@@ -35,21 +35,21 @@ struct rpc_call;
 
 typedef enum rpc_error_code
 {
-    INVALID_JSON_RESPONSE = 1,
-    CONNECTION_TIMEOUT,
-    CONNECTION_CLOSED,
-    RPC_CALL_TIMEOUT,
-    SPURIOUS_RPC_RESPONSE,
-    LOGOUT,
-    OTHER
+	INVALID_JSON_RESPONSE = 1,
+	CONNECTION_TIMEOUT,
+	CONNECTION_CLOSED,
+	RPC_CALL_TIMEOUT,
+	SPURIOUS_RPC_RESPONSE,
+	LOGOUT,
+	OTHER
 } error_code_t;
 
 typedef enum rpc_call_status
 {
-    RPC_CALL_IN_PROGRESS,
-    RPC_CALL_MORE_AVAILABLE,
-    RPC_CALL_DONE,
-    RPC_CALL_ERROR
+	RPC_CALL_IN_PROGRESS,
+	RPC_CALL_MORE_AVAILABLE,
+	RPC_CALL_DONE,
+	RPC_CALL_ERROR
 } rpc_call_status_t;
 
 typedef struct rpc_connection *rpc_connection_t;
