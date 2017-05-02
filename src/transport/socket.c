@@ -27,15 +27,18 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <errno.h>
-#include <sys/types.h>
 #include <gio/gio.h>
+#include <gio/gunixcredentialsmessage.h>
+#include <gio/gunixfdmessage.h>
+#include <gio/gunixfdlist.h>
+#include <gio/gunixsocketaddress.h>
+#include <libsoup/soup.h>
 #include "../internal.h"
 
-static struct rpc_transport_connection *socket_connect(const char *);
-static struct rpc_transport_server *socket_listen(const char *);
-static void *unix_event_loop(void *);
+static GSocketAddress *socket_parse_uri(const char *);
+static struct rpc_transport_connection *socket_connect(const char *, rpc_object_t);
+static struct rpc_transport_server *socket_listen(const char *, rpc_object_t);
+static void *socket_reader(void *);
 
 struct rpc_transport socket_transport = {
     .schemas = {"unix", "tcp", NULL},
@@ -46,7 +49,7 @@ struct rpc_transport socket_transport = {
 struct socket_server
 {
     const char *	ss_uri;
-    GSocketService	ss_service;
+    GSocketService *	ss_service;
     conn_handler_t	ss_conn_handler;
 
 };
@@ -55,95 +58,133 @@ struct socket_connection
 {
     const char *	sc_uri;
     GSocketConnection *	sc_conn;
+    GSocketClient *	sc_client;
+    GInputStream * 	sc_istream;
+    GOutputStream *	sc_ostream;
+    GThread *		sc_reader_thread;
     message_handler_t	sc_message_handler;
     close_handler_t	sc_close_handler;
 };
 
-static struct rpc_transport_connection *
-socket_connect(const char *uri)
+static GSocketAddress *
+socket_parse_uri(const char *uri_string)
 {
+	GSocketAddress *addr;
+	SoupURI *uri;
+
+	uri = soup_uri_new(uri_string);
+
+	if (!g_strcmp0(uri->scheme, "tcp")) {
+		addr = g_inet_socket_address_new_from_string(uri->host,
+		    uri->port);
+		return (addr);
+	}
+
+	if (!g_strcmp0(uri->scheme, "unix")) {
+		addr = g_unix_socket_address_new(uri->path);
+		return (addr);
+	}
+
+	return (NULL);
+}
+
+static struct rpc_transport_connection *
+socket_connect(const char *uri, rpc_object_t args)
+{
+	GError *err;
+	GSocketAddress *addr;
 	struct socket_connection *conn;
+
+	addr = socket_parse_uri(uri);
+	if (addr == NULL)
+		return (NULL);
+
+	conn = calloc(1, sizeof(*conn));
+	conn->sc_uri = strdup(uri);
+	conn->sc_client = g_socket_client_new();
+	conn->sc_conn = g_socket_client_connect(conn->sc_client,
+	    G_SOCKET_CONNECTABLE(&addr), NULL, &err);
+	conn->sc_istream = g_io_stream_get_input_stream(
+	    G_IO_STREAM(conn->sc_conn));
+	conn->sc_ostream = g_io_stream_get_output_stream(
+	    G_IO_STREAM(conn->sc_conn));
 }
 
 static struct rpc_transport_server *
-socket_listen(const char *uri)
+socket_listen(const char *uri, rpc_object_t args)
 {
+	GError *err;
+	GSocketAddress *addr;
 	struct socket_server *server;
 
-}
+	addr = socket_parse_uri(uri);
+	if (addr == NULL)
+		return (NULL);
 
-void
-unix_close(unix_conn_t *conn)
-{
-	shutdown(conn->unix_fd, SHUT_RDWR);
-	pthread_join(conn->unix_thread, NULL);
+	server = calloc(1, sizeof(*server));
+	server->ss_uri = strdup(uri);
+	server->ss_service = g_socket_service_new();
 
-	free(conn->unix_path);
-	free(conn);
+	g_socket_listener_add_address(G_SOCKET_LISTENER(server->ss_service),
+	    addr, G_SOCKET_TYPE_STREAM, G_SOCKET_PROTOCOL_DEFAULT, NULL, NULL,
+	    &err);
 }
 
 static int
-unix_send_msg(void *arg, void *buf, size_t size, int *fds, size_t nfds)
+socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 {
 	struct socket_connection *conn = arg;
-	GSocketControlMessage *creds;
+	GError *err;
+	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
+	GSocketControlMessage *cmsg[2];
 	GUnixFDList *fdlist;
-	struct msghdr msg;
-	struct cmsghdr *cmsg;
-	struct iovec iov;
-	uint32_t header[2];
-	int i;
+	GOutputVector iov[2];
+	uint32_t header[4] = { 0xdeadbeef, (uint32_t)size, 0, 0 };
 
-	header[0] = 0xdeadbeef;
-	header[1] = (uint32_t)size;
+	iov[0] = { .buffer = header, .size = sizeof(header) };
+	iov[1] = { .buffer = buf, .size = size };
 
-	memset(&msg, 0, sizeof(struct msghdr));
-	iov.iov_base = header;
-	iov.iov_len = sizeof(header);
-	msg.msg_iov = &iov;
-	msg.msg_iovlen = 1;
-	msg.msg_controllen = CMSG_SPACE(sizeof(struct cmsgcred)) +
-	    CMSG_SPACE(nfds * sizeof(int));
-	msg.msg_control = malloc(msg.msg_controllen);
-
-	cmsg = CMSG_FIRSTHDR(&msg);
-	cmsg->cmsg_type = SCM_CREDS;
-	cmsg->cmsg_level = SOL_SOCKET;
-	cmsg->cmsg_len = CMSG_LEN(sizeof(struct cmsgcred));
-
+	cmsg[0] = g_unix_credentials_message_new();
 	if (nfds > 0) {
-		cmsg = CMSG_NXTHDR(&msg, cmsg);
-		cmsg->cmsg_type = SCM_RIGHTS;
-		cmsg->cmsg_level = SOL_SOCKET;
-		cmsg->cmsg_len = CMSG_LEN(nfds * sizeof(int));
-		memcpy(CMSG_DATA(cmsg), fds, cmsg->cmsg_len);
+		cmsg[1] = g_unix_fd_message_new_with_fd_list(
+		    g_unix_fd_list_new_from_array(fds, (gint)nfds));
 	}
 
-	if (xsendmsg(conn->unix_fd, &msg, 0) < 0)
+	g_socket_send_message(sock, NULL, iov, 1, cmsg, nfds > 0 ? 2 : 1, 0,
+	    NULL, &err);
+	if (err != NULL) {
+		g_error_free(err);
 		return (-1);
+	}
 
-	if (xwrite(conn->unix_fd, buf, size) < 0)
+	g_output_stream_write(conn->sc_ostream, buf, size, NULL, &err);
+	if (err != NULL) {
+		g_error_free(err);
 		return (-1);
+	}
 
 	return (0);
 }
 
 static int
-socket_recv_msg(void *arg, void **frame, size_t *size,
+socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
     int **fds, size_t *nfds, struct rpc_credentials *creds)
 {
-	struct msghdr msg;
-	struct cmsghdr *cmsg;
-	struct cmsgcred *recv_creds;
-	struct iovec iov;
-	int *recv_fds = NULL;
-	size_t recv_fds_count = 0;
-	ssize_t recvd;
-	uint32_t header[2];
+	GError *err;
+	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
+	GSocketControlMessage **cmsg;
+	GUnixFDList *fdlist;
+	GInputVector iov;
+	uint32_t header[4];
 	size_t length;
+	gssize read;
+	int ncmsg, flags, i;
 
-	if (xrecvmsg(conn->unix_fd, &msg, sizeof(uint32_t) * 2) < 0)
-		return (-1);
+	iov.buffer = header;
+	iov.size = sizeof(header);
+
+	g_socket_receive_message(sock, NULL, &iov, 1, &cmsg, &ncmsg, &flags,
+	    NULL, &err);
 
 	if (header[0] != 0xdeadbeef)
 		return (-1);
@@ -152,35 +193,33 @@ socket_recv_msg(void *arg, void **frame, size_t *size,
 	*frame = malloc(length);
 	*size = length;
 
-	for (cmsg = CMSG_FIRSTHDR(&msg); cmsg != NULL;
-	     cmsg = CMSG_NXTHDR(&msg, cmsg)) {
-		if (cmsg->cmsg_type == SCM_CREDS) {
-			recv_creds = (struct cmsgcred *)CMSG_DATA(cmsg);
+	for (i = 0; i < ncmsg; i++) {
+		if (G_IS_UNIX_CREDENTIALS_MESSAGE(cmsg[i])) {
+			GUnixCredentialsMessage *recv_creds;
+			creds->rcc_remote_pid = recv_creds->native.pid;
+			creds->rcc_remote_uid = recv_creds->native.uid;
+			creds->rcc_remote_gid = recv_creds->native.gid;
+			debugf("remote pid=%d, uid=%d, gid=%d",
+			    creds->rcc_remote_pid, creds->rcc_remote_uid,
+			    creds->rcc_remote_gid);
 			continue;
 		}
 
-		if (cmsg->cmsg_type == SCM_RIGHTS) {
-			recv_fds = (int *)CMSG_DATA(cmsg);
-			recv_fds_count = CMSG_SPACE(cmsg);
+		if (G_IS_UNIX_FD_MESSAGE(cmsg[i])) {
+			fds = g_unix_fd_message_steal_fds(cmsg[i], &nfds);
+			continue;
 		}
 	}
 
-	if (recv_creds != NULL) {
-		creds->rcc_remote_pid = recv_creds->cmcred_pid;
-		creds->rcc_remote_uid = recv_creds->cmcred_euid;
-		creds->rcc_remote_gid = recv_creds->cmcred_gid;
-		debugf("remote pid=%d, uid=%d, gid=%d", recv_creds->cmcred_pid,
-		       recv_creds->cmcred_uid, recv_creds->cmcred_gid);
-
+	read = g_input_stream_read(conn->sc_istream, *frame, *size, NULL, &err);
+	if (err != NULL) {
+		g_free(err);
+		free(frame);
+		return (-1);
 	}
 
-	if (recv_fds != NULL) {
-		int i;
-		*fds = malloc(sizeof(int) * recv_fds_count);
-		memcpy(*fds, recv_fds, sizeof(int) * recv_fds_count);
-	}
-
-	if (xread(conn->unix_fd, frame, size) < size) {
+	if (read < length) {
+		/* Short read */
 		free(frame);
 		return (-1);
 	}
@@ -189,68 +228,39 @@ socket_recv_msg(void *arg, void **frame, size_t *size,
 }
 
 void
-unix_abort(unix_conn_t *conn)
+socket_abort(void *arg)
 {
-	conn->unix_close_handler(conn, conn->unix_close_handler_arg);
+	struct socket_connection *conn = arg;
+	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
+
+	g_socket_close(sock, NULL);
 }
 
-int unix_get_fd(unix_conn_t *conn)
+int
+unix_get_fd(void *arg)
 {
+	struct socket_connection *conn = arg;
+	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
 
-	return (conn->unix_fd);
-}
-
-static void
-unix_process_msg(unix_conn_t *conn, void *frame, size_t size)
-{
-	conn->unix_message_handler(conn, frame, size,
-	    conn->unix_message_handler_arg);
+	return (g_socket_get_fd(sock));
 }
 
 static void *
-unix_event_loop(void *arg)
+socket_reader(void *arg)
 {
-	unix_conn_t *conn = (unix_conn_t *)arg;
-	struct kevent event;
-	struct kevent change;
-	int i, evs;
-	int kq = kqueue();
+	struct socket_connection *conn = arg;
+	struct rpc_credentials creds;
 	void *frame;
-	size_t size;
-
-	EV_SET(&change, conn->unix_fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
-
-        if (kevent(kq, &change, 1, NULL, 0, NULL) < 0)
-                goto out;
+	int *fds;
+	size_t len, nfds;
+	int ret;
 
 	for (;;) {
-		evs = kevent(kq, NULL, 0, &event, 1, NULL);
-		if (evs < 0) {
-			if (errno == EINTR)
-				continue;
-
-			unix_abort(conn);
-			goto out;
-		}
-
-		for (i = 0; i < evs; i++) {
-			if (event.ident == conn->unix_fd) {
-				if (event.flags & EV_EOF)
-                                        goto out;
-
-				if (event.flags & EV_ERROR)
-                                        goto out;
-
-				if (unix_recv_msg(conn, &frame, &size) < 0)
-					continue;
-
-				unix_process_msg(conn, frame, size);
-			}
-		}
+		ret = socket_recv_msg(conn, &frame, &len, &fds, &nfds, &creds);
+		if (ret != 0)
+			break;
 	}
 
-out:
-        close(conn->unix_fd);
-        close(kq);
-        return (NULL);
+	conn->sc_close_handler();
+	return (NULL);
 }
