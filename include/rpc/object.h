@@ -33,14 +33,6 @@
 #include <stdarg.h>
 #include <sys/types.h>
 
-#ifdef __FreeBSD__
-#include <uuid.h>
-#endif
-
-#if defined(__APPLE__) or defined(__linux__)
-#include <uuid/uuid.h>
-#endif
-
 struct rpc_object;
 
 typedef enum {
@@ -52,7 +44,6 @@ typedef enum {
     RPC_TYPE_DATE,
     RPC_TYPE_STRING,
     RPC_TYPE_BINARY,
-    RPC_TYPE_UUID,
     RPC_TYPE_FD,
     RPC_TYPE_DICTIONARY,
     RPC_TYPE_ARRAY
@@ -93,8 +84,6 @@ rpc_object_t rpc_string_create_with_format_and_arguments(const char *fmt,
     va_list ap);
 size_t rpc_string_get_length(rpc_object_t xstring);
 const char *rpc_string_get_string_ptr(rpc_object_t xstring);
-rpc_object_t rpc_uuid_create(const uuid_t uuid);
-const uint8_t *rpc_uuid_get_bytes(rpc_object_t xuuid);
 rpc_object_t rpc_fd_create(int fd);
 int rpc_fd_dup(rpc_object_t xfd);
 
@@ -112,7 +101,6 @@ void rpc_array_set_date(rpc_object_t array, size_t index, int64_t value);
 void rpc_array_set_data(rpc_object_t array, size_t index, const void *bytes,
     size_t length);
 void rpc_array_set_string(rpc_object_t array, size_t index, const char *value);
-void rpc_array_set_uuid(rpc_object_t array, size_t index, const uuid_t value);
 void rpc_array_set_fd(rpc_object_t array, size_t index, int value);
 bool rpc_array_get_bool(rpc_object_t array, size_t index);
 int64_t rpc_array_get_int64(rpc_object_t array, size_t index);
@@ -121,7 +109,6 @@ double rpc_array_get_double(rpc_object_t array, size_t index);
 int64_t rpc_array_get_date(rpc_object_t array, size_t index);
 const void *rpc_array_get_data(rpc_object_t array, size_t index,
     size_t *length);
-const uint8_t *rpc_array_get_uuid(rpc_object_t array, size_t index);
 const char *rpc_array_get_string(rpc_object_t array, size_t index);
 int rpc_array_dup_fd(rpc_object_t array, size_t index);
 
@@ -149,8 +136,6 @@ void rpc_dictionary_set_data(rpc_object_t dictionary, const char *key,
     const void *value, size_t length);
 void rpc_dictionary_set_string(rpc_object_t dictionary, const char *key,
     const char *value);
-void rpc_dictionary_set_uuid(rpc_object_t dictionary, const char *key,
-    const uuid_t value);
 void rpc_dictionary_set_fd(rpc_object_t dictionary, const char *key,
     int value);
 bool rpc_dictionary_get_bool(rpc_object_t dictionary, const char *key);
@@ -160,8 +145,6 @@ double rpc_dictionary_get_double(rpc_object_t dictionary, const char *key);
 int64_t rpc_dictionary_get_date(rpc_object_t dictionary, const char *key);
 const void *rpc_dictionary_get_data(rpc_object_t dictionary, const char *key,
     size_t *length);
-const uint8_t *rpc_dictionary_get_uuid(rpc_object_t dictionary,
-    const char *key);
 const char *rpc_dictionary_get_string(rpc_object_t dictionary,
     const char *key);
 int rpc_dictionary_dup_fd(rpc_object_t dictionary, const char *key);

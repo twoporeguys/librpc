@@ -66,7 +66,7 @@ inline rpc_object_t
 rpc_retain(rpc_object_t object)
 {
 
-	object->ro_refcnt++;
+	g_atomic_int_inc(&object->ro_refcnt);
 	return (object);
 }
 
@@ -369,18 +369,6 @@ rpc_string_get_string_ptr(rpc_object_t xstring)
 }
 
 inline rpc_object_t
-rpc_uuid_create(const uuid_t uuid)
-{
-
-}
-
-inline const uint8_t *
-rpc_uuid_get_bytes(rpc_object_t xuuid)
-{
-
-}
-
-inline rpc_object_t
 rpc_fd_create(int fd)
 {
 	union rpc_value val;
@@ -413,6 +401,8 @@ inline void
 rpc_array_append_value(rpc_object_t array, rpc_object_t value)
 {
 
+	rpc_retain(value);
+	g_array_append_val(array->ro_value.rv_list, value);
 }
 
 inline rpc_object_t
@@ -491,13 +481,6 @@ inline void rpc_array_set_string(rpc_object_t array, size_t index,
 	rpc_array_set_value(array, index, rpc_string_create(value));
 }
 
-inline void rpc_array_set_uuid(rpc_object_t array, size_t index,
-    const uuid_t value)
-{
-
-	rpc_array_set_value(array, index, rpc_uuid_create(value));
-}
-
 inline void
 rpc_array_set_fd(rpc_object_t array, size_t index, int value)
 {
@@ -547,13 +530,6 @@ rpc_array_get_data(rpc_object_t array, size_t index,
 
 }
 
-inline const uint8_t *
-rpc_array_get_uuid(rpc_object_t array, size_t index)
-{
-
-	return rpc_uuid_get_bytes(rpc_array_get_value(array, index));
-}
-
 inline const char *
 rpc_array_get_string(rpc_object_t array, size_t index)
 {
@@ -572,7 +548,9 @@ rpc_dictionary_create(const char * const *keys, const rpc_object_t *values,
 {
 	union rpc_value val;
 
-	val.rv_dict = g_hash_table_new(NULL, g_str_equal);
+	val.rv_dict = g_hash_table_new_full(NULL, g_str_equal, NULL,
+	    (GDestroyNotify)rpc_release);
+
 	return (rpc_prim_create(RPC_TYPE_DICTIONARY, val, 0));
 }
 
@@ -582,7 +560,6 @@ rpc_dictionary_set_value(rpc_object_t dictionary, const char *key,
 {
 	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
 		return;
-
 
 	g_hash_table_insert(dictionary->ro_value.rv_dict,
 	    rpc_string_create(key), value);
@@ -676,14 +653,6 @@ rpc_dictionary_set_string(rpc_object_t dictionary, const char *key,
 }
 
 inline void
-rpc_dictionary_set_uuid(rpc_object_t dictionary, const char *key,
-    const uuid_t value)
-{
-
-	rpc_dictionary_set_value(dictionary, key, rpc_uuid_create(value));
-}
-
-inline void
 rpc_dictionary_set_fd(rpc_object_t dictionary, const char *key, int value)
 {
 
@@ -728,12 +697,6 @@ rpc_dictionary_get_date(rpc_object_t dictionary, const char *key)
 inline const void *
 rpc_dictionary_get_data(rpc_object_t dictionary, const char *key,
     size_t *length)
-{
-
-}
-
-inline const uint8_t *
-rpc_dictionary_get_uuid(rpc_object_t dictionary, const char *key)
 {
 
 }
