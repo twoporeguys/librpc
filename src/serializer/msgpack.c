@@ -26,7 +26,6 @@
  */
 
 #include <rpc/object.h>
-#include <rpc/connection.h>
 #include "../../contrib/mpack/mpack.h"
 #include "../internal.h"
 #include "msgpack.h"
@@ -64,7 +63,7 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 
 	case RPC_TYPE_BINARY:
 		mpack_write_bin(writer, (char *)object->ro_value.rv_ptr,
-		    object->ro_size);
+		    (uint32_t)object->ro_size);
 		break;
 
 	case RPC_TYPE_FD:
@@ -74,19 +73,19 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 		break;
 
 	case RPC_TYPE_DICTIONARY:
-		mpack_start_map(writer, rpc_dictionary_get_count(object));
+		mpack_start_map(writer, (uint32_t)rpc_dictionary_get_count(object));
 		rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
 		    mpack_write_cstr(writer, k);
-		    rpc_mpack_write_object(writer, v);
+		    rpc_msgpack_write_object(writer, v);
 		    return ((bool)true);
 		});
 		mpack_finish_map(writer);
 		break;
 
 	case RPC_TYPE_ARRAY:
-		mpack_start_array(writer, rpc_array_get_count(object));
+		mpack_start_array(writer, (uint32_t)rpc_array_get_count(object));
 		rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
-		    rpc_mpack_write_object(writer, v);
+		    rpc_msgpack_write_object(writer, v);
 		    return ((bool)true);
 		});
 		mpack_finish_array(writer);
@@ -101,9 +100,6 @@ rpc_msgpack_read_object(mpack_node_t node)
 	__block rpc_object_t result;
 
 	switch (mpack_node_type(node)) {
-	case mpack_type_nil:
-		return (rpc_null_create());
-
 	case mpack_type_int:
 		return (rpc_int64_create(mpack_node_i64(node)));
 
@@ -117,18 +113,34 @@ rpc_msgpack_read_object(mpack_node_t node)
 		return (rpc_double_create(mpack_node_double(node)));
 
 	case mpack_type_str:
-		return (rpc_string_create(mpack_node_cstr(node)));
+		return (rpc_string_create(mpack_node_str(node)));
+
+	case mpack_type_bin:
+		return (rpc_data_create(mpack_node_data(node),
+		    mpack_node_data_len(node)));
 
 	case mpack_type_array:
+		result = rpc_array_create(NULL, 0);
 		for (i = 0; i < mpack_node_array_length(node); i++) {
-
+			rpc_array_append_value(result, rpc_msgpack_read_object(
+			    mpack_node_array_at(node, (uint32_t)i)));
 		}
+		return (result);
 
 	case mpack_type_map:
-		for (i = 0; i < mpack_node_map_length(node); i++) {
-
+		result = rpc_dictionary_create(NULL, NULL, 0);
+		for (i = 0; i < mpack_node_map_count(node); i++) {
+			rpc_dictionary_set_value(result,
+			    mpack_node_str(mpack_node_map_key_at(node,
+				(uint32_t)i)),
+			    rpc_msgpack_read_object(mpack_node_map_value_at(
+				node, (uint32_t)i)));
 		}
+		return (result);
 
+	case mpack_type_nil:
+	default:
+		return (rpc_null_create());
 	}
 }
 
@@ -137,7 +149,7 @@ rpc_msgpack_serialize(rpc_object_t obj, void **frame, size_t *size)
 {
 	mpack_writer_t writer;
 
-	mpack_writer_init_growable(&writer, frame, size);
+	mpack_writer_init_growable(&writer, (char **)frame, size);
 	rpc_msgpack_write_object(&writer, obj);
 	return (0);
 }
@@ -148,5 +160,5 @@ rpc_msgpack_deserialize(void *frame, size_t size)
 	mpack_tree_t tree;
 
 	mpack_tree_init(&tree, frame, size);
-	return (rpc_msgpack_read_object(mpack_tree_root(tree)));
+	return (rpc_msgpack_read_object(mpack_tree_root(&tree)));
 }
