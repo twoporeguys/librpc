@@ -25,11 +25,98 @@
  *
  */
 
+#include <stdlib.h>
 #include <rpc/object.h>
+#include <rpc/connection.h>
 #include <glib.h>
+#include "internal.h"
 
-struct rpc_context
+struct rpc_method
 {
-    GHashTable *rc_methods;
+	const char *	rm_name;
 };
 
+struct rpc_pending_call
+{
+	void *		rpc_priv;
+};
+
+rpc_context_t
+rpc_context_create(void)
+{
+	rpc_context_t result;
+
+	result = calloc(1, sizeof(*result));
+	result->rcx_methods = g_hash_table_new(g_str_hash, g_str_equal);
+
+	return (result);
+}
+
+void
+rpc_context_free(rpc_context_t context)
+{
+
+}
+
+void
+rpc_context_dispatch(rpc_context_t context, void *cookie, const char *name,
+    rpc_object_t args)
+{
+	struct rpc_method *method;
+
+	method = g_hash_table_lookup(context->rcx_methods, (gconstpointer)name);
+	if (method == NULL) {
+
+	}
+}
+
+int
+rpc_context_register_method(rpc_context_t context, const char *name,
+    rpc_function_t func, void *arg, int flags)
+{
+	struct rpc_method *method;
+
+	method = calloc(1, sizeof(*method));
+	method->rm_name = g_strdup(name);
+	g_hash_table_insert(context->rcx_methods, (gpointer)method->rm_name,
+	    method);
+
+	return (0);
+}
+
+int
+rpc_context_register_method_f(rpc_context_t context, const char *name,
+    rpc_function_f func, void *arg, int flags)
+{
+
+}
+
+void
+rpc_function_respond(void *cookie, rpc_object_t object)
+{
+
+}
+
+void
+rpc_function_error(void *cookie, int code, const char *message, ...)
+{
+
+}
+
+void
+rpc_function_error_ex(void *cookie, rpc_object_t exception)
+{
+
+}
+
+void
+rpc_function_yield(void *cookie, rpc_object_t fragment)
+{
+
+}
+
+void
+rpc_function_end(void *cookie)
+{
+
+}
