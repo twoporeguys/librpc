@@ -65,7 +65,6 @@ rpc_data_hash(const uint8_t *data, size_t length)
 inline rpc_object_t
 rpc_retain(rpc_object_t object)
 {
-
 	g_atomic_int_inc(&object->ro_refcnt);
 	return (object);
 }
@@ -73,7 +72,6 @@ rpc_retain(rpc_object_t object)
 inline void
 rpc_release(rpc_object_t object)
 {
-
 	assert(object->ro_refcnt > 0);
 	if (g_atomic_int_dec_and_test(&object->ro_refcnt)) {
 		free(object);
@@ -87,13 +85,22 @@ rpc_copy(rpc_object_t object)
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
+		return (rpc_null_create());
+
 	case RPC_TYPE_BOOL:
+		return (rpc_bool_create(object->ro_value.rv_b));
+
 	case RPC_TYPE_INT64:
+		return (rpc_int64_create(object->ro_value.rv_i));
+
 	case RPC_TYPE_UINT64:
+		return (rpc_uint64_create(object->ro_value.rv_ui));
+
 	case RPC_TYPE_DATE:
+		return (rpc_date_create(object->ro_value.rv_datetime));
+
 	case RPC_TYPE_DOUBLE:
-		return (rpc_prim_create(object->ro_type,
-		    object->ro_value, 1));
+		return (rpc_double_create(object->ro_value.rv_d));
 
 	case RPC_TYPE_STRING:
 		return (rpc_string_create(strdup(
@@ -127,7 +134,6 @@ rpc_copy(rpc_object_t object)
 inline bool
 rpc_equal(rpc_object_t o1, rpc_object_t o2)
 {
-
 	return (rpc_hash(o1) == rpc_hash(o2));
 }
 
