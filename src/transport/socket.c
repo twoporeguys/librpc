@@ -36,8 +36,11 @@
 #include "../internal.h"
 
 static GSocketAddress *socket_parse_uri(const char *);
-static struct rpc_transport_connection *socket_connect(const char *, rpc_object_t);
-static struct rpc_transport_server *socket_listen(const char *, rpc_object_t);
+int socket_connect(const char *, struct rpc_connection *, rpc_object_t);
+int socket_listen(const char *, rpc_object_t);
+static int socket_send_msg(void *, void *, size_t, const int *, size_t);
+static int socket_abort(void *);
+static int socket_get_fd(void *);
 static void *socket_reader(void *);
 
 struct rpc_transport socket_transport = {
@@ -48,22 +51,21 @@ struct rpc_transport socket_transport = {
 
 struct socket_server
 {
-    const char *	ss_uri;
-    GSocketService *	ss_service;
-    conn_handler_t	ss_conn_handler;
+    const char *			ss_uri;
+    GSocketService *			ss_service;
+    conn_handler_t			ss_conn_handler;
 
 };
 
 struct socket_connection
 {
-    const char *	sc_uri;
-    GSocketConnection *	sc_conn;
-    GSocketClient *	sc_client;
-    GInputStream * 	sc_istream;
-    GOutputStream *	sc_ostream;
-    GThread *		sc_reader_thread;
-    message_handler_t	sc_message_handler;
-    close_handler_t	sc_close_handler;
+    const char *			sc_uri;
+    GSocketConnection *			sc_conn;
+    GSocketClient *			sc_client;
+    GInputStream * 			sc_istream;
+    GOutputStream *			sc_ostream;
+    GThread *				sc_reader_thread;
+    struct rpc_connection *		sc_parent;
 };
 
 static GSocketAddress *
@@ -88,8 +90,8 @@ socket_parse_uri(const char *uri_string)
 	return (NULL);
 }
 
-static struct rpc_transport_connection *
-socket_connect(const char *uri, rpc_object_t args)
+int
+socket_connect(const char *uri, struct rpc_connection *rco, rpc_object_t args)
 {
 	GError *err;
 	GSocketAddress *addr;
@@ -97,7 +99,7 @@ socket_connect(const char *uri, rpc_object_t args)
 
 	addr = socket_parse_uri(uri);
 	if (addr == NULL)
-		return (NULL);
+		return (-1);
 
 	conn = calloc(1, sizeof(*conn));
 	conn->sc_uri = strdup(uri);
@@ -108,9 +110,17 @@ socket_connect(const char *uri, rpc_object_t args)
 	    G_IO_STREAM(conn->sc_conn));
 	conn->sc_ostream = g_io_stream_get_output_stream(
 	    G_IO_STREAM(conn->sc_conn));
+	rco->rco_send_msg = &socket_send_msg;
+	rco->rco_abort = &socket_abort;
+	rco->rco_get_fd = &socket_get_fd;
+	rco->rco_arg = conn;
+	conn->sc_reader_thread = g_thread_new("socket reader thread",
+	    socket_reader, (gpointer)conn);
+
+	return (0);
 }
 
-static struct rpc_transport_server *
+int
 socket_listen(const char *uri, rpc_object_t args)
 {
 	GError *err;
@@ -141,8 +151,8 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 	GOutputVector iov[2];
 	uint32_t header[4] = { 0xdeadbeef, (uint32_t)size, 0, 0 };
 
-	iov[0] = { .buffer = header, .size = sizeof(header) };
-	iov[1] = { .buffer = buf, .size = size };
+	iov[0] = (GOutputVector){ .buffer = header, .size = sizeof(header) };
+	iov[1] = (GOutputVector){ .buffer = buf, .size = size };
 
 	cmsg[0] = g_unix_credentials_message_new();
 	if (nfds > 0) {
@@ -168,7 +178,7 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 
 static int
 socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
-    int **fds, size_t *nfds, struct rpc_credentials *creds)
+    int *fds, size_t *nfds, struct rpc_credentials *creds)
 {
 	GError *err;
 	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
@@ -195,18 +205,18 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 
 	for (i = 0; i < ncmsg; i++) {
 		if (G_IS_UNIX_CREDENTIALS_MESSAGE(cmsg[i])) {
-			GUnixCredentialsMessage *recv_creds;
-			creds->rcc_remote_pid = recv_creds->native.pid;
-			creds->rcc_remote_uid = recv_creds->native.uid;
-			creds->rcc_remote_gid = recv_creds->native.gid;
-			debugf("remote pid=%d, uid=%d, gid=%d",
-			    creds->rcc_remote_pid, creds->rcc_remote_uid,
-			    creds->rcc_remote_gid);
+			GCredentials *cr;
+			creds->rcc_pid = g_credentials_get_unix_pid(cr, &err);
+			creds->rcc_uid = g_credentials_get_unix_user(cr, &err);
+			creds->rcc_gid = (gid_t)-1;
+			debugf("remote pid=%d, uid=%d, gid=%d", creds->rcc_pid,
+			    creds->rcc_uid, creds->rcc_gid);
 			continue;
 		}
 
 		if (G_IS_UNIX_FD_MESSAGE(cmsg[i])) {
-			fds = g_unix_fd_message_steal_fds(cmsg[i], &nfds);
+			fds = g_unix_fd_message_steal_fds(
+			    G_UNIX_FD_MESSAGE(cmsg[i]), nfds);
 			continue;
 		}
 	}
@@ -227,22 +237,14 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	return (0);
 }
 
-void
+static int
 socket_abort(void *arg)
 {
 	struct socket_connection *conn = arg;
 	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
 
 	g_socket_close(sock, NULL);
-}
-
-int
-unix_get_fd(void *arg)
-{
-	struct socket_connection *conn = arg;
-	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
-
-	return (g_socket_get_fd(sock));
+	return (0);
 }
 
 static void *
@@ -253,14 +255,19 @@ socket_reader(void *arg)
 	void *frame;
 	int *fds;
 	size_t len, nfds;
-	int ret;
 
 	for (;;) {
-		ret = socket_recv_msg(conn, &frame, &len, &fds, &nfds, &creds);
-		if (ret != 0)
+		if (socket_recv_msg(conn, &frame, &len, &fds, &nfds, &creds) != 0)
 			break;
+
+		if (conn->sc_parent->rco_recv_msg(conn->sc_parent, frame, len,
+		    fds, nfds, &creds) != 0)
+			break;
+
 	}
 
-	conn->sc_close_handler();
+	conn->sc_parent->rco_close(conn->sc_parent);
 	return (NULL);
 }
+
+DECLARE_TRANSPORT(socket_transport);
