@@ -30,6 +30,7 @@
 
 #include <rpc/object.h>
 #include <rpc/service.h>
+#include <rpc/connection.h>
 #include <stdio.h>
 #include <glib.h>
 
