@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.6)
 project(librpc)
 
 find_package (PkgConfig REQUIRED)
-pkg_check_modules (GLIB REQUIRED glib-2.0)
+pkg_check_modules (GLIB REQUIRED glib-2.0>=2.52)
 pkg_check_modules (GIO REQUIRED gio-unix-2.0)
 pkg_check_modules(SOUP REQUIRED libsoup-2.4)
 
@@ -36,7 +36,10 @@ set(SERIALIZER_FILES
         src/serializer/msgpack.c
         src/serializer/msgpack.c)
 
-add_library(librpc SHARED ${CORE_FILES} ${TRANSPORT_FILES} ${SERIALIZER_FILES})
+add_library(librpc SHARED ${CORE_FILES})
+target_link_libraries(librpc ${GLIB_LIBRARIES})
+target_link_libraries(librpc ${GIO_LIBRARIES})
+target_link_libraries(librpc ${SOUP_LIBRARIES})
 
 #Compile tests
 set(CATCH_INCLUDE_DIR src/tests)
