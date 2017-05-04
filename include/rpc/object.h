@@ -54,6 +54,8 @@ typedef bool (^rpc_array_applier_t)(size_t index, rpc_object_t value);
 typedef bool (^rpc_dictionary_applier_t)(const char *key, rpc_object_t value);
 typedef void (^rpc_callback_t)(rpc_object_t object);
 
+
+static rpc_object_t rpc_prim_create(rpc_type_t type, union rpc_value val, size_t size);
 rpc_object_t rpc_retain(rpc_object_t object);
 void rpc_release(rpc_object_t object);
 rpc_object_t rpc_copy(rpc_object_t object);
