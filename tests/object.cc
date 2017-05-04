@@ -27,20 +27,17 @@
 
 #include "catch.hpp"
 
-#include <rpc/object.h>
-#include "../src/rpc_object.c"
+#include "../src/internal.h"
 
 SCENARIO("RPC_OBJECT_CREATE", "Create RPC object and check its internal value") {
         GIVEN("Integer initialized RPC object") {
                 rpc_object_t object;
-                union rpc_value value;
+                int value = 10;
 
-                value.rv_i = 10;
-
-                object = rpc_prim_create(RPC_TYPE_INT64, value, sizeof(value.rv_i));
+                object = rpc_int64_create(value);
                 REQUIRE(object->ro_refcnt == 1);
 
-                REQUIRE(object->ro_value.rv_i == value.rv_i);
+                REQUIRE(object->ro_value.rv_i == value);
 
                 WHEN("reference count is incremented") {
                         rpc_retain(object);
