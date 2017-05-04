@@ -21,7 +21,6 @@ set(CORE_FILES
         src/rpc_object.c
         src/rpc_server.c
         src/internal.h
-        src/utils.c
         include/rpc/service.h
         include/rpc/object.h
         include/rpc/connection.h
