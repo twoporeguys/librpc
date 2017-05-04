@@ -31,6 +31,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <glib.h>
+#include <glib/gprintf.h>
 #include <rpc/object.h>
 #include "internal.h"
 
@@ -162,9 +163,7 @@ rpc_hash(rpc_object_t object)
 		return ((size_t)rpc_date_get_value(object));
 
 	case RPC_TYPE_STRING:
-		return (rpc_data_hash(
-		    (const uint8_t *)rpc_string_get_string_ptr(object),
-		    rpc_string_get_length(object)));
+		return (g_string_hash(object->ro_value.rv_str));
 
 	case RPC_TYPE_BINARY:
 		return (rpc_data_hash(
@@ -372,7 +371,7 @@ rpc_string_get_length(rpc_object_t xstring)
 	if (xstring->ro_type != RPC_TYPE_STRING)
 		return (0);
 
-	return (xstring->ro_size);
+	return (xstring->ro_value.rv_str->len);
 }
 
 inline const char *
@@ -403,14 +402,21 @@ inline rpc_object_t
 rpc_array_create(const rpc_object_t *objects, size_t count)
 {
 
+	union rpc_value val;
+
+	val.rv_list = g_array_new(true, true, sizeof(rpc_object_t));
+	return (rpc_prim_create(RPC_TYPE_ARRAY, val, 1));
 }
 
 inline void
 rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value)
 {
-	rpc_object_t ro;
+	rpc_object_t *ro;
 
-	ro = g_array_index(array->ro_value.rv_list, rpc_object_t, index);
+	rpc_retain(value);
+	ro = &g_array_index(array->ro_value.rv_list, rpc_object_t, index);
+	rpc_release(*ro);
+	*ro = value;
 }
 
 inline void
@@ -424,6 +430,7 @@ rpc_array_append_value(rpc_object_t array, rpc_object_t value)
 inline rpc_object_t
 rpc_array_get_value(rpc_object_t array, size_t index)
 {
+
 	return (g_array_index(array->ro_value.rv_list, rpc_object_t, index));
 }
 
@@ -438,13 +445,18 @@ inline size_t rpc_array_get_count(rpc_object_t array)
 inline bool
 rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier)
 {
+	bool flag = false;
 	size_t i = 0;
 
 	for (i = 0; i < array->ro_value.rv_list->len; i++) {
 		if (!applier(i, g_array_index(array->ro_value.rv_list,
-		    rpc_object_t, i)))
+		    rpc_object_t, i))) {
+			flag = true;
 			break;
+		}
 	}
+
+	return (flag);
 }
 
 inline void
@@ -564,7 +576,7 @@ rpc_dictionary_create(const char * const *keys, const rpc_object_t *values,
 {
 	union rpc_value val;
 
-	val.rv_dict = g_hash_table_new_full(NULL, g_str_equal, NULL,
+	val.rv_dict = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
 	    (GDestroyNotify)rpc_release);
 
 	return (rpc_prim_create(RPC_TYPE_DICTIONARY, val, 0));
@@ -577,6 +589,7 @@ rpc_dictionary_set_value(rpc_object_t dictionary, const char *key,
 	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
 		return;
 
+	rpc_retain(value);
 	g_hash_table_insert(dictionary->ro_value.rv_dict,
 	    rpc_string_create(key), value);
 }
