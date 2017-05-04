@@ -55,7 +55,6 @@
 /*
  * Private macros, not to be used outside this header file.
  */
-#ifdef __GNUCLIKE___SECTION
 #define __MAKE_SET(set, sym)				\
 	__GLOBL(__CONCAT(__start_set_,set));		\
 	__GLOBL(__CONCAT(__stop_set_,set));		\
@@ -63,11 +62,6 @@
 	__set_##set##_sym_##sym __section("set_" #set)	\
 	__used = &(sym)
 #else /* !__GNUCLIKE___SECTION */
-#ifndef lint
-#error this file needs to be ported to your compiler
-#endif /* lint */
-#define __MAKE_SET(set, sym)	extern void const * const (__set_##set##_sym_##sym)
-#endif /* __GNUCLIKE___SECTION */
 
 /*
  * Public macros.
