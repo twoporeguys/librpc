@@ -98,7 +98,7 @@ rpc_copy(rpc_object_t object)
 		return (rpc_uint64_create(object->ro_value.rv_ui));
 
 	case RPC_TYPE_DATE:
-		return (rpc_date_create(g_date_time_to_unix(object->ro_value.rv_datetime)));
+		return (rpc_date_create(rpc_date_get_value(object)));
 
 	case RPC_TYPE_DOUBLE:
 		return (rpc_double_create(object->ro_value.rv_d));
@@ -152,22 +152,14 @@ rpc_hash(rpc_object_t object)
 		return (0);
 
 	case RPC_TYPE_BOOL:
-                return ((size_t)object->ro_value.rv_b);
-
 	case RPC_TYPE_INT64:
-                return ((size_t)object->ro_value.rv_i);
-
 	case RPC_TYPE_UINT64:
-                return ((size_t)object->ro_value.rv_ui);
-
-	case RPC_TYPE_DATE:
-
-
 	case RPC_TYPE_DOUBLE:
-
-
 	case RPC_TYPE_FD:
 		return ((size_t)object->ro_value.rv_ui);
+
+	case RPC_TYPE_DATE:
+		return ((size_t)rpc_date_get_value(object));
 
 	case RPC_TYPE_STRING:
 		return (rpc_data_hash(
@@ -304,10 +296,10 @@ inline rpc_object_t rpc_date_create_from_current(void)
 inline int64_t
 rpc_date_get_value(rpc_object_t xdate)
 {
-	if (xdate->ro_type != RPC_TYPE_DOUBLE)
+	if (xdate->ro_type != RPC_TYPE_DATE)
 		return (0);
 
-	return (xdate->ro_value.rv_i);
+	return (g_date_time_to_unix(xdate->ro_value.rv_datetime));
 }
 
 inline rpc_object_t
