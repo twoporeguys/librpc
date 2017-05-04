@@ -27,6 +27,7 @@
 
 #include "catch.hpp"
 
+#include <rpc/object.h>
 #include "../src/internal.h"
 
 SCENARIO("RPC_OBJECT_CREATE", "Create RPC object and check its internal value") {
