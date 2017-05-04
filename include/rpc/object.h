@@ -58,14 +58,13 @@ typedef bool (^rpc_array_applier_t)(size_t index, rpc_object_t value);
 typedef bool (^rpc_dictionary_applier_t)(const char *key, rpc_object_t value);
 typedef void (^rpc_callback_t)(rpc_object_t object);
 
-
-static rpc_object_t rpc_prim_create(rpc_type_t type, union rpc_value val, size_t size);
 rpc_object_t rpc_retain(rpc_object_t object);
 void rpc_release(rpc_object_t object);
 rpc_object_t rpc_copy(rpc_object_t object);
 bool rpc_equal(rpc_object_t o1, rpc_object_t o2);
 size_t rpc_hash(rpc_object_t object);
 char *rpc_copy_description(rpc_object_t object);
+rpc_type_t rpc_get_type(rpc_object_t object);
 
 rpc_object_t rpc_null_create(void);
 rpc_object_t rpc_bool_create(bool value);
@@ -118,7 +117,7 @@ const void *rpc_array_get_data(rpc_object_t array, size_t index,
 const char *rpc_array_get_string(rpc_object_t array, size_t index);
 int rpc_array_dup_fd(rpc_object_t array, size_t index);
 
-rpc_object_t rpc_dictionary_create(const char * const *keys,
+rpc_object_t rpc_dictionary_create(const char *const *keys,
     const rpc_object_t *values, size_t count);
 rpc_object_t rpc_dictionary_create_reply(rpc_object_t original);
 void rpc_dictionary_set_value(rpc_object_t dictionary, const char *key,

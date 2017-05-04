@@ -29,96 +29,130 @@
 #define LIBRPC_INTERNAL_H
 
 #include <rpc/object.h>
-#include <rpc/service.h>
 #include <rpc/connection.h>
+#include <rpc/service.h>
+#include <rpc/server.h>
 #include <stdio.h>
+#include <setjmp.h>
 #include <glib.h>
+#include "linker_set.h"
+
+#define	DECLARE_TRANSPORT(_transport)	DATA_SET(transport_set, _transport)
+#define	debugf(...)
+
+struct rpc_connection;
+struct rpc_credentials;
+struct rpc_server;
+
+typedef int (*rpc_recv_msg_fn_t)(struct rpc_connection *, const void *, size_t,
+    int *, size_t, struct rpc_credentials *);
+typedef int (*rpc_send_msg_fn_t)(void *, void *, size_t, const int *, size_t);
+typedef int (*rpc_abort_fn_t)(void *);
+typedef int (*rpc_get_fd_fn_t)(void *);
+typedef int (*rpc_close_fn_t)(struct rpc_connection *);
+typedef int (*rpc_accept_fn_t)(struct rpc_server *, const char *, rpc_object_t);
 
 union rpc_value
 {
-    GHashTable *	rv_dict;
-    GArray *		rv_list;
-    GString *		rv_str;
-    GDateTime *		rv_datetime;
-    uint64_t 		rv_ui;
-    int64_t		rv_i;
-    bool		rv_b;
-    double		rv_d;
-    uintptr_t 		rv_ptr;
-    int 		rv_fd;
+	GHashTable *		rv_dict;
+	GArray *		rv_list;
+	GString *		rv_str;
+	GDateTime *		rv_datetime;
+	uint64_t 		rv_ui;
+	int64_t			rv_i;
+	bool			rv_b;
+	double			rv_d;
+	uintptr_t 		rv_ptr;
+	int 			rv_fd;
 };
 
 struct rpc_object
 {
-    rpc_type_t		ro_type;
-    volatile int	ro_refcnt;
-    union rpc_value	ro_value;
-    size_t 		ro_size;
+	rpc_type_t		ro_type;
+	volatile int		ro_refcnt;
+	union rpc_value		ro_value;
+	size_t 			ro_size;
 };
 
 struct rpc_call
 {
-    rpc_connection_t *  rc_conn;
-    const char *        rc_type;
-    const char *        rc_method;
-    rpc_object_t        rc_id;
-    rpc_object_t        rc_args;
-    rpc_call_status_t   rc_status;
-    rpc_object_t        rc_result;
-    pthread_cond_t      rc_cv;
-    pthread_mutex_t     rc_mtx;
-    rpc_callback_t *    rc_callback;
-    void *              rc_callback_arg;
-    int                 rc_seqno;
+	rpc_connection_t    	rc_conn;
+	const char *        	rc_type;
+	const char *        	rc_method;
+	rpc_object_t        	rc_id;
+	rpc_object_t        	rc_args;
+	rpc_call_status_t   	rc_status;
+	rpc_object_t        	rc_result;
+	GCond      		rc_cv;
+	GMutex			rc_mtx;
+    	GAsyncQueue *		rc_queue;
+	rpc_callback_t *    	rc_callback;
+	void *              	rc_callback_arg;
+	uint64_t               	rc_seqno;
 };
 
-struct rpc_connection
+enum rpc_inbound_state
 {
-    const char *        rco_uri;
-    rpc_callback_t *	rco_error_handler;
-    void *              rco_error_handler_arg;
-    rpc_callback_t *	rco_event_handler;
-    void *              rco_event_handler_arg;
-    int                 rco_rpc_timeout;
-    GHashTable *	rco_calls;
+    	RPC_INBOUND_WAITING,
+    	RPC_INBOUND_FRAGMENT_REQUESTED
+};
+
+struct rpc_inbound_call
+{
+    	jmp_buf 		ric_state;
+	rpc_object_t        	ric_id;
+	rpc_object_t        	ric_args;
+	const char *        	ric_name;
+    	struct rpc_method *	ric_method;
+    	GMutex *		ric_mtx;
+    	GCond *			ric_cv;
+    	int			ric_seqno;
 };
 
 struct rpc_credentials
 {
-    uid_t		rcc_remote_uid;
-    gid_t		rcc_remote_gid;
-    pid_t 		rcc_remote_pid;
+    	uid_t			rcc_uid;
+    	gid_t			rcc_gid;
+    	pid_t 			rcc_pid;
+};
+
+struct rpc_connection
+{
+	struct rpc_server *	rco_server;
+    	struct rpc_credentials	rco_creds;
+	const char *        	rco_uri;
+	rpc_callback_t		rco_error_handler;
+	rpc_callback_t		rco_event_handler;
+	int                 	rco_rpc_timeout;
+	GHashTable *		rco_calls;
+	GHashTable *		rco_inbound_calls;
+
+    	/* Callbacks */
+	rpc_recv_msg_fn_t	rco_recv_msg;
+	rpc_send_msg_fn_t	rco_send_msg;
+	rpc_abort_fn_t 		rco_abort;
+	rpc_close_fn_t		rco_close;
+    	rpc_get_fd_fn_t 	rco_get_fd;
+	void *			rco_arg;
 };
 
 struct rpc_server
 {
-
+    	/* Callbacks */
+    	rpc_accept_fn_t		rs_accept;
+    	void *			rs_arg;
 };
 
 struct rpc_context
 {
-    GHashTable *	rcx_methods;
-};
-
-struct rpc_transport_connection
-{
-    	void *priv;
-    	int (*recv_msg)(void **, size_t *, int **, size_t *,
-	    struct rpc_credentials *);
-    	int (*send_msg)(void *, size_t, int *, size_t );
-    	int (*close)(void);
-};
-
-struct rpc_transport_server
-{
-    	void *priv;
-	int (*accept)(struct rpc_transport_connection *);
+    	GHashTable *		rcx_methods;
+    	GThreadPool *		rcx_threadpool;
 };
 
 struct rpc_transport
 {
-    struct rpc_transport_connection *(*connect)(const char *);
-    struct rpc_transport_server *(*listen)(const char *);
+    int (*connect)(struct rpc_connection *, const char *, rpc_object_t);
+    int (*listen)(struct rpc_server *, const char *, rpc_object_t);
     const char *schemas[];
 };
 
@@ -128,12 +162,8 @@ typedef void (^conn_handler_t)(rpc_transport_connection_t *);
 typedef void (^message_handler_t)(void *frame, size_t len);
 typedef void (^close_handler_t)(void);
 
-int rpc_context_dispatch(rpc_context_t context, const char *method, rpc_object_t *);
-
-ssize_t xread(int, void *, size_t);
-ssize_t xwrite(int, void *, size_t);
-ssize_t xrecvmsg(int, struct msghdr *, int);
-ssize_t xsendmsg(int, struct msghdr *, int);
-char *xfgetln(FILE *);
+void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
+void rpc_call_internal(rpc_connection_t, const char *, rpc_call_t);
+int rpc_context_dispatch(rpc_context_t, void *, const char *, rpc_object_t);
 
 #endif //LIBRPC_INTERNAL_H
