@@ -39,7 +39,7 @@ rpc_prim_create(rpc_type_t type, union rpc_value val, size_t size)
 {
 	struct rpc_object *ro;
 
-	ro = malloc(sizeof(*ro));
+	ro = (rpc_object_t)malloc(sizeof(*ro));
 	if (ro == NULL)
 		abort();
 
@@ -82,6 +82,7 @@ inline rpc_object_t
 rpc_copy(rpc_object_t object)
 {
 	rpc_object_t tmp;
+        union rpc_value tmp_value;
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
@@ -97,18 +98,22 @@ rpc_copy(rpc_object_t object)
 		return (rpc_uint64_create(object->ro_value.rv_ui));
 
 	case RPC_TYPE_DATE:
-		return (rpc_date_create(object->ro_value.rv_datetime));
+		return (rpc_date_create(g_date_time_to_unix(object->ro_value.rv_datetime)));
 
 	case RPC_TYPE_DOUBLE:
 		return (rpc_double_create(object->ro_value.rv_d));
+
+	case RPC_TYPE_FD:
 
 	case RPC_TYPE_STRING:
 		return (rpc_string_create(strdup(
 		    rpc_string_get_string_ptr(object))));
 
 	case RPC_TYPE_BINARY:
-		return (rpc_data_hash(
-		    rpc_data_get_bytes_ptr(object),
+                tmp_value.rv_ptr = (uintptr_t)rpc_data_get_bytes_ptr(object);
+		return (rpc_prim_create(
+                    object->ro_type,
+                    tmp_value,
 		    rpc_data_get_length(object)));
 
 	case RPC_TYPE_DICTIONARY:
@@ -147,10 +152,20 @@ rpc_hash(rpc_object_t object)
 		return (0);
 
 	case RPC_TYPE_BOOL:
+                return ((size_t)object->ro_value.rv_b);
+
 	case RPC_TYPE_INT64:
+                return ((size_t)object->ro_value.rv_i);
+
 	case RPC_TYPE_UINT64:
+                return ((size_t)object->ro_value.rv_ui);
+
 	case RPC_TYPE_DATE:
+
+
 	case RPC_TYPE_DOUBLE:
+
+
 	case RPC_TYPE_FD:
 		return ((size_t)object->ro_value.rv_ui);
 
@@ -161,7 +176,7 @@ rpc_hash(rpc_object_t object)
 
 	case RPC_TYPE_BINARY:
 		return (rpc_data_hash(
-		    rpc_data_get_bytes_ptr(object),
+                    (uint8_t *)rpc_data_get_bytes_ptr(object),
 		    rpc_data_get_length(object)));
 
 	case RPC_TYPE_DICTIONARY:
@@ -274,13 +289,16 @@ rpc_date_create(int64_t interval)
 {
 	union rpc_value val;
 
-	val.rv_datetime = interval;
+        val.rv_datetime = g_date_time_new_from_unix_utc(interval);
 	return (rpc_prim_create(RPC_TYPE_DATE, val, 1));
 }
 
 inline rpc_object_t rpc_date_create_from_current(void)
 {
+        union rpc_value val;
 
+        val.rv_datetime = g_date_time_new_now_utc();
+        return (rpc_prim_create(RPC_TYPE_DATE, val, 1));
 }
 
 inline int64_t
