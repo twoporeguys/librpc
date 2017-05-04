@@ -30,15 +30,21 @@
 
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct rpc_server;
 
 typedef struct rpc_server *rpc_server_t;
 
 rpc_server_t rpc_server_create(const char *uri, int flags);
-void rpc_server_set_connection_handler(rpc_server_t server,
-    rpc_connection_handler_t handler);
 int rpc_server_start(rpc_server_t server, bool background);
 int rpc_server_stop(rpc_server_t server);
 int rpc_server_close(rpc_server_t server);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //LIBRPC_SERVER_H

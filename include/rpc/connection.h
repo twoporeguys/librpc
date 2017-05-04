@@ -28,7 +28,12 @@
 #ifndef LIBRPC_CONNECTION_H
 #define LIBRPC_CONNECTION_H
 
+#include <Block.h>
 #include <rpc/object.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 struct rpc_connection;
 struct rpc_call;
@@ -81,5 +86,9 @@ int rpc_call_timedwait(rpc_call_t call, const struct timespec *ts);
 int rpc_call_success(rpc_call_t call);
 rpc_object_t rpc_call_result(rpc_call_t call);
 void rpc_call_free(rpc_call_t call);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //LIBRPC_CONNECTION_H

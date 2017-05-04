@@ -30,6 +30,10 @@
 
 #include <rpc/object.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct rpc_context;
 
 typedef struct rpc_context *rpc_context_t;
@@ -48,5 +52,10 @@ void rpc_function_error(void *cookie, int code, const char *message, ...);
 void rpc_function_error_ex(void *cookie, rpc_object_t exception);
 void rpc_function_yield(void *cookie, rpc_object_t fragment);
 void rpc_function_end(void *cookie);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //LIBRPC_SERVICE_H

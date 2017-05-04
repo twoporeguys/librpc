@@ -33,6 +33,10 @@
 #include <stdarg.h>
 #include <sys/types.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct rpc_object;
 
 typedef enum {
@@ -150,5 +154,9 @@ const void *rpc_dictionary_get_data(rpc_object_t dictionary, const char *key,
 const char *rpc_dictionary_get_string(rpc_object_t dictionary,
     const char *key);
 int rpc_dictionary_dup_fd(rpc_object_t dictionary, const char *key);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //LIBRPC_OBJECT_H
