@@ -28,4 +28,34 @@
 #include "catch.hpp"
 
 #include <rpc/object.h>
+#include "../src/rpc_object.c"
 
+SCENARIO("RPC_OBJECT_CREATE", "Create RPC object and check its internal value") {
+        GIVEN("Integer initialized RPC object") {
+                rpc_object_t object;
+                union rpc_value value;
+
+                value.rv_i = 10;
+
+                object = rpc_prim_create(RPC_TYPE_INT64, value, sizeof(value.rv_i));
+                REQUIRE(object->ro_refcnt == 1);
+
+                REQUIRE(object->ro_value.rv_i == value.rv_i);
+
+                WHEN("reference count is incremented") {
+                        rpc_retain(object);
+
+                        THEN("reference count equals 2"){
+                                REQUIRE(object->ro_refcnt == 2);
+                        }
+
+                        AND_WHEN("reference count is decremented") {
+                                rpc_release(object);
+
+                                AND_THEN("reference count equals 1") {
+                                        REQUIRE(object->ro_refcnt == 1);
+                                }
+                        }
+                }
+        }
+}

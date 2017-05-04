@@ -23,6 +23,9 @@ set(CORE_FILES
         src/internal.h
         src/utils.c
         include/rpc/service.h
+        include/rpc/object.h
+        include/rpc/connection.h
+        include/rpc/server.h
         src/rpc_service.c src/linker_set.h)
 
 set(TRANSPORT_FILES
@@ -34,3 +37,15 @@ set(SERIALIZER_FILES
         src/serializer/msgpack.c)
 
 add_library(librpc SHARED ${CORE_FILES} ${TRANSPORT_FILES} ${SERIALIZER_FILES})
+
+#Compile tests
+set(CATCH_INCLUDE_DIR src/tests)
+
+add_library(Catch INTERFACE)
+
+set(TEST_SOURCES
+        tests/tests_main.cpp
+        tests/object.cc)
+
+add_executable(tests ${TEST_SOURCES})
+target_link_libraries(tests Catch)
