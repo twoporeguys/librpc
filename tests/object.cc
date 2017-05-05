@@ -54,6 +54,14 @@ SCENARIO("RPC_OBJECT_CREATE", "Create RPC object and check its internal value") 
                                 AND_THEN("reference count equals 1") {
                                         REQUIRE(object->ro_refcnt == 1);
                                 }
+
+                                AND_WHEN("reference count reaches 0") {
+                                        rpc_release(object);
+
+                                        AND_THEN("RPC object pointer is NULL") {
+                                                REQUIRE(object == NULL);
+                                        }
+                                }
                         }
                 }
         }
