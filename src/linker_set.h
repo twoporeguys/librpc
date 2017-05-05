@@ -31,7 +31,16 @@
 #define _SYS_LINKER_SET_H_
 
 #define __weak_symbol   __attribute__((__weak__))
+#ifndef __used
 #define __used          __attribute__((__used__))
+#endif
+#ifndef __section
+#ifdef __APPLE__
+#define __section(x)    __attribute__((__section__("DATA," #x)))
+#else
+#define __section(x)    __attribute__((__section__(x)))
+#endif
+#endif
 #define __GLOBL1(sym)   __asm__(".globl " #sym)
 #define __GLOBL(sym)    __GLOBL1(sym)
 #ifndef __CONCAT
@@ -78,9 +87,17 @@
 /*
  * Initialize before referring to a given linker set.
  */
+#ifdef __APPLE__
+#define SET_DECLARE(set, ptype)					\
+	extern ptype __weak_symbol *__CONCAT(__start_set_,set)	\
+	    __asm("section$start$__DATA$set_" #set);	\
+	extern ptype __weak_symbol *__CONCAT(__stop_set_,set)	\
+	    __asm("section$end$__DATA$set_" #set);
+#else
 #define SET_DECLARE(set, ptype)					\
 	extern ptype __weak_symbol *__CONCAT(__start_set_,set);	\
 	extern ptype __weak_symbol *__CONCAT(__stop_set_,set)
+#endif
 
 #define SET_BEGIN(set)							\
 	(&__CONCAT(__start_set_,set))
