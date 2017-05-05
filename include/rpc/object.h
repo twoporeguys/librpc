@@ -95,7 +95,8 @@ rpc_object_t rpc_string_create_with_format_and_arguments(const char *fmt,
 size_t rpc_string_get_length(rpc_object_t xstring);
 const char *rpc_string_get_string_ptr(rpc_object_t xstring);
 rpc_object_t rpc_fd_create(int fd);
-int rpc_fd_dup(rpc_object_t xfd);
+rpc_object_t rpc_fd_dup(rpc_object_t xfd);
+int rpc_fd_get_value(rpc_object_t xfd);
 
 rpc_object_t rpc_array_create(const rpc_object_t *objects, size_t count);
 void rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value);

@@ -26,6 +26,7 @@
  */
 
 
+#include <unistd.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -117,6 +118,7 @@ rpc_copy(rpc_object_t object)
 		return (rpc_double_create(object->ro_value.rv_d));
 
 	case RPC_TYPE_FD:
+                return (rpc_fd_dup(object));
 
 	case RPC_TYPE_STRING:
 		return (rpc_string_create(strdup(
@@ -359,7 +361,23 @@ inline size_t
 rpc_data_get_bytes(rpc_object_t xdata, void *buffer, size_t off,
     size_t length)
 {
+        size_t cpy_size;
+        size_t xdata_length = rpc_data_get_length(xdata);
 
+        if (xdata->ro_type != RPC_TYPE_BINARY)
+                return (0);
+
+        if (off > xdata_length)
+                return (0);
+
+        cpy_size = MIN(length, xdata_length - off);
+
+        memcpy(
+            buffer,
+            rpc_data_get_bytes_ptr(xdata) + off,
+            cpy_size);
+
+        return (cpy_size);
 }
 
 inline rpc_object_t
@@ -425,9 +443,29 @@ rpc_fd_create(int fd)
 }
 
 inline int
-rpc_fd_dup(rpc_object_t xfd)
+rpc_fd_get_value(rpc_object_t xfd)
 {
 
+        if (xfd->ro_type != RPC_TYPE_FD)
+                return (0);
+
+        return (xfd->ro_value.rv_fd);
+}
+
+inline rpc_object_t
+rpc_fd_dup(rpc_object_t xfd)
+{
+        union rpc_value value;
+
+        if (xfd->ro_type != RPC_TYPE_FD)
+                return (0);
+
+        value.rv_fd = dup(rpc_fd_get_value(xfd));
+        return (rpc_prim_create(
+            RPC_TYPE_FD,
+            value,
+            sizeof(value)
+        ));
 }
 
 inline rpc_object_t
