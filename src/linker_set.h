@@ -31,10 +31,13 @@
 #define _SYS_LINKER_SET_H_
 
 #define __weak_symbol   __attribute__((__weak__))
+#define __used          __attribute__((__used__))
 #define __GLOBL1(sym)   __asm__(".globl " #sym)
 #define __GLOBL(sym)    __GLOBL1(sym)
+#ifndef __CONCAT
 #define __CONCAT1(x,y)  x ## y
 #define __CONCAT(x,y)   __CONCAT1(x,y)
+#endif
 
 /*
  * The following macros are used to declare global sets of objects, which
