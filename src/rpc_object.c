@@ -151,6 +151,7 @@ rpc_copy(rpc_object_t object)
 inline bool
 rpc_equal(rpc_object_t o1, rpc_object_t o2)
 {
+
 	return (rpc_hash(o1) == rpc_hash(o2));
 }
 
@@ -226,6 +227,7 @@ rpc_bool_create(bool value)
 inline bool
 rpc_bool_get_value(rpc_object_t xbool)
 {
+
 	if (xbool->ro_type != RPC_TYPE_BOOL)
 		return (false);
 
@@ -244,6 +246,7 @@ rpc_int64_create(int64_t value)
 inline int64_t
 rpc_int64_get_value(rpc_object_t xint)
 {
+
 	if (xint->ro_type != RPC_TYPE_INT64)
 		return (-1);
 
@@ -262,6 +265,7 @@ rpc_uint64_create(uint64_t value)
 inline uint64_t
 rpc_uint64_get_value(rpc_object_t xuint)
 {
+
 	if (xuint->ro_type != RPC_TYPE_UINT64)
 		return (0);
 
@@ -280,6 +284,7 @@ rpc_double_create(double value)
 inline double
 rpc_double_get_value(rpc_object_t xdouble)
 {
+
 	if (xdouble->ro_type != RPC_TYPE_DOUBLE)
 		return (0);
 
@@ -306,6 +311,7 @@ inline rpc_object_t rpc_date_create_from_current(void)
 inline int64_t
 rpc_date_get_value(rpc_object_t xdate)
 {
+
 	if (xdate->ro_type != RPC_TYPE_DATE)
 		return (0);
 
@@ -332,6 +338,7 @@ rpc_data_create(const void *bytes, size_t length, bool copy)
 inline size_t
 rpc_data_get_length(rpc_object_t xdata)
 {
+
 	if (xdata->ro_type != RPC_TYPE_BINARY)
 		return (0);
 
@@ -341,6 +348,7 @@ rpc_data_get_length(rpc_object_t xdata)
 inline const void *
 rpc_data_get_bytes_ptr(rpc_object_t xdata)
 {
+
 	if (xdata->ro_type != RPC_TYPE_BINARY)
 		return (NULL);
 
@@ -390,6 +398,7 @@ rpc_string_create_with_format_and_arguments(const char *fmt, va_list ap)
 inline size_t
 rpc_string_get_length(rpc_object_t xstring)
 {
+
 	if (xstring->ro_type != RPC_TYPE_STRING)
 		return (0);
 
@@ -399,6 +408,7 @@ rpc_string_get_length(rpc_object_t xstring)
 inline const char *
 rpc_string_get_string_ptr(rpc_object_t xstring)
 {
+
 	if (xstring->ro_type != RPC_TYPE_STRING)
 		return (0);
 
@@ -423,7 +433,6 @@ rpc_fd_dup(rpc_object_t xfd)
 inline rpc_object_t
 rpc_array_create(const rpc_object_t *objects, size_t count)
 {
-
 	union rpc_value val;
 
 	val.rv_list = g_array_new(true, true, sizeof(rpc_object_t));
@@ -608,6 +617,7 @@ inline void
 rpc_dictionary_set_value(rpc_object_t dictionary, const char *key,
     rpc_object_t value)
 {
+
 	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
 		return;
 
