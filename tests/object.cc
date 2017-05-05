@@ -36,7 +36,7 @@ SCENARIO("RPC_OBJECT_CREATE", "Create RPC object and check its internal value") 
                 int value = 10;
 
                 object = rpc_int64_create(value);
-                REQUIRE(rpc_get_type(object) == RPC_TYPE_UINT64);
+                REQUIRE(rpc_get_type(object) == RPC_TYPE_INT64);
                 REQUIRE(rpc_int64_get_value(object) == value);
                 REQUIRE(object->ro_refcnt == 1);
                 REQUIRE(object->ro_value.rv_i == value);
