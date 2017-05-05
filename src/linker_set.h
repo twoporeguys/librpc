@@ -90,7 +90,7 @@
 #ifdef __APPLE__
 #define SET_DECLARE(set, ptype)					\
 	extern ptype __weak_symbol *__CONCAT(__start_set_,set)	\
-	    __asm("section$start$__DATA$set_" #set);	\
+	    __asm("section$start$__DATA$set_" #set);		\
 	extern ptype __weak_symbol *__CONCAT(__stop_set_,set)	\
 	    __asm("section$end$__DATA$set_" #set);
 #else
@@ -99,9 +99,9 @@
 	extern ptype __weak_symbol *__CONCAT(__stop_set_,set)
 #endif
 
-#define SET_BEGIN(set)							\
+#define SET_BEGIN(set)						\
 	(&__CONCAT(__start_set_,set))
-#define SET_LIMIT(set)							\
+#define SET_LIMIT(set)						\
 	(&__CONCAT(__stop_set_,set))
 
 /*

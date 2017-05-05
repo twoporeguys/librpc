@@ -15,17 +15,19 @@ link_directories (${GIO_LIBRARY_DIRS})
 include_directories (${SOUP_INCLUDE_DIRS})
 link_directories (${SOUP_LIBRARY_DIRS})
 
+set(HEADERS
+        include/rpc/service.h
+        include/rpc/object.h
+        include/rpc/connection.h
+        include/rpc/server.h)
 
 set(CORE_FILES
         src/rpc_connection.c
         src/rpc_object.c
         src/rpc_server.c
+        src/rpc_service.c
         src/internal.h
-        include/rpc/service.h
-        include/rpc/object.h
-        include/rpc/connection.h
-        include/rpc/server.h
-        src/rpc_service.c src/linker_set.h)
+        src/linker_set.h)
 
 set(TRANSPORT_FILES
         src/transport/socket.c
@@ -33,9 +35,15 @@ set(TRANSPORT_FILES
 
 set(SERIALIZER_FILES
         src/serializer/msgpack.c
-        src/serializer/msgpack.c)
+        src/serializer/msgpack.h
+        contrib/mpack/mpack.c)
 
-add_library(librpc SHARED ${CORE_FILES})
+add_library(librpc SHARED
+        ${HEADERS}
+        ${TRANSPORT_FILES}
+        ${SERIALIZER_FILES}
+        ${CORE_FILES})
+
 target_link_libraries(librpc ${GLIB_LIBRARIES})
 target_link_libraries(librpc ${GIO_LIBRARIES})
 target_link_libraries(librpc ${SOUP_LIBRARIES})
