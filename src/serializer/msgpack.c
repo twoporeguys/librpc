@@ -117,7 +117,7 @@ rpc_msgpack_read_object(mpack_node_t node)
 
 	case mpack_type_bin:
 		return (rpc_data_create(mpack_node_data(node),
-		    mpack_node_data_len(node)));
+		    mpack_node_data_len(node), false));
 
 	case mpack_type_array:
 		result = rpc_array_create(NULL, 0);

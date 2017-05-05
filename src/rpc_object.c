@@ -123,11 +123,10 @@ rpc_copy(rpc_object_t object)
 		    rpc_string_get_string_ptr(object))));
 
 	case RPC_TYPE_BINARY:
-                tmp_value.rv_ptr = (uintptr_t)rpc_data_get_bytes_ptr(object);
-		return (rpc_prim_create(
-                    object->ro_type,
-                    tmp_value,
-		    rpc_data_get_length(object)));
+                return rpc_data_create(
+                    rpc_data_get_bytes_ptr(object),
+                    rpc_data_get_length(object),
+                    true);
 
 	case RPC_TYPE_DICTIONARY:
 		tmp = rpc_dictionary_create(NULL, NULL, 0);
@@ -314,9 +313,20 @@ rpc_date_get_value(rpc_object_t xdate)
 }
 
 inline rpc_object_t
-rpc_data_create(const void *bytes, size_t length)
+rpc_data_create(const void *bytes, size_t length, bool copy)
 {
+        union rpc_value value;
 
+        if (copy == true) {
+                value.rv_ptr = (uintptr_t)malloc(length);
+                memcpy((void *)value.rv_ptr, bytes, length);
+        } else
+                value.rv_ptr = (uintptr_t)bytes;
+
+        return (rpc_prim_create(
+            RPC_TYPE_BINARY,
+            value,
+            length));
 }
 
 inline size_t
@@ -511,7 +521,7 @@ rpc_array_set_data(rpc_object_t array, size_t index, const void *bytes,
     size_t length)
 {
 
-	rpc_array_set_value(array, index, rpc_data_create(bytes, length));
+	rpc_array_set_value(array, index, rpc_data_create(bytes, length, false));
 }
 
 inline void rpc_array_set_string(rpc_object_t array, size_t index,
@@ -682,7 +692,7 @@ rpc_dictionary_set_data(rpc_object_t dictionary, const char *key,
     const void *value, size_t length)
 {
 
-	rpc_dictionary_set_value(dictionary, key, rpc_data_create(value, length));
+	rpc_dictionary_set_value(dictionary, key, rpc_data_create(value, length, false));
 }
 
 inline void

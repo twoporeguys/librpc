@@ -83,7 +83,7 @@ double rpc_double_get_value(rpc_object_t xdouble);
 rpc_object_t rpc_date_create(int64_t interval);
 rpc_object_t rpc_date_create_from_current(void);
 int64_t rpc_date_get_value(rpc_object_t xdate);
-rpc_object_t rpc_data_create(const void *bytes, size_t length);
+rpc_object_t rpc_data_create(const void *bytes, size_t length, bool copy);
 size_t rpc_data_get_length(rpc_object_t xdata);
 const void *rpc_data_get_bytes_ptr(rpc_object_t xdata);
 size_t rpc_data_get_bytes(rpc_object_t xdata, void *buffer, size_t off,
