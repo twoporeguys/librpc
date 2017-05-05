@@ -646,7 +646,7 @@ rpc_dictionary_create(const char * const *keys, const rpc_object_t *values,
 	union rpc_value val;
 
 	val.rv_dict = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
-	    (GDestroyNotify)rpc_release);
+	    (GDestroyNotify)rpc_release_impl);
 
 	return (rpc_prim_create(RPC_TYPE_DICTIONARY, val, 0));
 }
