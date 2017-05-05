@@ -59,7 +59,7 @@ typedef bool (^rpc_dictionary_applier_t)(const char *key, rpc_object_t value);
 typedef void (^rpc_callback_t)(rpc_object_t object);
 
 rpc_object_t rpc_retain(rpc_object_t object);
-void rpc_release_impl(rpc_object_t object);
+int rpc_release_impl(rpc_object_t object);
 rpc_object_t rpc_copy(rpc_object_t object);
 bool rpc_equal(rpc_object_t o1, rpc_object_t o2);
 size_t rpc_hash(rpc_object_t object);
@@ -67,10 +67,9 @@ char *rpc_copy_description(rpc_object_t object);
 rpc_type_t rpc_get_type(rpc_object_t object);
 
 #define	rpc_release(_object)				\
-	do {						\
-		rpc_release_impl(_object);		\
+	if (rpc_release_impl(_object) == 0) {		\
 		_object = NULL;				\
-	} while (0);
+	}
 
 rpc_object_t rpc_null_create(void);
 rpc_object_t rpc_bool_create(bool value);

@@ -66,17 +66,22 @@ rpc_data_hash(const uint8_t *data, size_t length)
 inline rpc_object_t
 rpc_retain(rpc_object_t object)
 {
+
 	g_atomic_int_inc(&object->ro_refcnt);
 	return (object);
 }
 
-inline void
+inline int
 rpc_release_impl(rpc_object_t object)
 {
+
 	assert(object->ro_refcnt > 0);
 	if (g_atomic_int_dec_and_test(&object->ro_refcnt)) {
 		free(object);
+                return (0);
 	}
+
+        return (object->ro_refcnt);
 }
 
 inline rpc_type_t
