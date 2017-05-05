@@ -71,12 +71,19 @@ rpc_retain(rpc_object_t object)
 }
 
 inline void
-rpc_release(rpc_object_t object)
+rpc_release_impl(rpc_object_t object)
 {
 	assert(object->ro_refcnt > 0);
 	if (g_atomic_int_dec_and_test(&object->ro_refcnt)) {
 		free(object);
 	}
+}
+
+inline rpc_type_t
+rpc_get_type(rpc_object_t object)
+{
+
+	return (object->ro_type);
 }
 
 inline rpc_object_t
@@ -350,7 +357,7 @@ rpc_string_create_with_format(const char *fmt, ...)
 	union rpc_value val;
 
 	va_start(ap, fmt);
-	g_vasprintf(&val.rv_str, fmt, ap);
+	g_string_vprintf(val.rv_str, fmt, ap);
 	va_end(ap);
 
 	return (rpc_prim_create(RPC_TYPE_STRING, val, 1));
@@ -361,7 +368,7 @@ rpc_string_create_with_format_and_arguments(const char *fmt, va_list ap)
 {
 	union rpc_value val;
 
-	g_vasprintf(&val.rv_str, fmt, ap);
+	g_string_vprintf(val.rv_str, fmt, ap);
 	return (rpc_prim_create(RPC_TYPE_STRING, val, 1));
 }
 
