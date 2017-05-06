@@ -118,7 +118,7 @@ rpc_copy(rpc_object_t object)
 		return (rpc_double_create(object->ro_value.rv_d));
 
 	case RPC_TYPE_FD:
-                return (rpc_fd_dup(object));
+                return (rpc_fd_create(rpc_fd_dup(object)));
 
 	case RPC_TYPE_STRING:
 		return (rpc_string_create(strdup(
@@ -452,20 +452,14 @@ rpc_fd_get_value(rpc_object_t xfd)
         return (xfd->ro_value.rv_fd);
 }
 
-inline rpc_object_t
+inline int
 rpc_fd_dup(rpc_object_t xfd)
 {
-        union rpc_value value;
 
         if (xfd->ro_type != RPC_TYPE_FD)
                 return (0);
 
-        value.rv_fd = dup(rpc_fd_get_value(xfd));
-        return (rpc_prim_create(
-            RPC_TYPE_FD,
-            value,
-            sizeof(value)
-        ));
+        return (dup(rpc_fd_get_value(xfd)));
 }
 
 inline rpc_object_t
