@@ -99,27 +99,27 @@ int rpc_fd_dup(rpc_object_t xfd);
 int rpc_fd_get_value(rpc_object_t xfd);
 
 rpc_object_t rpc_array_create(const rpc_object_t *objects, size_t count);
-void rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value);
-void rpc_array_append_value(rpc_object_t array, rpc_object_t value);
+int rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value);
+int rpc_array_append_value(rpc_object_t array, rpc_object_t value);
 rpc_object_t rpc_array_get_value(rpc_object_t array, size_t index);
 size_t rpc_array_get_count(rpc_object_t array);
 bool rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier);
-void rpc_array_set_bool(rpc_object_t array, size_t index, bool value);
-void rpc_array_set_int64(rpc_object_t array, size_t index, int64_t value);
-void rpc_array_set_uint64(rpc_object_t array, size_t index, uint64_t value);
-void rpc_array_set_double(rpc_object_t array, size_t index, double value);
-void rpc_array_set_date(rpc_object_t array, size_t index, int64_t value);
-void rpc_array_set_data(rpc_object_t array, size_t index, const void *bytes,
+int rpc_array_set_bool(rpc_object_t array, size_t index, bool value);
+int rpc_array_set_int64(rpc_object_t array, size_t index, int64_t value);
+int rpc_array_set_uint64(rpc_object_t array, size_t index, uint64_t value);
+int rpc_array_set_double(rpc_object_t array, size_t index, double value);
+int rpc_array_set_date(rpc_object_t array, size_t index, int64_t value);
+int rpc_array_set_data(rpc_object_t array, size_t index, const void *bytes,
     size_t length);
-void rpc_array_set_string(rpc_object_t array, size_t index, const char *value);
-void rpc_array_set_fd(rpc_object_t array, size_t index, int value);
+int rpc_array_set_string(rpc_object_t array, size_t index, const char *value);
+int rpc_array_set_fd(rpc_object_t array, size_t index, int value);
 bool rpc_array_get_bool(rpc_object_t array, size_t index);
 int64_t rpc_array_get_int64(rpc_object_t array, size_t index);
 uint64_t rpc_array_get_uint64(rpc_object_t array, size_t index);
 double rpc_array_get_double(rpc_object_t array, size_t index);
 int64_t rpc_array_get_date(rpc_object_t array, size_t index);
 const void *rpc_array_get_data(rpc_object_t array, size_t index,
-    size_t *length);
+    size_t length);
 const char *rpc_array_get_string(rpc_object_t array, size_t index);
 int rpc_array_dup_fd(rpc_object_t array, size_t index);
 

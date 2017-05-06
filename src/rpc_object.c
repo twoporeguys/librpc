@@ -28,6 +28,7 @@
 
 #include <unistd.h>
 #include <assert.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -466,35 +467,62 @@ inline rpc_object_t
 rpc_array_create(const rpc_object_t *objects, size_t count)
 {
 	union rpc_value val;
+        rpc_object_t array_object;
+        rpc_object_t curr_obj_ptr = (rpc_object_t)objects;
+        int i;
 
 	val.rv_list = g_array_new(true, true, sizeof(rpc_object_t));
-	return (rpc_prim_create(RPC_TYPE_ARRAY, val, 1));
+        array_object = rpc_prim_create(RPC_TYPE_ARRAY, val, 1);
+        for (i = 0; i < count; i++) {
+                rpc_array_append_value(array_object, curr_obj_ptr);
+                curr_obj_ptr++;
+        }
+
+        return array_object;
 }
 
-inline void
+inline int
 rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value)
 {
 	rpc_object_t *ro;
 
+        if (array->ro_type != RPC_TYPE_ARRAY)
+                return (-EINVAL);
+
+        if (index >= array->ro_value.rv_list->len)
+                return (-EFAULT);
+
 	rpc_retain(value);
 	ro = &g_array_index(array->ro_value.rv_list, rpc_object_t, index);
-	rpc_release(*ro);
+	rpc_release_impl(*ro);
 	*ro = value;
+
+        return (0);
 }
 
-inline void
+inline int
 rpc_array_append_value(rpc_object_t array, rpc_object_t value)
 {
 
+        if (array->ro_type != RPC_TYPE_ARRAY)
+                return (-EINVAL);
+
 	rpc_retain(value);
 	g_array_append_val(array->ro_value.rv_list, value);
+
+        return (0);
 }
 
 inline rpc_object_t
 rpc_array_get_value(rpc_object_t array, size_t index)
 {
+        if (array->ro_type != RPC_TYPE_ARRAY)
+                return (0);
 
-	return (g_array_index(array->ro_value.rv_list, rpc_object_t, index));
+        if (index >= array->ro_value.rv_list->len)
+                return (0);
+
+        return (g_array_index(array->ro_value.rv_list, rpc_object_t, index));
 }
 
 inline size_t rpc_array_get_count(rpc_object_t array)
@@ -502,7 +530,7 @@ inline size_t rpc_array_get_count(rpc_object_t array)
 	if (array->ro_type != RPC_TYPE_ARRAY)
 		return (0);
 
-	return (array->ro_size);
+	return (array->ro_value.rv_list->len);
 }
 
 inline bool
@@ -522,103 +550,115 @@ rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier)
 	return (flag);
 }
 
-inline void
+inline int
 rpc_array_set_bool(rpc_object_t array, size_t index, bool value)
 {
 
-	rpc_array_set_value(array, index, rpc_bool_create(value));
+	return (rpc_array_set_value(array, index, rpc_bool_create(value)));
 }
 
-inline void
+inline int
 rpc_array_set_int64(rpc_object_t array, size_t index, int64_t value)
 {
 
-	rpc_array_set_value(array, index, rpc_int64_create(value));
+	return (rpc_array_set_value(array, index, rpc_int64_create(value)));
 }
 
-inline void
+inline int
 rpc_array_set_uint64(rpc_object_t array, size_t index, uint64_t value)
 {
 
-	rpc_array_set_value(array, index, rpc_uint64_create(value));
+	return (rpc_array_set_value(array, index, rpc_uint64_create(value)));
 }
 
-inline void
+inline int
 rpc_array_set_double(rpc_object_t array, size_t index, double value)
 {
 
-	rpc_array_set_value(array, index, rpc_double_create(value));
+	return (rpc_array_set_value(array, index, rpc_double_create(value)));
 }
 
-inline void
+inline int
 rpc_array_set_date(rpc_object_t array, size_t index, int64_t value)
 {
 
-	rpc_array_set_value(array, index, rpc_date_create(value));
+	return (rpc_array_set_value(array, index, rpc_date_create(value)));
 }
 
-inline void
+inline int
 rpc_array_set_data(rpc_object_t array, size_t index, const void *bytes,
     size_t length)
 {
 
-	rpc_array_set_value(array, index, rpc_data_create(bytes, length, false));
+	return (rpc_array_set_value(array, index, rpc_data_create(bytes, length, false)));
 }
 
-inline void rpc_array_set_string(rpc_object_t array, size_t index,
+inline int
+rpc_array_set_string(rpc_object_t array, size_t index,
     const char *value)
 {
 
-	rpc_array_set_value(array, index, rpc_string_create(value));
+	return (rpc_array_set_value(array, index, rpc_string_create(value)));
 }
 
-inline void
+inline int
 rpc_array_set_fd(rpc_object_t array, size_t index, int value)
 {
 
-	rpc_array_set_value(array, index, rpc_fd_create(value));
+	return (rpc_array_set_value(array, index, rpc_fd_create(value)));
 }
 
 inline bool
 rpc_array_get_bool(rpc_object_t array, size_t index)
 {
 
-	return rpc_bool_get_value(rpc_array_get_value(array, index));
+	return (rpc_bool_get_value(rpc_array_get_value(array, index)));
 }
 
 inline int64_t
 rpc_array_get_int64(rpc_object_t array, size_t index)
 {
 
-	return rpc_int64_get_value(rpc_array_get_value(array, index));
+	return (rpc_int64_get_value(rpc_array_get_value(array, index)));
 }
 
 inline uint64_t
 rpc_array_get_uint64(rpc_object_t array, size_t index)
 {
 
-	return rpc_uint64_get_value(rpc_array_get_value(array, index));
+	return (rpc_uint64_get_value(rpc_array_get_value(array, index)));
 }
 
 inline double
 rpc_array_get_double(rpc_object_t array, size_t index)
 {
 
-	return rpc_double_get_value(rpc_array_get_value(array, index));
+	return (rpc_double_get_value(rpc_array_get_value(array, index)));
 }
 
 inline int64_t
 rpc_array_get_date(rpc_object_t array, size_t index)
 {
 
-	return rpc_date_get_value(rpc_array_get_value(array, index));
+	return (rpc_date_get_value(rpc_array_get_value(array, index)));
 }
 
-inline const void *
-rpc_array_get_data(rpc_object_t array, size_t index,
-    size_t *length)
+inline const void *rpc_array_get_data(rpc_object_t array, size_t index,
+    size_t length)
 {
+        void *buffer;
+        rpc_object_t xdata;
+        size_t ret_size;
 
+        if ((xdata = rpc_array_get_value(array, index)) == 0)
+                return (0);
+
+        ret_size = MIN(length, xdata->ro_size);
+
+        buffer = malloc(length);
+        rpc_data_get_bytes(xdata, buffer, 0, ret_size);
+
+        return (buffer);
 }
 
 inline const char *
@@ -631,6 +671,7 @@ rpc_array_get_string(rpc_object_t array, size_t index)
 inline int rpc_array_dup_fd(rpc_object_t array, size_t index)
 {
 
+        return (rpc_fd_dup(rpc_array_get_value(array, index)));
 }
 
 inline rpc_object_t
