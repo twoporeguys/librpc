@@ -37,8 +37,18 @@
 #include <glib.h>
 #include "linker_set.h"
 
-#define	DECLARE_TRANSPORT(_transport)	DATA_SET(transport_set, _transport)
-#define	debugf(...)
+#define	DECLARE_TRANSPORT(_transport)	DATA_SET(tp_set, _transport)
+
+#ifdef RPC_DEBUG
+#define debugf(...) 				\
+    do { 					\
+    	fprintf(stderr, "%s: ", __func__);	\
+    	fprintf(stderr, __VA_ARGS__);		\
+    	fprintf(stderr, "\n");			\
+    } while(0);
+#else
+#define debugf(...)
+#endif
 
 struct rpc_connection;
 struct rpc_credentials;
@@ -50,7 +60,7 @@ typedef int (*rpc_send_msg_fn_t)(void *, void *, size_t, const int *, size_t);
 typedef int (*rpc_abort_fn_t)(void *);
 typedef int (*rpc_get_fd_fn_t)(void *);
 typedef int (*rpc_close_fn_t)(struct rpc_connection *);
-typedef int (*rpc_accept_fn_t)(struct rpc_server *, const char *, rpc_object_t);
+typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
 
 union rpc_value
 {
@@ -91,6 +101,12 @@ struct rpc_call
 	uint64_t               	rc_seqno;
 };
 
+struct rpc_subscription
+{
+    	int 			rsu_refcount;
+    	GList *			rsu_handlers;
+};
+
 enum rpc_inbound_state
 {
     	RPC_INBOUND_WAITING,
@@ -100,13 +116,14 @@ enum rpc_inbound_state
 struct rpc_inbound_call
 {
     	jmp_buf 		ric_state;
+    	rpc_connection_t    	ric_conn;
 	rpc_object_t        	ric_id;
 	rpc_object_t        	ric_args;
 	const char *        	ric_name;
     	struct rpc_method *	ric_method;
-    	GMutex *		ric_mtx;
-    	GCond *			ric_cv;
-    	int			ric_seqno;
+    	GMutex			ric_mtx;
+    	GCond			ric_cv;
+    	int64_t			ric_seqno;
 };
 
 struct rpc_credentials
@@ -122,10 +139,15 @@ struct rpc_connection
     	struct rpc_credentials	rco_creds;
 	const char *        	rco_uri;
 	rpc_callback_t		rco_error_handler;
-	rpc_callback_t		rco_event_handler;
+	rpc_handler_t		rco_event_handler;
 	int                 	rco_rpc_timeout;
 	GHashTable *		rco_calls;
 	GHashTable *		rco_inbound_calls;
+    	GHashTable *		rco_event_listeners;
+    	GHashTable *		rco_subscriptions;
+    	GMutex			rco_subscription_mtx;
+    	GMutex			rco_send_mtx;
+    	GMainContext *		rco_mainloop;
 
     	/* Callbacks */
 	rpc_recv_msg_fn_t	rco_recv_msg;
@@ -138,9 +160,23 @@ struct rpc_connection
 
 struct rpc_server
 {
+    	GMainContext *		rs_g_context;
+    	GMainLoop *		rs_g_loop;
+    	GThread *		rs_thread;
+    	GList *			rs_connections;
+	struct rpc_context *	rs_context;
+
     	/* Callbacks */
     	rpc_accept_fn_t		rs_accept;
     	void *			rs_arg;
+};
+
+struct rpc_client
+{
+    	GMainContext *		rci_g_context;
+    	GMainLoop *		rci_g_loop;
+    	GThread *		rci_thread;
+    	rpc_connection_t 	rci_connection;
 };
 
 struct rpc_context
@@ -162,8 +198,17 @@ typedef void (^conn_handler_t)(rpc_transport_connection_t *);
 typedef void (^message_handler_t)(void *frame, size_t len);
 typedef void (^close_handler_t)(void);
 
+rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
-void rpc_call_internal(rpc_connection_t, const char *, rpc_call_t);
-int rpc_context_dispatch(rpc_context_t, void *, const char *, rpc_object_t);
+int rpc_context_dispatch(rpc_context_t, struct rpc_inbound_call *);
+int rpc_server_dispatch(rpc_server_t, struct rpc_inbound_call *);
+void rpc_connection_send_err(rpc_connection_t, rpc_object_t, int,
+    const char *descr, ...);
+void rpc_connection_send_errx(rpc_connection_t, rpc_object_t, rpc_object_t);
+void rpc_connection_send_response(rpc_connection_t, rpc_object_t, rpc_object_t);
+void rpc_connection_send_fragment(rpc_connection_t, rpc_object_t, int64_t,
+    rpc_object_t);
+void rpc_connection_send_end(rpc_connection_t, rpc_object_t, int64_t);
+void rpc_connection_close_inbound_call(struct rpc_inbound_call *);
 
 #endif //LIBRPC_INTERNAL_H
