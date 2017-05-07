@@ -399,6 +399,7 @@ rpc_string_create_with_format(const char *fmt, ...)
 	union rpc_value val;
 
 	va_start(ap, fmt);
+	val.rv_str = g_string_new(NULL);
 	g_string_vprintf(val.rv_str, fmt, ap);
 	va_end(ap);
 
@@ -410,6 +411,7 @@ rpc_string_create_with_format_and_arguments(const char *fmt, va_list ap)
 {
 	union rpc_value val;
 
+	val.rv_str = g_string_new(NULL);
 	g_string_vprintf(val.rv_str, fmt, ap);
 	return (rpc_prim_create(RPC_TYPE_STRING, val, 1));
 }
@@ -695,8 +697,7 @@ rpc_dictionary_set_value(rpc_object_t dictionary, const char *key,
 		return;
 
 	rpc_retain(value);
-	g_hash_table_insert(dictionary->ro_value.rv_dict,
-	    rpc_string_create(key), value);
+	g_hash_table_insert(dictionary->ro_value.rv_dict, key, value);
 }
 
 inline rpc_object_t
