@@ -29,6 +29,7 @@
 #define LIBRPC_CONNECTION_H
 
 #include <Block.h>
+#include <sys/time.h>
 #include <rpc/object.h>
 
 #ifdef __cplusplus
@@ -64,12 +65,9 @@ typedef void (*rpc_handler_f)(const char *name, rpc_object_t args);
 
 rpc_connection_t rpc_connection_create(const char *uri, int flags);
 int rpc_connection_close(rpc_connection_t conn);
-int rpc_connection_login_user(rpc_connection_t conn, const char *username,
-    const char *password);
-int rpc_connection_login_service(rpc_connection_t conn, const char *name);
 int rpc_connection_subscribe_event(rpc_connection_t conn, const char *name);
 int rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name);
-int rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...);
+rpc_object_t rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...);
 void rpc_connection_call_async(rpc_connection_t conn, const char *method, ...);
 rpc_call_t rpc_connection_call(rpc_connection_t conn, const char *name,
     rpc_object_t args);
