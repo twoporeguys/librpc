@@ -33,6 +33,8 @@
 static int
 rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 {
+	int64_t timestamp;
+
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
 		mpack_write_nil(writer);
@@ -51,6 +53,9 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 		break;
 
 	case RPC_TYPE_DATE:
+		timestamp = g_date_time_to_unix(object->ro_value.rv_datetime);
+		mpack_write_ext(writer, MSGPACK_EXTTYPE_DATE,
+		    (const char *)&timestamp, sizeof(int64_t));
 		break;
 
 	case RPC_TYPE_DOUBLE:
@@ -91,6 +96,8 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 		mpack_finish_array(writer);
 		break;
 	}
+
+	return (0);
 }
 
 static rpc_object_t
@@ -138,10 +145,15 @@ rpc_msgpack_read_object(mpack_node_t node)
 		}
 		return (result);
 
+	case mpack_type_ext:
+		break;
+
 	case mpack_type_nil:
 	default:
 		return (rpc_null_create());
 	}
+
+	return (NULL);
 }
 
 int
@@ -151,6 +163,7 @@ rpc_msgpack_serialize(rpc_object_t obj, void **frame, size_t *size)
 
 	mpack_writer_init_growable(&writer, (char **)frame, size);
 	rpc_msgpack_write_object(&writer, obj);
+	mpack_writer_destroy(&writer);
 	return (0);
 }
 
@@ -158,7 +171,11 @@ rpc_object_t
 rpc_msgpack_deserialize(void *frame, size_t size)
 {
 	mpack_tree_t tree;
+	rpc_object_t result;
 
 	mpack_tree_init(&tree, frame, size);
-	return (rpc_msgpack_read_object(mpack_tree_root(&tree)));
+	result = rpc_msgpack_read_object(mpack_tree_root(&tree));
+	mpack_tree_destroy(&tree);
+
+	return (result);
 }
