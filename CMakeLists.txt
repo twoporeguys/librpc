@@ -19,13 +19,15 @@ set(HEADERS
         include/rpc/service.h
         include/rpc/object.h
         include/rpc/connection.h
-        include/rpc/server.h)
+        include/rpc/server.h
+        include/rpc/client.h)
 
 set(CORE_FILES
         src/rpc_connection.c
         src/rpc_object.c
         src/rpc_server.c
         src/rpc_service.c
+        src/rpc_client.c
         src/internal.h
         src/linker_set.h)
 
