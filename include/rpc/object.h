@@ -67,9 +67,10 @@ char *rpc_copy_description(rpc_object_t object);
 rpc_type_t rpc_get_type(rpc_object_t object);
 
 #define	rpc_release(_object)				\
-	if (rpc_release_impl(_object) == 0) {		\
-		_object = NULL;				\
-	}
+	do {						\
+		if (rpc_release_impl(_object) == 0)	\
+			_object = NULL;			\
+	} while(0)
 
 rpc_object_t rpc_null_create(void);
 rpc_object_t rpc_bool_create(bool value);
