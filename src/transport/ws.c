@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <glib.h>
 #include <libsoup/soup.h>
-
+#include "../linker_set.h"
 #include "../internal.h"
 
 static int ws_connect(struct rpc_connection *, const char *, rpc_object_t);
@@ -84,6 +84,8 @@ ws_connect(struct rpc_connection *rco, const char *uri_string, rpc_object_t args
 
 	g_signal_connect(conn->wc_ws, "message",
 	    G_CALLBACK(ws_receive_message), NULL);
+
+	return (0);
 }
 
 static int
@@ -97,7 +99,9 @@ ws_listen(struct rpc_server *srv, const char *uri, rpc_object_t args)
 	    NULL);
 
 	soup_server_add_websocket_handler(server->ws_server, "/ws", "", NULL,
-	    G_CALLBACK(ws_process_connection), NULL, NULL);
+	    ws_process_connection, NULL, NULL);
+
+	return (0);
 }
 
 static void
@@ -131,6 +135,16 @@ ws_send_message(void *arg, void *buf, size_t len, const int *fds, size_t nfds)
 	struct ws_connection *conn = arg;
 
 	soup_websocket_connection_send_binary(conn->wc_ws, buf, len);
+	return (0);
+}
+
+static int
+ws_abort(void *arg)
+{
+	struct ws_connection *conn = arg;
+
+	soup_websocket_connection_close(conn->wc_ws, 1000, "Going away");
+	return (0);
 }
 
 static int
