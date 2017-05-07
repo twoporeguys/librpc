@@ -33,11 +33,12 @@
 #include <gio/gunixfdlist.h>
 #include <gio/gunixsocketaddress.h>
 #include <libsoup/soup.h>
+#include "../linker_set.h"
 #include "../internal.h"
 
 static GSocketAddress *socket_parse_uri(const char *);
-int socket_connect(const char *, struct rpc_connection *, rpc_object_t);
-int socket_listen(const char *, rpc_object_t);
+int socket_connect(struct rpc_connection *, const char *, rpc_object_t);
+int socket_listen(struct rpc_server *, const char *, rpc_object_t);
 static int socket_send_msg(void *, void *, size_t, const int *, size_t);
 static int socket_abort(void *);
 static int socket_get_fd(void *);
@@ -52,6 +53,7 @@ struct rpc_transport socket_transport = {
 struct socket_server
 {
     const char *			ss_uri;
+    struct rpc_server *			ss_server;
     GSocketService *			ss_service;
     conn_handler_t			ss_conn_handler;
 
@@ -90,8 +92,43 @@ socket_parse_uri(const char *uri_string)
 	return (NULL);
 }
 
+static void
+socket_accept(GObject *source, GAsyncResult *result, void *data)
+{
+	struct socket_server *server = data;
+	struct socket_connection *conn;
+	GError *err;
+	GSocketConnection *gconn;
+	rpc_connection_t rco;
+	rpc_server_t srv = server->ss_server;
+
+
+	g_socket_listener_accept_finish(G_SOCKET_LISTENER(server->ss_service),
+	    result, NULL, &err);
+	if (err != NULL) {
+
+	}
+
+	conn = g_malloc0(sizeof(*conn));
+	conn->sc_client = g_socket_client_new();
+	conn->sc_conn = gconn;
+	conn->sc_istream = g_io_stream_get_input_stream(G_IO_STREAM(gconn));
+	conn->sc_ostream = g_io_stream_get_output_stream(G_IO_STREAM(gconn));
+
+	rco = rpc_connection_alloc(srv);
+	rco->rco_send_msg = &socket_send_msg;
+	rco->rco_abort = &socket_abort;
+	rco->rco_get_fd = &socket_get_fd;
+	rco->rco_arg = conn;
+	srv->rs_accept(srv, rco);
+
+	/* Schedule next accept */
+	g_socket_listener_accept_async(G_SOCKET_LISTENER(server->ss_service),
+	    NULL, &socket_accept, data);
+}
+
 int
-socket_connect(const char *uri, struct rpc_connection *rco, rpc_object_t args)
+socket_connect(struct rpc_connection *rco, const char *uri, rpc_object_t args)
 {
 	GError *err;
 	GSocketAddress *addr;
@@ -101,7 +138,7 @@ socket_connect(const char *uri, struct rpc_connection *rco, rpc_object_t args)
 	if (addr == NULL)
 		return (-1);
 
-	conn = calloc(1, sizeof(*conn));
+	conn = g_malloc0(sizeof(*conn));
 	conn->sc_uri = strdup(uri);
 	conn->sc_client = g_socket_client_new();
 	conn->sc_conn = g_socket_client_connect(conn->sc_client,
@@ -121,7 +158,7 @@ socket_connect(const char *uri, struct rpc_connection *rco, rpc_object_t args)
 }
 
 int
-socket_listen(const char *uri, rpc_object_t args)
+socket_listen(struct rpc_server *srv, const char *uri, rpc_object_t args)
 {
 	GError *err;
 	GSocketAddress *addr;
@@ -129,15 +166,25 @@ socket_listen(const char *uri, rpc_object_t args)
 
 	addr = socket_parse_uri(uri);
 	if (addr == NULL)
-		return (NULL);
+		return (-1);
 
-	server = calloc(1, sizeof(*server));
+	server = g_malloc0(sizeof(*server));
 	server->ss_uri = strdup(uri);
 	server->ss_service = g_socket_service_new();
 
 	g_socket_listener_add_address(G_SOCKET_LISTENER(server->ss_service),
 	    addr, G_SOCKET_TYPE_STREAM, G_SOCKET_PROTOCOL_DEFAULT, NULL, NULL,
 	    &err);
+	if (err != NULL) {
+		g_free(server->ss_service);
+		g_free(server);
+	}
+
+	/* Schedule first accept */
+	g_socket_listener_accept_async(G_SOCKET_LISTENER(server->ss_service),
+	    NULL, &socket_accept, server);
+
+	return (0);
 }
 
 static int
@@ -216,7 +263,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 
 		if (G_IS_UNIX_FD_MESSAGE(cmsg[i])) {
 			fds = g_unix_fd_message_steal_fds(
-			    G_UNIX_FD_MESSAGE(cmsg[i]), nfds);
+			    G_UNIX_FD_MESSAGE(cmsg[i]), (gint *)nfds);
 			continue;
 		}
 	}
@@ -247,17 +294,26 @@ socket_abort(void *arg)
 	return (0);
 }
 
+static int
+socket_get_fd(void *arg)
+{
+	struct socket_connection *conn = arg;
+	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
+
+	return (g_socket_get_fd(sock));
+}
+
 static void *
 socket_reader(void *arg)
 {
 	struct socket_connection *conn = arg;
 	struct rpc_credentials creds;
 	void *frame;
-	int *fds;
+	int fds[128];
 	size_t len, nfds;
 
 	for (;;) {
-		if (socket_recv_msg(conn, &frame, &len, &fds, &nfds, &creds) != 0)
+		if (socket_recv_msg(conn, &frame, &len, fds, &nfds, &creds) != 0)
 			break;
 
 		if (conn->sc_parent->rco_recv_msg(conn->sc_parent, frame, len,
