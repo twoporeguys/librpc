@@ -25,31 +25,79 @@
  *
  */
 
+#include <rpc/object.h>
 #include <rpc/server.h>
+#include <glib.h>
+#include "internal.h"
+
+static int rpc_server_accept(rpc_server_t, rpc_connection_t);
+
+static int
+rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
+{
+
+	server->rs_connections = g_list_append(server->rs_connections, conn);
+	return (0);
+}
+
+static void *
+rpc_server_worker(void *arg)
+{
+	rpc_server_t server = arg;
+
+	g_main_loop_run(server->rs_g_loop);
+	return (NULL);
+}
 
 rpc_server_t
 rpc_server_create(const char *uri, int flags)
 {
+	rpc_server_t server;
+
+	server = g_malloc0(sizeof(*server));
+	server->rs_accept = &rpc_server_accept;
+	server->rs_g_context = g_main_context_new();
+	server->rs_g_loop = g_main_loop_new(server->rs_g_context, false);
+	server->rs_thread = g_thread_new("librpc server", rpc_server_worker,
+	    server);
+	return (server);
+}
+
+void
+rpc_server_broadcast_event(rpc_server_t server, const char *name,
+    rpc_object_t args)
+{
+	GList *item;
+
+	for (item = g_list_first(server->rs_connections); item;
+	     item = item->next) {
+		rpc_connection_t conn = item->data;
+		rpc_connection_send_event(conn, name, args);
+	}
+}
+
+int
+rpc_server_dispatch(rpc_server_t server, struct rpc_inbound_call *call)
+{
+
+	return (rpc_context_dispatch(server->rs_context, call));
+}
+
+int
+rpc_server_start(rpc_server_t server, bool background)
+{
+
 
 }
 
-void rpc_server_set_connection_handler(rpc_server_t server,
-    rpc_connection_handler_t handler)
+int
+rpc_server_stop(rpc_server_t server)
 {
 
 }
 
-int rpc_server_start(rpc_server_t server, bool background)
-{
-
-}
-
-int rpc_server_stop(rpc_server_t server)
-{
-
-}
-
-int rpc_server_close(rpc_server_t server)
+int
+rpc_server_close(rpc_server_t server)
 {
 
 }
