@@ -28,6 +28,7 @@ set(CORE_FILES
         src/rpc_server.c
         src/rpc_service.c
         src/rpc_client.c
+        src/utils.c
         src/internal.h
         src/linker_set.h)
 

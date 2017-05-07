@@ -38,7 +38,6 @@
 #define	DEFAULT_RPC_TIMEOUT	60
 #define	MAX_FDS			128
 
-static const struct rpc_transport *rpc_find_transport(const char *);
 static rpc_object_t rpc_new_id(void);
 static rpc_object_t rpc_pack_frame(const char *, const char *, rpc_object_t,
     rpc_object_t);
@@ -77,24 +76,6 @@ static const struct message_handler handlers[] = {
     { "events", "unsubscribe", on_events_unsubscribe },
     { NULL }
 };
-
-SET_DECLARE(tp_set, struct rpc_transport);
-
-static const struct rpc_transport *
-rpc_find_transport(const char *scheme)
-{
-	struct rpc_transport **t;
-	int i;
-
-	SET_FOREACH(t, tp_set) {
-		for (i = 0; (*t)->schemas[i] != NULL; i++) {
-			if (!g_strcmp0((*t)->schemas[i], scheme))
-				return (*t);
-		}
-	}
-
-	return (NULL);
-}
 
 static size_t
 rpc_serialize_fds(rpc_object_t obj, int *fds, size_t *nfds, size_t idx)
