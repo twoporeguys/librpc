@@ -26,10 +26,12 @@
  */
 
 #include <Block.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <rpc/object.h>
 #include <rpc/connection.h>
 #include <glib.h>
+#include <glib/gprintf.h>
 #include "internal.h"
 
 struct rpc_method
@@ -69,18 +71,29 @@ void
 rpc_context_free(rpc_context_t context)
 {
 
+	g_thread_pool_free(context->rcx_threadpool, true, true);
+	g_hash_table_destroy(context->rcx_methods);
+	g_free(context);
 }
 
 int
-rpc_context_dispatch(rpc_context_t context, void *cookie, const char *name,
-    rpc_object_t args)
+rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 {
 	struct rpc_method *method;
+	GError *err;
 
-	method = g_hash_table_lookup(context->rcx_methods, (gconstpointer)name);
-	if (method == NULL) {
+	call->ric_method = g_hash_table_lookup(context->rcx_methods,
+	    call->ric_name);
+	if (call->ric_method == NULL) {
 
 	}
+
+	g_thread_pool_push(context->rcx_threadpool, call, &err);
+	if (err != NULL) {
+
+	}
+
+	return (0);
 }
 
 int
@@ -117,18 +130,42 @@ rpc_context_register_method_f(rpc_context_t context, const char *name,
 	return (0);
 }
 
+int
+rpc_context_unregister_method(rpc_context_t context, const char *name)
+{
+	struct rpc_method *method;
+
+	method = g_hash_table_lookup(context->rcx_methods, name);
+	if (method == NULL) {
+		errno = ENOENT;
+		return (-1);
+	}
+
+	g_hash_table_remove(context->rcx_methods, method);
+	return (0);
+}
+
 void
 rpc_function_respond(void *cookie, rpc_object_t object)
 {
 	struct rpc_inbound_call *call = cookie;
 
+	rpc_connection_send_response(call->ric_conn, call->ric_id, object);
+	rpc_connection_close_inbound_call(call);
 }
 
 void
 rpc_function_error(void *cookie, int code, const char *message, ...)
 {
 	struct rpc_inbound_call *call = cookie;
+	char *msg;
+	va_list ap;
 
+	va_start(ap, message);
+	g_vasprintf(&msg, message, ap);
+	va_end(ap);
+	rpc_connection_send_err(call->ric_conn, call->ric_id, code, msg);
+	g_free(msg);
 }
 
 void
@@ -143,6 +180,8 @@ rpc_function_produce(void *cookie, rpc_object_t fragment)
 {
 	struct rpc_inbound_call *call = cookie;
 
+	rpc_connection_send_fragment(call->ric_conn, call->ric_id,
+	    call->ric_seqno, fragment);
 }
 
 void
@@ -150,4 +189,6 @@ rpc_function_end(void *cookie)
 {
 	struct rpc_inbound_call *call = cookie;
 
+	rpc_connection_send_end(call->ric_conn, call->ric_id, call->ric_seqno);
+	rpc_connection_close_inbound_call(call);
 }
