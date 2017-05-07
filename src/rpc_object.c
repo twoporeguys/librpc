@@ -470,15 +470,12 @@ rpc_array_create(const rpc_object_t *objects, size_t count)
 {
 	union rpc_value val;
         rpc_object_t array_object;
-        rpc_object_t curr_obj_ptr = (rpc_object_t)objects;
         int i;
 
 	val.rv_list = g_array_new(true, true, sizeof(rpc_object_t));
         array_object = rpc_prim_create(RPC_TYPE_ARRAY, val, 1);
-        for (i = 0; i < count; i++) {
-                rpc_array_append_value(array_object, curr_obj_ptr);
-                curr_obj_ptr++;
-        }
+        for (i = 0; i < count; i++)
+                rpc_array_append_value(array_object, objects[i]);
 
         return array_object;
 }
@@ -697,7 +694,7 @@ rpc_dictionary_set_value(rpc_object_t dictionary, const char *key,
 		return;
 
 	rpc_retain(value);
-	g_hash_table_insert(dictionary->ro_value.rv_dict, key, value);
+	g_hash_table_insert(dictionary->ro_value.rv_dict, (gpointer)key, value);
 }
 
 inline rpc_object_t
