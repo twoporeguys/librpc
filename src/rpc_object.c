@@ -96,7 +96,6 @@ inline rpc_object_t
 rpc_copy(rpc_object_t object)
 {
 	rpc_object_t tmp;
-        union rpc_value tmp_value;
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
