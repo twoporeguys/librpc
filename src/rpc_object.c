@@ -862,7 +862,14 @@ inline const void *
 rpc_dictionary_get_data(rpc_object_t dictionary, const char *key,
     size_t *length)
 {
+	rpc_object_t xdata;
 
+	if ((xdata = rpc_dictionary_get_value(dictionary, key)) == 0)
+		return (0);
+
+	length = &xdata->ro_size;
+
+	return rpc_data_get_bytes_ptr(xdata);
 }
 
 inline const char *
@@ -877,4 +884,5 @@ inline int
 rpc_dictionary_dup_fd(rpc_object_t dictionary, const char *key)
 {
 
+	return (rpc_fd_dup(rpc_dictionary_get_value(dictionary, key)));
 }
