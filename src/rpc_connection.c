@@ -144,7 +144,7 @@ rpc_pack_frame(const char *ns, const char *name, rpc_object_t id,
 {
 	rpc_object_t obj;
 
-	obj = rpc_dictionary_create(NULL, NULL, 0);
+	obj = rpc_dictionary_create(NULL, NULL, 0, true);
 	rpc_dictionary_set_string(obj, "namespace", ns);
 	rpc_dictionary_set_string(obj, "name", name);
 	rpc_dictionary_set_value(obj, "id", id);
@@ -380,7 +380,7 @@ rpc_connection_send_err(rpc_connection_t conn, rpc_object_t id, int code,
 	g_vasprintf(&str, descr, ap);
 	va_end(ap);
 
-	args = rpc_dictionary_create(NULL, NULL, 0);
+	args = rpc_dictionary_create(NULL, NULL, 0, true);
 	rpc_dictionary_set_int64(args, "code", code);
 	rpc_dictionary_set_string(args, "message", str);
 	frame = rpc_pack_frame("rpc", "error", id, args);
@@ -417,7 +417,7 @@ rpc_connection_send_fragment(rpc_connection_t conn, rpc_object_t id,
 	rpc_object_t frame;
 	rpc_object_t args;
 
-	args = rpc_dictionary_create(NULL, NULL, 0);
+	args = rpc_dictionary_create(NULL, NULL, 0, true);
 	rpc_dictionary_set_int64(args, "seqno", seqno);
 	rpc_dictionary_set_value(args, "fragment", fragment);
 	frame = rpc_pack_frame("rpc", "end", id, args);
@@ -430,7 +430,7 @@ rpc_connection_send_end(rpc_connection_t conn, rpc_object_t id, int64_t seqno)
 	rpc_object_t frame;
 	rpc_object_t args;
 
-	args = rpc_dictionary_create(NULL, NULL, 0);
+	args = rpc_dictionary_create(NULL, NULL, 0, true);
 	rpc_dictionary_set_int64(args, "seqno", seqno);
 	frame = rpc_pack_frame("rpc", "end", id, args);
 	rpc_send_frame(conn, frame);
@@ -607,7 +607,7 @@ rpc_connection_call(rpc_connection_t conn, const char *name, rpc_object_t args)
 {
 	struct rpc_call *call;
 	rpc_object_t id = rpc_new_id();
-	rpc_object_t payload = rpc_dictionary_create(NULL, NULL, 0);
+	rpc_object_t payload = rpc_dictionary_create(NULL, NULL, 0, true);
 	rpc_object_t frame;
 
 	call = rpc_call_alloc(conn, NULL);
@@ -645,7 +645,7 @@ rpc_connection_send_event(rpc_connection_t conn, const char *name,
 	    args
 	};
 
-	event = rpc_dictionary_create(names, values, 2);
+	event = rpc_dictionary_create(names, values, 2, true);
 	frame = rpc_pack_frame("events", "event", NULL, event);
 
 	if (rpc_send_frame(conn, frame) != 0)

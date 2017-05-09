@@ -130,7 +130,7 @@ rpc_copy(rpc_object_t object)
                     true);
 
 	case RPC_TYPE_DICTIONARY:
-		tmp = rpc_dictionary_create(NULL, NULL, 0);
+		tmp = rpc_dictionary_create(NULL, NULL, 0, true);
 		rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
 		    rpc_dictionary_set_value(tmp, k, rpc_copy(v));
 		    return ((bool)true);
