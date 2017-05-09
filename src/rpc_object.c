@@ -28,7 +28,6 @@
 
 #include <unistd.h>
 #include <assert.h>
-#include <errno.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -480,36 +479,52 @@ rpc_array_create(const rpc_object_t *objects, size_t count)
         return array_object;
 }
 
-inline int
+inline void
 rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value)
 {
-	rpc_object_t *ro;
-
-        if (array->ro_type != RPC_TYPE_ARRAY)
-                return (-EINVAL);
-
-        if (index >= array->ro_value.rv_list->len)
-                return (-EFAULT);
-
+	rpc_array_steal_value(array, index, value);
 	rpc_retain(value);
+}
+
+inline void
+rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value)
+{
+	rpc_object_t *ro;
+	union rpc_value null_value;
+	int i;
+
+	if (array->ro_type != RPC_TYPE_ARRAY)
+		abort();
+
+	for (i = (int)(index - array->ro_value.rv_list->len); i >= 0; i--) {
+		rpc_array_append_value(
+		    array,
+		    rpc_prim_create(RPC_TYPE_NULL, null_value, 1)
+		);
+	}
+
 	ro = &g_array_index(array->ro_value.rv_list, rpc_object_t, index);
 	rpc_release_impl(*ro);
 	*ro = value;
-
-        return (0);
 }
 
-inline int
+inline void
 rpc_array_append_value(rpc_object_t array, rpc_object_t value)
 {
 
-        if (array->ro_type != RPC_TYPE_ARRAY)
-                return (-EINVAL);
+        rpc_array_append_stolen_value(array, value);
 
 	rpc_retain(value);
-	g_array_append_val(array->ro_value.rv_list, value);
+}
 
-        return (0);
+inline void
+rpc_array_append_stolen_value(rpc_object_t array, rpc_object_t value)
+{
+
+        if (array->ro_type != RPC_TYPE_ARRAY)
+                abort();
+
+	g_array_append_val(array->ro_value.rv_list, value);
 }
 
 inline rpc_object_t
@@ -675,14 +690,28 @@ inline int rpc_array_dup_fd(rpc_object_t array, size_t index)
 
 inline rpc_object_t
 rpc_dictionary_create(const char * const *keys, const rpc_object_t *values,
-    size_t count)
+    size_t count, bool steal)
 {
+	rpc_object_t object;
 	union rpc_value val;
+	int i;
+	void (*setter_fnc)(rpc_object_t dictionary, const char *key, rpc_object_t value);
+
+	if (steal == true)
+		setter_fnc = &rpc_dictionary_set_value;
+	else
+		setter_fnc = &rpc_dictionary_steal_value;
 
 	val.rv_dict = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
 	    (GDestroyNotify)rpc_release_impl);
 
-	return (rpc_prim_create(RPC_TYPE_DICTIONARY, val, 0));
+	object = rpc_prim_create(RPC_TYPE_DICTIONARY, val, 0);
+
+	for (i = 0; i < count; i++) {
+		setter_fnc(object, keys[i], values[i]);
+	}
+
+	return (object);
 }
 
 inline void
@@ -690,10 +719,19 @@ rpc_dictionary_set_value(rpc_object_t dictionary, const char *key,
     rpc_object_t value)
 {
 
-	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
-		return;
+	rpc_dictionary_steal_value(dictionary, key, value);
 
 	rpc_retain(value);
+}
+
+inline void
+rpc_dictionary_steal_value(rpc_object_t dictionary, const char *key,
+    rpc_object_t value)
+{
+
+	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
+		abort();
+
 	g_hash_table_insert(dictionary->ro_value.rv_dict, (gpointer)key, value);
 }
 
