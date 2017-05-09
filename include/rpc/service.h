@@ -43,17 +43,18 @@ typedef rpc_object_t (*rpc_function_f)(void *cookie, rpc_object_t args);
 rpc_context_t rpc_context_create(void);
 void rpc_context_free(rpc_context_t context);
 int rpc_context_register_method(rpc_context_t context, const char *name,
-    const char *descr, rpc_function_t func, void *arg, int flags);
+    const char *descr, void *arg, rpc_function_t func);
 int rpc_context_register_method_f(rpc_context_t context, const char *name,
-    const char *descr, rpc_function_f func, void *arg, int flags);
+    const char *descr, void *arg, rpc_function_f func);
 
+void *rpc_function_get_arg(void *cookie);
 void rpc_function_respond(void *cookie, rpc_object_t object);
 void rpc_function_error(void *cookie, int code, const char *message, ...);
 void rpc_function_error_ex(void *cookie, rpc_object_t exception);
 void rpc_function_produce(void *cookie, rpc_object_t fragment);
 void rpc_function_end(void *cookie);
 
-#define        rpc_function_yield(_cookie, _fragment)                                \
+#define rpc_function_yield(_cookie, _fragment)                                \
         do {                                                                \
                 setjmp((jmp_buf)_cookie);                                \
                 rpc_function_produce(_cookie, _fragment)                \

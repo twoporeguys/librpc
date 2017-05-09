@@ -43,6 +43,7 @@ static int ws_abort(void *);
 static int ws_get_fd(void *);
 
 struct rpc_transport ws_transport = {
+    .name = "websocket",
     .schemas = {"ws", "wss", NULL},
     .connect = ws_connect,
     .listen = ws_listen
@@ -96,11 +97,13 @@ ws_listen(struct rpc_server *srv, const char *uri, rpc_object_t args)
 	server = calloc(1, sizeof(*server));
 	server->ws_server = soup_server_new(
 	    SOUP_SERVER_SERVER_HEADER, "librpc",
+	    SOUP_SERVER_PORT, 8080,
 	    NULL);
 
 	soup_server_add_websocket_handler(server->ws_server, "/ws", "", NULL,
 	    ws_process_connection, NULL, NULL);
 
+	soup_server_listen(server->ws_server, g_inet_socket_address_new_from_string("0.0.0.0", 8080), 0, NULL);
 	return (0);
 }
 

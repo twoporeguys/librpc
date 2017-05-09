@@ -38,7 +38,6 @@ struct rpc_method
 {
 	const char *	rm_name;
     	const char *	rm_description;
-    	rpc_function_f  rm_handler;
     	rpc_function_t  rm_block;
     	void *		rm_arg;
 };
@@ -48,9 +47,18 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 {
 	struct rpc_inbound_call *call = data;
 	struct rpc_context *context = user_data;
-	struct rpc_method *method;
+	struct rpc_method *method = call->ric_method;
+	rpc_connection_t conn = call->ric_conn;
+	rpc_object_t result;
 
-	if (method->rm_handler) {}
+	debugf("method=%p", method);
+	result = method->rm_block((void *)call, call->ric_args);
+
+	if (!call->ric_responded)
+		rpc_connection_send_response(conn, call->ric_id, result);
+
+	if (call->ric_streaming && !call->ric_ended)
+		rpc_connection_send_end(conn, call->ric_id, call->ric_seqno);
 }
 
 rpc_context_t
@@ -82,6 +90,8 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 	struct rpc_method *method;
 	GError *err;
 
+	debugf("call=%p, name=%s", call, call->ric_name);
+
 	call->ric_method = g_hash_table_lookup(context->rcx_methods,
 	    call->ric_name);
 	if (call->ric_method == NULL) {
@@ -98,7 +108,7 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 
 int
 rpc_context_register_method(rpc_context_t context, const char *name,
-    const char *descr, rpc_function_t func, void *arg, int flags)
+    const char *descr, void *arg, rpc_function_t func)
 {
 	struct rpc_method *method;
 
@@ -115,19 +125,13 @@ rpc_context_register_method(rpc_context_t context, const char *name,
 
 int
 rpc_context_register_method_f(rpc_context_t context, const char *name,
-    const char *descr, rpc_function_f func, void *arg, int flags)
+    const char *descr, void *arg, rpc_function_f func)
 {
-	struct rpc_method *method;
+	rpc_function_t fn = ^(void *cookie, rpc_object_t args) {
+		return (func(cookie, args));
+	};
 
-	method = g_malloc0(sizeof(*method));
-	method->rm_name = g_strdup(name);
-	method->rm_description = g_strdup(descr);
-	method->rm_handler = func;
-	method->rm_arg = arg;
-	g_hash_table_insert(context->rcx_methods, (gpointer)method->rm_name,
-	    method);
-
-	return (0);
+	return (rpc_context_register_method(context, name, descr, arg, fn));
 }
 
 int
@@ -141,8 +145,17 @@ rpc_context_unregister_method(rpc_context_t context, const char *name)
 		return (-1);
 	}
 
+	Block_release(method->rm_block);
 	g_hash_table_remove(context->rcx_methods, method);
 	return (0);
+}
+
+inline void *
+rpc_function_get_arg(void *cookie)
+{
+	struct rpc_inbound_call *call = cookie;
+
+	return (call->ric_arg);
 }
 
 void
@@ -180,6 +193,7 @@ rpc_function_produce(void *cookie, rpc_object_t fragment)
 {
 	struct rpc_inbound_call *call = cookie;
 
+	call->ric_streaming = true;
 	rpc_connection_send_fragment(call->ric_conn, call->ric_id,
 	    call->ric_seqno, fragment);
 }

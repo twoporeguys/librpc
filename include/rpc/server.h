@@ -29,6 +29,7 @@
 #define LIBRPC_SERVER_H
 
 #include <stdbool.h>
+#include <rpc/service.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,7 +39,7 @@ struct rpc_server;
 
 typedef struct rpc_server *rpc_server_t;
 
-rpc_server_t rpc_server_create(const char *uri, int flags);
+rpc_server_t rpc_server_create(const char *uri, rpc_context_t context);
 int rpc_server_start(rpc_server_t server, bool background);
 int rpc_server_stop(rpc_server_t server);
 int rpc_server_close(rpc_server_t server);

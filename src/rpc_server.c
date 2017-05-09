@@ -25,9 +25,10 @@
  *
  */
 
+#include <errno.h>
+#include <glib.h>
 #include <rpc/object.h>
 #include <rpc/server.h>
-#include <glib.h>
 #include "internal.h"
 
 static int rpc_server_accept(rpc_server_t, rpc_connection_t);
@@ -45,21 +46,46 @@ rpc_server_worker(void *arg)
 {
 	rpc_server_t server = arg;
 
+	g_main_context_push_thread_default(server->rs_g_context);
 	g_main_loop_run(server->rs_g_loop);
 	return (NULL);
 }
 
-rpc_server_t
-rpc_server_create(const char *uri, int flags)
+static gboolean
+rpc_server_listen(void *arg)
 {
+	rpc_server_t server = arg;
+	const struct rpc_transport *transport;
+
+	transport = rpc_find_transport(g_uri_parse_scheme(server->rs_uri));
+	if (transport == NULL) {
+		errno = ENXIO;
+		return (false);
+	}
+
+	debugf("selected transport %s", transport->name);
+	transport->listen(server, server->rs_uri, NULL);
+	return (false);
+}
+
+rpc_server_t
+rpc_server_create(const char *uri, rpc_context_t context)
+{
+
 	rpc_server_t server;
 
+	debugf("creating server");
+
 	server = g_malloc0(sizeof(*server));
+	server->rs_uri = uri;
+	server->rs_context = context;
 	server->rs_accept = &rpc_server_accept;
 	server->rs_g_context = g_main_context_new();
 	server->rs_g_loop = g_main_loop_new(server->rs_g_context, false);
 	server->rs_thread = g_thread_new("librpc server", rpc_server_worker,
 	    server);
+
+	g_main_context_invoke(server->rs_g_context, rpc_server_listen, server);
 	return (server);
 }
 
