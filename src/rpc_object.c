@@ -657,21 +657,16 @@ rpc_array_get_date(rpc_object_t array, size_t index)
 }
 
 inline const void *rpc_array_get_data(rpc_object_t array, size_t index,
-    size_t length)
+    size_t *length)
 {
-        void *buffer;
         rpc_object_t xdata;
-        size_t ret_size;
 
         if ((xdata = rpc_array_get_value(array, index)) == 0)
                 return (0);
 
-        ret_size = MIN(length, xdata->ro_size);
+	length = &xdata->ro_size;
 
-        buffer = malloc(length);
-        rpc_data_get_bytes(xdata, buffer, 0, ret_size);
-
-        return (buffer);
+        return rpc_data_get_bytes_ptr(xdata);
 }
 
 inline const char *
