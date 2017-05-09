@@ -39,6 +39,7 @@
 
 #define	DECLARE_TRANSPORT(_transport)	DATA_SET(tp_set, _transport)
 
+#define RPC_DEBUG	1
 #ifdef RPC_DEBUG
 #define debugf(...) 				\
     do { 					\
@@ -124,6 +125,10 @@ struct rpc_inbound_call
     	GMutex			ric_mtx;
     	GCond			ric_cv;
     	int64_t			ric_seqno;
+    	void *			ric_arg;
+    	bool			ric_streaming;
+    	bool			ric_responded;
+    	bool			ric_ended;
 };
 
 struct rpc_credentials
@@ -148,6 +153,8 @@ struct rpc_connection
     	GMutex			rco_subscription_mtx;
     	GMutex			rco_send_mtx;
     	GMainContext *		rco_mainloop;
+    	GThread *		rco_event_worker;
+    	GAsyncQueue *		rco_event_queue;
 
     	/* Callbacks */
 	rpc_recv_msg_fn_t	rco_recv_msg;
@@ -165,6 +172,7 @@ struct rpc_server
     	GThread *		rs_thread;
     	GList *			rs_connections;
 	struct rpc_context *	rs_context;
+    	const char *		rs_uri;
 
     	/* Callbacks */
     	rpc_accept_fn_t		rs_accept;
@@ -187,16 +195,16 @@ struct rpc_context
 
 struct rpc_transport
 {
-    int (*connect)(struct rpc_connection *, const char *, rpc_object_t);
-    int (*listen)(struct rpc_server *, const char *, rpc_object_t);
-    const char *schemas[];
+	int (*connect)(struct rpc_connection *, const char *, rpc_object_t);
+	int (*listen)(struct rpc_server *, const char *, rpc_object_t);
+	const char *name;
+	const char *schemas[];
 };
 
-typedef struct rpc_transport_connection rpc_transport_connection_t;
-
-typedef void (^conn_handler_t)(rpc_transport_connection_t *);
 typedef void (^message_handler_t)(void *frame, size_t len);
 typedef void (^close_handler_t)(void);
+
+const struct rpc_transport *rpc_find_transport(const char *scheme);
 
 rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);

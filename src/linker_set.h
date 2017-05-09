@@ -36,7 +36,7 @@
 #endif
 #ifndef __section
 #ifdef __APPLE__
-#define __section(x)    __attribute__((__section__("DATA," #x)))
+#define __section(x)    __attribute__((__section__("__DATA," #x)))
 #else
 #define __section(x)    __attribute__((__section__(x)))
 #endif
@@ -71,7 +71,7 @@
 	__GLOBL(__CONCAT(__start_set_,set));		\
 	__GLOBL(__CONCAT(__stop_set_,set));		\
 	static void const * __MAKE_SET_CONST		\
-	__set_##set##_sym_##sym __section("set_" #set)	\
+	__set_##set##_sym_##sym __section(set_##set)	\
 	__used = &(sym)
 #else /* !__GNUCLIKE___SECTION */
 
