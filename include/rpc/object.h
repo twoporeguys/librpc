@@ -126,7 +126,8 @@ const void *rpc_array_get_data(rpc_object_t array, size_t index,
 const char *rpc_array_get_string(rpc_object_t array, size_t index);
 int rpc_array_dup_fd(rpc_object_t array, size_t index);
 
-rpc_object_t rpc_dictionary_create(const char *const *keys,
+rpc_object_t rpc_dictionary_create(void);
+rpc_object_t rpc_dictionary_create_ex(const char *const *keys,
     const rpc_object_t *values, size_t count, bool steal);
 void rpc_dictionary_set_value(rpc_object_t dictionary, const char *key,
     rpc_object_t value);

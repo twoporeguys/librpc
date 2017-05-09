@@ -138,7 +138,7 @@ rpc_msgpack_read_object(mpack_node_t node)
 		return (result);
 
 	case mpack_type_map:
-		result = rpc_dictionary_create(NULL, NULL, 0, true);
+		result = rpc_dictionary_create();
 		for (i = 0; i < mpack_node_map_count(node); i++) {
 			tmp = mpack_node_map_key_at(node, (uint32_t)i);
 			cstr = g_strndup(mpack_node_str(tmp), mpack_node_strlen(tmp));
