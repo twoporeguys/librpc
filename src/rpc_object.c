@@ -563,62 +563,62 @@ rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier)
 	return (flag);
 }
 
-inline int
+inline void
 rpc_array_set_bool(rpc_object_t array, size_t index, bool value)
 {
 
-	return (rpc_array_set_value(array, index, rpc_bool_create(value)));
+	rpc_array_steal_value(array, index, rpc_bool_create(value));
 }
 
-inline int
+inline void
 rpc_array_set_int64(rpc_object_t array, size_t index, int64_t value)
 {
 
-	return (rpc_array_set_value(array, index, rpc_int64_create(value)));
+	rpc_array_steal_value(array, index, rpc_int64_create(value));
 }
 
-inline int
+inline void
 rpc_array_set_uint64(rpc_object_t array, size_t index, uint64_t value)
 {
 
-	return (rpc_array_set_value(array, index, rpc_uint64_create(value)));
+	rpc_array_steal_value(array, index, rpc_uint64_create(value));
 }
 
-inline int
+inline void
 rpc_array_set_double(rpc_object_t array, size_t index, double value)
 {
 
-	return (rpc_array_set_value(array, index, rpc_double_create(value)));
+	rpc_array_steal_value(array, index, rpc_double_create(value));
 }
 
-inline int
+inline void
 rpc_array_set_date(rpc_object_t array, size_t index, int64_t value)
 {
 
-	return (rpc_array_set_value(array, index, rpc_date_create(value)));
+	rpc_array_steal_value(array, index, rpc_date_create(value));
 }
 
-inline int
+inline void
 rpc_array_set_data(rpc_object_t array, size_t index, const void *bytes,
     size_t length)
 {
 
-	return (rpc_array_set_value(array, index, rpc_data_create(bytes, length, false)));
+	rpc_array_steal_value(array, index, rpc_data_create(bytes, length, false));
 }
 
-inline int
+inline void
 rpc_array_set_string(rpc_object_t array, size_t index,
     const char *value)
 {
 
-	return (rpc_array_set_value(array, index, rpc_string_create(value)));
+	rpc_array_steal_value(array, index, rpc_string_create(value));
 }
 
-inline int
+inline void
 rpc_array_set_fd(rpc_object_t array, size_t index, int value)
 {
 
-	return (rpc_array_set_value(array, index, rpc_fd_create(value)));
+	rpc_array_steal_value(array, index, rpc_fd_create(value));
 }
 
 inline bool
@@ -765,7 +765,7 @@ inline void
 rpc_dictionary_set_bool(rpc_object_t dictionary, const char *key, bool value)
 {
 
-	rpc_dictionary_set_value(dictionary, key, rpc_bool_create(value));
+	rpc_dictionary_steal_value(dictionary, key, rpc_bool_create(value));
 }
 
 inline void
@@ -773,7 +773,7 @@ rpc_dictionary_set_int64(rpc_object_t dictionary, const char *key,
     int64_t value)
 {
 
-	rpc_dictionary_set_value(dictionary, key, rpc_int64_create(value));
+	rpc_dictionary_steal_value(dictionary, key, rpc_int64_create(value));
 }
 
 inline void
@@ -781,7 +781,7 @@ rpc_dictionary_set_uint64(rpc_object_t dictionary, const char *key,
     uint64_t value)
 {
 
-	rpc_dictionary_set_value(dictionary, key, rpc_uint64_create(value));
+	rpc_dictionary_steal_value(dictionary, key, rpc_uint64_create(value));
 }
 
 inline void
@@ -789,7 +789,7 @@ rpc_dictionary_set_double(rpc_object_t dictionary, const char *key,
     double value)
 {
 
-	rpc_dictionary_set_value(dictionary, key, rpc_double_create(value));
+	rpc_dictionary_steal_value(dictionary, key, rpc_double_create(value));
 }
 
 inline void
@@ -797,7 +797,7 @@ rpc_dictionary_set_date(rpc_object_t dictionary, const char *key,
     int64_t value)
 {
 
-	rpc_dictionary_set_value(dictionary, key, rpc_int64_create(value));
+	rpc_dictionary_steal_value(dictionary, key, rpc_int64_create(value));
 }
 
 inline void
@@ -805,7 +805,7 @@ rpc_dictionary_set_data(rpc_object_t dictionary, const char *key,
     const void *value, size_t length)
 {
 
-	rpc_dictionary_set_value(dictionary, key, rpc_data_create(value, length, false));
+	rpc_dictionary_steal_value(dictionary, key, rpc_data_create(value, length, false));
 }
 
 inline void
@@ -813,14 +813,14 @@ rpc_dictionary_set_string(rpc_object_t dictionary, const char *key,
     const char *value)
 {
 
-	rpc_dictionary_set_value(dictionary, key, rpc_string_create(value));
+	rpc_dictionary_steal_value(dictionary, key, rpc_string_create(value));
 }
 
 inline void
 rpc_dictionary_set_fd(rpc_object_t dictionary, const char *key, int value)
 {
 
-	rpc_dictionary_set_value(dictionary, key, rpc_fd_create(value));
+	rpc_dictionary_steal_value(dictionary, key, rpc_fd_create(value));
 }
 
 inline bool
