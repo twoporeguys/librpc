@@ -104,6 +104,8 @@ static rpc_object_t
 rpc_msgpack_read_object(mpack_node_t node)
 {
 	__block int i;
+	__block char *cstr;
+	__block mpack_node_t tmp;
 	__block rpc_object_t result;
 
 	switch (mpack_node_type(node)) {
@@ -120,7 +122,8 @@ rpc_msgpack_read_object(mpack_node_t node)
 		return (rpc_double_create(mpack_node_double(node)));
 
 	case mpack_type_str:
-		return (rpc_string_create(mpack_node_str(node)));
+		cstr = g_strndup(mpack_node_str(node), mpack_node_strlen(node));
+		return (rpc_string_create(cstr));
 
 	case mpack_type_bin:
 		return (rpc_data_create(mpack_node_data(node),
@@ -137,9 +140,9 @@ rpc_msgpack_read_object(mpack_node_t node)
 	case mpack_type_map:
 		result = rpc_dictionary_create(NULL, NULL, 0, true);
 		for (i = 0; i < mpack_node_map_count(node); i++) {
-			rpc_dictionary_set_value(result,
-			    mpack_node_str(mpack_node_map_key_at(node,
-				(uint32_t)i)),
+			tmp = mpack_node_map_key_at(node, (uint32_t)i);
+			cstr = g_strndup(mpack_node_str(tmp), mpack_node_strlen(tmp));
+			rpc_dictionary_set_value(result, cstr,
 			    rpc_msgpack_read_object(mpack_node_map_value_at(
 				node, (uint32_t)i)));
 		}
@@ -168,7 +171,7 @@ rpc_msgpack_serialize(rpc_object_t obj, void **frame, size_t *size)
 }
 
 rpc_object_t
-rpc_msgpack_deserialize(void *frame, size_t size)
+rpc_msgpack_deserialize(const void *frame, size_t size)
 {
 	mpack_tree_t tree;
 	rpc_object_t result;
