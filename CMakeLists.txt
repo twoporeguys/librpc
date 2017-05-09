@@ -28,6 +28,7 @@ set(CORE_FILES
         src/rpc_server.c
         src/rpc_service.c
         src/rpc_client.c
+        src/rpc_discovery.c
         src/utils.c
         src/internal.h
         src/linker_set.h)
@@ -51,9 +52,8 @@ target_link_libraries(librpc ${GLIB_LIBRARIES})
 target_link_libraries(librpc ${GIO_LIBRARIES})
 target_link_libraries(librpc ${SOUP_LIBRARIES})
 
-#Compile tests
+# Compile tests
 set(CATCH_INCLUDE_DIR src/tests)
-
 add_library(Catch INTERFACE)
 
 set(TEST_SOURCES
@@ -63,3 +63,8 @@ set(TEST_SOURCES
 add_executable(tests ${TEST_SOURCES})
 target_link_libraries(tests Catch)
 target_link_libraries(tests librpc)
+
+add_executable(example-server examples/server.c)
+target_link_libraries(example-server librpc)
+add_executable(example-client examples/client.c)
+target_link_libraries(example-client librpc)
