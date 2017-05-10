@@ -80,14 +80,14 @@ rpc_data_hash(const uint8_t *data, size_t length)
 }
 
 static void
-rpc_create_description (GString *description, rpc_object_t object, unsigned int indent_lvl, bool end_nl)
+rpc_create_description (GString *description, rpc_object_t object, unsigned int indent_lvl, bool nested)
 {
 	int i;
 	unsigned int local_indent_lvl = indent_lvl + 1;
 	size_t data_length;
 	uint8_t *data_ptr;
 
-	if (indent_lvl > 0)
+	if ((indent_lvl > 0) && (!nested))
 		g_string_append_printf(description, "%*s", (indent_lvl * 4), "");
 
 	g_string_append_printf(description, "<%s> ", rpc_types[object->ro_type]);
@@ -140,7 +140,8 @@ rpc_create_description (GString *description, rpc_object_t object, unsigned int 
 		case RPC_TYPE_DICTIONARY:
 			g_string_append(description, "{\n");
 			rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
-				rpc_create_description(description, v, local_indent_lvl, false);
+				g_string_append_printf(description, "%*s%s: ", (local_indent_lvl * 4), "", k);
+				rpc_create_description(description, v, local_indent_lvl, true);
 				g_string_append(description, ",\n");
 				return ((bool)true);
 			});
@@ -153,7 +154,13 @@ rpc_create_description (GString *description, rpc_object_t object, unsigned int 
 		case RPC_TYPE_ARRAY:
 			g_string_append(description, "[\n");
 			rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
-				rpc_create_description(description, v, local_indent_lvl, false);
+				g_string_append_printf(
+				    description, "%*s%u: ",
+				    (local_indent_lvl * 4),
+				    "",
+				    (unsigned int)idx);
+				
+				rpc_create_description(description, v, local_indent_lvl, true);
 				g_string_append(description, ",\n");
 				return ((bool)true);
 			});
@@ -164,7 +171,7 @@ rpc_create_description (GString *description, rpc_object_t object, unsigned int 
 			break;
 	}
 
-	if (end_nl == true)
+	if (nested == false)
 		g_string_append(description, "\n");
 }
 
@@ -320,7 +327,7 @@ rpc_copy_description(rpc_object_t object)
 	GString *description;
 
 	description = g_string_new(NULL);
-	rpc_create_description(description, object, 0, true);
+	rpc_create_description(description, object, 0, false);
 
 	return g_string_free(description, false);
 }
