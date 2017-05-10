@@ -166,11 +166,19 @@ rpc_hash(rpc_object_t object)
 		return (0);
 
 	case RPC_TYPE_BOOL:
+		return ((size_t)object->ro_value.rv_b);
+
 	case RPC_TYPE_INT64:
+		return ((size_t)object->ro_value.rv_i);
+
 	case RPC_TYPE_UINT64:
-	case RPC_TYPE_DOUBLE:
-	case RPC_TYPE_FD:
 		return ((size_t)object->ro_value.rv_ui);
+
+	case RPC_TYPE_DOUBLE:
+		return ((size_t)object->ro_value.rv_d);
+
+	case RPC_TYPE_FD:
+		return ((size_t)object->ro_value.rv_fd);
 
 	case RPC_TYPE_DATE:
 		return ((size_t)rpc_date_get_value(object));
