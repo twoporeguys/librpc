@@ -121,7 +121,7 @@ rpc_create_description (GString *description, rpc_object_t object, unsigned int 
 			break;
 
 		case RPC_TYPE_DATE:
-			g_string_append(description, g_date_time_format(object->ro_value.rv_datetime, "%F - %T"));
+			g_string_append(description, g_date_time_format(object->ro_value.rv_datetime, "%F %T"));
 			break;
 
 		case RPC_TYPE_STRING:
