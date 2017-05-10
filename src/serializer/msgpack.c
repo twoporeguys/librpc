@@ -130,7 +130,7 @@ rpc_msgpack_read_object(mpack_node_t node)
 		    mpack_node_data_len(node), false));
 
 	case mpack_type_array:
-		result = rpc_array_create(NULL, 0);
+		result = rpc_array_create();
 		for (i = 0; i < mpack_node_array_length(node); i++) {
 			rpc_array_append_value(result, rpc_msgpack_read_object(
 			    mpack_node_array_at(node, (uint32_t)i)));

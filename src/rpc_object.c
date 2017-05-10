@@ -152,7 +152,7 @@ rpc_copy(rpc_object_t object)
 		return (tmp);
 
 	case RPC_TYPE_ARRAY:
-		tmp = rpc_array_create(NULL, 0);
+		tmp = rpc_array_create();
 		rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
 		    rpc_array_set_value(tmp, idx, rpc_copy(v));
 		    return ((bool)true);
@@ -323,7 +323,8 @@ rpc_date_create(int64_t interval)
 	return (rpc_prim_create(RPC_TYPE_DATE, val, 1));
 }
 
-inline rpc_object_t rpc_date_create_from_current(void)
+inline
+rpc_object_t rpc_date_create_from_current(void)
 {
         union rpc_value val;
 
@@ -486,18 +487,25 @@ rpc_fd_dup(rpc_object_t xfd)
 }
 
 inline rpc_object_t
-rpc_array_create(const rpc_object_t *objects, size_t count)
+rpc_array_create(void)
 {
 	union rpc_value val;
-        rpc_object_t array_object;
-        int i;
 
 	val.rv_list = g_array_new(true, true, sizeof(rpc_object_t));
-        array_object = rpc_prim_create(RPC_TYPE_ARRAY, val, 1);
-        for (i = 0; i < count; i++)
-                rpc_array_append_value(array_object, objects[i]);
+        return (rpc_prim_create(RPC_TYPE_ARRAY, val, 1));
+}
 
-        return array_object;
+inline rpc_object_t
+rpc_array_create_ex(const rpc_object_t *objects, size_t count)
+{
+	rpc_object_t array_object;
+	int i;
+
+	array_object = rpc_array_create();
+	for (i = 0; i < count; i++)
+		rpc_array_append_value(array_object, objects[i]);
+
+	return array_object;
 }
 
 inline void

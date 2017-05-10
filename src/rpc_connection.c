@@ -628,7 +628,7 @@ rpc_connection_subscribe_event(rpc_connection_t conn, const char *name)
 	rpc_object_t args, str;
 
 	str = rpc_string_create(name);
-	args = rpc_array_create(&str, 1);
+	args = rpc_array_create_ex(&str, 1);
 	frame = rpc_pack_frame("events", "subscribe", NULL, args);
 
 	if (rpc_send_frame(conn, frame) != 0)
@@ -644,7 +644,7 @@ rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name)
 	rpc_object_t args, str;
 
 	str = rpc_string_create(name);
-	args = rpc_array_create(&str, 1);
+	args = rpc_array_create_ex(&str, 1);
 	frame = rpc_pack_frame("events", "unsubscribe", NULL, args);
 
 	if (rpc_send_frame(conn, frame) != 0)
@@ -663,7 +663,7 @@ rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...)
 	rpc_object_t i;
 	va_list ap;
 
-	args = rpc_array_create(NULL, 0);
+	args = rpc_array_create();
 	va_start(ap, method);
 
 	for (;;) {
