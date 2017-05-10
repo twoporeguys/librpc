@@ -683,12 +683,12 @@ inline int rpc_array_dup_fd(rpc_object_t array, size_t index)
 }
 
 inline rpc_object_t
-rpc_dictionary_create()
+rpc_dictionary_create(void)
 {
 	union rpc_value val;
 
 	val.rv_dict = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
-					    (GDestroyNotify)rpc_release_impl);
+	    (GDestroyNotify)rpc_release_impl);
 
 	return (rpc_prim_create(RPC_TYPE_DICTIONARY, val, 0));
 }
@@ -699,18 +699,13 @@ rpc_dictionary_create_ex(const char * const *keys, const rpc_object_t *values,
 {
 	rpc_object_t object;
 	int i;
-	void (*setter_fnc)(rpc_object_t dictionary, const char *key, rpc_object_t value);
+	void (*setter_fn)(rpc_object_t, const char *, rpc_object_t);
 
-	if (steal == true)
-		setter_fnc = &rpc_dictionary_set_value;
-	else
-		setter_fnc = &rpc_dictionary_steal_value;
-
+	setter_fn = steal ? &rpc_dictionary_set_value : &rpc_dictionary_steal_value;
 	object = rpc_dictionary_create();
 
-	for (i = 0; i < count; i++) {
-		setter_fnc(object, keys[i], values[i]);
-	}
+	for (i = 0; i < count; i++)
+		setter_fn(object, keys[i], values[i]);
 
 	return (object);
 }
