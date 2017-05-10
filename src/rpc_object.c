@@ -36,6 +36,20 @@
 #include <rpc/object.h>
 #include "internal.h"
 
+static const char *rpc_types[] = {
+    [RPC_TYPE_NULL] = "null",
+    [RPC_TYPE_BOOL] = "bool",
+    [RPC_TYPE_UINT64] = "uint64",
+    [RPC_TYPE_INT64] = "int64",
+    [RPC_TYPE_DOUBLE] = "double",
+    [RPC_TYPE_DATE] = "date",
+    [RPC_TYPE_STRING] = "string",
+    [RPC_TYPE_BINARY] = "binary",
+    [RPC_TYPE_FD] = "fd",
+    [RPC_TYPE_DICTIONARY] = "dictionary",
+    [RPC_TYPE_ARRAY] = "array"
+};
+
 static rpc_object_t
 rpc_prim_create(rpc_type_t type, union rpc_value val, size_t size)
 {
