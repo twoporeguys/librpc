@@ -27,6 +27,7 @@
 
 
 #include <unistd.h>
+#include <inttypes.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -76,6 +77,95 @@ rpc_data_hash(const uint8_t *data, size_t length)
 		hash = ((hash << 5) + hash) + data[length];
 
 	return (hash);
+}
+
+static void
+rpc_create_description (GString *description, rpc_object_t object, unsigned int indent_lvl, bool end_nl)
+{
+	int i;
+	unsigned int local_indent_lvl = indent_lvl + 1;
+	size_t data_length;
+	uint8_t *data_ptr;
+
+	if (indent_lvl > 0)
+		g_string_append_printf(description, "%*s", (indent_lvl * 4), "");
+
+	g_string_append_printf(description, "<%s> ", rpc_types[object->ro_type]);
+
+	switch (object->ro_type) {
+		case RPC_TYPE_NULL:
+			break;
+
+		case RPC_TYPE_BOOL:
+			if (object->ro_value.rv_b == true)
+				g_string_append(description, "true");
+			else
+				g_string_append(description, "false");
+
+			break;
+
+		case RPC_TYPE_INT64:
+			g_string_append_printf(description, "%" PRId64 "", object->ro_value.rv_i);
+			break;
+
+		case RPC_TYPE_FD:
+			g_string_append_printf(description, "%u", object->ro_value.rv_fd);
+			break;
+
+		case RPC_TYPE_UINT64:
+			g_string_append_printf(description, "%" PRIu64 "", object->ro_value.rv_ui);
+			break;
+
+		case RPC_TYPE_DOUBLE:
+			g_string_append_printf(description, "%f", object->ro_value.rv_d);
+			break;
+
+		case RPC_TYPE_DATE:
+			g_string_append(description, g_date_time_format(object->ro_value.rv_datetime, "%F - %T"));
+			break;
+
+		case RPC_TYPE_STRING:
+			g_string_append_printf(description, "\"%s\"", rpc_string_get_string_ptr(object));
+			break;
+
+		case RPC_TYPE_BINARY:
+			data_ptr = (uint8_t *)rpc_data_get_bytes_ptr(object);
+			data_length = MIN(object->ro_size, 16);
+
+			for (i = 0; i < data_length; i++)
+				g_string_append_printf(description, "%02x", data_ptr[i]);
+
+			break;
+
+		case RPC_TYPE_DICTIONARY:
+			g_string_append(description, "{\n");
+			rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
+				rpc_create_description(description, v, local_indent_lvl, false);
+				g_string_append(description, ",\n");
+				return ((bool)true);
+			});
+			if (indent_lvl > 0)
+				g_string_append_printf(description, "%*s", (indent_lvl * 4), "");
+
+			g_string_append(description, "}");
+			break;
+
+		case RPC_TYPE_ARRAY:
+			g_string_append(description, "[\n");
+			rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
+				rpc_create_description(description, v, local_indent_lvl, false);
+				g_string_append(description, ",\n");
+				return ((bool)true);
+			});
+			if (indent_lvl > 0)
+				g_string_append_printf(description, "%*s", (indent_lvl * 4), "");
+
+			g_string_append(description, "]");
+			break;
+	}
+
+	if (end_nl == true)
+		g_string_append(description, "\n");
 }
 
 inline rpc_object_t
@@ -227,7 +317,12 @@ rpc_hash(rpc_object_t object)
 inline char *
 rpc_copy_description(rpc_object_t object)
 {
+	GString *description;
 
+	description = g_string_new(NULL);
+	rpc_create_description(description, object, 0, true);
+
+	return g_string_free(description, false);
 }
 
 inline rpc_object_t
