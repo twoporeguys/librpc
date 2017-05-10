@@ -278,7 +278,6 @@ SCENARIO("RPC_INT64_OBJECT", "Create a INT64 RPC object and perform basic operat
 	}
 }
 
-
 SCENARIO("RPC_DOUBLE_OBJECT", "Create a DOUBLE RPC object and perform basic operations on it") {
 	GIVEN("DOUBLE object") {
 		rpc_object_t object;
@@ -345,4 +344,37 @@ SCENARIO("RPC_DOUBLE_OBJECT", "Create a DOUBLE RPC object and perform basic oper
 	}
 }
 
+SCENARIO("RPC_DESCRIPTION_TEST", "Create a tree of RPC objects and print their description") {
+	GIVEN("RPC objects tree") {
+		int data = 0xff00ff00;
 
+		rpc_object_t null = rpc_null_create();
+		rpc_object_t boolean = rpc_bool_create(true);
+		rpc_object_t u_integer = rpc_uint64_create(1234);
+		rpc_object_t integer = rpc_int64_create(-1234);
+		rpc_object_t dbl = rpc_double_create(12.34);
+		rpc_object_t date = rpc_date_create_from_current();
+		rpc_object_t string = rpc_string_create("test string");
+		rpc_object_t binary = rpc_data_create(&data, sizeof(data), false);
+		rpc_object_t fd = rpc_fd_create(10);
+		rpc_object_t dict = rpc_dictionary_create();
+		rpc_object_t array = rpc_array_create();
+
+		rpc_array_append_stolen_value(array, null);
+		rpc_array_append_stolen_value(array, boolean);
+		rpc_array_append_stolen_value(array, u_integer);
+		rpc_array_append_stolen_value(array, integer);
+		rpc_array_append_stolen_value(array, dbl);
+		rpc_array_append_stolen_value(array, date);
+		rpc_array_append_stolen_value(array, string);
+		rpc_array_append_stolen_value(array, binary);
+		rpc_array_append_stolen_value(array, fd);
+
+		rpc_dictionary_set_value(dict, "null_val", null);
+		rpc_dictionary_set_value(dict, "array", array);
+
+		rpc_dictionary_set_string(dict, "test_string2", "test_test_test");
+
+		g_print("%s", rpc_copy_description(dict));
+	}
+}
