@@ -103,6 +103,7 @@ struct rpc_call
 	GCond      		rc_cv;
 	GMutex			rc_mtx;
     	GAsyncQueue *		rc_queue;
+    	GSource *		rc_timeout;
 	rpc_callback_t *    	rc_callback;
 	void *              	rc_callback_arg;
 	uint64_t               	rc_seqno;
@@ -149,11 +150,12 @@ struct rpc_credentials
 struct rpc_connection
 {
 	struct rpc_server *	rco_server;
+    	struct rpc_client *	rco_client;
     	struct rpc_credentials	rco_creds;
 	const char *        	rco_uri;
 	rpc_callback_t		rco_error_handler;
 	rpc_handler_t		rco_event_handler;
-	int                 	rco_rpc_timeout;
+	guint                 	rco_rpc_timeout;
 	GHashTable *		rco_calls;
 	GHashTable *		rco_inbound_calls;
     	GHashTable *		rco_event_listeners;

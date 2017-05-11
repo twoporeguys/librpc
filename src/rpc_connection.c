@@ -56,6 +56,7 @@ static void on_events_subscribe(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_events_unsubscribe(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void *rpc_event_worker(void *);
 static int rpc_call_wait_locked(rpc_call_t);
+static gboolean rpc_call_timeout(gpointer user_data);
 
 struct message_handler
 {
@@ -478,6 +479,22 @@ rpc_call_wait_locked(rpc_call_t call)
 	return (0);
 }
 
+static gboolean
+rpc_call_timeout(gpointer user_data)
+{
+	rpc_call_t call = user_data;
+
+	g_mutex_lock(&call->rc_mtx);
+	call->rc_status = RPC_CALL_ERROR;
+	call->rc_result = rpc_dictionary_create();
+	rpc_dictionary_set_uint64(call->rc_result, "code", ETIMEDOUT);
+	rpc_dictionary_set_string(call->rc_result, "message", "Call timed out");
+	g_cond_broadcast(&call->rc_cv);
+	g_mutex_unlock(&call->rc_mtx);
+
+	return (false);
+}
+
 void
 rpc_connection_send_errx(rpc_connection_t conn, rpc_object_t id,
     rpc_object_t err)
@@ -733,6 +750,10 @@ rpc_connection_call(rpc_connection_t conn, const char *name, rpc_object_t args)
 		return (NULL);
 	}
 
+	call->rc_timeout = g_timeout_source_new_seconds(conn->rco_rpc_timeout);
+	g_source_set_callback(call->rc_timeout, &rpc_call_timeout, call, NULL);
+	g_source_attach(call->rc_timeout, conn->rco_client->rci_g_context);
+
 	call->rc_status = RPC_CALL_IN_PROGRESS;
 	g_mutex_unlock(&call->rc_mtx);
 	return (call);
@@ -774,7 +795,7 @@ rpc_call_wait(rpc_call_t call)
 	g_mutex_lock(&call->rc_mtx);
 	ret = rpc_call_wait_locked(call);
 	g_mutex_unlock(&call->rc_mtx);
-	
+
 	return (ret);
 }
 

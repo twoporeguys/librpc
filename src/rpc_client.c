@@ -50,6 +50,7 @@ rpc_client_create(const char *uri, int flags)
 	client->rci_g_loop = g_main_loop_new(client->rci_g_context, false);
 	client->rci_thread = g_thread_new("librpc client", rpc_client_worker,
 	    client);
+	client->rci_connection->rco_client = client;
 
 	return (client);
 }

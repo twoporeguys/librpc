@@ -54,6 +54,13 @@ main(int argc, const char *argv[])
 		return rpc_string_create("haha lol");
 	    });
 
+
+	rpc_context_register_method(ctx, "delay", "Sleeps for a long time",
+	    NULL, ^(void *cookie, rpc_object_t args) {
+		sleep(60);
+		return rpc_int64_create(42);
+	    });
+
 	rpc_discovery_register(ctx);
 	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
 	pause();
