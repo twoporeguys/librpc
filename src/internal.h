@@ -63,6 +63,13 @@ typedef int (*rpc_get_fd_fn_t)(void *);
 typedef int (*rpc_close_fn_t)(struct rpc_connection *);
 typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
 
+struct rpc_binary_value
+{
+	uintptr_t ptr;
+	size_t length;
+	bool copy;
+};
+
 union rpc_value
 {
 	GHashTable *		rv_dict;
@@ -73,7 +80,7 @@ union rpc_value
 	int64_t			rv_i;
 	bool			rv_b;
 	double			rv_d;
-	uintptr_t 		rv_ptr;
+	struct rpc_binary_value rv_bin;
 	int 			rv_fd;
 };
 
@@ -82,7 +89,6 @@ struct rpc_object
 	rpc_type_t		ro_type;
 	volatile int		ro_refcnt;
 	union rpc_value		ro_value;
-	size_t 			ro_size;
 };
 
 struct rpc_call

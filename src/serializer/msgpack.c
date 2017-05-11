@@ -67,8 +67,8 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 		break;
 
 	case RPC_TYPE_BINARY:
-		mpack_write_bin(writer, (char *)object->ro_value.rv_ptr,
-		    (uint32_t)object->ro_size);
+		mpack_write_bin(writer, (char *)object->ro_value.rv_bin.ptr,
+		    (uint32_t)object->ro_value.rv_bin.length);
 		break;
 
 	case RPC_TYPE_FD:

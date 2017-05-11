@@ -52,7 +52,7 @@ static const char *rpc_types[] = {
 };
 
 static rpc_object_t
-rpc_prim_create(rpc_type_t type, union rpc_value val, size_t size)
+rpc_prim_create(rpc_type_t type, union rpc_value val)
 {
 	struct rpc_object *ro;
 
@@ -61,7 +61,6 @@ rpc_prim_create(rpc_type_t type, union rpc_value val, size_t size)
 		abort();
 
 	ro->ro_type = type;
-	ro->ro_size = size;
 	ro->ro_value = val;
 	ro->ro_refcnt = 1;
 
@@ -130,7 +129,7 @@ rpc_create_description (GString *description, rpc_object_t object, unsigned int 
 
 		case RPC_TYPE_BINARY:
 			data_ptr = (uint8_t *)rpc_data_get_bytes_ptr(object);
-			data_length = MIN(object->ro_size, 16);
+			data_length = MIN(object->ro_value.rv_bin.length, 16);
 
 			for (i = 0; i < data_length; i++)
 				g_string_append_printf(description, "%02x", data_ptr[i]);
@@ -361,7 +360,7 @@ rpc_null_create(void)
 {
 	union rpc_value val;
 
-	return (rpc_prim_create(RPC_TYPE_NULL, val, 0));
+	return (rpc_prim_create(RPC_TYPE_NULL, val));
 }
 
 inline rpc_object_t
@@ -370,7 +369,7 @@ rpc_bool_create(bool value)
 	union rpc_value val;
 
 	val.rv_b = value;
-	return (rpc_prim_create(RPC_TYPE_BOOL, val, 1));
+	return (rpc_prim_create(RPC_TYPE_BOOL, val));
 }
 
 inline bool
@@ -389,7 +388,7 @@ rpc_int64_create(int64_t value)
 	union rpc_value val;
 
 	val.rv_i = value;
-	return (rpc_prim_create(RPC_TYPE_INT64, val, 1));
+	return (rpc_prim_create(RPC_TYPE_INT64, val));
 }
 
 inline int64_t
@@ -408,7 +407,7 @@ rpc_uint64_create(uint64_t value)
 	union rpc_value val;
 
 	val.rv_ui = value;
-	return (rpc_prim_create(RPC_TYPE_UINT64, val, 1));
+	return (rpc_prim_create(RPC_TYPE_UINT64, val));
 }
 
 inline uint64_t
@@ -427,7 +426,7 @@ rpc_double_create(double value)
 	union rpc_value val;
 
 	val.rv_d = value;
-	return (rpc_prim_create(RPC_TYPE_DOUBLE, val, 1));
+	return (rpc_prim_create(RPC_TYPE_DOUBLE, val));
 }
 
 inline double
@@ -446,7 +445,7 @@ rpc_date_create(int64_t interval)
 	union rpc_value val;
 
         val.rv_datetime = g_date_time_new_from_unix_utc(interval);
-	return (rpc_prim_create(RPC_TYPE_DATE, val, 1));
+	return (rpc_prim_create(RPC_TYPE_DATE, val));
 }
 
 inline
@@ -455,7 +454,7 @@ rpc_object_t rpc_date_create_from_current(void)
         union rpc_value val;
 
         val.rv_datetime = g_date_time_new_now_utc();
-        return (rpc_prim_create(RPC_TYPE_DATE, val, 1));
+        return (rpc_prim_create(RPC_TYPE_DATE, val));
 }
 
 inline int64_t
@@ -474,15 +473,17 @@ rpc_data_create(const void *bytes, size_t length, bool copy)
         union rpc_value value;
 
         if (copy == true) {
-                value.rv_ptr = (uintptr_t)malloc(length);
-                memcpy((void *)value.rv_ptr, bytes, length);
+                value.rv_bin.ptr = (uintptr_t)malloc(length);
+                memcpy((void *)value.rv_bin.ptr, bytes, length);
         } else
-                value.rv_ptr = (uintptr_t)bytes;
+                value.rv_bin.ptr = (uintptr_t)bytes;
+
+	value.rv_bin.copy = copy;
+	value.rv_bin.length = length;
 
         return (rpc_prim_create(
             RPC_TYPE_BINARY,
-            value,
-            length));
+            value));
 }
 
 inline size_t
@@ -492,7 +493,7 @@ rpc_data_get_length(rpc_object_t xdata)
 	if (xdata->ro_type != RPC_TYPE_BINARY)
 		return (0);
 
-	return (xdata->ro_size);
+	return (xdata->ro_value.rv_bin.length);
 }
 
 inline const void *
@@ -502,7 +503,7 @@ rpc_data_get_bytes_ptr(rpc_object_t xdata)
 	if (xdata->ro_type != RPC_TYPE_BINARY)
 		return (NULL);
 
-	return ((const void *)xdata->ro_value.rv_ptr);
+	return ((const void *)xdata->ro_value.rv_bin.ptr);
 }
 
 inline size_t
@@ -536,7 +537,7 @@ rpc_string_create(const char *string)
 
 	str = g_strdup(string);
 	val.rv_str = g_string_new(str);
-	return (rpc_prim_create(RPC_TYPE_STRING, val, strlen(str)));
+	return (rpc_prim_create(RPC_TYPE_STRING, val));
 }
 
 inline rpc_object_t
@@ -550,7 +551,7 @@ rpc_string_create_with_format(const char *fmt, ...)
 	g_string_vprintf(val.rv_str, fmt, ap);
 	va_end(ap);
 
-	return (rpc_prim_create(RPC_TYPE_STRING, val, 1));
+	return (rpc_prim_create(RPC_TYPE_STRING, val));
 }
 
 inline rpc_object_t
@@ -560,7 +561,7 @@ rpc_string_create_with_format_and_arguments(const char *fmt, va_list ap)
 
 	val.rv_str = g_string_new(NULL);
 	g_string_vprintf(val.rv_str, fmt, ap);
-	return (rpc_prim_create(RPC_TYPE_STRING, val, 1));
+	return (rpc_prim_create(RPC_TYPE_STRING, val));
 }
 
 inline size_t
@@ -589,7 +590,7 @@ rpc_fd_create(int fd)
 	union rpc_value val;
 
 	val.rv_fd = fd;
-	return (rpc_prim_create(RPC_TYPE_FD, val, 1));
+	return (rpc_prim_create(RPC_TYPE_FD, val));
 }
 
 inline int
@@ -618,7 +619,7 @@ rpc_array_create(void)
 	union rpc_value val;
 
 	val.rv_list = g_array_new(true, true, sizeof(rpc_object_t));
-        return (rpc_prim_create(RPC_TYPE_ARRAY, val, 1));
+        return (rpc_prim_create(RPC_TYPE_ARRAY, val));
 }
 
 inline rpc_object_t
@@ -654,7 +655,7 @@ rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value)
 	for (i = (int)(index - array->ro_value.rv_list->len); i >= 0; i--) {
 		rpc_array_append_value(
 		    array,
-		    rpc_prim_create(RPC_TYPE_NULL, null_value, 1)
+		    rpc_prim_create(RPC_TYPE_NULL, null_value)
 		);
 	}
 
@@ -833,7 +834,8 @@ inline const void *rpc_array_get_data(rpc_object_t array, size_t index,
         if ((xdata = rpc_array_get_value(array, index)) == 0)
                 return (0);
 
-	length = &xdata->ro_size;
+	if (length != NULL)
+		*length = xdata->ro_value.rv_bin.length;
 
         return rpc_data_get_bytes_ptr(xdata);
 }
@@ -859,7 +861,7 @@ rpc_dictionary_create(void)
 	val.rv_dict = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
 	    (GDestroyNotify)rpc_release_impl);
 
-	return (rpc_prim_create(RPC_TYPE_DICTIONARY, val, 0));
+	return (rpc_prim_create(RPC_TYPE_DICTIONARY, val));
 }
 
 inline rpc_object_t
@@ -1048,7 +1050,7 @@ rpc_dictionary_get_data(rpc_object_t dictionary, const char *key,
 		return (0);
 
 	if (length != NULL)
-		*length = xdata->ro_size;
+		*length = xdata->ro_value.rv_bin.length;
 
 	return rpc_data_get_bytes_ptr(xdata);
 }
