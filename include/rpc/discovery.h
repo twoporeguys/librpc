@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Two Pore Guys, Inc.
+ * Copyright 2017 Two Pore Guys, Inc.
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,50 +22,14 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
+#ifndef LIBRPC_DISCOVERY_H
+#define LIBRPC_DISCOVERY_H
+
 #include <rpc/service.h>
-#include <rpc/discovery.h>
-#include <glib.h>
-#include "internal.h"
 
-static rpc_object_t
-rpc_get_methods(void *cookie, rpc_object_t args __unused)
-{
-	GHashTableIter iter;
-	const char *k;
-	struct rpc_method *m;
-	rpc_object_t fragment;
-	rpc_context_t context = rpc_function_get_arg(cookie);
+int rpc_discovery_register(rpc_context_t context);
+int rpc_discovery_destroy(rpc_context_t context);
 
-	g_hash_table_iter_init(&iter, context->rcx_methods);
-
-	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&m)) {
-		fragment = rpc_dictionary_create();
-		rpc_dictionary_set_string(fragment, "name", m->rm_name);
-		rpc_dictionary_set_string(fragment, "description", m->rm_description);
-		if (rpc_function_yield(cookie, fragment) != 0)
-			goto done;
-	}
-
-done:
-	return ((rpc_object_t)NULL);
-}
-
-int
-rpc_discovery_register(rpc_context_t context)
-{
-
-	return (rpc_context_register_method_f(context, "discovery.get_methods",
-	    "Returns a list of all registered methods", context,
-	    &rpc_get_methods));
-}
-
-int
-rpc_discovery_destroy(rpc_context_t context)
-{
-
-	return (rpc_context_unregister_method(context, "discovery.get_methods"));
-}
-
+#endif //LIBRPC_DISCOVERY_H

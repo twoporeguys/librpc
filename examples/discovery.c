@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Two Pore Guys, Inc.
+ * Copyright 2017 Two Pore Guys, Inc.
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,47 +25,33 @@
  *
  */
 
-#include <rpc/service.h>
-#include <rpc/discovery.h>
-#include <glib.h>
-#include "internal.h"
+#include <stdio.h>
+#include <rpc/object.h>
+#include <rpc/client.h>
 
-static rpc_object_t
-rpc_get_methods(void *cookie, rpc_object_t args __unused)
+int
+main(int argc, const char *argv[])
 {
-	GHashTableIter iter;
-	const char *k;
-	struct rpc_method *m;
-	rpc_object_t fragment;
-	rpc_context_t context = rpc_function_get_arg(cookie);
+	rpc_client_t client;
+	rpc_connection_t conn;
+	rpc_object_t result;
+	rpc_call_t call;
 
-	g_hash_table_iter_init(&iter, context->rcx_methods);
+	client = rpc_client_create("tcp://127.0.0.1:5000", 0);
+	conn = rpc_client_get_connection(client);
 
-	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&m)) {
-		fragment = rpc_dictionary_create();
-		rpc_dictionary_set_string(fragment, "name", m->rm_name);
-		rpc_dictionary_set_string(fragment, "description", m->rm_description);
-		if (rpc_function_yield(cookie, fragment) != 0)
-			goto done;
+	call = rpc_connection_call(conn, "discovery.get_methods", NULL);
+	rpc_call_wait(call);
+
+	while (rpc_call_status(call) == RPC_CALL_MORE_AVAILABLE) {
+		result = rpc_call_result(call);
+		printf("%s (%s)\n", rpc_dictionary_get_string(result, "name"),
+		    rpc_dictionary_get_string(result, "description"));
+
+		rpc_call_continue(call, true);
 	}
 
-done:
-	return ((rpc_object_t)NULL);
+	rpc_call_free(call);
+	rpc_client_close(client);
+	return (0);
 }
-
-int
-rpc_discovery_register(rpc_context_t context)
-{
-
-	return (rpc_context_register_method_f(context, "discovery.get_methods",
-	    "Returns a list of all registered methods", context,
-	    &rpc_get_methods));
-}
-
-int
-rpc_discovery_destroy(rpc_context_t context)
-{
-
-	return (rpc_context_unregister_method(context, "discovery.get_methods"));
-}
-

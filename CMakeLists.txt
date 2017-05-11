@@ -20,7 +20,8 @@ set(HEADERS
         include/rpc/object.h
         include/rpc/connection.h
         include/rpc/server.h
-        include/rpc/client.h)
+        include/rpc/client.h
+        include/rpc/discovery.h)
 
 set(CORE_FILES
         src/rpc_connection.c
@@ -68,3 +69,5 @@ add_executable(example-server examples/server.c)
 target_link_libraries(example-server librpc)
 add_executable(example-client examples/client.c)
 target_link_libraries(example-client librpc)
+add_executable(example-discovery examples/discovery.c)
+target_link_libraries(example-discovery librpc)
