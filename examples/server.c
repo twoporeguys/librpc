@@ -29,6 +29,7 @@
 #include <rpc/object.h>
 #include <rpc/service.h>
 #include <rpc/server.h>
+#include <rpc/discovery.h>
 
 static rpc_object_t
 hello(void *cookie, rpc_object_t args)
@@ -45,14 +46,15 @@ main(int argc, const char *argv[])
 	rpc_server_t srv;
 
 	ctx = rpc_context_create();
-	rpc_context_register_method_f(ctx, "hello", NULL, "Hello world function",
-	    hello);
+	rpc_context_register_method_f(ctx, "hello", "Hello world function",
+	    NULL, hello);
 
 	rpc_context_register_method(ctx, "block", "Test function using blocks",
 	    NULL, ^(void *cookie, rpc_object_t args) {
 		return rpc_string_create("haha lol");
 	    });
 
-	srv = rpc_server_create("tcp://0.0.0.0:8080", ctx);
+	rpc_discovery_register(ctx);
+	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
 	pause();
 }
