@@ -189,6 +189,30 @@ rpc_release_impl(rpc_object_t object)
 
 	assert(object->ro_refcnt > 0);
 	if (g_atomic_int_dec_and_test(&object->ro_refcnt)) {
+		switch (object->ro_type) {
+		case RPC_TYPE_STRING:
+			g_string_free(object->ro_value.rv_str, true);
+			break;
+
+		case RPC_TYPE_DATE:
+			g_date_time_unref(object->ro_value.rv_datetime);
+			break;
+
+		case RPC_TYPE_ARRAY:
+			rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
+				rpc_release_impl(v);
+				return ((bool)true);
+			});
+			g_array_free(object->ro_value.rv_list, true);
+			break;
+
+		case RPC_TYPE_DICTIONARY:
+			g_hash_table_unref(object->ro_value.rv_dict);
+			break;
+
+		default:
+			break;
+		}
 		free(object);
                 return (0);
 	}
