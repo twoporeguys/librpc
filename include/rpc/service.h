@@ -46,19 +46,14 @@ int rpc_context_register_method(rpc_context_t context, const char *name,
     const char *descr, void *arg, rpc_function_t func);
 int rpc_context_register_method_f(rpc_context_t context, const char *name,
     const char *descr, void *arg, rpc_function_f func);
+int rpc_context_unregister_method(rpc_context_t context, const char *name);
 
 void *rpc_function_get_arg(void *cookie);
 void rpc_function_respond(void *cookie, rpc_object_t object);
 void rpc_function_error(void *cookie, int code, const char *message, ...);
 void rpc_function_error_ex(void *cookie, rpc_object_t exception);
-void rpc_function_produce(void *cookie, rpc_object_t fragment);
+int rpc_function_yield(void *cookie, rpc_object_t fragment);
 void rpc_function_end(void *cookie);
-
-#define rpc_function_yield(_cookie, _fragment)                                \
-        do {                                                                \
-                setjmp((jmp_buf)_cookie);                                \
-                rpc_function_produce(_cookie, _fragment)                \
-        } while(0);
 
 #ifdef __cplusplus
 }

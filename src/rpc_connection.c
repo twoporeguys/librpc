@@ -55,6 +55,7 @@ static void on_events_event_burst(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_events_subscribe(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_events_unsubscribe(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void *rpc_event_worker(void *);
+static int rpc_call_wait_locked(rpc_call_t);
 
 struct message_handler
 {
@@ -204,6 +205,8 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	call->ric_name = rpc_dictionary_get_string(args, "method");
 	g_mutex_init(&call->ric_mtx);
 	g_cond_init(&call->ric_cv);
+	g_hash_table_insert(conn->rco_inbound_calls,
+	    (gpointer)rpc_string_get_string_ptr(id), call);
 
 	rpc_server_dispatch(conn->rco_server, call);
 }
@@ -255,13 +258,18 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 static void
 on_rpc_continue(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 {
-	rpc_call_t call;
+	struct rpc_inbound_call *call;
 
-	call = g_hash_table_lookup(conn->rco_calls,
+	call = g_hash_table_lookup(conn->rco_inbound_calls,
 	    rpc_string_get_string_ptr(id));
 	if (call == NULL) {
 		return;
 	}
+
+	g_mutex_lock(&call->ric_mtx);
+	call->ric_consumer_seqno++;
+	g_cond_broadcast(&call->ric_cv);
+	g_mutex_unlock(&call->ric_mtx);
 }
 
 static void
@@ -461,6 +469,15 @@ done:
 	g_free(str);
 }
 
+static int
+rpc_call_wait_locked(rpc_call_t call)
+{
+	while (call->rc_status == RPC_CALL_IN_PROGRESS)
+		g_cond_wait(&call->rc_cv, &call->rc_mtx);
+
+	return (0);
+}
+
 void
 rpc_connection_send_errx(rpc_connection_t conn, rpc_object_t id,
     rpc_object_t err)
@@ -488,7 +505,7 @@ rpc_connection_send_fragment(rpc_connection_t conn, rpc_object_t id,
 	args = rpc_dictionary_create();
 	rpc_dictionary_set_int64(args, "seqno", seqno);
 	rpc_dictionary_set_value(args, "fragment", fragment);
-	frame = rpc_pack_frame("rpc", "end", id, args);
+	frame = rpc_pack_frame("rpc", "fragment", id, args);
 	rpc_send_frame(conn, frame);
 }
 
@@ -703,7 +720,7 @@ rpc_connection_call(rpc_connection_t conn, const char *name, rpc_object_t args)
 	call->rc_args = args;
 
 	rpc_dictionary_set_string(payload, "method", name);
-	rpc_dictionary_set_value(payload, "args", args);
+	rpc_dictionary_set_value(payload, "args", args != NULL ? args : rpc_array_create());
 	frame = rpc_pack_frame("rpc", "call", call->rc_id,  payload);
 
 	g_mutex_lock(&call->rc_mtx);
@@ -752,14 +769,13 @@ rpc_connection_set_event_handler(rpc_connection_t conn, rpc_handler_t handler)
 int
 rpc_call_wait(rpc_call_t call)
 {
+	int ret;
 
 	g_mutex_lock(&call->rc_mtx);
-
-	while (call->rc_status == RPC_CALL_IN_PROGRESS)
-		g_cond_wait(&call->rc_cv, &call->rc_mtx);
-
+	ret = rpc_call_wait_locked(call);
 	g_mutex_unlock(&call->rc_mtx);
-	return (0);
+	
+	return (ret);
 }
 
 int
@@ -780,7 +796,7 @@ rpc_call_continue(rpc_call_t call, bool sync)
 	call->rc_status = RPC_CALL_IN_PROGRESS;
 
 	if (sync) {
-		rpc_call_wait(call);
+		rpc_call_wait_locked(call);
 		g_mutex_unlock(&call->rc_mtx);
 		return (rpc_call_success(call));
 	}
@@ -813,6 +829,13 @@ rpc_call_success(rpc_call_t call)
 {
 
 	return (call->rc_status == RPC_CALL_DONE);
+}
+
+int
+rpc_call_status(rpc_call_t call)
+{
+
+	return (call->rc_status);
 }
 
 inline rpc_object_t

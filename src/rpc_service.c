@@ -34,14 +34,6 @@
 #include <glib/gprintf.h>
 #include "internal.h"
 
-struct rpc_method
-{
-	const char *	rm_name;
-    	const char *	rm_description;
-    	rpc_function_t  rm_block;
-    	void *		rm_arg;
-};
-
 static void
 rpc_context_tp_handler(gpointer data, gpointer user_data)
 {
@@ -51,14 +43,19 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	rpc_connection_t conn = call->ric_conn;
 	rpc_object_t result;
 
+	call->ric_arg = method->rm_arg;
+	call->ric_consumer_seqno = 1;
+
 	debugf("method=%p", method);
 	result = method->rm_block((void *)call, call->ric_args);
 
-	if (!call->ric_responded)
+	if (!call->ric_streaming && !call->ric_responded)
 		rpc_connection_send_response(conn, call->ric_id, result);
 
-	if (call->ric_streaming && !call->ric_ended)
-		rpc_connection_send_end(conn, call->ric_id, call->ric_seqno);
+	if (call->ric_streaming && !call->ric_ended) {
+		rpc_connection_send_end(conn, call->ric_id,
+		    call->ric_producer_seqno);
+	}
 }
 
 rpc_context_t
@@ -188,14 +185,29 @@ rpc_function_error_ex(void *cookie, rpc_object_t exception)
 
 }
 
-void
-rpc_function_produce(void *cookie, rpc_object_t fragment)
+int
+rpc_function_yield(void *cookie, rpc_object_t fragment)
 {
 	struct rpc_inbound_call *call = cookie;
 
-	call->ric_streaming = true;
+	g_mutex_lock(&call->ric_mtx);
+
+	while (call->ric_producer_seqno == call->ric_consumer_seqno || call->ric_aborted)
+		g_cond_wait(&call->ric_cv, &call->ric_mtx);
+
+	if (call->ric_aborted) {
+		g_mutex_unlock(&call->ric_mtx);
+		return (-1);
+	}
+
 	rpc_connection_send_fragment(call->ric_conn, call->ric_id,
-	    call->ric_seqno, fragment);
+	    call->ric_producer_seqno, fragment);
+
+	call->ric_producer_seqno++;
+	call->ric_streaming = true;
+	g_mutex_unlock(&call->ric_mtx);
+
+	return (0);
 }
 
 void
@@ -203,6 +215,19 @@ rpc_function_end(void *cookie)
 {
 	struct rpc_inbound_call *call = cookie;
 
-	rpc_connection_send_end(call->ric_conn, call->ric_id, call->ric_seqno);
-	rpc_connection_close_inbound_call(call);
+	g_mutex_lock(&call->ric_mtx);
+
+	while (call->ric_producer_seqno < call->ric_consumer_seqno || call->ric_aborted)
+		g_cond_wait(&call->ric_cv, &call->ric_mtx);
+
+	if (call->ric_aborted) {
+		g_mutex_unlock(&call->ric_mtx);
+		return;
+	}
+
+	rpc_connection_send_end(call->ric_conn, call->ric_id, call->ric_producer_seqno);
+	call->ric_producer_seqno++;
+	call->ric_streaming = true;
+	call->ric_ended = true;
+	g_mutex_unlock(&call->ric_mtx);
 }

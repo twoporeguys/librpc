@@ -124,11 +124,13 @@ struct rpc_inbound_call
     	struct rpc_method *	ric_method;
     	GMutex			ric_mtx;
     	GCond			ric_cv;
-    	int64_t			ric_seqno;
+    	int64_t			ric_producer_seqno;
+    	int64_t			ric_consumer_seqno;
     	void *			ric_arg;
     	bool			ric_streaming;
     	bool			ric_responded;
     	bool			ric_ended;
+    	bool			ric_aborted;
 };
 
 struct rpc_credentials
@@ -191,6 +193,14 @@ struct rpc_context
 {
     	GHashTable *		rcx_methods;
     	GThreadPool *		rcx_threadpool;
+};
+
+struct rpc_method
+{
+	const char *		rm_name;
+	const char *		rm_description;
+	rpc_function_t  	rm_block;
+	void *			rm_arg;
 };
 
 struct rpc_transport

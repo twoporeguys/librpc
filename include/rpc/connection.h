@@ -83,6 +83,7 @@ int rpc_call_continue(rpc_call_t call, bool sync);
 int rpc_call_abort(rpc_call_t call);
 int rpc_call_timedwait(rpc_call_t call, const struct timespec *ts);
 int rpc_call_success(rpc_call_t call);
+int rpc_call_status(rpc_call_t call);
 rpc_object_t rpc_call_result(rpc_call_t call);
 void rpc_call_free(rpc_call_t call);
 
