@@ -189,6 +189,12 @@ rpc_release_impl(rpc_object_t object)
 	assert(object->ro_refcnt > 0);
 	if (g_atomic_int_dec_and_test(&object->ro_refcnt)) {
 		switch (object->ro_type) {
+		case RPC_TYPE_BINARY:
+			if (object->ro_value.rv_bin.copy == true)
+				g_free((void *)object->ro_value.rv_bin.ptr);
+
+			break;
+
 		case RPC_TYPE_STRING:
 			g_string_free(object->ro_value.rv_str, true);
 			break;
