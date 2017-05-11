@@ -30,8 +30,6 @@
 #include <rpc/object.h>
 #include "../src/internal.h"
 
-#include <glib/gprintf.h>
-
 SCENARIO("RPC_NULL_OBJECT", "Create a NULL RPC object and perform basic operations on it") {
 	GIVEN("BOOL object") {
 		rpc_object_t object;
@@ -393,5 +391,7 @@ SCENARIO("RPC_DESCRIPTION_TEST", "Create a tree of RPC objects and print their d
 		THEN("Parent RPC object's description is equal to refrence description") {
 			REQUIRE(g_strcmp0(referene, rpc_copy_description(dict)) == 0);
 		}
+
+		rpc_release(dict);
 	}
 }
