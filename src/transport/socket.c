@@ -237,7 +237,7 @@ static int
 socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
     int *fds, size_t *nfds, struct rpc_credentials *creds)
 {
-	GError *err;
+	GError *err = NULL;
 	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
 	GSocketControlMessage **cmsg;
 	GCredentials *cr;
