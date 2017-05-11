@@ -640,6 +640,19 @@ rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value)
 }
 
 inline void
+rpc_array_remove_index(rpc_object_t array, size_t index)
+{
+	if (array->ro_type != RPC_TYPE_ARRAY)
+		abort();
+
+	if (rpc_array_get_count(array) >= index)
+		abort();
+
+	g_array_remove_index(array->ro_value.rv_list, (guint)index);
+}
+
+
+inline void
 rpc_array_append_value(rpc_object_t array, rpc_object_t value)
 {
 
@@ -861,6 +874,15 @@ rpc_dictionary_steal_value(rpc_object_t dictionary, const char *key,
 		abort();
 
 	g_hash_table_insert(dictionary->ro_value.rv_dict, (gpointer)key, value);
+}
+
+inline void
+rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key)
+{
+	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
+		abort();
+
+	g_hash_table_remove(dictionary->ro_value.rv_dict, key);
 }
 
 inline rpc_object_t

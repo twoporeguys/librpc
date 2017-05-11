@@ -103,6 +103,7 @@ rpc_object_t rpc_array_create(void);
 rpc_object_t rpc_array_create_ex(const rpc_object_t *objects, size_t count);
 void rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value);
 void rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value);
+void rpc_array_remove_index(rpc_object_t array, size_t index);
 void rpc_array_append_value(rpc_object_t array, rpc_object_t value);
 void rpc_array_append_stolen_value(rpc_object_t array, rpc_object_t value);
 rpc_object_t rpc_array_get_value(rpc_object_t array, size_t index);
@@ -134,6 +135,7 @@ void rpc_dictionary_set_value(rpc_object_t dictionary, const char *key,
     rpc_object_t value);
 void rpc_dictionary_steal_value(rpc_object_t dictionary, const char *key,
     rpc_object_t value);
+void rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key);
 rpc_object_t rpc_dictionary_get_value(rpc_object_t dictionary,
     const char *key);
 size_t rpc_dictionary_get_count(rpc_object_t dictionary);
