@@ -27,6 +27,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 #include <glib.h>
 #include <libsoup/soup.h>
 #include "../linker_set.h"
@@ -37,16 +39,19 @@ static int ws_listen(struct rpc_server *, const char *, rpc_object_t);
 static void ws_receive_message(SoupWebsocketConnection *, SoupWebsocketDataType,
     GBytes *, gpointer);
 static int ws_send_message(void *, void *, size_t, const int *, size_t);
+static void ws_process_banner(SoupServer *, SoupMessage *, const char *,
+    GHashTable *, SoupClientContext *, gpointer);
 static void ws_process_connection(SoupServer *, SoupWebsocketConnection *,
     const char *, SoupClientContext *, gpointer);
+static void ws_close(SoupWebsocketConnection *, gpointer);
 static int ws_abort(void *);
 static int ws_get_fd(void *);
 
 struct rpc_transport ws_transport = {
-    .name = "websocket",
-    .schemas = {"ws", "wss", NULL},
-    .connect = ws_connect,
-    .listen = ws_listen
+	.name = "websocket",
+	.schemas = {"ws", "wss", NULL},
+	.connect = ws_connect,
+	.listen = ws_listen
 };
 
 struct ws_connection
@@ -59,65 +64,117 @@ struct ws_connection
 
 struct ws_server
 {
-	SoupServer *			ws_server;
+    	struct rpc_server *		ws_server;
+	SoupServer *			ws_soupserver;
 };
 
 static int
 ws_connect(struct rpc_connection *rco, const char *uri_string, rpc_object_t args)
 {
-	GError *err;
+	GError *err = NULL;
 	SoupURI *uri;
-	struct ws_connection *conn;
+	struct ws_connection *conn = NULL;
 
 	uri = soup_uri_new(uri_string);
 
-	conn = calloc(1, sizeof(*conn));
+	conn = g_malloc0(sizeof(*conn));
 	conn->wc_client = g_socket_client_new();
 	conn->wc_conn = g_socket_client_connect_to_host(conn->wc_client,
 	    uri->host, (guint16)uri->port, NULL, &err);
+	if (err != NULL) {
+		errno = err->code;
+		goto err;
+	}
+
 	conn->wc_ws = soup_websocket_connection_new(G_IO_STREAM(conn->wc_conn),
-	    soup_uri_new(uri_string), SOUP_WEBSOCKET_CONNECTION_CLIENT, NULL,
-	    NULL);
+	    uri, SOUP_WEBSOCKET_CONNECTION_CLIENT, NULL, NULL);
 
 	rco->rco_send_msg = ws_send_message;
 	rco->rco_abort = ws_abort;
 	rco->rco_get_fd = ws_get_fd;
+	rco->rco_arg = conn;
 
-	g_signal_connect(conn->wc_ws, "message",
-	    G_CALLBACK(ws_receive_message), NULL);
-
+	g_signal_connect(conn->wc_ws, "close", G_CALLBACK(ws_close), conn);
+	g_signal_connect(conn->wc_ws, "message", G_CALLBACK(ws_receive_message),
+	    conn);
 	return (0);
+
+err:
+	g_object_unref(conn->wc_client);
+	g_free(conn);
+	return (-1);
 }
 
 static int
-ws_listen(struct rpc_server *srv, const char *uri, rpc_object_t args)
+ws_listen(struct rpc_server *srv, const char *uri_str, rpc_object_t args)
 {
+	GError *err = NULL;
+	GSocketAddress *addr;
+	SoupURI *uri;
 	struct ws_server *server;
+	int ret = 0;
 
+	uri = soup_uri_new(uri_str);
 	server = calloc(1, sizeof(*server));
-	server->ws_server = soup_server_new(
+	server->ws_soupserver = soup_server_new(
 	    SOUP_SERVER_SERVER_HEADER, "librpc",
-	    SOUP_SERVER_PORT, 8080,
 	    NULL);
 
-	soup_server_add_websocket_handler(server->ws_server, "/ws", "", NULL,
-	    ws_process_connection, NULL, NULL);
+	soup_server_add_handler(server->ws_soupserver, "/", ws_process_banner,
+	    server, NULL);
+	soup_server_add_websocket_handler(server->ws_soupserver, "/ws", NULL,
+	    NULL, ws_process_connection, server, NULL);
 
-	soup_server_listen(server->ws_server, g_inet_socket_address_new_from_string("0.0.0.0", 8080), 0, NULL);
-	return (0);
+	addr = g_inet_socket_address_new_from_string(uri->host, uri->port);
+	soup_server_listen(server->ws_soupserver, addr, 0, &err);
+	if (err != NULL) {
+		errno = err->code;
+		ret = -1;
+		goto done;
+	}
+
+done:
+	g_object_unref(addr);
+	if (err != NULL)
+		g_error_free(err);
+
+	return (ret);
 }
 
 static void
-ws_process_connection(SoupServer *server, SoupWebsocketConnection *connection,
+ws_process_banner(SoupServer *ss, SoupMessage *msg, const char *path,
+    GHashTable *query, SoupClientContext *client, gpointer user_data)
+{
+	const char *resp =
+	    "<h1>Hello from librpc</h1>"
+	    "<p>Please use WebSocket endpoint located at /ws</p>";
+
+	soup_message_set_status(msg, 200);
+	soup_message_body_append(msg->response_body, SOUP_MEMORY_STATIC, resp, strlen(resp));
+}
+
+static void
+ws_process_connection(SoupServer *ss, SoupWebsocketConnection *connection,
     const char *path, SoupClientContext *client, gpointer user_data)
 {
+	rpc_connection_t rco;
+	struct ws_server *server = user_data;
 	struct ws_connection *conn;
 
-	conn = calloc(1, sizeof(*conn));
+	conn = g_malloc0(sizeof(*conn));
 	conn->wc_ws = connection;
 
+	rco = rpc_connection_alloc(server->ws_server);
+	rco->rco_send_msg = &ws_send_message;
+	rco->rco_abort = &ws_abort;
+	rco->rco_get_fd = &ws_get_fd;
+	rco->rco_arg = conn;
+	conn->wc_parent = rco;
+
+	g_object_ref(conn->wc_ws);
+	g_signal_connect(conn->wc_ws, "close", G_CALLBACK(ws_close), conn);
 	g_signal_connect(conn->wc_ws, "message",
-	    G_CALLBACK(ws_receive_message), NULL);
+	    G_CALLBACK(ws_receive_message), conn);
 }
 
 static void
@@ -130,6 +187,15 @@ ws_receive_message(SoupWebsocketConnection *ws, SoupWebsocketDataType type,
 
 	data = g_bytes_get_data(message, &len);
 	conn->wc_parent->rco_recv_msg(conn->wc_parent, data, len, NULL, 0, NULL);
+}
+
+static void
+ws_close(SoupWebsocketConnection *ws, gpointer user_data)
+{
+	struct ws_connection *conn = user_data;
+
+	conn->wc_parent->rco_close(conn->wc_parent);
+	g_object_unref(ws);
 }
 
 static int
