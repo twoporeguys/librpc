@@ -347,13 +347,28 @@ SCENARIO("RPC_DOUBLE_OBJECT", "Create a DOUBLE RPC object and perform basic oper
 SCENARIO("RPC_DESCRIPTION_TEST", "Create a tree of RPC objects and print their description") {
 	GIVEN("RPC objects tree") {
 		int data = 0xff00ff00;
+		static const char *referene = "<dictionary> {\n"
+		    "    null_val: <null> ,\n"
+		    "    array: <array> [\n"
+		    "        0: <null> ,\n"
+		    "        1: <bool> true,\n"
+		    "        2: <uint64> 1234,\n"
+		    "        3: <int64> -1234,\n"
+		    "        4: <double> 12.340000,\n"
+		    "        5: <date> 1970-01-01 00:00:00,\n"
+		    "        6: <string> \"test string\",\n"
+		    "        7: <binary> 00ff00ff,\n"
+		    "        8: <fd> 10,\n"
+		    "    ],\n"
+		    "    test_string2: <string> \"test_test_test\",\n"
+		    "}\n";
 
 		rpc_object_t null = rpc_null_create();
 		rpc_object_t boolean = rpc_bool_create(true);
 		rpc_object_t u_integer = rpc_uint64_create(1234);
 		rpc_object_t integer = rpc_int64_create(-1234);
 		rpc_object_t dbl = rpc_double_create(12.34);
-		rpc_object_t date = rpc_date_create_from_current();
+		rpc_object_t date = rpc_date_create(0);
 		rpc_object_t string = rpc_string_create("test string");
 		rpc_object_t binary = rpc_data_create(&data, sizeof(data), false);
 		rpc_object_t fd = rpc_fd_create(10);
@@ -375,6 +390,8 @@ SCENARIO("RPC_DESCRIPTION_TEST", "Create a tree of RPC objects and print their d
 
 		rpc_dictionary_set_string(dict, "test_string2", "test_test_test");
 
-		g_print("%s", rpc_copy_description(dict));
+		THEN("Parent RPC object's description is equal to refrence description") {
+			REQUIRE(g_strcmp0(referene, rpc_copy_description(dict)) == 0);
+		}
 	}
 }

@@ -159,7 +159,7 @@ rpc_create_description (GString *description, rpc_object_t object, unsigned int 
 				    (local_indent_lvl * 4),
 				    "",
 				    (unsigned int)idx);
-				
+
 				rpc_create_description(description, v, local_indent_lvl, true);
 				g_string_append(description, ",\n");
 				return ((bool)true);
