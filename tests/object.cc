@@ -465,6 +465,115 @@ SCENARIO("RPC_STRING_OBJECT", "Create a STRING RPC object and perform basic oper
 	}
 }
 
+SCENARIO("RPC_BINARY_OBJECT", "Create a BINARY RPC object and perform basic operations on it") {
+	GIVEN("BINARY object") {
+		rpc_object_t object;
+		rpc_object_t different_object;
+		rpc_object_t copy;
+		int value = 0xff00ff00;
+		int different_value = 0xabcdef00;
+		int *buffer = (int *)malloc(sizeof(value));
+		object = rpc_data_create(&value, sizeof(value), true);
+		different_object = rpc_data_create(&different_value, sizeof(different_value), true);
+
+		THEN("Type is BINARY") {
+			REQUIRE(rpc_get_type(object) == RPC_TYPE_BINARY);
+		}
+
+		THEN("Refcount equals 1") {
+			REQUIRE(object->ro_refcnt == 1);
+		}
+
+		THEN("Object is referencing a copy of inital data") {
+			REQUIRE(object->ro_value.rv_bin.copy);
+			REQUIRE(rpc_data_get_bytes_ptr(object) != &value);
+		}
+
+		THEN("Length of data inside of the object is the same as length of initial data") {
+			REQUIRE(object->ro_value.rv_bin.length == sizeof(value));
+		}
+
+		THEN("Extracted value matches") {
+			rpc_data_get_bytes(object, (void *)buffer, 0, sizeof(value));
+			REQUIRE(buffer[0] == value);
+		}
+
+		WHEN("Object's copy is created") {
+			copy = rpc_copy(object);
+
+			THEN("Source and copy are equal"){
+				REQUIRE(rpc_equal(object, copy));
+			}
+
+			AND_THEN("Object and its copy are referencing different buffers") {
+				REQUIRE(copy->ro_value.rv_bin.copy);
+				REQUIRE(rpc_data_get_bytes_ptr(object) != rpc_data_get_bytes_ptr(copy));
+			}
+
+			AND_THEN("Object is different from object initialized with different value") {
+				REQUIRE(!rpc_equal(object, different_object));
+			}
+		}
+
+		WHEN("reference count is incremented") {
+			rpc_retain(object);
+
+			THEN("reference count equals 2"){
+				REQUIRE(object->ro_refcnt == 2);
+			}
+
+			AND_WHEN("reference count is decremented") {
+				rpc_release(object);
+
+				THEN("reference count equals 1") {
+					REQUIRE(object->ro_refcnt == 1);
+				}
+
+				AND_WHEN("reference count reaches 0") {
+					rpc_release(object);
+
+					THEN("RPC object pointer is NULL") {
+						REQUIRE(object == NULL);
+					}
+				}
+			}
+		}
+
+		WHEN("Object is reinitialized as a reference to initial data") {
+			object = rpc_data_create(&value, sizeof(value), false);
+
+			THEN("Refcount equals 1") {
+				REQUIRE(object->ro_refcnt == 1);
+			}
+
+			THEN("Object is referencing inital data") {
+				REQUIRE(!object->ro_value.rv_bin.copy);
+				REQUIRE(rpc_data_get_bytes_ptr(object) == &value);
+			}
+
+			THEN("Length of data inside of the object is the same as length of initial data") {
+				REQUIRE(object->ro_value.rv_bin.length == sizeof(value));
+			}
+
+			THEN("Extracted value matches") {
+				rpc_data_get_bytes(object, (void *)buffer, 0, sizeof(value));
+				REQUIRE(buffer[0] == value);
+			}
+
+			AND_WHEN("reference count reaches 0") {
+				rpc_release(object);
+
+				THEN("RPC object pointer is NULL") {
+					REQUIRE(object == NULL);
+				}
+			}
+		}
+
+		rpc_release(different_object);
+		g_free(buffer);
+	}
+}
+
 SCENARIO("RPC_DESCRIPTION_TEST", "Create a tree of RPC objects and print their description") {
 	GIVEN("RPC objects tree") {
 		int data = 0xff00ff00;
