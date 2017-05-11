@@ -379,6 +379,14 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 	debugf("received frame: addr=%p, len=%zu", frame, len);
 
 	msg = rpc_msgpack_deserialize(frame, len);
+	if (msg == NULL)
+		return (-1);
+
+	if (rpc_get_type(msg) != RPC_TYPE_DICTIONARY) {
+		rpc_release(msg);
+		return (-1);
+	}
+
 	rpc_connection_dispatch(conn, msg);
 	return (0);
 }
