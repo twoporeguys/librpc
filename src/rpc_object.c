@@ -1001,7 +1001,8 @@ rpc_dictionary_get_data(rpc_object_t dictionary, const char *key,
 	if ((xdata = rpc_dictionary_get_value(dictionary, key)) == 0)
 		return (0);
 
-	length = &xdata->ro_size;
+	if (length != NULL)
+		*length = xdata->ro_size;
 
 	return rpc_data_get_bytes_ptr(xdata);
 }
