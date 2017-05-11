@@ -403,6 +403,68 @@ SCENARIO("RPC_DATE_OBJECT", "Create a DATE RPC object and perform basic operatio
 	}
 }
 
+SCENARIO("RPC_STRING_OBJECT", "Create a STRING RPC object and perform basic operations on it") {
+	GIVEN("STRING object") {
+		rpc_object_t object;
+		rpc_object_t different_object;
+		rpc_object_t copy;
+		static const char *value = "first test string";
+		static const char *different_value = "second test string";
+		object = rpc_string_create(value);
+		different_object = rpc_string_create(different_value);
+
+		THEN("Type is STRING") {
+			REQUIRE(rpc_get_type(object) == RPC_TYPE_STRING);
+		}
+
+		THEN("Refcount equals 1") {
+			REQUIRE(object->ro_refcnt == 1);
+		}
+
+		THEN("Extracted value matches") {
+			REQUIRE(g_strcmp0(rpc_string_get_string_ptr(object), value) == 0);
+		}
+
+		WHEN("Object's copy is created") {
+			copy = rpc_copy(object);
+
+			THEN("Source and copy are equal"){
+				REQUIRE(rpc_equal(object, copy));
+			}
+
+			AND_THEN("Object is different from object initialized with different value") {
+				REQUIRE(!rpc_equal(object, different_object));
+			}
+		}
+
+		WHEN("reference count is incremented") {
+			rpc_retain(object);
+
+			THEN("reference count equals 2"){
+				REQUIRE(object->ro_refcnt == 2);
+			}
+
+			AND_WHEN("reference count is decremented") {
+				rpc_release(object);
+
+				THEN("reference count equals 1") {
+					REQUIRE(object->ro_refcnt == 1);
+				}
+
+				AND_WHEN("reference count reaches 0") {
+					rpc_release(object);
+
+					THEN("RPC object pointer is NULL") {
+						REQUIRE(object == NULL);
+					}
+				}
+			}
+		}
+
+		rpc_release(different_object);
+	}
+}
+
 SCENARIO("RPC_DESCRIPTION_TEST", "Create a tree of RPC objects and print their description") {
 	GIVEN("RPC objects tree") {
 		int data = 0xff00ff00;
