@@ -877,6 +877,15 @@ rpc_array_get_string(rpc_object_t array, size_t index)
 	return rpc_string_get_string_ptr(rpc_array_get_value(array, index));
 }
 
+inline int rpc_array_get_fd(rpc_object_t array, size_t index)
+{
+
+	if (index >= rpc_array_get_count(array))
+		return (0);
+
+        return (rpc_fd_get_value(rpc_array_get_value(array, index)));
+}
+
 inline int rpc_array_dup_fd(rpc_object_t array, size_t index)
 {
 

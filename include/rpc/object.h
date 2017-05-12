@@ -126,6 +126,7 @@ int64_t rpc_array_get_date(rpc_object_t array, size_t index);
 const void *rpc_array_get_data(rpc_object_t array, size_t index,
     size_t *length);
 const char *rpc_array_get_string(rpc_object_t array, size_t index);
+int rpc_array_get_fd(rpc_object_t array, size_t index);
 int rpc_array_dup_fd(rpc_object_t array, size_t index);
 
 rpc_object_t rpc_dictionary_create(void);
