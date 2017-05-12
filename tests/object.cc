@@ -30,6 +30,17 @@
 #include <rpc/object.h>
 #include "../src/internal.h"
 
+static rpc_object_t create_string_with_arguments(const char *fmt, ...) {
+	rpc_object_t object;
+	va_list ap;
+
+	va_start(ap, fmt);
+	object = rpc_string_create_with_format_and_arguments("%s", ap);
+	va_end(ap);
+
+	return object;
+}
+
 SCENARIO("RPC_NULL_OBJECT", "Create a NULL RPC object and perform basic operations on it") {
 	GIVEN("BOOL object") {
 		rpc_object_t object;
@@ -440,52 +451,117 @@ SCENARIO("RPC_STRING_OBJECT", "Create a STRING RPC object and perform basic oper
 		rpc_object_t copy;
 		static const char *value = "first test string";
 		static const char *different_value = "second test string";
-		object = rpc_string_create(value);
-		different_object = rpc_string_create(different_value);
 
-		THEN("Type is STRING") {
-			REQUIRE(rpc_get_type(object) == RPC_TYPE_STRING);
-		}
 
-		THEN("Refcount equals 1") {
-			REQUIRE(object->ro_refcnt == 1);
-		}
+		WHEN("Objects are created with formatting") {
+			object = rpc_string_create_with_format("%s", value);
+			different_object = rpc_string_create_with_format("%s", different_value);
 
-		THEN("Extracted value matches") {
-			REQUIRE(g_strcmp0(rpc_string_get_string_ptr(object), value) == 0);
-		}
-
-		WHEN("Object's copy is created") {
-			copy = rpc_copy(object);
-
-			THEN("Source and copy are equal"){
-				REQUIRE(rpc_equal(object, copy));
+			THEN("Length of object and original string are the same") {
+				REQUIRE(strlen(value) == rpc_string_get_length(object));
 			}
 
-			AND_THEN("Object is different from object initialized with different value") {
-				REQUIRE(!rpc_equal(object, different_object));
-			}
-		}
-
-		WHEN("reference count is incremented") {
-			rpc_retain(object);
-
-			THEN("reference count equals 2"){
-				REQUIRE(object->ro_refcnt == 2);
+			THEN("Extracted value matches") {
+				REQUIRE(g_strcmp0(rpc_string_get_string_ptr(object), value) == 0);
 			}
 
-			AND_WHEN("reference count is decremented") {
-				rpc_release(object);
+			AND_WHEN("Object's copy is created") {
+				copy = rpc_copy(object);
 
-				THEN("reference count equals 1") {
-					REQUIRE(object->ro_refcnt == 1);
+				THEN("Source and copy are equal") {
+					REQUIRE(rpc_equal(object, copy));
 				}
 
-				AND_WHEN("reference count reaches 0") {
+				AND_THEN("Object is different from object initialized with different value") {
+					REQUIRE(!rpc_equal(object, different_object));
+				}
+
+				rpc_release(copy);
+			}
+		}
+
+		WHEN("Objects are created with formatting and arguments") {
+			object = create_string_with_arguments("%s", value);
+			different_object = create_string_with_arguments("%s", different_value);
+
+			THEN("Length of object and original string are the same") {
+				REQUIRE(strlen(value) == rpc_string_get_length(object));
+			}
+
+			THEN("Extracted value matches") {
+				REQUIRE(g_strcmp0(rpc_string_get_string_ptr(object), value) == 0);
+			}
+
+			AND_WHEN("Object's copy is created") {
+				copy = rpc_copy(object);
+
+				THEN("Source and copy are equal") {
+					REQUIRE(rpc_equal(object, copy));
+				}
+
+				AND_THEN("Object is different from object initialized with different value") {
+					REQUIRE(!rpc_equal(object, different_object));
+				}
+
+				rpc_release(copy);
+			}
+		}
+
+		WHEN("Objects are created from value") {
+			object = rpc_string_create(value);
+			different_object = rpc_string_create(different_value);
+
+
+			THEN("Type is STRING") {
+				REQUIRE(rpc_get_type(object) == RPC_TYPE_STRING);
+			}
+
+			THEN("Refcount equals 1") {
+				REQUIRE(object->ro_refcnt == 1);
+			}
+
+			THEN("Length of object and original string are the same") {
+				REQUIRE(strlen(value) == rpc_string_get_length(object));
+			}
+
+			THEN("Extracted value matches") {
+				REQUIRE(g_strcmp0(rpc_string_get_string_ptr(object), value) == 0);
+			}
+
+			AND_WHEN("Object's copy is created") {
+				copy = rpc_copy(object);
+
+				THEN("Source and copy are equal") {
+					REQUIRE(rpc_equal(object, copy));
+				}
+
+				AND_THEN("Object is different from object initialized with different value") {
+					REQUIRE(!rpc_equal(object, different_object));
+				}
+
+				rpc_release(copy);
+			}
+
+			AND_WHEN("reference count is incremented") {
+				rpc_retain(object);
+
+				THEN("reference count equals 2") {
+					REQUIRE(object->ro_refcnt == 2);
+				}
+
+				AND_WHEN("reference count is decremented") {
 					rpc_release(object);
 
-					THEN("RPC object pointer is NULL") {
-						REQUIRE(object == NULL);
+					THEN("reference count equals 1") {
+						REQUIRE(object->ro_refcnt == 1);
+					}
+
+					AND_WHEN("reference count reaches 0") {
+						rpc_release(object);
+
+						THEN("RPC object pointer is NULL") {
+							REQUIRE(object == NULL);
+						}
 					}
 				}
 			}
