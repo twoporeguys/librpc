@@ -1026,6 +1026,240 @@ SCENARIO("RPC_DICTIONARY_OBJECT", "Create a DICTIONARY RPC object and perform ba
 			rpc_release(different_object);
 	}
 }
+
+SCENARIO("RPC_ARRAY_OBJECT", "Create a ARRAY RPC object and perform basic operations on it") {
+	GIVEN("ARRAY object") {
+		rpc_object_t object;
+		rpc_object_t different_object;
+		rpc_object_t copy;
+		int data = 0xFF00FF00;
+		size_t data_len;
+		size_t *data_len_ptr;
+		int fds[2];
+		int dup_fd = 0;
+		struct stat stat1, stat2;
+
+		data_len_ptr = &data_len;
+		pipe(fds);
+
+		object = rpc_array_create();
+		different_object = rpc_array_create();
+
+		THEN("Empty object has no entries") {
+			REQUIRE(rpc_array_get_count(object) == 0);
+
+			REQUIRE(!rpc_array_get_bool(object, 0));
+			REQUIRE(rpc_array_get_int64(object, 0) == 0);
+			REQUIRE(rpc_array_get_uint64(object, 0) == 0);
+			REQUIRE(rpc_array_get_double(object, 0) == 0);
+			REQUIRE(rpc_array_get_date(object, 0) == 0);
+			REQUIRE(rpc_array_get_data(object, 0, data_len_ptr) == NULL);
+			REQUIRE(rpc_array_get_string(object, 0) == NULL);
+			REQUIRE(rpc_array_get_fd(object, 0) == 0);
+			REQUIRE(rpc_array_dup_fd(object, 0) == 0);
+
+			REQUIRE(rpc_array_get_value(object, 0) == NULL);
+		}
+
+		THEN("Type is ARRAY") {
+			REQUIRE(rpc_get_type(object) == RPC_TYPE_ARRAY);
+		}
+
+		THEN("Refcount equals 1") {
+			REQUIRE(object->ro_refcnt == 1);
+		}
+
+		WHEN("reference count is incremented") {
+			rpc_retain(object);
+
+			THEN("reference count equals 2"){
+				REQUIRE(object->ro_refcnt == 2);
+			}
+
+			AND_WHEN("reference count is decremented") {
+				rpc_release(object);
+
+				THEN("reference count equals 1") {
+					REQUIRE(object->ro_refcnt == 1);
+				}
+
+				AND_WHEN("reference count reaches 0") {
+					rpc_release(object);
+
+					THEN("RPC object pointer is NULL") {
+						REQUIRE(object == NULL);
+					}
+				}
+			}
+		}
+
+		if (object != NULL)
+			rpc_release(object);
+
+		rpc_release(different_object);
+
+		WHEN("Array is created") {
+			object = rpc_array_create();
+			different_object = rpc_array_create();
+
+			rpc_array_set_bool(object, 0, true);
+			rpc_array_set_int64(object, 1, -1234);
+			rpc_array_set_uint64(object, 2, 1234);
+			rpc_array_set_double(object, 3, 12.34);
+			rpc_array_set_date(object, 4, 1000);
+			rpc_array_set_data(object, 5, &data, sizeof(data));
+			rpc_array_set_string(object, 6, "test string");
+			rpc_array_set_fd(object, 7, fds[0]);
+
+			rpc_array_set_string(different_object, 0, "value");
+
+			THEN("Array item count matches the number of inserted items") {
+				REQUIRE(rpc_array_get_count(object) == 8);
+			}
+
+			AND_WHEN("When one of the values is removed") {
+				rpc_array_remove_index(object, 1);
+
+				THEN("Array item count is decremented") {
+					REQUIRE(rpc_array_get_count(object) == 7);
+				}
+
+				THEN("Removed key does not exist in the array anymore") {
+					REQUIRE(rpc_array_get_int64(object, 1) != -1234);
+				}
+			}
+
+			AND_WHEN("One of existing items is being overwritten by NULL") {
+				rpc_array_set_value(object, 3, NULL);
+
+				THEN("Key was removed from the array") {
+					REQUIRE(rpc_array_get_count(object) == 7);
+					REQUIRE(rpc_array_get_int64(object, 3) != -12.34);
+				}
+			}
+
+			THEN("Extracted bool value matches initial value") {
+				REQUIRE(rpc_array_get_bool(object, 0));
+			}
+
+			THEN("Extracted integer value matches initial value") {
+				REQUIRE(rpc_array_get_int64(object, 1) == -1234);
+			}
+
+			THEN("Extracted unsigned integer value matches initial value") {
+				REQUIRE(rpc_array_get_uint64(object, 2) == 1234);
+			}
+
+			THEN("Extracted double value matches initial value") {
+				REQUIRE(rpc_array_get_double(object, 3) == 12.34);
+			}
+
+			THEN("Extracted date value matches initial value") {
+				REQUIRE(rpc_array_get_date(object, 4) == 1000);
+			}
+
+			THEN("Extracted data pointer matches initial data pointer") {
+				REQUIRE(rpc_array_get_data(object, 5, data_len_ptr) == &data);
+			}
+
+			THEN("Extracted string value matches initial value") {
+				REQUIRE(g_strcmp0(rpc_array_get_string(object, 6), "test string") == 0);
+			}
+
+			THEN("Extracted fd value matches initial value") {
+				REQUIRE(rpc_array_get_fd(object, 7) == fds[0]);
+			}
+
+			THEN("Duplicated fd has different value, but references the same file") {
+				dup_fd = rpc_array_dup_fd(object, 7);
+
+				REQUIRE(rpc_array_get_fd(object, 7) != dup_fd);
+				REQUIRE(fstat(rpc_array_get_fd(object, 7), &stat1) >= 0);
+				REQUIRE(fstat(dup_fd, &stat2) >= 0);
+				REQUIRE(stat1.st_dev == stat2.st_dev);
+				REQUIRE(stat1.st_ino == stat2.st_ino);
+			}
+
+			WHEN("Object's copy is created") {
+				copy = rpc_copy(object);
+
+				THEN("Source and copy are equal") {
+					REQUIRE(rpc_equal(object, copy));
+				}
+
+				AND_THEN("Object is different from object initialized with different value") {
+					REQUIRE(!rpc_equal(object, different_object));
+				}
+
+				rpc_release(copy);
+			}
+		}
+
+
+		WHEN("Object is created with initial values") {
+			const rpc_object_t values[] = {
+			    rpc_string_create("test string"),
+			    rpc_int64_create(64)
+			};
+
+			rpc_object_t object_to_steal;
+			rpc_object_t object_to_set;
+
+			object = rpc_array_create_ex(values, 2, true);
+			different_object = rpc_array_create();
+
+			rpc_array_set_string(different_object, 0, "another test string");
+
+			THEN("Object contains both items inserted during initialization") {
+				REQUIRE(rpc_array_get_count(object) == 2);
+
+				REQUIRE(g_strcmp0(rpc_array_get_string(object, 0), "test string") == 0);
+				REQUIRE(rpc_array_get_int64(object, 1) == 64);
+			}
+
+			AND_WHEN("Value is stolen") {
+				object_to_steal = rpc_dictionary_create();
+				rpc_array_steal_value(object, 2, object_to_steal);
+
+				THEN("Entry in array references the original value") {
+					REQUIRE(rpc_array_get_value(object, 2) == object_to_steal);
+
+					AND_THEN("Reference count of stolen object remains 1") {
+						REQUIRE(rpc_array_get_value(object, 2)->ro_refcnt == 1);
+					}
+				}
+			}
+
+			AND_WHEN("Value is set") {
+				object_to_set = rpc_dictionary_create();
+				rpc_array_set_value(object, 2, object_to_set);
+
+				THEN("Entry in array references the original value") {
+					REQUIRE(rpc_array_get_value(object, 2) == object_to_set);
+
+					AND_THEN("Reference count of the set value was incremented") {
+						REQUIRE(rpc_array_get_value(object, 2)->ro_refcnt == 2);
+					}
+				}
+
+				rpc_release(object_to_set);
+			}
+		}
+
+		close(fds[0]);
+		close(fds[1]);
+
+		if (dup_fd != 0)
+			close(dup_fd);
+
+		if (object != NULL)
+			rpc_release(object);
+
+		if (different_object != NULL)
+			rpc_release(different_object);
+	}
+}
+
 SCENARIO("RPC_DESCRIPTION_TEST", "Create a tree of RPC objects and print their description") {
 	GIVEN("RPC objects tree") {
 		int data = 0xff00ff00;
