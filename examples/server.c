@@ -61,6 +61,14 @@ main(int argc, const char *argv[])
 		return rpc_int64_create(42);
 	    });
 
+	rpc_context_register_method(ctx, "event", "Sends a bunch of events",
+	    NULL, ^(void *cookie, rpc_object_t args) {
+		rpc_server_broadcast_event(srv, "server.hello", rpc_string_create("world"));
+		rpc_server_broadcast_event(srv, "oh_noes", rpc_int64_create(-1));
+		return rpc_null_create();
+	    });
+
+
 	rpc_discovery_register(ctx);
 	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
 	pause();
