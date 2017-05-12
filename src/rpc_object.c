@@ -257,7 +257,7 @@ rpc_copy(rpc_object_t object)
 		return (rpc_double_create(object->ro_value.rv_d));
 
 	case RPC_TYPE_FD:
-                return (rpc_fd_create(rpc_fd_dup(object)));
+                return (rpc_fd_create(object->ro_value.rv_fd));
 
 	case RPC_TYPE_STRING:
 		return (rpc_string_create(strdup(
