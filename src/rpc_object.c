@@ -992,7 +992,7 @@ rpc_dictionary_set_date(rpc_object_t dictionary, const char *key,
     int64_t value)
 {
 
-	rpc_dictionary_steal_value(dictionary, key, rpc_int64_create(value));
+	rpc_dictionary_steal_value(dictionary, key, rpc_date_create(value));
 }
 
 inline void
