@@ -68,10 +68,10 @@
  * Private macros, not to be used outside this header file.
  */
 #define __MAKE_SET(set, sym)				\
-	__GLOBL(__CONCAT(__start_set_,set));		\
-	__GLOBL(__CONCAT(__stop_set_,set));		\
+	__GLOBL(__CONCAT(__start_set_, set));		\
+	__GLOBL(__CONCAT(__stop_set_, set));		\
 	static void const * __MAKE_SET_CONST		\
-	__set_##set##_sym_##sym __section(set_##set)	\
+	__set_##set##_sym_##sym __section("set_" #set)	\
 	__used = &(sym)
 #else /* !__GNUCLIKE___SECTION */
 

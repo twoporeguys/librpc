@@ -1,12 +1,23 @@
 cmake_minimum_required(VERSION 3.6)
 project(librpc)
 
+set(CPACK_PACKAGE_NAME librpc)
+set(CPACK_PACKAGE_VENDOR Two Pore Guys)
+set(CPACK_PACKAGE_VERSION_MAJOR 6)
+set(CPACK_PACKAGE_VERSION_MAJOR 0)
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER Jakub Klama <jakub.klama@twoporeguys.com>)
+set(CPACK_GENERATOR DEB)
+execute_process(COMMAND git rev-parse --short HEAD OUTPUT_VARIABLE CPACK_PACKAGE_VERSION_PATCH)
+include(CPack)
+
 find_package (PkgConfig REQUIRED)
 pkg_check_modules (GLIB REQUIRED glib-2.0>=2.52)
 pkg_check_modules (GIO REQUIRED gio-unix-2.0)
 pkg_check_modules(SOUP REQUIRED libsoup-2.4)
 
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_FLAGS -fblocks)
+set(CMAKE_CXX_FLAGS -fblocks)
 include_directories(include)
 include_directories (${GLIB_INCLUDE_DIRS})
 link_directories (${GLIB_LIBRARY_DIRS})
@@ -52,6 +63,10 @@ add_library(librpc SHARED
 target_link_libraries(librpc ${GLIB_LIBRARIES})
 target_link_libraries(librpc ${GIO_LIBRARIES})
 target_link_libraries(librpc ${SOUP_LIBRARIES})
+if(NOT APPLE)
+    target_link_libraries(librpc BlocksRuntime)
+endif()
+install(TARGETS librpc LIBRARY DESTINATION lib)
 
 # Compile tests
 set(CATCH_INCLUDE_DIR src/tests)
