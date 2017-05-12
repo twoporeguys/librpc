@@ -683,10 +683,10 @@ rpc_array_remove_index(rpc_object_t array, size_t index)
 	if (array->ro_type != RPC_TYPE_ARRAY)
 		abort();
 
-	if (rpc_array_get_count(array) >= index)
+	if (index >= rpc_array_get_count(array))
 		return;
 
-	g_array_remove_index(array->ro_value.rv_list, (guint)index);
+	array->ro_value.rv_list = g_array_remove_index(array->ro_value.rv_list, (guint)index);
 }
 
 
