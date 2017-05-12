@@ -27,6 +27,8 @@
 
 #include "catch.hpp"
 
+#include <unistd.h>
+#include <sys/stat.h>
 #include <rpc/object.h>
 #include "../src/internal.h"
 
@@ -689,6 +691,95 @@ SCENARIO("RPC_BINARY_OBJECT", "Create a BINARY RPC object and perform basic oper
 	}
 }
 
+SCENARIO("RPC_FD_OBJECT", "Create a FD RPC object and perform basic operations on it") {
+	GIVEN("FD object") {
+		rpc_object_t object;
+		rpc_object_t different_object;
+		rpc_object_t copy;
+		int fds[2];
+		int dup_fd = 0;
+		struct stat stat1, stat2;
+
+		pipe(fds);
+
+		object = rpc_fd_create(fds[0]);
+		different_object = rpc_fd_create(fds[1]);
+
+		THEN("Type is FD") {
+			REQUIRE(rpc_get_type(object) == RPC_TYPE_FD);
+		}
+
+		THEN("Refcount equals 1") {
+			REQUIRE(object->ro_refcnt == 1);
+		}
+
+		THEN("Extracted value matches") {
+			REQUIRE(rpc_fd_get_value(object) == fds[0]);
+		}
+
+		AND_THEN("Direct value matches") {
+			REQUIRE(object->ro_value.rv_fd == fds[0]);
+		}
+
+		WHEN("Object's copy is created") {
+			copy = rpc_copy(object);
+
+			THEN("Source and copy are equal"){
+				REQUIRE(rpc_equal(object, copy));
+			}
+
+			AND_THEN("Object is different from object initialized with different value") {
+				REQUIRE(!rpc_equal(object, different_object));
+			}
+		}
+
+		WHEN("File descriptor is duplicated") {
+			dup_fd = rpc_fd_dup(object);
+
+			THEN("Both RPC object and duplicate file descriptor are pointing to the same file") {
+				REQUIRE(fstat(rpc_fd_get_value(object), &stat1) >= 0);
+				REQUIRE(fstat(dup_fd, &stat2) >= 0);
+				REQUIRE(stat1.st_dev == stat2.st_dev);
+				REQUIRE(stat1.st_ino == stat2.st_ino);
+			}
+		}
+
+		WHEN("reference count is incremented") {
+			rpc_retain(object);
+
+			THEN("reference count equals 2"){
+				REQUIRE(object->ro_refcnt == 2);
+			}
+
+			AND_WHEN("reference count is decremented") {
+				rpc_release(object);
+
+				THEN("reference count equals 1") {
+					REQUIRE(object->ro_refcnt == 1);
+				}
+
+				AND_WHEN("reference count reaches 0") {
+					rpc_release(object);
+
+					THEN("RPC object pointer is NULL") {
+						REQUIRE(object == NULL);
+					}
+				}
+			}
+		}
+
+		close(fds[0]);
+		close(fds[1]);
+
+		if (dup_fd != 0)
+			close(dup_fd);
+
+		if (object != NULL)
+			rpc_release(object);
+
+		rpc_release(different_object);
+	}
+}
 SCENARIO("RPC_DESCRIPTION_TEST", "Create a tree of RPC objects and print their description") {
 	GIVEN("RPC objects tree") {
 		int data = 0xff00ff00;
