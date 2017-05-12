@@ -960,7 +960,7 @@ SCENARIO("RPC_DICTIONARY_OBJECT", "Create a DICTIONARY RPC object and perform ba
 		}
 
 
-		WHEN("Object is created with initial values") {
+		WHEN("Object is created with initial values and steals them") {
 			const char *names[] = {"string", "int"};
 			const rpc_object_t values[] = {
 			    rpc_string_create("test string"),
@@ -1011,6 +1011,37 @@ SCENARIO("RPC_DICTIONARY_OBJECT", "Create a DICTIONARY RPC object and perform ba
 
 				rpc_release(object_to_set);
 			}
+		}
+
+		WHEN("Object is created with initial values") {
+			const char *names[] = {"string", "int"};
+			const rpc_object_t values[] = {
+			    rpc_string_create("test string"),
+			    rpc_int64_create(64)
+			};
+
+			rpc_object_t object_to_steal;
+			rpc_object_t object_to_set;
+
+			object = rpc_dictionary_create_ex(names, values, 2, false);
+			different_object = rpc_dictionary_create();
+
+			rpc_dictionary_set_string(different_object, "string", "another test string");
+
+			THEN("Object contains both items inserted during initialization") {
+				REQUIRE(rpc_dictionary_get_count(object) == 2);
+
+				REQUIRE(g_strcmp0(rpc_dictionary_get_string(object, "string"), "test string") == 0);
+				REQUIRE(rpc_dictionary_get_int64(object, "int") == 64);
+
+				AND_THEN("Values have refcount set to 2") {
+					REQUIRE(rpc_dictionary_get_value(object, "string")->ro_refcnt == 2);
+					REQUIRE(rpc_dictionary_get_value(object, "int")->ro_refcnt == 2);
+				}
+			}
+
+			rpc_release_impl(rpc_dictionary_get_value(object, "string"));
+			rpc_release_impl(rpc_dictionary_get_value(object, "int"));
 		}
 
 		close(fds[0]);
@@ -1196,7 +1227,7 @@ SCENARIO("RPC_ARRAY_OBJECT", "Create a ARRAY RPC object and perform basic operat
 		}
 
 
-		WHEN("Object is created with initial values") {
+		WHEN("Object is created with initial values and steals them") {
 			const rpc_object_t values[] = {
 			    rpc_string_create("test string"),
 			    rpc_int64_create(64)
@@ -1244,6 +1275,36 @@ SCENARIO("RPC_ARRAY_OBJECT", "Create a ARRAY RPC object and perform basic operat
 
 				rpc_release(object_to_set);
 			}
+		}
+
+		WHEN("Object is created with initial values") {
+			const rpc_object_t values[] = {
+			    rpc_string_create("test string"),
+			    rpc_int64_create(64)
+			};
+
+			rpc_object_t object_to_steal;
+			rpc_object_t object_to_set;
+
+			object = rpc_array_create_ex(values, 2, false);
+			different_object = rpc_array_create();
+
+			rpc_array_set_string(different_object, 0, "another test string");
+
+			THEN("Object contains both items inserted during initialization") {
+				REQUIRE(rpc_array_get_count(object) == 2);
+
+				REQUIRE(g_strcmp0(rpc_array_get_string(object, 0), "test string") == 0);
+				REQUIRE(rpc_array_get_int64(object, 1) == 64);
+
+				AND_THEN("Values have refcount set to 2") {
+					REQUIRE(rpc_array_get_value(object, 0)->ro_refcnt == 2);
+					REQUIRE(rpc_array_get_value(object, 1)->ro_refcnt == 2);
+				}
+			}
+
+			rpc_release_impl(rpc_array_get_value(object, 0));
+			rpc_release_impl(rpc_array_get_value(object, 1));
 		}
 
 		close(fds[0]);
