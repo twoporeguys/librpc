@@ -879,8 +879,8 @@ SCENARIO("RPC_DICTIONARY_OBJECT", "Create a DICTIONARY RPC object and perform ba
 				}
 
 				THEN("Removed key does not exist in the dictionary anymore") {
-					REQUIRE(!rpc_dictionary_has_key(object, "int_key"));
-					REQUIRE(rpc_dictionary_get_int64(object, "int_key") == 0);
+					REQUIRE(!rpc_dictionary_has_key(object, "int_val"));
+					REQUIRE(rpc_dictionary_get_int64(object, "int_val") == 0);
 				}
 			}
 
