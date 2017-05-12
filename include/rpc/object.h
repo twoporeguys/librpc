@@ -141,6 +141,7 @@ rpc_object_t rpc_dictionary_get_value(rpc_object_t dictionary,
 size_t rpc_dictionary_get_count(rpc_object_t dictionary);
 bool rpc_dictionary_apply(rpc_object_t dictionary,
     rpc_dictionary_applier_t applier);
+bool rpc_dictionary_has_key(rpc_object_t dictionary, const char *key);
 void rpc_dictionary_set_bool(rpc_object_t dictionary, const char *key,
     bool value);
 void rpc_dictionary_set_int64(rpc_object_t dictionary, const char *key,

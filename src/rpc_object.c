@@ -949,6 +949,13 @@ rpc_dictionary_apply(rpc_object_t dictionary, rpc_dictionary_applier_t applier)
 	return (true);
 }
 
+inline bool
+rpc_dictionary_has_key(rpc_object_t dictionary, const char *key)
+{
+
+	return (g_hash_table_lookup(dictionary->ro_value.rv_dict, key) != NULL);
+}
+
 inline void
 rpc_dictionary_set_bool(rpc_object_t dictionary, const char *key, bool value)
 {
