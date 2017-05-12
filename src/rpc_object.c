@@ -1021,36 +1021,46 @@ rpc_dictionary_set_fd(rpc_object_t dictionary, const char *key, int value)
 inline bool
 rpc_dictionary_get_bool(rpc_object_t dictionary, const char *key)
 {
+	rpc_object_t xbool;
 
-	return rpc_bool_get_value(rpc_dictionary_get_value(dictionary, key));
+	xbool = rpc_dictionary_get_value(dictionary, key);
+	return ((xbool != NULL) ? rpc_bool_get_value(xbool) : false);
 }
 
 inline int64_t
 rpc_dictionary_get_int64(rpc_object_t dictionary, const char *key)
 {
+	rpc_object_t xint;
 
-	return rpc_int64_get_value(rpc_dictionary_get_value(dictionary, key));
+	xint = rpc_dictionary_get_value(dictionary, key);
+	return ((xint != NULL) ? rpc_int64_get_value(xint) : 0);
 }
 
 inline uint64_t
 rpc_dictionary_get_uint64(rpc_object_t dictionary, const char *key)
 {
+	rpc_object_t xuint;
 
-	return rpc_uint64_get_value(rpc_dictionary_get_value(dictionary, key));
+	xuint = rpc_dictionary_get_value(dictionary, key);
+	return ((xuint != NULL) ? rpc_uint64_get_value(xuint) : 0);
 }
 
 inline double
 rpc_dictionary_get_double(rpc_object_t dictionary, const char *key)
 {
+	rpc_object_t xdouble;
 
-	return rpc_double_get_value(rpc_dictionary_get_value(dictionary, key));
+	xdouble = rpc_dictionary_get_value(dictionary, key);
+	return ((xdouble != NULL) ? rpc_double_get_value(xdouble) : 0);
 }
 
 inline int64_t
 rpc_dictionary_get_date(rpc_object_t dictionary, const char *key)
 {
+	rpc_object_t xdate;
 
-	return rpc_date_get_value(rpc_dictionary_get_value(dictionary, key));
+	xdate = rpc_dictionary_get_value(dictionary, key);
+	return ((xdate != NULL) ? rpc_date_get_value(xdate) : false);
 }
 
 inline const void *
@@ -1059,8 +1069,8 @@ rpc_dictionary_get_data(rpc_object_t dictionary, const char *key,
 {
 	rpc_object_t xdata;
 
-	if ((xdata = rpc_dictionary_get_value(dictionary, key)) == 0)
-		return (0);
+	if ((xdata = rpc_dictionary_get_value(dictionary, key)) == NULL)
+		return (NULL);
 
 	if (length != NULL)
 		*length = xdata->ro_value.rv_bin.length;
@@ -1071,14 +1081,18 @@ rpc_dictionary_get_data(rpc_object_t dictionary, const char *key,
 inline const char *
 rpc_dictionary_get_string(rpc_object_t dictionary, const char *key)
 {
+	rpc_object_t xstring;
 
-	return rpc_string_get_string_ptr(rpc_dictionary_get_value(dictionary,
-	    key));
+	xstring = rpc_dictionary_get_value(dictionary, key);
+	return ((xstring != NULL) ? rpc_string_get_string_ptr(xstring) : NULL);
+}
 }
 
 inline int
 rpc_dictionary_dup_fd(rpc_object_t dictionary, const char *key)
 {
+	rpc_object_t xfd;
 
-	return (rpc_fd_dup(rpc_dictionary_get_value(dictionary, key)));
+	xfd = rpc_dictionary_get_value(dictionary, key);
+	return (xfd != NULL ? rpc_fd_dup(xfd) : 0);
 }
