@@ -644,8 +644,12 @@ rpc_array_create_ex(const rpc_object_t *objects, size_t count)
 inline void
 rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value)
 {
-	rpc_array_steal_value(array, index, value);
-	rpc_retain(value);
+	if (value == NULL)
+		rpc_array_remove_index(array, index);
+	else {
+		rpc_array_steal_value(array, index, value);
+		rpc_retain(value);
+	}
 }
 
 inline void
@@ -677,7 +681,7 @@ rpc_array_remove_index(rpc_object_t array, size_t index)
 		abort();
 
 	if (rpc_array_get_count(array) >= index)
-		abort();
+		return;
 
 	g_array_remove_index(array->ro_value.rv_list, (guint)index);
 }
@@ -891,10 +895,12 @@ inline void
 rpc_dictionary_set_value(rpc_object_t dictionary, const char *key,
     rpc_object_t value)
 {
-
-	rpc_dictionary_steal_value(dictionary, key, value);
-
-	rpc_retain(value);
+	if (value == NULL)
+		rpc_dictionary_remove_key(dictionary, key);
+	else {
+		rpc_dictionary_steal_value(dictionary, key, value);
+		rpc_retain(value);
+	}
 }
 
 inline void

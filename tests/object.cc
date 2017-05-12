@@ -884,6 +884,16 @@ SCENARIO("RPC_DICTIONARY_OBJECT", "Create a DICTIONARY RPC object and perform ba
 				}
 			}
 
+			AND_WHEN("One of existing items is being overwritten by NULL") {
+				rpc_dictionary_set_value(object, "double_val", NULL);
+
+				THEN("Key was removed from the dictionary") {
+					REQUIRE(rpc_dictionary_get_count(object) == 7);
+					REQUIRE(rpc_dictionary_get_int64(object, "double_val") == 0);
+					REQUIRE(!rpc_dictionary_has_key(object, "double_val"));
+				}
+			}
+
 			THEN("Extracted bool value matches initial value") {
 				REQUIRE(rpc_dictionary_has_key(object, "bool_val"));
 				REQUIRE(rpc_dictionary_get_bool(object, "bool_val"));
