@@ -61,12 +61,16 @@ typedef enum rpc_call_status
 typedef struct rpc_connection *rpc_connection_t;
 typedef struct rpc_call *rpc_call_t;
 typedef void (^rpc_handler_t)(const char *name, rpc_object_t args);
-typedef void (*rpc_handler_f)(const char *name, rpc_object_t args);
+typedef void (*rpc_handler_f)(const char *name, rpc_object_t args, void *arg);
 
 rpc_connection_t rpc_connection_create(const char *uri, int flags);
 int rpc_connection_close(rpc_connection_t conn);
 int rpc_connection_subscribe_event(rpc_connection_t conn, const char *name);
 int rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name);
+int rpc_connection_register_event_handler(rpc_connection_t conn,
+    const char *name, rpc_handler_t handler);
+int rpc_connection_register_event_handler_f(rpc_connection_t conn,
+    const char *name, rpc_handler_f handler, void *arg);
 rpc_object_t rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...);
 void rpc_connection_call_async(rpc_connection_t conn, const char *method, ...);
 rpc_call_t rpc_connection_call(rpc_connection_t conn, const char *name,

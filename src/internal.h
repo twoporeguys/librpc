@@ -65,9 +65,9 @@ typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
 
 struct rpc_binary_value
 {
-	uintptr_t ptr;
-	size_t length;
-	bool copy;
+	uintptr_t 		ptr;
+	size_t 			length;
+	bool 			copy;
 };
 
 union rpc_value
@@ -181,6 +181,8 @@ struct rpc_server
     	GMainLoop *		rs_g_loop;
     	GThread *		rs_thread;
     	GList *			rs_connections;
+    	GHashTable *		rs_subscriptions;
+    	GMutex			rs_subscription_mtx;
 	struct rpc_context *	rs_context;
     	const char *		rs_uri;
 

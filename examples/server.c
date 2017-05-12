@@ -43,7 +43,7 @@ int
 main(int argc, const char *argv[])
 {
 	rpc_context_t ctx;
-	rpc_server_t srv;
+	__block rpc_server_t srv;
 
 	ctx = rpc_context_create();
 	rpc_context_register_method_f(ctx, "hello", "Hello world function",
@@ -67,7 +67,6 @@ main(int argc, const char *argv[])
 		rpc_server_broadcast_event(srv, "oh_noes", rpc_int64_create(-1));
 		return rpc_null_create();
 	    });
-
 
 	rpc_discovery_register(ctx);
 	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);

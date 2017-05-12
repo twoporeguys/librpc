@@ -30,6 +30,7 @@
 
 #include <stdbool.h>
 #include <rpc/service.h>
+#include <rpc/connection.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,8 +39,16 @@ extern "C" {
 struct rpc_server;
 
 typedef struct rpc_server *rpc_server_t;
+typedef void (^rpc_server_event_handler_t)(rpc_connection_t source,
+    const char *name, rpc_object_t args);
+typedef void (*rpc_server_event_handler_f)(rpc_connection_t source,
+    const char *name, rpc_object_t args, void *arg);
 
 rpc_server_t rpc_server_create(const char *uri, rpc_context_t context);
+void rpc_server_broadcast_event(rpc_server_t server, const char *name,
+    rpc_object_t args);
+void rpc_server_set_event_handler(rpc_server_event_handler_t handler);
+void rpc_server_set_event_handler_f(rpc_server_event_handler_f handler);
 int rpc_server_start(rpc_server_t server, bool background);
 int rpc_server_stop(rpc_server_t server);
 int rpc_server_close(rpc_server_t server);
