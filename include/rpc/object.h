@@ -100,7 +100,7 @@ int rpc_fd_dup(rpc_object_t xfd);
 int rpc_fd_get_value(rpc_object_t xfd);
 
 rpc_object_t rpc_array_create(void);
-rpc_object_t rpc_array_create_ex(const rpc_object_t *objects, size_t count);
+rpc_object_t rpc_array_create_ex(const rpc_object_t *objects, size_t count, bool steal);
 void rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value);
 void rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value);
 void rpc_array_remove_index(rpc_object_t array, size_t index);

@@ -696,7 +696,7 @@ rpc_connection_subscribe_event_locked(rpc_connection_t conn, const char *name)
 	if (sub == NULL) {
 		sub = g_malloc0(sizeof(*sub));
 		str = rpc_string_create(name);
-		args = rpc_array_create_ex(&str, 1);
+		args = rpc_array_create_ex(&str, 1, true);
 		frame = rpc_pack_frame("events", "subscribe", NULL, args);
 
 		if (rpc_send_frame(conn, frame) != 0)
@@ -731,7 +731,7 @@ rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name)
 
 
 	str = rpc_string_create(name);
-	args = rpc_array_create_ex(&str, 1);
+	args = rpc_array_create_ex(&str, 1, true);
 	frame = rpc_pack_frame("events", "unsubscribe", NULL, args);
 
 	if (rpc_send_frame(conn, frame) != 0)

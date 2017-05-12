@@ -629,14 +629,17 @@ rpc_array_create(void)
 }
 
 inline rpc_object_t
-rpc_array_create_ex(const rpc_object_t *objects, size_t count)
+rpc_array_create_ex(const rpc_object_t *objects, size_t count, bool steal)
 {
 	rpc_object_t array_object;
 	int i;
+	void (*setter_fn)(rpc_object_t, rpc_object_t);
+
+	setter_fn = steal ? &rpc_array_append_stolen_value : &rpc_array_append_value;
 
 	array_object = rpc_array_create();
 	for (i = 0; i < count; i++)
-		rpc_array_append_value(array_object, objects[i]);
+		setter_fn(array_object, objects[i]);
 
 	return array_object;
 }
