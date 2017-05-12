@@ -878,7 +878,7 @@ rpc_dictionary_create_ex(const char * const *keys, const rpc_object_t *values,
 	int i;
 	void (*setter_fn)(rpc_object_t, const char *, rpc_object_t);
 
-	setter_fn = steal ? &rpc_dictionary_set_value : &rpc_dictionary_steal_value;
+	setter_fn = steal ? &rpc_dictionary_steal_value : &rpc_dictionary_set_value;
 	object = rpc_dictionary_create();
 
 	for (i = 0; i < count; i++)
