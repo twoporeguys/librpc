@@ -805,6 +805,9 @@ inline bool
 rpc_array_get_bool(rpc_object_t array, size_t index)
 {
 
+	if (index >= rpc_array_get_count(array))
+		return (false);
+
 	return (rpc_bool_get_value(rpc_array_get_value(array, index)));
 }
 
@@ -812,12 +815,17 @@ inline int64_t
 rpc_array_get_int64(rpc_object_t array, size_t index)
 {
 
+	if (index >= rpc_array_get_count(array))
+		return (0);
+
 	return (rpc_int64_get_value(rpc_array_get_value(array, index)));
 }
 
 inline uint64_t
 rpc_array_get_uint64(rpc_object_t array, size_t index)
 {
+	if (index >= rpc_array_get_count(array))
+		return (0);
 
 	return (rpc_uint64_get_value(rpc_array_get_value(array, index)));
 }
@@ -826,12 +834,18 @@ inline double
 rpc_array_get_double(rpc_object_t array, size_t index)
 {
 
+	if (index >= rpc_array_get_count(array))
+		return (0);
+
 	return (rpc_double_get_value(rpc_array_get_value(array, index)));
 }
 
 inline int64_t
 rpc_array_get_date(rpc_object_t array, size_t index)
 {
+
+	if (index >= rpc_array_get_count(array))
+		return (0);
 
 	return (rpc_date_get_value(rpc_array_get_value(array, index)));
 }
@@ -840,6 +854,9 @@ inline const void *rpc_array_get_data(rpc_object_t array, size_t index,
     size_t *length)
 {
         rpc_object_t xdata;
+
+	if (index >= rpc_array_get_count(array))
+		return (NULL);
 
         if ((xdata = rpc_array_get_value(array, index)) == 0)
                 return (0);
@@ -854,11 +871,17 @@ inline const char *
 rpc_array_get_string(rpc_object_t array, size_t index)
 {
 
+	if (index >= rpc_array_get_count(array))
+		return (NULL);
+
 	return rpc_string_get_string_ptr(rpc_array_get_value(array, index));
 }
 
 inline int rpc_array_dup_fd(rpc_object_t array, size_t index)
 {
+
+	if (index >= rpc_array_get_count(array))
+		return (0);
 
         return (rpc_fd_dup(rpc_array_get_value(array, index)));
 }
