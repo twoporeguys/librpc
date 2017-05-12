@@ -167,6 +167,7 @@ const void *rpc_dictionary_get_data(rpc_object_t dictionary, const char *key,
     size_t *length);
 const char *rpc_dictionary_get_string(rpc_object_t dictionary,
     const char *key);
+int rpc_dictionary_get_fd(rpc_object_t dictionary, const char *key);
 int rpc_dictionary_dup_fd(rpc_object_t dictionary, const char *key);
 
 #ifdef __cplusplus

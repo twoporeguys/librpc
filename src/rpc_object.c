@@ -1086,6 +1086,14 @@ rpc_dictionary_get_string(rpc_object_t dictionary, const char *key)
 	xstring = rpc_dictionary_get_value(dictionary, key);
 	return ((xstring != NULL) ? rpc_string_get_string_ptr(xstring) : NULL);
 }
+
+inline int
+rpc_dictionary_get_fd(rpc_object_t dictionary, const char *key)
+{
+	rpc_object_t xfd;
+
+	xfd = rpc_dictionary_get_value(dictionary, key);
+	return ((xfd != NULL) ? rpc_fd_get_value(xfd) : 0);
 }
 
 inline int
