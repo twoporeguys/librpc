@@ -50,6 +50,8 @@ SCENARIO("RPC_NULL_OBJECT", "Create a NULL RPC object and perform basic operatio
 			THEN("Source and copy are equal"){
 				REQUIRE(rpc_equal(object, copy));
 			}
+
+			rpc_release(copy);
 		}
 
 		WHEN("reference count is incremented") {
@@ -75,6 +77,9 @@ SCENARIO("RPC_NULL_OBJECT", "Create a NULL RPC object and perform basic operatio
 				}
 			}
 		}
+
+		if (object != NULL)
+			rpc_release(object);
 	}
 }
 
@@ -114,6 +119,8 @@ SCENARIO("RPC_BOOL_OBJECT", "Create a BOOL RPC object and perform basic operatio
 			AND_THEN("Object is different from object initialized with different value") {
 				REQUIRE(!rpc_equal(object, different_object));
 			}
+
+			rpc_release(copy);
 		}
 
 		WHEN("reference count is incremented") {
@@ -139,6 +146,9 @@ SCENARIO("RPC_BOOL_OBJECT", "Create a BOOL RPC object and perform basic operatio
 				}
 			}
 		}
+
+		if (object != NULL)
+			rpc_release(object);
 
 		rpc_release(different_object);
 	}
@@ -180,6 +190,8 @@ SCENARIO("RPC_UINT64_OBJECT", "Create a UINT64 RPC object and perform basic oper
 			AND_THEN("Object is different from object initialized with different value") {
 				REQUIRE(!rpc_equal(object, different_object));
 			}
+
+			rpc_release(copy);
 		}
 
 		WHEN("reference count is incremented") {
@@ -205,6 +217,9 @@ SCENARIO("RPC_UINT64_OBJECT", "Create a UINT64 RPC object and perform basic oper
 				}
 			}
 		}
+
+		if (object != NULL)
+			rpc_release(object);
 
 		rpc_release(different_object);
 	}
@@ -246,6 +261,8 @@ SCENARIO("RPC_INT64_OBJECT", "Create a INT64 RPC object and perform basic operat
 			AND_THEN("Object is different from object initialized with different value") {
 				REQUIRE(!rpc_equal(object, different_object));
 			}
+
+			rpc_release(copy);
 		}
 
 		WHEN("reference count is incremented") {
@@ -271,6 +288,9 @@ SCENARIO("RPC_INT64_OBJECT", "Create a INT64 RPC object and perform basic operat
 				}
 			}
 		}
+
+		if (object != NULL)
+			rpc_release(object);
 
 		rpc_release(different_object);
 	}
@@ -312,6 +332,8 @@ SCENARIO("RPC_DOUBLE_OBJECT", "Create a DOUBLE RPC object and perform basic oper
 			AND_THEN("Object is different from object initialized with different value") {
 				REQUIRE(!rpc_equal(object, different_object));
 			}
+
+			rpc_release(copy);
 		}
 
 		WHEN("reference count is incremented") {
@@ -337,6 +359,9 @@ SCENARIO("RPC_DOUBLE_OBJECT", "Create a DOUBLE RPC object and perform basic oper
 				}
 			}
 		}
+
+		if (object != NULL)
+			rpc_release(object);
 
 		rpc_release(different_object);
 	}
@@ -373,6 +398,8 @@ SCENARIO("RPC_DATE_OBJECT", "Create a DATE RPC object and perform basic operatio
 			AND_THEN("Object is different from object initialized with different value") {
 				REQUIRE(!rpc_equal(object, different_object));
 			}
+
+			rpc_release(copy);
 		}
 
 		WHEN("reference count is incremented") {
@@ -398,6 +425,9 @@ SCENARIO("RPC_DATE_OBJECT", "Create a DATE RPC object and perform basic operatio
 				}
 			}
 		}
+
+		if (object != NULL)
+			rpc_release(object);
 
 		rpc_release(different_object);
 	}
@@ -461,6 +491,9 @@ SCENARIO("RPC_STRING_OBJECT", "Create a STRING RPC object and perform basic oper
 			}
 		}
 
+		if (object != NULL)
+			rpc_release(object);
+
 		rpc_release(different_object);
 	}
 }
@@ -513,6 +546,8 @@ SCENARIO("RPC_BINARY_OBJECT", "Create a BINARY RPC object and perform basic oper
 			AND_THEN("Object is different from object initialized with different value") {
 				REQUIRE(!rpc_equal(object, different_object));
 			}
+
+			rpc_release(copy);
 		}
 
 		WHEN("reference count is incremented") {
@@ -540,6 +575,7 @@ SCENARIO("RPC_BINARY_OBJECT", "Create a BINARY RPC object and perform basic oper
 		}
 
 		WHEN("Object is reinitialized as a reference to initial data") {
+			rpc_release(object);
 			object = rpc_data_create(&value, sizeof(value), false);
 
 			THEN("Refcount equals 1") {
@@ -568,6 +604,9 @@ SCENARIO("RPC_BINARY_OBJECT", "Create a BINARY RPC object and perform basic oper
 				}
 			}
 		}
+
+		if (object != NULL)
+			rpc_release(object);
 
 		rpc_release(different_object);
 		g_free(buffer);
