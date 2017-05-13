@@ -37,6 +37,10 @@
 #include <glib.h>
 #include "linker_set.h"
 
+#ifndef __unused
+#define __unused __attribute__((unused))
+#endif
+
 #define	DECLARE_TRANSPORT(_transport)	DATA_SET(tp_set, _transport)
 
 #define RPC_DEBUG	1
