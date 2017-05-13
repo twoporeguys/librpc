@@ -27,6 +27,7 @@
 
 #include "catch.hpp"
 
+#include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <rpc/object.h>
