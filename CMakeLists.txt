@@ -60,13 +60,17 @@ add_library(librpc SHARED
         ${SERIALIZER_FILES}
         ${CORE_FILES})
 
+set_target_properties(librpc PROPERTIES PREFIX "")
 target_link_libraries(librpc ${GLIB_LIBRARIES})
 target_link_libraries(librpc ${GIO_LIBRARIES})
 target_link_libraries(librpc ${SOUP_LIBRARIES})
 if(NOT APPLE)
     target_link_libraries(librpc BlocksRuntime)
 endif()
-install(TARGETS librpc LIBRARY DESTINATION lib)
+
+install(TARGETS librpc
+        LIBRARY DESTINATION lib
+        INCLUDES DESTINATION include)
 
 # Compile tests
 set(CATCH_INCLUDE_DIR src/tests)
