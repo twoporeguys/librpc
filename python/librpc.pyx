@@ -28,6 +28,7 @@ import enum
 import datetime
 cimport defs
 from libc.stdint cimport *
+from libc.stdlib cimport malloc, free
 
 
 class ObjectType(enum.IntEnum):
@@ -229,16 +230,63 @@ cdef class Dictionary(Object):
 cdef class Context(object):
     cdef defs.rpc_context_t context
 
+    def __init__(self):
+        self.context = defs.rpc_context_create()
+
+    @staticmethod
+    cdef defs.rpc_object_t c_cb_function(void *cookie, defs.rpc_object_t args):
+        cdef Array args_array
+        cdef Object result
+        cdef object cb = <object>defs.rpc_function_get_arg(cookie)
+
+        args_array = Array.__new__(Array)
+        args_array.obj = args
+
+        result = Object(cb(args_array))
+        return result.obj
+
     def register_method(self, name, description, fn):
-        pass
+        defs.rpc_context_register_method_f(
+            self.context,
+            name,
+            description,
+            <void *>fn,
+            <defs.rpc_function_f>Context.c_cb_function
+        )
 
     def unregister_method(self, name):
-        pass
+        defs.rpc_context_unregister_method(self.context, name)
+
+    def __dealloc__(self):
+        defs.rpc_context_free(self.context)
 
 
 cdef class Connection(object):
+    cdef defs.rpc_connection_t connection
+
     def call_sync(self, method, *args):
-        pass
+        cdef defs.rpc_object_t rpc_result
+        cdef defs.rpc_object_t *rpc_args
+        cdef defs.rpc_call_t call
+        cdef Object rpc_value
+
+        rpc_args = <defs.rpc_object_t *>malloc(sizeof(defs.rpc_object_t) * len(args))
+        for idx, arg in enumerate(args):
+            rpc_value = Object(arg)
+            rpc_args[idx] = rpc_value.obj
+
+        call = defs.rpc_connection_call(self.connection, method, rpc_args[0])
+        defs.rpc_call_wait(call)
+        rpc_result = defs.rpc_call_result(call)
+
+        defs.rpc_retain(rpc_result)
+
+        rpc_value = Object.__new__(Object)
+        rpc_value.obj = rpc_result
+
+        free(rpc_args)
+        return rpc_value.value()
+
 
     def call_async(self, method, callback, *args):
         pass
@@ -247,10 +295,20 @@ cdef class Connection(object):
         pass
 
 
-cdef class Client(object):
+cdef class Client(Connection):
+    cdef defs.rpc_client_t client
+
     def connect(self, uri):
-        pass
+        self.client = defs.rpc_client_create(uri, 0)
+        self.connection = defs.rpc_client_get_connection(self.client)
+
+    def disconnect(self):
+        defs.rpc_client_close(self.client)
 
 
-cdef class Server(object):
-    pass
+cdef class Server(Context):
+    cdef defs.rpc_server_t server
+
+    def __init__(self, uri):
+        super(Context, self).__init__()
+        self.server = defs.rpc_server_create(uri, self.context)
