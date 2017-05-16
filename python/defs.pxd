@@ -25,14 +25,17 @@
 #
 
 from libc.stdint cimport *
+from libcpp cimport bool
 
 
 cdef extern from "rpc/object.h" nogil:
-    ctypedef struct rpc_object_t:
+    ctypedef struct rpc_object:
         pass
 
+    ctypedef rpc_object *rpc_object_t
+
     ctypedef enum rpc_type_t:
-    	RPC_TYPE_NULL
+        RPC_TYPE_NULL
         RPC_TYPE_BOOL
         RPC_TYPE_UINT64
         RPC_TYPE_INT64
@@ -53,7 +56,7 @@ cdef extern from "rpc/object.h" nogil:
     rpc_type_t rpc_get_type(rpc_object_t object)
     void rpc_release(rpc_object_t object)
 
-    rpc_object_t rpc_null_create(void)
+    rpc_object_t rpc_null_create()
     rpc_object_t rpc_bool_create(bool value)
     bool rpc_bool_get_value(rpc_object_t xbool)
     rpc_object_t rpc_int64_create(int64_t value)
@@ -63,7 +66,7 @@ cdef extern from "rpc/object.h" nogil:
     rpc_object_t rpc_double_create(double value)
     double rpc_double_get_value(rpc_object_t xdouble)
     rpc_object_t rpc_date_create(int64_t interval)
-    rpc_object_t rpc_date_create_from_current(void)
+    rpc_object_t rpc_date_create_from_current()
     int64_t rpc_date_get_value(rpc_object_t xdate)
     rpc_object_t rpc_data_create(const void *bytes, size_t length, bool copy)
     size_t rpc_data_get_length(rpc_object_t xdata)
@@ -77,6 +80,16 @@ cdef extern from "rpc/object.h" nogil:
     int rpc_fd_dup(rpc_object_t xfd)
     int rpc_fd_get_value(rpc_object_t xfd)
 
+    rpc_object_t rpc_array_create()
+    void rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value)
+    void rpc_array_append_value(rpc_object_t array, rpc_object_t value)
+    rpc_object_t rpc_array_get_value(rpc_object_t array, size_t index)
+
+    rpc_object_t rpc_dictionary_create()
+    rpc_object_t rpc_dictionary_get_value(rpc_object_t dictionary,
+        const char *key)
+    void rpc_dictionary_set_value(rpc_object_t dictionary, const char *key,
+        rpc_object_t value)
 
 cdef extern from "rpc/connection.h" nogil:
     ctypedef void (*rpc_handler_f)(const char *name, rpc_object_t args)
@@ -111,10 +124,10 @@ cdef extern from "rpc/service.h" nogil:
     ctypedef struct rpc_context_t:
         pass
 
-    rpc_context_t rpc_context_create(void)
+    rpc_context_t rpc_context_create()
     void rpc_context_free(rpc_context_t context)
-    int rpc_context_register_method_f(rpc_context_t context, const char *name,
-        const char *descr, void *arg, rpc_function_f func)
+    # int rpc_context_register_method_f(rpc_context_t context, const char *name,
+    #    const char *descr, void *arg, rpc_function_f func)
 
     void *rpc_function_get_arg(void *cookie)
     void rpc_function_respond(void *cookie, rpc_object_t object)
@@ -124,9 +137,22 @@ cdef extern from "rpc/service.h" nogil:
     void rpc_function_end(void *cookie)
 
 
-cdef extern from "rpc/server.h" nogil:
-    ctypedef struct rpc_server_t:
+cdef extern from "rpc/client.h" nogil:
+    ctypedef struct rpc_client:
         pass
+
+    ctypedef rpc_client *rpc_client_t
+
+    rpc_client_t rpc_client_create(const char *uri, int flags)
+    rpc_connection_t rpc_client_get_connection(rpc_client_t client)
+    void rpc_client_close(rpc_client_t client)
+
+
+cdef extern from "rpc/server.h" nogil:
+    ctypedef struct rpc_server:
+        pass
+
+    ctypedef rpc_server *rpc_server_t
 
     rpc_server_t rpc_server_create(const char *uri, rpc_context_t context);
     int rpc_server_start(rpc_server_t server, bool background);

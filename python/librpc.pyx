@@ -25,7 +25,9 @@
 #
 
 import enum
+import datetime
 cimport defs
+from libc.stdint cimport *
 
 
 class ObjectType(enum.IntEnum):
@@ -45,33 +47,117 @@ class ObjectType(enum.IntEnum):
 cdef class Object(object):
     cdef defs.rpc_object_t obj
 
-    def __init__(self, value):
-        if value is None:
+    def __init__(self, value, force_type=None):
+        if value is None or force_type == ObjectType.NIL:
             self.obj = defs.rpc_null_create()
             return
 
-        if isinstance(value, bool):
+        if isinstance(value, bool) or force_type == ObjectType.BOOL:
             self.obj = defs.rpc_bool_create(value)
             return
 
-        if isinstance(value, int):
+        if isinstance(value, int) or force_type == ObjectType.INT64:
             self.obj = defs.rpc_int64_create(value)
             return
 
-        if isinstance(value, str):
+        if isinstance(value, int) and force_type == ObjectType.UINT64:
+            self.obj = defs.rpc_uint64_create(value)
+            return
+
+        if isinstance(value, int) and force_type == ObjectType.FD:
+            self.obj = defs.rpc_fd_create(value)
+            return
+
+        if isinstance(value, str) or force_type == ObjectType.STRING:
             self.obj = defs.rpc_string_create(value)
             return
 
-        if isinstance(value, float):
+        if isinstance(value, float) or force_type == ObjectType.DOUBLE:
             self.obj = defs.rpc_double_create(value)
             return
+
+        if isinstance(value, datetime.datetime) or force_type == ObjectType.DATE:
+            self.obj = defs.rpc_date_create(int(value.timestamp()))
+            return
+
+        if isinstance(value, bytearray) or force_type == ObjectType.BINARY:
+            self.obj = defs.rpc_data_create(<void *>value, <size_t>len(value), False)
+            return
+
+        if isinstance(value, list) or force_type == ObjectType.ARRAY:
+            self.obj = defs.rpc_array_create()
+
+            for v in value:
+                child = Object(v)
+                defs.rpc_array_append_value(self.obj, child.obj)
+
+            return
+
+        if isinstance(value, dict) or force_type == ObjectType.DICTIONARY:
+            self.obj = defs.rpc_dictionary_create()
+
+            for k, v in value.items():
+                child = Object(v)
+                defs.rpc_dictionary_set_value(self.obj, k, child.obj)
+
+        raise TypeError(f"Cannot create RPC object - unknown value type: {type(value)}")
 
     def __dealloc__(self):
         defs.rpc_release(self.obj)
 
     property value:
         def __get__(self):
-            pass
+            cdef Array array
+            cdef Dictionary dictionary
+            cdef const char *c_string = NULL
+            cdef const uint8_t *c_bytes = NULL
+            cdef size_t c_len = 0
+
+
+            if self.type() == ObjectType.NIL:
+                return None
+
+            if self.type() == ObjectType.BOOL:
+                return defs.rpc_bool_get_value(self.obj)
+
+            if self.type() == ObjectType.INT64:
+                return defs.rpc_int64_get_value(self.obj)
+
+            if self.type() == ObjectType.UINT64:
+                return defs.rpc_uint64_get_value(self.obj)
+
+            if self.type() == ObjectType.FD:
+                return defs.rpc_fd_get_value(self.obj)
+
+            if self.type() == ObjectType.STRING:
+                c_string = defs.rpc_string_get_string_ptr(self.obj)
+                c_len = defs.rpc_string_get_length(self.obj)
+
+                return c_string[:c_len].decode('UTF-8')
+
+            if self.type() == ObjectType.DOUBLE:
+                return defs.rpc_double_get_value(self.obj)
+
+            if self.type() == ObjectType.DATE:
+                return datetime.datetime.utcfromtimestamp(defs.rpc_date_get_value(self.obj))
+
+            if self.type() == ObjectType.BINARY:
+                c_bytes = <uint8_t *>defs.rpc_data_get_bytes_ptr(self.obj)
+                c_len = defs.rpc_data_get_length(self.obj)
+
+                return <bytes>c_bytes[:c_len]
+
+            if self.type() == ObjectType.ARRAY:
+                array = Array.__new__(Array)
+                array.obj = self.obj
+                defs.rpc_retain(array.obj)
+                return array
+
+            if self.type() == ObjectType.DICTIONARY:
+                dictionary = Dictionary.__new__(Dictionary)
+                dictionary.obj = self.obj
+                defs.rpc_retain(dictionary.obj)
+                return dictionary
 
     property type:
         def __get__(self):
@@ -79,25 +165,66 @@ cdef class Object(object):
 
 
 cdef class Array(Object):
-    def __getitem__(self, item):
-        pass
+    def __init__(self, value, force_type=None):
+        if not isinstance(value, list):
+            raise TypeError(f"Cannot initialize Array RPC object from {type(value)} type")
 
-    def __setitem__(self, key, value):
-        pass
+        super(Array, self).__init__(value, force_type)
+
+    def __getitem__(self, index):
+        cdef Object rpc_value
+
+        rpc_value = Object.__new__(Object)
+        rpc_value.obj = defs.rpc_array_get_value(self.obj, index)
+        defs.rpc_retain(rpc_value.obj)
+
+        return rpc_value
+
+    def __setitem__(self, index, value):
+        cdef Object rpc_value
+
+        rpc_value = Object(value)
+        defs.rpc_array_set_value(self.obj, index, rpc_value.obj)
+
+        defs.rpc_retain(rpc_value.obj)
 
     def append(self, value):
-        pass
+        cdef Object rpc_value
+
+        rpc_value = Object(value)
+        defs.rpc_array_append_value(self.obj, rpc_value.obj)
 
     def extend(self, array):
-        pass
+        cdef Object rpc_value
+
+        for value in array:
+            rpc_value = Object(value)
+            defs.rpc_array_append_value(self.obj, rpc_value.obj)
 
 
 cdef class Dictionary(Object):
-    def __getitem__(self, item):
-        pass
+    def __init__(self, value, force_type=None):
+        if not isinstance(value, dict):
+            raise TypeError(f"Cannot initialize Dictionary RPC object from {type(value)} type")
+
+        super(Dictionary, self).__init__(value, force_type)
+
+    def __getitem__(self, key):
+        cdef Object rpc_value
+
+        rpc_value = Object.__new__(Object)
+        rpc_value.obj = defs.rpc_dictionary_get_value(self.obj, key)
+        defs.rpc_retain(rpc_value.obj)
+
+        return rpc_value
 
     def __setitem__(self, key, value):
-        pass
+        cdef Object rpc_value
+
+        rpc_value = Object(value)
+        defs.rpc_dictionary_set_value(self.obj, key, rpc_value.obj)
+
+        defs.rpc_retain(rpc_value.obj)
 
 
 cdef class Context(object):
