@@ -113,7 +113,6 @@ cdef class Object(object):
             cdef const uint8_t *c_bytes = NULL
             cdef size_t c_len = 0
 
-
             if self.type() == ObjectType.NIL:
                 return None
 
