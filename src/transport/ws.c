@@ -59,12 +59,12 @@ struct ws_connection
 	GSocketClient *			wc_client;
 	GSocketConnection *		wc_conn;
 	SoupWebsocketConnection *	wc_ws;
-    	struct rpc_connection *		wc_parent;
+	struct rpc_connection *		wc_parent;
 };
 
 struct ws_server
 {
-    	struct rpc_server *		ws_server;
+	struct rpc_server *		ws_server;
 	SoupServer *			ws_soupserver;
 };
 

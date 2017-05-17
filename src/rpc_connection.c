@@ -132,8 +132,8 @@ rpc_restore_fds(rpc_object_t obj, int *fds, size_t nfds)
 		case RPC_TYPE_DICTIONARY:
 			rpc_dictionary_apply(obj, ^(const char *key,
 			    rpc_object_t value) {
-			    	rpc_restore_fds(value, fds, nfds);
-			    	return ((bool)true);
+				rpc_restore_fds(value, fds, nfds);
+				return ((bool)true);
 			});
 			break;
 

@@ -79,7 +79,8 @@ rpc_data_hash(const uint8_t *data, size_t length)
 }
 
 static void
-rpc_create_description (GString *description, rpc_object_t object, unsigned int indent_lvl, bool nested)
+rpc_create_description (GString *description, rpc_object_t object,
+    unsigned int indent_lvl, bool nested)
 {
 	int i;
 	unsigned int local_indent_lvl = indent_lvl + 1;
@@ -87,90 +88,104 @@ rpc_create_description (GString *description, rpc_object_t object, unsigned int 
 	uint8_t *data_ptr;
 
 	if ((indent_lvl > 0) && (!nested))
-		g_string_append_printf(description, "%*s", (indent_lvl * 4), "");
+		g_string_append_printf(description, "%*s", (indent_lvl * 4),
+		    "");
 
-	g_string_append_printf(description, "<%s> ", rpc_types[object->ro_type]);
+	g_string_append_printf(description, "<%s> ",
+	    rpc_types[object->ro_type]);
 
 	switch (object->ro_type) {
-		case RPC_TYPE_NULL:
-			break;
+	case RPC_TYPE_NULL:
+		break;
 
-		case RPC_TYPE_BOOL:
-			if (object->ro_value.rv_b == true)
-				g_string_append(description, "true");
-			else
-				g_string_append(description, "false");
+	case RPC_TYPE_BOOL:
+		if (object->ro_value.rv_b == true)
+			g_string_append(description, "true");
+		else
+			g_string_append(description, "false");
 
-			break;
+		break;
 
-		case RPC_TYPE_INT64:
-			g_string_append_printf(description, "%" PRId64 "", object->ro_value.rv_i);
-			break;
+	case RPC_TYPE_INT64:
+		g_string_append_printf(description, "%" PRId64 "",
+		    object->ro_value.rv_i);
+		break;
 
-		case RPC_TYPE_FD:
-			g_string_append_printf(description, "%u", object->ro_value.rv_fd);
-			break;
+	case RPC_TYPE_FD:
+		g_string_append_printf(description, "%u",
+		    object->ro_value.rv_fd);
+		break;
 
-		case RPC_TYPE_UINT64:
-			g_string_append_printf(description, "%" PRIu64 "", object->ro_value.rv_ui);
-			break;
+	case RPC_TYPE_UINT64:
+		g_string_append_printf(description, "%" PRIu64 "",
+		    object->ro_value.rv_ui);
+		break;
 
-		case RPC_TYPE_DOUBLE:
-			g_string_append_printf(description, "%f", object->ro_value.rv_d);
-			break;
+	case RPC_TYPE_DOUBLE:
+		g_string_append_printf(description, "%f",
+		    object->ro_value.rv_d);
+		break;
 
-		case RPC_TYPE_DATE:
-			g_string_append(description, g_date_time_format(object->ro_value.rv_datetime, "%F %T"));
-			break;
+	case RPC_TYPE_DATE:
+		g_string_append(description, g_date_time_format(
+		    object->ro_value.rv_datetime, "%F %T"));
+		break;
 
-		case RPC_TYPE_STRING:
-			g_string_append_printf(description, "\"%s\"", rpc_string_get_string_ptr(object));
-			break;
+	case RPC_TYPE_STRING:
+		g_string_append_printf(description, "\"%s\"",
+		    rpc_string_get_string_ptr(object));
+		break;
 
-		case RPC_TYPE_BINARY:
-			data_ptr = (uint8_t *)rpc_data_get_bytes_ptr(object);
-			data_length = MIN(object->ro_value.rv_bin.length, 16);
+	case RPC_TYPE_BINARY:
+		data_ptr = (uint8_t *)rpc_data_get_bytes_ptr(object);
+		data_length = MIN(object->ro_value.rv_bin.length, 16);
 
-			for (i = 0; i < data_length; i++)
-				g_string_append_printf(description, "%02x", data_ptr[i]);
+		for (i = 0; i < data_length; i++)
+			g_string_append_printf(description, "%02x",
+			    data_ptr[i]);
 
-			break;
+		break;
 
-		case RPC_TYPE_DICTIONARY:
-			g_string_append(description, "{\n");
-			rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
-				g_string_append_printf(description, "%*s%s: ", (local_indent_lvl * 4), "", k);
-				rpc_create_description(description, v, local_indent_lvl, true);
-				g_string_append(description, ",\n");
-				return ((bool)true);
-			});
-			if (indent_lvl > 0)
-				g_string_append_printf(description, "%*s", (indent_lvl * 4), "");
+	case RPC_TYPE_DICTIONARY:
+		g_string_append(description, "{\n");
+		rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
+			g_string_append_printf(description, "%*s%s: ",
+			    (local_indent_lvl * 4), "", k);
+			rpc_create_description(description, v, local_indent_lvl,
+			    true);
+			g_string_append(description, ",\n");
+			return ((bool)true);
+		});
+		if (indent_lvl > 0)
+			g_string_append_printf(description, "%*s",
+			    (indent_lvl * 4), "");
 
-			g_string_append(description, "}");
-			break;
+		g_string_append(description, "}");
+		break;
 
-		case RPC_TYPE_ARRAY:
-			g_string_append(description, "[\n");
-			rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
-				g_string_append_printf(
-				    description, "%*s%u: ",
-				    (local_indent_lvl * 4),
-				    "",
-				    (unsigned int)idx);
+	case RPC_TYPE_ARRAY:
+		g_string_append(description, "[\n");
+		rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
+			g_string_append_printf(
+			    description, "%*s%u: ",
+			    (local_indent_lvl * 4),
+			    "",
+			    (unsigned int)idx);
 
-				rpc_create_description(description, v, local_indent_lvl, true);
-				g_string_append(description, ",\n");
-				return ((bool)true);
-			});
-			if (indent_lvl > 0)
-				g_string_append_printf(description, "%*s", (indent_lvl * 4), "");
+			rpc_create_description(description, v,
+			    local_indent_lvl, true);
+			g_string_append(description, ",\n");
+			return ((bool)true);
+		});
+		if (indent_lvl > 0)
+			g_string_append_printf(description, "%*s",
+			    (indent_lvl * 4), "");
 
-			g_string_append(description, "]");
-			break;
+		g_string_append(description, "]");
+		break;
 	}
 
-	if (nested == false)
+	if (!nested)
 		g_string_append(description, "\n");
 }
 
@@ -219,10 +234,10 @@ rpc_release_impl(rpc_object_t object)
 			break;
 		}
 		free(object);
-                return (0);
+		return (0);
 	}
 
-        return (object->ro_refcnt);
+	return (object->ro_refcnt);
 }
 
 inline rpc_type_t
@@ -257,17 +272,15 @@ rpc_copy(rpc_object_t object)
 		return (rpc_double_create(object->ro_value.rv_d));
 
 	case RPC_TYPE_FD:
-                return (rpc_fd_create(object->ro_value.rv_fd));
+		return (rpc_fd_create(object->ro_value.rv_fd));
 
 	case RPC_TYPE_STRING:
 		return (rpc_string_create(strdup(
 		    rpc_string_get_string_ptr(object))));
 
 	case RPC_TYPE_BINARY:
-                return rpc_data_create(
-                    rpc_data_get_bytes_ptr(object),
-                    rpc_data_get_length(object),
-                    true);
+		return rpc_data_create(rpc_data_get_bytes_ptr(object),
+		    rpc_data_get_length(object), true);
 
 	case RPC_TYPE_DICTIONARY:
 		tmp = rpc_dictionary_create();
@@ -286,7 +299,7 @@ rpc_copy(rpc_object_t object)
 		return (tmp);
 	}
 
-	return (0);
+	return (NULL);
 }
 
 inline bool
@@ -327,8 +340,7 @@ rpc_hash(rpc_object_t object)
 		return (g_string_hash(object->ro_value.rv_str));
 
 	case RPC_TYPE_BINARY:
-		return (rpc_data_hash(
-                    (uint8_t *)rpc_data_get_bytes_ptr(object),
+		return (rpc_data_hash((uint8_t *)rpc_data_get_bytes_ptr(object),
 		    rpc_data_get_length(object)));
 
 	case RPC_TYPE_DICTIONARY:
@@ -450,17 +462,17 @@ rpc_date_create(int64_t interval)
 {
 	union rpc_value val;
 
-        val.rv_datetime = g_date_time_new_from_unix_utc(interval);
+	val.rv_datetime = g_date_time_new_from_unix_utc(interval);
 	return (rpc_prim_create(RPC_TYPE_DATE, val));
 }
 
-inline
-rpc_object_t rpc_date_create_from_current(void)
+inline rpc_object_t
+rpc_date_create_from_current(void)
 {
-        union rpc_value val;
+	union rpc_value val;
 
-        val.rv_datetime = g_date_time_new_now_utc();
-        return (rpc_prim_create(RPC_TYPE_DATE, val));
+	val.rv_datetime = g_date_time_new_now_utc();
+	return (rpc_prim_create(RPC_TYPE_DATE, val));
 }
 
 inline int64_t
@@ -476,20 +488,18 @@ rpc_date_get_value(rpc_object_t xdate)
 inline rpc_object_t
 rpc_data_create(const void *bytes, size_t length, bool copy)
 {
-        union rpc_value value;
+	union rpc_value value;
 
-        if (copy == true) {
-                value.rv_bin.ptr = (uintptr_t)malloc(length);
-                memcpy((void *)value.rv_bin.ptr, bytes, length);
-        } else
-                value.rv_bin.ptr = (uintptr_t)bytes;
+	if (copy) {
+		value.rv_bin.ptr = (uintptr_t)malloc(length);
+		memcpy((void *)value.rv_bin.ptr, bytes, length);
+	} else
+		value.rv_bin.ptr = (uintptr_t)bytes;
 
 	value.rv_bin.copy = copy;
 	value.rv_bin.length = length;
 
-        return (rpc_prim_create(
-            RPC_TYPE_BINARY,
-            value));
+	return (rpc_prim_create(RPC_TYPE_BINARY, value));
 }
 
 inline size_t
@@ -513,26 +523,22 @@ rpc_data_get_bytes_ptr(rpc_object_t xdata)
 }
 
 inline size_t
-rpc_data_get_bytes(rpc_object_t xdata, void *buffer, size_t off,
-    size_t length)
+rpc_data_get_bytes(rpc_object_t xdata, void *buffer, size_t off, size_t length)
 {
-        size_t cpy_size;
-        size_t xdata_length = rpc_data_get_length(xdata);
+	size_t cpy_size;
+	size_t xdata_length = rpc_data_get_length(xdata);
 
-        if (xdata->ro_type != RPC_TYPE_BINARY)
-                return (0);
+	if (xdata->ro_type != RPC_TYPE_BINARY)
+		return (0);
 
-        if (off > xdata_length)
-                return (0);
+	if (off > xdata_length)
+		return (0);
 
-        cpy_size = MIN(length, xdata_length - off);
+	cpy_size = MIN(length, xdata_length - off);
 
-        memcpy(
-            buffer,
-            rpc_data_get_bytes_ptr(xdata) + off,
-            cpy_size);
+	memcpy(buffer, rpc_data_get_bytes_ptr(xdata) + off, cpy_size);
 
-        return (cpy_size);
+	return (cpy_size);
 }
 
 inline rpc_object_t
@@ -585,7 +591,7 @@ rpc_string_get_string_ptr(rpc_object_t xstring)
 {
 
 	if (xstring->ro_type != RPC_TYPE_STRING)
-		return (0);
+		return (NULL);
 
 	return (xstring->ro_value.rv_str->str);
 }
@@ -603,20 +609,20 @@ inline int
 rpc_fd_get_value(rpc_object_t xfd)
 {
 
-        if (xfd->ro_type != RPC_TYPE_FD)
-                return (0);
+	if (xfd->ro_type != RPC_TYPE_FD)
+		return (0);
 
-        return (xfd->ro_value.rv_fd);
+	return (xfd->ro_value.rv_fd);
 }
 
 inline int
 rpc_fd_dup(rpc_object_t xfd)
 {
 
-        if (xfd->ro_type != RPC_TYPE_FD)
-                return (0);
+	if (xfd->ro_type != RPC_TYPE_FD)
+		return (0);
 
-        return (dup(rpc_fd_get_value(xfd)));
+	return (dup(rpc_fd_get_value(xfd)));
 }
 
 inline rpc_object_t
@@ -625,7 +631,7 @@ rpc_array_create(void)
 	union rpc_value val;
 
 	val.rv_list = g_array_new(true, true, sizeof(rpc_object_t));
-        return (rpc_prim_create(RPC_TYPE_ARRAY, val));
+	return (rpc_prim_create(RPC_TYPE_ARRAY, val));
 }
 
 inline rpc_object_t
@@ -635,7 +641,8 @@ rpc_array_create_ex(const rpc_object_t *objects, size_t count, bool steal)
 	int i;
 	void (*setter_fn)(rpc_object_t, rpc_object_t);
 
-	setter_fn = steal ? &rpc_array_append_stolen_value : &rpc_array_append_value;
+	setter_fn = steal ? &rpc_array_append_stolen_value :
+	    &rpc_array_append_value;
 
 	array_object = rpc_array_create();
 	for (i = 0; i < count; i++)
@@ -694,7 +701,7 @@ inline void
 rpc_array_append_value(rpc_object_t array, rpc_object_t value)
 {
 
-        rpc_array_append_stolen_value(array, value);
+	rpc_array_append_stolen_value(array, value);
 
 	rpc_retain(value);
 }
@@ -703,8 +710,8 @@ inline void
 rpc_array_append_stolen_value(rpc_object_t array, rpc_object_t value)
 {
 
-        if (array->ro_type != RPC_TYPE_ARRAY)
-                abort();
+	if (array->ro_type != RPC_TYPE_ARRAY)
+		abort();
 
 	g_array_append_val(array->ro_value.rv_list, value);
 }
@@ -712,19 +719,20 @@ rpc_array_append_stolen_value(rpc_object_t array, rpc_object_t value)
 inline rpc_object_t
 rpc_array_get_value(rpc_object_t array, size_t index)
 {
-        if (array->ro_type != RPC_TYPE_ARRAY)
-                return (0);
+	if (array->ro_type != RPC_TYPE_ARRAY)
+		return (NULL);
 
-        if (index >= array->ro_value.rv_list->len)
-                return (0);
+	if (index >= array->ro_value.rv_list->len)
+		return (NULL);
 
-        return (g_array_index(array->ro_value.rv_list, rpc_object_t, index));
+	return (g_array_index(array->ro_value.rv_list, rpc_object_t, index));
 }
 
-inline size_t rpc_array_get_count(rpc_object_t array)
+inline size_t
+rpc_array_get_count(rpc_object_t array)
 {
 	if (array->ro_type != RPC_TYPE_ARRAY)
-		return (0);
+		return (NULL);
 
 	return (array->ro_value.rv_list->len);
 }
@@ -786,7 +794,8 @@ rpc_array_set_data(rpc_object_t array, size_t index, const void *bytes,
     size_t length)
 {
 
-	rpc_array_steal_value(array, index, rpc_data_create(bytes, length, false));
+	rpc_array_steal_value(array, index, rpc_data_create(bytes, length,
+	    false));
 }
 
 inline void
@@ -853,21 +862,21 @@ rpc_array_get_date(rpc_object_t array, size_t index)
 	return (rpc_date_get_value(rpc_array_get_value(array, index)));
 }
 
-inline const void *rpc_array_get_data(rpc_object_t array, size_t index,
-    size_t *length)
+inline const void *
+rpc_array_get_data(rpc_object_t array, size_t index, size_t *length)
 {
-        rpc_object_t xdata;
+	rpc_object_t xdata;
 
 	if (index >= rpc_array_get_count(array))
 		return (NULL);
 
-        if ((xdata = rpc_array_get_value(array, index)) == 0)
-                return (0);
+	if ((xdata = rpc_array_get_value(array, index)) == 0)
+		return (NULL);
 
 	if (length != NULL)
 		*length = xdata->ro_value.rv_bin.length;
 
-        return rpc_data_get_bytes_ptr(xdata);
+	return rpc_data_get_bytes_ptr(xdata);
 }
 
 inline const char *
@@ -880,22 +889,24 @@ rpc_array_get_string(rpc_object_t array, size_t index)
 	return rpc_string_get_string_ptr(rpc_array_get_value(array, index));
 }
 
-inline int rpc_array_get_fd(rpc_object_t array, size_t index)
+inline int
+rpc_array_get_fd(rpc_object_t array, size_t index)
 {
 
 	if (index >= rpc_array_get_count(array))
 		return (0);
 
-        return (rpc_fd_get_value(rpc_array_get_value(array, index)));
+	return (rpc_fd_get_value(rpc_array_get_value(array, index)));
 }
 
-inline int rpc_array_dup_fd(rpc_object_t array, size_t index)
+inline int
+rpc_array_dup_fd(rpc_object_t array, size_t index)
 {
 
 	if (index >= rpc_array_get_count(array))
 		return (0);
 
-        return (rpc_fd_dup(rpc_array_get_value(array, index)));
+	return (rpc_fd_dup(rpc_array_get_value(array, index)));
 }
 
 inline rpc_object_t
@@ -917,7 +928,9 @@ rpc_dictionary_create_ex(const char * const *keys, const rpc_object_t *values,
 	int i;
 	void (*setter_fn)(rpc_object_t, const char *, rpc_object_t);
 
-	setter_fn = steal ? &rpc_dictionary_steal_value : &rpc_dictionary_set_value;
+	setter_fn = steal ? &rpc_dictionary_steal_value :
+	    &rpc_dictionary_set_value;
+
 	object = rpc_dictionary_create();
 
 	for (i = 0; i < count; i++)
@@ -1041,7 +1054,8 @@ rpc_dictionary_set_data(rpc_object_t dictionary, const char *key,
     const void *value, size_t length)
 {
 
-	rpc_dictionary_steal_value(dictionary, key, rpc_data_create(value, length, false));
+	rpc_dictionary_steal_value(dictionary, key, rpc_data_create(value,
+	    length, false));
 }
 
 inline void
