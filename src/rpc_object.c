@@ -732,7 +732,7 @@ inline size_t
 rpc_array_get_count(rpc_object_t array)
 {
 	if (array->ro_type != RPC_TYPE_ARRAY)
-		return (NULL);
+		return (0);
 
 	return (array->ro_value.rv_list->len);
 }
