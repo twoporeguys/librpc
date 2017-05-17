@@ -217,6 +217,135 @@ cdef class Dictionary(Object):
 
         super(Dictionary, self).__init__(value, force_type)
 
+    @staticmethod
+    cdef bool c_applier(void *arg, char *key, defs.rpc_object_t value):
+        cdef object cb = <object>arg
+        cdef Object py_value
+
+        py_value = Object.__new__(Object)
+        py_value.obj = value
+
+        return <bool>cb(key, py_value)
+
+    def __applier(self, applier_f):
+        defs.rpc_dictionary_apply_f(self.obj, <void *>applier_f, <defs.rpc_dictionary_applier_f>Dictionary.c_applier)
+
+    def clear(self):
+        with nogil:
+            defs.rpc_release(self.obj)
+            self.obj = defs.rpc_dictionary_create()
+
+    def copy(self):
+        cdef Dictionary copy
+
+        copy = Dictionary.__new__(Dictionary)
+        with nogil:
+            copy.obj = defs.rpc_copy(self.obj)
+
+        return copy
+
+    def get(self, k, d=None):
+        try:
+            return self.__getitem__(k)
+        except KeyError:
+            return d
+
+    def items(self):
+        result = []
+        def collect(k, v):
+            result.append((k, v))
+            return True
+
+        self.__applier(collect)
+        return result
+
+    def keys(self):
+        result = []
+        def collect(k, v):
+            result.append(k)
+            return True
+
+        self.__applier(collect)
+        return result
+
+    def pop(self, k, d=None):
+        try:
+            val = self.__getitem__(k)
+            self.__delitem__(k)
+            return val
+        except KeyError:
+            return d
+
+    def setdefault(self, k, d=None):
+        try:
+            return self.__getitem__(k)
+        except KeyError:
+            self.__setitem__(k, d)
+            return d
+
+    def update(self, value):
+        cdef Dictionary py_dict
+        cdef Object py_value
+        equal = False
+
+        if isinstance(value, Dictionary):
+            py_dict = value
+        elif isinstance(value, dict):
+            py_dict = Dictionary(value)
+        else:
+            raise TypeError("Dictionary can be updated only with dict or other Dictionary object")
+
+        for k, v in py_dict.items():
+            py_value = v
+            byte_key = k.encode('utf-8')
+            defs.rpc_dictionary_set_value(self.obj, byte_key, py_value.obj)
+
+    def values(self):
+        result = []
+        def collect(k, v):
+            result.append(v)
+            return True
+
+        self.__applier(collect)
+        return result
+
+    def __contains__(self, value):
+        cdef Object py_value
+        equal = False
+
+        if isinstance(value, Object):
+            py_value = value
+        else:
+            py_value = Object(value)
+
+        def compare(k, v):
+            if defs.rpc_equal(py_value.obj, v.obj):
+                equal = True
+                return False
+            return True
+
+        self.__applier(compare)
+        return equal
+
+
+    def __delitem__(self, key):
+        bytes_key = key.encode('utf-8')
+        defs.rpc_dictionary_remove_key(self.obj, bytes_key)
+
+    def __iter__(self):
+        keys = self.keys()
+        for k in keys:
+            yield k
+
+    def __len__(self):
+        return defs.rpc_dictionary_get_count(self.obj)
+
+    def __repr__(self):
+        return defs.rpc_copy_description(self.obj)
+
+    def __sizeof__(self):
+        return defs.rpc_dictionary_get_count(self.obj)
+
     def __getitem__(self, key):
         cdef Object rpc_value
         byte_key = key.encode('utf-8')

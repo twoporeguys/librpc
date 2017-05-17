@@ -47,6 +47,8 @@ cdef extern from "rpc/object.h" nogil:
         RPC_TYPE_DICTIONARY
         RPC_TYPE_ARRAY
 
+    ctypedef bool (*rpc_dictionary_applier_f)(void *arg, const char *key, rpc_object_t value)
+
     rpc_object_t rpc_retain(rpc_object_t object)
     int rpc_release_impl(rpc_object_t object)
     rpc_object_t rpc_copy(rpc_object_t object)
@@ -80,6 +82,9 @@ cdef extern from "rpc/object.h" nogil:
     int rpc_fd_dup(rpc_object_t xfd)
     int rpc_fd_get_value(rpc_object_t xfd)
 
+    bool rpc_equal(rpc_object_t o1, rpc_object_t o2)
+    char *rpc_copy_description(rpc_object_t object)
+
     rpc_object_t rpc_array_create()
     void rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value)
     void rpc_array_append_value(rpc_object_t array, rpc_object_t value)
@@ -90,6 +95,10 @@ cdef extern from "rpc/object.h" nogil:
         const char *key)
     void rpc_dictionary_set_value(rpc_object_t dictionary, const char *key,
         rpc_object_t value)
+    bool rpc_dictionary_apply_f(rpc_object_t dictionary, void *arg,
+        rpc_dictionary_applier_f applier)
+    size_t rpc_dictionary_get_count(rpc_object_t dictionary)
+    void rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key)
 
 cdef extern from "rpc/connection.h" nogil:
     ctypedef void (*rpc_handler_f)(const char *name, rpc_object_t args)
