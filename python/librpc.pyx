@@ -183,7 +183,7 @@ cdef class Array(Object):
         rpc_value.obj = defs.rpc_array_get_value(self.obj, index)
         defs.rpc_retain(rpc_value.obj)
 
-        return rpc_value
+        return rpc_value.value
 
     def __setitem__(self, index, value):
         cdef Object rpc_value
@@ -222,7 +222,7 @@ cdef class Dictionary(Object):
         rpc_value.obj = defs.rpc_dictionary_get_value(self.obj, byte_key)
         defs.rpc_retain(rpc_value.obj)
 
-        return rpc_value
+        return rpc_value.value
 
     def __setitem__(self, key, value):
         cdef Object rpc_value
