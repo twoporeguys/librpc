@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <rpc/object.h>
 #include <rpc/connection.h>
+#include <rpc/service.h>
 #include <glib.h>
 #include <glib/gprintf.h>
 #include "internal.h"
