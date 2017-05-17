@@ -108,7 +108,8 @@ cdef class Object(object):
         raise TypeError(f"Cannot create RPC object - unknown value type: {type(value)}")
 
     def __dealloc__(self):
-        defs.rpc_release(self.obj)
+        if self.obj != NULL:
+            defs.rpc_release(self.obj)
 
     property value:
         def __get__(self):
