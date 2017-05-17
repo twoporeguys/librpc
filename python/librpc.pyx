@@ -292,7 +292,7 @@ cdef class Connection(object):
         rpc_value.obj = rpc_result
 
         free(rpc_args)
-        return rpc_value.value()
+        return rpc_value.value
 
 
     def call_async(self, method, callback, *args):
