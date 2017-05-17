@@ -93,11 +93,14 @@ cdef extern from "rpc/object.h" nogil:
 
 cdef extern from "rpc/connection.h" nogil:
     ctypedef void (*rpc_handler_f)(const char *name, rpc_object_t args)
-    ctypedef struct rpc_connection_t:
+    ctypedef struct rpc_connection:
         pass
 
-    ctypedef struct rpc_call_t:
+    ctypedef struct rpc_call:
         pass
+
+    ctypedef rpc_connection *rpc_connection_t
+    ctypedef rpc_call *rpc_call_t
 
     rpc_connection_t rpc_connection_create(const char *uri, int flags)
     int rpc_connection_close(rpc_connection_t conn)
@@ -122,8 +125,10 @@ cdef extern from "rpc/connection.h" nogil:
 
 cdef extern from "rpc/service.h" nogil:
     ctypedef rpc_object_t (*rpc_function_f)(void *cookie, rpc_object_t args);
-    ctypedef struct rpc_context_t:
+    ctypedef struct rpc_context:
         pass
+
+    ctypedef rpc_context *rpc_context_t
 
     rpc_context_t rpc_context_create()
     void rpc_context_free(rpc_context_t context)
