@@ -103,6 +103,8 @@ cdef class Object(object):
                 child = Object(v)
                 defs.rpc_dictionary_set_value(self.obj, byte_k, child.obj)
 
+            return
+
         raise TypeError(f"Cannot create RPC object - unknown value type: {type(value)}")
 
     def __dealloc__(self):
