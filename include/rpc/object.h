@@ -55,7 +55,11 @@ typedef enum {
 
 typedef struct rpc_object *rpc_object_t;
 typedef bool (^rpc_array_applier_t)(size_t index, rpc_object_t value);
+typedef bool (*rpc_array_applier_f)(void *arg, size_t index,
+    rpc_object_t value);
 typedef bool (^rpc_dictionary_applier_t)(const char *key, rpc_object_t value);
+typedef bool (*rpc_dictionary_applier_f)(void *arg, const char *key,
+    rpc_object_t value);
 typedef void (^rpc_callback_t)(rpc_object_t object);
 
 rpc_object_t rpc_retain(rpc_object_t object);
@@ -109,6 +113,8 @@ void rpc_array_append_stolen_value(rpc_object_t array, rpc_object_t value);
 rpc_object_t rpc_array_get_value(rpc_object_t array, size_t index);
 size_t rpc_array_get_count(rpc_object_t array);
 bool rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier);
+inline bool rpc_array_apply_f(rpc_object_t array, void *arg,
+    rpc_array_applier_f applier);
 void rpc_array_set_bool(rpc_object_t array, size_t index, bool value);
 void rpc_array_set_int64(rpc_object_t array, size_t index, int64_t value);
 void rpc_array_set_uint64(rpc_object_t array, size_t index, uint64_t value);
@@ -142,6 +148,8 @@ rpc_object_t rpc_dictionary_get_value(rpc_object_t dictionary,
 size_t rpc_dictionary_get_count(rpc_object_t dictionary);
 bool rpc_dictionary_apply(rpc_object_t dictionary,
     rpc_dictionary_applier_t applier);
+bool rpc_dictionary_apply_f(rpc_object_t dictionary, void *arg,
+    rpc_dictionary_applier_f applier);
 bool rpc_dictionary_has_key(rpc_object_t dictionary, const char *key);
 void rpc_dictionary_set_bool(rpc_object_t dictionary, const char *key,
     bool value);
