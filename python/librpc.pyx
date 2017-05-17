@@ -82,7 +82,7 @@ cdef class Object(object):
             return
 
         if isinstance(value, bytearray) or force_type == ObjectType.BINARY:
-            self.obj = defs.rpc_data_create(<void *>value, <size_t>len(value), False)
+            self.obj = defs.rpc_data_create(<void *>value, <size_t>len(value), True)
             return
 
         if isinstance(value, list) or force_type == ObjectType.ARRAY:
