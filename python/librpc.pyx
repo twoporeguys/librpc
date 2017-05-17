@@ -218,14 +218,14 @@ cdef class Dictionary(Object):
         super(Dictionary, self).__init__(value, force_type)
 
     @staticmethod
-    cdef bool c_applier(void *arg, char *key, defs.rpc_object_t value):
+    cdef bint c_applier(void *arg, char *key, defs.rpc_object_t value):
         cdef object cb = <object>arg
         cdef Object py_value
 
         py_value = Object.__new__(Object)
         py_value.obj = value
 
-        return <bool>cb(key, py_value)
+        return <bint>cb(key, py_value)
 
     def __applier(self, applier_f):
         defs.rpc_dictionary_apply_f(self.obj, <void *>applier_f, <defs.rpc_dictionary_applier_f>Dictionary.c_applier)

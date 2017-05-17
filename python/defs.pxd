@@ -25,7 +25,6 @@
 #
 
 from libc.stdint cimport *
-from libcpp cimport bool
 
 
 cdef extern from "rpc/object.h" nogil:
@@ -47,20 +46,20 @@ cdef extern from "rpc/object.h" nogil:
         RPC_TYPE_DICTIONARY
         RPC_TYPE_ARRAY
 
-    ctypedef bool (*rpc_dictionary_applier_f)(void *arg, const char *key, rpc_object_t value)
+    ctypedef bint (*rpc_dictionary_applier_f)(void *arg, const char *key, rpc_object_t value)
 
     rpc_object_t rpc_retain(rpc_object_t object)
     int rpc_release_impl(rpc_object_t object)
     rpc_object_t rpc_copy(rpc_object_t object)
-    bool rpc_equal(rpc_object_t o1, rpc_object_t o2)
+    bint rpc_equal(rpc_object_t o1, rpc_object_t o2)
     size_t rpc_hash(rpc_object_t object)
     char *rpc_copy_description(rpc_object_t object)
     rpc_type_t rpc_get_type(rpc_object_t object)
     void rpc_release(rpc_object_t object)
 
     rpc_object_t rpc_null_create()
-    rpc_object_t rpc_bool_create(bool value)
-    bool rpc_bool_get_value(rpc_object_t xbool)
+    rpc_object_t rpc_bool_create(bint value)
+    bint rpc_bool_get_value(rpc_object_t xbool)
     rpc_object_t rpc_int64_create(int64_t value)
     int64_t rpc_int64_get_value(rpc_object_t xint)
     rpc_object_t rpc_uint64_create(uint64_t value)
@@ -70,7 +69,7 @@ cdef extern from "rpc/object.h" nogil:
     rpc_object_t rpc_date_create(int64_t interval)
     rpc_object_t rpc_date_create_from_current()
     int64_t rpc_date_get_value(rpc_object_t xdate)
-    rpc_object_t rpc_data_create(const void *bytes, size_t length, bool copy)
+    rpc_object_t rpc_data_create(const void *bytes, size_t length, bint copy)
     size_t rpc_data_get_length(rpc_object_t xdata)
     const void *rpc_data_get_bytes_ptr(rpc_object_t xdata)
     size_t rpc_data_get_bytes(rpc_object_t xdata, void *buffer, size_t off,
@@ -82,7 +81,7 @@ cdef extern from "rpc/object.h" nogil:
     int rpc_fd_dup(rpc_object_t xfd)
     int rpc_fd_get_value(rpc_object_t xfd)
 
-    bool rpc_equal(rpc_object_t o1, rpc_object_t o2)
+    bint rpc_equal(rpc_object_t o1, rpc_object_t o2)
     char *rpc_copy_description(rpc_object_t object)
 
     rpc_object_t rpc_array_create()
@@ -95,7 +94,7 @@ cdef extern from "rpc/object.h" nogil:
         const char *key)
     void rpc_dictionary_set_value(rpc_object_t dictionary, const char *key,
         rpc_object_t value)
-    bool rpc_dictionary_apply_f(rpc_object_t dictionary, void *arg,
+    bint rpc_dictionary_apply_f(rpc_object_t dictionary, void *arg,
         rpc_dictionary_applier_f applier)
     size_t rpc_dictionary_get_count(rpc_object_t dictionary)
     void rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key)
@@ -125,7 +124,7 @@ cdef extern from "rpc/connection.h" nogil:
         rpc_handler_f handler)
 
     int rpc_call_wait(rpc_call_t call)
-    int rpc_call_continue(rpc_call_t call, bool sync)
+    int rpc_call_continue(rpc_call_t call, bint sync)
     int rpc_call_abort(rpc_call_t call)
     int rpc_call_success(rpc_call_t call)
     rpc_object_t rpc_call_result(rpc_call_t call)
@@ -171,6 +170,6 @@ cdef extern from "rpc/server.h" nogil:
     ctypedef rpc_server *rpc_server_t
 
     rpc_server_t rpc_server_create(const char *uri, rpc_context_t context);
-    int rpc_server_start(rpc_server_t server, bool background);
+    int rpc_server_start(rpc_server_t server, bint background);
     int rpc_server_stop(rpc_server_t server);
     int rpc_server_close(rpc_server_t server);
