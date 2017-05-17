@@ -119,46 +119,46 @@ cdef class Object(object):
             cdef const uint8_t *c_bytes = NULL
             cdef size_t c_len = 0
 
-            if self.type() == ObjectType.NIL:
+            if self.type == ObjectType.NIL:
                 return None
 
-            if self.type() == ObjectType.BOOL:
+            if self.type == ObjectType.BOOL:
                 return defs.rpc_bool_get_value(self.obj)
 
-            if self.type() == ObjectType.INT64:
+            if self.type == ObjectType.INT64:
                 return defs.rpc_int64_get_value(self.obj)
 
-            if self.type() == ObjectType.UINT64:
+            if self.type == ObjectType.UINT64:
                 return defs.rpc_uint64_get_value(self.obj)
 
-            if self.type() == ObjectType.FD:
+            if self.type == ObjectType.FD:
                 return defs.rpc_fd_get_value(self.obj)
 
-            if self.type() == ObjectType.STRING:
+            if self.type == ObjectType.STRING:
                 c_string = defs.rpc_string_get_string_ptr(self.obj)
                 c_len = defs.rpc_string_get_length(self.obj)
 
                 return c_string[:c_len].decode('UTF-8')
 
-            if self.type() == ObjectType.DOUBLE:
+            if self.type == ObjectType.DOUBLE:
                 return defs.rpc_double_get_value(self.obj)
 
-            if self.type() == ObjectType.DATE:
+            if self.type == ObjectType.DATE:
                 return datetime.datetime.utcfromtimestamp(defs.rpc_date_get_value(self.obj))
 
-            if self.type() == ObjectType.BINARY:
+            if self.type == ObjectType.BINARY:
                 c_bytes = <uint8_t *>defs.rpc_data_get_bytes_ptr(self.obj)
                 c_len = defs.rpc_data_get_length(self.obj)
 
                 return <bytes>c_bytes[:c_len]
 
-            if self.type() == ObjectType.ARRAY:
+            if self.type == ObjectType.ARRAY:
                 array = Array.__new__(Array)
                 array.obj = self.obj
                 defs.rpc_retain(array.obj)
                 return array
 
-            if self.type() == ObjectType.DICTIONARY:
+            if self.type == ObjectType.DICTIONARY:
                 dictionary = Dictionary.__new__(Dictionary)
                 dictionary.obj = self.obj
                 defs.rpc_retain(dictionary.obj)
