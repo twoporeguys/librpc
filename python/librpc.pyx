@@ -345,7 +345,8 @@ cdef class Dictionary(Object):
         return defs.rpc_dictionary_get_count(self.obj)
 
     def __repr__(self):
-        return defs.rpc_copy_description(self.obj)
+        byte_descr = defs.rpc_copy_description(self.obj)
+        return byte_descr.decode('utf-8')
 
     def __sizeof__(self):
         return defs.rpc_dictionary_get_count(self.obj)
