@@ -181,6 +181,9 @@ cdef class Array(Object):
 
         rpc_value = Object.__new__(Object)
         rpc_value.obj = defs.rpc_array_get_value(self.obj, index)
+        if rpc_value.obj == NULL:
+            raise IndexError('Array index out of range')
+
         defs.rpc_retain(rpc_value.obj)
 
         return rpc_value.value
@@ -220,6 +223,9 @@ cdef class Dictionary(Object):
 
         rpc_value = Object.__new__(Object)
         rpc_value.obj = defs.rpc_dictionary_get_value(self.obj, byte_key)
+        if rpc_value.obj == NULL:
+            raise KeyError(f'Key {key} does not exist')
+
         defs.rpc_retain(rpc_value.obj)
 
         return rpc_value.value
