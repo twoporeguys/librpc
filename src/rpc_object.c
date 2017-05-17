@@ -762,7 +762,7 @@ rpc_array_apply_f(rpc_object_t array, void *arg,
 		return (applier(arg, index, value));
 	};
 
-	return (rpc_dictionary_apply(array, fn));
+	return (rpc_array_apply(array, fn));
 }
 
 inline void
