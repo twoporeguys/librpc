@@ -310,16 +310,20 @@ cdef class Dictionary(Object):
         return result
 
     def __contains__(self, value):
-        cdef Object py_value
+        cdef Object v1
+        cdef Object v2
         equal = False
 
         if isinstance(value, Object):
-            py_value = value
+            v1 = value
         else:
-            py_value = Object(value)
+            v1 = Object(value)
 
         def compare(k, v):
-            if defs.rpc_equal(py_value.obj, v.obj):
+            nonlocal v2
+            v2 = v
+
+            if defs.rpc_equal(v1.obj, v2.obj):
                 equal = True
                 return False
             return True
