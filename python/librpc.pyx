@@ -319,9 +319,10 @@ cdef class Client(Connection):
         defs.rpc_client_close(self.client)
 
 
-cdef class Server(Context):
+cdef class Server(object):
     cdef defs.rpc_server_t server
+    cdef Context context
 
-    def __init__(self, uri):
-        super(Context, self).__init__()
-        self.server = defs.rpc_server_create(uri, self.context)
+    def __init__(self, uri, context):
+        self.context = context
+        self.server = defs.rpc_server_create(uri, self.context.context)
