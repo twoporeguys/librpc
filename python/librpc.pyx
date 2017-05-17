@@ -70,7 +70,8 @@ cdef class Object(object):
             return
 
         if isinstance(value, str) or force_type == ObjectType.STRING:
-            self.obj = defs.rpc_string_create(value)
+            byte_str = value.encode('utf-8')
+            self.obj = defs.rpc_string_create(byte_str)
             return
 
         if isinstance(value, float) or force_type == ObjectType.DOUBLE:
@@ -98,8 +99,9 @@ cdef class Object(object):
             self.obj = defs.rpc_dictionary_create()
 
             for k, v in value.items():
+                byte_k = k.encode('utf-8')
                 child = Object(v)
-                defs.rpc_dictionary_set_value(self.obj, k, child.obj)
+                defs.rpc_dictionary_set_value(self.obj, byte_k, child.obj)
 
         raise TypeError(f"Cannot create RPC object - unknown value type: {type(value)}")
 
@@ -211,18 +213,20 @@ cdef class Dictionary(Object):
 
     def __getitem__(self, key):
         cdef Object rpc_value
+        byte_key = key.encode('utf-8')
 
         rpc_value = Object.__new__(Object)
-        rpc_value.obj = defs.rpc_dictionary_get_value(self.obj, key)
+        rpc_value.obj = defs.rpc_dictionary_get_value(self.obj, byte_key)
         defs.rpc_retain(rpc_value.obj)
 
         return rpc_value
 
     def __setitem__(self, key, value):
         cdef Object rpc_value
+        byte_key = key.encode('utf-8')
 
         rpc_value = Object(value)
-        defs.rpc_dictionary_set_value(self.obj, key, rpc_value.obj)
+        defs.rpc_dictionary_set_value(self.obj, byte_key, rpc_value.obj)
 
         defs.rpc_retain(rpc_value.obj)
 
