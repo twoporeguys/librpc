@@ -369,6 +369,7 @@ rpc_copy_description(rpc_object_t object)
 
 	description = g_string_new(NULL);
 	rpc_create_description(description, object, 0, false);
+	g_string_truncate(description, description->len - 1);
 
 	return g_string_free(description, false);
 }
