@@ -560,7 +560,10 @@ cdef class Connection(object):
 
         rpc_args = <defs.rpc_object_t *>malloc(sizeof(defs.rpc_object_t) * len(args))
         for idx, arg in enumerate(args):
-            rpc_value = Object(arg)
+            if isinstance(arg, Object):
+                rpc_value = arg
+            else:
+                rpc_value = Object(arg)
             rpc_args[idx] = rpc_value.obj
 
         call = defs.rpc_connection_call(self.connection, method.encode('utf-8'), rpc_args[0])
