@@ -229,7 +229,9 @@ cdef class Dictionary(Object):
         py_value = Object.__new__(Object)
         py_value.obj = value
 
-        return <bint>cb(key, py_value)
+        defs.rpc_retain(py_value.obj)
+
+        return <bint>cb(key.decode('utf-8'), py_value)
 
     def __applier(self, applier_f):
         defs.rpc_dictionary_apply_f(self.obj, <void *>applier_f, <defs.rpc_dictionary_applier_f>Dictionary.c_applier)
