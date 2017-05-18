@@ -535,8 +535,8 @@ cdef class Context(object):
     def register_method(self, name, description, fn):
         defs.rpc_context_register_method_f(
             self.context,
-            name,
-            description,
+            name.encode('utf-8'),
+            description.encode('utf-8'),
             <void *>fn,
             <defs.rpc_function_f>Context.c_cb_function
         )
@@ -562,7 +562,7 @@ cdef class Connection(object):
             rpc_value = Object(arg)
             rpc_args[idx] = rpc_value.obj
 
-        call = defs.rpc_connection_call(self.connection, method, rpc_args[0])
+        call = defs.rpc_connection_call(self.connection, method.encode('utf-8'), rpc_args[0])
         defs.rpc_call_wait(call)
         rpc_result = defs.rpc_call_result(call)
 
@@ -584,9 +584,11 @@ cdef class Connection(object):
 
 cdef class Client(Connection):
     cdef defs.rpc_client_t client
+    cdef object uri
 
     def connect(self, uri):
-        self.client = defs.rpc_client_create(uri, 0)
+        self.uri = uri.encode('utf-8')
+        self.client = defs.rpc_client_create(self.uri, 0)
         self.connection = defs.rpc_client_get_connection(self.client)
 
     def disconnect(self):
@@ -596,7 +598,9 @@ cdef class Client(Connection):
 cdef class Server(object):
     cdef defs.rpc_server_t server
     cdef Context context
+    cdef object uri
 
     def __init__(self, uri, context):
+        self.uri = uri.encode('utf-8')
         self.context = context
-        self.server = defs.rpc_server_create(uri, self.context.context)
+        self.server = defs.rpc_server_create(self.uri, self.context.context)
