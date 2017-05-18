@@ -107,6 +107,10 @@ cdef class Object(object):
 
         raise TypeError(f"Cannot create RPC object - unknown value type: {type(value)}")
 
+    def __repr__(self):
+        byte_descr = defs.rpc_copy_description(self.obj)
+        return byte_descr.decode('utf-8')
+
     def __dealloc__(self):
         if self.obj != NULL:
             defs.rpc_release(self.obj)
