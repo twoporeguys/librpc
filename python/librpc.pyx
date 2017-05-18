@@ -530,6 +530,7 @@ cdef class Context(object):
         args_array.obj = args
 
         result = Object(cb(args_array))
+        defs.rpc_retain(result.obj)
         return result.obj
 
     def register_method(self, name, description, fn):
