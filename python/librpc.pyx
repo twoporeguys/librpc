@@ -325,6 +325,7 @@ cdef class Dictionary(Object):
 
         def compare(k, v):
             nonlocal v2
+            nonlocal equal
             v2 = v
 
             if defs.rpc_equal(v1.obj, v2.obj):
