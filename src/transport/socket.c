@@ -246,13 +246,17 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	uint32_t header[4];
 	size_t length;
 	gssize read;
-	int ncmsg, flags, i;
+	int ncmsg, flags = 0, i;
 
 	iov.buffer = header;
 	iov.size = sizeof(header);
 
 	g_socket_receive_message(sock, NULL, &iov, 1, &cmsg, &ncmsg, &flags,
 	    NULL, &err);
+	if (err != NULL) {
+		g_free(err);
+		return (-1);
+	}
 
 	if (header[0] != 0xdeadbeef)
 		return (-1);
