@@ -926,7 +926,7 @@ rpc_dictionary_create(void)
 {
 	union rpc_value val;
 
-	val.rv_dict = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
+	val.rv_dict = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 	    (GDestroyNotify)rpc_release_impl);
 
 	return (rpc_prim_create(RPC_TYPE_DICTIONARY, val));
@@ -971,7 +971,8 @@ rpc_dictionary_steal_value(rpc_object_t dictionary, const char *key,
 	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
 		abort();
 
-	g_hash_table_insert(dictionary->ro_value.rv_dict, (gpointer)key, value);
+	g_hash_table_insert(dictionary->ro_value.rv_dict,
+	    (gpointer)g_strdup(key), value);
 }
 
 inline void
