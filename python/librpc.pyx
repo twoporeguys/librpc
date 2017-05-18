@@ -340,7 +340,7 @@ cdef class Array(Object):
 
         defs.rpc_retain(rpc_value.obj)
 
-        return rpc_value.value
+        return rpc_value
 
     def __setitem__(self, index, value):
         cdef Object rpc_value
@@ -502,7 +502,7 @@ cdef class Dictionary(Object):
 
         defs.rpc_retain(rpc_value.obj)
 
-        return rpc_value.value
+        return rpc_value
 
     def __setitem__(self, key, value):
         cdef Object rpc_value
@@ -572,7 +572,7 @@ cdef class Connection(object):
         rpc_value.obj = rpc_result
 
         free(rpc_args)
-        return rpc_value.value
+        return rpc_value
 
 
     def call_async(self, method, callback, *args):
