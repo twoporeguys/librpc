@@ -113,7 +113,7 @@ void rpc_array_append_stolen_value(rpc_object_t array, rpc_object_t value);
 rpc_object_t rpc_array_get_value(rpc_object_t array, size_t index);
 size_t rpc_array_get_count(rpc_object_t array);
 bool rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier);
-inline bool rpc_array_apply_f(rpc_object_t array, void *arg,
+bool rpc_array_apply_f(rpc_object_t array, void *arg,
     rpc_array_applier_f applier);
 void rpc_array_set_bool(rpc_object_t array, size_t index, bool value);
 void rpc_array_set_int64(rpc_object_t array, size_t index, int64_t value);
