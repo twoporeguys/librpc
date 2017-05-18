@@ -180,6 +180,156 @@ cdef class Array(Object):
 
         super(Array, self).__init__(value, force_type)
 
+    @staticmethod
+    cdef bint c_applier(void *arg, size_t index, defs.rpc_object_t value):
+        cdef object cb = <object>arg
+        cdef Object py_value
+
+        py_value = Object.__new__(Object)
+        py_value.obj = value
+
+        defs.rpc_retain(py_value.obj)
+
+        return <bint>cb(index, py_value)
+
+    def __applier(self, applier_f):
+        defs.rpc_array_apply_f(self.obj, <void *>applier_f, <defs.rpc_array_applier_f>Array.c_applier)
+
+    def append(self, value):
+        cdef Object rpc_value
+
+        rpc_value = Object(value)
+        defs.rpc_array_append_value(self.obj, rpc_value.obj)
+
+    def extend(self, array):
+        cdef Object rpc_value
+        cdef Array rpc_array
+
+        if isinstance(array, Array):
+            rpc_array = array
+        elif isinstance(array, list):
+            rpc_array = Array(array)
+        else:
+            raise TypeError("Array can be extended with only with list or another Array")
+
+        for value in rpc_array:
+            rpc_value = value
+            defs.rpc_array_append_value(self.obj, rpc_value.obj)
+
+    def clear(self):
+        defs.rpc_release(self.obj)
+        self.obj = defs.rpc_array_create()
+
+    def copy(self):
+        cdef Array copy
+
+        copy = Array.__new__(Array)
+        with nogil:
+            copy.obj = defs.rpc_copy(self.obj)
+
+        return copy
+
+    def count(self, value):
+        cdef Object v1
+        cdef Object v2
+        count = 0
+
+        if isinstance(value, Object):
+            v1 = value
+        else:
+            v1 = Object(value)
+
+        def count_items(idx, v):
+            nonlocal v2
+            nonlocal count
+            v2 = v
+
+            if defs.rpc_equal(v1.obj, v2.obj):
+                count += 1
+
+            return True
+
+        self.__applier(count_items)
+
+        return count
+
+    def index(self, value):
+        cdef Object v1
+        cdef Object v2
+        index = None
+
+        if isinstance(value, Object):
+            v1 = value
+        else:
+            v1 = Object(value)
+
+        def find_index(idx, v):
+            nonlocal v2
+            nonlocal index
+            v2 = v
+
+            if defs.rpc_equal(v1.obj, v2.obj):
+                index = idx
+                return False
+
+            return True
+
+        self.__applier(find_index)
+
+        if index is None:
+            raise ValueError(f'{value} is not in list')
+
+        return index
+
+    def insert(self, index, value):
+        cdef Object rpc_value
+
+        if isinstance(value, Object):
+            rpc_value = value
+        else:
+            rpc_value = Object(value)
+
+        defs.rpc_array_set_value(self.obj, index, rpc_value.obj)
+
+    def pop(self, index=None):
+        if index is None:
+            index = self.__len__() - 1
+
+        val = self.__getitem__(index)
+        self.__delitem__(index)
+        return val
+
+    def remove(self, value):
+        idx = self.index(value)
+        self.__delitem__(idx)
+
+    def __contains__(self, value):
+        try:
+            self.index(value)
+            return True
+        except ValueError:
+            return False
+
+    def __delitem__(self, index):
+        defs.rpc_array_remove_index(self.obj, index)
+
+    def __iter__(self):
+        result = []
+        def collect(idx, v):
+            result.append(v)
+            return True
+
+        self.__applier(collect)
+
+        for v in result:
+            yield v
+
+    def __len__(self):
+        return defs.rpc_array_get_count(self.obj)
+
+    def __sizeof__(self):
+        return defs.rpc_array_get_count(self.obj)
+
     def __getitem__(self, index):
         cdef Object rpc_value
 
@@ -199,19 +349,6 @@ cdef class Array(Object):
         defs.rpc_array_set_value(self.obj, index, rpc_value.obj)
 
         defs.rpc_retain(rpc_value.obj)
-
-    def append(self, value):
-        cdef Object rpc_value
-
-        rpc_value = Object(value)
-        defs.rpc_array_append_value(self.obj, rpc_value.obj)
-
-    def extend(self, array):
-        cdef Object rpc_value
-
-        for value in array:
-            rpc_value = Object(value)
-            defs.rpc_array_append_value(self.obj, rpc_value.obj)
 
 
 cdef class Dictionary(Object):

@@ -47,6 +47,7 @@ cdef extern from "rpc/object.h" nogil:
         RPC_TYPE_ARRAY
 
     ctypedef bint (*rpc_dictionary_applier_f)(void *arg, const char *key, rpc_object_t value)
+    ctypedef bint (*rpc_array_applier_f)(void *arg, size_t index, rpc_object_t value)
 
     rpc_object_t rpc_retain(rpc_object_t object)
     int rpc_release_impl(rpc_object_t object)
@@ -86,8 +87,11 @@ cdef extern from "rpc/object.h" nogil:
 
     rpc_object_t rpc_array_create()
     void rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value)
+    bint rpc_array_apply_f(rpc_object_t array, void *arg, rpc_array_applier_f applier)
     void rpc_array_append_value(rpc_object_t array, rpc_object_t value)
     rpc_object_t rpc_array_get_value(rpc_object_t array, size_t index)
+    size_t rpc_array_get_count(rpc_object_t array)
+    void rpc_array_remove_index(rpc_object_t array, size_t index)
 
     rpc_object_t rpc_dictionary_create()
     rpc_object_t rpc_dictionary_get_value(rpc_object_t dictionary,
