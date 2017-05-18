@@ -1339,7 +1339,7 @@ SCENARIO("RPC_DESCRIPTION_TEST", "Create a tree of RPC objects and print their d
 		    "        8: <fd> 10,\n"
 		    "    ],\n"
 		    "    test_string2: <string> \"test_test_test\",\n"
-		    "}\n";
+		    "}";
 
 		rpc_object_t null = rpc_null_create();
 		rpc_object_t boolean = rpc_bool_create(true);
