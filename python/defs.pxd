@@ -104,6 +104,12 @@ cdef extern from "rpc/object.h" nogil:
     void rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key)
 
 cdef extern from "rpc/connection.h" nogil:
+    ctypedef enum rpc_call_status_t:
+        RPC_CALL_IN_PROGRESS,
+        RPC_CALL_MORE_AVAILABLE,
+        RPC_CALL_DONE,
+        RPC_CALL_ERROR
+
     ctypedef void (*rpc_handler_f)(const char *name, rpc_object_t args)
     ctypedef struct rpc_connection:
         pass
@@ -127,6 +133,7 @@ cdef extern from "rpc/connection.h" nogil:
     void rpc_connection_set_event_handler_f(rpc_connection_t conn,
         rpc_handler_f handler)
 
+    int rpc_call_status(rpc_call_t call)
     int rpc_call_wait(rpc_call_t call)
     int rpc_call_continue(rpc_call_t call, bint sync)
     int rpc_call_abort(rpc_call_t call)
@@ -152,6 +159,7 @@ cdef extern from "rpc/service.h" nogil:
     void rpc_function_respond(void *cookie, rpc_object_t object)
     void rpc_function_error(void *cookie, int code, const char *message, ...)
     void rpc_function_error_ex(void *cookie, rpc_object_t exception)
+    int rpc_function_yield(void *cookie, rpc_object_t fragment)
     void rpc_function_produce(void *cookie, rpc_object_t fragment)
     void rpc_function_end(void *cookie)
 

@@ -25,6 +25,7 @@
 #
 
 import enum
+import types
 import datetime
 cimport defs
 from libc.stdint cimport *
@@ -43,6 +44,13 @@ class ObjectType(enum.IntEnum):
     FD = defs.RPC_TYPE_FD
     DICTIONARY = defs.RPC_TYPE_DICTIONARY
     ARRAY = defs.RPC_TYPE_ARRAY
+
+
+class CallStatus(enum.IntEnum):
+    IN_PROGRESS = defs.RPC_CALL_IN_PROGRESS,
+    MORE_AVAILABLE = defs.RPC_CALL_MORE_AVAILABLE,
+    DONE = defs.RPC_CALL_DONE,
+    ERROR = defs.RPC_CALL_ERROR
 
 
 cdef class Object(object):
@@ -523,15 +531,27 @@ cdef class Context(object):
     @staticmethod
     cdef defs.rpc_object_t c_cb_function(void *cookie, defs.rpc_object_t args):
         cdef Array args_array
-        cdef Object result
+        cdef Object rpc_obj
         cdef object cb = <object>defs.rpc_function_get_arg(cookie)
+        cdef int ret
 
         args_array = Array.__new__(Array)
         args_array.obj = args
 
-        result = Object(cb(args_array))
-        defs.rpc_retain(result.obj)
-        return result.obj
+        output = cb(args_array)
+        if isinstance(output, types.GeneratorType):
+            for chunk in output:
+                rpc_obj = Object(chunk)
+                defs.rpc_retain(rpc_obj.obj)
+                ret = defs.rpc_function_yield(cookie, rpc_obj.obj)
+                if ret:
+                    break
+
+            return defs.rpc_null_create()
+
+        rpc_obj = Object(output)
+        defs.rpc_retain(rpc_obj.obj)
+        return rpc_obj.obj
 
     def register_method(self, name, description, fn):
         defs.rpc_context_register_method_f(
@@ -557,6 +577,7 @@ cdef class Connection(object):
         cdef defs.rpc_object_t *rpc_args
         cdef defs.rpc_call_t call
         cdef Object rpc_value
+        cdef defs.rpc_call_status_t call_status
 
         rpc_args = <defs.rpc_object_t *>malloc(sizeof(defs.rpc_object_t) * len(args))
         for idx, arg in enumerate(args):
@@ -568,15 +589,39 @@ cdef class Connection(object):
 
         call = defs.rpc_connection_call(self.connection, method.encode('utf-8'), rpc_args[0])
         defs.rpc_call_wait(call)
-        rpc_result = defs.rpc_call_result(call)
+        call_status = <defs.rpc_call_status_t>defs.rpc_call_status(call)
 
-        defs.rpc_retain(rpc_result)
+        def get_chunk():
+            nonlocal rpc_result
+            nonlocal rpc_value
 
-        rpc_value = Object.__new__(Object)
-        rpc_value.obj = rpc_result
+            rpc_result = defs.rpc_call_result(call)
+            defs.rpc_retain(rpc_result)
 
+            rpc_value = Object.__new__(Object)
+            rpc_value.obj = rpc_result
+            return rpc_value
+
+        def iter_chunk():
+            nonlocal call_status
+
+            while call_status == CallStatus.MORE_AVAILABLE:
+                yield get_chunk()
+                defs.rpc_call_continue(call, True)
+                call_status = <defs.rpc_call_status_t>defs.rpc_call_status(call)
+
+            #defs.rpc_call_free(call)
+            free(rpc_args)
+
+        if call_status == CallStatus.ERROR:
+            pass
+
+        if call_status == CallStatus.DONE:
+            return get_chunk()
+
+        #defs.rpc_call_free(call)
         free(rpc_args)
-        return rpc_value
+        return iter_chunk()
 
 
     def call_async(self, method, callback, *args):
