@@ -110,7 +110,7 @@ cdef extern from "rpc/connection.h" nogil:
         RPC_CALL_DONE,
         RPC_CALL_ERROR
 
-    ctypedef void (*rpc_handler_f)(const char *name, rpc_object_t args)
+    ctypedef void (*rpc_handler_f)(const char *name, rpc_object_t args, void *arg)
     ctypedef struct rpc_connection:
         pass
 
@@ -140,6 +140,9 @@ cdef extern from "rpc/connection.h" nogil:
     int rpc_call_success(rpc_call_t call)
     rpc_object_t rpc_call_result(rpc_call_t call)
     void rpc_call_free(rpc_call_t call)
+
+    int rpc_connection_register_event_handler_f(rpc_connection_t conn, const char *name, rpc_handler_f handler,
+        void *arg)
 
 
 cdef extern from "rpc/service.h" nogil:
@@ -185,3 +188,5 @@ cdef extern from "rpc/server.h" nogil:
     int rpc_server_start(rpc_server_t server, bint background);
     int rpc_server_stop(rpc_server_t server);
     int rpc_server_close(rpc_server_t server);
+
+    void rpc_server_broadcast_event(rpc_server_t server, const char *name, rpc_object_t args)

@@ -572,6 +572,17 @@ cdef class Context(object):
 cdef class Connection(object):
     cdef defs.rpc_connection_t connection
 
+    @staticmethod
+    cdef void c_ev_handler(const char *name, defs.rpc_object_t args, void *arg):
+        cdef Object event_args
+        cdef object handler = <object>arg
+
+        event_args = Object.__new__(Object)
+        event_args.obj = args
+        defs.rpc_retain(args)
+
+        output = handler(event_args)
+
     def call_sync(self, method, *args):
         cdef defs.rpc_object_t rpc_result
         cdef defs.rpc_object_t *rpc_args
@@ -623,13 +634,20 @@ cdef class Connection(object):
         free(rpc_args)
         return iter_chunk()
 
-
     def call_async(self, method, callback, *args):
         pass
 
     def emit_event(self, name, data):
         pass
 
+    def register_event_handler(self, name, fn):
+        byte_name = name.encode('utf-8')
+        defs.rpc_connection_register_event_handler_f(
+            self.connection,
+            byte_name,
+            <defs.rpc_handler_f>Connection.c_ev_handler,
+            <void *>fn
+        )
 
 cdef class Client(Connection):
     cdef defs.rpc_client_t client
@@ -653,3 +671,14 @@ cdef class Server(object):
         self.uri = uri.encode('utf-8')
         self.context = context
         self.server = defs.rpc_server_create(self.uri, self.context.context)
+
+    def broadcast_event(self, name, args):
+        cdef Object rpc_args
+        byte_name = name.encode('utf-8')
+        if isinstance(args, Object):
+            rpc_args = args
+        else:
+            rpc_args = Object(args)
+            defs.rpc_retain(rpc_args.obj)
+
+        defs.rpc_server_broadcast_event(self.server, byte_name, rpc_args.obj)
