@@ -1,0 +1,29 @@
+{
+  "name": "librpc-client",
+  "version": "1.0.0",
+  "description": "LibRPC client",
+  "files": [
+    "lib/"
+  ],
+  "main": "lib/LibrpcClient.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "./node_modules/.bin/gulp babel"
+  },
+  "author": "Wojciech Kloska <wojciech.kloska@twoporeguys.com>",
+  "license": "BSD",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.1.18",
+    "gulp-babel": "^6.1.0",
+    "gulp": "^3.9.0"
+  },
+  "dependencies": {
+    "deep-diff": "^0.3.3",
+    "lodash": "^3.10.1",
+    "babel-polyfill": "^6.2.0",
+    "msgpack-lite": "*"
+  },
+  "browser": {
+    "msgpack-lite": "msgpack-lite/global"
+  }
+}
