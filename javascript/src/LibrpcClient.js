@@ -100,14 +100,14 @@ export class LibrpcClient
             return;
         }
 
-        if (data.namespace == "rpc") {
-            if (data.name == "call") {
+        if (data.namespace === "rpc") {
+            if (data.name === "call") {
                 console.error("Server functionality is not supported");
                 this.onError(SPURIOUS_RPC_RESPONSE);
                 return;
             }
 
-            if (data.name == "response" || data.name == "error") {
+            if (data.name === "response" || data.name === "error") {
                 if (!this.pendingCalls.has(data.id)) {
                     console.warn(`Spurious RPC response: ${data.id}`);
                     this.onError(SPURIOUS_RPC_RESPONSE);
@@ -115,7 +115,7 @@ export class LibrpcClient
                 }
 
                 var result = data.args;
-                if (data.name == "error") {
+                if (data.name === "error") {
                     result = new RPCException(
                         data.args.code,
                         data.args.message,
@@ -136,6 +136,50 @@ export class LibrpcClient
                 if (call.callback !== null)
                     call.callback(result);
                 
+                this.pendingCalls.delete(data.id);
+            }
+
+            if (data.name === "fragment") {
+                if (!this.pendingCalls.has(data.id)) {
+                    console.warn(`Spurious RPC response: ${data.id}`);
+                    this.onError(SPURIOUS_RPC_RESPONSE);
+                    return;
+                }
+
+                let fragment = data.args;
+                let seqno = data.seqno;
+                let result = {
+                    "id": data.id,
+                    "fragment": fragment,
+                    "seqno": seqno
+                };
+
+                let call = this.pendingCalls.get(data.id);
+                clearTimeout(call.timeout);
+
+                if (call.callback !== null)
+                    call.callback(result);
+            }
+
+            if (data.name === "end") {
+                if (!this.pendingCalls.has(data.id)) {
+                    console.warn(`Spurious RPC response: ${data.id}`);
+                    this.onError(SPURIOUS_RPC_RESPONSE);
+                    return;
+                }
+
+                let seqno = data.seqno;
+                let result = {
+                    "id": data.id,
+                    "fragment": null,
+                    "seqno": seqno
+                };
+                let call = this.pendingCalls.get(data.id);
+
+                if (call.callback !== null)
+                    call.callback(result);
+
+                call.resolve !== undefined && call.resolve(result);
                 this.pendingCalls.delete(data.id);
             }
         }
@@ -248,6 +292,11 @@ export class LibrpcClient
 
             this.socket.send(LibrpcClient.__pack("rpc", "call", payload, id));
         });
+    }
+
+    call_continue(id, seqno)
+    {
+        this.socket.send(LibrpcClient.__pack("rpc", "continue", seqno, id));
     }
 
     subscribe(pattern)
