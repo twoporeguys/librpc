@@ -173,7 +173,7 @@ ws_process_connection(SoupServer *ss, SoupWebsocketConnection *connection,
 	conn->wc_parent = rco;
 
 	g_object_ref(conn->wc_ws);
-	g_signal_connect(conn->wc_ws, "close", G_CALLBACK(ws_close), conn);
+	g_signal_connect(conn->wc_ws, "closed", G_CALLBACK(ws_close), conn);
 	g_signal_connect(conn->wc_ws, "message",
 	    G_CALLBACK(ws_receive_message), conn);
 }
