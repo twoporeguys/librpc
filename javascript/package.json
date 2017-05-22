@@ -18,10 +18,10 @@
     "gulp": "^3.9.0"
   },
   "dependencies": {
+    "babel-polyfill": "^6.2.0",
     "deep-diff": "^0.3.3",
     "lodash": "^3.10.1",
-    "babel-polyfill": "^6.2.0",
-    "msgpack-lite": "*"
+    "msgpack-lite": "^0.1.26"
   },
   "browser": {
     "msgpack-lite": "msgpack-lite/global"

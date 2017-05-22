@@ -3,8 +3,9 @@ fetch:
 	npm install -g browserify
 
 install:
+	npm config set prefix ${STAGEDIR_IN_CHROOT}${PREFIX}
 	npm install --unsafe-perm -g .
-	NODE_PATH=node_modules browserify --standalone middleware -r librpc-client -o module.js
+	NODE_PATH=${STAGEDIR_IN_CHROOT}${PREFIX}/lib/node_modules browserify --standalone middleware -r librpc-client -o ${BROWSERIFY_BUNDLE}
 
 clean:
 	rm -rf lib node_modules
