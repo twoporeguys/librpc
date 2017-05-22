@@ -25,6 +25,7 @@
  *
  */
 require("babel-polyfill");
+var msgpack = require("msgpack-lite");
 
 const INVALID_MSGPACK_RESPONSE = 1;
 const CONNECTION_TIMEOUT = 2;
@@ -76,7 +77,7 @@ export class LibrpcClient
     __onmessage(msg)
     {
         try {
-            var data = msgpack.decode(msg.data);
+            var data = msgpack.decode(new Uint8Array(msg.data));
         } catch (e) {
             console.warn(`Malformed response: "${msg.data}"`);
             this.onError(INVALID_MSGPACK_RESPONSE);
@@ -195,6 +196,7 @@ export class LibrpcClient
     connect()
     {
         this.socket = new WebSocket(`ws://${this.hostname}/ws`);
+        this.socket.binaryType = "arraybuffer";
         this.socket.onmessage = this.__onmessage.bind(this);
         this.socket.onopen = this.__onopen.bind(this);
         this.socket.onclose = this.__onclose.bind(this);
