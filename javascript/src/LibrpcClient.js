@@ -227,41 +227,6 @@ export class LibrpcClient
         this.socket.close();
     }
 
-    ping()
-    {
-        this.call("management.ping", [], () => {});
-    }
-
-    login(username, password)
-    {
-        let id = LibrpcClient.__uuid();
-        let payload = {
-            "username": username,
-            "password": password
-        };
-
-        this.pendingCalls.set(id, {
-            "callback": (result) => {
-                this.token = result;
-                this.onLogin(result);
-            }
-        });
-
-        this.socket.send(LibrpcClient.__pack("rpc", "auth", payload, id));
-    }
-
-    login_token(token)
-    {
-        let id = LibrpcClient.__uuid();
-        let payload = {"token": token};
-
-        this.pendingCalls.set(id, {
-            "callback": (result) => this.onLogin(result)
-        });
-
-        this.socket.send(LibrpcClient.__pack("rpc", "auth_token", payload, id));
-    }
-
     call(method, args, callback=null)
     {
         return new Promise((resolve, reject) => {
