@@ -162,6 +162,8 @@ ws_process_connection(SoupServer *ss, SoupWebsocketConnection *connection,
 	struct ws_server *server = user_data;
 	struct ws_connection *conn;
 
+	debugf("new connection");
+
 	conn = g_malloc0(sizeof(*conn));
 	conn->wc_ws = connection;
 
@@ -187,6 +189,7 @@ ws_receive_message(SoupWebsocketConnection *ws, SoupWebsocketDataType type,
 	size_t len;
 
 	data = g_bytes_get_data(message, &len);
+	debugf("received frame: addr=%p, len=%zu", data, len);
 	conn->wc_parent->rco_recv_msg(conn->wc_parent, data, len, NULL, 0, NULL);
 }
 
