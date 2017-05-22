@@ -50,7 +50,7 @@ export class RPCException
     }
 }
 
-export class LibrpcClient
+export class Client
 {
     constructor(hostname)
     {
@@ -231,7 +231,7 @@ export class LibrpcClient
     {
         return msgpack.encode({
             "namespace": namespace,
-            "id": id || LibrpcClient.__uuid(),
+            "id": id || Client.__uuid(),
             "name": name,
             "args": args
         });
@@ -274,7 +274,7 @@ export class LibrpcClient
     call(method, args, callback=null)
     {
         return new Promise((resolve, reject) => {
-            let id = LibrpcClient.__uuid();
+            let id = Client.__uuid();
             let timeout = setTimeout(() => { this.__ontimeout(id); }, this.defaultTimeout * 1000);
             let payload = {
                 "method": method,
@@ -290,19 +290,19 @@ export class LibrpcClient
                 "timeout": timeout
             });
 
-            this.socket.send(LibrpcClient.__pack("rpc", "call", payload, id));
+            this.socket.send(Client.__pack("rpc", "call", payload, id));
         });
     }
 
     call_continue(id, seqno)
     {
-        this.socket.send(LibrpcClient.__pack("rpc", "continue", seqno, id));
+        this.socket.send(Client.__pack("rpc", "continue", seqno, id));
     }
 
     subscribe(pattern)
     {
         if (!this.subscriptions.has(pattern)) {
-            this.socket.send(LibrpcClient.__pack("events", "subscribe", [pattern]));
+            this.socket.send(Client.__pack("events", "subscribe", [pattern]));
             this.subscriptions.set(pattern, 0);
         }
 
@@ -320,14 +320,14 @@ export class LibrpcClient
         this.subscriptions.set(pattern, refcount);
 
         if (refcount === 0) {
-            this.socket.send(LibrpcClient.__pack("events", "unsubscribe", [pattern]));
+            this.socket.send(Client.__pack("events", "unsubscribe", [pattern]));
             this.subscriptions.delete(pattern);
         }
     }
 
     emitEvent(name, args)
     {
-        this.socket.send(LibrpcClient.__pack("events", "event", {
+        this.socket.send(Client.__pack("events", "event", {
             "name": name,
             "args": "args"
         }));
@@ -339,7 +339,7 @@ export class LibrpcClient
             this.eventHandlers.set(name, new Map());
         }
 
-        let cookie = LibrpcClient.__uuid();
+        let cookie = Client.__uuid();
         let list = this.eventHandlers.get(name);
         list.set(cookie, callback);
         this.subscribe(name);
