@@ -94,7 +94,7 @@ ws_connect(struct rpc_connection *rco, const char *uri_string, rpc_object_t args
 	rco->rco_get_fd = ws_get_fd;
 	rco->rco_arg = conn;
 
-	g_signal_connect(conn->wc_ws, "close", G_CALLBACK(ws_close), conn);
+	g_signal_connect(conn->wc_ws, "closed", G_CALLBACK(ws_close), conn);
 	g_signal_connect(conn->wc_ws, "message", G_CALLBACK(ws_receive_message),
 	    conn);
 	return (0);
@@ -116,6 +116,7 @@ ws_listen(struct rpc_server *srv, const char *uri_str, rpc_object_t args)
 
 	uri = soup_uri_new(uri_str);
 	server = calloc(1, sizeof(*server));
+	server->ws_server = srv;
 	server->ws_soupserver = soup_server_new(
 	    SOUP_SERVER_SERVER_HEADER, "librpc",
 	    NULL);
