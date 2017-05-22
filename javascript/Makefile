@@ -1,9 +1,9 @@
 build:
 	npm install
-	npm install --prefix=${STAGEDIR_IN_CHROOT}${PREFIX}/lib --unsafe-perm -g .
+	npm install --prefix=${PREFIX}/lib --unsafe-perm -g .
 
 install:
-	NODE_PATH=${STAGEDIR_IN_CHROOT}${PREFIX}/lib/node_modules browserify --standalone librpc -r librpc-client -o ${BROWSERIFY_BUNDLE}
+	NODE_PATH=${PREFIX}/lib/node_modules browserify --standalone librpc -r librpc-client -o ${BROWSERIFY_BUNDLE}
 
 clean:
 	rm -rf lib node_modules
