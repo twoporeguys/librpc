@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.2)
 project(librpc)
 
 set(CPACK_PACKAGE_NAME librpc)
@@ -68,9 +68,16 @@ if(NOT APPLE)
     target_link_libraries(librpc BlocksRuntime)
 endif()
 
+configure_file(librpc.pc.in ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc @ONLY)
+
 install(TARGETS librpc
-        LIBRARY DESTINATION lib
-        INCLUDES DESTINATION include)
+        LIBRARY DESTINATION lib)
+
+install(DIRECTORY include/
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pkgconfig)
 
 # Compile tests
 set(CATCH_INCLUDE_DIR src/tests)
