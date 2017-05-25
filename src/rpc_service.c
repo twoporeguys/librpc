@@ -28,6 +28,7 @@
 #include <Block.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 #include <rpc/object.h>
 #include <rpc/connection.h>
 #include <rpc/service.h>
@@ -104,32 +105,46 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 	return (0);
 }
 
+struct rpc_method *
+rpc_context_find_method(rpc_context_t context, const char *name)
+{
+
+	return (g_hash_table_lookup(context->rcx_methods, name));
+}
+
 int
-rpc_context_register_method(rpc_context_t context, const char *name,
-    const char *descr, void *arg, rpc_function_t func)
+rpc_context_register_method(rpc_context_t context, struct rpc_method *m)
 {
 	struct rpc_method *method;
 
-	method = g_malloc0(sizeof(*method));
-	method->rm_name = g_strdup(name);
-	method->rm_description = g_strdup(descr);
-	method->rm_block = Block_copy(func);
-	method->rm_arg = arg;
-	g_hash_table_insert(context->rcx_methods, (gpointer)method->rm_name,
-	    method);
-
+	method = g_memdup(m, sizeof(*m));
+	g_hash_table_insert(context->rcx_methods, (gpointer)m->rm_name, method);
 	return (0);
 }
 
 int
-rpc_context_register_method_f(rpc_context_t context, const char *name,
+rpc_context_register_block(rpc_context_t context, const char *name,
+    const char *descr, void *arg, rpc_function_t func)
+{
+	struct rpc_method method;
+
+	method.rm_name = g_strdup(name);
+	method.rm_description = g_strdup(descr);
+	method.rm_block = Block_copy(func);
+	method.rm_arg = arg;
+
+	return (rpc_context_register_method(context, &method));
+}
+
+int
+rpc_context_register_func(rpc_context_t context, const char *name,
     const char *descr, void *arg, rpc_function_f func)
 {
 	rpc_function_t fn = ^(void *cookie, rpc_object_t args) {
 		return (func(cookie, args));
 	};
 
-	return (rpc_context_register_method(context, name, descr, arg, fn));
+	return (rpc_context_register_block(context, name, descr, arg, fn));
 }
 
 int

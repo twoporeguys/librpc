@@ -57,7 +57,7 @@ int
 rpc_discovery_register(rpc_context_t context)
 {
 
-	return (rpc_context_register_method_f(context, "discovery.get_methods",
+	return (rpc_context_register_func(context, "discovery.get_methods",
 	    "Returns a list of all registered methods", context,
 	    &rpc_get_methods));
 }

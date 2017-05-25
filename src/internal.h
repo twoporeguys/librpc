@@ -218,14 +218,6 @@ struct rpc_context
     	GThreadPool *		rcx_threadpool;
 };
 
-struct rpc_method
-{
-	const char *		rm_name;
-	const char *		rm_description;
-	rpc_function_t  	rm_block;
-	void *			rm_arg;
-};
-
 struct rpc_transport
 {
 	int (*connect)(struct rpc_connection *, const char *, rpc_object_t);

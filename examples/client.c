@@ -26,6 +26,8 @@
  */
 
 #include <stdio.h>
+#include <errno.h>
+#include <string.h>
 #include <rpc/object.h>
 #include <rpc/client.h>
 
@@ -36,11 +38,19 @@ main(int argc, const char *argv[])
 	rpc_connection_t conn;
 	rpc_object_t result;
 
-	client = rpc_client_create("tcp://127.0.0.1:5000", 0);
-	conn = rpc_client_get_connection(client);
-	result = rpc_connection_call_sync(conn, "block", rpc_string_create("world"), NULL);
+	client = rpc_client_create("ws://127.0.0.1:8080/ws", 0);
+	if (client == NULL) {
+		fprintf(stderr, "cannot connect: %s", strerror(errno));
+		return (1);
+	}
 
+	conn = rpc_client_get_connection(client);
+	result = rpc_connection_call_sync(conn, "hello", rpc_string_create("world"), NULL);
 	printf("result = %s\n", rpc_string_get_string_ptr(result));
+
+	result = rpc_connection_call_sync(conn, "hello", rpc_string_create("world"), NULL);
+	printf("result = %s\n", rpc_string_get_string_ptr(result));
+
 	rpc_client_close(client);
 	return (0);
 }

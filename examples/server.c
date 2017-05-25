@@ -46,22 +46,22 @@ main(int argc, const char *argv[])
 	__block rpc_server_t srv;
 
 	ctx = rpc_context_create();
-	rpc_context_register_method_f(ctx, "hello", "Hello world function",
+	rpc_context_register_func(ctx, "hello", "Hello world function",
 	    NULL, hello);
 
-	rpc_context_register_method(ctx, "block", "Test function using blocks",
+	rpc_context_register_block(ctx, "block", "Test function using blocks",
 	    NULL, ^(void *cookie, rpc_object_t args) {
 		return rpc_string_create("haha lol");
 	    });
 
 
-	rpc_context_register_method(ctx, "delay", "Sleeps for a long time",
+	rpc_context_register_block(ctx, "delay", "Sleeps for a long time",
 	    NULL, ^(void *cookie, rpc_object_t args) {
 		sleep(60);
 		return rpc_int64_create(42);
 	    });
 
-	rpc_context_register_method(ctx, "event", "Sends a bunch of events",
+	rpc_context_register_block(ctx, "event", "Sends a bunch of events",
 	    NULL, ^(void *cookie, rpc_object_t args) {
 		rpc_server_broadcast_event(srv, "server.hello", rpc_string_create("world"));
 		rpc_server_broadcast_event(srv, "oh_noes", rpc_int64_create(-1));
@@ -69,6 +69,6 @@ main(int argc, const char *argv[])
 	    });
 
 	rpc_discovery_register(ctx);
-	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
+	srv = rpc_server_create("ws://0.0.0.0:8080", ctx);
 	pause();
 }

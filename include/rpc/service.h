@@ -29,6 +29,7 @@
 #define LIBRPC_SERVICE_H
 
 #include <rpc/object.h>
+#include <rpc/connection.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,13 +41,26 @@ typedef struct rpc_context *rpc_context_t;
 typedef rpc_object_t (^rpc_function_t)(void *cookie, rpc_object_t args);
 typedef rpc_object_t (*rpc_function_f)(void *cookie, rpc_object_t args);
 
+struct rpc_method
+{
+	const char *		rm_name;
+	const char *		rm_description;
+	rpc_function_t  	rm_block;
+	void *			rm_arg;
+};
+
 rpc_context_t rpc_context_create(void);
 void rpc_context_free(rpc_context_t context);
-int rpc_context_register_method(rpc_context_t context, const char *name,
+struct rpc_method *rpc_context_find_method(rpc_context_t, const char *name);
+int rpc_context_register_method(rpc_context_t context, struct rpc_method *m);
+int rpc_context_register_block(rpc_context_t context, const char *name,
     const char *descr, void *arg, rpc_function_t func);
-int rpc_context_register_method_f(rpc_context_t context, const char *name,
+int rpc_context_register_func(rpc_context_t context, const char *name,
     const char *descr, void *arg, rpc_function_f func);
 int rpc_context_unregister_method(rpc_context_t context, const char *name);
+
+rpc_call_t rpc_context_dispatch_call(rpc_context_t context, const char *name,
+    rpc_object_t args);
 
 void *rpc_function_get_arg(void *cookie);
 void rpc_function_respond(void *cookie, rpc_object_t object);
