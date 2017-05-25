@@ -43,6 +43,8 @@
 
 #define	DECLARE_TRANSPORT(_transport)	DATA_SET(tp_set, _transport)
 
+#define	RPC_TRANSPORT_NO_SERIALIZE		(1 << 0)
+
 #define RPC_DEBUG	1
 #ifdef RPC_DEBUG
 #define debugf(...) 				\
@@ -169,6 +171,7 @@ struct rpc_connection
     	GMainContext *		rco_mainloop;
     	GThread *		rco_event_worker;
     	GAsyncQueue *		rco_event_queue;
+    	int			rco_flags;
 
     	/* Callbacks */
 	rpc_recv_msg_fn_t	rco_recv_msg;
@@ -187,8 +190,12 @@ struct rpc_server
     	GList *			rs_connections;
     	GHashTable *		rs_subscriptions;
     	GMutex			rs_subscription_mtx;
+    	GMutex			rs_mtx;
+    	GCond			rs_cv;
 	struct rpc_context *	rs_context;
     	const char *		rs_uri;
+    	int 			rs_flags;
+    	bool			rs_operational;
 
     	/* Callbacks */
     	rpc_accept_fn_t		rs_accept;
@@ -201,6 +208,8 @@ struct rpc_client
     	GMainLoop *		rci_g_loop;
     	GThread *		rci_thread;
     	rpc_connection_t 	rci_connection;
+    	const char *		rci_uri;
+    	int 			rci_flags;
 };
 
 struct rpc_context
@@ -221,6 +230,7 @@ struct rpc_transport
 {
 	int (*connect)(struct rpc_connection *, const char *, rpc_object_t);
 	int (*listen)(struct rpc_server *, const char *, rpc_object_t);
+    	int flags;
 	const char *name;
 	const char *schemas[];
 };

@@ -64,6 +64,7 @@ rpc_server_listen(void *arg)
 	}
 
 	debugf("selected transport %s", transport->name);
+	server->rs_flags = transport->flags;
 	transport->listen(server, server->rs_uri, NULL);
 	return (false);
 }

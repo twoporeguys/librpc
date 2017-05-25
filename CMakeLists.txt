@@ -47,7 +47,8 @@ set(CORE_FILES
 
 set(TRANSPORT_FILES
         src/transport/socket.c
-        src/transport/ws.c)
+        src/transport/ws.c
+        src/transport/loopback.c)
 
 set(SERIALIZER_FILES
         src/serializer/msgpack.c
@@ -99,3 +100,5 @@ add_executable(example-discovery examples/discovery.c)
 target_link_libraries(example-discovery librpc)
 add_executable(example-event examples/event.c)
 target_link_libraries(example-event librpc)
+add_executable(example-loopback examples/loopback.c)
+target_link_libraries(example-loopback librpc)

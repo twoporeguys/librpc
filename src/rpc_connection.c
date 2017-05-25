@@ -393,13 +393,15 @@ static int
 rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
     int *fds, size_t nfds, struct rpc_credentials *creds)
 {
-	rpc_object_t msg;
+	rpc_object_t msg = frame;
 
 	debugf("received frame: addr=%p, len=%zu", frame, len);
 
-	msg = rpc_msgpack_deserialize(frame, len);
-	if (msg == NULL)
-		return (-1);
+	if ((conn->rco_flags & RPC_TRANSPORT_NO_SERIALIZE) == 0) {
+		msg = rpc_msgpack_deserialize(frame, len);
+		if (msg == NULL)
+			return (-1);
+	}
 
 	if (rpc_get_type(msg) != RPC_TYPE_DICTIONARY) {
 		rpc_release(msg);
@@ -441,20 +443,25 @@ rpc_call_destroy(struct rpc_call *call)
 static int
 rpc_send_frame(rpc_connection_t conn, rpc_object_t frame)
 {
-	void *buf;
+	void *buf = frame;
 	int fds[MAX_FDS];
-	size_t len, nfds = 0;
+	size_t len = 0, nfds = 0;
 	int ret;
 
 	g_mutex_lock(&conn->rco_send_mtx);
 
-	if (rpc_msgpack_serialize(frame, &buf, &len) != 0) {
-		g_mutex_unlock(&conn->rco_send_mtx);
-		return (-1);
+	if ((conn->rco_flags & RPC_TRANSPORT_NO_SERIALIZE) == 0) {
+		if (rpc_msgpack_serialize(frame, &buf, &len) != 0) {
+			g_mutex_unlock(&conn->rco_send_mtx);
+			return (-1);
+		}
 	}
 
 	rpc_serialize_fds(frame, fds, &nfds, 0);
-	rpc_release(frame);
+
+	if ((conn->rco_flags & RPC_TRANSPORT_NO_SERIALIZE) == 0)
+		rpc_release(frame);
+
 	ret = conn->rco_send_msg(conn->rco_arg, buf, len, fds, nfds);
 	g_mutex_unlock(&conn->rco_send_mtx);
 
@@ -586,6 +593,7 @@ rpc_connection_alloc(rpc_server_t server)
 	struct rpc_connection *conn = NULL;
 
 	conn = g_malloc0(sizeof(*conn));
+	conn->rco_flags = server->rs_flags;
 	conn->rco_server = server;
 	conn->rco_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_inbound_calls = g_hash_table_new(g_str_hash, g_str_equal);
@@ -617,6 +625,7 @@ rpc_connection_create(const char *uri, int flags)
 	conn = g_malloc0(sizeof(*conn));
 	g_mutex_init(&conn->rco_send_mtx);
 	g_mutex_init(&conn->rco_subscription_mtx);
+	conn->rco_flags = transport->flags;
 	conn->rco_uri = uri;
 	conn->rco_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_inbound_calls = g_hash_table_new(g_str_hash, g_str_equal);
