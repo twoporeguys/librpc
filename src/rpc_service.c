@@ -51,6 +51,9 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	debugf("method=%p", method);
 	result = method->rm_block((void *)call, call->ric_args);
 
+	if (result == RPC_FUNCTION_STILL_RUNNING)
+		return;
+
 	if (!call->ric_streaming && !call->ric_responded)
 		rpc_connection_send_response(conn, call->ric_id, result);
 

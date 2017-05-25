@@ -35,6 +35,8 @@
 extern "C" {
 #endif
 
+#define	RPC_FUNCTION_STILL_RUNNING	((rpc_object_t)1)
+
 struct rpc_context;
 
 typedef struct rpc_context *rpc_context_t;
