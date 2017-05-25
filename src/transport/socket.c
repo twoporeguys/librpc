@@ -37,37 +37,36 @@
 #include "../internal.h"
 
 static GSocketAddress *socket_parse_uri(const char *);
-int socket_connect(struct rpc_connection *, const char *, rpc_object_t);
-int socket_listen(struct rpc_server *, const char *, rpc_object_t);
+static int socket_connect(struct rpc_connection *, const char *, rpc_object_t);
+static int socket_listen(struct rpc_server *, const char *, rpc_object_t);
 static int socket_send_msg(void *, void *, size_t, const int *, size_t);
 static int socket_abort(void *);
 static int socket_get_fd(void *);
 static void *socket_reader(void *);
 
 struct rpc_transport socket_transport = {
-    .name = "socket",
-    .schemas = {"unix", "tcp", NULL},
-    .connect = socket_connect,
-    .listen = socket_listen
+	.name = "socket",
+	.schemas = {"unix", "tcp", NULL},
+	.connect = socket_connect,
+	.listen = socket_listen
 };
 
 struct socket_server
 {
-    const char *			ss_uri;
-    struct rpc_server *			ss_server;
-    GSocketListener *			ss_listener;
-
+	const char *			ss_uri;
+	struct rpc_server *		ss_server;
+	GSocketListener *		ss_listener;
 };
 
 struct socket_connection
 {
-    const char *			sc_uri;
-    GSocketConnection *			sc_conn;
-    GSocketClient *			sc_client;
-    GInputStream * 			sc_istream;
-    GOutputStream *			sc_ostream;
-    GThread *				sc_reader_thread;
-    struct rpc_connection *		sc_parent;
+	const char *			sc_uri;
+	GSocketConnection *		sc_conn;
+	GSocketClient *			sc_client;
+	GInputStream * 			sc_istream;
+	GOutputStream *			sc_ostream;
+	GThread *			sc_reader_thread;
+	struct rpc_connection *		sc_parent;
 };
 
 static GSocketAddress *
