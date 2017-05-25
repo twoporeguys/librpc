@@ -86,7 +86,7 @@ add_library(Catch INTERFACE)
 
 set(TEST_SOURCES
         tests/tests_main.cpp
-        tests/object.cc tests/connection.cpp)
+        tests/object.cc)
 
 add_executable(tests ${TEST_SOURCES})
 target_link_libraries(tests Catch)
