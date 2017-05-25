@@ -86,19 +86,14 @@ add_library(Catch INTERFACE)
 
 set(TEST_SOURCES
         tests/tests_main.cpp
-        tests/object.cc)
+        tests/object.cc tests/connection.cpp)
 
 add_executable(tests ${TEST_SOURCES})
 target_link_libraries(tests Catch)
 target_link_libraries(tests librpc)
 
-add_executable(example-server examples/server.c)
-target_link_libraries(example-server librpc)
-add_executable(example-client examples/client.c)
-target_link_libraries(example-client librpc)
-add_executable(example-discovery examples/discovery.c)
-target_link_libraries(example-discovery librpc)
-add_executable(example-event examples/event.c)
-target_link_libraries(example-event librpc)
-add_executable(example-loopback examples/loopback.c)
-target_link_libraries(example-loopback librpc)
+add_subdirectory(examples/client)
+add_subdirectory(examples/discovery)
+add_subdirectory(examples/event)
+add_subdirectory(examples/loopback)
+add_subdirectory(examples/server)
