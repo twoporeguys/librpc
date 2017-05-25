@@ -57,15 +57,22 @@ rpc_server_listen(void *arg)
 	rpc_server_t server = arg;
 	const struct rpc_transport *transport;
 
+	g_mutex_lock(&server->rs_mtx);
+
 	transport = rpc_find_transport(g_uri_parse_scheme(server->rs_uri));
 	if (transport == NULL) {
 		errno = ENXIO;
-		return (false);
+		goto done;
 	}
 
 	debugf("selected transport %s", transport->name);
 	server->rs_flags = transport->flags;
 	transport->listen(server, server->rs_uri, NULL);
+	server->rs_operational = true;
+
+done:
+	g_cond_signal(&server->rs_cv);
+	g_mutex_unlock(&server->rs_mtx);
 	return (false);
 }
 
@@ -86,9 +93,17 @@ rpc_server_create(const char *uri, rpc_context_t context)
 	server->rs_g_loop = g_main_loop_new(server->rs_g_context, false);
 	server->rs_thread = g_thread_new("librpc server", rpc_server_worker,
 	    server);
+	g_cond_init(&server->rs_cv);
+	g_mutex_init(&server->rs_mtx);
 	g_mutex_init(&server->rs_subscription_mtx);
 
+	g_mutex_lock(&server->rs_mtx);
 	g_main_context_invoke(server->rs_g_context, rpc_server_listen, server);
+
+	while (!server->rs_operational)
+		g_cond_wait(&server->rs_cv, &server->rs_mtx);
+
+	g_mutex_unlock(&server->rs_mtx);
 	return (server);
 }
 
