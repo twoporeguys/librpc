@@ -56,6 +56,50 @@ class CallStatus(enum.IntEnum):
     ERROR = defs.RPC_CALL_ERROR
 
 
+class LibException(Exception):
+    def __init__(self, code=None, message=None, extra=None, stacktrace=None, obj=None):
+        if obj:
+            self.code = obj['code']
+            self.message = obj['message']
+            self.extra = obj.get('extra')
+            return
+
+        self.code = code
+        self.message = message
+        self.extra = extra
+
+        tb = sys.exc_info()[2]
+        if stacktrace is None and tb:
+            stacktrace = tb
+
+        if isinstance(stacktrace, types.TracebackType):
+            def serialize_traceback(tb):
+                iter_tb = tb if isinstance(tb, (list, tuple)) else traceback.extract_tb(tb)
+                return [
+                    {
+                        'filename': f[0],
+                        'lineno': f[1],
+                        'method': f[2],
+                        'code': f[3]
+                    }
+                    for f in iter_tb
+                ]
+
+            stacktrace = serialize_traceback(stacktrace)
+
+        self.stacktrace = stacktrace
+
+    def __str__(self):
+        return "Code {0}: {1} {2}".format(
+            self.code,
+            self.message,
+            self.extra if self.extra else '')
+
+
+class RpcException(LibException):
+    pass
+
+
 cdef class Object(object):
     cdef defs.rpc_object_t obj
 
