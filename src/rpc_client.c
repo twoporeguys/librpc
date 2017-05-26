@@ -46,6 +46,11 @@ rpc_client_create(const char *uri, int flags)
 
 	client = g_malloc0(sizeof(*client));
 	client->rci_connection = rpc_connection_create(uri, flags);
+	if (client->rci_connection == NULL) {
+		g_free(client);
+		return (NULL);
+	}
+
 	client->rci_g_context = g_main_context_new();
 	client->rci_g_loop = g_main_loop_new(client->rci_g_context, false);
 	client->rci_thread = g_thread_new("librpc client", rpc_client_worker,

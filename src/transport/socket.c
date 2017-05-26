@@ -26,11 +26,11 @@
  */
 
 #include <stdlib.h>
+#include <errno.h>
 #include <string.h>
 #include <gio/gio.h>
 #include <gio/gunixcredentialsmessage.h>
 #include <gio/gunixfdmessage.h>
-#include <gio/gunixfdlist.h>
 #include <gio/gunixsocketaddress.h>
 #include <libsoup/soup.h>
 #include "../linker_set.h"
@@ -148,6 +148,14 @@ socket_connect(struct rpc_connection *rco, const char *uri, rpc_object_t args)
 	conn->sc_client = g_socket_client_new();
 	conn->sc_conn = g_socket_client_connect(conn->sc_client,
 	    G_SOCKET_CONNECTABLE(addr), NULL, &err);
+	if (err != NULL) {
+		g_object_unref(conn->sc_client);
+		g_free((gpointer)conn->sc_uri);
+		g_free(conn);
+		errno = err->code;
+		return(-1);
+	}
+
 	conn->sc_istream = g_io_stream_get_input_stream(
 	    G_IO_STREAM(conn->sc_conn));
 	conn->sc_ostream = g_io_stream_get_output_stream(

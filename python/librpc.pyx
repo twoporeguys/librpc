@@ -24,11 +24,14 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+import os
 import enum
+import errno
 import types
 import datetime
 cimport defs
 from libc.stdint cimport *
+from libc.errno cimport errno
 from libc.stdlib cimport malloc, free
 
 
@@ -656,6 +659,9 @@ cdef class Client(Connection):
     def connect(self, uri):
         self.uri = uri.encode('utf-8')
         self.client = defs.rpc_client_create(self.uri, 0)
+        if self.client == NULL:
+            raise OSError(errno, os.strerror(errno))
+
         self.connection = defs.rpc_client_get_connection(self.client)
 
     def disconnect(self):
