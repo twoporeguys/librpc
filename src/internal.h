@@ -61,6 +61,8 @@ struct rpc_connection;
 struct rpc_credentials;
 struct rpc_server;
 
+extern GPrivate rpc_last_error;
+
 typedef int (*rpc_recv_msg_fn_t)(struct rpc_connection *, const void *, size_t,
     int *, size_t, struct rpc_credentials *);
 typedef int (*rpc_send_msg_fn_t)(void *, void *, size_t, const int *, size_t);
@@ -232,6 +234,7 @@ typedef void (^close_handler_t)(void);
 
 const struct rpc_transport *rpc_find_transport(const char *scheme);
 
+void rpc_set_last_error(GError *error);
 rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
 int rpc_context_dispatch(rpc_context_t, struct rpc_inbound_call *);

@@ -37,6 +37,8 @@
 #include <rpc/object.h>
 #include "internal.h"
 
+GPrivate rpc_last_error = G_PRIVATE_INIT((GDestroyNotify)g_error_free);
+
 static const char *rpc_types[] = {
     [RPC_TYPE_NULL] = "null",
     [RPC_TYPE_BOOL] = "bool",
@@ -187,6 +189,26 @@ rpc_create_description (GString *description, rpc_object_t object,
 
 	if (!nested)
 		g_string_append(description, "\n");
+}
+
+void
+rpc_set_last_error(GError *error) {
+	g_private_replace(&rpc_last_error, error);
+}
+
+rpc_error_t
+rpc_get_last_error(void) {
+	GError *g_error;
+	rpc_error_t error;
+
+	if ((g_error = g_private_get(&rpc_last_error)) == NULL)
+		return (NULL);
+
+	error = g_malloc(sizeof(rpc_error_t));
+	error->code = g_error->code;
+	error->message = g_strdup(g_error->message);
+
+	return error;
 }
 
 inline rpc_object_t

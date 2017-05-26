@@ -39,6 +39,12 @@ extern "C" {
 
 struct rpc_object;
 
+struct rpc_error
+{
+	int 			code;
+	char * 			message;
+};
+
 typedef enum {
 	RPC_TYPE_NULL,
 	RPC_TYPE_BOOL,
@@ -54,6 +60,7 @@ typedef enum {
 } rpc_type_t;
 
 typedef struct rpc_object *rpc_object_t;
+typedef struct rpc_error *rpc_error_t;
 typedef bool (^rpc_array_applier_t)(size_t index, rpc_object_t value);
 typedef bool (*rpc_array_applier_f)(void *arg, size_t index,
     rpc_object_t value);
@@ -75,6 +82,8 @@ rpc_type_t rpc_get_type(rpc_object_t object);
 		if (rpc_release_impl(_object) == 0)	\
 			_object = NULL;			\
 	} while(0)
+
+rpc_error_t rpc_get_last_error(void);
 
 rpc_object_t rpc_null_create(void);
 rpc_object_t rpc_bool_create(bool value);
