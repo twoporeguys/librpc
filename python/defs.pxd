@@ -31,7 +31,12 @@ cdef extern from "rpc/object.h" nogil:
     ctypedef struct rpc_object:
         pass
 
+    ctypedef struct rpc_error:
+        int code
+        char *message
+
     ctypedef rpc_object *rpc_object_t
+    ctypedef rpc_error *rpc_error_t
 
     ctypedef enum rpc_type_t:
         RPC_TYPE_NULL
@@ -48,6 +53,8 @@ cdef extern from "rpc/object.h" nogil:
 
     ctypedef bint (*rpc_dictionary_applier_f)(void *arg, const char *key, rpc_object_t value)
     ctypedef bint (*rpc_array_applier_f)(void *arg, size_t index, rpc_object_t value)
+
+    rpc_error_t rpc_get_last_error()
 
     rpc_object_t rpc_retain(rpc_object_t object)
     int rpc_release_impl(rpc_object_t object)

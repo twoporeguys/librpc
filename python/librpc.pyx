@@ -24,14 +24,14 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-import os
+import sys
 import enum
 import errno
 import types
+import traceback
 import datetime
 cimport defs
 from libc.stdint cimport *
-from libc.errno cimport errno
 from libc.stdlib cimport malloc, free
 
 
@@ -160,7 +160,7 @@ cdef class Object(object):
 
             return
 
-        raise TypeError(f"Cannot create RPC object - unknown value type: {type(value)}")
+        raise LibException(errno.EINVAL, f"Cannot create RPC object - unknown value type: {type(value)}")
 
     def __repr__(self):
         byte_descr = defs.rpc_copy_description(self.obj)
@@ -231,7 +231,7 @@ cdef class Object(object):
 cdef class Array(Object):
     def __init__(self, value, force_type=None):
         if not isinstance(value, list):
-            raise TypeError(f"Cannot initialize Array RPC object from {type(value)} type")
+            raise LibException(errno.EINVAL, f"Cannot initialize Array RPC object from {type(value)} type")
 
         super(Array, self).__init__(value, force_type)
 
@@ -265,7 +265,7 @@ cdef class Array(Object):
         elif isinstance(array, list):
             rpc_array = Array(array)
         else:
-            raise TypeError("Array can be extended with only with list or another Array")
+            raise LibException(errno.EINVAL, "Array can be extended with only with list or another Array")
 
         for value in rpc_array:
             rpc_value = value
@@ -332,7 +332,7 @@ cdef class Array(Object):
         self.__applier(find_index)
 
         if index is None:
-            raise ValueError(f'{value} is not in list')
+            raise LibException(errno.EINVAL, f'{value} is not in list')
 
         return index
 
@@ -391,7 +391,7 @@ cdef class Array(Object):
         rpc_value = Object.__new__(Object)
         rpc_value.obj = defs.rpc_array_get_value(self.obj, index)
         if rpc_value.obj == NULL:
-            raise IndexError('Array index out of range')
+            raise LibException(errno.ERANGE, 'Array index out of range')
 
         defs.rpc_retain(rpc_value.obj)
 
@@ -409,7 +409,7 @@ cdef class Array(Object):
 cdef class Dictionary(Object):
     def __init__(self, value, force_type=None):
         if not isinstance(value, dict):
-            raise TypeError(f"Cannot initialize Dictionary RPC object from {type(value)} type")
+            raise LibException(errno.EINVAL, "Cannot initialize Dictionary RPC object from {type(value)} type")
 
         super(Dictionary, self).__init__(value, force_type)
 
@@ -491,7 +491,7 @@ cdef class Dictionary(Object):
         elif isinstance(value, dict):
             py_dict = Dictionary(value)
         else:
-            raise TypeError("Dictionary can be updated only with dict or other Dictionary object")
+            raise LibException(errno.EINVAL, "Dictionary can be updated only with dict or other Dictionary object")
 
         for k, v in py_dict.items():
             py_value = v
@@ -553,7 +553,7 @@ cdef class Dictionary(Object):
         rpc_value = Object.__new__(Object)
         rpc_value.obj = defs.rpc_dictionary_get_value(self.obj, byte_key)
         if rpc_value.obj == NULL:
-            raise KeyError(f'Key {key} does not exist')
+            raise LibException(errno.EINVAL, f'Key {key} does not exist')
 
         defs.rpc_retain(rpc_value.obj)
 
@@ -704,7 +704,7 @@ cdef class Client(Connection):
         self.uri = uri.encode('utf-8')
         self.client = defs.rpc_client_create(self.uri, 0)
         if self.client == NULL:
-            raise OSError(errno, os.strerror(errno))
+            raise_internal_excp(rpc=False)
 
         self.connection = defs.rpc_client_get_connection(self.client)
 
@@ -732,3 +732,18 @@ cdef class Server(object):
             defs.rpc_retain(rpc_args.obj)
 
         defs.rpc_server_broadcast_event(self.server, byte_name, rpc_args.obj)
+
+
+cdef raise_internal_excp(rpc=False):
+    cdef defs.rpc_error_t error
+
+    excp = LibException
+    if rpc:
+        excp = RpcException
+
+    error = defs.rpc_get_last_error()
+    if error != NULL:
+        try:
+            raise excp(error.code, error.message.decode('utf-8'))
+        finally:
+            free(error)
