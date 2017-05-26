@@ -554,7 +554,7 @@ cdef class Context(object):
         return rpc_obj.obj
 
     def register_method(self, name, description, fn):
-        defs.rpc_context_register_method_f(
+        defs.rpc_context_register_func(
             self.context,
             name.encode('utf-8'),
             description.encode('utf-8'),
