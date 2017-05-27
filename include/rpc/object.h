@@ -85,6 +85,9 @@ rpc_type_t rpc_get_type(rpc_object_t object);
 
 rpc_error_t rpc_get_last_error(void);
 
+rpc_object_t rpc_object_pack(const char *fmt, ...);
+int rpc_object_unpack(rpc_object_t, const char *fmt, ...);
+
 rpc_object_t rpc_null_create(void);
 rpc_object_t rpc_bool_create(bool value);
 bool rpc_bool_get_value(rpc_object_t xbool);
