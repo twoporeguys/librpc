@@ -41,8 +41,8 @@ struct rpc_object;
 
 struct rpc_error
 {
-	int 			code;
-	char * 			message;
+	int 		code;
+	char * 		message;
 };
 
 typedef enum {

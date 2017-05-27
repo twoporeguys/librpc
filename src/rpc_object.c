@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <errno.h>
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <rpc/object.h>
@@ -81,7 +82,7 @@ rpc_data_hash(const uint8_t *data, size_t length)
 }
 
 static void
-rpc_create_description (GString *description, rpc_object_t object,
+rpc_create_description(GString *description, rpc_object_t object,
     unsigned int indent_lvl, bool nested)
 {
 	int i;
@@ -266,6 +267,9 @@ inline rpc_type_t
 rpc_get_type(rpc_object_t object)
 {
 
+	if (object == NULL)
+		return (RPC_TYPE_NULL);
+
 	return (object->ro_type);
 }
 
@@ -395,6 +399,159 @@ rpc_copy_description(rpc_object_t object)
 
 	return g_string_free(description, false);
 }
+
+rpc_object_t
+rpc_object_pack(const char *fmt, ...)
+{
+	GQueue *stack = g_queue_new();
+	GQueue *keys = g_queue_new();
+	rpc_object_t current = NULL;
+	rpc_object_t container = NULL;
+	va_list ap;
+	const char *key;
+	char ch;
+
+	va_start(ap, fmt);
+
+	while ((ch = *fmt++) != '\0') {
+		if (rpc_get_type(container) == RPC_TYPE_DICTIONARY && ch != '}') {
+			key = va_arg(ap, const char *);
+			g_queue_push_tail(keys, (gpointer)key);
+		}
+
+		switch (ch) {
+		case 'v':
+			current = va_arg(ap, rpc_object_t);
+			break;
+
+		case 'n':
+			current = rpc_null_create();
+			break;
+
+		case 'b':
+			current = rpc_bool_create(va_arg(ap, int));
+			break;
+
+		case 'i':
+			current = rpc_int64_create(va_arg(ap, int64_t));
+			break;
+
+		case 'u':
+			current = rpc_uint64_create(va_arg(ap, uint64_t));
+			break;
+
+		case 'd':
+			current = rpc_double_create(va_arg(ap, double));
+			break;
+
+		case 's':
+			current = rpc_string_create(va_arg(ap, const char *));
+			break;
+
+		case '{':
+			container = rpc_dictionary_create();
+			g_queue_push_tail(stack, container);
+			continue;
+
+		case '[':
+			container = rpc_array_create();
+			g_queue_push_tail(stack, container);
+			continue;
+
+		case '}':
+		case ']':
+			current = g_queue_pop_tail(stack);
+			container = g_queue_peek_tail(stack);
+			break;
+
+		default:
+			rpc_release(current);
+			errno = EINVAL;
+			return (NULL);
+		}
+
+		if (container != NULL) {
+			if (rpc_get_type(container) == RPC_TYPE_DICTIONARY) {
+				key = g_queue_pop_tail(keys);
+				rpc_dictionary_steal_value(container, key,
+				    current);
+			}
+
+			if (rpc_get_type(container) == RPC_TYPE_ARRAY) {
+				rpc_array_append_stolen_value(container,
+				    current);
+			}
+
+			continue;
+		}
+
+		return (current);
+	}
+
+	return (NULL);
+}
+
+int
+rpc_object_unpack(rpc_object_t obj, const char *fmt, ...)
+{
+	rpc_object_t array = NULL;
+	rpc_object_t current;
+	va_list ap;
+	char ch;
+	size_t idx = 0;
+
+	current = obj;
+	va_start(ap, fmt);
+
+	while ((ch = *fmt++) != '\0') {
+		if (array)
+			current = rpc_array_get_value(array, idx++);
+
+		switch (ch) {
+		case '*':
+			break;
+
+		case 'v':
+			*va_arg(ap, rpc_object_t *) = current;
+			break;
+
+		case 'b':
+			*va_arg(ap, bool *) = rpc_bool_get_value(current);
+			break;
+
+		case 'i':
+			*va_arg(ap, int64_t *) = rpc_int64_get_value(current);
+			break;
+
+		case 'u':
+			*va_arg(ap, uint64_t *) = rpc_uint64_get_value(current);
+			break;
+
+		case 'd':
+			*va_arg(ap, double *) = rpc_double_get_value(current);
+			break;
+
+		case 's':
+			*va_arg(ap, char **) = rpc_string_get_string_ptr(current);
+			break;
+
+		case '[':
+			array = current;
+			idx = 0;
+			break;
+
+		case ']':
+			array = NULL;
+			break;
+
+		default:
+			return (-1);
+		}
+	}
+
+	return (0);
+}
+
 
 inline rpc_object_t
 rpc_null_create(void)
