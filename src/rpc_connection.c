@@ -656,6 +656,7 @@ void
 rpc_connection_dispatch(rpc_connection_t conn, rpc_object_t frame)
 {
 	rpc_object_t id;
+	rpc_object_t args;
 	const struct message_handler *h;
 	const char *namespace;
 	const char *name;
@@ -679,11 +680,16 @@ rpc_connection_dispatch(rpc_connection_t conn, rpc_object_t frame)
 		if (g_strcmp0(name, h->name))
 			continue;
 
-		h->handler(conn, rpc_dictionary_get_value(frame, "args"), id);
+		args = rpc_dictionary_get_value(frame, "args");
+		rpc_retain(args);
+		rpc_retain(id);
+		rpc_release(frame);
+		h->handler(conn, args, id);
 		return;
 	}
 
 	rpc_connection_send_err(conn, id, ENXIO, "No request handler found");
+	rpc_release(frame);
 }
 
 static int
@@ -774,6 +780,7 @@ rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...)
 {
 	rpc_call_t call;
 	rpc_object_t args;
+	rpc_object_t result;
 	rpc_object_t i;
 	va_list ap;
 
@@ -785,13 +792,16 @@ rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...)
 		if (i == NULL)
 			break;
 
-		rpc_array_append_value(args, i);
+		rpc_array_append_stolen_value(args, i);
 	}
 
 	va_end(ap);
 	call = rpc_connection_call(conn, method, args);
 	rpc_call_wait(call);
-	return (rpc_call_result(call));
+	result = rpc_call_result(call);
+	rpc_call_free(call);
+	rpc_retain(result);
+	return (result);
 }
 
 rpc_call_t
@@ -819,8 +829,11 @@ rpc_connection_call(rpc_connection_t conn, const char *name, rpc_object_t args)
 	if (rpc_send_frame(conn, frame) != 0) {
 		g_mutex_unlock(&call->rc_mtx);
 		rpc_call_destroy(call);
+		rpc_release(payload);
 		return (NULL);
 	}
+
+	rpc_release(payload);
 
 	call->rc_timeout = g_timeout_source_new_seconds(conn->rco_rpc_timeout);
 	g_source_set_callback(call->rc_timeout, &rpc_call_timeout, call, NULL);
@@ -942,9 +955,10 @@ void
 rpc_call_free(rpc_call_t call)
 {
 
-	rpc_release(call->rc_args);
-	rpc_release(call->rc_result);
 	g_hash_table_remove(call->rc_conn->rco_calls,
 	    (gpointer)rpc_string_get_string_ptr(call->rc_id));
+	rpc_release(call->rc_id);
+	rpc_release(call->rc_args);
+	rpc_release(call->rc_result);
 	g_free(call);
 }

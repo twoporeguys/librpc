@@ -45,6 +45,11 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	rpc_connection_t conn = call->ric_conn;
 	rpc_object_t result;
 
+	if (method == NULL) {
+		rpc_function_error(call, ENOENT, "Method not found");
+		return;
+	}
+
 	call->ric_arg = method->rm_arg;
 	call->ric_consumer_seqno = 1;
 
@@ -90,15 +95,12 @@ int
 rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 {
 	struct rpc_method *method;
-	GError *err;
+	GError *err = NULL;
 
 	debugf("call=%p, name=%s", call, call->ric_name);
 
 	call->ric_method = g_hash_table_lookup(context->rcx_methods,
 	    call->ric_name);
-	if (call->ric_method == NULL) {
-
-	}
 
 	g_thread_pool_push(context->rcx_threadpool, call, &err);
 	if (err != NULL) {

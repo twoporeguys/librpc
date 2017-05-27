@@ -47,9 +47,11 @@ main(int argc, const char *argv[])
 	conn = rpc_client_get_connection(client);
 	result = rpc_connection_call_sync(conn, "hello", rpc_string_create("world"), NULL);
 	printf("result = %s\n", rpc_string_get_string_ptr(result));
+	rpc_release(result);
 
 	result = rpc_connection_call_sync(conn, "hello", rpc_string_create("world"), NULL);
 	printf("result = %s\n", rpc_string_get_string_ptr(result));
+	rpc_release(result);
 
 	rpc_client_close(client);
 	return (0);

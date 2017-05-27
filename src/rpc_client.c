@@ -79,6 +79,7 @@ rpc_client_close(rpc_client_t client)
 
 	rpc_connection_close(client->rci_connection);
 	g_main_loop_quit(client->rci_g_loop);
+	g_main_loop_unref(client->rci_g_loop);
 	g_main_context_unref(client->rci_g_context);
 	g_thread_join(client->rci_thread);
 	g_free(client);

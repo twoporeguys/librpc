@@ -72,7 +72,7 @@ struct socket_connection
 static GSocketAddress *
 socket_parse_uri(const char *uri_string)
 {
-	GSocketAddress *addr;
+	GSocketAddress *addr = NULL;
 	SoupURI *uri;
 
 	uri = soup_uri_new(uri_string);
@@ -80,15 +80,17 @@ socket_parse_uri(const char *uri_string)
 	if (!g_strcmp0(uri->scheme, "tcp")) {
 		addr = g_inet_socket_address_new_from_string(uri->host,
 		    uri->port);
-		return (addr);
+		goto done;
 	}
 
 	if (!g_strcmp0(uri->scheme, "unix")) {
 		addr = g_unix_socket_address_new(uri->path);
-		return (addr);
+		goto done;
 	}
 
-	return (NULL);
+done:
+	soup_uri_free(uri);
+	return (addr);
 }
 
 static void
@@ -150,6 +152,7 @@ socket_connect(struct rpc_connection *rco, const char *uri, rpc_object_t args)
 	    G_SOCKET_CONNECTABLE(addr), NULL, &err);
 	if (err != NULL) {
 		g_object_unref(conn->sc_client);
+		g_object_unref(addr);
 		g_free((gpointer)conn->sc_uri);
 		g_free(conn);
 		rpc_set_last_error(err);
@@ -168,6 +171,7 @@ socket_connect(struct rpc_connection *rco, const char *uri, rpc_object_t args)
 	conn->sc_reader_thread = g_thread_new("socket reader thread",
 	    socket_reader, (gpointer)conn);
 
+	g_object_unref(addr);
 	return (0);
 }
 
@@ -206,11 +210,12 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 	struct socket_connection *conn = arg;
 	GError *err = NULL;
 	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
-	GSocketControlMessage *cmsg[2];
+	GSocketControlMessage *cmsg[2] = { NULL };
 	GUnixFDList *fdlist;
 	GOutputVector iov[2];
 	uint32_t header[4] = { 0xdeadbeef, (uint32_t)size, 0, 0 };
 	int ncmsg = 0;
+	int ret = 0;
 
 	debugf("sending frame: addr=%p, len=%zu, nfds=%zu", buf, size, nfds);
 
@@ -229,16 +234,22 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 	    NULL, &err);
 	if (err != NULL) {
 		g_error_free(err);
-		return (-1);
+		ret = -1;
+		goto done;
 	}
 
 	g_output_stream_write(conn->sc_ostream, buf, size, NULL, &err);
 	if (err != NULL) {
 		g_error_free(err);
-		return (-1);
+		ret = -1;
+		goto done;
 	}
 
-	return (0);
+done:
+	for (int i = 0; i < ncmsg; i++)
+		g_object_unref(cmsg[i]);
+
+	return (ret);
 }
 
 static int
@@ -262,7 +273,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	g_socket_receive_message(sock, NULL, &iov, 1, &cmsg, &ncmsg, &flags,
 	    NULL, &err);
 	if (err != NULL) {
-		g_free(err);
+		g_error_free(err);
 		return (-1);
 	}
 
