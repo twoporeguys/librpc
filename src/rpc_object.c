@@ -59,7 +59,7 @@ rpc_prim_create(rpc_type_t type, union rpc_value val)
 {
 	struct rpc_object *ro;
 
-	ro = (rpc_object_t)malloc(sizeof(*ro));
+	ro = (rpc_object_t)g_malloc(sizeof(*ro));
 	if (ro == NULL)
 		abort();
 
@@ -725,10 +725,8 @@ inline rpc_object_t
 rpc_string_create(const char *string)
 {
 	union rpc_value val;
-	const char *str;
 
-	str = g_strdup(string);
-	val.rv_str = g_string_new(str);
+	val.rv_str = g_string_new(string);
 	return (rpc_prim_create(RPC_TYPE_STRING, val));
 }
 
