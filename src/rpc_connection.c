@@ -393,7 +393,7 @@ static int
 rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
     int *fds, size_t nfds, struct rpc_credentials *creds)
 {
-	rpc_object_t msg = frame;
+	rpc_object_t msg = (rpc_object_t)frame;
 
 	debugf("received frame: addr=%p, len=%zu", frame, len);
 
@@ -568,13 +568,6 @@ rpc_connection_close_inbound_call(struct rpc_inbound_call *call)
 	rpc_connection_t conn = call->ric_conn;
 
 
-}
-
-static void
-rpc_answer_call(rpc_call_t call)
-{
-	//if (call->rc_callback != NULL)
-	//	call->rc_callback(call->rc_result);
 }
 
 static rpc_object_t

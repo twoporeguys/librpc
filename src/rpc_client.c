@@ -27,6 +27,7 @@
 
 #include <rpc/client.h>
 #include <glib.h>
+#include <gio/gio.h>
 #include "internal.h"
 
 static void *
@@ -38,25 +39,30 @@ rpc_client_worker(void *arg)
 	return (NULL);
 }
 
-
 rpc_client_t
 rpc_client_create(const char *uri, int flags)
 {
 	rpc_client_t client;
 
 	client = g_malloc0(sizeof(*client));
-	client->rci_connection = rpc_connection_create(uri, flags);
+	client->rci_g_context = g_main_context_new();
+	client->rci_g_loop = g_main_loop_new(client->rci_g_context, false);
+	client->rci_thread = g_thread_new("librpc client", rpc_client_worker,
+	    client);
+	client->rci_uri = uri;
+	client->rci_flags = flags;
+	
+	g_main_context_push_thread_default(client->rci_g_context);
+	client->rci_connection = rpc_connection_create(client->rci_uri,
+	    client->rci_flags);
+	g_main_context_pop_thread_default(client->rci_g_context);
+
 	if (client->rci_connection == NULL) {
 		g_free(client);
 		return (NULL);
 	}
 
-	client->rci_g_context = g_main_context_new();
-	client->rci_g_loop = g_main_loop_new(client->rci_g_context, false);
-	client->rci_thread = g_thread_new("librpc client", rpc_client_worker,
-	    client);
 	client->rci_connection->rco_client = client;
-
 	return (client);
 }
 

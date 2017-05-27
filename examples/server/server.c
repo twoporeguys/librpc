@@ -69,6 +69,6 @@ main(int argc, const char *argv[])
 	    });
 
 	rpc_discovery_register(ctx);
-	srv = rpc_server_create("ws://0.0.0.0:8080", ctx);
+	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
 	pause();
 }

@@ -27,6 +27,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include <gio/gio.h>
 #include <gio/gunixcredentialsmessage.h>
 #include <gio/gunixfdmessage.h>
@@ -152,7 +153,8 @@ socket_connect(struct rpc_connection *rco, const char *uri, rpc_object_t args)
 		g_free((gpointer)conn->sc_uri);
 		g_free(conn);
 		rpc_set_last_error(err);
-		return(-1);
+		g_error_free(err);
+		return (-1);
 	}
 
 	conn->sc_istream = g_io_stream_get_input_stream(
