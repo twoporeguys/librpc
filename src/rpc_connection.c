@@ -222,12 +222,16 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	call = g_hash_table_lookup(conn->rco_calls,
 	    rpc_string_get_string_ptr(id));
 	if (call == NULL) {
+		rpc_release(id);
+		rpc_release(args);
 		return;
 	}
 
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_status = RPC_CALL_DONE;
 	call->rc_result = args;
+
+	rpc_release(id);
 
 	g_cond_broadcast(&call->rc_cv);
 	g_mutex_unlock(&call->rc_mtx);
@@ -243,6 +247,8 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	call = g_hash_table_lookup(conn->rco_calls,
 	    rpc_string_get_string_ptr(id));
 	if (call == NULL) {
+		rpc_release(id);
+		rpc_release(args);
 		return;
 	}
 
@@ -253,6 +259,8 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	call->rc_status = RPC_CALL_MORE_AVAILABLE;
 	call->rc_result = payload;
 	call->rc_seqno = seqno;
+
+	rpc_release(id);
 
 	g_cond_broadcast(&call->rc_cv);
 	g_mutex_unlock(&call->rc_mtx);
@@ -458,11 +466,12 @@ rpc_send_frame(rpc_connection_t conn, rpc_object_t frame)
 	}
 
 	rpc_serialize_fds(frame, fds, &nfds, 0);
+	ret = conn->rco_send_msg(conn->rco_arg, buf, len, fds, nfds);
+	rpc_release(frame);
 
 	if ((conn->rco_flags & RPC_TRANSPORT_NO_SERIALIZE) == 0)
-		rpc_release(frame);
+		free(buf);
 
-	ret = conn->rco_send_msg(conn->rco_arg, buf, len, fds, nfds);
 	g_mutex_unlock(&conn->rco_send_mtx);
 
 	return (ret);
@@ -803,8 +812,8 @@ rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...)
 	call = rpc_connection_call(conn, method, args);
 	rpc_call_wait(call);
 	result = rpc_call_result(call);
-	rpc_call_free(call);
 	rpc_retain(result);
+	rpc_call_free(call);
 	return (result);
 }
 

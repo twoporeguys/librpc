@@ -123,7 +123,9 @@ rpc_msgpack_read_object(mpack_node_t node)
 
 	case mpack_type_str:
 		cstr = g_strndup(mpack_node_str(node), mpack_node_strlen(node));
-		return (rpc_string_create(cstr));
+		result = rpc_string_create(cstr);
+		g_free(cstr);
+		return (result);
 
 	case mpack_type_bin:
 		return (rpc_data_create(mpack_node_data(node),
