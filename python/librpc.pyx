@@ -253,7 +253,11 @@ cdef class Array(Object):
     def append(self, value):
         cdef Object rpc_value
 
-        rpc_value = Object(value)
+        if isinstance(value, Object):
+            rpc_value = value
+        else:
+            rpc_value = Object(value)
+
         defs.rpc_array_append_value(self.obj, rpc_value.obj)
 
     def extend(self, array):
@@ -632,20 +636,14 @@ cdef class Connection(object):
 
     def call_sync(self, method, *args):
         cdef defs.rpc_object_t rpc_result
-        cdef defs.rpc_object_t *rpc_args
+        cdef Array rpc_args
         cdef defs.rpc_call_t call
         cdef Object rpc_value
         cdef defs.rpc_call_status_t call_status
 
-        rpc_args = <defs.rpc_object_t *>malloc(sizeof(defs.rpc_object_t) * len(args))
-        for idx, arg in enumerate(args):
-            if isinstance(arg, Object):
-                rpc_value = arg
-            else:
-                rpc_value = Object(arg)
-            rpc_args[idx] = rpc_value.obj
+        rpc_args = Array(list(args))
 
-        call = defs.rpc_connection_call(self.connection, method.encode('utf-8'), rpc_args[0])
+        call = defs.rpc_connection_call(self.connection, method.encode('utf-8'), rpc_args.obj)
         defs.rpc_call_wait(call)
         call_status = <defs.rpc_call_status_t>defs.rpc_call_status(call)
 
@@ -668,17 +666,12 @@ cdef class Connection(object):
                 defs.rpc_call_continue(call, True)
                 call_status = <defs.rpc_call_status_t>defs.rpc_call_status(call)
 
-            #defs.rpc_call_free(call)
-            free(rpc_args)
-
         if call_status == CallStatus.ERROR:
             pass
 
         if call_status == CallStatus.DONE:
             return get_chunk()
 
-        #defs.rpc_call_free(call)
-        free(rpc_args)
         return iter_chunk()
 
     def call_async(self, method, callback, *args):
