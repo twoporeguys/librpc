@@ -567,7 +567,11 @@ rpc_connection_close_inbound_call(struct rpc_inbound_call *call)
 {
 	rpc_connection_t conn = call->ric_conn;
 
-
+	g_hash_table_remove(conn->rco_inbound_calls, rpc_string_get_string_ptr(
+	    call->ric_id));
+	rpc_release(call->ric_args);
+	rpc_release(call->ric_id);
+	g_free(call);
 }
 
 static rpc_object_t
