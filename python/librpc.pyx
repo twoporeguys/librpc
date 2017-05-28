@@ -637,6 +637,7 @@ cdef class Connection(object):
     def call_sync(self, method, *args):
         cdef defs.rpc_object_t rpc_result
         cdef Array rpc_args
+        cdef Dictionary error
         cdef defs.rpc_call_t call
         cdef Object rpc_value
         cdef defs.rpc_call_status_t call_status
@@ -644,6 +645,9 @@ cdef class Connection(object):
         rpc_args = Array(list(args))
 
         call = defs.rpc_connection_call(self.connection, method.encode('utf-8'), rpc_args.obj)
+        if call == NULL:
+            raise_internal_excp(rpc=True)
+
         defs.rpc_call_wait(call)
         call_status = <defs.rpc_call_status_t>defs.rpc_call_status(call)
 
@@ -667,7 +671,11 @@ cdef class Connection(object):
                 call_status = <defs.rpc_call_status_t>defs.rpc_call_status(call)
 
         if call_status == CallStatus.ERROR:
-            pass
+            rpc_value = get_chunk()
+            defs.rpc_retain(rpc_value.obj)
+            error = Dictionary.__new__(Dictionary)
+            error.obj = rpc_value.obj
+            raise RpcException(error['code'].value, error['message'].value)
 
         if call_status == CallStatus.DONE:
             return get_chunk()
