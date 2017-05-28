@@ -809,7 +809,9 @@ rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...)
 	}
 
 	va_end(ap);
-	call = rpc_connection_call(conn, method, args);
+	if ((call = rpc_connection_call(conn, method, args)) == NULL)
+		return (NULL);
+
 	rpc_call_wait(call);
 	result = rpc_call_result(call);
 	rpc_retain(result);

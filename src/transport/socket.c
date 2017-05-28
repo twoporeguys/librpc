@@ -233,6 +233,7 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 	g_socket_send_message(sock, NULL, iov, 1, cmsg, ncmsg, 0,
 	    NULL, &err);
 	if (err != NULL) {
+		rpc_set_last_error(err);
 		g_error_free(err);
 		ret = -1;
 		goto done;
@@ -240,6 +241,7 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 
 	g_output_stream_write(conn->sc_ostream, buf, size, NULL, &err);
 	if (err != NULL) {
+		rpc_set_last_error(err);
 		g_error_free(err);
 		ret = -1;
 		goto done;
@@ -273,6 +275,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	g_socket_receive_message(sock, NULL, &iov, 1, &cmsg, &ncmsg, &flags,
 	    NULL, &err);
 	if (err != NULL) {
+		rpc_set_last_error(err);
 		g_error_free(err);
 		return (-1);
 	}
