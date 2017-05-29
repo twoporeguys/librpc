@@ -60,6 +60,10 @@ def main():
     context.register_method('sub', 'Subtracts two numbers', subtracter)
     context.register_method('stream', 'Streams some numbers', streamer)
 
+    def sigint(signo, frame):
+        server.close()
+
+    signal.signal(signal.SIGINT, sigint)
     signal.pause()
 
 

@@ -742,6 +742,9 @@ cdef class Server(object):
 
         defs.rpc_server_broadcast_event(self.server, byte_name, rpc_args.obj)
 
+    def close(self):
+        defs.rpc_server_close(self.server)
+
 
 cdef raise_internal_excp(rpc=False):
     cdef defs.rpc_error_t error
