@@ -596,7 +596,10 @@ cdef class Context(object):
             for chunk in output:
                 rpc_obj = Object(chunk)
                 defs.rpc_retain(rpc_obj.obj)
-                ret = defs.rpc_function_yield(cookie, rpc_obj.obj)
+
+                with nogil:
+                    ret = defs.rpc_function_yield(cookie, rpc_obj.obj)
+                
                 if ret:
                     break
 
