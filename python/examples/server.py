@@ -31,15 +31,15 @@ import time
 
 
 def hello(string):
-    return f'Hello {string}'
+    return f'Hello {string.value}'
 
 
 def adder(n1, n2):
-    return n1 + n2
+    return n1.value + n2.value
 
 
 def subtracter(n1, n2):
-    return n1 - n2
+    return n1.value - n2.value
 
 
 def streamer():

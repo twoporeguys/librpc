@@ -24,10 +24,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-import ast
+import types
 import argparse
 import librpc
-import readline
 
 
 def main():
@@ -48,7 +47,13 @@ def main():
             method = tokens[0]
             args = [eval(s) for s in tokens[1:]]
 
-            print(client.call_sync(method, *args))
+            result = client.call_sync(method, *args)
+            if isinstance(result, types.GeneratorType):
+                for r in result:
+                    print(r)
+            else:
+                print(result)
+
     except KeyboardInterrupt:
         pass
 
