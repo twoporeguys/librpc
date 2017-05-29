@@ -48,6 +48,11 @@ def streamer():
         yield {'index': i}
 
 
+def slacker():
+    time.sleep(30)
+    return "Oh hey.. You're still here?"
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--uri', help='Server URI')
@@ -59,6 +64,7 @@ def main():
     context.register_method('add', 'Adds two numbers', adder)
     context.register_method('sub', 'Subtracts two numbers', subtracter)
     context.register_method('stream', 'Streams some numbers', streamer)
+    context.register_method('delay', 'Waits for long time, then returns a string', slacker)
 
     def sigint(signo, frame):
         server.close()
