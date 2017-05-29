@@ -27,6 +27,7 @@
 import argparse
 import librpc
 import signal
+import time
 
 
 def hello(string):
@@ -41,6 +42,12 @@ def subtracter(n1, n2):
     return n1 - n2
 
 
+def streamer():
+    for i in range(0, 10):
+        time.sleep(0.1)
+        yield {'index': i}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--uri', help='Server URI')
@@ -51,6 +58,7 @@ def main():
     context.register_method('hello', 'Classic hello world', hello)
     context.register_method('add', 'Adds two numbers', adder)
     context.register_method('sub', 'Subtracts two numbers', subtracter)
+    context.register_method('stream', 'Streams some numbers', streamer)
 
     signal.pause()
 
