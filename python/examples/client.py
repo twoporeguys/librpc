@@ -24,7 +24,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-import types
 import argparse
 import librpc
 
@@ -48,7 +47,7 @@ def main():
             args = [eval(s) for s in tokens[1:]]
 
             result = client.call_sync(method, *args)
-            if isinstance(result, types.GeneratorType):
+            if hasattr(result, '__next__'):
                 for r in result:
                     print(r)
             else:
