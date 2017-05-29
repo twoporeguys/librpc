@@ -93,7 +93,8 @@ class LibException(Exception):
         return "Code {0}: {1} {2}".format(
             self.code,
             self.message,
-            self.extra if self.extra else '')
+            self.extra if self.extra else ''
+        )
 
 
 class RpcException(LibException):
@@ -577,10 +578,11 @@ cdef class Context(object):
     cdef defs.rpc_context_t context
 
     def __init__(self):
+        defs.PyEval_InitThreads()
         self.context = defs.rpc_context_create()
 
     @staticmethod
-    cdef defs.rpc_object_t c_cb_function(void *cookie, defs.rpc_object_t args):
+    cdef defs.rpc_object_t c_cb_function(void *cookie, defs.rpc_object_t args) with gil:
         cdef Array args_array
         cdef Object rpc_obj
         cdef object cb = <object>defs.rpc_function_get_arg(cookie)

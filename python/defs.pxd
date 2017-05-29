@@ -27,6 +27,10 @@
 from libc.stdint cimport *
 
 
+cdef extern from "Python.h" nogil:
+    void PyEval_InitThreads()
+
+
 cdef extern from "rpc/object.h" nogil:
     ctypedef struct rpc_object:
         pass
