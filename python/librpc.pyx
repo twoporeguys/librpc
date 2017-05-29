@@ -237,7 +237,7 @@ cdef class Array(Object):
         super(Array, self).__init__(value, force_type)
 
     @staticmethod
-    cdef bint c_applier(void *arg, size_t index, defs.rpc_object_t value):
+    cdef bint c_applier(void *arg, size_t index, defs.rpc_object_t value) with gil:
         cdef object cb = <object>arg
         cdef Object py_value
 
@@ -419,7 +419,7 @@ cdef class Dictionary(Object):
         super(Dictionary, self).__init__(value, force_type)
 
     @staticmethod
-    cdef bint c_applier(void *arg, char *key, defs.rpc_object_t value):
+    cdef bint c_applier(void *arg, char *key, defs.rpc_object_t value) with gil:
         cdef object cb = <object>arg
         cdef Object py_value
 
@@ -591,7 +591,7 @@ cdef class Context(object):
         args_array = Array.__new__(Array)
         args_array.obj = args
 
-        output = cb(args_array)
+        output = cb(*[a for a in args_array])
         if isinstance(output, types.GeneratorType):
             for chunk in output:
                 rpc_obj = Object(chunk)
@@ -625,8 +625,11 @@ cdef class Context(object):
 cdef class Connection(object):
     cdef defs.rpc_connection_t connection
 
+    def __init__(self):
+        defs.PyEval_InitThreads()
+
     @staticmethod
-    cdef void c_ev_handler(const char *name, defs.rpc_object_t args, void *arg):
+    cdef void c_ev_handler(const char *name, defs.rpc_object_t args, void *arg) with gil:
         cdef Object event_args
         cdef object handler = <object>arg
 
@@ -702,6 +705,9 @@ cdef class Connection(object):
 cdef class Client(Connection):
     cdef defs.rpc_client_t client
     cdef object uri
+
+    def __init__(self):
+        super(Client, self).__init__()
 
     def connect(self, uri):
         self.uri = uri.encode('utf-8')
