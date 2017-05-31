@@ -14,6 +14,7 @@ find_package (PkgConfig REQUIRED)
 pkg_check_modules (GLIB REQUIRED glib-2.0>=2.52)
 pkg_check_modules (GIO REQUIRED gio-unix-2.0)
 pkg_check_modules(SOUP REQUIRED libsoup-2.4)
+pkg_check_modules(YAJL REQUIRED yajl>=2.1.0)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_FLAGS -fblocks)
@@ -25,6 +26,8 @@ include_directories (${GIO_INCLUDE_DIRS})
 link_directories (${GIO_LIBRARY_DIRS})
 include_directories (${SOUP_INCLUDE_DIRS})
 link_directories (${SOUP_LIBRARY_DIRS})
+include_directories (${YAJL_INCLUDE_DIRS})
+link_directories (${YAJL_LIBRARY_DIRS})
 
 set(HEADERS
         include/rpc/service.h
@@ -53,6 +56,8 @@ set(TRANSPORT_FILES
 set(SERIALIZER_FILES
         src/serializer/msgpack.c
         src/serializer/msgpack.h
+        src/serializer/json.c
+        src/serializer/json.h
         contrib/mpack/mpack.c)
 
 add_library(librpc SHARED
@@ -65,6 +70,7 @@ set_target_properties(librpc PROPERTIES PREFIX "")
 target_link_libraries(librpc ${GLIB_LIBRARIES})
 target_link_libraries(librpc ${GIO_LIBRARIES})
 target_link_libraries(librpc ${SOUP_LIBRARIES})
+target_link_libraries(librpc ${YAJL_LIBRARIES})
 if(NOT APPLE)
     target_link_libraries(librpc BlocksRuntime)
 endif()

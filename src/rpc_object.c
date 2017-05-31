@@ -225,6 +225,9 @@ inline int
 rpc_release_impl(rpc_object_t object)
 {
 
+	if (object == NULL)
+		return (0);
+
 	assert(object->ro_refcnt > 0);
 	if (g_atomic_int_dec_and_test(&object->ro_refcnt)) {
 		switch (object->ro_type) {
@@ -728,6 +731,15 @@ rpc_string_create(const char *string)
 	union rpc_value val;
 
 	val.rv_str = g_string_new(string);
+	return (rpc_prim_create(RPC_TYPE_STRING, val));
+}
+
+inline rpc_object_t
+rpc_string_create_len(const char *string, size_t length)
+{
+	union rpc_value val;
+
+	val.rv_str = g_string_new_len(string, length);
 	return (rpc_prim_create(RPC_TYPE_STRING, val));
 }
 

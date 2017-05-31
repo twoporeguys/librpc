@@ -106,6 +106,7 @@ const void *rpc_data_get_bytes_ptr(rpc_object_t xdata);
 size_t rpc_data_get_bytes(rpc_object_t xdata, void *buffer, size_t off,
     size_t length);
 rpc_object_t rpc_string_create(const char *string);
+rpc_object_t rpc_string_create_len(const char *string, size_t length);
 rpc_object_t rpc_string_create_with_format(const char *fmt, ...);
 rpc_object_t rpc_string_create_with_format_and_arguments(const char *fmt,
     va_list ap);
