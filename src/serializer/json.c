@@ -54,7 +54,7 @@ rpc_json_context_insert_value(void *ctx_ptr, rpc_object_t value)
 		return (1);
 	}
 
-	leaf = g_queue_peek_head(ctx->leaf_stack);
+	leaf = (rpc_object_t)g_queue_peek_head(ctx->leaf_stack);
 	if (leaf == NULL)
 		return (0);
 
@@ -153,7 +153,8 @@ static int
 rpc_json_end_map(void *ctx_ptr)
 {
 	parse_context_t ctx = (parse_context_t)ctx_ptr;
-	rpc_object_t leaf = g_queue_peek_head(ctx->leaf_stack);
+	rpc_object_t leaf;
+	leaf = (rpc_object_t)g_queue_pop_head(ctx->leaf_stack);
 
 	if (leaf == NULL)
 		return (0);
@@ -179,7 +180,7 @@ static int
 rpc_json_end_array(void *ctx_ptr)
 {
 	parse_context_t ctx = (parse_context_t)ctx_ptr;
-	rpc_object_t leaf = g_queue_peek_head(ctx->leaf_stack);
+	rpc_object_t leaf = (rpc_object_t)g_queue_pop_head(ctx->leaf_stack);
 
 	if (leaf == NULL)
 		return (0);
@@ -238,7 +239,7 @@ rpc_json_write_object_ext(yajl_gen gen, rpc_object_t object,
 
 	case RPC_TYPE_BINARY:
 		data_buf = rpc_data_get_bytes_ptr(object);
-		base64_data = g_base64_encode(data_buf,
+		base64_data = g_base64_encode((const guchar *)data_buf,
 		    object->ro_value.rv_bin.length);
 
 		status = yajl_gen_string(gen, (const uint8_t *)base64_data,
@@ -368,7 +369,7 @@ rpc_json_deserialize(const void *frame, size_t size)
 	ctx.key_buf = NULL;
 
 	handle = yajl_alloc(&callbacks, NULL, (void *) &ctx);
-	if (yajl_parse(handle, frame, size) != yajl_status_ok) {
+	if (yajl_parse(handle, (const guchar *)frame, size) != yajl_status_ok) {
 		rpc_release(ctx.result);
 		goto end;
 	}
