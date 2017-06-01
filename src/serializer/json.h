@@ -28,6 +28,10 @@
 #ifndef LIBRPC_JSON_H
 #define LIBRPC_JSON_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define	JSON_EXTTYPE_UINT64	"$uint"
 #define	JSON_EXTTYPE_DATE	"$date"
 #define	JSON_EXTTYPE_BINARY	"$bin"
@@ -35,5 +39,9 @@
 
 int rpc_json_serialize(rpc_object_t, void **, size_t *);
 rpc_object_t rpc_json_deserialize(const void *, size_t);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //LIBRPC_JSON_H

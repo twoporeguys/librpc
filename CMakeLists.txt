@@ -92,6 +92,7 @@ add_library(Catch INTERFACE)
 
 set(TEST_SOURCES
         tests/tests_main.cpp
+        tests/json.cc
         tests/object.cc)
 
 add_executable(tests ${TEST_SOURCES})
