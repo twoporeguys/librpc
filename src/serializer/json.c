@@ -348,22 +348,22 @@ rpc_json_write_object(yajl_gen gen, rpc_object_t object)
 	case RPC_TYPE_UINT64:
 		return (rpc_json_write_object_ext(gen, object,
 		    (const uint8_t *)JSON_EXTTYPE_UINT64,
-		    sizeof(JSON_EXTTYPE_UINT64)));
+		    strlen(JSON_EXTTYPE_UINT64)));
 
 	case RPC_TYPE_DATE:
 		return (rpc_json_write_object_ext(gen, object,
 		    (const uint8_t *)JSON_EXTTYPE_DATE,
-		    sizeof(JSON_EXTTYPE_DATE)));
+		    strlen(JSON_EXTTYPE_DATE)));
 
 	case RPC_TYPE_BINARY:
 		return (rpc_json_write_object_ext(gen, object,
 		    (const uint8_t *)JSON_EXTTYPE_BINARY,
-		    sizeof(JSON_EXTTYPE_BINARY)));
+		    strlen(JSON_EXTTYPE_BINARY)));
 
 	case RPC_TYPE_FD:
 		return (rpc_json_write_object_ext(gen, object,
 		    (const uint8_t *)JSON_EXTTYPE_FD,
-		    sizeof(JSON_EXTTYPE_FD)));
+		    strlen(JSON_EXTTYPE_FD)));
 
 	case RPC_TYPE_DOUBLE:
 		return (yajl_gen_double(gen, rpc_double_get_value(object)));
