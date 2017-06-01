@@ -91,6 +91,73 @@ rpc_json_context_insert_value(void *ctx_ptr, rpc_object_t value)
 	return (1);
 }
 
+static void
+rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
+{
+	parse_context_t ctx = (parse_context_t)ctx_ptr;
+	rpc_object_t branch;
+	rpc_object_t dict_value;
+	rpc_object_t unpacked_value;
+	void *data_buf;
+	size_t data_len;
+	size_t *data_len_ptr;
+	const char *base64_data;
+	GHashTableIter iter;
+	gpointer key, value;
+
+	if (rpc_dictionary_has_key(leaf, JSON_EXTTYPE_UINT64)) {
+		dict_value = rpc_dictionary_get_value(leaf,
+		    JSON_EXTTYPE_UINT64);
+		unpacked_value = rpc_uint64_create(
+		    (uint64_t)rpc_int64_get_value(dict_value));
+
+	} else if (rpc_dictionary_has_key(leaf, JSON_EXTTYPE_BINARY)) {
+		dict_value = rpc_dictionary_get_value(leaf,
+		    JSON_EXTTYPE_BINARY);
+		base64_data = rpc_string_get_string_ptr(dict_value);
+		data_buf = g_base64_decode(base64_data, &data_len);
+		unpacked_value = rpc_data_create(data_buf, data_len, false);
+
+	} else if (rpc_dictionary_has_key(leaf, JSON_EXTTYPE_DATE)) {
+		dict_value = rpc_dictionary_get_value(leaf,
+		    JSON_EXTTYPE_DATE);
+		unpacked_value = rpc_date_create(
+		    (uint64_t)rpc_int64_get_value(dict_value));
+
+	} else if (rpc_dictionary_has_key(leaf, JSON_EXTTYPE_FD)) {
+		dict_value = rpc_dictionary_get_value(leaf,
+		    JSON_EXTTYPE_FD);
+		unpacked_value = rpc_fd_create(
+		    (int)rpc_int64_get_value(dict_value));
+	}
+	else
+		return;
+
+	branch = (rpc_object_t)g_queue_peek_head(ctx->leaf_stack);
+
+	if (branch == NULL) {
+		ctx->result = unpacked_value;
+		g_queue_push_head(ctx->leaf_stack, unpacked_value);
+
+	} else if (branch->ro_type == RPC_TYPE_DICTIONARY) {
+		g_hash_table_iter_init(&iter, branch->ro_value.rv_dict);
+
+		while (g_hash_table_iter_next(&iter, &key, &value)) {
+			if (value == leaf) {
+				g_hash_table_iter_replace(&iter,
+				    unpacked_value);
+				break;
+			}
+		}
+
+	} else if (branch->ro_type == RPC_TYPE_ARRAY) {
+		rpc_array_steal_value(branch, (rpc_array_get_count(branch) - 1),
+		    unpacked_value);
+
+	}
+}
+
+
 static int
 rpc_json_parse_null(void *ctx)
 {
@@ -154,6 +221,8 @@ rpc_json_end_map(void *ctx_ptr)
 {
 	parse_context_t ctx = (parse_context_t)ctx_ptr;
 	rpc_object_t leaf;
+	size_t leaf_size;
+
 	leaf = (rpc_object_t)g_queue_pop_head(ctx->leaf_stack);
 
 	if (leaf == NULL)
@@ -165,7 +234,11 @@ rpc_json_end_map(void *ctx_ptr)
 	if (ctx->key_buf != NULL)
 		return (0);
 
-	g_queue_pop_head(ctx->leaf_stack);
+	leaf_size = rpc_dictionary_get_count(leaf);
+	if (leaf_size == 1) {
+		rpc_json_try_unpack_ext(ctx_ptr, leaf);
+	}
+
 	return (1);
 }
 
@@ -191,7 +264,6 @@ rpc_json_end_array(void *ctx_ptr)
 	if (ctx->key_buf != NULL)
 		return (0);
 
-	g_queue_pop_head(ctx->leaf_stack);
 	return (1);
 }
 
