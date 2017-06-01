@@ -636,13 +636,13 @@ cdef class Connection(object):
     @staticmethod
     cdef void c_ev_handler(const char *name, defs.rpc_object_t args, void *arg) with gil:
         cdef Object event_args
-        cdef object ev_handlers = <object>arg
+        cdef object handler = <object>arg
 
         event_args = Object.__new__(Object)
         event_args.obj = args
         defs.rpc_retain(args)
 
-        ev_handlers[name.decode('utf-8')](event_args)
+        handler(event_args)
 
     def call_sync(self, method, *args):
         cdef defs.rpc_object_t rpc_result
@@ -705,7 +705,7 @@ cdef class Connection(object):
             self.connection,
             byte_name,
             <defs.rpc_handler_f>Connection.c_ev_handler,
-            <void *>self.ev_handlers
+            <void *>fn
         )
 
 cdef class Client(Connection):
