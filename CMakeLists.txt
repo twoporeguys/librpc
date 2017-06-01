@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.2)
 project(librpc)
 
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_CXX_COMPILER clang++)
+
 set(CPACK_PACKAGE_NAME librpc)
 set(CPACK_PACKAGE_VENDOR Two Pore Guys)
 set(CPACK_PACKAGE_VERSION_MAJOR 6)
