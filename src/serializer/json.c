@@ -43,7 +43,7 @@ struct parse_context
 typedef struct parse_context *parse_context_t;
 
 static int
-context_insert_value(void *ctx_ptr, rpc_object_t value)
+rpc_json_context_insert_value(void *ctx_ptr, rpc_object_t value)
 {
 	rpc_object_t leaf;
 	parse_context_t ctx = (parse_context_t)ctx_ptr;
@@ -95,35 +95,35 @@ static int
 rpc_json_parse_null(void *ctx)
 {
 
-	return context_insert_value(ctx, rpc_null_create());
+	return rpc_json_context_insert_value(ctx, rpc_null_create());
 }
 
 static int
 rpc_json_parse_boolean(void * ctx, int value)
 {
 
-	return context_insert_value(ctx, rpc_bool_create((bool)value));
+	return rpc_json_context_insert_value(ctx, rpc_bool_create((bool)value));
 }
 
 static int
 rpc_json_parse_integer(void *ctx, long long value)
 {
 
-	return context_insert_value(ctx, rpc_int64_create(value));
+	return rpc_json_context_insert_value(ctx, rpc_int64_create(value));
 }
 
 static int
 rpc_json_parse_double(void *ctx, double value)
 {
 
-	return context_insert_value(ctx, rpc_double_create(value));
+	return rpc_json_context_insert_value(ctx, rpc_double_create(value));
 }
 
 static int
 rpc_json_parse_string(void *ctx, const unsigned char *value, size_t len)
 {
 
-	return context_insert_value(ctx,
+	return rpc_json_context_insert_value(ctx,
 	    rpc_string_create_len((const char *)value, len));
 }
 
@@ -145,7 +145,7 @@ static int
 rpc_json_start_map(void *ctx)
 {
 
-	return context_insert_value(ctx, rpc_dictionary_create());
+	return rpc_json_context_insert_value(ctx, rpc_dictionary_create());
 }
 
 
@@ -172,7 +172,7 @@ static int
 rpc_json_start_array(void *ctx)
 {
 
-	return context_insert_value(ctx, rpc_array_create());
+	return rpc_json_context_insert_value(ctx, rpc_array_create());
 }
 
 static int
