@@ -627,20 +627,22 @@ cdef class Context(object):
 
 cdef class Connection(object):
     cdef defs.rpc_connection_t connection
+    cdef object ev_handlers
 
     def __init__(self):
         defs.PyEval_InitThreads()
+        self.ev_handlers = {}
 
     @staticmethod
     cdef void c_ev_handler(const char *name, defs.rpc_object_t args, void *arg) with gil:
         cdef Object event_args
-        cdef object handler = <object>arg
+        cdef object ev_handlers = <object>arg
 
         event_args = Object.__new__(Object)
         event_args.obj = args
         defs.rpc_retain(args)
 
-        output = handler(event_args)
+        ev_handlers[name.decode('utf-8')](event_args)
 
     def call_sync(self, method, *args):
         cdef defs.rpc_object_t rpc_result
@@ -698,11 +700,12 @@ cdef class Connection(object):
 
     def register_event_handler(self, name, fn):
         byte_name = name.encode('utf-8')
+        self.ev_handlers[name] = fn
         defs.rpc_connection_register_event_handler_f(
             self.connection,
             byte_name,
             <defs.rpc_handler_f>Connection.c_ev_handler,
-            <void *>fn
+            <void *>self.ev_handlers
         )
 
 cdef class Client(Connection):
