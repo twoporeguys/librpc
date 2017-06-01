@@ -45,8 +45,8 @@
 
 #define	RPC_TRANSPORT_NO_SERIALIZE		(1 << 0)
 
-#define RPC_DEBUG	1
-#ifdef RPC_DEBUG
+#define RPC_DEBUG	0
+#if RPC_DEBUG
 #define debugf(...) 				\
     do { 					\
     	fprintf(stderr, "%s: ", __func__);	\
