@@ -94,7 +94,7 @@ done:
 }
 
 static void
-socket_accept(GObject *source, GAsyncResult *result, void *data)
+socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 {
 	struct socket_server *server = data;
 	struct socket_connection *conn;
@@ -134,7 +134,8 @@ done:
 }
 
 int
-socket_connect(struct rpc_connection *rco, const char *uri, rpc_object_t args)
+socket_connect(struct rpc_connection *rco, const char *uri,
+    rpc_object_t args __unused)
 {
 	GError *err = NULL;
 	GSocketAddress *addr;
@@ -176,7 +177,8 @@ socket_connect(struct rpc_connection *rco, const char *uri, rpc_object_t args)
 }
 
 int
-socket_listen(struct rpc_server *srv, const char *uri, rpc_object_t args)
+socket_listen(struct rpc_server *srv, const char *uri,
+    rpc_object_t args __unused)
 {
 	GError *err = NULL;
 	GSocketAddress *addr;
@@ -311,7 +313,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 		return (-1);
 	}
 
-	if (read < length) {
+	if (read < (ssize_t)length) {
 		/* Short read */
 		free(frame);
 		return (-1);

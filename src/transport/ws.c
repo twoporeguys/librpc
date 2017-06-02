@@ -106,7 +106,8 @@ err:
 }
 
 static int
-ws_listen(struct rpc_server *srv, const char *uri_str, rpc_object_t args)
+ws_listen(struct rpc_server *srv, const char *uri_str,
+    rpc_object_t args __unused)
 {
 	GError *err = NULL;
 	GSocketAddress *addr;
@@ -116,6 +117,7 @@ ws_listen(struct rpc_server *srv, const char *uri_str, rpc_object_t args)
 
 	uri = soup_uri_new(uri_str);
 	server = calloc(1, sizeof(*server));
+	server->ws_path = g_strdup(uri->path);
 	server->ws_server = srv;
 	server->ws_soupserver = soup_server_new(
 	    SOUP_SERVER_SERVER_HEADER, "librpc",
@@ -123,8 +125,8 @@ ws_listen(struct rpc_server *srv, const char *uri_str, rpc_object_t args)
 
 	soup_server_add_handler(server->ws_soupserver, "/", ws_process_banner,
 	    server, NULL);
-	soup_server_add_websocket_handler(server->ws_soupserver, "/ws", NULL,
-	    NULL, ws_process_connection, server, NULL);
+	soup_server_add_websocket_handler(server->ws_soupserver, server->ws_path,
+	    NULL, NULL, ws_process_connection, server, NULL);
 
 	addr = g_inet_socket_address_new_from_string(uri->host, uri->port);
 	soup_server_listen(server->ws_soupserver, addr, 0, &err);
@@ -144,20 +146,24 @@ done:
 }
 
 static void
-ws_process_banner(SoupServer *ss, SoupMessage *msg, const char *path,
-    GHashTable *query, SoupClientContext *client, gpointer user_data)
+ws_process_banner(SoupServer *ss __unused, SoupMessage *msg,
+    const char *path __unused, GHashTable *query __unused,
+    SoupClientContext *client __unused, gpointer user_data)
 {
-	const char *resp =
+	struct ws_server *server = user_data;
+	const char *resp = g_strdup_printf(
 	    "<h1>Hello from librpc</h1>"
-	    "<p>Please use WebSocket endpoint located at /ws</p>";
+	    "<p>Please use WebSockets endpoint located at %s</p>",
+	    server->ws_path);
 
 	soup_message_set_status(msg, 200);
 	soup_message_body_append(msg->response_body, SOUP_MEMORY_STATIC, resp, strlen(resp));
 }
 
 static void
-ws_process_connection(SoupServer *ss, SoupWebsocketConnection *connection,
-    const char *path, SoupClientContext *client, gpointer user_data)
+ws_process_connection(SoupServer *ss __unused,
+    SoupWebsocketConnection *connection, const char *path __unused,
+    SoupClientContext *client __unused, gpointer user_data)
 {
 	rpc_connection_t rco;
 	struct ws_server *server = user_data;
@@ -182,8 +188,8 @@ ws_process_connection(SoupServer *ss, SoupWebsocketConnection *connection,
 }
 
 static void
-ws_receive_message(SoupWebsocketConnection *ws, SoupWebsocketDataType type,
-    GBytes *message, gpointer user_data)
+ws_receive_message(SoupWebsocketConnection *ws __unused,
+    SoupWebsocketDataType type __unused, GBytes *message, gpointer user_data)
 {
 	struct ws_connection *conn = user_data;
 	const void *data;
@@ -204,7 +210,8 @@ ws_close(SoupWebsocketConnection *ws, gpointer user_data)
 }
 
 static int
-ws_send_message(void *arg, void *buf, size_t len, const int *fds, size_t nfds)
+ws_send_message(void *arg, void *buf, size_t len, const int *fds __unused,
+    size_t nfds __unused)
 {
 	struct ws_connection *conn = arg;
 

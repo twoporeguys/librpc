@@ -334,24 +334,27 @@ on_rpc_error(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 }
 
 static void
-on_events_event(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
+on_events_event(rpc_connection_t conn, rpc_object_t args,
+    rpc_object_t id __unused)
 {
 
 	g_async_queue_push(conn->rco_event_queue, args);
 }
 
 static void
-on_events_event_burst(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
+on_events_event_burst(rpc_connection_t conn, rpc_object_t args,
+    rpc_object_t id __unused)
 {
 
-	rpc_array_apply(args, ^(size_t idx, rpc_object_t value) {
+	rpc_array_apply(args, ^(size_t idx __unused, rpc_object_t value) {
 	    g_async_queue_push(conn->rco_event_queue, value);
 	    return ((bool)true);
 	});
 }
 
 static void
-on_events_subscribe(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
+on_events_subscribe(rpc_connection_t conn, rpc_object_t args,
+    rpc_object_t id __unused)
 {
 	rpc_server_t server = conn->rco_server;
 
@@ -376,7 +379,8 @@ on_events_subscribe(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 }
 
 static void
-on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
+on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args,
+    rpc_object_t id __unused)
 {
 	rpc_server_t server = conn->rco_server;
 
@@ -635,7 +639,6 @@ rpc_connection_create(const char *uri, int flags)
 	conn->rco_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_inbound_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_subscriptions = g_hash_table_new(g_str_hash, g_str_equal);
-	conn->rco_rpc_timeout = DEFAULT_RPC_TIMEOUT;
 	conn->rco_rpc_timeout = DEFAULT_RPC_TIMEOUT;
 	conn->rco_recv_msg = &rpc_recv_msg;
 	conn->rco_close = &rpc_close;

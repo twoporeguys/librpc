@@ -38,6 +38,9 @@ main(int argc, const char *argv[])
 	rpc_connection_t conn;
 	rpc_object_t result;
 
+	(void)argc;
+	(void)argv;
+
 	client = rpc_client_create("tcp://127.0.0.1:5000", 0);
 	if (client == NULL) {
 		fprintf(stderr, "cannot connect: %s", strerror(errno));

@@ -89,7 +89,7 @@ loopback_connect(struct rpc_connection *conn, const char *uri_string,
 
 static int
 loopback_listen(struct rpc_server *srv, const char *uri_string,
-    rpc_object_t extra)
+    rpc_object_t extra __unused)
 {
 	SoupURI *uri;
 	struct loopback_channel *chan;
@@ -112,13 +112,15 @@ loopback_listen(struct rpc_server *srv, const char *uri_string,
 }
 
 static int
-loopback_send_msg(void *arg, void *buf, size_t len, const int *fds, size_t nfds)
+loopback_send_msg(void *arg, void *buf, size_t len __unused, const int *fds,
+    size_t nfds)
 {
 	struct rpc_connection *conn = arg;
 	rpc_object_t obj = buf;
 
 	rpc_retain(obj);
-	return (conn->rco_recv_msg(conn, (const void *)obj, 0, NULL, 0, NULL));
+	return (conn->rco_recv_msg(conn, (const void *)obj, 0, (int *)fds,
+	    nfds, NULL));
 }
 
 static int

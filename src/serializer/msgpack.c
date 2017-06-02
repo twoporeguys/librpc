@@ -89,7 +89,7 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 
 	case RPC_TYPE_ARRAY:
 		mpack_start_array(writer, (uint32_t)rpc_array_get_count(object));
-		rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
+		rpc_array_apply(object, ^(size_t idx __unused, rpc_object_t v) {
 		    rpc_msgpack_write_object(writer, v);
 		    return ((bool)true);
 		});
@@ -103,7 +103,7 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 static rpc_object_t
 rpc_msgpack_read_object(mpack_node_t node)
 {
-	__block int i;
+	__block size_t i;
 	__block char *cstr;
 	__block mpack_node_t tmp;
 	__block rpc_object_t result;

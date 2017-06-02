@@ -399,7 +399,7 @@ rpc_json_write_object(yajl_gen gen, rpc_object_t object)
 		if (status != yajl_gen_status_ok)
 			return (status);
 
-		rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
+		rpc_array_apply(object, ^(size_t idx __unused, rpc_object_t v) {
 			status = rpc_json_write_object(gen, v);
 			if (status != yajl_gen_status_ok)
 				return ((bool)false);

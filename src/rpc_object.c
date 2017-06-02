@@ -85,9 +85,8 @@ static void
 rpc_create_description(GString *description, rpc_object_t object,
     unsigned int indent_lvl, bool nested)
 {
-	int i;
 	unsigned int local_indent_lvl = indent_lvl + 1;
-	size_t data_length;
+	size_t data_length, i;
 	uint8_t *data_ptr;
 
 	if ((indent_lvl > 0) && (!nested))
@@ -246,7 +245,8 @@ rpc_release_impl(rpc_object_t object)
 			break;
 
 		case RPC_TYPE_ARRAY:
-			rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
+			rpc_array_apply(object, ^(size_t idx __unused,
+			    rpc_object_t v) {
 				rpc_release_impl(v);
 				return ((bool)true);
 			});
@@ -561,7 +561,7 @@ rpc_object_unpack(rpc_object_t obj, const char *fmt, ...)
 inline rpc_object_t
 rpc_null_create(void)
 {
-	union rpc_value val;
+	union rpc_value val = { 0 };
 
 	val.rv_b = false;
 	return (rpc_prim_create(RPC_TYPE_NULL, val));
@@ -831,7 +831,7 @@ inline rpc_object_t
 rpc_array_create_ex(const rpc_object_t *objects, size_t count, bool steal)
 {
 	rpc_object_t array_object;
-	int i;
+	size_t i;
 	void (*setter_fn)(rpc_object_t, rpc_object_t);
 
 	setter_fn = steal ? &rpc_array_append_stolen_value :
@@ -1128,7 +1128,7 @@ rpc_dictionary_create_ex(const char * const *keys, const rpc_object_t *values,
     size_t count, bool steal)
 {
 	rpc_object_t object;
-	int i;
+	size_t i;
 	void (*setter_fn)(rpc_object_t, const char *, rpc_object_t);
 
 	setter_fn = steal ? &rpc_dictionary_steal_value :
