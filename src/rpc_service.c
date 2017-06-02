@@ -40,7 +40,6 @@ static void
 rpc_context_tp_handler(gpointer data, gpointer user_data)
 {
 	struct rpc_inbound_call *call = data;
-	struct rpc_context *context = user_data;
 	struct rpc_method *method = call->ric_method;
 	rpc_connection_t conn = call->ric_conn;
 	rpc_object_t result;
@@ -94,7 +93,6 @@ rpc_context_free(rpc_context_t context)
 int
 rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 {
-	struct rpc_method *method;
 	GError *err = NULL;
 
 	debugf("call=%p, name=%s", call, call->ric_name);

@@ -211,7 +211,6 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 	GError *err = NULL;
 	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
 	GSocketControlMessage *cmsg[2] = { NULL };
-	GUnixFDList *fdlist;
 	GOutputVector iov[2];
 	uint32_t header[4] = { 0xdeadbeef, (uint32_t)size, 0, 0 };
 	int ncmsg = 0;
@@ -262,7 +261,6 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
 	GSocketControlMessage **cmsg;
 	GCredentials *cr;
-	GUnixFDList *fdlist;
 	GInputVector iov;
 	uint32_t header[4];
 	size_t length;

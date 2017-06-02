@@ -100,7 +100,6 @@ rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 	rpc_object_t unpacked_value;
 	void *data_buf;
 	size_t data_len;
-	size_t *data_len_ptr;
 	const char *base64_data;
 	GHashTableIter iter;
 	gpointer key, value;

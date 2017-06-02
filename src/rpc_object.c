@@ -563,6 +563,7 @@ rpc_null_create(void)
 {
 	union rpc_value val;
 
+	val.rv_b = false;
 	return (rpc_prim_create(RPC_TYPE_NULL, val));
 }
 
@@ -858,7 +859,6 @@ inline void
 rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value)
 {
 	rpc_object_t *ro;
-	union rpc_value null_value;
 	int i;
 
 	if (array->ro_type != RPC_TYPE_ARRAY)
@@ -867,7 +867,7 @@ rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value)
 	for (i = (int)(index - array->ro_value.rv_list->len); i >= 0; i--) {
 		rpc_array_append_value(
 		    array,
-		    rpc_prim_create(RPC_TYPE_NULL, null_value)
+		    rpc_null_create()
 		);
 	}
 

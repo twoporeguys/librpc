@@ -499,7 +499,6 @@ rpc_connection_send_err(rpc_connection_t conn, rpc_object_t id, int code,
 
 	}
 
-done:
 	g_free(str);
 }
 
@@ -746,7 +745,6 @@ rpc_connection_subscribe_event(rpc_connection_t conn, const char *name)
 int
 rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name)
 {
-	struct rpc_subscription *sub;
 	rpc_object_t frame;
 	rpc_object_t args, str;
 
