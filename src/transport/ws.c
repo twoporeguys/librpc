@@ -66,6 +66,7 @@ struct ws_server
 {
 	struct rpc_server *		ws_server;
 	SoupServer *			ws_soupserver;
+	char *				ws_path;
 };
 
 static int

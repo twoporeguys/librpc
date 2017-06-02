@@ -124,14 +124,15 @@ rpc_restore_fds(rpc_object_t obj, int *fds, size_t nfds)
 			break;
 
 		case RPC_TYPE_ARRAY:
-			rpc_array_apply(obj, ^(size_t idx, rpc_object_t item) {
+			rpc_array_apply(obj, ^(size_t idx __unused,
+			    rpc_object_t item) {
 				rpc_restore_fds(item, fds, nfds);
 				return ((bool)true);
 			});
 			break;
 
 		case RPC_TYPE_DICTIONARY:
-			rpc_dictionary_apply(obj, ^(const char *key,
+			rpc_dictionary_apply(obj, ^(const char *key __unused,
 			    rpc_object_t value) {
 				rpc_restore_fds(value, fds, nfds);
 				return ((bool)true);
