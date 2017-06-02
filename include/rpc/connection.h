@@ -71,8 +71,10 @@ int rpc_connection_register_event_handler(rpc_connection_t conn,
     const char *name, rpc_handler_t handler);
 int rpc_connection_register_event_handler_f(rpc_connection_t conn,
     const char *name, rpc_handler_f handler, void *arg);
-rpc_object_t rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...);
-void rpc_connection_call_async(rpc_connection_t conn, const char *method, ...);
+rpc_object_t rpc_connection_call_sync(rpc_connection_t conn,
+    const char *method, ...);
+rpc_object_t rpc_connection_call_syncv(rpc_connection_t conn,
+    const char *method, va_list ap);
 rpc_call_t rpc_connection_call(rpc_connection_t conn, const char *name,
     rpc_object_t args);
 int rpc_connection_send_event(rpc_connection_t conn, const char *name,

@@ -798,16 +798,14 @@ rpc_connection_register_event_handler_f(rpc_connection_t conn, const char *name,
 }
 
 rpc_object_t
-rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...)
+rpc_connection_call_syncv(rpc_connection_t conn, const char *method, va_list ap)
 {
 	rpc_call_t call;
 	rpc_object_t args;
 	rpc_object_t result;
 	rpc_object_t i;
-	va_list ap;
 
 	args = rpc_array_create();
-	va_start(ap, method);
 
 	for (;;) {
 		i = va_arg(ap, rpc_object_t);
@@ -817,7 +815,6 @@ rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...)
 		rpc_array_append_stolen_value(args, i);
 	}
 
-	va_end(ap);
 	if ((call = rpc_connection_call(conn, method, args)) == NULL)
 		return (NULL);
 
@@ -825,6 +822,19 @@ rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...)
 	result = rpc_call_result(call);
 	rpc_retain(result);
 	rpc_call_free(call);
+	return (result);
+}
+
+rpc_object_t
+rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...)
+{
+	rpc_object_t result;
+	va_list ap;
+
+	va_start(ap, method);
+	result = rpc_connection_call_syncv(conn, method, ap);
+	va_end(ap);
+
 	return (result);
 }
 
