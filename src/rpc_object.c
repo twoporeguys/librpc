@@ -536,7 +536,8 @@ rpc_object_unpack(rpc_object_t obj, const char *fmt, ...)
 			break;
 
 		case 's':
-			*va_arg(ap, char **) = rpc_string_get_string_ptr(current);
+			*va_arg(ap, const char **) = rpc_string_get_string_ptr(
+			    current);
 			break;
 
 		case '[':
