@@ -37,7 +37,7 @@
 #include "internal.h"
 
 static void
-rpc_context_tp_handler(gpointer data, gpointer user_data)
+rpc_context_tp_handler(gpointer data, gpointer user_data __unused)
 {
 	struct rpc_inbound_call *call = data;
 	struct rpc_method *method = call->ric_method;
@@ -202,6 +202,7 @@ rpc_function_error_ex(void *cookie, rpc_object_t exception)
 {
 	struct rpc_inbound_call *call = cookie;
 
+	rpc_connection_send_errx(call->ric_conn, call->ric_id, exception);
 }
 
 int

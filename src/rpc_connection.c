@@ -93,16 +93,17 @@ rpc_serialize_fds(rpc_object_t obj, int *fds, size_t *nfds, size_t idx)
 		break;
 
 	case RPC_TYPE_ARRAY:
-		rpc_array_apply(obj, ^(size_t aidx, rpc_object_t i) {
-		    counter += rpc_serialize_fds(i, fds, nfds, idx);
-		    return ((bool)true);
+		rpc_array_apply(obj, ^(size_t aidx __unused, rpc_object_t i) {
+			counter += rpc_serialize_fds(i, fds, nfds, idx);
+			return ((bool)true);
 		});
 		break;
 
 	case RPC_TYPE_DICTIONARY:
-		rpc_dictionary_apply(obj, ^(const char *name, rpc_object_t i) {
-		    counter += rpc_serialize_fds(i, fds, nfds, idx);
-		    return ((bool)true);
+		rpc_dictionary_apply(obj, ^(const char *name __unused,
+		    rpc_object_t i) {
+			counter += rpc_serialize_fds(i, fds, nfds, idx);
+			return ((bool)true);
 		});
 		break;
 
@@ -360,7 +361,7 @@ on_events_subscribe(rpc_connection_t conn, rpc_object_t args,
 
 	g_mutex_lock(&server->rs_subscription_mtx);
 
-	rpc_array_apply(args, ^(size_t index, rpc_object_t value) {
+	rpc_array_apply(args, ^(size_t index __unused, rpc_object_t value) {
 		const char *name = rpc_string_get_string_ptr(value);
 		int *refcount;
 
@@ -386,7 +387,7 @@ on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args,
 
 	g_mutex_lock(&server->rs_subscription_mtx);
 
-	rpc_array_apply(args, ^(size_t index, rpc_object_t value) {
+	rpc_array_apply(args, ^(size_t index __unused, rpc_object_t value) {
 	    const char *name = rpc_string_get_string_ptr(value);
 	    int *refcount;
 

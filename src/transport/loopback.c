@@ -66,7 +66,7 @@ loopback_accept(struct loopback_channel *chan, struct rpc_connection *conn)
 
 static int
 loopback_connect(struct rpc_connection *conn, const char *uri_string,
-    rpc_object_t extra)
+    rpc_object_t extra __unused)
 {
 	SoupURI *uri;
 	struct loopback_channel *chan;
@@ -77,7 +77,7 @@ loopback_connect(struct rpc_connection *conn, const char *uri_string,
 		return (-1);
 
 	number = (int)strtoul(uri->host, NULL, 10);
-	chan = g_hash_table_lookup(loopback_channels, (gconstpointer)number);
+	chan = g_hash_table_lookup(loopback_channels, GINT_TO_POINTER(number));
 
 	if (chan == NULL) {
 		soup_uri_free(uri);
@@ -107,7 +107,8 @@ loopback_listen(struct rpc_server *srv, const char *uri_string,
 	if (loopback_channels == NULL)
 		loopback_channels = g_hash_table_new(NULL, NULL);
 
-	g_hash_table_insert(loopback_channels, (gpointer)chan->lc_number, chan);
+	g_hash_table_insert(loopback_channels, GINT_TO_POINTER(chan->lc_number),
+	    chan);
 	return (0);
 }
 
