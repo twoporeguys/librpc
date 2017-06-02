@@ -251,3 +251,11 @@ rpc_function_end(void *cookie)
 	call->ric_ended = true;
 	g_mutex_unlock(&call->ric_mtx);
 }
+
+bool
+rpc_function_should_abort(void *cookie)
+{
+	struct rpc_inbound_call *call = cookie;
+
+	return (call->ric_aborted);
+}

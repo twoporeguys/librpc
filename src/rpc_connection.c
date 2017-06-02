@@ -306,13 +306,20 @@ on_rpc_end(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 static void
 on_rpc_abort(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 {
-	rpc_call_t call;
+	struct rpc_inbound_call *call;
 
-	call = g_hash_table_lookup(conn->rco_calls,
+	call = g_hash_table_lookup(conn->rco_inbound_calls,
 	    rpc_string_get_string_ptr(id));
-	if (call == NULL) {
-		return;
-	}
+	if (call == NULL)
+		goto done;
+
+	g_mutex_lock(&call->ric_mtx);
+	call->ric_aborted = true;
+	g_cond_broadcast(&call->ric_cv);
+	g_mutex_unlock(&call->ric_mtx);
+done:
+	rpc_release(args);
+	rpc_release(id);
 }
 
 static void

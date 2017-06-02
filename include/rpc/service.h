@@ -70,6 +70,7 @@ void rpc_function_error(void *cookie, int code, const char *message, ...);
 void rpc_function_error_ex(void *cookie, rpc_object_t exception);
 int rpc_function_yield(void *cookie, rpc_object_t fragment);
 void rpc_function_end(void *cookie);
+bool rpc_function_should_abort(void *cookie);
 
 #ifdef __cplusplus
 }
