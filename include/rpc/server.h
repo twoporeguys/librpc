@@ -49,8 +49,6 @@ void rpc_server_broadcast_event(rpc_server_t server, const char *name,
     rpc_object_t args);
 void rpc_server_set_event_handler(rpc_server_event_handler_t handler);
 void rpc_server_set_event_handler_f(rpc_server_event_handler_f handler);
-int rpc_server_start(rpc_server_t server, bool background);
-int rpc_server_stop(rpc_server_t server);
 int rpc_server_close(rpc_server_t server);
 
 #ifdef __cplusplus
