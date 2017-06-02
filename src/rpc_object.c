@@ -36,6 +36,7 @@
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <rpc/object.h>
+#include "serializer/json.h"
 #include "internal.h"
 
 GPrivate rpc_last_error = G_PRIVATE_INIT((GDestroyNotify)g_free);
@@ -210,6 +211,20 @@ rpc_get_last_error(void) {
 		return (NULL);
 
 	return error;
+}
+
+inline rpc_object_t
+rpc_object_from_json(const void *frame, size_t size)
+{
+
+	return rpc_json_deserialize(frame, size);
+}
+
+inline int
+rpc_object_to_json(rpc_object_t object, void **frame, size_t *size)
+{
+
+	return rpc_json_serialize(object, frame, size);
 }
 
 inline rpc_object_t

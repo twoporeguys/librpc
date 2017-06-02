@@ -85,6 +85,9 @@ rpc_type_t rpc_get_type(rpc_object_t object);
 
 rpc_error_t rpc_get_last_error(void);
 
+rpc_object_t rpc_object_from_json(const void *frame, size_t size);
+int rpc_object_to_json(rpc_object_t object, void **frame, size_t *size);
+
 rpc_object_t rpc_object_pack(const char *fmt, ...);
 int rpc_object_unpack(rpc_object_t, const char *fmt, ...);
 
