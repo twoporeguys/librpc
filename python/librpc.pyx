@@ -599,7 +599,7 @@ cdef class Context(object):
 
                 with nogil:
                     ret = defs.rpc_function_yield(cookie, rpc_obj.obj)
-                
+
                 if ret:
                     break
 
@@ -656,7 +656,7 @@ cdef class Connection(object):
 
         call = defs.rpc_connection_call(self.connection, method.encode('utf-8'), rpc_args.obj)
         if call == NULL:
-            raise_internal_excp(rpc=True)
+            raise_internal_exc(rpc=True)
 
         defs.rpc_call_wait(call)
         call_status = <defs.rpc_call_status_t>defs.rpc_call_status(call)
@@ -719,7 +719,7 @@ cdef class Client(Connection):
         self.uri = uri.encode('utf-8')
         self.client = defs.rpc_client_create(self.uri, 0)
         if self.client == NULL:
-            raise_internal_excp(rpc=False)
+            raise_internal_exc(rpc=False)
 
         self.connection = defs.rpc_client_get_connection(self.client)
 
@@ -752,16 +752,16 @@ cdef class Server(object):
         defs.rpc_server_close(self.server)
 
 
-cdef raise_internal_excp(rpc=False):
+cdef raise_internal_exc(rpc=False):
     cdef defs.rpc_error_t error
 
-    excp = LibException
+    exc = LibException
     if rpc:
-        excp = RpcException
+        exc = RpcException
 
     error = defs.rpc_get_last_error()
     if error != NULL:
         try:
-            raise excp(error.code, error.message.decode('utf-8'))
+            raise exc(error.code, error.message.decode('utf-8'))
         finally:
             free(error)
