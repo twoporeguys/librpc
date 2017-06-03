@@ -397,7 +397,7 @@ rpc_hash(rpc_object_t object)
 		return (hash);
 
 	case RPC_TYPE_ARRAY:
-		rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
+		rpc_array_apply(object, ^(size_t idx __unused, rpc_object_t v) {
 		    hash ^= rpc_hash(v);
 		    return ((bool)true);
 		});

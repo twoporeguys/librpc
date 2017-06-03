@@ -127,7 +127,10 @@ loopback_send_msg(void *arg, void *buf, size_t len __unused, const int *fds,
 static int
 loopback_abort(void *arg)
 {
+	struct rpc_connection *conn = arg;
 
+	conn->rco_abort(arg);
+	return (0);
 }
 
 struct rpc_transport loopback_transport = {
