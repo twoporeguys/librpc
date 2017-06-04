@@ -30,6 +30,7 @@
 #include <rpc/object.h>
 #include <yajl/yajl_parse.h>
 #include <yajl/yajl_gen.h>
+#include "../linker_set.h"
 #include "../internal.h"
 #include "json.h"
 
@@ -455,3 +456,11 @@ end:	yajl_free(handle);
 	g_free(ctx.key_buf);
 	return (ctx.result);
 }
+
+static struct rpc_serializer json_serializer = {
+    .name = "json",
+    .serialize = &rpc_json_serialize,
+    .deserialize = &rpc_json_deserialize
+};
+
+DECLARE_SERIALIZER(json_serializer);

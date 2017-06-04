@@ -42,6 +42,7 @@
 #endif
 
 #define	DECLARE_TRANSPORT(_transport)	DATA_SET(tp_set, _transport)
+#define	DECLARE_SERIALIZER(_serializer)	DATA_SET(sr_set, _serializer)
 
 #define	RPC_TRANSPORT_NO_SERIALIZE		(1 << 0)
 
@@ -229,10 +230,15 @@ struct rpc_transport
 	const char *schemas[];
 };
 
-typedef void (^message_handler_t)(void *frame, size_t len);
-typedef void (^close_handler_t)(void);
+struct rpc_serializer
+{
+    	int (*serialize)(rpc_object_t, void **, size_t *);
+    	rpc_object_t (*deserialize)(const void *, size_t);
+	const char *name;
+};
 
 const struct rpc_transport *rpc_find_transport(const char *scheme);
+const struct rpc_serializer *rpc_find_serializer(const char *name);
 
 void rpc_set_last_error(GError *error);
 rpc_connection_t rpc_connection_alloc(rpc_server_t server);

@@ -27,6 +27,7 @@
 
 #include <rpc/object.h>
 #include "../../contrib/mpack/mpack.h"
+#include "../linker_set.h"
 #include "../internal.h"
 #include "msgpack.h"
 
@@ -184,3 +185,11 @@ rpc_msgpack_deserialize(const void *frame, size_t size)
 
 	return (result);
 }
+
+static struct rpc_serializer msgpack_serializer = {
+	.name = "msgpack",
+    	.serialize = &rpc_msgpack_serialize,
+    	.deserialize = &rpc_msgpack_deserialize
+};
+
+DECLARE_SERIALIZER(msgpack_serializer);

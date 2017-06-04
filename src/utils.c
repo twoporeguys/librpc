@@ -29,6 +29,7 @@
 #include "internal.h"
 
 SET_DECLARE(tp_set, struct rpc_transport);
+SET_DECLARE(sr_set, struct rpc_serializer);
 
 const struct rpc_transport *
 rpc_find_transport(const char *scheme)
@@ -43,6 +44,22 @@ rpc_find_transport(const char *scheme)
 			if (!g_strcmp0((*t)->schemas[i], scheme))
 				return (*t);
 		}
+	}
+
+	return (NULL);
+}
+
+const struct rpc_serializer *
+rpc_find_serializer(const char *name)
+{
+	struct rpc_serializer **s;
+	int i;
+
+	debugf("looking for serializer %s", name);
+
+	SET_FOREACH(s, sr_set) {
+		if (!g_strcmp0((*s)->name, name))
+			return (*s);
 	}
 
 	return (NULL);
