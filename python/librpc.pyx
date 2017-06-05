@@ -161,7 +161,7 @@ cdef class Object(object):
 
             return
 
-        raise LibException(errno.EINVAL, f"Cannot create RPC object - unknown value type: {type(value)}")
+        raise LibException(errno.EINVAL, "Unknown value type: {0}".format(type(value)))
 
     def __repr__(self):
         byte_descr = defs.rpc_copy_description(self.obj)
@@ -232,7 +232,7 @@ cdef class Object(object):
 cdef class Array(Object):
     def __init__(self, value, force_type=None):
         if not isinstance(value, list):
-            raise LibException(errno.EINVAL, f"Cannot initialize Array RPC object from {type(value)} type")
+            raise LibException(errno.EINVAL, "Cannot initialize arrayt from {0} type".format(type(value)))
 
         super(Array, self).__init__(value, force_type)
 
