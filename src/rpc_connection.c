@@ -78,7 +78,7 @@ static const struct message_handler handlers[] = {
     { "events", "event_burst", on_events_event_burst },
     { "events", "subscribe", on_events_subscribe },
     { "events", "unsubscribe", on_events_unsubscribe },
-    { NULL }
+    { }
 };
 
 static size_t
