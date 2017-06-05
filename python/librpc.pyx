@@ -337,7 +337,7 @@ cdef class Array(Object):
         self.__applier(find_index)
 
         if index is None:
-            raise LibException(errno.EINVAL, f'{value} is not in list')
+            raise LibException(errno.EINVAL, '{} is not in list'.format(value))
 
         return index
 
@@ -558,7 +558,7 @@ cdef class Dictionary(Object):
         rpc_value = Object.__new__(Object)
         rpc_value.obj = defs.rpc_dictionary_get_value(self.obj, byte_key)
         if rpc_value.obj == NULL:
-            raise LibException(errno.EINVAL, f'Key {key} does not exist')
+            raise LibException(errno.EINVAL, 'Key {} does not exist'.format(key))
 
         defs.rpc_retain(rpc_value.obj)
 
