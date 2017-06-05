@@ -71,6 +71,7 @@ typedef int (*rpc_abort_fn_t)(void *);
 typedef int (*rpc_get_fd_fn_t)(void *);
 typedef int (*rpc_close_fn_t)(struct rpc_connection *);
 typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
+typedef int (*rpc_teardown_fn_t)(struct rpc_server *);
 
 struct rpc_binary_value
 {
@@ -202,6 +203,7 @@ struct rpc_server
 
     	/* Callbacks */
     	rpc_accept_fn_t		rs_accept;
+    	rpc_teardown_fn_t	rs_teardown;
     	void *			rs_arg;
 };
 
@@ -212,7 +214,7 @@ struct rpc_client
     	GThread *		rci_thread;
     	rpc_connection_t 	rci_connection;
     	const char *		rci_uri;
-    	int 			rci_flags;
+    	int 				rci_flags;
 };
 
 struct rpc_context

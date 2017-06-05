@@ -42,6 +42,7 @@ static int loopback_accept(struct loopback_channel *, struct rpc_connection *);
 static int loopback_connect(struct rpc_connection *, const char *, rpc_object_t);
 static int loopback_listen(struct rpc_server *, const char *, rpc_object_t);
 static int loopback_abort(void *);
+static int loopback_teardown(struct rpc_server *);
 static int loopback_send_msg(void *, void *, size_t, const int *, size_t);
 
 static GHashTable *loopback_channels = NULL;
@@ -102,6 +103,7 @@ loopback_listen(struct rpc_server *srv, const char *uri_string,
 	chan->lc_srv = srv;
 	chan->lc_connections = g_hash_table_new(NULL, NULL);
 	chan->lc_number = (int)strtoul(uri->host, NULL, 10);
+	srv->rs_teardown = &loopback_teardown;
 	srv->rs_arg = chan;
 
 	if (loopback_channels == NULL)
@@ -130,6 +132,13 @@ loopback_abort(void *arg)
 	struct rpc_connection *conn = arg;
 
 	conn->rco_abort(arg);
+	return (0);
+}
+
+static int
+loopback_teardown(struct rpc_server *srv)
+{
+
 	return (0);
 }
 
