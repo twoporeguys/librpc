@@ -213,6 +213,8 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	g_hash_table_insert(conn->rco_inbound_calls,
 	    (gpointer)rpc_string_get_string_ptr(id), call);
 
+	rpc_retain(call->ric_args);
+	rpc_release(args);
 	rpc_server_dispatch(conn->rco_server, call);
 }
 
@@ -223,18 +225,14 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 
 	call = g_hash_table_lookup(conn->rco_calls,
 	    rpc_string_get_string_ptr(id));
-	if (call == NULL) {
-		rpc_release(id);
-		rpc_release(args);
+	if (call == NULL)
 		return;
-	}
 
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_status = RPC_CALL_DONE;
 	call->rc_result = args;
 
-	rpc_release(id);
-
+	rpc_retain(call->rc_result);
 	g_cond_broadcast(&call->rc_cv);
 	g_mutex_unlock(&call->rc_mtx);
 }
@@ -248,11 +246,8 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 
 	call = g_hash_table_lookup(conn->rco_calls,
 	    rpc_string_get_string_ptr(id));
-	if (call == NULL) {
-		rpc_release(id);
-		rpc_release(args);
+	if (call == NULL)
 		return;
-	}
 
 	seqno = rpc_dictionary_get_uint64(args, "seqno");
 	payload = rpc_dictionary_get_value(args, "fragment");
@@ -262,22 +257,21 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	call->rc_result = payload;
 	call->rc_seqno = seqno;
 
-	rpc_release(id);
-
+	rpc_retain(call->rc_result);
 	g_cond_broadcast(&call->rc_cv);
 	g_mutex_unlock(&call->rc_mtx);
 }
 
 static void
-on_rpc_continue(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
+on_rpc_continue(rpc_connection_t conn, rpc_object_t args __unused,
+    rpc_object_t id)
 {
 	struct rpc_inbound_call *call;
 
 	call = g_hash_table_lookup(conn->rco_inbound_calls,
 	    rpc_string_get_string_ptr(id));
-	if (call == NULL) {
+	if (call == NULL)
 		return;
-	}
 
 	g_mutex_lock(&call->ric_mtx);
 	call->ric_consumer_seqno++;
@@ -292,9 +286,8 @@ on_rpc_end(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 
 	call = g_hash_table_lookup(conn->rco_calls,
 	    rpc_string_get_string_ptr(id));
-	if (call == NULL) {
+	if (call == NULL)
 		return;
-	}
 
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_status = RPC_CALL_DONE;
@@ -312,15 +305,12 @@ on_rpc_abort(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	call = g_hash_table_lookup(conn->rco_inbound_calls,
 	    rpc_string_get_string_ptr(id));
 	if (call == NULL)
-		goto done;
+		return;
 
 	g_mutex_lock(&call->ric_mtx);
 	call->ric_aborted = true;
 	g_cond_broadcast(&call->ric_cv);
 	g_mutex_unlock(&call->ric_mtx);
-done:
-	rpc_release(args);
-	rpc_release(id);
 }
 
 static void
@@ -330,14 +320,14 @@ on_rpc_error(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 
 	call = g_hash_table_lookup(conn->rco_calls,
 	    rpc_string_get_string_ptr(id));
-	if (call == NULL) {
+	if (call == NULL)
 		return;
-	}
 
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_status = RPC_CALL_ERROR;
 	call->rc_result = args;
 
+	rpc_retain(call->rc_result);
 	g_cond_broadcast(&call->rc_cv);
 	g_mutex_unlock(&call->rc_mtx);
 }
@@ -356,6 +346,7 @@ on_events_event_burst(rpc_connection_t conn, rpc_object_t args,
 {
 
 	rpc_array_apply(args, ^(size_t idx __unused, rpc_object_t value) {
+	    rpc_retain(value);
 	    g_async_queue_push(conn->rco_event_queue, value);
 	    return ((bool)true);
 	});
@@ -429,6 +420,7 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 		return (-1);
 	}
 
+	rpc_restore_fds(msg, fds, nfds);
 	rpc_connection_dispatch(conn, msg);
 	return (0);
 }
@@ -705,10 +697,8 @@ rpc_connection_dispatch(rpc_connection_t conn, rpc_object_t frame)
 			continue;
 
 		args = rpc_dictionary_get_value(frame, "args");
-		rpc_retain(args);
-		rpc_retain(id);
-		rpc_release(frame);
 		h->handler(conn, args, id);
+		rpc_release(frame);
 		return;
 	}
 
