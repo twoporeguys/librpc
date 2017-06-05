@@ -181,22 +181,46 @@ socket_listen(struct rpc_server *srv, const char *uri,
     rpc_object_t args __unused)
 {
 	GError *err = NULL;
+	GFile *file;
 	GSocketAddress *addr;
 	struct socket_server *server;
 
 	addr = socket_parse_uri(uri);
-	if (addr == NULL)
+	if (addr == NULL) {
 		return (-1);
+	}
 
 	server = g_malloc0(sizeof(*server));
 	server->ss_server = srv;
 	server->ss_uri = strdup(uri);
 	server->ss_listener = g_socket_listener_new();
 
+	/*
+	 * If using Unix domain sockets, make sure there's no stale socket
+	 * file on the filesystem.
+	 */
+	if (g_socket_address_get_family(addr) == G_SOCKET_FAMILY_UNIX) {
+		file = g_file_new_for_path(g_unix_socket_address_get_path(
+		    G_UNIX_SOCKET_ADDRESS(addr)));
+
+		if (g_file_query_exists(file, NULL)) {
+			g_file_delete(file, NULL, &err);
+			if (err != NULL) {
+				rpc_set_last_error(err);
+				g_error_free(err);
+				g_free(server);
+				return (-1);
+			}
+		}
+	}
+
 	g_socket_listener_add_address(server->ss_listener, addr,
 	    G_SOCKET_TYPE_STREAM, G_SOCKET_PROTOCOL_DEFAULT, NULL, NULL, &err);
 	if (err != NULL) {
+		rpc_set_last_error(err);
+		g_error_free(err);
 		g_free(server);
+		return (-1);
 	}
 
 	/* Schedule first accept */
