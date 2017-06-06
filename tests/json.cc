@@ -63,10 +63,10 @@ static char json_single_ext_gold[] = "{\"$uint\":123}";
 
 SCENARIO("JSON_DICT_TEST", "Deserialize golden reference, serialize it again, and compare result") {
 	GIVEN("JSON object") {
-		rpc_object_t object;
-		rpc_object_t object_mirror;
+		rpc_object_t object = NULL;
+		rpc_object_t object_mirror = NULL;
 		size_t buf_size;
-		void *buf;
+		void *buf = NULL;
 
 		WHEN("Golden reference JSON is deserialized") {
 			object = rpc_json_deserialize((void *) json_dict_gold,
@@ -89,15 +89,19 @@ SCENARIO("JSON_DICT_TEST", "Deserialize golden reference, serialize it again, an
 				}
 			}
 		}
+
+		g_free(buf);
+		rpc_release(object);
+		rpc_release(object_mirror);
 	}
 }
 
 SCENARIO("JSON_ARRAY_TEST", "Deserialize golden reference, serialize it again, and compare result") {
 	GIVEN("JSON object") {
-		rpc_object_t object;
-		rpc_object_t object_mirror;
+		rpc_object_t object = NULL;
+		rpc_object_t object_mirror = NULL;
 		size_t buf_size;
-		void *buf;
+		void *buf = NULL;
 
 		WHEN("Golden reference JSON is deserialized") {
 			object = rpc_json_deserialize((void *) json_array_gold,
@@ -120,15 +124,19 @@ SCENARIO("JSON_ARRAY_TEST", "Deserialize golden reference, serialize it again, a
 				}
 			}
 		}
+
+		g_free(buf);
+		rpc_release(object);
+		rpc_release(object_mirror);
 	}
 }
 
 SCENARIO("JSON_SINGLE_TEST", "Deserialize golden reference, serialize it again, and compare result") {
 	GIVEN("JSON object") {
-		rpc_object_t object;
-		rpc_object_t object_mirror;
+		rpc_object_t object = NULL;
+		rpc_object_t object_mirror = NULL;
 		size_t buf_size;
-		void *buf;
+		void *buf = NULL;
 
 		WHEN("Golden reference JSON is deserialized") {
 			object = rpc_json_deserialize((void *) json_single_gold,
@@ -151,15 +159,19 @@ SCENARIO("JSON_SINGLE_TEST", "Deserialize golden reference, serialize it again, 
 				}
 			}
 		}
+
+		g_free(buf);
+		rpc_release(object);
+		rpc_release(object_mirror);
 	}
 }
 
 SCENARIO("JSON_SINGLE_EXT_TEST", "Deserialize golden reference, serialize it again, and compare result") {
 	GIVEN("JSON object") {
-		rpc_object_t object;
-		rpc_object_t object_mirror;
+		rpc_object_t object = NULL;
+		rpc_object_t object_mirror = NULL;
 		size_t buf_size;
-		void *buf;
+		void *buf = NULL;
 
 		WHEN("Golden reference JSON is deserialized") {
 			object = rpc_json_deserialize((void *) json_single_ext_gold,
@@ -182,5 +194,9 @@ SCENARIO("JSON_SINGLE_EXT_TEST", "Deserialize golden reference, serialize it aga
 				}
 			}
 		}
+
+		g_free(buf);
+		rpc_release(object);
+		rpc_release(object_mirror);
 	}
 }
