@@ -98,9 +98,9 @@ set(TEST_SOURCES
         tests/json.cc
         tests/object.cc)
 
-add_executable(tests ${TEST_SOURCES})
-target_link_libraries(tests Catch)
-target_link_libraries(tests librpc)
+add_executable(catch_tests ${TEST_SOURCES})
+target_link_libraries(catch_tests Catch)
+target_link_libraries(catch_tests librpc)
 
 add_subdirectory(examples/client)
 add_subdirectory(examples/discovery)
