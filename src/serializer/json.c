@@ -421,12 +421,19 @@ rpc_json_serialize(rpc_object_t obj, void **frame, size_t *size)
 {
 	yajl_gen gen = yajl_gen_alloc(NULL);
 	yajl_gen_status status;
+	GString *out_buffer;
+
+	out_buffer = g_string_new(NULL);
+	yajl_gen_config(gen, yajl_gen_print_callback,
+	    (yajl_print_t)g_string_append_len,(void *) out_buffer);
 
 	if ((status = rpc_json_write_object(gen, obj)) != yajl_gen_status_ok)
 		goto end;
 
-	status = yajl_gen_get_buf(gen, (const uint8_t **)frame, size);
-end:	g_free(gen);
+	*size = out_buffer->len;
+
+end:	yajl_gen_free(gen);
+	*frame = g_string_free(out_buffer, false);
 	return (status);
 }
 
