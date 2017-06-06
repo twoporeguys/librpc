@@ -426,7 +426,7 @@ rpc_json_serialize(rpc_object_t obj, void **frame, size_t *size)
 		goto end;
 
 	status = yajl_gen_get_buf(gen, (const uint8_t **)frame, size);
-end:	yajl_gen_free(gen);
+end:	g_free(gen);
 	return (status);
 }
 
