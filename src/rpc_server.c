@@ -130,5 +130,14 @@ rpc_server_dispatch(rpc_server_t server, struct rpc_inbound_call *call)
 int
 rpc_server_close(rpc_server_t server)
 {
+	struct rpc_connection *conn;
+	GList *iter = NULL;
 
+	/* Drop all connections */
+	for (iter = server->rs_connections; iter != NULL; iter = iter->next) {
+		conn = iter->data;
+		conn->rco_abort(conn);
+	}
+
+	return (server->rs_teardown(server));
 }
