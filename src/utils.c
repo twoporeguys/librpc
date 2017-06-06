@@ -53,7 +53,6 @@ const struct rpc_serializer *
 rpc_find_serializer(const char *name)
 {
 	struct rpc_serializer **s;
-	int i;
 
 	debugf("looking for serializer %s", name);
 
