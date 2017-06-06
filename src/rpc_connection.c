@@ -214,7 +214,6 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	    (gpointer)rpc_string_get_string_ptr(id), call);
 
 	rpc_retain(call->ric_args);
-	rpc_release(args);
 	rpc_server_dispatch(conn->rco_server, call);
 }
 
