@@ -25,20 +25,13 @@
  *
  */
 
-#ifndef LIBRPC_MSGPACK_H
-#define LIBRPC_MSGPACK_H
+#ifndef LIBRPC_SHMEM_H
+#define LIBRPC_SHMEM_H
 
-#define	MSGPACK_EXTTYPE_DATE	1
-#define	MSGPACK_EXTTYPE_FD	2
-#define	MSGPACK_EXTTYPE_SHMEM	3
+struct rpc_shmem_block;
+typedef struct rpc_shmem_block *rpc_shmem_block_t;
 
-struct rpc_msgpack_shmem_desc {
-    	pid_t pid;
-    	uintptr_t addr;
-    	size_t len;
-};
+rpc_shmem_block_t rpc_shmem_alloc(rpc_connection_t conn, size_t size);
+void rpc_shmem_free(rpc_shmem_block_t block);
 
-int rpc_msgpack_serialize(rpc_object_t, void **, size_t *);
-rpc_object_t rpc_msgpack_deserialize(const void *, size_t);
-
-#endif //LIBRPC_MSGPACK_H
+#endif //LIBRPC_SHMEM_H

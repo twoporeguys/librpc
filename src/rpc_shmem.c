@@ -25,20 +25,28 @@
  *
  */
 
-#ifndef LIBRPC_MSGPACK_H
-#define LIBRPC_MSGPACK_H
+#include <rpc/connection.h>
 
-#define	MSGPACK_EXTTYPE_DATE	1
-#define	MSGPACK_EXTTYPE_FD	2
-#define	MSGPACK_EXTTYPE_SHMEM	3
-
-struct rpc_msgpack_shmem_desc {
-    	pid_t pid;
-    	uintptr_t addr;
-    	size_t len;
+struct block
+{
+    	size_t 		b_size;
+    	struct block	b_next;
+    	bool		b_free;
+    	uint32_t	b_magic;
 };
 
-int rpc_msgpack_serialize(rpc_object_t, void **, size_t *);
-rpc_object_t rpc_msgpack_deserialize(const void *, size_t);
+void *
+rpc_shmem_alloc(rpc_connection_t conn, size_t size)
+{
 
-#endif //LIBRPC_MSGPACK_H
+	if (size == 0)
+		return (NULL);
+}
+
+void
+rpc_shmem_free(rpc_shmem_block_t block)
+{
+
+	if (block == NULL)
+		return;
+}
