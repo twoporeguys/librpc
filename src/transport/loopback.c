@@ -136,7 +136,7 @@ loopback_abort(void *arg)
 }
 
 static int
-loopback_teardown(struct rpc_server *srv)
+loopback_teardown(struct rpc_server *srv __unused)
 {
 
 	return (0);
