@@ -425,7 +425,7 @@ rpc_json_serialize(rpc_object_t obj, void **frame, size_t *size)
 
 	out_buffer = g_string_new(NULL);
 	yajl_gen_config(gen, yajl_gen_print_callback,
-	    (yajl_print_t)g_string_append_len,(void *) out_buffer);
+	    (yajl_print_t)g_string_append_len, (void *)out_buffer);
 
 	if ((status = rpc_json_write_object(gen, obj)) != yajl_gen_status_ok)
 		goto end;
