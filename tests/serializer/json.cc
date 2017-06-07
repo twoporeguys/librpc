@@ -25,13 +25,13 @@
  *
  */
 
-#include "catch.hpp"
+#include "../catch.hpp"
 
 #include <glib.h>
 #include <string.h>
 #include <rpc/object.h>
-#include "../src/serializer/json.h"
-#include "../src/internal.h"
+#include "../../src/serializer/json.h"
+#include "../../src/internal.h"
 
 static char json_dict_gold[] = "{"
     "\"null\":null,"

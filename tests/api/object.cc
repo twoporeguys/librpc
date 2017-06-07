@@ -25,13 +25,13 @@
  *
  */
 
-#include "catch.hpp"
+#include "../catch.hpp"
 
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <rpc/object.h>
-#include "../src/internal.h"
+#include "../../src/internal.h"
 
 static rpc_object_t create_string_with_arguments(const char *fmt, ...) {
 	rpc_object_t object;

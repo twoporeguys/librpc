@@ -95,8 +95,19 @@ add_library(Catch INTERFACE)
 
 set(TEST_SOURCES
         tests/tests_main.cpp
-        tests/json.cc
-        tests/object.cc)
+        tests/serializer/json.cc
+        tests/api/object.cc
+        tests/api/client.cpp
+        tests/api/connection.cpp
+        tests/api/discovery.cpp
+        tests/api/server.cpp
+        tests/api/service.cpp
+        tests/serializer/msgpack.cpp
+        tests/transport/loopback.cpp
+        tests/transport/socket.cpp
+        tests/transport/ws.cpp
+        tests/internal.cpp
+        tests/method_stress.cpp)
 
 add_executable(catch_tests ${TEST_SOURCES})
 target_link_libraries(catch_tests Catch)
