@@ -45,7 +45,7 @@ static int
 rpc_json_context_insert_value(void *ctx_ptr, rpc_object_t value)
 {
 	rpc_object_t leaf;
-	parse_context_t ctx = (parse_context_t)ctx_ptr;
+	struct parse_context *ctx = (struct parse_context *)ctx_ptr;
 
 	if (ctx->result == NULL) {
 		ctx->result = value;
@@ -93,7 +93,7 @@ rpc_json_context_insert_value(void *ctx_ptr, rpc_object_t value)
 static void
 rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 {
-	struct parse_contex *ctx = ctx_ptr;
+	struct parse_context *ctx = ctx_ptr;
 	rpc_object_t branch;
 	rpc_object_t dict_value;
 	rpc_object_t unpacked_value;
@@ -217,7 +217,7 @@ rpc_json_start_map(void *ctx)
 static int
 rpc_json_end_map(void *ctx_ptr)
 {
-	struct parse_context_t *ctx = ctx_ptr;
+	struct parse_context *ctx = ctx_ptr;
 	rpc_object_t leaf;
 	size_t leaf_size;
 
