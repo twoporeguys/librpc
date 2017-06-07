@@ -177,11 +177,10 @@ rpc_event_worker(void *arg)
 		sub = g_hash_table_lookup(conn->rco_subscriptions, name);
 
 		if (sub != NULL) {
-			GList *iter;
+			for (int i = 0; i < sub->rsu_handlers->len; i++) {
+				rpc_handler_t handler = g_ptr_array_index(
+				    sub->rsu_handlers, i);
 
-			for (iter = g_list_first(sub->rsu_handlers); iter != NULL;
-			     iter = g_list_next(iter)) {
-				rpc_handler_t handler = iter->data;
 				handler(name, data);
 			}
 		}
@@ -732,6 +731,7 @@ rpc_connection_subscribe_event_locked(rpc_connection_t conn, const char *name)
 	sub = g_hash_table_lookup(conn->rco_subscriptions, name);
 	if (sub == NULL) {
 		sub = g_malloc0(sizeof(*sub));
+		sub->rsu_handlers = g_ptr_array_new();
 		str = rpc_string_create(name);
 		args = rpc_array_create_ex(&str, 1, true);
 		frame = rpc_pack_frame("events", "subscribe", NULL, args);
@@ -790,7 +790,7 @@ rpc_connection_register_event_handler(rpc_connection_t conn, const char *name,
 	g_mutex_lock(&conn->rco_subscription_mtx);
 	rpc_connection_subscribe_event_locked(conn, name);
 	sub = g_hash_table_lookup(conn->rco_subscriptions, name);
-	sub->rsu_handlers = g_list_append(sub->rsu_handlers, fn);
+	g_ptr_array_add(sub->rsu_handlers, fn);
 	g_mutex_unlock(&conn->rco_subscription_mtx);
 
 	return (fn);
@@ -805,6 +805,20 @@ rpc_connection_register_event_handler_f(rpc_connection_t conn, const char *name,
 	};
 
 	return (rpc_connection_register_event_handler(conn, name, fn));
+}
+
+void
+rpc_connection_unregister_event_handler(rpc_connection_t conn, const char *name,
+    void *cookie)
+{
+	struct rpc_subscription *sub;
+
+	g_mutex_lock(&conn->rco_subscription_mtx);
+	rpc_connection_subscribe_event_locked(conn, name);
+	sub = g_hash_table_lookup(conn->rco_subscriptions, name);
+	g_ptr_array_remove(sub->rsu_handlers, cookie);
+	g_mutex_unlock(&conn->rco_subscription_mtx);
+
 }
 
 rpc_object_t

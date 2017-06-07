@@ -67,10 +67,12 @@ rpc_connection_t rpc_connection_create(const char *uri, int flags);
 int rpc_connection_close(rpc_connection_t conn);
 int rpc_connection_subscribe_event(rpc_connection_t conn, const char *name);
 int rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name);
-int rpc_connection_register_event_handler(rpc_connection_t conn,
+void *rpc_connection_register_event_handler(rpc_connection_t conn,
     const char *name, rpc_handler_t handler);
-int rpc_connection_register_event_handler_f(rpc_connection_t conn,
+void *rpc_connection_register_event_handler_f(rpc_connection_t conn,
     const char *name, rpc_handler_f handler, void *arg);
+void rpc_connection_unregister_event_handler(rpc_connection_t conn,
+    const char *name, void *cookie);
 rpc_object_t rpc_connection_call_sync(rpc_connection_t conn,
     const char *method, ...);
 rpc_object_t rpc_connection_call_syncv(rpc_connection_t conn,
