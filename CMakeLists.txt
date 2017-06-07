@@ -95,8 +95,8 @@ add_library(Catch INTERFACE)
 
 set(TEST_SOURCES
         tests/tests_main.cpp
-        tests/serializer/json.cc
-        tests/api/object.cc
+        tests/serializer/json.cpp
+        tests/api/object.cpp
         tests/api/client.cpp
         tests/api/connection.cpp
         tests/api/discovery.cpp
