@@ -89,6 +89,7 @@ rpc_create_description(GString *description, rpc_object_t object,
 	unsigned int local_indent_lvl = indent_lvl + 1;
 	size_t data_length, i;
 	uint8_t *data_ptr;
+	char *str_date;
 
 	if ((indent_lvl > 0) && (!nested))
 		g_string_append_printf(description, "%*s", (indent_lvl * 4),
@@ -130,8 +131,10 @@ rpc_create_description(GString *description, rpc_object_t object,
 		break;
 
 	case RPC_TYPE_DATE:
-		g_string_append(description, g_date_time_format(
-		    object->ro_value.rv_datetime, "%F %T"));
+		str_date = g_date_time_format(object->ro_value.rv_datetime,
+		    "%F %T");
+		g_string_append(description, str_date);
+		g_free(str_date);
 		break;
 
 	case RPC_TYPE_STRING:
@@ -270,7 +273,7 @@ rpc_release_impl(rpc_object_t object)
 		default:
 			break;
 		}
-		free(object);
+		g_free(object);
 		return (0);
 	}
 
@@ -315,8 +318,7 @@ rpc_copy(rpc_object_t object)
 		return (rpc_fd_create(object->ro_value.rv_fd));
 
 	case RPC_TYPE_STRING:
-		return (rpc_string_create(strdup(
-		    rpc_string_get_string_ptr(object))));
+		return (rpc_string_create(rpc_string_get_string_ptr(object)));
 
 	case RPC_TYPE_BINARY:
 		return rpc_data_create(rpc_data_get_bytes_ptr(object),
@@ -325,16 +327,16 @@ rpc_copy(rpc_object_t object)
 	case RPC_TYPE_DICTIONARY:
 		tmp = rpc_dictionary_create();
 		rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
-		    rpc_dictionary_set_value(tmp, k, rpc_copy(v));
-		    return ((bool)true);
+		    	rpc_dictionary_steal_value(tmp, k, rpc_copy(v));
+		    	return ((bool)true);
 		});
 		return (tmp);
 
 	case RPC_TYPE_ARRAY:
 		tmp = rpc_array_create();
 		rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
-		    rpc_array_set_value(tmp, idx, rpc_copy(v));
-		    return ((bool)true);
+			rpc_array_steal_value(tmp, idx, rpc_copy(v));
+		    	return ((bool)true);
 		});
 		return (tmp);
 	}
@@ -385,16 +387,16 @@ rpc_hash(rpc_object_t object)
 
 	case RPC_TYPE_DICTIONARY:
 		rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
-		    hash ^= rpc_data_hash((const uint8_t *)k, strlen(k));
-		    hash ^= rpc_hash(v);
-		    return ((bool)true);
+		    	hash ^= rpc_data_hash((const uint8_t *)k, strlen(k));
+		    	hash ^= rpc_hash(v);
+		    	return ((bool)true);
 		});
 		return (hash);
 
 	case RPC_TYPE_ARRAY:
 		rpc_array_apply(object, ^(size_t idx __unused, rpc_object_t v) {
-		    hash ^= rpc_hash(v);
-		    return ((bool)true);
+		    	hash ^= rpc_hash(v);
+		    	return ((bool)true);
 		});
 		return (hash);
 	}
@@ -875,11 +877,16 @@ rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value)
 	if (array->ro_type != RPC_TYPE_ARRAY)
 		abort();
 
-	for (i = (int)(index - array->ro_value.rv_list->len); i >= 0; i--) {
-		rpc_array_append_value(
+	for (i = (int)(index - array->ro_value.rv_list->len); i > 0; i--) {
+		rpc_array_append_stolen_value(
 		    array,
 		    rpc_null_create()
 		);
+	}
+
+	if (index == array->ro_value.rv_list->len) {
+		rpc_array_append_stolen_value(array, value);
+		return;
 	}
 
 	ro = (rpc_object_t *)&g_ptr_array_index(array->ro_value.rv_list, index);

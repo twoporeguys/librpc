@@ -383,7 +383,7 @@ SCENARIO("RPC_DOUBLE_OBJECT", "Create a DOUBLE RPC object and perform basic oper
 
 SCENARIO("RPC_DATE_OBJECT", "Create a DATE RPC object and perform basic operations on it") {
 	GIVEN("DATE object") {
-		rpc_object_t object;
+		rpc_object_t object = NULL;
 		rpc_object_t different_object;
 		rpc_object_t copy;
 		int value = 0;
@@ -440,9 +440,7 @@ SCENARIO("RPC_DATE_OBJECT", "Create a DATE RPC object and perform basic operatio
 			}
 		}
 
-		if (object != NULL)
-			rpc_release(object);
-
+		rpc_release(object);
 		rpc_release(different_object);
 	}
 }
@@ -1061,9 +1059,9 @@ SCENARIO("RPC_DICTIONARY_OBJECT", "Create a DICTIONARY RPC object and perform ba
 
 SCENARIO("RPC_ARRAY_OBJECT", "Create a ARRAY RPC object and perform basic operations on it") {
 	GIVEN("ARRAY object") {
-		rpc_object_t object;
-		rpc_object_t different_object;
-		rpc_object_t copy;
+		rpc_object_t object = NULL;
+		rpc_object_t different_object = NULL;
+		rpc_object_t copy = NULL;
 		int data = 0xFF00FF00;
 		size_t data_len;
 		size_t *data_len_ptr;
@@ -1125,9 +1123,7 @@ SCENARIO("RPC_ARRAY_OBJECT", "Create a ARRAY RPC object and perform basic operat
 			}
 		}
 
-		if (object != NULL)
-			rpc_release(object);
-
+		rpc_release(object);
 		rpc_release(different_object);
 
 		WHEN("Array is created") {
@@ -1222,8 +1218,6 @@ SCENARIO("RPC_ARRAY_OBJECT", "Create a ARRAY RPC object and perform basic operat
 				AND_THEN("Object is different from object initialized with different value") {
 					REQUIRE(!rpc_equal(object, different_object));
 				}
-
-				rpc_release(copy);
 			}
 		}
 
@@ -1314,11 +1308,9 @@ SCENARIO("RPC_ARRAY_OBJECT", "Create a ARRAY RPC object and perform basic operat
 		if (dup_fd != 0)
 			close(dup_fd);
 
-		if (object != NULL)
-			rpc_release(object);
-
-		if (different_object != NULL)
-			rpc_release(different_object);
+		rpc_release(object);
+		rpc_release(different_object);
+		rpc_release(copy);
 	}
 }
 
@@ -1340,6 +1332,7 @@ SCENARIO("RPC_DESCRIPTION_TEST", "Create a tree of RPC objects and print their d
 		    "    ],\n"
 		    "    test_string2: <string> \"test_test_test\",\n"
 		    "}";
+		char *description = NULL;
 
 		rpc_object_t null = rpc_null_create();
 		rpc_object_t boolean = rpc_bool_create(true);
@@ -1364,14 +1357,16 @@ SCENARIO("RPC_DESCRIPTION_TEST", "Create a tree of RPC objects and print their d
 		rpc_array_append_stolen_value(array, fd);
 
 		rpc_dictionary_set_value(dict, "null_val", null);
-		rpc_dictionary_set_value(dict, "array", array);
+		rpc_dictionary_steal_value(dict, "array", array);
 
 		rpc_dictionary_set_string(dict, "test_string2", "test_test_test");
 
 		THEN("Parent RPC object's description is equal to refrence description") {
-			REQUIRE(g_strcmp0(referene, rpc_copy_description(dict)) == 0);
+			description = rpc_copy_description(dict);
+			REQUIRE(g_strcmp0(referene, description) == 0);
 		}
 
 		rpc_release(dict);
+		g_free(description);
 	}
 }
