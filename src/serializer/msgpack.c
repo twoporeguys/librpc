@@ -26,6 +26,7 @@
  */
 
 #include <rpc/object.h>
+#include <rpc/shmem.h>
 #include "../../contrib/mpack/mpack.h"
 #include "../linker_set.h"
 #include "../internal.h"
@@ -34,6 +35,8 @@
 static int
 rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 {
+	struct rpc_msgpack_shmem_desc desc;
+	struct rpc_shmem_block *block;
 	int64_t timestamp;
 
 	switch (object->ro_type) {
@@ -78,6 +81,15 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 		    sizeof(object->ro_value.rv_fd));
 		break;
 
+	case RPC_TYPE_SHMEM:
+		block = rpc_shmem_get_block(object);
+		desc.addr = (uintptr_t)block->rsb_offset;
+		desc.len = block->rsb_size;
+		desc.fd = block->rsb_fd;
+		mpack_write_ext(writer, MSGPACK_EXTTYPE_SHMEM,
+		    (const char *)&desc, sizeof(desc));
+		break;
+
 	case RPC_TYPE_DICTIONARY:
 		mpack_start_map(writer, (uint32_t)rpc_dictionary_get_count(object));
 		rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
@@ -105,6 +117,7 @@ static rpc_object_t
 rpc_msgpack_read_object(mpack_node_t node)
 {
 	struct rpc_msgpack_shmem_desc *desc;
+	struct rpc_shmem_block *block;
 	int *fd;
 	int64_t *date;
 	__block size_t i;
@@ -159,14 +172,20 @@ rpc_msgpack_read_object(mpack_node_t node)
 		case MSGPACK_EXTTYPE_DATE:
 			date = (int64_t *)mpack_node_data(node);
 			return (rpc_date_create(*date));
+
 		case MSGPACK_EXTTYPE_FD:
 			fd = (int *)mpack_node_data(node);
 			return (rpc_fd_create(*fd));
+
 		case MSGPACK_EXTTYPE_SHMEM:
 			desc = (struct rpc_msgpack_shmem_desc *)
 			    mpack_node_data(node);
 
-			break;
+			block = g_malloc(sizeof(*block));
+			block->rsb_fd = desc->fd;
+			block->rsb_offset = desc->addr;
+			block->rsb_size = desc->len;
+			return (rpc_shmem_create(block));
 		}
 		break;
 

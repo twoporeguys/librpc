@@ -33,9 +33,9 @@
 #define	MSGPACK_EXTTYPE_SHMEM	3
 
 struct rpc_msgpack_shmem_desc {
-    	pid_t pid;
-    	uintptr_t addr;
-    	size_t len;
+    	int 		fd;
+    	uintptr_t 	addr;
+    	size_t 		len;
 };
 
 int rpc_msgpack_serialize(rpc_object_t, void **, size_t *);

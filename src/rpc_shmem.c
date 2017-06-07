@@ -25,22 +25,39 @@
  *
  */
 
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/mman.h>
+#include <glib.h>
 #include <rpc/connection.h>
+#include <rpc/shmem.h>
+#include "memfd.h"
+#include "internal.h"
 
-struct block
+rpc_shmem_block_t
+rpc_shmem_alloc(size_t size)
 {
-    	size_t 		b_size;
-    	struct block	b_next;
-    	bool		b_free;
-    	uint32_t	b_magic;
-};
-
-void *
-rpc_shmem_alloc(rpc_connection_t conn, size_t size)
-{
+	rpc_shmem_block_t block;
 
 	if (size == 0)
 		return (NULL);
+
+	block = g_malloc(sizeof(*block));
+	block->rsb_addr = NULL;
+	block->rsb_size = size;
+	block->rsb_offset = 0;
+	block->rsb_fd = memfd_create("librpc", 0);
+
+	if (ftruncate(block->rsb_fd, size) != 0) {
+		close(block->rsb_fd);
+		g_free(block);
+		return (NULL);
+	}
+
+	block->rsb_addr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED,
+	    block->rsb_fd, 0);
+
+	return (block);
 }
 
 void
@@ -49,4 +66,49 @@ rpc_shmem_free(rpc_shmem_block_t block)
 
 	if (block == NULL)
 		return;
+
+	munmap(block->rsb_addr, block->rsb_size);
+	close(block->rsb_fd);
+	g_free(block);
+}
+
+void *
+rpc_shmem_map(rpc_shmem_block_t block)
+{
+
+	return (mmap(NULL, block->rsb_size, PROT_READ | PROT_WRITE, MAP_SHARED,
+	    block->rsb_fd, block->rsb_offset));
+}
+
+void *
+rpc_shmem_block_get_ptr(rpc_shmem_block_t block)
+{
+
+	return (block->rsb_addr);
+}
+
+size_t
+rpc_shmem_block_get_size(rpc_shmem_block_t block)
+{
+
+	return (block->rsb_size);
+}
+
+rpc_object_t
+rpc_shmem_create(rpc_shmem_block_t block)
+{
+	union rpc_value val;
+
+	val.rv_shmem = block;
+	return (rpc_prim_create(RPC_TYPE_SHMEM, val));
+}
+
+rpc_shmem_block_t
+rpc_shmem_get_block(rpc_object_t obj)
+{
+
+	if (rpc_get_type(obj) != RPC_TYPE_SHMEM)
+		return (NULL);
+
+	return (obj->ro_value.rv_shmem);
 }

@@ -28,10 +28,18 @@
 #ifndef LIBRPC_SHMEM_H
 #define LIBRPC_SHMEM_H
 
+#include <rpc/object.h>
+#include <rpc/connection.h>
+
 struct rpc_shmem_block;
 typedef struct rpc_shmem_block *rpc_shmem_block_t;
 
-rpc_shmem_block_t rpc_shmem_alloc(rpc_connection_t conn, size_t size);
+rpc_shmem_block_t rpc_shmem_alloc(size_t size);
 void rpc_shmem_free(rpc_shmem_block_t block);
+void *rpc_shmem_block_get_ptr(rpc_shmem_block_t block);
+size_t rpc_shmem_block_get_size(rpc_shmem_block_t block);
+
+rpc_object_t rpc_shmem_create(rpc_shmem_block_t block);
+rpc_shmem_block_t rpc_shmem_get_block(rpc_object_t obj);
 
 #endif //LIBRPC_SHMEM_H

@@ -32,7 +32,6 @@
 #include <stdbool.h>
 #include <stdarg.h>
 #include <sys/types.h>
-#include <rpc/shmem.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -120,8 +119,6 @@ const char *rpc_string_get_string_ptr(rpc_object_t xstring);
 rpc_object_t rpc_fd_create(int fd);
 int rpc_fd_dup(rpc_object_t xfd);
 int rpc_fd_get_value(rpc_object_t xfd);
-rpc_object_t rpc_shmem_create(rpc_shmem_block_t block);
-rpc_shmem_block_t rpc_shmem_get_block(rpc_object_t obj);
 
 rpc_object_t rpc_array_create(void);
 rpc_object_t rpc_array_create_ex(const rpc_object_t *objects, size_t count,

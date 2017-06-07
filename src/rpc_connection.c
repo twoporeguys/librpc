@@ -67,18 +67,18 @@ struct message_handler
 };
 
 static const struct message_handler handlers[] = {
-    { "rpc", "call", on_rpc_call },
-    { "rpc", "response", on_rpc_response },
-    { "rpc", "fragment", on_rpc_fragment },
-    { "rpc", "continue", on_rpc_continue },
-    { "rpc", "end", on_rpc_end },
-    { "rpc", "abort", on_rpc_abort },
-    { "rpc", "error", on_rpc_error },
-    { "events", "event", on_events_event },
-    { "events", "event_burst", on_events_event_burst },
-    { "events", "subscribe", on_events_subscribe },
-    { "events", "unsubscribe", on_events_unsubscribe },
-    { }
+	{ "rpc", "call", on_rpc_call },
+	{ "rpc", "response", on_rpc_response },
+	{ "rpc", "fragment", on_rpc_fragment },
+	{ "rpc", "continue", on_rpc_continue },
+	{ "rpc", "end", on_rpc_end },
+	{ "rpc", "abort", on_rpc_abort },
+	{ "rpc", "error", on_rpc_error },
+	{ "events", "event", on_events_event },
+	{ "events", "event_burst", on_events_event_burst },
+	{ "events", "subscribe", on_events_subscribe },
+	{ "events", "unsubscribe", on_events_unsubscribe },
+	{ }
 };
 
 static size_t
@@ -90,6 +90,12 @@ rpc_serialize_fds(rpc_object_t obj, int *fds, size_t *nfds, size_t idx)
 	case RPC_TYPE_FD:
 		fds[counter] = obj->ro_value.rv_fd;
 		obj->ro_value.rv_fd = (int)counter;
+		counter++;
+		break;
+
+	case RPC_TYPE_SHMEM:
+		fds[counter] = obj->ro_value.rv_shmem->rsb_fd;
+		obj->ro_value.rv_shmem->rsb_fd = (int)counter;
 		counter++;
 		break;
 
@@ -122,6 +128,13 @@ rpc_restore_fds(rpc_object_t obj, int *fds, size_t nfds)
 	switch (rpc_get_type(obj)) {
 		case RPC_TYPE_FD:
 			obj->ro_value.rv_fd = fds[obj->ro_value.rv_fd];
+			break;
+
+		case RPC_TYPE_SHMEM:
+			obj->ro_value.rv_shmem->rsb_fd =
+			    fds[obj->ro_value.rv_shmem->rsb_fd];
+			obj->ro_value.rv_shmem->rsb_addr =
+			    rpc_shmem_map(obj->ro_value.rv_shmem);
 			break;
 
 		case RPC_TYPE_ARRAY:
