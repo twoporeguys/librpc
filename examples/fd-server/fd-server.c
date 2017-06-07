@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Two Pore Guys, Inc.
+ * Copyright 2017 Two Pore Guys, Inc.
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,50 @@
  *
  */
 
-#ifndef LIBRPC_MSGPACK_H
-#define LIBRPC_MSGPACK_H
+#include <stdio.h>
+#include <unistd.h>
+#include <errno.h>
+#include <rpc/object.h>
+#include <rpc/service.h>
+#include <rpc/server.h>
+#include <rpc/discovery.h>
 
-#define	MSGPACK_EXTTYPE_DATE	1
-#define	MSGPACK_EXTTYPE_FD	2
-#define	MSGPACK_EXTTYPE_SHMEM	3
+static rpc_object_t
+write_to_pipe(void *cookie, rpc_object_t args)
+{
+	int fd;
 
-struct rpc_msgpack_shmem_desc {
-    	int 		fd;
-    	uintptr_t 	addr;
-    	size_t 		len;
-};
+	if (rpc_object_unpack(args, "[f]", &fd) != 0) {
+		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
+		return (NULL);
+	}
 
-int rpc_msgpack_serialize(rpc_object_t, void **, size_t *);
-rpc_object_t rpc_msgpack_deserialize(const void *, size_t);
+	printf("Received fd %d\n", fd);
 
-#endif //LIBRPC_MSGPACK_H
+	dprintf(fd, "Hello there\n");
+	dprintf(fd, "I am writing to the pipe\n");
+	sleep(1);
+	dprintf(fd, "And sometimes sleeping\n");
+	dprintf(fd, "Bye.\n");
+	close(fd);
+
+	return (NULL);
+}
+
+int
+main(int argc, const char *argv[])
+{
+	rpc_context_t ctx;
+	rpc_server_t srv;
+
+	(void)argc;
+	(void)argv;
+
+	ctx = rpc_context_create();
+	rpc_context_register_func(ctx, "write_to_pipe", "Writes to a pipe",
+	    NULL, &write_to_pipe);
+
+	rpc_discovery_register(ctx);
+	srv = rpc_server_create("unix:///tmp/server.sock", ctx);
+	pause();
+}

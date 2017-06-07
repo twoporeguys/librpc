@@ -36,6 +36,7 @@
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <rpc/object.h>
+#include <rpc/shmem.h>
 #include "serializer/json.h"
 #include "internal.h"
 
@@ -52,10 +53,11 @@ static const char *rpc_types[] = {
     [RPC_TYPE_BINARY] = "binary",
     [RPC_TYPE_FD] = "fd",
     [RPC_TYPE_DICTIONARY] = "dictionary",
-    [RPC_TYPE_ARRAY] = "array"
+    [RPC_TYPE_ARRAY] = "array",
+    [RPC_TYPE_SHMEM] = "shmem"
 };
 
-static rpc_object_t
+rpc_object_t
 rpc_prim_create(rpc_type_t type, union rpc_value val)
 {
 	struct rpc_object *ro;
@@ -150,6 +152,10 @@ rpc_create_description(GString *description, rpc_object_t object,
 			g_string_append_printf(description, "%02x",
 			    data_ptr[i]);
 
+		break;
+
+	case RPC_TYPE_SHMEM:
+		g_string_append(description, "shared memory");
 		break;
 
 	case RPC_TYPE_DICTIONARY:
@@ -324,6 +330,9 @@ rpc_copy(rpc_object_t object)
 		return rpc_data_create(rpc_data_get_bytes_ptr(object),
 		    rpc_data_get_length(object), true);
 
+	case RPC_TYPE_SHMEM:
+		return (NULL);
+
 	case RPC_TYPE_DICTIONARY:
 		tmp = rpc_dictionary_create();
 		rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
@@ -384,6 +393,9 @@ rpc_hash(rpc_object_t object)
 	case RPC_TYPE_BINARY:
 		return (rpc_data_hash((uint8_t *)rpc_data_get_bytes_ptr(object),
 		    rpc_data_get_length(object)));
+
+	case RPC_TYPE_SHMEM:
+		return (0);	/* not supported */
 
 	case RPC_TYPE_DICTIONARY:
 		rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
@@ -448,6 +460,15 @@ rpc_object_pack(const char *fmt, ...)
 			current = rpc_bool_create(va_arg(ap, int));
 			break;
 
+		case 'B':
+			current = rpc_data_create(va_arg(ap, const void *),
+			    va_arg(ap, size_t), va_arg(ap, int));
+			break;
+
+		case 'f':
+			current = rpc_fd_create(va_arg(ap, int));
+			break;
+
 		case 'i':
 			current = rpc_int64_create(va_arg(ap, int64_t));
 			break;
@@ -462,6 +483,10 @@ rpc_object_pack(const char *fmt, ...)
 
 		case 's':
 			current = rpc_string_create(va_arg(ap, const char *));
+			break;
+
+		case 'h':
+			current = rpc_shmem_create(va_arg(ap, rpc_shmem_block_t));
 			break;
 
 		case '{':
@@ -547,8 +572,17 @@ rpc_object_unpack(rpc_object_t obj, const char *fmt, ...)
 			*va_arg(ap, double *) = rpc_double_get_value(current);
 			break;
 
+		case 'f':
+			*va_arg(ap, int *) = rpc_fd_get_value(current);
+			break;
+
 		case 's':
 			*va_arg(ap, const char **) = rpc_string_get_string_ptr(
+			    current);
+			break;
+
+		case 'h':
+			*va_arg(ap, rpc_shmem_block_t *) = rpc_shmem_get_block(
 			    current);
 			break;
 
@@ -815,7 +849,7 @@ rpc_fd_get_value(rpc_object_t xfd)
 {
 
 	if (xfd->ro_type != RPC_TYPE_FD)
-		return (0);
+		return (-1);
 
 	return (xfd->ro_value.rv_fd);
 }
@@ -912,7 +946,6 @@ rpc_array_append_value(rpc_object_t array, rpc_object_t value)
 {
 
 	rpc_array_append_stolen_value(array, value);
-
 	rpc_retain(value);
 }
 

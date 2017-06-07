@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Two Pore Guys, Inc.
+ * Copyright 2017 Two Pore Guys, Inc.
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,48 @@
  *
  */
 
-#ifndef LIBRPC_MSGPACK_H
-#define LIBRPC_MSGPACK_H
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
+#include <rpc/object.h>
+#include <rpc/service.h>
+#include <rpc/server.h>
+#include <rpc/discovery.h>
+#include <rpc/shmem.h>
+#include "../../src/internal.h"
 
-#define	MSGPACK_EXTTYPE_DATE	1
-#define	MSGPACK_EXTTYPE_FD	2
-#define	MSGPACK_EXTTYPE_SHMEM	3
+static rpc_object_t
+exchange_blob(void *cookie, rpc_object_t args)
+{
+	rpc_shmem_block_t block;
 
-struct rpc_msgpack_shmem_desc {
-    	int 		fd;
-    	uintptr_t 	addr;
-    	size_t 		len;
-};
+	if (rpc_object_unpack(args, "[h]", &block) != 0) {
+		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
+		return (NULL);
+	}
 
-int rpc_msgpack_serialize(rpc_object_t, void **, size_t *);
-rpc_object_t rpc_msgpack_deserialize(const void *, size_t);
+	printf("Received %zu bytes long shared memory block\n",
+	    rpc_shmem_block_get_size(block));
 
-#endif //LIBRPC_MSGPACK_H
+	memset(block->rsb_addr, 'B', block->rsb_size);
+	return (rpc_shmem_create(block));
+}
+
+int
+main(int argc, const char *argv[])
+{
+	rpc_context_t ctx;
+	rpc_server_t srv;
+
+	(void)argc;
+	(void)argv;
+
+	ctx = rpc_context_create();
+	rpc_context_register_func(ctx, "exchange_blob", "Exchanges binary blob",
+	    NULL, &exchange_blob);
+
+	rpc_discovery_register(ctx);
+	srv = rpc_server_create("unix:///tmp/server.sock", ctx);
+	pause();
+}

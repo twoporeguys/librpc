@@ -56,7 +56,8 @@ typedef enum {
 	RPC_TYPE_BINARY,
 	RPC_TYPE_FD,
 	RPC_TYPE_DICTIONARY,
-	RPC_TYPE_ARRAY
+	RPC_TYPE_ARRAY,
+    	RPC_TYPE_SHMEM
 } rpc_type_t;
 
 typedef struct rpc_object *rpc_object_t;

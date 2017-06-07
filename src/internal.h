@@ -45,6 +45,8 @@
 #define	DECLARE_SERIALIZER(_serializer)	DATA_SET(sr_set, _serializer)
 
 #define	RPC_TRANSPORT_NO_SERIALIZE		(1 << 0)
+#define	RPC_TRANSPORT_CREDENTIALS		(1 << 1)
+#define RPC_TRANSPORT_FD_PASSING		(1 << 2)
 
 #define RPC_DEBUG	0
 #if RPC_DEBUG
@@ -91,6 +93,7 @@ union rpc_value
 	bool			rv_b;
 	double			rv_d;
 	struct rpc_binary_value rv_bin;
+    	struct rpc_shmem_block *rv_shmem;
 	int 			rv_fd;
 };
 
@@ -122,7 +125,7 @@ struct rpc_call
 struct rpc_subscription
 {
     	int 			rsu_refcount;
-    	GList *			rsu_handlers;
+    	GPtrArray *		rsu_handlers;
 };
 
 enum rpc_inbound_state
@@ -223,6 +226,14 @@ struct rpc_context
     	GThreadPool *		rcx_threadpool;
 };
 
+struct rpc_shmem_block
+{
+    	int			rsb_fd;
+    	off_t 			rsb_offset;
+    	void *			rsb_addr;
+    	size_t 			rsb_size;
+};
+
 struct rpc_transport
 {
 	int (*connect)(struct rpc_connection *, const char *, rpc_object_t);
@@ -238,6 +249,9 @@ struct rpc_serializer
     	rpc_object_t (*deserialize)(const void *, size_t);
 	const char *name;
 };
+
+rpc_object_t rpc_prim_create(rpc_type_t type, union rpc_value val);
+void *rpc_shmem_map(struct rpc_shmem_block *block);
 
 const struct rpc_transport *rpc_find_transport(const char *scheme);
 const struct rpc_serializer *rpc_find_serializer(const char *name);

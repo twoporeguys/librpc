@@ -38,6 +38,7 @@ set(HEADERS
         include/rpc/connection.h
         include/rpc/server.h
         include/rpc/client.h
+        include/rpc/shmem.h
         include/rpc/discovery.h)
 
 set(CORE_FILES
@@ -47,9 +48,11 @@ set(CORE_FILES
         src/rpc_service.c
         src/rpc_client.c
         src/rpc_discovery.c
+        src/rpc_shmem.c
         src/utils.c
         src/internal.h
-        src/linker_set.h)
+        src/linker_set.h
+        src/memfd.h)
 
 set(TRANSPORT_FILES
         src/transport/socket.c
@@ -119,3 +122,7 @@ add_subdirectory(examples/event)
 add_subdirectory(examples/loopback)
 add_subdirectory(examples/pack-unpack)
 add_subdirectory(examples/server)
+add_subdirectory(examples/fd-client)
+add_subdirectory(examples/fd-server)
+add_subdirectory(examples/shm-client)
+add_subdirectory(examples/shm-server)

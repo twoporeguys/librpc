@@ -281,7 +281,7 @@ done:
 
 static int
 socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
-    int *fds, size_t *nfds, struct rpc_credentials *creds)
+    int **fds, size_t *nfds, struct rpc_credentials *creds)
 {
 	GError *err = NULL;
 	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
@@ -324,7 +324,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 		}
 
 		if (G_IS_UNIX_FD_MESSAGE(cmsg[i])) {
-			fds = g_unix_fd_message_steal_fds(
+			*fds = g_unix_fd_message_steal_fds(
 			    G_UNIX_FD_MESSAGE(cmsg[i]), (gint *)nfds);
 			continue;
 		}
@@ -371,11 +371,11 @@ socket_reader(void *arg)
 	struct socket_connection *conn = arg;
 	struct rpc_credentials creds;
 	void *frame;
-	int fds[128];
+	int *fds;
 	size_t len, nfds;
 
 	for (;;) {
-		if (socket_recv_msg(conn, &frame, &len, fds, &nfds, &creds) != 0)
+		if (socket_recv_msg(conn, &frame, &len, &fds, &nfds, &creds) != 0)
 			break;
 
 		if (conn->sc_parent->rco_recv_msg(conn->sc_parent, frame, len,

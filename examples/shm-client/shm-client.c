@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Two Pore Guys, Inc.
+ * Copyright 2017 Two Pore Guys, Inc.
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,46 @@
  *
  */
 
-#ifndef LIBRPC_MSGPACK_H
-#define LIBRPC_MSGPACK_H
+#include <stdio.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
+#include <glib.h>
+#include <rpc/object.h>
+#include <rpc/client.h>
+#include <rpc/shmem.h>
 
-#define	MSGPACK_EXTTYPE_DATE	1
-#define	MSGPACK_EXTTYPE_FD	2
-#define	MSGPACK_EXTTYPE_SHMEM	3
+#define	BLOCK_SIZE	(1024 * 1024)
 
-struct rpc_msgpack_shmem_desc {
-    	int 		fd;
-    	uintptr_t 	addr;
-    	size_t 		len;
-};
+int
+main(int argc, const char *argv[])
+{
+	rpc_client_t client;
+	rpc_connection_t conn;
+	rpc_object_t result;
+	rpc_shmem_block_t b1, b2;
 
-int rpc_msgpack_serialize(rpc_object_t, void **, size_t *);
-rpc_object_t rpc_msgpack_deserialize(const void *, size_t);
+	if (argc < 2) {
+		fprintf(stderr, "Usage: shm-client <server socket URI>\n");
+		return (1);
+	}
 
-#endif //LIBRPC_MSGPACK_H
+	client = rpc_client_create(argv[1], 0);
+	if (client == NULL) {
+		fprintf(stderr, "cannot connect: %s\n", strerror(errno));
+		return (1);
+	}
+
+	conn = rpc_client_get_connection(client);
+	b1 = rpc_shmem_alloc(BLOCK_SIZE);
+	memset(rpc_shmem_block_get_ptr(b1), 'A', rpc_shmem_block_get_size(b1));
+
+	result = rpc_connection_call_sync(conn, "exchange_blob",
+	    rpc_shmem_create(b1), NULL);
+
+	printf("result = %s\n", rpc_copy_description(result));
+	b2 = rpc_shmem_get_block(result);
+
+	rpc_client_close(client);
+	return (0);
+}
