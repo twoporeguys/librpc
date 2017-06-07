@@ -695,9 +695,9 @@ SCENARIO("RPC_BINARY_OBJECT", "Create a BINARY RPC object and perform basic oper
 
 SCENARIO("RPC_FD_OBJECT", "Create a FD RPC object and perform basic operations on it") {
 	GIVEN("FD object") {
-		rpc_object_t object;
-		rpc_object_t different_object;
-		rpc_object_t copy;
+		rpc_object_t object = NULL;
+		rpc_object_t different_object = NULL;
+		rpc_object_t copy = NULL;
 		int fds[2];
 		int dup_fd = 0;
 		struct stat stat1, stat2;
@@ -1022,9 +1022,6 @@ SCENARIO("RPC_DICTIONARY_OBJECT", "Create a DICTIONARY RPC object and perform ba
 			    rpc_int64_create(64)
 			};
 
-			rpc_object_t object_to_steal;
-			rpc_object_t object_to_set;
-
 			object = rpc_dictionary_create_ex(names, values, 2, false);
 			different_object = rpc_dictionary_create();
 
@@ -1065,6 +1062,7 @@ SCENARIO("RPC_ARRAY_OBJECT", "Create a ARRAY RPC object and perform basic operat
 		rpc_object_t object = NULL;
 		rpc_object_t different_object = NULL;
 		rpc_object_t copy = NULL;
+		rpc_object_t value = NULL;
 		int data = 0xFF00FF00;
 		size_t data_len;
 		size_t *data_len_ptr;
@@ -1281,9 +1279,6 @@ SCENARIO("RPC_ARRAY_OBJECT", "Create a ARRAY RPC object and perform basic operat
 			    rpc_int64_create(64)
 			};
 
-			rpc_object_t object_to_steal;
-			rpc_object_t object_to_set;
-
 			object = rpc_array_create_ex(values, 2, false);
 			different_object = rpc_array_create();
 
@@ -1303,6 +1298,41 @@ SCENARIO("RPC_ARRAY_OBJECT", "Create a ARRAY RPC object and perform basic operat
 
 			rpc_release_impl(rpc_array_get_value(object, 0));
 			rpc_release_impl(rpc_array_get_value(object, 1));
+		}
+
+		WHEN("Values is appended to an empty object") {
+			object = rpc_array_create();
+			value = rpc_int64_create(1234);
+
+			AND_WHEN("Value is stolen") {
+				rpc_array_append_stolen_value(object, value);
+
+				THEN("Array contains only stolen value") {
+					REQUIRE(rpc_array_get_count(object) == 1);
+					REQUIRE(rpc_array_get_int64(object, 0) == 1234);
+				}
+
+				THEN("Both array and value have refcnt = 1 ") {
+					REQUIRE(object->ro_refcnt == 1);
+					REQUIRE(value->ro_refcnt == 1);
+				}
+			}
+
+			AND_WHEN("Value is set") {
+				rpc_array_append_value(object, value);
+
+				THEN("Array contains only stolen value") {
+					REQUIRE(rpc_array_get_count(object) == 1);
+					REQUIRE(rpc_array_get_int64(object, 0) == 1234);
+				}
+
+				THEN("Array has refcnt = 1, value has refcnt = 2") {
+					REQUIRE(object->ro_refcnt == 1);
+					REQUIRE(value->ro_refcnt == 2);
+				}
+
+				rpc_release(value);
+			}
 		}
 
 		close(fds[0]);
