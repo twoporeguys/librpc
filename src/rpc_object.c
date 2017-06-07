@@ -451,6 +451,11 @@ rpc_object_pack(const char *fmt, ...)
 			current = rpc_bool_create(va_arg(ap, int));
 			break;
 
+		case 'B':
+			current = rpc_data_create(va_arg(ap, const void *),
+			    va_arg(ap, size_t), va_arg(ap, int));
+			break;
+
 		case 'i':
 			current = rpc_int64_create(va_arg(ap, int64_t));
 			break;
@@ -548,6 +553,10 @@ rpc_object_unpack(rpc_object_t obj, const char *fmt, ...)
 
 		case 'd':
 			*va_arg(ap, double *) = rpc_double_get_value(current);
+			break;
+
+		case 'f':
+			*va_arg(ap, int *) = rpc_fd_get_value(current);
 			break;
 
 		case 's':
@@ -818,7 +827,7 @@ rpc_fd_get_value(rpc_object_t xfd)
 {
 
 	if (xfd->ro_type != RPC_TYPE_FD)
-		return (0);
+		return (-1);
 
 	return (xfd->ro_value.rv_fd);
 }
@@ -909,7 +918,6 @@ rpc_array_append_value(rpc_object_t array, rpc_object_t value)
 {
 
 	rpc_array_append_stolen_value(array, value);
-
 	rpc_retain(value);
 }
 

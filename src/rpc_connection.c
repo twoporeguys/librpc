@@ -27,10 +27,10 @@
 
 #include <stdlib.h>
 #include <errno.h>
-#include <rpc/object.h>
-#include <rpc/connection.h>
 #include <glib.h>
 #include <glib/gprintf.h>
+#include <rpc/object.h>
+#include <rpc/connection.h>
 #include "linker_set.h"
 #include "internal.h"
 #include "serializer/msgpack.h"
@@ -88,8 +88,9 @@ rpc_serialize_fds(rpc_object_t obj, int *fds, size_t *nfds, size_t idx)
 
 	switch (rpc_get_type(obj)) {
 	case RPC_TYPE_FD:
-		fds[counter++] = obj->ro_value.rv_fd;
-		obj->ro_value.rv_fd = (int)idx;
+		fds[counter] = obj->ro_value.rv_fd;
+		obj->ro_value.rv_fd = (int)counter;
+		counter++;
 		break;
 
 	case RPC_TYPE_ARRAY:
@@ -461,6 +462,7 @@ rpc_send_frame(rpc_connection_t conn, rpc_object_t frame)
 	int ret;
 
 	g_mutex_lock(&conn->rco_send_mtx);
+	nfds = rpc_serialize_fds(frame, fds, NULL, 0);
 
 	if ((conn->rco_flags & RPC_TRANSPORT_NO_SERIALIZE) == 0) {
 		if (rpc_msgpack_serialize(frame, &buf, &len) != 0) {
@@ -469,7 +471,6 @@ rpc_send_frame(rpc_connection_t conn, rpc_object_t frame)
 		}
 	}
 
-	rpc_serialize_fds(frame, fds, &nfds, 0);
 	ret = conn->rco_send_msg(conn->rco_arg, buf, len, fds, nfds);
 	rpc_release(frame);
 
@@ -544,6 +545,9 @@ rpc_connection_send_response(rpc_connection_t conn, rpc_object_t id,
 {
 	rpc_object_t frame;
 
+	if (response == NULL)
+		response = rpc_null_create();
+
 	frame = rpc_pack_frame("rpc", "response", id, response);
 	rpc_send_frame(conn, frame);
 }
@@ -610,7 +614,6 @@ rpc_connection_alloc(rpc_server_t server)
 	conn->rco_rpc_timeout = DEFAULT_RPC_TIMEOUT;
 	conn->rco_recv_msg = &rpc_recv_msg;
 	conn->rco_close = &rpc_close;
-
 	g_mutex_init(&conn->rco_send_mtx);
 
 	return (conn);
@@ -762,21 +765,25 @@ rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name)
 	return (0);
 }
 
-int
+void *
 rpc_connection_register_event_handler(rpc_connection_t conn, const char *name,
     rpc_handler_t handler)
 {
 	struct rpc_subscription *sub;
+	rpc_handler_t fn;
+
+	fn = Block_copy(handler);
 
 	g_mutex_lock(&conn->rco_subscription_mtx);
 	rpc_connection_subscribe_event_locked(conn, name);
 	sub = g_hash_table_lookup(conn->rco_subscriptions, name);
-	sub->rsu_handlers = g_list_append(sub->rsu_handlers, Block_copy(handler));
+	sub->rsu_handlers = g_list_append(sub->rsu_handlers, fn);
 	g_mutex_unlock(&conn->rco_subscription_mtx);
-	return (0);
+
+	return (fn);
 }
 
-int
+void *
 rpc_connection_register_event_handler_f(rpc_connection_t conn, const char *name,
     rpc_handler_f handler, void *arg)
 {

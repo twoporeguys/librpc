@@ -108,3 +108,6 @@ add_subdirectory(examples/event)
 add_subdirectory(examples/loopback)
 add_subdirectory(examples/pack-unpack)
 add_subdirectory(examples/server)
+add_subdirectory(examples/fd-client)
+add_subdirectory(examples/fd-server)
+

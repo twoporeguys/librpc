@@ -104,6 +104,9 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 static rpc_object_t
 rpc_msgpack_read_object(mpack_node_t node)
 {
+	struct rpc_msgpack_shmem_desc *desc;
+	int *fd;
+	int64_t *date;
 	__block size_t i;
 	__block char *cstr;
 	__block mpack_node_t tmp;
@@ -152,6 +155,19 @@ rpc_msgpack_read_object(mpack_node_t node)
 		return (result);
 
 	case mpack_type_ext:
+		switch (mpack_node_exttype(node)) {
+		case MSGPACK_EXTTYPE_DATE:
+			date = (int64_t *)mpack_node_data(node);
+			return (rpc_date_create(*date));
+		case MSGPACK_EXTTYPE_FD:
+			fd = (int *)mpack_node_data(node);
+			return (rpc_fd_create(*fd));
+		case MSGPACK_EXTTYPE_SHMEM:
+			desc = (struct rpc_msgpack_shmem_desc *)
+			    mpack_node_data(node);
+
+			break;
+		}
 		break;
 
 	case mpack_type_nil:
