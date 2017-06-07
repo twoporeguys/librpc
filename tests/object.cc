@@ -46,7 +46,7 @@ static rpc_object_t create_string_with_arguments(const char *fmt, ...) {
 
 SCENARIO("RPC_NULL_OBJECT", "Create a NULL RPC object and perform basic operations on it") {
 	GIVEN("BOOL object") {
-		rpc_object_t object;
+		rpc_object_t object = NULL;
 		rpc_object_t copy;
 		object = rpc_null_create();
 
@@ -73,6 +73,7 @@ SCENARIO("RPC_NULL_OBJECT", "Create a NULL RPC object and perform basic operatio
 
 			THEN("reference count equals 2"){
 				REQUIRE(object->ro_refcnt == 2);
+				rpc_release(object);
 			}
 
 			AND_WHEN("reference count is decremented") {
@@ -92,8 +93,7 @@ SCENARIO("RPC_NULL_OBJECT", "Create a NULL RPC object and perform basic operatio
 			}
 		}
 
-		if (object != NULL)
-			rpc_release(object);
+		rpc_release(object);
 	}
 }
 
@@ -142,6 +142,7 @@ SCENARIO("RPC_BOOL_OBJECT", "Create a BOOL RPC object and perform basic operatio
 
 			THEN("reference count equals 2"){
 				REQUIRE(object->ro_refcnt == 2);
+				rpc_release(object);
 			}
 
 			AND_WHEN("reference count is decremented") {
@@ -213,6 +214,7 @@ SCENARIO("RPC_UINT64_OBJECT", "Create a UINT64 RPC object and perform basic oper
 
 			THEN("reference count equals 2"){
 				REQUIRE(object->ro_refcnt == 2);
+				rpc_release(object);
 			}
 
 			AND_WHEN("reference count is decremented") {
@@ -284,6 +286,7 @@ SCENARIO("RPC_INT64_OBJECT", "Create a INT64 RPC object and perform basic operat
 
 			THEN("reference count equals 2"){
 				REQUIRE(object->ro_refcnt == 2);
+				rpc_release(object);
 			}
 
 			AND_WHEN("reference count is decremented") {
@@ -355,6 +358,7 @@ SCENARIO("RPC_DOUBLE_OBJECT", "Create a DOUBLE RPC object and perform basic oper
 
 			THEN("reference count equals 2"){
 				REQUIRE(object->ro_refcnt == 2);
+				rpc_release(object);
 			}
 
 			AND_WHEN("reference count is decremented") {
@@ -421,6 +425,7 @@ SCENARIO("RPC_DATE_OBJECT", "Create a DATE RPC object and perform basic operatio
 
 			THEN("reference count equals 2"){
 				REQUIRE(object->ro_refcnt == 2);
+				rpc_release(object);
 			}
 
 			AND_WHEN("reference count is decremented") {
@@ -447,9 +452,9 @@ SCENARIO("RPC_DATE_OBJECT", "Create a DATE RPC object and perform basic operatio
 
 SCENARIO("RPC_STRING_OBJECT", "Create a STRING RPC object and perform basic operations on it") {
 	GIVEN("STRING object") {
-		rpc_object_t object;
-		rpc_object_t different_object;
-		rpc_object_t copy;
+		rpc_object_t object = NULL;
+		rpc_object_t different_object = NULL;
+		rpc_object_t copy = NULL;
 		static const char *value = "first test string";
 		static const char *different_value = "second test string";
 
@@ -476,8 +481,6 @@ SCENARIO("RPC_STRING_OBJECT", "Create a STRING RPC object and perform basic oper
 				AND_THEN("Object is different from object initialized with different value") {
 					REQUIRE(!rpc_equal(object, different_object));
 				}
-
-				rpc_release(copy);
 			}
 		}
 
@@ -540,7 +543,6 @@ SCENARIO("RPC_STRING_OBJECT", "Create a STRING RPC object and perform basic oper
 					REQUIRE(!rpc_equal(object, different_object));
 				}
 
-				rpc_release(copy);
 			}
 
 			AND_WHEN("reference count is incremented") {
@@ -548,6 +550,7 @@ SCENARIO("RPC_STRING_OBJECT", "Create a STRING RPC object and perform basic oper
 
 				THEN("reference count equals 2") {
 					REQUIRE(object->ro_refcnt == 2);
+					rpc_release(object);
 				}
 
 				AND_WHEN("reference count is decremented") {
@@ -568,10 +571,9 @@ SCENARIO("RPC_STRING_OBJECT", "Create a STRING RPC object and perform basic oper
 			}
 		}
 
-		if (object != NULL)
-			rpc_release(object);
-
+		rpc_release(object);
 		rpc_release(different_object);
+		rpc_release(copy);
 	}
 }
 
@@ -632,6 +634,7 @@ SCENARIO("RPC_BINARY_OBJECT", "Create a BINARY RPC object and perform basic oper
 
 			THEN("reference count equals 2"){
 				REQUIRE(object->ro_refcnt == 2);
+				rpc_release(object);
 			}
 
 			AND_WHEN("reference count is decremented") {
@@ -748,6 +751,7 @@ SCENARIO("RPC_FD_OBJECT", "Create a FD RPC object and perform basic operations o
 
 			THEN("reference count equals 2"){
 				REQUIRE(object->ro_refcnt == 2);
+				rpc_release(object);
 			}
 
 			AND_WHEN("reference count is decremented") {
@@ -773,9 +777,8 @@ SCENARIO("RPC_FD_OBJECT", "Create a FD RPC object and perform basic operations o
 		if (dup_fd != 0)
 			close(dup_fd);
 
-		if (object != NULL)
-			rpc_release(object);
-
+		rpc_release(object);
+		rpc_release(copy);
 		rpc_release(different_object);
 	}
 }

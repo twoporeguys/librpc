@@ -136,6 +136,7 @@ rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 	if (branch == NULL) {
 		ctx->result = unpacked_value;
 		g_queue_push_head(ctx->leaf_stack, unpacked_value);
+		rpc_release(leaf);
 
 	} else if (branch->ro_type == RPC_TYPE_DICTIONARY) {
 		g_hash_table_iter_init(&iter, branch->ro_value.rv_dict);
