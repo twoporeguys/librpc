@@ -123,7 +123,7 @@ struct rpc_call
 struct rpc_subscription
 {
     	int 			rsu_refcount;
-    	GList *			rsu_handlers;
+    	GPtrArray *		rsu_handlers;
 };
 
 enum rpc_inbound_state
