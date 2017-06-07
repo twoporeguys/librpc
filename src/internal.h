@@ -83,7 +83,7 @@ struct rpc_binary_value
 union rpc_value
 {
 	GHashTable *		rv_dict;
-	GArray *		rv_list;
+	GPtrArray *		rv_list;
 	GString *		rv_str;
 	GDateTime *		rv_datetime;
 	uint64_t 		rv_ui;

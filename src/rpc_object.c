@@ -260,12 +260,7 @@ rpc_release_impl(rpc_object_t object)
 			break;
 
 		case RPC_TYPE_ARRAY:
-			rpc_array_apply(object, ^(size_t idx __unused,
-			    rpc_object_t v) {
-				rpc_release_impl(v);
-				return ((bool)true);
-			});
-			g_array_free(object->ro_value.rv_list, true);
+			g_ptr_array_unref(object->ro_value.rv_list);
 			break;
 
 		case RPC_TYPE_DICTIONARY:
@@ -838,7 +833,8 @@ rpc_array_create(void)
 {
 	union rpc_value val;
 
-	val.rv_list = g_array_new(true, true, sizeof(rpc_object_t));
+	val.rv_list = g_ptr_array_new_with_free_func(
+	    (GDestroyNotify)rpc_release_impl);
 	return (rpc_prim_create(RPC_TYPE_ARRAY, val));
 }
 
@@ -886,7 +882,7 @@ rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value)
 		);
 	}
 
-	ro = &g_array_index(array->ro_value.rv_list, rpc_object_t, index);
+	ro = (rpc_object_t *)&g_ptr_array_index(array->ro_value.rv_list, index);
 	rpc_release_impl(*ro);
 	*ro = value;
 }
@@ -900,7 +896,7 @@ rpc_array_remove_index(rpc_object_t array, size_t index)
 	if (index >= rpc_array_get_count(array))
 		return;
 
-	array->ro_value.rv_list = g_array_remove_index(array->ro_value.rv_list, (guint)index);
+	g_ptr_array_remove_index(array->ro_value.rv_list, (guint)index);
 }
 
 
@@ -920,7 +916,7 @@ rpc_array_append_stolen_value(rpc_object_t array, rpc_object_t value)
 	if (array->ro_type != RPC_TYPE_ARRAY)
 		abort();
 
-	g_array_append_val(array->ro_value.rv_list, value);
+	g_ptr_array_add(array->ro_value.rv_list, value);
 }
 
 inline rpc_object_t
@@ -932,7 +928,7 @@ rpc_array_get_value(rpc_object_t array, size_t index)
 	if (index >= array->ro_value.rv_list->len)
 		return (NULL);
 
-	return (g_array_index(array->ro_value.rv_list, rpc_object_t, index));
+	return (g_ptr_array_index(array->ro_value.rv_list, index));
 }
 
 inline size_t
@@ -951,8 +947,8 @@ rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier)
 	size_t i = 0;
 
 	for (i = 0; i < array->ro_value.rv_list->len; i++) {
-		if (!applier(i, g_array_index(array->ro_value.rv_list,
-		    rpc_object_t, i))) {
+		if (!applier(i, g_ptr_array_index(array->ro_value.rv_list, i)))
+		{
 			flag = true;
 			break;
 		}
