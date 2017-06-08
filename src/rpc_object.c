@@ -997,17 +997,6 @@ rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier)
 	return (flag);
 }
 
-inline bool
-rpc_array_apply_f(rpc_object_t array, void *arg,
-    rpc_array_applier_f applier)
-{
-	rpc_array_applier_t fn = ^(size_t index, rpc_object_t value) {
-		return (applier(arg, index, value));
-	};
-
-	return (rpc_array_apply(array, fn));
-}
-
 inline void
 rpc_array_set_bool(rpc_object_t array, size_t index, bool value)
 {
@@ -1256,17 +1245,6 @@ rpc_dictionary_apply(rpc_object_t dictionary, rpc_dictionary_applier_t applier)
 	}
 
 	return (true);
-}
-
-inline bool
-rpc_dictionary_apply_f(rpc_object_t dictionary, void *arg,
-    rpc_dictionary_applier_f applier)
-{
-	rpc_dictionary_applier_t fn = ^(const char *key, rpc_object_t value) {
-		return (applier(arg, key, value));
-	};
-
-	return (rpc_dictionary_apply(dictionary, fn));
 }
 
 inline bool
