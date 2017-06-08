@@ -171,6 +171,14 @@ cdef class Object(object):
         if self.obj != <defs.rpc_object_t>NULL:
             defs.rpc_release(self.obj)
 
+    @staticmethod
+    def init_from_ptr(ptr):
+        cdef Context ret
+
+        ret = Object.__new__(Object)
+        ret.obj = <defs.rpc_object_t><uintptr_t>ptr
+        return ret
+
     property value:
         def __get__(self):
             cdef Array array
@@ -588,10 +596,20 @@ cdef class Dictionary(Object):
 
 cdef class Context(object):
     cdef defs.rpc_context_t context
+    cdef bint borrowed
 
     def __init__(self):
         defs.PyEval_InitThreads()
         self.context = defs.rpc_context_create()
+
+    @staticmethod
+    def init_from_ptr(ptr):
+        cdef Context ret
+
+        ret = Context.__new__(Context)
+        ret.borrowed = True
+        ret.context = <defs.rpc_context_t><uintptr_t>ptr
+        return ret
 
     @staticmethod
     cdef defs.rpc_object_t c_cb_function(void *cookie, defs.rpc_object_t args) with gil:
@@ -634,16 +652,27 @@ cdef class Context(object):
         defs.rpc_context_unregister_method(self.context, name)
 
     def __dealloc__(self):
-        defs.rpc_context_free(self.context)
+        if not self.borrowed:
+            defs.rpc_context_free(self.context)
 
 
 cdef class Connection(object):
     cdef defs.rpc_connection_t connection
     cdef object ev_handlers
+    cdef bint borrowed
 
     def __init__(self):
         defs.PyEval_InitThreads()
         self.ev_handlers = {}
+
+    @staticmethod
+    def init_from_ptr(ptr):
+        cdef Context ret
+
+        ret = Connection.__new__(Connection)
+        ret.borrowed = True
+        ret.connection = <defs.rpc_connection_t><uintptr_t>ptr
+        return ret
 
     @staticmethod
     cdef void c_ev_handler(const char *name, defs.rpc_object_t args, void *arg) with gil:
@@ -728,6 +757,9 @@ cdef class Client(Connection):
 
     def __init__(self):
         super(Client, self).__init__()
+        self.uri = None
+        self.client = <defs.rpc_client_t>NULL
+        self.connection = <defs.rpc_connection_t>NULL
 
     def connect(self, uri):
         self.uri = uri.encode('utf-8')

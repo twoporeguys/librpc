@@ -125,13 +125,11 @@ cdef extern from "rpc/connection.h" nogil:
         RPC_CALL_DONE,
         RPC_CALL_ERROR
 
-    ctypedef struct rpc_connection:
+    ctypedef struct rpc_connection_t:
         pass
 
     ctypedef struct rpc_call_t:
         pass
-
-    ctypedef rpc_connection *rpc_connection_t
 
     void *RPC_HANDLER(rpc_handler_f fn, void *arg)
     void *RPC_CALLBACK(rpc_callback_f fn, void *arg)

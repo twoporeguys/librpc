@@ -31,7 +31,7 @@ import time
 
 
 def hello(string):
-    return f'Hello {string.value}'
+    return f'Hello {0}'.format(string.value)
 
 
 def adder(n1, n2):
