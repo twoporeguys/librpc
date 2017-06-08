@@ -168,7 +168,7 @@ cdef class Object(object):
         return byte_descr.decode('utf-8')
 
     def __dealloc__(self):
-        if self.obj != NULL:
+        if self.obj != <defs.rpc_object_t>NULL:
             defs.rpc_release(self.obj)
 
     property value:
@@ -249,7 +249,13 @@ cdef class Array(Object):
         return <bint>cb(index, py_value)
 
     def __applier(self, applier_f):
-        defs.rpc_array_apply_f(self.obj, <void *>applier_f, <defs.rpc_array_applier_f>Array.c_applier)
+        defs.rpc_array_apply(
+            self.obj,
+            defs.RPC_ARRAY_APPLIER(
+                <defs.rpc_array_applier_f>Array.c_applier,
+                <void *>applier_f,
+            )
+        )
 
     def append(self, value):
         cdef Object rpc_value
@@ -395,7 +401,7 @@ cdef class Array(Object):
 
         rpc_value = Object.__new__(Object)
         rpc_value.obj = defs.rpc_array_get_value(self.obj, index)
-        if rpc_value.obj == NULL:
+        if rpc_value.obj == <defs.rpc_object_t>NULL:
             raise LibException(errno.ERANGE, 'Array index out of range')
 
         defs.rpc_retain(rpc_value.obj)
@@ -431,7 +437,13 @@ cdef class Dictionary(Object):
         return <bint>cb(key.decode('utf-8'), py_value)
 
     def __applier(self, applier_f):
-        defs.rpc_dictionary_apply_f(self.obj, <void *>applier_f, <defs.rpc_dictionary_applier_f>Dictionary.c_applier)
+        defs.rpc_dictionary_apply(
+            self.obj,
+            defs.RPC_DICTIONARY_APPLIER(
+                <defs.rpc_dictionary_applier_f>Dictionary.c_applier,
+                <void *>applier_f
+            )
+        )
 
     def clear(self):
         with nogil:
@@ -557,7 +569,7 @@ cdef class Dictionary(Object):
 
         rpc_value = Object.__new__(Object)
         rpc_value.obj = defs.rpc_dictionary_get_value(self.obj, byte_key)
-        if rpc_value.obj == NULL:
+        if rpc_value.obj == <defs.rpc_object_t>NULL:
             raise LibException(errno.EINVAL, 'Key {} does not exist'.format(key))
 
         defs.rpc_retain(rpc_value.obj)
@@ -654,8 +666,8 @@ cdef class Connection(object):
 
         rpc_args = Array(list(args))
 
-        call = defs.rpc_connection_call(self.connection, method.encode('utf-8'), rpc_args.obj)
-        if call == NULL:
+        call = defs.rpc_connection_call(self.connection, method.encode('utf-8'), rpc_args.obj, NULL)
+        if call == <defs.rpc_call_t>NULL:
             raise_internal_exc(rpc=True)
 
         defs.rpc_call_wait(call)
@@ -701,11 +713,13 @@ cdef class Connection(object):
     def register_event_handler(self, name, fn):
         byte_name = name.encode('utf-8')
         self.ev_handlers[name] = fn
-        defs.rpc_connection_register_event_handler_f(
+        defs.rpc_connection_register_event_handler(
             self.connection,
             byte_name,
-            <defs.rpc_handler_f>Connection.c_ev_handler,
-            <void *>fn
+            defs.RPC_HANDLER(
+                <defs.rpc_handler_f>Connection.c_ev_handler,
+                <void *>fn
+            )
         )
 
 cdef class Client(Connection):

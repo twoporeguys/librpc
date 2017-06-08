@@ -27,19 +27,24 @@
 from libc.stdint cimport *
 
 
+ctypedef bint (*rpc_dictionary_applier_f)(void *arg, const char *key, rpc_object_t value)
+ctypedef bint (*rpc_array_applier_f)(void *arg, size_t index, rpc_object_t value)
+ctypedef void (*rpc_handler_f)(void *arg, const char *name, rpc_object_t args);
+ctypedef bint (*rpc_callback_f)(void *arg, rpc_call_t call, rpc_call_status_t status);
+
+
 cdef extern from "Python.h" nogil:
     void PyEval_InitThreads()
 
 
 cdef extern from "rpc/object.h" nogil:
-    ctypedef struct rpc_object:
+    ctypedef struct rpc_object_t:
         pass
 
     ctypedef struct rpc_error:
         int code
         char *message
 
-    ctypedef rpc_object *rpc_object_t
     ctypedef rpc_error *rpc_error_t
 
     ctypedef enum rpc_type_t:
@@ -55,8 +60,8 @@ cdef extern from "rpc/object.h" nogil:
         RPC_TYPE_DICTIONARY
         RPC_TYPE_ARRAY
 
-    ctypedef bint (*rpc_dictionary_applier_f)(void *arg, const char *key, rpc_object_t value)
-    ctypedef bint (*rpc_array_applier_f)(void *arg, size_t index, rpc_object_t value)
+    void *RPC_DICTIONARY_APPLIER(rpc_dictionary_applier_f fn, void *arg)
+    void *RPC_ARRAY_APPLIER(rpc_array_applier_f fn, void *arg)
 
     rpc_error_t rpc_get_last_error()
 
@@ -98,7 +103,7 @@ cdef extern from "rpc/object.h" nogil:
 
     rpc_object_t rpc_array_create()
     void rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value)
-    bint rpc_array_apply_f(rpc_object_t array, void *arg, rpc_array_applier_f applier)
+    bint rpc_array_apply(rpc_object_t array, void *applier)
     void rpc_array_append_value(rpc_object_t array, rpc_object_t value)
     rpc_object_t rpc_array_get_value(rpc_object_t array, size_t index)
     size_t rpc_array_get_count(rpc_object_t array)
@@ -109,8 +114,7 @@ cdef extern from "rpc/object.h" nogil:
         const char *key)
     void rpc_dictionary_set_value(rpc_object_t dictionary, const char *key,
         rpc_object_t value)
-    bint rpc_dictionary_apply_f(rpc_object_t dictionary, void *arg,
-        rpc_dictionary_applier_f applier)
+    bint rpc_dictionary_apply(rpc_object_t dictionary, void *applier)
     size_t rpc_dictionary_get_count(rpc_object_t dictionary)
     void rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key)
 
@@ -121,29 +125,27 @@ cdef extern from "rpc/connection.h" nogil:
         RPC_CALL_DONE,
         RPC_CALL_ERROR
 
-    ctypedef void (*rpc_handler_f)(const char *name, rpc_object_t args, void *arg)
     ctypedef struct rpc_connection:
         pass
 
-    ctypedef struct rpc_call:
+    ctypedef struct rpc_call_t:
         pass
 
     ctypedef rpc_connection *rpc_connection_t
-    ctypedef rpc_call *rpc_call_t
+
+    void *RPC_HANDLER(rpc_handler_f fn, void *arg)
+    void *RPC_CALLBACK(rpc_callback_f fn, void *arg)
 
     rpc_connection_t rpc_connection_create(const char *uri, int flags)
     int rpc_connection_close(rpc_connection_t conn)
     int rpc_connection_subscribe_event(rpc_connection_t conn, const char *name)
     int rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name)
     rpc_object_t rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...)
-    void rpc_connection_call_async(rpc_connection_t conn, const char *method, ...)
     rpc_call_t rpc_connection_call(rpc_connection_t conn, const char *name,
-        rpc_object_t args)
+        rpc_object_t args, void *callback)
     int rpc_connection_send_event(rpc_connection_t conn, const char *name,
         rpc_object_t args)
-    void rpc_connection_set_event_handler_f(rpc_connection_t conn,
-        rpc_handler_f handler)
-
+    void rpc_connection_set_event_handler(rpc_connection_t conn, void *handler)
     int rpc_call_status(rpc_call_t call)
     int rpc_call_wait(rpc_call_t call)
     int rpc_call_continue(rpc_call_t call, bint sync)
@@ -152,8 +154,7 @@ cdef extern from "rpc/connection.h" nogil:
     rpc_object_t rpc_call_result(rpc_call_t call)
     void rpc_call_free(rpc_call_t call)
 
-    int rpc_connection_register_event_handler_f(rpc_connection_t conn, const char *name, rpc_handler_f handler,
-        void *arg)
+    int rpc_connection_register_event_handler(rpc_connection_t conn, const char *name, void *handler)
 
 
 cdef extern from "rpc/service.h" nogil:

@@ -63,12 +63,17 @@ typedef enum {
 typedef struct rpc_object *rpc_object_t;
 typedef struct rpc_error *rpc_error_t;
 typedef bool (^rpc_array_applier_t)(size_t index, rpc_object_t value);
-typedef bool (*rpc_array_applier_f)(void *arg, size_t index,
-    rpc_object_t value);
 typedef bool (^rpc_dictionary_applier_t)(const char *key, rpc_object_t value);
-typedef bool (*rpc_dictionary_applier_f)(void *arg, const char *key,
-    rpc_object_t value);
-typedef void (^rpc_callback_t)(rpc_object_t object);
+
+#define	RPC_ARRAY_APPLIER(_fn, _arg)					\
+	^(size_t _index, rpc_object_t _value) {				\
+                return ((bool)_fn(_arg, _index, _value));		\
+        }
+
+#define	RPC_DICTIONARY_APPLIER(_fn, _arg)				\
+	^(const char *_key, rpc_object_t _value) {			\
+                return ((bool)_fn(_arg, _key, _value));			\
+        }
 
 rpc_object_t rpc_retain(rpc_object_t object);
 int rpc_release_impl(rpc_object_t object);
@@ -78,10 +83,10 @@ size_t rpc_hash(rpc_object_t object);
 char *rpc_copy_description(rpc_object_t object);
 rpc_type_t rpc_get_type(rpc_object_t object);
 
-#define	rpc_release(_object)				\
-	do {						\
-		if (rpc_release_impl(_object) == 0)	\
-			_object = NULL;			\
+#define	rpc_release(_object)						\
+	do {								\
+		if (rpc_release_impl(_object) == 0)			\
+			_object = NULL;					\
 	} while(0)
 
 rpc_error_t rpc_get_last_error(void);
@@ -131,8 +136,6 @@ void rpc_array_append_stolen_value(rpc_object_t array, rpc_object_t value);
 rpc_object_t rpc_array_get_value(rpc_object_t array, size_t index);
 size_t rpc_array_get_count(rpc_object_t array);
 bool rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier);
-bool rpc_array_apply_f(rpc_object_t array, void *arg,
-    rpc_array_applier_f applier);
 void rpc_array_set_bool(rpc_object_t array, size_t index, bool value);
 void rpc_array_set_int64(rpc_object_t array, size_t index, int64_t value);
 void rpc_array_set_uint64(rpc_object_t array, size_t index, uint64_t value);
@@ -166,8 +169,6 @@ rpc_object_t rpc_dictionary_get_value(rpc_object_t dictionary,
 size_t rpc_dictionary_get_count(rpc_object_t dictionary);
 bool rpc_dictionary_apply(rpc_object_t dictionary,
     rpc_dictionary_applier_t applier);
-bool rpc_dictionary_apply_f(rpc_object_t dictionary, void *arg,
-    rpc_dictionary_applier_f applier);
 bool rpc_dictionary_has_key(rpc_object_t dictionary, const char *key);
 void rpc_dictionary_set_bool(rpc_object_t dictionary, const char *key,
     bool value);
