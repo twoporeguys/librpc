@@ -186,15 +186,14 @@ rpc_msgpack_read_object(mpack_node_t node)
 			block->rsb_offset = desc->addr;
 			block->rsb_size = desc->len;
 			return (rpc_shmem_create(block));
+		default:
+			return (rpc_null_create());
 		}
-		break;
 
 	case mpack_type_nil:
 	default:
 		return (rpc_null_create());
 	}
-
-	return (NULL);
 }
 
 int
