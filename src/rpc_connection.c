@@ -54,16 +54,22 @@ static void on_events_event(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_events_event_burst(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_events_subscribe(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_events_unsubscribe(rpc_connection_t, rpc_object_t, rpc_object_t);
-static void *rpc_event_worker(void *);
+static void rpc_callback_worker(void *, void *);
 static int rpc_call_wait_locked(rpc_call_t);
 static gboolean rpc_call_timeout(gpointer user_data);
 static int rpc_connection_subscribe_event_locked(rpc_connection_t, const char *);
 
 struct message_handler
 {
-    const char *namespace;
-    const char *name;
-    void (*handler)(rpc_connection_t conn, rpc_object_t args, rpc_object_t id);
+	const char *namespace;
+	const char *name;
+	void (*handler)(rpc_connection_t, rpc_object_t, rpc_object_t);
+};
+
+struct work_item
+{
+    	rpc_call_t call;
+    	rpc_object_t event;
 };
 
 static const struct message_handler handlers[] = {
@@ -158,26 +164,40 @@ rpc_restore_fds(rpc_object_t obj, int *fds, size_t nfds)
 	}
 }
 
-static void *
-rpc_event_worker(void *arg)
+static void
+rpc_callback_worker(void *arg, void *data)
 {
+	struct work_item *item = data;
 	struct rpc_subscription *sub;
 	const char *name;
-	rpc_object_t event;
-	rpc_object_t data;
+	rpc_call_t call;
 	rpc_connection_t conn = arg;
+	bool ret;
 
-	for (;;) {
-		event = g_async_queue_pop(conn->rco_event_queue);
-		if (event == NULL)
-			break;
+	if (item->call) {
+		call = item->call;
+		if (call->rc_callback == NULL)
+			goto done;
 
-		name = rpc_dictionary_get_string(event, "name");
-		data = rpc_dictionary_get_value(event, "args");
+		ret = call->rc_callback(call->rc_result, call->rc_status);
+
+		if (call->rc_status == RPC_CALL_MORE_AVAILABLE) {
+			if (ret)
+				rpc_call_continue(call, false);
+			else
+				rpc_call_abort(call);
+		}
+
+		goto done;
+	}
+
+	if (item->event) {
+		name = rpc_dictionary_get_string(item->event, "name");
+		data = rpc_dictionary_get_value(item->event, "args");
 		sub = g_hash_table_lookup(conn->rco_subscriptions, name);
 
 		if (sub != NULL) {
-			for (int i = 0; i < sub->rsu_handlers->len; i++) {
+			for (guint i = 0; i < sub->rsu_handlers->len; i++) {
 				rpc_handler_t handler = g_ptr_array_index(
 				    sub->rsu_handlers, i);
 
@@ -189,7 +209,8 @@ rpc_event_worker(void *arg)
 			conn->rco_event_handler(name, data);
 	}
 
-	return (NULL);
+done:
+	g_free(item);
 }
 
 static rpc_object_t
@@ -233,6 +254,7 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 static void
 on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 {
+	GError *err = NULL;
 	rpc_call_t call;
 
 	call = g_hash_table_lookup(conn->rco_calls,
@@ -244,6 +266,13 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	call->rc_status = RPC_CALL_DONE;
 	call->rc_result = args;
 
+	if (call->rc_callback) {
+		g_thread_pool_push(conn->rco_callback_pool, call, &err);
+		if (err != NULL) {
+
+		}
+	}
+
 	rpc_retain(call->rc_result);
 	g_cond_broadcast(&call->rc_cv);
 	g_mutex_unlock(&call->rc_mtx);
@@ -252,6 +281,7 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 static void
 on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 {
+	GError *err = NULL;
 	rpc_call_t call;
 	rpc_object_t payload;
 	uint64_t seqno;
@@ -268,6 +298,14 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	call->rc_status = RPC_CALL_MORE_AVAILABLE;
 	call->rc_result = payload;
 	call->rc_seqno = seqno;
+
+	if (call->rc_callback) {
+		g_thread_pool_push(conn->rco_callback_pool, call, &err);
+		if (err != NULL) {
+
+		}
+	}
+
 
 	rpc_retain(call->rc_result);
 	g_cond_broadcast(&call->rc_cv);
@@ -348,8 +386,10 @@ static void
 on_events_event(rpc_connection_t conn, rpc_object_t args,
     rpc_object_t id __unused)
 {
+	struct work_item *item;
 
-	g_async_queue_push(conn->rco_event_queue, args);
+	item = g_malloc0(sizeof(*item));
+	g_thread_pool_push(conn->rco_callback_pool, item, NULL);
 }
 
 static void
@@ -358,9 +398,12 @@ on_events_event_burst(rpc_connection_t conn, rpc_object_t args,
 {
 
 	rpc_array_apply(args, ^(size_t idx __unused, rpc_object_t value) {
-	    rpc_retain(value);
-	    g_async_queue_push(conn->rco_event_queue, value);
-	    return ((bool)true);
+		struct work_item *item;
+
+		rpc_retain(value);
+		item = g_malloc0(sizeof(*item));
+		g_thread_pool_push(conn->rco_callback_pool, item, NULL);
+		return ((bool)true);
 	});
 }
 
@@ -634,6 +677,7 @@ rpc_connection_alloc(rpc_server_t server)
 rpc_connection_t
 rpc_connection_create(const char *uri, int flags)
 {
+	GError *err = NULL;
 	const struct rpc_transport *transport;
 	struct rpc_connection *conn = NULL;
 	char *scheme = NULL;
@@ -657,9 +701,12 @@ rpc_connection_create(const char *uri, int flags)
 	conn->rco_rpc_timeout = DEFAULT_RPC_TIMEOUT;
 	conn->rco_recv_msg = &rpc_recv_msg;
 	conn->rco_close = &rpc_close;
-	conn->rco_event_queue = g_async_queue_new();
-	conn->rco_event_worker = g_thread_new("event worker", rpc_event_worker,
-	    conn);
+	conn->rco_callback_pool = g_thread_pool_new(&rpc_callback_worker, conn,
+	    g_get_num_processors(), false, &err);
+
+	if (err != NULL) {
+
+	}
 
 	if (transport->connect(conn, uri, NULL) != 0)
 		goto fail;
@@ -796,17 +843,6 @@ rpc_connection_register_event_handler(rpc_connection_t conn, const char *name,
 	return (fn);
 }
 
-void *
-rpc_connection_register_event_handler_f(rpc_connection_t conn, const char *name,
-    rpc_handler_f handler, void *arg)
-{
-	rpc_handler_t fn = ^(const char *n, rpc_object_t a) {
-	    handler(n, a, arg);
-	};
-
-	return (rpc_connection_register_event_handler(conn, name, fn));
-}
-
 void
 rpc_connection_unregister_event_handler(rpc_connection_t conn, const char *name,
     void *cookie)
@@ -839,7 +875,7 @@ rpc_connection_call_syncv(rpc_connection_t conn, const char *method, va_list ap)
 		rpc_array_append_stolen_value(args, i);
 	}
 
-	if ((call = rpc_connection_call(conn, method, args)) == NULL)
+	if ((call = rpc_connection_call(conn, method, args, NULL)) == NULL)
 		return (NULL);
 
 	rpc_call_wait(call);
@@ -863,7 +899,8 @@ rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...)
 }
 
 rpc_call_t
-rpc_connection_call(rpc_connection_t conn, const char *name, rpc_object_t args)
+rpc_connection_call(rpc_connection_t conn, const char *name, rpc_object_t args,
+    rpc_callback_t callback)
 {
 	struct rpc_call *call;
 	rpc_object_t id = rpc_new_id();
@@ -875,6 +912,7 @@ rpc_connection_call(rpc_connection_t conn, const char *name, rpc_object_t args)
 	call->rc_type = "call";
 	call->rc_method = name;
 	call->rc_args = args;
+	call->rc_callback = callback;
 
 	rpc_dictionary_set_string(payload, "method", name);
 	rpc_dictionary_set_value(payload, "args", args != NULL ? args : rpc_array_create());
@@ -946,12 +984,12 @@ int
 rpc_call_continue(rpc_call_t call, bool sync)
 {
 	rpc_object_t frame;
-	int64_t seqno;
+	uint64_t seqno;
 
 	g_mutex_lock(&call->rc_mtx);
 	seqno = call->rc_seqno + 1;
 	frame = rpc_pack_frame("rpc", "continue", call->rc_id,
-	    rpc_int64_create(seqno));
+	    rpc_uint64_create(seqno));
 
 	if (rpc_send_frame(call->rc_conn, frame) != 0) {
 

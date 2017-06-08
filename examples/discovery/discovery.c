@@ -40,7 +40,7 @@ main(int argc, const char *argv[])
 	client = rpc_client_create("tcp://127.0.0.1:5000", 0);
 	conn = rpc_client_get_connection(client);
 
-	call = rpc_connection_call(conn, "discovery.get_methods", NULL);
+	call = rpc_connection_call(conn, "discovery.get_methods", NULL, NULL);
 	rpc_call_wait(call);
 
 	while (rpc_call_status(call) == RPC_CALL_MORE_AVAILABLE) {

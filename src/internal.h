@@ -117,8 +117,7 @@ struct rpc_call
 	GMutex			rc_mtx;
     	GAsyncQueue *		rc_queue;
     	GSource *		rc_timeout;
-	rpc_callback_t *    	rc_callback;
-	void *              	rc_callback_arg;
+	rpc_callback_t    	rc_callback;
 	uint64_t               	rc_seqno;
 };
 
@@ -176,8 +175,7 @@ struct rpc_connection
     	GMutex			rco_subscription_mtx;
     	GMutex			rco_send_mtx;
     	GMainContext *		rco_mainloop;
-    	GThread *		rco_event_worker;
-    	GAsyncQueue *		rco_event_queue;
+    	GThreadPool *		rco_callback_pool;
     	int			rco_flags;
 
     	/* Callbacks */
