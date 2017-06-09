@@ -41,6 +41,23 @@ struct parse_context
 	char *key_buf;
 };
 
+static const char shmem_addr[] = "addr";
+static const char shmem_len[] = "len";
+static const char shmem_fd[] = "fd";
+
+static yajl_gen_status
+rpc_json_shmem_write_key(yajl_gen gen, const unsigned char *key, long value)
+{
+	yajl_gen_status status;
+
+	status = yajl_gen_string(gen, key, strlen((const char *)key));
+	if (status != yajl_gen_status_ok)
+		return (status);
+
+	status = yajl_gen_integer(gen, value);
+	return (status);
+}
+
 static int
 rpc_json_context_insert_value(void *ctx_ptr, rpc_object_t value)
 {
@@ -102,6 +119,7 @@ rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 	const char *base64_data;
 	GHashTableIter iter;
 	gpointer key, value;
+	rpc_shmem_block_t block;
 
 	if (rpc_dictionary_has_key(leaf, JSON_EXTTYPE_UINT64)) {
 		dict_value = rpc_dictionary_get_value(leaf,
@@ -127,6 +145,19 @@ rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 		    JSON_EXTTYPE_FD);
 		unpacked_value = rpc_fd_create(
 		    (int)rpc_int64_get_value(dict_value));
+	} else if (rpc_dictionary_has_key(leaf, JSON_EXTTYPE_SHMEM)) {
+		dict_value = rpc_dictionary_get_value(leaf,
+		    JSON_EXTTYPE_SHMEM);
+
+		block = g_malloc(sizeof(*block));
+		block->rsb_fd = (int)rpc_dictionary_get_int64(dict_value,
+		    shmem_fd);
+		block->rsb_offset = rpc_dictionary_get_int64(dict_value,
+		    shmem_addr);
+		block->rsb_size = (size_t)rpc_dictionary_get_int64(dict_value,
+		    shmem_len);
+
+		unpacked_value = rpc_shmem_create(block);
 	}
 	else
 		return;
@@ -287,6 +318,7 @@ rpc_json_write_object_ext(yajl_gen gen, rpc_object_t object,
 	yajl_gen_status status;
 	const void *data_buf;
 	char *base64_data;
+	rpc_shmem_block_t block;
 
 	if ((status = yajl_gen_map_open(gen)) != yajl_gen_status_ok)
 		return (status);
@@ -316,6 +348,30 @@ rpc_json_write_object_ext(yajl_gen gen, rpc_object_t object,
 		status = yajl_gen_string(gen, (const uint8_t *)base64_data,
 		    strlen(base64_data));
 		g_free(base64_data);
+		break;
+
+	case RPC_TYPE_SHMEM:
+		if ((status = yajl_gen_map_open(gen)) != yajl_gen_status_ok)
+			return (status);
+
+		block = rpc_shmem_get_block(object);
+
+		status = rpc_json_shmem_write_key(gen,
+		    (const unsigned char *)shmem_addr, block->rsb_offset);
+		if (status != yajl_gen_status_ok)
+			return (status);
+
+		status = rpc_json_shmem_write_key(gen,
+		    (const unsigned char *)shmem_len, block->rsb_size);
+		if (status != yajl_gen_status_ok)
+			return (status);
+
+		status = rpc_json_shmem_write_key(gen,
+		    (const unsigned char *)shmem_fd, block->rsb_fd);
+		if (status != yajl_gen_status_ok)
+			return (status);
+
+		status = yajl_gen_map_close(gen);
 		break;
 
 	default:
@@ -363,6 +419,11 @@ rpc_json_write_object(yajl_gen gen, rpc_object_t object)
 		return (rpc_json_write_object_ext(gen, object,
 		    (const uint8_t *)JSON_EXTTYPE_FD,
 		    strlen(JSON_EXTTYPE_FD)));
+
+	case RPC_TYPE_SHMEM:
+		return (rpc_json_write_object_ext(gen, object,
+		    (const uint8_t *)JSON_EXTTYPE_SHMEM,
+		    strlen(JSON_EXTTYPE_SHMEM)));
 
 	case RPC_TYPE_DOUBLE:
 		return (yajl_gen_double(gen, rpc_double_get_value(object)));

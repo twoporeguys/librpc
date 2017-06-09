@@ -36,6 +36,7 @@ extern "C" {
 #define	JSON_EXTTYPE_DATE	"$date"
 #define	JSON_EXTTYPE_BINARY	"$bin"
 #define	JSON_EXTTYPE_FD		"$fd"
+#define	JSON_EXTTYPE_SHMEM	"$shmem"
 
 int rpc_json_serialize(rpc_object_t, void **, size_t *);
 rpc_object_t rpc_json_deserialize(const void *, size_t);
