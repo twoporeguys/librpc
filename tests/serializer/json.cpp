@@ -42,6 +42,7 @@ static char json_dict_gold[] = "{"
     "\"fd\":{\"$fd\":1},"
     "\"double\":12.0,"
     "\"string\":\"deadbeef\","
+    "\"shmem\":{\"addr\":1234,\"len\":4000,\"fd\":1},"
     "\"array\":[\"woopwoop\",-1234,{\"$fd\":2}]"
     "}";
 
