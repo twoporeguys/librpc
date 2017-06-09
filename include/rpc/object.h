@@ -38,6 +38,7 @@ extern "C" {
 #endif
 
 struct rpc_object;
+struct rpc_shmem_block;
 
 struct rpc_error
 {
@@ -61,6 +62,7 @@ typedef enum {
 } rpc_type_t;
 
 typedef struct rpc_object *rpc_object_t;
+typedef struct rpc_shmem_block *rpc_shmem_block_t;
 typedef struct rpc_error *rpc_error_t;
 typedef bool (^rpc_array_applier_t)(size_t index, rpc_object_t value);
 typedef bool (^rpc_dictionary_applier_t)(const char *key, rpc_object_t value);
@@ -155,6 +157,14 @@ const void *rpc_array_get_data(rpc_object_t array, size_t index,
 const char *rpc_array_get_string(rpc_object_t array, size_t index);
 int rpc_array_get_fd(rpc_object_t array, size_t index);
 int rpc_array_dup_fd(rpc_object_t array, size_t index);
+
+rpc_shmem_block_t rpc_shmem_alloc(size_t size);
+void rpc_shmem_free(rpc_shmem_block_t block);
+void *rpc_shmem_block_get_ptr(rpc_shmem_block_t block);
+size_t rpc_shmem_block_get_size(rpc_shmem_block_t block);
+
+rpc_object_t rpc_shmem_create(rpc_shmem_block_t block);
+rpc_shmem_block_t rpc_shmem_get_block(rpc_object_t obj);
 
 rpc_object_t rpc_dictionary_create(void);
 rpc_object_t rpc_dictionary_create_ex(const char *const *keys,

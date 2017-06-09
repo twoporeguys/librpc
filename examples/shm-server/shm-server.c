@@ -33,7 +33,6 @@
 #include <rpc/service.h>
 #include <rpc/server.h>
 #include <rpc/discovery.h>
-#include <rpc/shmem.h>
 #include "../../src/internal.h"
 
 static rpc_object_t

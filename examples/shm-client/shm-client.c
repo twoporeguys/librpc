@@ -32,7 +32,6 @@
 #include <glib.h>
 #include <rpc/object.h>
 #include <rpc/client.h>
-#include <rpc/shmem.h>
 
 #define	BLOCK_SIZE	(1024 * 1024)
 

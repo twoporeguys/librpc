@@ -38,7 +38,6 @@ set(HEADERS
         include/rpc/connection.h
         include/rpc/server.h
         include/rpc/client.h
-        include/rpc/shmem.h
         include/rpc/discovery.h)
 
 set(CORE_FILES
@@ -48,7 +47,6 @@ set(CORE_FILES
         src/rpc_service.c
         src/rpc_client.c
         src/rpc_discovery.c
-        src/rpc_shmem.c
         src/utils.c
         src/internal.h
         src/linker_set.h
