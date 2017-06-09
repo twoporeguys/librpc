@@ -126,3 +126,5 @@ add_subdirectory(examples/fd-client)
 add_subdirectory(examples/fd-server)
 add_subdirectory(examples/shm-client)
 add_subdirectory(examples/shm-server)
+
+add_subdirectory(python)
