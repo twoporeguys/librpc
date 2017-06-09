@@ -118,6 +118,7 @@ cdef extern from "rpc/object.h" nogil:
     size_t rpc_dictionary_get_count(rpc_object_t dictionary)
     void rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key)
 
+
 cdef extern from "rpc/connection.h" nogil:
     ctypedef enum rpc_call_status_t:
         RPC_CALL_IN_PROGRESS,
