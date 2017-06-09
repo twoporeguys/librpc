@@ -29,12 +29,8 @@ from libc.stdint cimport *
 
 ctypedef bint (*rpc_dictionary_applier_f)(void *arg, const char *key, rpc_object_t value)
 ctypedef bint (*rpc_array_applier_f)(void *arg, size_t index, rpc_object_t value)
-ctypedef void (*rpc_handler_f)(void *arg, const char *name, rpc_object_t args);
-ctypedef bint (*rpc_callback_f)(void *arg, rpc_call_t call, rpc_call_status_t status);
-
-
-cdef extern from "Python.h" nogil:
-    void PyEval_InitThreads()
+ctypedef void (*rpc_handler_f)(void *arg, const char *name, rpc_object_t args)
+ctypedef bint (*rpc_callback_f)(void *arg, rpc_call_t call, rpc_call_status_t status)
 
 
 cdef extern from "rpc/object.h" nogil:
@@ -179,10 +175,8 @@ cdef extern from "rpc/service.h" nogil:
 
 
 cdef extern from "rpc/client.h" nogil:
-    ctypedef struct rpc_client:
+    ctypedef struct rpc_client_t:
         pass
-
-    ctypedef rpc_client *rpc_client_t
 
     rpc_client_t rpc_client_create(const char *uri, int flags)
     rpc_connection_t rpc_client_get_connection(rpc_client_t client)
@@ -201,3 +195,30 @@ cdef extern from "rpc/server.h" nogil:
     int rpc_server_close(rpc_server_t server);
 
     void rpc_server_broadcast_event(rpc_server_t server, const char *name, rpc_object_t args)
+
+
+cdef class Object(object):
+    cdef rpc_object_t obj
+
+    @staticmethod
+    cdef Object init_from_ptr(rpc_object_t ptr)
+
+
+cdef class Context(object):
+    cdef rpc_context_t context
+    cdef bint borrowed
+
+    @staticmethod
+    cdef Context init_from_ptr(rpc_context_t ptr)
+    @staticmethod
+    cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil
+
+cdef class Connection(object):
+    cdef rpc_connection_t connection
+    cdef object ev_handlers
+    cdef bint borrowed
+
+    @staticmethod
+    cdef Connection init_from_ptr(rpc_connection_t ptr)
+    @staticmethod
+    cdef void c_ev_handler(const char *name, rpc_object_t args, void *arg) with gil

@@ -34,7 +34,7 @@ setup(
     name='librpc',
     version='1.0',
     packages=[''],
-    package_data={'': ['*.html', '*.c']},
+    package_data={'': ['*.html', '*.c', 'librpc.pxd']},
     cmdclass={'build_ext': build_ext},
     ext_modules=[
         Extension(

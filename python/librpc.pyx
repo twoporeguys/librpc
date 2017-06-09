@@ -30,30 +30,34 @@ import errno
 import types
 import traceback
 import datetime
-cimport defs
+from librpc cimport *
 from libc.stdint cimport *
 from libc.stdlib cimport malloc, free
 
 
+cdef extern from "Python.h" nogil:
+    void PyEval_InitThreads()
+
+
 class ObjectType(enum.IntEnum):
-    NIL = defs.RPC_TYPE_NULL
-    BOOL = defs.RPC_TYPE_BOOL
-    UINT64 = defs.RPC_TYPE_UINT64
-    INT64 = defs.RPC_TYPE_INT64
-    DOUBLE = defs.RPC_TYPE_DOUBLE
-    DATE = defs.RPC_TYPE_DATE
-    STRING = defs.RPC_TYPE_STRING
-    BINARY = defs.RPC_TYPE_BINARY
-    FD = defs.RPC_TYPE_FD
-    DICTIONARY = defs.RPC_TYPE_DICTIONARY
-    ARRAY = defs.RPC_TYPE_ARRAY
+    NIL = RPC_TYPE_NULL
+    BOOL = RPC_TYPE_BOOL
+    UINT64 = RPC_TYPE_UINT64
+    INT64 = RPC_TYPE_INT64
+    DOUBLE = RPC_TYPE_DOUBLE
+    DATE = RPC_TYPE_DATE
+    STRING = RPC_TYPE_STRING
+    BINARY = RPC_TYPE_BINARY
+    FD = RPC_TYPE_FD
+    DICTIONARY = RPC_TYPE_DICTIONARY
+    ARRAY = RPC_TYPE_ARRAY
 
 
 class CallStatus(enum.IntEnum):
-    IN_PROGRESS = defs.RPC_CALL_IN_PROGRESS,
-    MORE_AVAILABLE = defs.RPC_CALL_MORE_AVAILABLE,
-    DONE = defs.RPC_CALL_DONE,
-    ERROR = defs.RPC_CALL_ERROR
+    IN_PROGRESS = RPC_CALL_IN_PROGRESS,
+    MORE_AVAILABLE = RPC_CALL_MORE_AVAILABLE,
+    DONE = RPC_CALL_DONE,
+    ERROR = RPC_CALL_ERROR
 
 
 class LibException(Exception):
@@ -102,82 +106,80 @@ class RpcException(LibException):
 
 
 cdef class Object(object):
-    cdef defs.rpc_object_t obj
-
     def __init__(self, value, force_type=None):
         if value is None or force_type == ObjectType.NIL:
-            self.obj = defs.rpc_null_create()
+            self.obj = rpc_null_create()
             return
 
         if isinstance(value, bool) or force_type == ObjectType.BOOL:
-            self.obj = defs.rpc_bool_create(value)
+            self.obj = rpc_bool_create(value)
             return
 
         if isinstance(value, int) or force_type == ObjectType.INT64:
-            self.obj = defs.rpc_int64_create(value)
+            self.obj = rpc_int64_create(value)
             return
 
         if isinstance(value, int) and force_type == ObjectType.UINT64:
-            self.obj = defs.rpc_uint64_create(value)
+            self.obj = rpc_uint64_create(value)
             return
 
         if isinstance(value, int) and force_type == ObjectType.FD:
-            self.obj = defs.rpc_fd_create(value)
+            self.obj = rpc_fd_create(value)
             return
 
         if isinstance(value, str) or force_type == ObjectType.STRING:
             byte_str = value.encode('utf-8')
-            self.obj = defs.rpc_string_create(byte_str)
+            self.obj = rpc_string_create(byte_str)
             return
 
         if isinstance(value, float) or force_type == ObjectType.DOUBLE:
-            self.obj = defs.rpc_double_create(value)
+            self.obj = rpc_double_create(value)
             return
 
         if isinstance(value, datetime.datetime) or force_type == ObjectType.DATE:
-            self.obj = defs.rpc_date_create(int(value.timestamp()))
+            self.obj = rpc_date_create(int(value.timestamp()))
             return
 
         if isinstance(value, bytearray) or force_type == ObjectType.BINARY:
-            self.obj = defs.rpc_data_create(<void *>value, <size_t>len(value), True)
+            self.obj = rpc_data_create(<void *>value, <size_t>len(value), True)
             return
 
         if isinstance(value, list) or force_type == ObjectType.ARRAY:
-            self.obj = defs.rpc_array_create()
+            self.obj = rpc_array_create()
 
             for v in value:
                 child = Object(v)
-                defs.rpc_array_append_value(self.obj, child.obj)
+                rpc_array_append_value(self.obj, child.obj)
 
             return
 
         if isinstance(value, dict) or force_type == ObjectType.DICTIONARY:
-            self.obj = defs.rpc_dictionary_create()
+            self.obj = rpc_dictionary_create()
 
             for k, v in value.items():
                 byte_k = k.encode('utf-8')
                 child = Object(v)
-                defs.rpc_dictionary_set_value(self.obj, byte_k, child.obj)
+                rpc_dictionary_set_value(self.obj, byte_k, child.obj)
 
             return
 
         raise LibException(errno.EINVAL, "Unknown value type: {0}".format(type(value)))
 
     def __repr__(self):
-        byte_descr = defs.rpc_copy_description(self.obj)
+        byte_descr = rpc_copy_description(self.obj)
         return byte_descr.decode('utf-8')
 
     def __dealloc__(self):
-        if self.obj != <defs.rpc_object_t>NULL:
-            defs.rpc_release(self.obj)
+        if self.obj != <rpc_object_t>NULL:
+            rpc_release(self.obj)
 
     @staticmethod
-    def init_from_ptr(ptr):
+    cdef Object init_from_ptr(rpc_object_t ptr):
         cdef Object ret
 
         ret = Object.__new__(Object)
-        ret.obj = <defs.rpc_object_t><uintptr_t>ptr
-        defs.rpc_retain(ret.obj)
+        ret.obj = ptr
+        rpc_retain(ret.obj)
         return ret
 
     property value:
@@ -192,50 +194,50 @@ cdef class Object(object):
                 return None
 
             if self.type == ObjectType.BOOL:
-                return defs.rpc_bool_get_value(self.obj)
+                return rpc_bool_get_value(self.obj)
 
             if self.type == ObjectType.INT64:
-                return defs.rpc_int64_get_value(self.obj)
+                return rpc_int64_get_value(self.obj)
 
             if self.type == ObjectType.UINT64:
-                return defs.rpc_uint64_get_value(self.obj)
+                return rpc_uint64_get_value(self.obj)
 
             if self.type == ObjectType.FD:
-                return defs.rpc_fd_get_value(self.obj)
+                return rpc_fd_get_value(self.obj)
 
             if self.type == ObjectType.STRING:
-                c_string = defs.rpc_string_get_string_ptr(self.obj)
-                c_len = defs.rpc_string_get_length(self.obj)
+                c_string = rpc_string_get_string_ptr(self.obj)
+                c_len = rpc_string_get_length(self.obj)
 
                 return c_string[:c_len].decode('UTF-8')
 
             if self.type == ObjectType.DOUBLE:
-                return defs.rpc_double_get_value(self.obj)
+                return rpc_double_get_value(self.obj)
 
             if self.type == ObjectType.DATE:
-                return datetime.datetime.utcfromtimestamp(defs.rpc_date_get_value(self.obj))
+                return datetime.datetime.utcfromtimestamp(rpc_date_get_value(self.obj))
 
             if self.type == ObjectType.BINARY:
-                c_bytes = <uint8_t *>defs.rpc_data_get_bytes_ptr(self.obj)
-                c_len = defs.rpc_data_get_length(self.obj)
+                c_bytes = <uint8_t *>rpc_data_get_bytes_ptr(self.obj)
+                c_len = rpc_data_get_length(self.obj)
 
                 return <bytes>c_bytes[:c_len]
 
             if self.type == ObjectType.ARRAY:
                 array = Array.__new__(Array)
                 array.obj = self.obj
-                defs.rpc_retain(array.obj)
+                rpc_retain(array.obj)
                 return array
 
             if self.type == ObjectType.DICTIONARY:
                 dictionary = Dictionary.__new__(Dictionary)
                 dictionary.obj = self.obj
-                defs.rpc_retain(dictionary.obj)
+                rpc_retain(dictionary.obj)
                 return dictionary
 
     property type:
         def __get__(self):
-            return ObjectType(defs.rpc_get_type(self.obj))
+            return ObjectType(rpc_get_type(self.obj))
 
 
 cdef class Array(Object):
@@ -246,22 +248,22 @@ cdef class Array(Object):
         super(Array, self).__init__(value, force_type)
 
     @staticmethod
-    cdef bint c_applier(void *arg, size_t index, defs.rpc_object_t value) with gil:
+    cdef bint c_applier(void *arg, size_t index, rpc_object_t value) with gil:
         cdef object cb = <object>arg
         cdef Object py_value
 
         py_value = Object.__new__(Object)
         py_value.obj = value
 
-        defs.rpc_retain(py_value.obj)
+        rpc_retain(py_value.obj)
 
         return <bint>cb(index, py_value)
 
     def __applier(self, applier_f):
-        defs.rpc_array_apply(
+        rpc_array_apply(
             self.obj,
-            defs.RPC_ARRAY_APPLIER(
-                <defs.rpc_array_applier_f>Array.c_applier,
+            RPC_ARRAY_APPLIER(
+                <rpc_array_applier_f>Array.c_applier,
                 <void *>applier_f,
             )
         )
@@ -274,7 +276,7 @@ cdef class Array(Object):
         else:
             rpc_value = Object(value)
 
-        defs.rpc_array_append_value(self.obj, rpc_value.obj)
+        rpc_array_append_value(self.obj, rpc_value.obj)
 
     def extend(self, array):
         cdef Object rpc_value
@@ -289,18 +291,18 @@ cdef class Array(Object):
 
         for value in rpc_array:
             rpc_value = value
-            defs.rpc_array_append_value(self.obj, rpc_value.obj)
+            rpc_array_append_value(self.obj, rpc_value.obj)
 
     def clear(self):
-        defs.rpc_release(self.obj)
-        self.obj = defs.rpc_array_create()
+        rpc_release(self.obj)
+        self.obj = rpc_array_create()
 
     def copy(self):
         cdef Array copy
 
         copy = Array.__new__(Array)
         with nogil:
-            copy.obj = defs.rpc_copy(self.obj)
+            copy.obj = rpc_copy(self.obj)
 
         return copy
 
@@ -319,7 +321,7 @@ cdef class Array(Object):
             nonlocal count
             v2 = v
 
-            if defs.rpc_equal(v1.obj, v2.obj):
+            if rpc_equal(v1.obj, v2.obj):
                 count += 1
 
             return True
@@ -343,7 +345,7 @@ cdef class Array(Object):
             nonlocal index
             v2 = v
 
-            if defs.rpc_equal(v1.obj, v2.obj):
+            if rpc_equal(v1.obj, v2.obj):
                 index = idx
                 return False
 
@@ -364,7 +366,7 @@ cdef class Array(Object):
         else:
             rpc_value = Object(value)
 
-        defs.rpc_array_set_value(self.obj, index, rpc_value.obj)
+        rpc_array_set_value(self.obj, index, rpc_value.obj)
 
     def pop(self, index=None):
         if index is None:
@@ -386,7 +388,7 @@ cdef class Array(Object):
             return False
 
     def __delitem__(self, index):
-        defs.rpc_array_remove_index(self.obj, index)
+        rpc_array_remove_index(self.obj, index)
 
     def __iter__(self):
         result = []
@@ -400,20 +402,20 @@ cdef class Array(Object):
             yield v
 
     def __len__(self):
-        return defs.rpc_array_get_count(self.obj)
+        return rpc_array_get_count(self.obj)
 
     def __sizeof__(self):
-        return defs.rpc_array_get_count(self.obj)
+        return rpc_array_get_count(self.obj)
 
     def __getitem__(self, index):
         cdef Object rpc_value
 
         rpc_value = Object.__new__(Object)
-        rpc_value.obj = defs.rpc_array_get_value(self.obj, index)
-        if rpc_value.obj == <defs.rpc_object_t>NULL:
+        rpc_value.obj = rpc_array_get_value(self.obj, index)
+        if rpc_value.obj == <rpc_object_t>NULL:
             raise LibException(errno.ERANGE, 'Array index out of range')
 
-        defs.rpc_retain(rpc_value.obj)
+        rpc_retain(rpc_value.obj)
 
         return rpc_value
 
@@ -421,9 +423,9 @@ cdef class Array(Object):
         cdef Object rpc_value
 
         rpc_value = Object(value)
-        defs.rpc_array_set_value(self.obj, index, rpc_value.obj)
+        rpc_array_set_value(self.obj, index, rpc_value.obj)
 
-        defs.rpc_retain(rpc_value.obj)
+        rpc_retain(rpc_value.obj)
 
 
 cdef class Dictionary(Object):
@@ -434,37 +436,37 @@ cdef class Dictionary(Object):
         super(Dictionary, self).__init__(value, force_type)
 
     @staticmethod
-    cdef bint c_applier(void *arg, char *key, defs.rpc_object_t value) with gil:
+    cdef bint c_applier(void *arg, char *key, rpc_object_t value) with gil:
         cdef object cb = <object>arg
         cdef Object py_value
 
         py_value = Object.__new__(Object)
         py_value.obj = value
 
-        defs.rpc_retain(py_value.obj)
+        rpc_retain(py_value.obj)
 
         return <bint>cb(key.decode('utf-8'), py_value)
 
     def __applier(self, applier_f):
-        defs.rpc_dictionary_apply(
+        rpc_dictionary_apply(
             self.obj,
-            defs.RPC_DICTIONARY_APPLIER(
-                <defs.rpc_dictionary_applier_f>Dictionary.c_applier,
+            RPC_DICTIONARY_APPLIER(
+                <rpc_dictionary_applier_f>Dictionary.c_applier,
                 <void *>applier_f
             )
         )
 
     def clear(self):
         with nogil:
-            defs.rpc_release(self.obj)
-            self.obj = defs.rpc_dictionary_create()
+            rpc_release(self.obj)
+            self.obj = rpc_dictionary_create()
 
     def copy(self):
         cdef Dictionary copy
 
         copy = Dictionary.__new__(Dictionary)
         with nogil:
-            copy.obj = defs.rpc_copy(self.obj)
+            copy.obj = rpc_copy(self.obj)
 
         return copy
 
@@ -522,7 +524,7 @@ cdef class Dictionary(Object):
         for k, v in py_dict.items():
             py_value = v
             byte_key = k.encode('utf-8')
-            defs.rpc_dictionary_set_value(self.obj, byte_key, py_value.obj)
+            rpc_dictionary_set_value(self.obj, byte_key, py_value.obj)
 
     def values(self):
         result = []
@@ -548,7 +550,7 @@ cdef class Dictionary(Object):
             nonlocal equal
             v2 = v
 
-            if defs.rpc_equal(v1.obj, v2.obj):
+            if rpc_equal(v1.obj, v2.obj):
                 equal = True
                 return False
             return True
@@ -559,7 +561,7 @@ cdef class Dictionary(Object):
 
     def __delitem__(self, key):
         bytes_key = key.encode('utf-8')
-        defs.rpc_dictionary_remove_key(self.obj, bytes_key)
+        rpc_dictionary_remove_key(self.obj, bytes_key)
 
     def __iter__(self):
         keys = self.keys()
@@ -567,21 +569,21 @@ cdef class Dictionary(Object):
             yield k
 
     def __len__(self):
-        return defs.rpc_dictionary_get_count(self.obj)
+        return rpc_dictionary_get_count(self.obj)
 
     def __sizeof__(self):
-        return defs.rpc_dictionary_get_count(self.obj)
+        return rpc_dictionary_get_count(self.obj)
 
     def __getitem__(self, key):
         cdef Object rpc_value
         byte_key = key.encode('utf-8')
 
         rpc_value = Object.__new__(Object)
-        rpc_value.obj = defs.rpc_dictionary_get_value(self.obj, byte_key)
-        if rpc_value.obj == <defs.rpc_object_t>NULL:
+        rpc_value.obj = rpc_dictionary_get_value(self.obj, byte_key)
+        if rpc_value.obj == <rpc_object_t>NULL:
             raise LibException(errno.EINVAL, 'Key {} does not exist'.format(key))
 
-        defs.rpc_retain(rpc_value.obj)
+        rpc_retain(rpc_value.obj)
 
         return rpc_value
 
@@ -590,33 +592,30 @@ cdef class Dictionary(Object):
         byte_key = key.encode('utf-8')
 
         rpc_value = Object(value)
-        defs.rpc_dictionary_set_value(self.obj, byte_key, rpc_value.obj)
+        rpc_dictionary_set_value(self.obj, byte_key, rpc_value.obj)
 
-        defs.rpc_retain(rpc_value.obj)
+        rpc_retain(rpc_value.obj)
 
 
 cdef class Context(object):
-    cdef defs.rpc_context_t context
-    cdef bint borrowed
-
     def __init__(self):
-        defs.PyEval_InitThreads()
-        self.context = defs.rpc_context_create()
+        PyEval_InitThreads()
+        self.context = rpc_context_create()
 
     @staticmethod
-    def init_from_ptr(ptr):
+    cdef Context init_from_ptr(rpc_context_t ptr):
         cdef Context ret
 
         ret = Context.__new__(Context)
         ret.borrowed = True
-        ret.context = <defs.rpc_context_t><uintptr_t>ptr
+        ret.context = ptr
         return ret
 
     @staticmethod
-    cdef defs.rpc_object_t c_cb_function(void *cookie, defs.rpc_object_t args) with gil:
+    cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil:
         cdef Array args_array
         cdef Object rpc_obj
-        cdef object cb = <object>defs.rpc_function_get_arg(cookie)
+        cdef object cb = <object>rpc_function_get_arg(cookie)
         cdef int ret
 
         args_array = Array.__new__(Array)
@@ -626,89 +625,85 @@ cdef class Context(object):
         if isinstance(output, types.GeneratorType):
             for chunk in output:
                 rpc_obj = Object(chunk)
-                defs.rpc_retain(rpc_obj.obj)
+                rpc_retain(rpc_obj.obj)
 
                 with nogil:
-                    ret = defs.rpc_function_yield(cookie, rpc_obj.obj)
+                    ret = rpc_function_yield(cookie, rpc_obj.obj)
 
                 if ret:
                     break
 
-            return defs.rpc_null_create()
+            return rpc_null_create()
 
         rpc_obj = Object(output)
-        defs.rpc_retain(rpc_obj.obj)
+        rpc_retain(rpc_obj.obj)
         return rpc_obj.obj
 
     def register_method(self, name, description, fn):
-        defs.rpc_context_register_func(
+        rpc_context_register_func(
             self.context,
             name.encode('utf-8'),
             description.encode('utf-8'),
             <void *>fn,
-            <defs.rpc_function_f>Context.c_cb_function
+            <rpc_function_f>Context.c_cb_function
         )
 
     def unregister_method(self, name):
-        defs.rpc_context_unregister_method(self.context, name)
+        rpc_context_unregister_method(self.context, name)
 
     def __dealloc__(self):
         if not self.borrowed:
-            defs.rpc_context_free(self.context)
+            rpc_context_free(self.context)
 
 
 cdef class Connection(object):
-    cdef defs.rpc_connection_t connection
-    cdef object ev_handlers
-    cdef bint borrowed
-
     def __init__(self):
-        defs.PyEval_InitThreads()
+        PyEval_InitThreads()
         self.ev_handlers = {}
 
     @staticmethod
-    def init_from_ptr(ptr):
+    cdef Connection init_from_ptr(rpc_connection_t ptr):
         cdef Connection ret
 
         ret = Connection.__new__(Connection)
         ret.borrowed = True
-        ret.connection = <defs.rpc_connection_t><uintptr_t>ptr
+        ret.connection = ptr
         return ret
 
     @staticmethod
-    cdef void c_ev_handler(const char *name, defs.rpc_object_t args, void *arg) with gil:
+    cdef void c_ev_handler(const char *name, rpc_object_t args, void *arg) with gil:
         cdef Object event_args
         cdef object handler = <object>arg
 
         event_args = Object.__new__(Object)
         event_args.obj = args
-        defs.rpc_retain(args)
+        rpc_retain(args)
 
         handler(event_args)
 
     def call_sync(self, method, *args):
-        cdef defs.rpc_object_t rpc_result
+        cdef rpc_object_t rpc_result
         cdef Array rpc_args
         cdef Dictionary error
-        cdef defs.rpc_call_t call
+        cdef rpc_call_t call
         cdef Object rpc_value
-        cdef defs.rpc_call_status_t call_status
+        cdef rpc_call_status_t call_status
 
         rpc_args = Array(list(args))
 
-        call = defs.rpc_connection_call(self.connection, method.encode('utf-8'), rpc_args.obj, NULL)
-        if call == <defs.rpc_call_t>NULL:
+        call = rpc_connection_call(self.connection, method.encode('utf-8'), rpc_args.obj, NULL)
+        if call == <rpc_call_t>NULL:
             raise_internal_exc(rpc=True)
 
-        defs.rpc_call_wait(call)
-        call_status = <defs.rpc_call_status_t>defs.rpc_call_status(call)
+        rpc_call_wait(call)
+        call_status = <rpc_call_status_t>rpc_call_status(call)
 
         def get_chunk():
             nonlocal rpc_result
             nonlocal rpc_value
 
-            rpc_result = defs.rpc_call_result(call)
-            defs.rpc_retain(rpc_result)
+            rpc_result = rpc_call_result(call)
+            rpc_retain(rpc_result)
 
             rpc_value = Object.__new__(Object)
             rpc_value.obj = rpc_result
@@ -719,12 +714,12 @@ cdef class Connection(object):
 
             while call_status == CallStatus.MORE_AVAILABLE:
                 yield get_chunk()
-                defs.rpc_call_continue(call, True)
-                call_status = <defs.rpc_call_status_t>defs.rpc_call_status(call)
+                rpc_call_continue(call, True)
+                call_status = <rpc_call_status_t>rpc_call_status(call)
 
         if call_status == CallStatus.ERROR:
             rpc_value = get_chunk()
-            defs.rpc_retain(rpc_value.obj)
+            rpc_retain(rpc_value.obj)
             error = Dictionary.__new__(Dictionary)
             error.obj = rpc_value.obj
             raise RpcException(error['code'].value, error['message'].value)
@@ -743,46 +738,46 @@ cdef class Connection(object):
     def register_event_handler(self, name, fn):
         byte_name = name.encode('utf-8')
         self.ev_handlers[name] = fn
-        defs.rpc_connection_register_event_handler(
+        rpc_connection_register_event_handler(
             self.connection,
             byte_name,
-            defs.RPC_HANDLER(
-                <defs.rpc_handler_f>Connection.c_ev_handler,
+            RPC_HANDLER(
+                <rpc_handler_f>Connection.c_ev_handler,
                 <void *>fn
             )
         )
 
 cdef class Client(Connection):
-    cdef defs.rpc_client_t client
+    cdef rpc_client_t client
     cdef object uri
 
     def __init__(self):
         super(Client, self).__init__()
         self.uri = None
-        self.client = <defs.rpc_client_t>NULL
-        self.connection = <defs.rpc_connection_t>NULL
+        self.client = <rpc_client_t>NULL
+        self.connection = <rpc_connection_t>NULL
 
     def connect(self, uri):
         self.uri = uri.encode('utf-8')
-        self.client = defs.rpc_client_create(self.uri, 0)
-        if self.client == NULL:
+        self.client = rpc_client_create(self.uri, 0)
+        if self.client == <rpc_client_t>NULL:
             raise_internal_exc(rpc=False)
 
-        self.connection = defs.rpc_client_get_connection(self.client)
+        self.connection = rpc_client_get_connection(self.client)
 
     def disconnect(self):
-        defs.rpc_client_close(self.client)
+        rpc_client_close(self.client)
 
 
 cdef class Server(object):
-    cdef defs.rpc_server_t server
+    cdef rpc_server_t server
     cdef Context context
     cdef object uri
 
     def __init__(self, uri, context):
         self.uri = uri.encode('utf-8')
         self.context = context
-        self.server = defs.rpc_server_create(self.uri, self.context.context)
+        self.server = rpc_server_create(self.uri, self.context.context)
 
     def broadcast_event(self, name, args):
         cdef Object rpc_args
@@ -791,22 +786,22 @@ cdef class Server(object):
             rpc_args = args
         else:
             rpc_args = Object(args)
-            defs.rpc_retain(rpc_args.obj)
+            rpc_retain(rpc_args.obj)
 
-        defs.rpc_server_broadcast_event(self.server, byte_name, rpc_args.obj)
+        rpc_server_broadcast_event(self.server, byte_name, rpc_args.obj)
 
     def close(self):
-        defs.rpc_server_close(self.server)
+        rpc_server_close(self.server)
 
 
 cdef raise_internal_exc(rpc=False):
-    cdef defs.rpc_error_t error
+    cdef rpc_error_t error
 
     exc = LibException
     if rpc:
         exc = RpcException
 
-    error = defs.rpc_get_last_error()
+    error = rpc_get_last_error()
     if error != NULL:
         try:
             raise exc(error.code, error.message.decode('utf-8'))
