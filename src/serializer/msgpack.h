@@ -28,6 +28,10 @@
 #ifndef LIBRPC_MSGPACK_H
 #define LIBRPC_MSGPACK_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define	MSGPACK_EXTTYPE_DATE	1
 #define	MSGPACK_EXTTYPE_FD	2
 #define	MSGPACK_EXTTYPE_SHMEM	3
@@ -40,5 +44,9 @@ struct rpc_msgpack_shmem_desc {
 
 int rpc_msgpack_serialize(rpc_object_t, void **, size_t *);
 rpc_object_t rpc_msgpack_deserialize(const void *, size_t);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //LIBRPC_MSGPACK_H
