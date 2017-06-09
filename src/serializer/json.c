@@ -41,10 +41,6 @@ struct parse_context
 	char *key_buf;
 };
 
-static const char shmem_addr[] = "addr";
-static const char shmem_len[] = "len";
-static const char shmem_fd[] = "fd";
-
 static yajl_gen_status
 rpc_json_shmem_write_key(yajl_gen gen, const unsigned char *key, long value)
 {
@@ -151,11 +147,11 @@ rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 
 		block = g_malloc(sizeof(*block));
 		block->rsb_fd = (int)rpc_dictionary_get_int64(dict_value,
-		    shmem_fd);
+		    JSON_EXTTYPE_SHMEM_FD);
 		block->rsb_offset = rpc_dictionary_get_int64(dict_value,
-		    shmem_addr);
+		    JSON_EXTTYPE_SHMEM_ADDR);
 		block->rsb_size = (size_t)rpc_dictionary_get_int64(dict_value,
-		    shmem_len);
+		    JSON_EXTTYPE_SHMEM_LEN);
 
 		unpacked_value = rpc_shmem_create(block);
 	}
@@ -357,17 +353,17 @@ rpc_json_write_object_ext(yajl_gen gen, rpc_object_t object,
 		block = rpc_shmem_get_block(object);
 
 		status = rpc_json_shmem_write_key(gen,
-		    (const unsigned char *)shmem_addr, block->rsb_offset);
+		    (const uint8_t *)JSON_EXTTYPE_SHMEM_ADDR, block->rsb_offset);
 		if (status != yajl_gen_status_ok)
 			return (status);
 
 		status = rpc_json_shmem_write_key(gen,
-		    (const unsigned char *)shmem_len, block->rsb_size);
+		    (const uint8_t *)JSON_EXTTYPE_SHMEM_LEN, block->rsb_size);
 		if (status != yajl_gen_status_ok)
 			return (status);
 
 		status = rpc_json_shmem_write_key(gen,
-		    (const unsigned char *)shmem_fd, block->rsb_fd);
+		    (const uint8_t *)JSON_EXTTYPE_SHMEM_FD, block->rsb_fd);
 		if (status != yajl_gen_status_ok)
 			return (status);
 
