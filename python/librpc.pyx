@@ -173,10 +173,11 @@ cdef class Object(object):
 
     @staticmethod
     def init_from_ptr(ptr):
-        cdef Context ret
+        cdef Object ret
 
         ret = Object.__new__(Object)
         ret.obj = <defs.rpc_object_t><uintptr_t>ptr
+        defs.rpc_retain(ret.obj)
         return ret
 
     property value:
@@ -667,7 +668,7 @@ cdef class Connection(object):
 
     @staticmethod
     def init_from_ptr(ptr):
-        cdef Context ret
+        cdef Connection ret
 
         ret = Connection.__new__(Connection)
         ret.borrowed = True
