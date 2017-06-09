@@ -26,7 +26,6 @@
  */
 
 #include <rpc/object.h>
-#include <rpc/shmem.h>
 #include "../../contrib/mpack/mpack.h"
 #include "../linker_set.h"
 #include "../internal.h"
@@ -183,9 +182,10 @@ rpc_msgpack_read_object(mpack_node_t node)
 
 			block = g_malloc(sizeof(*block));
 			block->rsb_fd = desc->fd;
-			block->rsb_offset = desc->addr;
+			block->rsb_offset = (off_t)desc->addr;
 			block->rsb_size = desc->len;
 			return (rpc_shmem_create(block));
+
 		default:
 			return (rpc_null_create());
 		}
