@@ -250,6 +250,7 @@ struct rpc_serializer
 
 rpc_object_t rpc_prim_create(rpc_type_t type, union rpc_value val);
 void *rpc_shmem_map(struct rpc_shmem_block *block);
+void rpc_trace(const char *msg, rpc_object_t frame);
 
 const struct rpc_transport *rpc_find_transport(const char *scheme);
 const struct rpc_serializer *rpc_find_serializer(const char *name);
