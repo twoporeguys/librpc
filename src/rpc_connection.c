@@ -99,11 +99,13 @@ rpc_serialize_fds(rpc_object_t obj, int *fds, size_t *nfds, size_t idx)
 		counter++;
 		break;
 
+#if defined(__linux__)
 	case RPC_TYPE_SHMEM:
 		fds[counter] = obj->ro_value.rv_shmem->rsb_fd;
 		obj->ro_value.rv_shmem->rsb_fd = (int)counter;
 		counter++;
 		break;
+#endif
 
 	case RPC_TYPE_ARRAY:
 		rpc_array_apply(obj, ^(size_t aidx __unused, rpc_object_t i) {
@@ -136,12 +138,14 @@ rpc_restore_fds(rpc_object_t obj, int *fds, size_t nfds)
 			obj->ro_value.rv_fd = fds[obj->ro_value.rv_fd];
 			break;
 
+#if defined(__linux__)
 		case RPC_TYPE_SHMEM:
 			obj->ro_value.rv_shmem->rsb_fd =
 			    fds[obj->ro_value.rv_shmem->rsb_fd];
 			obj->ro_value.rv_shmem->rsb_addr =
 			    rpc_shmem_map(obj->ro_value.rv_shmem);
 			break;
+#endif
 
 		case RPC_TYPE_ARRAY:
 			rpc_array_apply(obj, ^(size_t idx __unused,

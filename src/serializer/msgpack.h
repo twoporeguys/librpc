@@ -34,6 +34,7 @@ extern "C" {
 
 #define	MSGPACK_EXTTYPE_DATE	1
 #define	MSGPACK_EXTTYPE_FD	2
+#if defined(__linux__)
 #define	MSGPACK_EXTTYPE_SHMEM	3
 
 struct rpc_msgpack_shmem_desc {
@@ -41,6 +42,7 @@ struct rpc_msgpack_shmem_desc {
     	uintptr_t 	addr;
     	size_t 		len;
 };
+#endif
 
 int rpc_msgpack_serialize(rpc_object_t, void **, size_t *);
 rpc_object_t rpc_msgpack_deserialize(const void *, size_t);

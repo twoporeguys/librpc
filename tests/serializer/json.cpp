@@ -202,6 +202,7 @@ SCENARIO("JSON_SINGLE_EXT_TEST", "Deserialize golden reference, serialize it aga
 	}
 }
 
+#if defined(__linux__)
 SCENARIO("JSON_SHMEM_TEST", "Serialize and deserialize an RPC object representing a chunk of shared memory") {
 	GIVEN("Chunk of shared memory") {
 		rpc_shmem_block_t block = rpc_shmem_alloc(1024);
@@ -227,3 +228,4 @@ SCENARIO("JSON_SHMEM_TEST", "Serialize and deserialize an RPC object representin
 		g_free(buf);
 	}
 }
+#endif

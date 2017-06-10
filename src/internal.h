@@ -93,7 +93,9 @@ union rpc_value
 	bool			rv_b;
 	double			rv_d;
 	struct rpc_binary_value rv_bin;
+#if defined(__linux__)
     	struct rpc_shmem_block *rv_shmem;
+#endif
 	int 			rv_fd;
 };
 
@@ -224,6 +226,7 @@ struct rpc_context
     	GThreadPool *		rcx_threadpool;
 };
 
+#if defined(__linux__)
 struct rpc_shmem_block
 {
     	int			rsb_fd;
@@ -231,6 +234,7 @@ struct rpc_shmem_block
     	void *			rsb_addr;
     	size_t 			rsb_size;
 };
+#endif
 
 struct rpc_transport
 {
@@ -249,7 +253,9 @@ struct rpc_serializer
 };
 
 rpc_object_t rpc_prim_create(rpc_type_t type, union rpc_value val);
+#if defined(__linux__)
 void *rpc_shmem_map(struct rpc_shmem_block *block);
+#endif
 void rpc_trace(const char *msg, rpc_object_t frame);
 
 const struct rpc_transport *rpc_find_transport(const char *scheme);

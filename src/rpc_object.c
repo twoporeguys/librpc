@@ -40,7 +40,9 @@
 #include <rpc/object.h>
 #include "serializer/json.h"
 #include "internal.h"
+#if defined(__linux__)
 #include "memfd.h"
+#endif
 
 GPrivate rpc_last_error = G_PRIVATE_INIT((GDestroyNotify)g_free);
 
@@ -55,8 +57,10 @@ static const char *rpc_types[] = {
     [RPC_TYPE_BINARY] = "binary",
     [RPC_TYPE_FD] = "fd",
     [RPC_TYPE_DICTIONARY] = "dictionary",
-    [RPC_TYPE_ARRAY] = "array",
-    [RPC_TYPE_SHMEM] = "shmem"
+#if defined(__linux__)
+    [RPC_TYPE_SHMEM] = "shmem",
+#endif
+    [RPC_TYPE_ARRAY] = "array"
 };
 
 rpc_object_t
@@ -158,11 +162,11 @@ rpc_create_description(GString *description, rpc_object_t object,
 			g_string_append(description, " ...");
 
 		break;
-
+#if defined(__linux__)
 	case RPC_TYPE_SHMEM:
 		g_string_append(description, "shared memory");
 		break;
-
+#endif
 	case RPC_TYPE_DICTIONARY:
 		g_string_append(description, "{\n");
 		rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
@@ -280,10 +284,10 @@ rpc_release_impl(rpc_object_t object)
 		case RPC_TYPE_DICTIONARY:
 			g_hash_table_unref(object->ro_value.rv_dict);
 			break;
-
+#if defined(__linux__)
 		case RPC_TYPE_SHMEM:
 			rpc_shmem_free(object->ro_value.rv_shmem);
-
+#endif
 		default:
 			break;
 		}
@@ -308,7 +312,9 @@ inline rpc_object_t
 rpc_copy(rpc_object_t object)
 {
 	rpc_object_t tmp;
+#if defined(__linux__)
 	rpc_shmem_block_t block;
+#endif
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
@@ -339,12 +345,14 @@ rpc_copy(rpc_object_t object)
 		return rpc_data_create(rpc_data_get_bytes_ptr(object),
 		    rpc_data_get_length(object), true);
 
+#if defined(__linux__)
 	case RPC_TYPE_SHMEM:
 		block = g_malloc(sizeof(*block));
 		block->rsb_fd = dup(object->ro_value.rv_shmem->rsb_fd);
 		block->rsb_offset = object->ro_value.rv_shmem->rsb_offset;
 		block->rsb_size = object->ro_value.rv_shmem->rsb_size;
 		return (rpc_shmem_create(block));
+#endif
 
 	case RPC_TYPE_DICTIONARY:
 		tmp = rpc_dictionary_create();
@@ -407,8 +415,10 @@ rpc_hash(rpc_object_t object)
 		return (rpc_data_hash((uint8_t *)rpc_data_get_bytes_ptr(object),
 		    rpc_data_get_length(object)));
 
+#if defined(__linux__)
 	case RPC_TYPE_SHMEM:
 		return ((size_t)object->ro_value.rv_shmem->rsb_fd);
+#endif
 
 	case RPC_TYPE_DICTIONARY:
 		rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
@@ -498,9 +508,11 @@ rpc_object_pack(const char *fmt, ...)
 			current = rpc_string_create(va_arg(ap, const char *));
 			break;
 
+#if defined(__linux__)
 		case 'h':
 			current = rpc_shmem_create(va_arg(ap, rpc_shmem_block_t));
 			break;
+#endif
 
 		case '{':
 			container = rpc_dictionary_create();
@@ -594,10 +606,12 @@ rpc_object_unpack(rpc_object_t obj, const char *fmt, ...)
 			    current);
 			break;
 
+#if defined(__linux__)
 		case 'h':
 			*va_arg(ap, rpc_shmem_block_t *) = rpc_shmem_get_block(
 			    current);
 			break;
+#endif
 
 		case '[':
 			array = current;
@@ -877,6 +891,7 @@ rpc_fd_dup(rpc_object_t xfd)
 	return (dup(rpc_fd_get_value(xfd)));
 }
 
+#if defined(__linux__)
 rpc_object_t
 rpc_shmem_create(rpc_shmem_block_t block)
 {
@@ -955,6 +970,7 @@ rpc_shmem_get_block(rpc_object_t obj)
 
 	return (obj->ro_value.rv_shmem);
 }
+#endif
 
 inline rpc_object_t
 rpc_array_create(void)

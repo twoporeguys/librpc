@@ -41,6 +41,7 @@ struct parse_context
 	char *key_buf;
 };
 
+#if defined(__linux__)
 static yajl_gen_status
 rpc_json_shmem_write_key(yajl_gen gen, const unsigned char *key, long value)
 {
@@ -53,6 +54,7 @@ rpc_json_shmem_write_key(yajl_gen gen, const unsigned char *key, long value)
 	status = yajl_gen_integer(gen, value);
 	return (status);
 }
+#endif
 
 static int
 rpc_json_context_insert_value(void *ctx_ptr, rpc_object_t value)
@@ -115,7 +117,9 @@ rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 	const char *base64_data;
 	GHashTableIter iter;
 	gpointer key, value;
+#if defined(__linux__)
 	rpc_shmem_block_t block;
+#endif
 
 	if (rpc_dictionary_has_key(leaf, JSON_EXTTYPE_UINT64)) {
 		dict_value = rpc_dictionary_get_value(leaf,
@@ -141,6 +145,8 @@ rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 		    JSON_EXTTYPE_FD);
 		unpacked_value = rpc_fd_create(
 		    (int)rpc_int64_get_value(dict_value));
+
+#if defined(__linux__)
 	} else if (rpc_dictionary_has_key(leaf, JSON_EXTTYPE_SHMEM)) {
 		dict_value = rpc_dictionary_get_value(leaf,
 		    JSON_EXTTYPE_SHMEM);
@@ -154,8 +160,9 @@ rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 		    JSON_EXTTYPE_SHMEM_LEN);
 
 		unpacked_value = rpc_shmem_create(block);
-	}
-	else
+
+#endif
+	} else
 		return;
 
 	branch = (rpc_object_t)g_queue_peek_head(ctx->leaf_stack);
@@ -314,7 +321,9 @@ rpc_json_write_object_ext(yajl_gen gen, rpc_object_t object,
 	yajl_gen_status status;
 	const void *data_buf;
 	char *base64_data;
+#if defined(__linux__)
 	rpc_shmem_block_t block;
+#endif
 
 	if ((status = yajl_gen_map_open(gen)) != yajl_gen_status_ok)
 		return (status);
@@ -346,6 +355,7 @@ rpc_json_write_object_ext(yajl_gen gen, rpc_object_t object,
 		g_free(base64_data);
 		break;
 
+#if defined(__linux__)
 	case RPC_TYPE_SHMEM:
 		if ((status = yajl_gen_map_open(gen)) != yajl_gen_status_ok)
 			return (status);
@@ -369,6 +379,7 @@ rpc_json_write_object_ext(yajl_gen gen, rpc_object_t object,
 
 		status = yajl_gen_map_close(gen);
 		break;
+#endif
 
 	default:
 		break;
@@ -416,10 +427,12 @@ rpc_json_write_object(yajl_gen gen, rpc_object_t object)
 		    (const uint8_t *)JSON_EXTTYPE_FD,
 		    strlen(JSON_EXTTYPE_FD)));
 
+#if defined(__linux__)
 	case RPC_TYPE_SHMEM:
 		return (rpc_json_write_object_ext(gen, object,
 		    (const uint8_t *)JSON_EXTTYPE_SHMEM,
 		    strlen(JSON_EXTTYPE_SHMEM)));
+#endif
 
 	case RPC_TYPE_DOUBLE:
 		return (yajl_gen_double(gen, rpc_double_get_value(object)));
