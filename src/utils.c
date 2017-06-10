@@ -25,6 +25,7 @@
  *
  */
 
+#include <stdlib.h>
 #include "linker_set.h"
 #include "internal.h"
 
@@ -69,6 +70,7 @@ void
 rpc_trace(const char *msg, rpc_object_t frame)
 {
 	char *descr;
+	const char *dest;
 	static FILE *stream = NULL;
 
 	if (stream == NULL) {
@@ -84,7 +86,7 @@ rpc_trace(const char *msg, rpc_object_t frame)
 	}
 
 	descr = rpc_copy_description(frame);
-	fprintf(stream, "%s: %s\n", msg);
+	fprintf(stream, "%s: %s\n", msg, descr);
 	g_free(descr);
 }
 #endif
