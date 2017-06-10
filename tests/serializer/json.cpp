@@ -29,6 +29,7 @@
 
 #include <glib.h>
 #include <string.h>
+#include <unistd.h>
 #include <rpc/object.h>
 #include "../../src/serializer/json.h"
 #include "../../src/internal.h"
@@ -42,7 +43,6 @@ static char json_dict_gold[] = "{"
     "\"fd\":{\"$fd\":1},"
     "\"double\":12.0,"
     "\"string\":\"deadbeef\","
-    "\"shmem\":{\"addr\":1234,\"len\":4000,\"fd\":1},"
     "\"array\":[\"woopwoop\",-1234,{\"$fd\":2}]"
     "}";
 
@@ -199,5 +199,31 @@ SCENARIO("JSON_SINGLE_EXT_TEST", "Deserialize golden reference, serialize it aga
 		g_free(buf);
 		rpc_release(object);
 		rpc_release(object_mirror);
+	}
+}
+
+SCENARIO("JSON_SHMEM_TEST", "Serialize and deserialize an RPC object representing a chunk of shared memory") {
+	GIVEN("Chunk of shared memory") {
+		rpc_shmem_block_t block = rpc_shmem_alloc(1024);
+		rpc_object_t shmem = rpc_shmem_create(block);
+		rpc_object_t parent = rpc_dictionary_create();
+		rpc_object_t mirror = NULL;
+		size_t buf_size;
+		void *buf = NULL;
+
+		rpc_dictionary_steal_value(parent, "mem", shmem);
+
+		WHEN("RPC object is serialized and deserialized again") {
+			rpc_json_serialize(parent, &buf, &buf_size);
+			mirror = rpc_json_deserialize(buf, buf_size);
+
+			THEN("Both source and result are the same") {
+				REQUIRE(rpc_equal(parent, mirror));
+			}
+		}
+
+		rpc_release(parent);
+		rpc_release(mirror);
+		g_free(buf);
 	}
 }
