@@ -492,7 +492,7 @@ rpc_call_alloc(rpc_connection_t conn, rpc_object_t id)
 {
 	struct rpc_call *call;
 
-	call = calloc(1, sizeof(*call));
+	call = g_malloc0(sizeof(*call));
 	call->rc_conn = conn;
 	call->rc_id = id != NULL ? id : rpc_new_id();
 	g_mutex_init(&call->rc_mtx);
@@ -515,6 +515,10 @@ rpc_send_frame(rpc_connection_t conn, rpc_object_t frame)
 	int fds[MAX_FDS];
 	size_t len = 0, nfds = 0;
 	int ret;
+
+#ifdef RPC_TRACE
+	rpc_trace("SEND", frame);
+#endif
 
 	g_mutex_lock(&conn->rco_send_mtx);
 	nfds = rpc_serialize_fds(frame, fds, NULL, 0);
@@ -749,6 +753,10 @@ rpc_connection_dispatch(rpc_connection_t conn, rpc_object_t frame)
 
 	debugf("inbound call: namespace=%s, name=%s, id=%s", namespace, name,
 	    rpc_string_get_string_ptr(id));
+
+#ifdef RPC_TRACE
+	rpc_trace("RECV", frame);
+#endif
 
 	for (h = &handlers[0]; h->namespace != NULL; h++) {
 		if (g_strcmp0(namespace, h->namespace))
