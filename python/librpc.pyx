@@ -727,7 +727,10 @@ cdef class Connection(object):
         if call_status == CallStatus.DONE:
             return get_chunk()
 
-        return iter_chunk()
+        if call_status == CallStatus.MORE_AVAILABLE:
+            return iter_chunk()
+
+        raise AssertionError('Impossible call status {0}'.format(call_status))
 
     def call_async(self, method, callback, *args):
         pass
@@ -802,8 +805,8 @@ cdef raise_internal_exc(rpc=False):
         exc = RpcException
 
     error = rpc_get_last_error()
-    if error != NULL:
+    if error != <rpc_error_t>NULL:
         try:
             raise exc(error.code, error.message.decode('utf-8'))
         finally:
-            free(error)
+            free(<void *>error)

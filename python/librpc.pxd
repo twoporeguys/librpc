@@ -37,11 +37,9 @@ cdef extern from "rpc/object.h" nogil:
     ctypedef struct rpc_object_t:
         pass
 
-    ctypedef struct rpc_error:
+    cdef struct rpc_error:
         int code
         char *message
-
-    ctypedef rpc_error *rpc_error_t
 
     ctypedef enum rpc_type_t:
         RPC_TYPE_NULL
@@ -56,6 +54,7 @@ cdef extern from "rpc/object.h" nogil:
         RPC_TYPE_DICTIONARY
         RPC_TYPE_ARRAY
 
+    ctypedef rpc_error *rpc_error_t;
     void *RPC_DICTIONARY_APPLIER(rpc_dictionary_applier_f fn, void *arg)
     void *RPC_ARRAY_APPLIER(rpc_array_applier_f fn, void *arg)
 
