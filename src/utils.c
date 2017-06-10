@@ -63,3 +63,28 @@ rpc_find_serializer(const char *name)
 
 	return (NULL);
 }
+
+#ifdef RPC_TRACE
+void
+rpc_trace(const char *msg, rpc_object_t frame)
+{
+	char *descr;
+	static FILE *stream = NULL;
+
+	if (stream == NULL) {
+		dest = getenv("LIBRPC_LOGGING");
+		if (dest == NULL)
+			return;
+		else if (!g_strcmp0(dest, "stderr"))
+			stream = stderr;
+		else
+			stream = fopen(dest, "a");
+			if (stream == NULL)
+				return;
+	}
+
+	descr = rpc_copy_description(frame);
+	fprintf(stream, "%s: %s\n", msg);
+	g_free(descr);
+}
+#endif
