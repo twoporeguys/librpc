@@ -61,10 +61,8 @@ rpc_context_tp_handler(gpointer data, gpointer user_data __unused)
 	if (!call->ric_streaming && !call->ric_responded)
 		rpc_connection_send_response(conn, call->ric_id, result);
 
-	if (call->ric_streaming && !call->ric_ended) {
-		rpc_connection_send_end(conn, call->ric_id,
-		    call->ric_producer_seqno);
-	}
+	if (call->ric_streaming && !call->ric_ended)
+		rpc_function_end(data);
 }
 
 rpc_context_t
@@ -212,7 +210,7 @@ rpc_function_yield(void *cookie, rpc_object_t fragment)
 
 	g_mutex_lock(&call->ric_mtx);
 
-	while (call->ric_producer_seqno == call->ric_consumer_seqno || call->ric_aborted)
+	while (call->ric_producer_seqno == call->ric_consumer_seqno && !call->ric_aborted)
 		g_cond_wait(&call->ric_cv, &call->ric_mtx);
 
 	if (call->ric_aborted) {
@@ -237,7 +235,7 @@ rpc_function_end(void *cookie)
 
 	g_mutex_lock(&call->ric_mtx);
 
-	while (call->ric_producer_seqno < call->ric_consumer_seqno || call->ric_aborted)
+	while (call->ric_producer_seqno == call->ric_consumer_seqno && !call->ric_aborted)
 		g_cond_wait(&call->ric_cv, &call->ric_mtx);
 
 	if (call->ric_aborted) {
