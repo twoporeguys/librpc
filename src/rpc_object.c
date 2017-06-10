@@ -327,7 +327,7 @@ rpc_copy(rpc_object_t object)
 		return (rpc_double_create(object->ro_value.rv_d));
 
 	case RPC_TYPE_FD:
-		return (rpc_fd_create(object->ro_value.rv_fd));
+		return (rpc_fd_create(rpc_fd_dup(object)));
 
 	case RPC_TYPE_STRING:
 		return (rpc_string_create(rpc_string_get_string_ptr(object)));
@@ -338,7 +338,7 @@ rpc_copy(rpc_object_t object)
 
 	case RPC_TYPE_SHMEM:
 		block = g_malloc(sizeof(*block));
-		block->rsb_fd = object->ro_value.rv_shmem->rsb_fd;
+		block->rsb_fd = dup(object->ro_value.rv_shmem->rsb_fd);
 		block->rsb_offset = object->ro_value.rv_shmem->rsb_offset;
 		block->rsb_size = object->ro_value.rv_shmem->rsb_size;
 		return (rpc_shmem_create(block));
