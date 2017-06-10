@@ -726,8 +726,8 @@ SCENARIO("RPC_FD_OBJECT", "Create a FD RPC object and perform basic operations o
 		WHEN("Object's copy is created") {
 			copy = rpc_copy(object);
 
-			THEN("Source and copy are equal"){
-				REQUIRE(rpc_equal(object, copy));
+			THEN("Source and copy are not equal"){
+				REQUIRE(!rpc_equal(object, copy));
 			}
 
 			AND_THEN("Object is different from object initialized with different value") {
@@ -865,19 +865,18 @@ SCENARIO("RPC_DICTIONARY_OBJECT", "Create a DICTIONARY RPC object and perform ba
 			rpc_dictionary_set_date(object, "date_val", 1000);
 			rpc_dictionary_set_data(object, "data_val", &data, sizeof(data));
 			rpc_dictionary_set_string(object, "string_val", "test string");
-			rpc_dictionary_set_fd(object, "fd_val", fds[0]);
 
 			rpc_dictionary_set_string(different_object, "key", "value");
 
 			THEN("Dictionary item count matches the number of inserted items") {
-				REQUIRE(rpc_dictionary_get_count(object) == 8);
+				REQUIRE(rpc_dictionary_get_count(object) == 7);
 			}
 
 			AND_WHEN("When one of the values is removed") {
 				rpc_dictionary_remove_key(object, "int_val");
 
 				THEN("Dictionary item count is decremented") {
-					REQUIRE(rpc_dictionary_get_count(object) == 7);
+					REQUIRE(rpc_dictionary_get_count(object) == 6);
 				}
 
 				THEN("Removed key does not exist in the dictionary anymore") {
@@ -890,7 +889,7 @@ SCENARIO("RPC_DICTIONARY_OBJECT", "Create a DICTIONARY RPC object and perform ba
 				rpc_dictionary_set_value(object, "double_val", NULL);
 
 				THEN("Key was removed from the dictionary") {
-					REQUIRE(rpc_dictionary_get_count(object) == 7);
+					REQUIRE(rpc_dictionary_get_count(object) == 6);
 					REQUIRE(rpc_dictionary_get_int64(object, "double_val") == 0);
 					REQUIRE(!rpc_dictionary_has_key(object, "double_val"));
 				}
@@ -931,6 +930,22 @@ SCENARIO("RPC_DICTIONARY_OBJECT", "Create a DICTIONARY RPC object and perform ba
 				REQUIRE(g_strcmp0(rpc_dictionary_get_string(object, "string_val"), "test string") == 0);
 			}
 
+			WHEN("Object's copy is created") {
+				copy = rpc_copy(object);
+
+				THEN("Source and copy are equal") {
+					REQUIRE(rpc_equal(object, copy));
+				}
+
+				AND_THEN("Object is different from object initialized with different value") {
+					REQUIRE(!rpc_equal(object, different_object));
+				}
+
+				rpc_release(copy);
+			}
+
+			rpc_dictionary_set_fd(object, "fd_val", fds[0]);
+
 			THEN("Extracted fd value matches initial value") {
 				REQUIRE(rpc_dictionary_has_key(object, "fd_val"));
 				REQUIRE(rpc_dictionary_get_fd(object, "fd_val") == fds[0]);
@@ -944,20 +959,6 @@ SCENARIO("RPC_DICTIONARY_OBJECT", "Create a DICTIONARY RPC object and perform ba
 				REQUIRE(fstat(dup_fd, &stat2) >= 0);
 				REQUIRE(stat1.st_dev == stat2.st_dev);
 				REQUIRE(stat1.st_ino == stat2.st_ino);
-			}
-
-			WHEN("Object's copy is created") {
-				copy = rpc_copy(object);
-
-				THEN("Source and copy are equal") {
-					REQUIRE(rpc_equal(object, copy));
-				}
-
-				AND_THEN("Object is different from object initialized with different value") {
-					REQUIRE(!rpc_equal(object, different_object));
-				}
-
-				rpc_release(copy);
 			}
 		}
 
@@ -1138,19 +1139,18 @@ SCENARIO("RPC_ARRAY_OBJECT", "Create a ARRAY RPC object and perform basic operat
 			rpc_array_set_date(object, 4, 1000);
 			rpc_array_set_data(object, 5, &data, sizeof(data));
 			rpc_array_set_string(object, 6, "test string");
-			rpc_array_set_fd(object, 7, fds[0]);
 
 			rpc_array_set_string(different_object, 0, "value");
 
 			THEN("Array item count matches the number of inserted items") {
-				REQUIRE(rpc_array_get_count(object) == 8);
+				REQUIRE(rpc_array_get_count(object) == 7);
 			}
 
 			AND_WHEN("When one of the values is removed") {
 				rpc_array_remove_index(object, 1);
 
 				THEN("Array item count is decremented") {
-					REQUIRE(rpc_array_get_count(object) == 7);
+					REQUIRE(rpc_array_get_count(object) == 6);
 				}
 
 				THEN("Removed key does not exist in the array anymore") {
@@ -1162,7 +1162,7 @@ SCENARIO("RPC_ARRAY_OBJECT", "Create a ARRAY RPC object and perform basic operat
 				rpc_array_set_value(object, 3, NULL);
 
 				THEN("Key was removed from the array") {
-					REQUIRE(rpc_array_get_count(object) == 7);
+					REQUIRE(rpc_array_get_count(object) == 6);
 					REQUIRE(rpc_array_get_int64(object, 3) != -12.34);
 				}
 			}
@@ -1195,6 +1195,20 @@ SCENARIO("RPC_ARRAY_OBJECT", "Create a ARRAY RPC object and perform basic operat
 				REQUIRE(g_strcmp0(rpc_array_get_string(object, 6), "test string") == 0);
 			}
 
+			WHEN("Object's copy is created") {
+				copy = rpc_copy(object);
+
+				THEN("Source and copy are equal") {
+					REQUIRE(rpc_equal(object, copy));
+				}
+
+				AND_THEN("Object is different from object initialized with different value") {
+					REQUIRE(!rpc_equal(object, different_object));
+				}
+			}
+
+			rpc_array_set_fd(object, 7, fds[0]);
+
 			THEN("Extracted fd value matches initial value") {
 				REQUIRE(rpc_array_get_fd(object, 7) == fds[0]);
 			}
@@ -1207,18 +1221,6 @@ SCENARIO("RPC_ARRAY_OBJECT", "Create a ARRAY RPC object and perform basic operat
 				REQUIRE(fstat(dup_fd, &stat2) >= 0);
 				REQUIRE(stat1.st_dev == stat2.st_dev);
 				REQUIRE(stat1.st_ino == stat2.st_ino);
-			}
-
-			WHEN("Object's copy is created") {
-				copy = rpc_copy(object);
-
-				THEN("Source and copy are equal") {
-					REQUIRE(rpc_equal(object, copy));
-				}
-
-				AND_THEN("Object is different from object initialized with different value") {
-					REQUIRE(!rpc_equal(object, different_object));
-				}
 			}
 		}
 
