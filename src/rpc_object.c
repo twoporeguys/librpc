@@ -154,6 +154,9 @@ rpc_create_description(GString *description, rpc_object_t object,
 			g_string_append_printf(description, "%02x",
 			    data_ptr[i]);
 
+		if (data_length < object->ro_value.rv_bin.length)
+			g_string_append(description, " ...");
+
 		break;
 
 	case RPC_TYPE_SHMEM:
