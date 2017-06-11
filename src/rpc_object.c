@@ -613,6 +613,16 @@ rpc_object_unpack(rpc_object_t obj, const char *fmt, ...)
 			break;
 #endif
 
+		case 'R':
+			if (array == NULL) {
+				errno = EINVAL;
+				return (-1);
+			}
+
+			*va_arg(ap, rpc_object_t *) = rpc_array_slice(array,
+			    idx + 1, -1);
+			break;
+
 		case '[':
 			array = current;
 			idx = 0;
@@ -1114,14 +1124,14 @@ rpc_array_slice(rpc_object_t array, size_t index, ssize_t len)
 	if (len == -1)
 		end = array->ro_value.rv_list->len;
 	else
-		end = MIN(array->ro_value.rv_list->len, index + len)
+		end = MIN(array->ro_value.rv_list->len, index + len);
 
 	result = rpc_array_create();
 
 	for (i = index; i < end; i++)
 		rpc_array_append_value(result, rpc_array_get_value(array, i));
 
-	return (result;)
+	return (result);
 }
 
 inline void
