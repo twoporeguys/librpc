@@ -1092,17 +1092,36 @@ inline bool
 rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier)
 {
 	bool flag = false;
-	size_t i = 0;
+	size_t i;
 
 	for (i = 0; i < array->ro_value.rv_list->len; i++) {
-		if (!applier(i, g_ptr_array_index(array->ro_value.rv_list, i)))
-		{
+		if (!applier(i, g_ptr_array_index(array->ro_value.rv_list, i))) {
 			flag = true;
 			break;
 		}
 	}
 
 	return (flag);
+}
+
+rpc_object_t
+rpc_array_slice(rpc_object_t array, size_t index, ssize_t len)
+{
+	size_t i;
+	size_t end;
+	rpc_object_t result;
+
+	if (len == -1)
+		end = array->ro_value.rv_list->len;
+	else
+		end = MIN(array->ro_value.rv_list->len, index + len)
+
+	result = rpc_array_create();
+
+	for (i = index; i < end; i++)
+		rpc_array_append_value(result, rpc_array_get_value(array, i));
+
+	return (result;)
 }
 
 inline void
