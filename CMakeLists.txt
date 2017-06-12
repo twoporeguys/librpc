@@ -85,15 +85,9 @@ if(NOT APPLE)
 endif()
 
 configure_file(librpc.pc.in ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc @ONLY)
-
-install(TARGETS librpc
-        LIBRARY DESTINATION lib)
-
-install(DIRECTORY include/
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pkgconfig)
+install(TARGETS librpc LIBRARY DESTINATION lib)
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pkgconfig)
 
 if(BUILD_TESTS)
     # Compile tests
@@ -142,7 +136,9 @@ endif()
 
 if(BUILD_DOC)
     find_package(Doxygen)
-    add_custom_target(doc
-            COMMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/Doxyfile
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc)
+    configure_file(${CMAKE_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+    add_custom_target(doc ALL
+            ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc)
 endif()
