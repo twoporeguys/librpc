@@ -105,12 +105,68 @@ int rpc_object_to_json(rpc_object_t object, void **frame, size_t *size);
 rpc_object_t rpc_object_pack(const char *fmt, ...);
 int rpc_object_unpack(rpc_object_t, const char *fmt, ...);
 
+/**
+ * Creates an rpc_object_t holding null value
+ *
+ * @return newly created object
+ */
 rpc_object_t rpc_null_create(void);
+
+/**
+ * Creates an rpc_object_t holding boolean value
+ *
+ * @param value Value of the object (true or false)
+ * @return Newly created object
+ */
 rpc_object_t rpc_bool_create(bool value);
+
+/**
+ * Returns a boolean value of rpc_object_t.
+ *
+ * If rpc_object_t passed as the first argument if not of RPC_TYPE_BOOLEAN
+ * type, the function returns false.
+ *
+ * @param xbool Object to read the value from
+ * @return Boolean value of the object (true or false)
+ */
 bool rpc_bool_get_value(rpc_object_t xbool);
+
+/**
+ * Creates an rpc_object_t holding a signed 64-bit integer value
+ *
+ * @param value Value of the object (signed 64-bit integer)
+ * @return Newly created object
+ */
 rpc_object_t rpc_int64_create(int64_t value);
+
+/**
+ * Returns an integer value of rpc_object_t.
+ *
+ * If rpc_object_t passed as the first argument if not of RPC_TYPE_INT64
+ * type, the function returns -1.
+ *
+ * @param xint Object to read the value from
+ * @return Integer value of the object
+ */
 int64_t rpc_int64_get_value(rpc_object_t xint);
+
+/**
+ * Creates an rpc_object_t holding an unsigned 64-bit integer value
+ *
+ * @param value Value of the object (unsigned 64-bit integer)
+ * @return Newly created object
+ */
 rpc_object_t rpc_uint64_create(uint64_t value);
+
+/**
+ * Returns an integer value of rpc_object_t.
+ *
+ * If rpc_object_t passed as the first argument if not of RPC_TYPE_UINT64
+ * type, the function returns 0.
+ *
+ * @param xuint Object to read the value from
+ * @return Integer value of the object
+ */
 uint64_t rpc_uint64_get_value(rpc_object_t xuint);
 rpc_object_t rpc_double_create(double value);
 double rpc_double_get_value(rpc_object_t xdouble);
