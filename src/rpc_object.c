@@ -943,7 +943,6 @@ rpc_shmem_unmap(rpc_object_t shmem, void *addr)
 		return;
 
 	munmap(addr, shmem->ro_value.rv_shmem.rsb_size);
-	close(shmem->ro_value.rv_shmem.rsb_fd);
 }
 
 inline void *
