@@ -32,6 +32,7 @@ from Cython.Distutils.extension import Extension
 from Cython.Distutils import build_ext
 
 os.environ['CC'] = 'clang'
+os.environ.setdefault('DESTDIR', '/')
 
 setup(
     name='librpc',
