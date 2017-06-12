@@ -29,7 +29,26 @@
 
 #include <rpc/service.h>
 
+/**
+ * @file discovery.h
+ *
+ * Helpers for creating auto-discoverable services.
+ */
+
+/**
+ * Installs discovery service on an RPC context.
+ *
+ * @param context RPC context to install on
+ * @return 0 on success, -1 on failure
+ */
 int rpc_discovery_register(rpc_context_t context);
+
+/**
+ * Uninstalls previously installed discovery service.
+ *
+ * @param context RPC context to uninstall discovery service from
+ * @return 0 on success, -1 on failure
+ */
 int rpc_discovery_destroy(rpc_context_t context);
 
 #endif //LIBRPC_DISCOVERY_H

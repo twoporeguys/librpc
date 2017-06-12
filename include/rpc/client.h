@@ -31,6 +31,12 @@
 #include <stdbool.h>
 #include <rpc/connection.h>
 
+/**
+ * @file client.h
+ *
+ * RPC client API.
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

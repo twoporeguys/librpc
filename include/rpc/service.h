@@ -31,6 +31,13 @@
 #include <rpc/object.h>
 #include <rpc/connection.h>
 
+/**
+ * @file service.h
+ *
+ * RPC service API.
+ */
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -51,7 +58,18 @@ struct rpc_method
 	void *			rm_arg;
 };
 
+/**
+ * Creates a new RPC context.
+ *
+ * @return Newly created RPC context object.
+ */
 rpc_context_t rpc_context_create(void);
+
+/**
+ * Disposes existing RPC context and frees all associated resources.
+ *
+ * @param context Context to dispose
+ */
 void rpc_context_free(rpc_context_t context);
 struct rpc_method *rpc_context_find_method(rpc_context_t, const char *name);
 int rpc_context_register_method(rpc_context_t context, struct rpc_method *m);
@@ -64,8 +82,30 @@ int rpc_context_unregister_method(rpc_context_t context, const char *name);
 rpc_call_t rpc_context_dispatch_call(rpc_context_t context, const char *name,
     rpc_object_t args);
 
+/**
+ * Returns the argument associated with metod.
+ *
+ * @param cookie
+ * @return
+ */
 void *rpc_function_get_arg(void *cookie);
+
+/**
+ * Sends a response to a call.
+ *
+ * @param cookie Running call identifier
+ * @param object Response
+ */
 void rpc_function_respond(void *cookie, rpc_object_t object);
+
+/**
+ * Sends an error response to a call.
+ *
+ * @param cookie
+ * @param code
+ * @param message
+ * @param ...
+ */
 void rpc_function_error(void *cookie, int code, const char *message, ...);
 void rpc_function_error_ex(void *cookie, rpc_object_t exception);
 int rpc_function_yield(void *cookie, rpc_object_t fragment);
