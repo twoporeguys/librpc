@@ -50,6 +50,9 @@ typedef struct rpc_context *rpc_context_t;
 typedef rpc_object_t (^rpc_function_t)(void *cookie, rpc_object_t args);
 typedef rpc_object_t (*rpc_function_f)(void *cookie, rpc_object_t args);
 
+/**
+ * RPC method descriptor
+ */
 struct rpc_method
 {
 	const char *		rm_name;
@@ -93,6 +96,10 @@ void *rpc_function_get_arg(void *cookie);
 /**
  * Sends a response to a call.
  *
+ * This function may be called only once during the lifetime of a single
+ * call (for a given cookie). When called, return value of a method
+ * is silently ignored (it is preferred to return NULL).
+ *
  * @param cookie Running call identifier
  * @param object Response
  */
@@ -101,15 +108,49 @@ void rpc_function_respond(void *cookie, rpc_object_t object);
 /**
  * Sends an error response to a call.
  *
- * @param cookie
- * @param code
- * @param message
- * @param ...
+ * This function may be called only once during the lifetime of a single
+ * call (for a given cookie). When called, return value of a method
+ * is silently ignored (it is preferred to return NULL).
+ *
+ * When called in a streaming function, implicitly ends streaming response.
+ *
+ * @param cookie Running call identifier
+ * @param code Error (errno) code
+ * @param message Error message format
+ * @param ... Format arguments
  */
 void rpc_function_error(void *cookie, int code, const char *message, ...);
 void rpc_function_error_ex(void *cookie, rpc_object_t exception);
+
+/**
+ * Generates a new value in a streaming response.
+ *
+ *
+ *
+ * @param cookie
+ * @param fragment
+ * @return
+ */
 int rpc_function_yield(void *cookie, rpc_object_t fragment);
+
+/**
+ * Ends a streaming response.
+ *
+ * When that function is called, sending further responses (either singular,
+ * streaming or error responses) is not allowed. Return value of a method
+ * functions is ignored.
+ *
+ * @param cookie Running call identifier
+ */
 void rpc_function_end(void *cookie);
+
+/**
+ * Returns the value of a flag saying whether or not a method should
+ * immediately stop because it was aborted on the client side.
+ *
+ * @param cookie Running call identifier
+ * @return Whether or not function should abort
+ */
 bool rpc_function_should_abort(void *cookie);
 
 #ifdef __cplusplus

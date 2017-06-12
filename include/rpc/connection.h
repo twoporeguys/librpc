@@ -137,10 +137,16 @@ int rpc_call_status(rpc_call_t call);
 /**
  * Returns a call result (or a current fragment).
  *
- * @param call
- * @return
+ * @param call Call to get result from
+ * @return Result
  */
 rpc_object_t rpc_call_result(rpc_call_t call);
+
+/**
+ * Frees a rpc_call_t object.
+ *
+ * @param call Call to free
+ */
 void rpc_call_free(rpc_call_t call);
 
 #ifdef __cplusplus
