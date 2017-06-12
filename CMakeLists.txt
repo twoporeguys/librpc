@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.2)
 project(librpc)
 
+option(BUILD_DOC "Create and install HTML API documentation")
+option(BUILD_TESTS "Build and install tests")
+option(BUILD_EXAMPLES "Build and install example programs" ON)
+option(BUILD_PYTHON "Buidl and install Python extension" ON)
+
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
 
@@ -90,41 +95,54 @@ install(DIRECTORY include/
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc
         DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pkgconfig)
 
-# Compile tests
-set(CATCH_INCLUDE_DIR src/tests)
-add_library(Catch INTERFACE)
+if(BUILD_TESTS)
+    # Compile tests
+    set(CATCH_INCLUDE_DIR src/tests)
+    add_library(Catch INTERFACE)
 
-set(TEST_SOURCES
-        tests/tests_main.cpp
-        tests/serializer/json.cpp
-        tests/api/object.cpp
-        tests/api/client.cpp
-        tests/api/connection.cpp
-        tests/api/discovery.cpp
-        tests/api/server.cpp
-        tests/api/service.cpp
-        tests/serializer/msgpack.cpp
-        tests/transport/loopback.cpp
-        tests/transport/socket.cpp
-        tests/transport/ws.cpp
-        tests/internal.cpp
-        tests/method_stress.cpp)
+    set(TEST_SOURCES
+            tests/tests_main.cpp
+            tests/serializer/json.cpp
+            tests/api/object.cpp
+            tests/api/client.cpp
+            tests/api/connection.cpp
+            tests/api/discovery.cpp
+            tests/api/server.cpp
+            tests/api/service.cpp
+            tests/serializer/msgpack.cpp
+            tests/transport/loopback.cpp
+            tests/transport/socket.cpp
+            tests/transport/ws.cpp
+            tests/internal.cpp
+            tests/method_stress.cpp)
 
-add_executable(catch_tests ${TEST_SOURCES})
-target_link_libraries(catch_tests Catch)
-target_link_libraries(catch_tests librpc)
-
-add_subdirectory(examples/client)
-add_subdirectory(examples/discovery)
-add_subdirectory(examples/event)
-add_subdirectory(examples/loopback)
-add_subdirectory(examples/pack-unpack)
-add_subdirectory(examples/server)
-add_subdirectory(examples/fd-client)
-add_subdirectory(examples/fd-server)
-if(LINUX)
-    add_subdirectory(examples/shm-client)
-    add_subdirectory(examples/shm-server)
+    add_executable(catch_tests ${TEST_SOURCES})
+    target_link_libraries(catch_tests Catch)
+    target_link_libraries(catch_tests librpc)
 endif()
 
-add_subdirectory(python)
+if(BUILD_EXAMPLES)
+    add_subdirectory(examples/client)
+    add_subdirectory(examples/discovery)
+    add_subdirectory(examples/event)
+    add_subdirectory(examples/loopback)
+    add_subdirectory(examples/pack-unpack)
+    add_subdirectory(examples/server)
+    add_subdirectory(examples/fd-client)
+    add_subdirectory(examples/fd-server)
+    if(LINUX)
+        add_subdirectory(examples/shm-client)
+        add_subdirectory(examples/shm-server)
+    endif()
+endif()
+
+if(BUILD_PYTHON)
+    add_subdirectory(python)
+endif()
+
+if(BUILD_DOC)
+    find_package(Doxygen)
+    add_custom_target(doc
+            COMMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/Doxyfile
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc)
+endif()
