@@ -34,7 +34,7 @@
 #include <rpc/service.h>
 
 int
-main(int argc, const char *argv[])
+main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)))
 {
 	rpc_context_t ctx;
 	rpc_server_t server;
@@ -45,7 +45,7 @@ main(int argc, const char *argv[])
 	ctx = rpc_context_create();
 
 	rpc_context_register_block(ctx, "hello", "", NULL,
-	    ^(void *cookie, rpc_object_t args) {
+	    ^(void *cookie __attribute__((unused)), rpc_object_t args __attribute__((unused))) {
 	    	return rpc_string_create("world");
 	});
 

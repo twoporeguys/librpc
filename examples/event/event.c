@@ -30,7 +30,7 @@
 #include <rpc/client.h>
 
 int
-main(int argc, const char *argv[])
+main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)))
 {
 	rpc_client_t client;
 	rpc_connection_t conn;
