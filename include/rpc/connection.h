@@ -32,6 +32,12 @@
 #include <sys/time.h>
 #include <rpc/object.h>
 
+/**
+ * @file connection.h
+ *
+ * RPC connection API.
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -50,12 +56,15 @@ typedef enum rpc_error_code
 	OTHER
 } error_code_t;
 
+/**
+ * Enumerates possible remote procedure call status values.
+ */
 typedef enum rpc_call_status
 {
-	RPC_CALL_IN_PROGRESS,
-	RPC_CALL_MORE_AVAILABLE,
-	RPC_CALL_DONE,
-	RPC_CALL_ERROR
+	RPC_CALL_IN_PROGRESS,		/**< Call in progress */
+	RPC_CALL_MORE_AVAILABLE,	/**< Streaming response, more data available */
+	RPC_CALL_DONE,				/**< Call finished, response received */
+	RPC_CALL_ERROR				/**< Call finished, error received */
 } rpc_call_status_t;
 
 typedef struct rpc_connection *rpc_connection_t;
@@ -63,11 +72,17 @@ typedef struct rpc_call *rpc_call_t;
 typedef void (^rpc_handler_t)(const char *name, rpc_object_t args);
 typedef bool (^rpc_callback_t)(rpc_object_t args, rpc_call_status_t status);
 
+/**
+ * Converts function pointer to a ::rpc_handler_t block type.
+ */
 #define	RPC_HANDLER(_fn, _arg) 						\
 	^(const char *_name, rpc_object_t _args) {			\
 		_fn(_arg, _name, _args);				\
 	}
 
+/**
+ * Converts function pointer to a ::rpc_callback_t block type.
+ */
 #define	RPC_CALLBACK(_fn, _arg) 					\
 	^(rpc_object_t _args, rpc_call_status_t _status) {		\
 		return ((bool)_fn(_arg, _args, _status));		\
@@ -92,12 +107,39 @@ int rpc_connection_send_event(rpc_connection_t conn, const char *name,
 void rpc_connection_set_event_handler(rpc_connection_t conn,
     rpc_handler_t handler);
 
+/**
+ * Waits for a call to change status.
+ *
+ * @param call Call to wait on
+ * @return 0 on success, -1 on failure
+ */
 int rpc_call_wait(rpc_call_t call);
+
+/**
+ * Requiests a next chunk from a call.
+ *
+ * @param call
+ * @param sync
+ * @return
+ */
 int rpc_call_continue(rpc_call_t call, bool sync);
+
+/**
+ * Aborts a pending call.
+ * @param call
+ * @return
+ */
 int rpc_call_abort(rpc_call_t call);
 int rpc_call_timedwait(rpc_call_t call, const struct timespec *ts);
 int rpc_call_success(rpc_call_t call);
 int rpc_call_status(rpc_call_t call);
+
+/**
+ * Returns a call result (or a current fragment).
+ *
+ * @param call
+ * @return
+ */
 rpc_object_t rpc_call_result(rpc_call_t call);
 void rpc_call_free(rpc_call_t call);
 

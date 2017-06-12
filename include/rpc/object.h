@@ -33,6 +33,12 @@
 #include <stdarg.h>
 #include <sys/types.h>
 
+/**
+ * @file object.h
+ *
+ * Object model (boxed types) API.
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -76,24 +82,55 @@ typedef struct rpc_error *rpc_error_t;
 typedef bool (^rpc_array_applier_t)(size_t index, rpc_object_t value);
 typedef bool (^rpc_dictionary_applier_t)(const char *key, rpc_object_t value);
 
+/**
+ * Converts function pointer to an rpc_array_applier_t block type.
+ */
 #define	RPC_ARRAY_APPLIER(_fn, _arg)					\
 	^(size_t _index, rpc_object_t _value) {				\
                 return ((bool)_fn(_arg, _index, _value));		\
         }
 
+/**
+ * Converts function pointer to an rpc_dictionary_applier_t block type.
+ */
 #define	RPC_DICTIONARY_APPLIER(_fn, _arg)				\
 	^(const char *_key, rpc_object_t _value) {			\
                 return ((bool)_fn(_arg, _key, _value));			\
         }
 
+/**
+ * Increases reference count of an object.
+ *
+ * For convenience, the function returns reference to an object passed
+ * as the first argument.
+ *
+ * @param object Object to increase reference count of.
+ * @return Same object
+ */
 rpc_object_t rpc_retain(rpc_object_t object);
+
+/**
+ *
+ * @param object
+ * @return
+ */
 int rpc_release_impl(rpc_object_t object);
+
+/**
+ *
+ * @param object
+ * @return Copied object.
+ */
 rpc_object_t rpc_copy(rpc_object_t object);
 bool rpc_equal(rpc_object_t o1, rpc_object_t o2);
 size_t rpc_hash(rpc_object_t object);
 char *rpc_copy_description(rpc_object_t object);
 rpc_type_t rpc_get_type(rpc_object_t object);
 
+/**
+ * Decreases reference count of an object and sets it to NULL if needed.
+ *
+ */
 #define	rpc_release(_object)						\
 	do {								\
 		if (rpc_release_impl(_object) == 0)			\
@@ -109,7 +146,7 @@ rpc_object_t rpc_object_pack(const char *fmt, ...);
 int rpc_object_unpack(rpc_object_t, const char *fmt, ...);
 
 /**
- * Creates an rpc_object_t holding null value
+ * Creates an object holding null value
  *
  * @return newly created object
  */
@@ -124,7 +161,7 @@ rpc_object_t rpc_null_create(void);
 rpc_object_t rpc_bool_create(bool value);
 
 /**
- * Returns a boolean value of rpc_object_t.
+ * Returns a boolean value of an object.
  *
  * If rpc_object_t passed as the first argument if not of RPC_TYPE_BOOLEAN
  * type, the function returns false.
@@ -135,7 +172,7 @@ rpc_object_t rpc_bool_create(bool value);
 bool rpc_bool_get_value(rpc_object_t xbool);
 
 /**
- * Creates an rpc_object_t holding a signed 64-bit integer value
+ * Creates an object holding a signed 64-bit integer value
  *
  * @param value Value of the object (signed 64-bit integer)
  * @return Newly created object
@@ -143,7 +180,7 @@ bool rpc_bool_get_value(rpc_object_t xbool);
 rpc_object_t rpc_int64_create(int64_t value);
 
 /**
- * Returns an integer value of rpc_object_t.
+ * Returns an integer value of an object.
  *
  * If rpc_object_t passed as the first argument if not of RPC_TYPE_INT64
  * type, the function returns -1.
@@ -154,7 +191,7 @@ rpc_object_t rpc_int64_create(int64_t value);
 int64_t rpc_int64_get_value(rpc_object_t xint);
 
 /**
- * Creates an rpc_object_t holding an unsigned 64-bit integer value
+ * Creates an RPC object holding an unsigned 64-bit integer value
  *
  * @param value Value of the object (unsigned 64-bit integer)
  * @return Newly created object
@@ -162,7 +199,7 @@ int64_t rpc_int64_get_value(rpc_object_t xint);
 rpc_object_t rpc_uint64_create(uint64_t value);
 
 /**
- * Returns an integer value of rpc_object_t.
+ * Returns an integer value of an object.
  *
  * If rpc_object_t passed as the first argument if not of RPC_TYPE_UINT64
  * type, the function returns 0.
@@ -192,7 +229,21 @@ rpc_object_t rpc_fd_create(int fd);
 int rpc_fd_dup(rpc_object_t xfd);
 int rpc_fd_get_value(rpc_object_t xfd);
 
+/**
+ * Creates a new, empty array of objects.
+ *
+ * @return Empty array.
+ */
 rpc_object_t rpc_array_create(void);
+
+/**
+ * Creates a new array of objects, optinally populating it with data.
+ *
+ * @param objects Array of objects to insert
+ * @param count Number of iterms in @ref objects
+ * @param steal
+ * @return
+ */
 rpc_object_t rpc_array_create_ex(const rpc_object_t *objects, size_t count,
     bool steal);
 void rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value);

@@ -32,6 +32,12 @@
 #include <rpc/service.h>
 #include <rpc/connection.h>
 
+/**
+ * @file server.h
+ *
+ * RPC server API.
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
