@@ -70,7 +70,7 @@ struct ws_server
 };
 
 static int
-ws_connect(struct rpc_connection *rco, const char *uri_string, rpc_object_t args)
+ws_connect(struct rpc_connection *rco, const char *uri_string, rpc_object_t args __attribute__((unused)))
 {
 	GError *err = NULL;
 	SoupURI *uri;

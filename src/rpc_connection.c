@@ -334,7 +334,7 @@ on_rpc_continue(rpc_connection_t conn, rpc_object_t args __unused,
 }
 
 static void
-on_rpc_end(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
+on_rpc_end(rpc_connection_t conn, rpc_object_t args __attribute__((unused)), rpc_object_t id)
 {
 	rpc_call_t call;
 
@@ -352,7 +352,7 @@ on_rpc_end(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 }
 
 static void
-on_rpc_abort(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
+on_rpc_abort(rpc_connection_t conn, rpc_object_t args __attribute__((unused)), rpc_object_t id)
 {
 	struct rpc_inbound_call *call;
 
@@ -387,7 +387,7 @@ on_rpc_error(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 }
 
 static void
-on_events_event(rpc_connection_t conn, rpc_object_t args,
+on_events_event(rpc_connection_t conn, rpc_object_t args __attribute__((unused)),
     rpc_object_t id __unused)
 {
 	struct work_item *item;
@@ -462,7 +462,7 @@ on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args,
 
 static int
 rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
-    int *fds, size_t nfds, struct rpc_credentials *creds)
+    int *fds, size_t nfds, struct rpc_credentials *creds __attribute__((unused)))
 {
 	rpc_object_t msg = (rpc_object_t)frame;
 
@@ -485,7 +485,7 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 }
 
 static int
-rpc_close(struct rpc_connection *conn)
+rpc_close(struct rpc_connection *conn __attribute__((unused)))
 {
 
 	return (0);
@@ -596,8 +596,8 @@ rpc_call_timeout(gpointer user_data)
 }
 
 void
-rpc_connection_send_errx(rpc_connection_t conn, rpc_object_t id,
-    rpc_object_t err)
+rpc_connection_send_errx(rpc_connection_t conn __attribute__((unused)), rpc_object_t id __attribute__((unused)),
+    rpc_object_t err __attribute__((unused)))
 {
 
 }
@@ -683,7 +683,7 @@ rpc_connection_alloc(rpc_server_t server)
 }
 
 rpc_connection_t
-rpc_connection_create(const char *uri, int flags)
+rpc_connection_create(const char *uri, int flags __attribute__((unused)))
 {
 	GError *err = NULL;
 	const struct rpc_transport *transport;
@@ -1033,7 +1033,7 @@ rpc_call_abort(rpc_call_t call)
 }
 
 inline int
-rpc_call_timedwait(rpc_call_t call, const struct timespec *ts)
+rpc_call_timedwait(rpc_call_t call __attribute__((unused)), const struct timespec *ts __attribute__((unused)))
 {
 
 }
