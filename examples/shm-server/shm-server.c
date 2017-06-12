@@ -41,10 +41,12 @@ exchange_blob(void *cookie, rpc_object_t args)
 	rpc_object_t shmem;
 	void *addr;
 
-	if (rpc_object_unpack(args, "[h]", shmem) != 0) {
-		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
-		return (NULL);
-	}
+//	if (rpc_object_unpack(args, "[h]", shmem) != 0) {
+//		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
+//		return (NULL);
+//	}
+
+	shmem = rpc_array_get_value(args, 0);
 
 	printf("Received %zu bytes long shared memory block\n",
 	    rpc_shmem_get_size(shmem));

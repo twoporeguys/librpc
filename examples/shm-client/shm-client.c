@@ -61,18 +61,16 @@ main(int argc, const char *argv[])
 
 	memset(addr, 'A', rpc_shmem_get_size(shmem));
 
-	printf("memory before :%.*s", 16, addr);
+	printf("memory before :%.*s\n", 16, addr);
 
 	result = rpc_connection_call_sync(conn, "exchange_blob",
 	    shmem, NULL);
 
 	printf("result = %s\n", rpc_copy_description(result));
 
-	printf("memory after :%.*s", 16, addr);
+	printf("memory after :%.*s\n", 16, addr);
 
 	rpc_shmem_unmap(shmem, addr);
-	rpc_release(shmem);
-	rpc_release(result);
 	rpc_client_close(client);
 	return (0);
 }
