@@ -45,8 +45,34 @@ struct rpc_client;
 
 typedef struct rpc_client *rpc_client_t;
 
+/**
+ * Creates a new, connected RPC client.
+ *
+ * URI parameter can take multiple forms:
+ * - unix://<path> connects to an Unix domain socket
+ * - tcp://<ip-address>:<port> connects using a TCP socket
+ * - ws://<ip-address>:<port>/<path> connects using a WebSocket
+ * - loopback://<id> connects using a local transport
+ *
+ * @param uri Endpoint URI
+ * @param flags Currently unused
+ * @return Connect RPC client object
+ */
 rpc_client_t rpc_client_create(const char *uri, int flags);
+
+/**
+ * Gets the connection object from a client.
+ *
+ * @param client Client object to get the connection from
+ * @return Connection object
+ */
 rpc_connection_t rpc_client_get_connection(rpc_client_t client);
+
+/**
+ * Closes the connection and frees associated resources.
+ *
+ * @param client Client object
+ */
 void rpc_client_close(rpc_client_t client);
 
 #ifdef __cplusplus
