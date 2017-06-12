@@ -730,8 +730,8 @@ SCENARIO("RPC_FD_OBJECT", "Create a FD RPC object and perform basic operations o
 				REQUIRE(rpc_equal(object, copy));
 			}
 
-			AND_THEN("Object is different from object initialized with different value") {
-				REQUIRE(!rpc_equal(object, different_object));
+			AND_THEN("Both sides of a pipe are referencing the same file") {
+				REQUIRE(rpc_equal(object, different_object));
 			}
 		}
 
