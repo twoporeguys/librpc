@@ -1,10 +1,14 @@
 cmake_minimum_required(VERSION 3.2)
 project(librpc)
 
+if(UNIX AND NOT APPLE)
+    set(LINUX TRUE)
+endif()
+
 option(BUILD_DOC "Create and install HTML API documentation")
 option(BUILD_TESTS "Build and install tests")
 option(BUILD_EXAMPLES "Build and install example programs" ON)
-option(BUILD_PYTHON "Buidl and install Python extension" ON)
+option(BUILD_PYTHON "Build and install Python extension" ON)
 
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)

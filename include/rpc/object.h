@@ -44,9 +44,6 @@ extern "C" {
 #endif
 
 struct rpc_object;
-#if defined(__linux__)
-struct rpc_shmem_block;
-#endif
 
 struct rpc_error
 {
@@ -67,17 +64,14 @@ typedef enum {
 	RPC_TYPE_STRING,		/**< string type */
 	RPC_TYPE_BINARY,		/**< binary data type */
 	RPC_TYPE_FD,			/**< file descriptor type */
-	RPC_TYPE_DICTIONARY,	/**< dictionary type */
+	RPC_TYPE_DICTIONARY,		/**< dictionary type */
 #if defined(__linux__)
-    	RPC_TYPE_SHMEM,		/**< shared memory type */
+    	RPC_TYPE_SHMEM,			/**< shared memory type */
 #endif
 	RPC_TYPE_ARRAY			/**< array type */
 } rpc_type_t;
 
 typedef struct rpc_object *rpc_object_t;
-#if defined(__linux__)
-typedef struct rpc_shmem_block *rpc_shmem_block_t;
-#endif
 typedef struct rpc_error *rpc_error_t;
 typedef bool (^rpc_array_applier_t)(size_t index, rpc_object_t value);
 typedef bool (^rpc_dictionary_applier_t)(const char *key, rpc_object_t value);
@@ -276,13 +270,11 @@ int rpc_array_get_fd(rpc_object_t array, size_t index);
 int rpc_array_dup_fd(rpc_object_t array, size_t index);
 
 #if defined(__linux__)
-rpc_shmem_block_t rpc_shmem_alloc(size_t size);
-void rpc_shmem_free(rpc_shmem_block_t block);
-void *rpc_shmem_block_get_ptr(rpc_shmem_block_t block);
-size_t rpc_shmem_block_get_size(rpc_shmem_block_t block);
-
-rpc_object_t rpc_shmem_create(rpc_shmem_block_t block);
-rpc_shmem_block_t rpc_shmem_get_block(rpc_object_t obj);
+rpc_object_t rpc_shmem_create(size_t size);
+void *rpc_shmem_map(rpc_object_t shmem);
+void rpc_shmem_unmap(rpc_object_t shmem, void *addr);
+void rpc_shmem_free(rpc_object_t shmem, void *addr);
+size_t rpc_shmem_get_size(rpc_object_t shmem);
 #endif
 
 rpc_object_t rpc_dictionary_create(void);

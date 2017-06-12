@@ -38,18 +38,23 @@
 static rpc_object_t
 exchange_blob(void *cookie, rpc_object_t args)
 {
-	rpc_shmem_block_t block;
+	rpc_object_t shmem;
+	void *addr;
 
-	if (rpc_object_unpack(args, "[h]", &block) != 0) {
+	if (rpc_object_unpack(args, "[h]", shmem) != 0) {
 		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
 		return (NULL);
 	}
 
 	printf("Received %zu bytes long shared memory block\n",
-	    rpc_shmem_block_get_size(block));
+	    rpc_shmem_get_size(shmem));
 
-	memset(block->rsb_addr, 'B', block->rsb_size);
-	return (rpc_shmem_create(block));
+	addr = rpc_shmem_map(shmem);
+
+	memset(addr, 'B', rpc_shmem_get_size(shmem));
+
+	rpc_shmem_unmap(shmem, addr);
+	return (shmem);
 }
 
 int

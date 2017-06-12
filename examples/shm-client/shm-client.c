@@ -41,7 +41,8 @@ main(int argc, const char *argv[])
 	rpc_client_t client;
 	rpc_connection_t conn;
 	rpc_object_t result;
-	rpc_shmem_block_t b1, b2;
+	rpc_object_t shmem;
+	void *addr;
 
 	if (argc < 2) {
 		fprintf(stderr, "Usage: shm-client <server socket URI>\n");
@@ -55,15 +56,23 @@ main(int argc, const char *argv[])
 	}
 
 	conn = rpc_client_get_connection(client);
-	b1 = rpc_shmem_alloc(BLOCK_SIZE);
-	memset(rpc_shmem_block_get_ptr(b1), 'A', rpc_shmem_block_get_size(b1));
+	shmem = rpc_shmem_create(BLOCK_SIZE);
+	addr = rpc_shmem_map(shmem);
+
+	memset(addr, 'A', rpc_shmem_get_size(shmem));
+
+	printf("memory before :%.*s", 16, addr);
 
 	result = rpc_connection_call_sync(conn, "exchange_blob",
-	    rpc_shmem_create(b1), NULL);
+	    shmem, NULL);
 
 	printf("result = %s\n", rpc_copy_description(result));
-	b2 = rpc_shmem_get_block(result);
 
+	printf("memory after :%.*s", 16, addr);
+
+	rpc_shmem_unmap(shmem, addr);
+	rpc_release(shmem);
+	rpc_release(result);
 	rpc_client_close(client);
 	return (0);
 }

@@ -36,7 +36,6 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 {
 #if defined(__linux__)
 	struct rpc_msgpack_shmem_desc desc;
-	struct rpc_shmem_block *block;
 #endif
 	int64_t timestamp;
 
@@ -84,10 +83,9 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 
 #if defined(__linux__)
 	case RPC_TYPE_SHMEM:
-		block = rpc_shmem_get_block(object);
-		desc.addr = (uintptr_t)block->rsb_offset;
-		desc.len = block->rsb_size;
-		desc.fd = block->rsb_fd;
+		desc.addr = (uintptr_t)rpc_shmem_get_offset(object);
+		desc.len = rpc_shmem_get_size(object);
+		desc.fd = rpc_shmem_get_fd(object);
 		mpack_write_ext(writer, MSGPACK_EXTTYPE_SHMEM,
 		    (const char *)&desc, sizeof(desc));
 		break;
@@ -121,7 +119,6 @@ rpc_msgpack_read_object(mpack_node_t node)
 {
 #if defined(__linux__)
 	struct rpc_msgpack_shmem_desc *desc;
-	struct rpc_shmem_block *block;
 #endif
 	int *fd;
 	int64_t *date;
@@ -187,11 +184,8 @@ rpc_msgpack_read_object(mpack_node_t node)
 			desc = (struct rpc_msgpack_shmem_desc *)
 			    mpack_node_data(node);
 
-			block = g_malloc(sizeof(*block));
-			block->rsb_fd = desc->fd;
-			block->rsb_offset = (off_t)desc->addr;
-			block->rsb_size = desc->len;
-			return (rpc_shmem_create(block));
+			return (rpc_shmem_recreate(desc->fd, (off_t)desc->addr,
+			    desc->len));
 #endif
 
 		default:

@@ -38,6 +38,7 @@
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <rpc/object.h>
+#include <sys/stat.h>
 #include "serializer/json.h"
 #include "internal.h"
 #if defined(__linux__)
@@ -286,7 +287,7 @@ rpc_release_impl(rpc_object_t object)
 			break;
 #if defined(__linux__)
 		case RPC_TYPE_SHMEM:
-			rpc_shmem_free(object->ro_value.rv_shmem);
+			close(object->ro_value.rv_shmem.rsb_fd);
 #endif
 		default:
 			break;
@@ -312,9 +313,6 @@ inline rpc_object_t
 rpc_copy(rpc_object_t object)
 {
 	rpc_object_t tmp;
-#if defined(__linux__)
-	rpc_shmem_block_t block;
-#endif
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
@@ -347,11 +345,10 @@ rpc_copy(rpc_object_t object)
 
 #if defined(__linux__)
 	case RPC_TYPE_SHMEM:
-		block = g_malloc(sizeof(*block));
-		block->rsb_fd = dup(object->ro_value.rv_shmem->rsb_fd);
-		block->rsb_offset = object->ro_value.rv_shmem->rsb_offset;
-		block->rsb_size = object->ro_value.rv_shmem->rsb_size;
-		return (rpc_shmem_create(block));
+		return (rpc_shmem_recreate(
+		    dup(object->ro_value.rv_shmem.rsb_fd),
+		    object->ro_value.rv_shmem.rsb_offset,
+		    object->ro_value.rv_shmem.rsb_size));
 #endif
 
 	case RPC_TYPE_DICTIONARY:
@@ -385,6 +382,7 @@ inline size_t
 rpc_hash(rpc_object_t object)
 {
 	__block size_t hash = 0;
+	struct stat fdstat;
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
@@ -403,7 +401,8 @@ rpc_hash(rpc_object_t object)
 		return ((size_t)object->ro_value.rv_d);
 
 	case RPC_TYPE_FD:
-		return ((size_t)object->ro_value.rv_fd);
+		fstat(object->ro_value.rv_fd, &fdstat);
+		return (fdstat.st_dev ^ fdstat.st_ino);
 
 	case RPC_TYPE_DATE:
 		return ((size_t)rpc_date_get_value(object));
@@ -417,7 +416,8 @@ rpc_hash(rpc_object_t object)
 
 #if defined(__linux__)
 	case RPC_TYPE_SHMEM:
-		return ((size_t)object->ro_value.rv_shmem->rsb_fd);
+		fstat(object->ro_value.rv_shmem.rsb_fd, &fdstat);
+		return (fdstat.st_dev ^ fdstat.st_ino);
 #endif
 
 	case RPC_TYPE_DICTIONARY:
@@ -510,7 +510,7 @@ rpc_object_pack(const char *fmt, ...)
 
 #if defined(__linux__)
 		case 'h':
-			current = rpc_shmem_create(va_arg(ap, rpc_shmem_block_t));
+			current = va_arg(ap, rpc_object_t);
 			break;
 #endif
 
@@ -608,8 +608,7 @@ rpc_object_unpack(rpc_object_t obj, const char *fmt, ...)
 
 #if defined(__linux__)
 		case 'h':
-			*va_arg(ap, rpc_shmem_block_t *) = rpc_shmem_get_block(
-			    current);
+			*va_arg(ap, rpc_object_t *) = current;
 			break;
 #endif
 
@@ -902,83 +901,83 @@ rpc_fd_dup(rpc_object_t xfd)
 }
 
 #if defined(__linux__)
-rpc_object_t
-rpc_shmem_create(rpc_shmem_block_t block)
+inline rpc_object_t
+rpc_shmem_create(size_t size)
 {
 	union rpc_value val;
-
-	val.rv_shmem = block;
-	return (rpc_prim_create(RPC_TYPE_SHMEM, val));
-}
-
-rpc_shmem_block_t
-rpc_shmem_alloc(size_t size)
-{
-	rpc_shmem_block_t block;
 
 	if (size == 0)
 		return (NULL);
 
-	block = g_malloc(sizeof(*block));
-	block->rsb_addr = NULL;
-	block->rsb_size = size;
-	block->rsb_offset = 0;
-	block->rsb_fd = memfd_create("librpc", 0);
+	val.rv_shmem.rsb_size = size;
+	val.rv_shmem.rsb_offset = 0;
+	val.rv_shmem.rsb_fd = memfd_create("librpc", 0);
 
-	if (ftruncate(block->rsb_fd, (off_t)size) != 0) {
-		close(block->rsb_fd);
-		g_free(block);
+	if (ftruncate(val.rv_shmem.rsb_fd, (off_t)size) != 0) {
+		close(val.rv_shmem.rsb_fd);
 		return (NULL);
 	}
 
-	block->rsb_addr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED,
-			       block->rsb_fd, 0);
-
-	return (block);
+	return (rpc_prim_create(RPC_TYPE_SHMEM, val));
 }
 
-void
-rpc_shmem_free(rpc_shmem_block_t block)
+inline rpc_object_t
+rpc_shmem_recreate(int fd, off_t offset, size_t size)
+{
+	union rpc_value val;
+	val.rv_shmem.rsb_fd = fd;
+	val.rv_shmem.rsb_offset = offset;
+	val.rv_shmem.rsb_size = size;
+
+	return (rpc_prim_create(RPC_TYPE_SHMEM, val));
+}
+
+inline void
+rpc_shmem_unmap(rpc_object_t shmem, void *addr)
 {
 
-	if (block == NULL)
+	if (addr == NULL)
 		return;
 
-	munmap(block->rsb_addr, block->rsb_size);
-	close(block->rsb_fd);
-	g_free(block);
+	if (shmem == NULL)
+		return;
+
+	munmap(addr, shmem->ro_value.rv_shmem.rsb_size);
+	close(shmem->ro_value.rv_shmem.rsb_fd);
 }
 
-void *
-rpc_shmem_map(rpc_shmem_block_t block)
+inline void *
+rpc_shmem_map(rpc_object_t shmem)
 {
 
-	return (mmap(NULL, block->rsb_size, PROT_READ | PROT_WRITE, MAP_SHARED,
-		     block->rsb_fd, block->rsb_offset));
+	return (mmap(NULL, shmem->ro_value.rv_shmem.rsb_size,
+	    PROT_READ | PROT_WRITE, MAP_SHARED, shmem->ro_value.rv_shmem.rsb_fd,
+	    shmem->ro_value.rv_shmem.rsb_offset));
 }
 
-void *
-rpc_shmem_block_get_ptr(rpc_shmem_block_t block)
+inline size_t
+rpc_shmem_get_size(rpc_object_t shmem)
 {
 
-	return (block->rsb_addr);
+	return (shmem->ro_value.rv_shmem.rsb_size);
 }
 
-size_t
-rpc_shmem_block_get_size(rpc_shmem_block_t block)
+int
+rpc_shmem_get_fd(rpc_object_t shmem)
 {
 
-	return (block->rsb_size);
+	if (shmem == NULL)
+		return (0);
+
+	return (shmem->ro_value.rv_shmem.rsb_fd);
 }
-
-rpc_shmem_block_t
-rpc_shmem_get_block(rpc_object_t obj)
+off_t rpc_shmem_get_offset(rpc_object_t shmem)
 {
 
-	if (rpc_get_type(obj) != RPC_TYPE_SHMEM)
-		return (NULL);
+	if (shmem == NULL)
+		return (0);
 
-	return (obj->ro_value.rv_shmem);
+	return (shmem->ro_value.rv_shmem.rsb_offset);
 }
 #endif
 

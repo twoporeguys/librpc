@@ -117,9 +117,9 @@ rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 	const char *base64_data;
 	GHashTableIter iter;
 	gpointer key, value;
-#if defined(__linux__)
-	rpc_shmem_block_t block;
-#endif
+	int shmem_fd;
+	off_t shmem_addr;
+	size_t shmem_size;
 
 	if (rpc_dictionary_has_key(leaf, JSON_EXTTYPE_UINT64)) {
 		dict_value = rpc_dictionary_get_value(leaf,
@@ -151,15 +151,15 @@ rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 		dict_value = rpc_dictionary_get_value(leaf,
 		    JSON_EXTTYPE_SHMEM);
 
-		block = g_malloc(sizeof(*block));
-		block->rsb_fd = (int)rpc_dictionary_get_int64(dict_value,
+		shmem_fd = (int)rpc_dictionary_get_int64(dict_value,
 		    JSON_EXTTYPE_SHMEM_FD);
-		block->rsb_offset = rpc_dictionary_get_int64(dict_value,
+		shmem_addr = rpc_dictionary_get_int64(dict_value,
 		    JSON_EXTTYPE_SHMEM_ADDR);
-		block->rsb_size = (size_t)rpc_dictionary_get_int64(dict_value,
+		shmem_size = (size_t)rpc_dictionary_get_int64(dict_value,
 		    JSON_EXTTYPE_SHMEM_LEN);
 
-		unpacked_value = rpc_shmem_create(block);
+		unpacked_value = rpc_shmem_recreate(shmem_fd, shmem_addr,
+		    shmem_size);
 
 #endif
 	} else
@@ -321,9 +321,6 @@ rpc_json_write_object_ext(yajl_gen gen, rpc_object_t object,
 	yajl_gen_status status;
 	const void *data_buf;
 	char *base64_data;
-#if defined(__linux__)
-	rpc_shmem_block_t block;
-#endif
 
 	if ((status = yajl_gen_map_open(gen)) != yajl_gen_status_ok)
 		return (status);
@@ -360,20 +357,21 @@ rpc_json_write_object_ext(yajl_gen gen, rpc_object_t object,
 		if ((status = yajl_gen_map_open(gen)) != yajl_gen_status_ok)
 			return (status);
 
-		block = rpc_shmem_get_block(object);
-
 		status = rpc_json_shmem_write_key(gen,
-		    (const uint8_t *)JSON_EXTTYPE_SHMEM_ADDR, block->rsb_offset);
+		    (const uint8_t *)JSON_EXTTYPE_SHMEM_ADDR,
+		    rpc_shmem_get_offset(object));
 		if (status != yajl_gen_status_ok)
 			return (status);
 
 		status = rpc_json_shmem_write_key(gen,
-		    (const uint8_t *)JSON_EXTTYPE_SHMEM_LEN, block->rsb_size);
+		    (const uint8_t *)JSON_EXTTYPE_SHMEM_LEN,
+		    rpc_shmem_get_size(object));
 		if (status != yajl_gen_status_ok)
 			return (status);
 
 		status = rpc_json_shmem_write_key(gen,
-		    (const uint8_t *)JSON_EXTTYPE_SHMEM_FD, block->rsb_fd);
+		    (const uint8_t *)JSON_EXTTYPE_SHMEM_FD,
+		    rpc_shmem_get_fd(object));
 		if (status != yajl_gen_status_ok)
 			return (status);
 

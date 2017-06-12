@@ -101,8 +101,8 @@ rpc_serialize_fds(rpc_object_t obj, int *fds, size_t *nfds, size_t idx)
 
 #if defined(__linux__)
 	case RPC_TYPE_SHMEM:
-		fds[counter] = obj->ro_value.rv_shmem->rsb_fd;
-		obj->ro_value.rv_shmem->rsb_fd = (int)counter;
+		fds[counter] = obj->ro_value.rv_shmem.rsb_fd;
+		obj->ro_value.rv_shmem.rsb_fd = (int)counter;
 		counter++;
 		break;
 #endif
@@ -140,10 +140,8 @@ rpc_restore_fds(rpc_object_t obj, int *fds, size_t nfds)
 
 #if defined(__linux__)
 		case RPC_TYPE_SHMEM:
-			obj->ro_value.rv_shmem->rsb_fd =
-			    fds[obj->ro_value.rv_shmem->rsb_fd];
-			obj->ro_value.rv_shmem->rsb_addr =
-			    rpc_shmem_map(obj->ro_value.rv_shmem);
+			obj->ro_value.rv_shmem.rsb_fd =
+			    fds[obj->ro_value.rv_shmem.rsb_fd];
 			break;
 #endif
 

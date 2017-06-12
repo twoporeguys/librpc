@@ -81,6 +81,15 @@ struct rpc_binary_value
 	size_t 			length;
 	bool 			copy;
 };
+#if defined(__linux__)
+
+struct rpc_shmem_block
+{
+    	int			rsb_fd;
+    	off_t 			rsb_offset;
+    	size_t 			rsb_size;
+};
+#endif
 
 union rpc_value
 {
@@ -94,7 +103,7 @@ union rpc_value
 	double			rv_d;
 	struct rpc_binary_value rv_bin;
 #if defined(__linux__)
-    	struct rpc_shmem_block *rv_shmem;
+    	struct rpc_shmem_block  rv_shmem;
 #endif
 	int 			rv_fd;
 };
@@ -217,7 +226,7 @@ struct rpc_client
     	GThread *		rci_thread;
     	rpc_connection_t 	rci_connection;
     	const char *		rci_uri;
-    	int 				rci_flags;
+    	int 			rci_flags;
 };
 
 struct rpc_context
@@ -225,16 +234,6 @@ struct rpc_context
     	GHashTable *		rcx_methods;
     	GThreadPool *		rcx_threadpool;
 };
-
-#if defined(__linux__)
-struct rpc_shmem_block
-{
-    	int			rsb_fd;
-    	off_t 			rsb_offset;
-    	void *			rsb_addr;
-    	size_t 			rsb_size;
-};
-#endif
 
 struct rpc_transport
 {
@@ -254,7 +253,9 @@ struct rpc_serializer
 
 rpc_object_t rpc_prim_create(rpc_type_t type, union rpc_value val);
 #if defined(__linux__)
-void *rpc_shmem_map(struct rpc_shmem_block *block);
+rpc_object_t rpc_shmem_recreate(int fd, off_t offset, size_t size);
+int rpc_shmem_get_fd(rpc_object_t shmem);
+off_t rpc_shmem_get_offset(rpc_object_t shmem);
 #endif
 void rpc_trace(const char *msg, rpc_object_t frame);
 
