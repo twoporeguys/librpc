@@ -48,21 +48,24 @@ struct rpc_error
 	char * 		message;
 };
 
+/**
+ * Enumerates the possible types of an rpc_object_t.
+ */
 typedef enum {
-	RPC_TYPE_NULL,
-	RPC_TYPE_BOOL,
-	RPC_TYPE_UINT64,
-	RPC_TYPE_INT64,
-	RPC_TYPE_DOUBLE,
-	RPC_TYPE_DATE,
-	RPC_TYPE_STRING,
-	RPC_TYPE_BINARY,
-	RPC_TYPE_FD,
-	RPC_TYPE_DICTIONARY,
+	RPC_TYPE_NULL,			/**< null type */
+	RPC_TYPE_BOOL,			/**< boolean type */
+	RPC_TYPE_UINT64,		/**< unsigned 64-bit integer type */
+	RPC_TYPE_INT64,			/**< signed 64-bit integer type */
+	RPC_TYPE_DOUBLE,		/**< double precision floating-point type */
+	RPC_TYPE_DATE,			/**< date type (represented as 64-bit timestamp */
+	RPC_TYPE_STRING,		/**< string type */
+	RPC_TYPE_BINARY,		/**< binary data type */
+	RPC_TYPE_FD,			/**< file descriptor type */
+	RPC_TYPE_DICTIONARY,	/**< dictionary type */
 #if defined(__linux__)
-    	RPC_TYPE_SHMEM,
+    	RPC_TYPE_SHMEM,		/**< shared memory type */
 #endif
-	RPC_TYPE_ARRAY
+	RPC_TYPE_ARRAY			/**< array type */
 } rpc_type_t;
 
 typedef struct rpc_object *rpc_object_t;
