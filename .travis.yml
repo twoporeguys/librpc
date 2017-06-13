@@ -20,6 +20,12 @@ addons:
       - doxygen-latex
       - doxygen-gui
       - graphviz
+      - cmake
+      - clang
+      - libglib2.0-dev
+      - libsoup-gnome2.4-dev
+      - libyajl-dev
+      - libblocksruntime-dev
 
 # Build your code e.g. by calling make
 script:
