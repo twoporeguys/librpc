@@ -89,4 +89,29 @@ rpc_trace(const char *msg, rpc_object_t frame)
 	fprintf(stream, "%s: %s\n", msg, descr);
 	g_free(descr);
 }
-#endif
+
+char *
+rpc_get_backtrace(void)
+{
+	GString *result;
+	int count, i;
+	void *buffer[128];
+	char **names;
+	char *name;
+
+	count = backtrace(buffer, 128);
+	if (count == 0)
+		return (NULL);
+
+	names = backtrace_symbols(buffer, count);
+	if (names == NULL)
+		return (NULL);
+
+	result = g_string_new("Traceback (most recent call first):\n");
+
+	for (i = 1; i < count; i++)
+		g_string_append_printf(result, "%s\n", names[i]);
+
+	free(names);
+	return (g_string_free(result, false));
+}

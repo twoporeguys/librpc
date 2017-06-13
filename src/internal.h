@@ -252,12 +252,15 @@ struct rpc_serializer
 };
 
 rpc_object_t rpc_prim_create(rpc_type_t type, union rpc_value val);
+
 #if defined(__linux__)
 rpc_object_t rpc_shmem_recreate(int fd, off_t offset, size_t size);
 int rpc_shmem_get_fd(rpc_object_t shmem);
 off_t rpc_shmem_get_offset(rpc_object_t shmem);
 #endif
+
 void rpc_trace(const char *msg, rpc_object_t frame);
+char *rpc_get_backtrace(void);
 
 const struct rpc_transport *rpc_find_transport(const char *scheme);
 const struct rpc_serializer *rpc_find_serializer(const char *name);
