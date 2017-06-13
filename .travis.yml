@@ -30,11 +30,5 @@ addons:
 
 # Build your code e.g. by calling make
 script:
-  - mkdir build
-  - cd build && CC=clang CXX=clang++ cmake ..
-  - cd build && make
-
-# Generate and deploy documentation
-after_success:
   - cd $TRAVIS_BUILD_DIR
   - sh tools/deploy-docs.sh
