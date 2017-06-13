@@ -116,7 +116,6 @@ rpc_get_backtrace(void)
 	int count, i;
 	void *buffer[128];
 	char **names;
-	char *name;
 
 	count = backtrace(buffer, 128);
 	if (count == 0)
