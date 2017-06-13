@@ -10,7 +10,7 @@ doxygen ${DOXYFILE}
 if [ -d "html" ] && [ -f "html/index.html" ]; then
 	git add --all
 	git commit -m "Deploy code docs to GitHub Pages (build ${TRAVIS_BUILD_NUMBER})" -m "Commit: ${TRAVIS_COMMIT}"
-	git push --force git@github.com:twoporeguys/librpc.git > /dev/null 2>&1
+	git push --force https://${GH_REPO_TOKEN}@github.com/twoporeguys/librpc.git > /dev/null 2>&1
 else
 	echo '' >&2
 	echo 'Warning: No documentation (html) files have been found!' >&2
