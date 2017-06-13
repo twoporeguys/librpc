@@ -47,6 +47,7 @@ cdef extern from "rpc/object.h" nogil:
         RPC_TYPE_STRING
         RPC_TYPE_BINARY
         RPC_TYPE_FD
+        RPC_TYPE_ERROR
         RPC_TYPE_DICTIONARY
         RPC_TYPE_ARRAY
 
@@ -87,6 +88,14 @@ cdef extern from "rpc/object.h" nogil:
     rpc_object_t rpc_fd_create(int fd)
     int rpc_fd_dup(rpc_object_t xfd)
     int rpc_fd_get_value(rpc_object_t xfd)
+
+    rpc_object_t rpc_error_create(int code, const char *msg, rpc_object_t extra)
+    rpc_object_t rpc_error_create_with_stack(int code, const char *msg, rpc_object_t extra, rpc_object_t stack)
+    int rpc_error_get_code(rpc_object_t error)
+    const char *rpc_error_get_message(rpc_object_t error)
+    rpc_object_t rpc_error_get_extra(rpc_object_t error)
+    void rpc_error_set_extra(rpc_object_t error, rpc_object_t extra)
+    rpc_object_t rpc_error_get_stack(rpc_object_t error)
 
     bint rpc_equal(rpc_object_t o1, rpc_object_t o2)
     char *rpc_copy_description(rpc_object_t object)

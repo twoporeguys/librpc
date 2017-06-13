@@ -28,6 +28,7 @@ import argparse
 import librpc
 import signal
 import time
+import errno
 
 
 def hello(string):
@@ -47,6 +48,9 @@ def streamer():
         time.sleep(0.1)
         yield {'index': i}
 
+def error():
+    raise librpc.RpcException(errno.EPERM, 'Not allowed here')
+
 
 def slacker():
     time.sleep(30)
@@ -64,6 +68,7 @@ def main():
     context.register_method('add', 'Adds two numbers', adder)
     context.register_method('sub', 'Subtracts two numbers', subtracter)
     context.register_method('stream', 'Streams some numbers', streamer)
+    context.register_method('error', 'Raises an exception', error)
     context.register_method('delay', 'Waits for long time, then returns a string', slacker)
 
     def sigint(signo, frame):

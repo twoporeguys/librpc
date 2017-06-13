@@ -49,6 +49,7 @@ class ObjectType(enum.IntEnum):
     STRING = RPC_TYPE_STRING
     BINARY = RPC_TYPE_BINARY
     FD = RPC_TYPE_FD
+    ERROR = RPC_TYPE_ERROR
     DICTIONARY = RPC_TYPE_DICTIONARY
     ARRAY = RPC_TYPE_ARRAY
 
@@ -144,6 +145,12 @@ cdef class Object(object):
             self.obj = rpc_data_create(<void *>value, <size_t>len(value), True)
             return
 
+        if isinstance(value, RpcException):
+            extra = Object(value.extra)
+            stack = Object(value.stacktrace)
+            self.obj = rpc_error_create_with_stack(value.code, value.message, extra.obj, stack.obj)
+            return
+
         if isinstance(value, list) or force_type == ObjectType.ARRAY:
             self.obj = rpc_array_create()
 
@@ -222,6 +229,9 @@ cdef class Object(object):
                 c_len = rpc_data_get_length(self.obj)
 
                 return <bytes>c_bytes[:c_len]
+
+            if self.type == ObjectType.ERROR:
+                pass
 
             if self.type == ObjectType.ARRAY:
                 array = Array.__new__(Array)
@@ -621,19 +631,27 @@ cdef class Context(object):
         args_array = Array.__new__(Array)
         args_array.obj = args
 
-        output = cb(*[a for a in args_array])
-        if isinstance(output, types.GeneratorType):
-            for chunk in output:
-                rpc_obj = Object(chunk)
-                rpc_retain(rpc_obj.obj)
+        try:
+            output = cb(*[a for a in args_array])
+            if isinstance(output, types.GeneratorType):
+                for chunk in output:
+                    rpc_obj = Object(chunk)
+                    rpc_retain(rpc_obj.obj)
 
-                with nogil:
-                    ret = rpc_function_yield(cookie, rpc_obj.obj)
+                    with nogil:
+                        ret = rpc_function_yield(cookie, rpc_obj.obj)
 
-                if ret:
-                    break
+                    if ret:
+                        break
 
-            return rpc_null_create()
+                return <rpc_object_t>NULL
+        except Exception as e:
+            if not isinstance(e, RpcException):
+                e = RpcException(errno.EFAULT, str(e))
+
+            rpc_obj = Object(e)
+            rpc_function_error_ex(cookie, rpc_obj.obj)
+            return <rpc_object_t>NULL
 
         rpc_obj = Object(output)
         rpc_retain(rpc_obj.obj)
