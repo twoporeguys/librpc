@@ -1,0 +1,33 @@
+# This will run on Travis' 'new' container-based infrastructure
+sudo: false
+
+# Whitelist
+branches:
+  only:
+    - master
+
+# Environment variables
+env:
+  global:
+    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxygen
+
+# Install dependencies
+addons:
+  apt:
+    packages:
+      - doxygen
+      - doxygen-doc
+      - doxygen-latex
+      - doxygen-gui
+      - graphviz
+
+# Build your code e.g. by calling make
+script:
+  - mkdir build
+  - cd build && cmake ..
+  - cd build && make
+
+# Generate and deploy documentation
+after_success:
+  - cd $TRAVIS_BUILD_DIR
+  - sh tools/deploy-docs.sh
