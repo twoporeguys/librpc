@@ -35,6 +35,7 @@
 #include "../internal.h"
 
 static int ws_connect(struct rpc_connection *, const char *, rpc_object_t);
+static void ws_connect_done(GObject *, GAsyncResult *, gpointer);
 static int ws_listen(struct rpc_server *, const char *, rpc_object_t);
 static void ws_receive_message(SoupWebsocketConnection *, SoupWebsocketDataType,
     GBytes *, gpointer);
@@ -56,8 +57,12 @@ struct rpc_transport ws_transport = {
 
 struct ws_connection
 {
+    	GMutex				wc_mtx;
+    	GCond				wc_cv;
+    	GError *			wc_connect_err;
 	GSocketClient *			wc_client;
 	GSocketConnection *		wc_conn;
+    	SoupSession *			wc_session;
 	SoupWebsocketConnection *	wc_ws;
 	struct rpc_connection *		wc_parent;
 };
@@ -66,29 +71,65 @@ struct ws_server
 {
 	struct rpc_server *		ws_server;
 	SoupServer *			ws_soupserver;
-	char *				ws_path;
+    	const char *			ws_path;
 };
 
 static int
-ws_connect(struct rpc_connection *rco, const char *uri_string, rpc_object_t args __attribute__((unused)))
+ws_connect(struct rpc_connection *rco, const char *uri_string,
+    rpc_object_t args __unused)
 {
-	GError *err = NULL;
 	SoupURI *uri;
+	SoupMessage *msg;
+	SoupLogger *logger;
 	struct ws_connection *conn = NULL;
 
 	uri = soup_uri_new(uri_string);
+	logger = soup_logger_new (SOUP_LOGGER_LOG_BODY, -1);
 
 	conn = g_malloc0(sizeof(*conn));
-	conn->wc_client = g_socket_client_new();
-	conn->wc_conn = g_socket_client_connect_to_host(conn->wc_client,
-	    uri->host, (guint16)uri->port, NULL, &err);
-	if (err != NULL) {
-		errno = err->code;
-		goto err;
-	}
+	g_mutex_init(&conn->wc_mtx);
+	g_cond_init(&conn->wc_cv);
+	conn->wc_parent = rco;
+	conn->wc_session = soup_session_new_with_options(
+	    SOUP_SESSION_USE_THREAD_CONTEXT, TRUE, NULL);
 
-	conn->wc_ws = soup_websocket_connection_new(G_IO_STREAM(conn->wc_conn),
-	    uri, SOUP_WEBSOCKET_CONNECTION_CLIENT, NULL, NULL);
+	soup_session_add_feature(conn->wc_session, SOUP_SESSION_FEATURE(logger));
+	msg = soup_message_new_from_uri(SOUP_METHOD_GET, uri);
+	soup_session_websocket_connect_async(conn->wc_session, msg, NULL, NULL,
+	    NULL, &ws_connect_done, conn);
+
+	g_mutex_lock(&conn->wc_mtx);
+	while (conn->wc_connect_err == NULL && conn->wc_ws == NULL)
+		g_cond_wait(&conn->wc_cv, &conn->wc_mtx);
+	g_mutex_unlock(&conn->wc_mtx);
+
+	if (conn->wc_connect_err != NULL)
+		goto err;
+
+	return (0);
+err:
+	g_object_unref(conn->wc_client);
+	g_free(conn);
+	return (-1);
+}
+
+static void
+ws_connect_done(GObject *obj, GAsyncResult *res, gpointer user_data)
+{
+	GError *err = NULL;
+	SoupWebsocketConnection *ws;
+	struct ws_connection *conn = user_data;
+	struct rpc_connection *rco = conn->wc_parent;
+
+	ws = soup_session_websocket_connect_finish(SOUP_SESSION(obj),
+	    res, &err);
+	if (err != NULL) {
+		g_mutex_lock(&conn->wc_mtx);
+		conn->wc_connect_err = err;
+		g_cond_signal(&conn->wc_cv);
+		g_mutex_unlock(&conn->wc_mtx);
+		return;
+	}
 
 	rco->rco_send_msg = ws_send_message;
 	rco->rco_abort = ws_abort;
@@ -98,12 +139,11 @@ ws_connect(struct rpc_connection *rco, const char *uri_string, rpc_object_t args
 	g_signal_connect(conn->wc_ws, "closed", G_CALLBACK(ws_close), conn);
 	g_signal_connect(conn->wc_ws, "message", G_CALLBACK(ws_receive_message),
 	    conn);
-	return (0);
 
-err:
-	g_object_unref(conn->wc_client);
-	g_free(conn);
-	return (-1);
+	g_mutex_lock(&conn->wc_mtx);
+	conn->wc_ws = ws;
+	g_cond_signal(&conn->wc_cv);
+	g_mutex_unlock(&conn->wc_mtx);
 }
 
 static int

@@ -45,12 +45,6 @@ extern "C" {
 
 struct rpc_object;
 
-struct rpc_error
-{
-	int 		code;
-	char * 		message;
-};
-
 /**
  * Enumerates the possible types of an rpc_object_t.
  */
@@ -65,10 +59,11 @@ typedef enum {
 	RPC_TYPE_BINARY,		/**< binary data type */
 	RPC_TYPE_FD,			/**< file descriptor type */
 	RPC_TYPE_DICTIONARY,		/**< dictionary type */
+	RPC_TYPE_ARRAY,			/**< array type */
+	RPC_TYPE_ERROR,			/**< error type */
 #if defined(__linux__)
     	RPC_TYPE_SHMEM,			/**< shared memory type */
 #endif
-	RPC_TYPE_ARRAY			/**< array type */
 } rpc_type_t;
 
 typedef struct rpc_object *rpc_object_t;
@@ -131,7 +126,7 @@ rpc_type_t rpc_get_type(rpc_object_t object);
 			_object = NULL;					\
 	} while(0)
 
-rpc_error_t rpc_get_last_error(void);
+rpc_object_t rpc_get_last_error(void);
 
 rpc_object_t rpc_object_from_json(const void *frame, size_t size);
 int rpc_object_to_json(rpc_object_t object, void **frame, size_t *size);
@@ -276,6 +271,15 @@ void rpc_shmem_unmap(rpc_object_t shmem, void *addr);
 void rpc_shmem_free(rpc_object_t shmem, void *addr);
 size_t rpc_shmem_get_size(rpc_object_t shmem);
 #endif
+
+rpc_object_t rpc_error_create(int code, const char *msg, rpc_object_t extra);
+rpc_object_t rpc_error_create_with_stack(int code, const char *msg,
+    rpc_object_t extra, rpc_object_t stack);
+int rpc_error_get_code(rpc_object_t error);
+const char *rpc_error_get_message(rpc_object_t error);
+rpc_object_t rpc_error_get_extra(rpc_object_t error);
+void rpc_error_set_extra(rpc_object_t error, rpc_object_t extra);
+rpc_object_t rpc_error_get_stack(rpc_object_t error);
 
 rpc_object_t rpc_dictionary_create(void);
 rpc_object_t rpc_dictionary_create_ex(const char *const *keys,

@@ -32,17 +32,19 @@
 extern "C" {
 #endif
 
-#define	MSGPACK_EXTTYPE_DATE	1
-#define	MSGPACK_EXTTYPE_FD	2
-#if defined(__linux__)
-#define	MSGPACK_EXTTYPE_SHMEM	3
+#define MSGPACK_EXTTYPE_DATE	1
+#define MSGPACK_EXTTYPE_FD	2
+#define MSGPACK_EXTTYPE_SHMEM	3
+#define MSGPACK_EXTTYPE_ERROR	4
 
-struct rpc_msgpack_shmem_desc {
-    	int 		fd;
-    	uintptr_t 	addr;
-    	size_t 		len;
-};
-#endif
+#define	MSGPACK_SHMEM_FD	"fd"
+#define	MSGPACK_SHMEM_OFFSET	"offset"
+#define	MSGPACK_SHMEM_LEN	"len"
+
+#define	MSGPACK_ERROR_CODE	"code"
+#define	MSGPACK_ERROR_MESSAGE	"message"
+#define	MSGPACK_ERROR_EXTRA	"extra"
+#define	MSGPACK_ERROR_STACK	"stack"
 
 int rpc_msgpack_serialize(rpc_object_t, void **, size_t *);
 rpc_object_t rpc_msgpack_deserialize(const void *, size_t);

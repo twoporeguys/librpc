@@ -584,9 +584,7 @@ rpc_call_timeout(gpointer user_data)
 
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_status = RPC_CALL_ERROR;
-	call->rc_result = rpc_dictionary_create();
-	rpc_dictionary_set_uint64(call->rc_result, "code", ETIMEDOUT);
-	rpc_dictionary_set_string(call->rc_result, "message", "Call timed out");
+	call->rc_result = rpc_error_create(ETIMEDOUT, "Call timed out", NULL);
 	g_cond_broadcast(&call->rc_cv);
 	g_mutex_unlock(&call->rc_mtx);
 

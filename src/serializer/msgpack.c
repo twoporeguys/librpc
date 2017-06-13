@@ -25,19 +25,97 @@
  *
  */
 
+#include <assert.h>
 #include <rpc/object.h>
 #include "../../contrib/mpack/mpack.h"
 #include "../linker_set.h"
 #include "../internal.h"
 #include "msgpack.h"
 
+static void rpc_msgpack_write_error(mpack_writer_t *, rpc_object_t);
+static rpc_object_t rpc_msgpack_read_error(mpack_tree_t *);
+static void rpc_msgpack_write_shmem(mpack_writer_t *, rpc_object_t);
+static int rpc_msgpack_write_object(mpack_writer_t *, rpc_object_t);
+static rpc_object_t rpc_msgpack_read_shmem(mpack_tree_t *);
+static rpc_object_t rpc_msgpack_read_object(mpack_node_t);
+
+static void
+rpc_msgpack_write_error(mpack_writer_t *writer, rpc_object_t error)
+{
+	assert(rpc_get_type(error) == RPC_TYPE_ERROR);
+
+	mpack_start_map(writer, 4);
+	mpack_write_cstr(writer, MSGPACK_ERROR_CODE);
+	mpack_write_i64(writer, rpc_error_get_code(error));
+	mpack_write_cstr(writer, MSGPACK_ERROR_MESSAGE);
+	mpack_write_cstr(writer, rpc_error_get_message(error));
+	mpack_write_cstr(writer, MSGPACK_ERROR_EXTRA);
+	rpc_msgpack_write_object(writer, rpc_error_get_extra(error));
+	mpack_write_cstr(writer, MSGPACK_ERROR_STACK);
+	rpc_msgpack_write_object(writer, rpc_error_get_stack(error));
+}
+
+static rpc_object_t
+rpc_msgpack_read_error(mpack_tree_t *tree)
+{
+	mpack_node_t root;
+	int code;
+	char *msg;
+	rpc_object_t extra;
+	rpc_object_t stack;
+	rpc_object_t result;
+
+	root = mpack_tree_root(tree);
+	code = (int)mpack_node_i64(mpack_node_map_cstr(root,
+	    MSGPACK_ERROR_CODE));
+	msg = mpack_node_cstr_alloc(mpack_node_map_cstr(root,
+	    MSGPACK_ERROR_MESSAGE), 1024);
+	extra = rpc_msgpack_read_object(mpack_node_map_cstr(root,
+	    MSGPACK_ERROR_EXTRA));
+	stack = rpc_msgpack_read_object(mpack_node_map_cstr(root,
+	    MSGPACK_ERROR_STACK));
+	result = rpc_error_create_with_stack((int)code, msg,
+	    extra, stack);
+
+	free(msg);
+	return (result);
+}
+
+static void
+rpc_msgpack_write_shmem(mpack_writer_t *writer, rpc_object_t shmem)
+{
+	assert(rpc_get_type(shmem) == RPC_TYPE_SHMEM);
+
+	mpack_start_map(writer, 3);
+	mpack_write_cstr(writer, MSGPACK_SHMEM_FD);
+	mpack_write_i64(writer, shmem->ro_value.rv_shmem.rsb_fd);
+	mpack_write_cstr(writer, MSGPACK_SHMEM_OFFSET);
+	mpack_write_u64(writer, shmem->ro_value.rv_shmem.rsb_offset);
+	mpack_write_cstr(writer, MSGPACK_SHMEM_LEN);
+	mpack_write_u64(writer, shmem->ro_value.rv_shmem.rsb_size);
+}
+
+static rpc_object_t
+rpc_msgpack_read_shmem(mpack_tree_t *tree)
+{
+	mpack_node_t root;
+	int fd;
+	uint64_t offset, len;
+
+	root = mpack_tree_root(tree);
+	fd = (int)mpack_node_i64(mpack_node_map_cstr(root, MSGPACK_SHMEM_FD));
+	offset = mpack_node_u64(mpack_node_map_cstr(root, MSGPACK_SHMEM_OFFSET));
+	len = mpack_node_u64(mpack_node_map_cstr(root, MSGPACK_SHMEM_LEN));
+	return (rpc_shmem_recreate(fd, (off_t)offset, (size_t)len));
+}
+
 static int
 rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 {
-#if defined(__linux__)
-	struct rpc_msgpack_shmem_desc desc;
-#endif
 	int64_t timestamp;
+	mpack_writer_t subwriter;
+	char *buffer;
+	size_t len;
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
@@ -83,13 +161,21 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 
 #if defined(__linux__)
 	case RPC_TYPE_SHMEM:
-		desc.addr = (uintptr_t)rpc_shmem_get_offset(object);
-		desc.len = rpc_shmem_get_size(object);
-		desc.fd = rpc_shmem_get_fd(object);
+		mpack_writer_init_growable(&subwriter, &buffer, &len);
+		rpc_msgpack_write_shmem(&subwriter, object);
+		mpack_writer_destroy(&subwriter);
 		mpack_write_ext(writer, MSGPACK_EXTTYPE_SHMEM,
-		    (const char *)&desc, sizeof(desc));
+		    buffer, len);
 		break;
 #endif
+
+	case RPC_TYPE_ERROR:
+		mpack_writer_init_growable(&subwriter, &buffer, &len);
+		rpc_msgpack_write_error(&subwriter, object);
+		mpack_writer_destroy(&subwriter);
+		mpack_write_ext(writer, MSGPACK_EXTTYPE_ERROR,
+		    (const char *)buffer, len);
+		break;
 
 	case RPC_TYPE_DICTIONARY:
 		mpack_start_map(writer, (uint32_t)rpc_dictionary_get_count(object));
@@ -122,6 +208,8 @@ rpc_msgpack_read_object(mpack_node_t node)
 #endif
 	int *fd;
 	int64_t *date;
+	mpack_tree_t subtree;
+	mpack_node_t subnode;
 	__block size_t i;
 	__block char *cstr;
 	__block mpack_node_t tmp;
@@ -181,12 +269,19 @@ rpc_msgpack_read_object(mpack_node_t node)
 
 #if defined(__linux__)
 		case MSGPACK_EXTTYPE_SHMEM:
-			desc = (struct rpc_msgpack_shmem_desc *)
-			    mpack_node_data(node);
-
-			return (rpc_shmem_recreate(desc->fd, (off_t)desc->addr,
-			    desc->len));
+			mpack_tree_init(&subtree, mpack_node_data(node),
+			    mpack_node_data_len(node));
+			result = rpc_msgpack_read_shmem(&subtree);
+			mpack_tree_destroy(&subtree);
+			return (result);
 #endif
+
+		case MSGPACK_EXTTYPE_ERROR:
+			mpack_tree_init(&subtree, mpack_node_data(node),
+			    mpack_node_data_len(node));
+			result = rpc_msgpack_read_error(&subtree);
+			mpack_tree_destroy(&subtree);
+			return (result);
 
 		default:
 			return (rpc_null_create());

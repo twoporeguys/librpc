@@ -26,11 +26,13 @@
  */
 
 #include <stdlib.h>
+#include <execinfo.h>
 #include "linker_set.h"
 #include "internal.h"
 
 SET_DECLARE(tp_set, struct rpc_transport);
 SET_DECLARE(sr_set, struct rpc_serializer);
+static GPrivate rpc_last_error = G_PRIVATE_INIT((GDestroyNotify)rpc_release_impl);
 
 const struct rpc_transport *
 rpc_find_transport(const char *scheme)
@@ -65,7 +67,24 @@ rpc_find_serializer(const char *name)
 	return (NULL);
 }
 
-#ifdef RPC_TRACE
+void
+rpc_set_last_error(GError *g_error)
+{
+	rpc_object_t error;
+
+	error = rpc_error_create(g_error->code, g_error->message, NULL);
+	g_private_replace(&rpc_last_error, error);
+}
+
+rpc_object_t
+rpc_get_last_error(void)
+{
+	rpc_object_t error;
+
+	error = g_private_get(&rpc_last_error);
+	return (error);
+}
+
 void
 rpc_trace(const char *msg, rpc_object_t frame)
 {

@@ -94,7 +94,7 @@ class LibException(Exception):
         self.stacktrace = stacktrace
 
     def __str__(self):
-        return "Code {0}: {1} {2}".format(
+        return "[{0}] {1} {2}".format(
             self.code,
             self.message,
             self.extra if self.extra else ''
@@ -798,14 +798,14 @@ cdef class Server(object):
 
 
 cdef raise_internal_exc(rpc=False):
-    cdef rpc_error_t error
+    cdef rpc_object_t error
 
     exc = LibException
     if rpc:
         exc = RpcException
 
     error = rpc_get_last_error()
-    if error != <rpc_error_t>NULL:
+    if error != <rpc_object_t>NULL:
         try:
             raise exc(error.code, error.message.decode('utf-8'))
         finally:

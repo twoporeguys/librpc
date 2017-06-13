@@ -64,8 +64,6 @@ struct rpc_connection;
 struct rpc_credentials;
 struct rpc_server;
 
-extern GPrivate rpc_last_error;
-
 typedef int (*rpc_recv_msg_fn_t)(struct rpc_connection *, const void *, size_t,
     int *, size_t, struct rpc_credentials *);
 typedef int (*rpc_send_msg_fn_t)(void *, void *, size_t, const int *, size_t);
@@ -81,7 +79,6 @@ struct rpc_binary_value
 	size_t 			length;
 	bool 			copy;
 };
-#if defined(__linux__)
 
 struct rpc_shmem_block
 {
@@ -89,7 +86,14 @@ struct rpc_shmem_block
     	off_t 			rsb_offset;
     	size_t 			rsb_size;
 };
-#endif
+
+struct rpc_error_value
+{
+	int			code;
+	char *			message;
+	rpc_object_t		extra;
+    	rpc_object_t 		stack;
+};
 
 union rpc_value
 {
@@ -101,11 +105,12 @@ union rpc_value
 	int64_t			rv_i;
 	bool			rv_b;
 	double			rv_d;
+	int			rv_fd;
 	struct rpc_binary_value rv_bin;
+	struct rpc_error_value	rv_error;
 #if defined(__linux__)
     	struct rpc_shmem_block  rv_shmem;
 #endif
-	int 			rv_fd;
 };
 
 struct rpc_object

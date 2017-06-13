@@ -45,8 +45,6 @@
 #include "memfd.h"
 #endif
 
-GPrivate rpc_last_error = G_PRIVATE_INIT((GDestroyNotify)g_free);
-
 static const char *rpc_types[] = {
     [RPC_TYPE_NULL] = "null",
     [RPC_TYPE_BOOL] = "bool",
@@ -58,10 +56,9 @@ static const char *rpc_types[] = {
     [RPC_TYPE_BINARY] = "binary",
     [RPC_TYPE_FD] = "fd",
     [RPC_TYPE_DICTIONARY] = "dictionary",
-#if defined(__linux__)
+    [RPC_TYPE_ARRAY] = "array",
     [RPC_TYPE_SHMEM] = "shmem",
-#endif
-    [RPC_TYPE_ARRAY] = "array"
+    [RPC_TYPE_ERROR] = "error"
 };
 
 rpc_object_t
@@ -103,6 +100,11 @@ rpc_create_description(GString *description, rpc_object_t object,
 	if ((indent_lvl > 0) && (!nested))
 		g_string_append_printf(description, "%*s", (indent_lvl * 4),
 		    "");
+
+	if (object == NULL) {
+		g_string_append_printf(description, "<null>\n");
+		return;
+	}
 
 	g_string_append_printf(description, "<%s> ",
 	    rpc_types[object->ro_type]);
@@ -163,11 +165,31 @@ rpc_create_description(GString *description, rpc_object_t object,
 			g_string_append(description, " ...");
 
 		break;
+
+	case RPC_TYPE_ERROR:
+		g_string_append_printf(description, "{\n");
+		g_string_append_printf(description, "%*scode: %d [%s]\n",
+		    local_indent_lvl * 4, "", rpc_error_get_code(object),
+	    	    strerror(rpc_error_get_code(object)));
+		g_string_append_printf(description, "%*smessage: \"%s\"\n",
+		    local_indent_lvl * 4, "", rpc_error_get_message(object));
+		g_string_append_printf(description, "%*sextra: ",
+		    local_indent_lvl * 4, "");
+		rpc_create_description(description, rpc_error_get_extra(object),
+		    local_indent_lvl, true);
+		g_string_append_printf(description, "%*sstack: ",
+		    local_indent_lvl * 4, "");
+		rpc_create_description(description, rpc_error_get_stack(object),
+		    local_indent_lvl, true);
+		g_string_append_printf(description, "\n}");
+		break;
+
 #if defined(__linux__)
 	case RPC_TYPE_SHMEM:
 		g_string_append(description, "shared memory");
 		break;
 #endif
+
 	case RPC_TYPE_DICTIONARY:
 		g_string_append(description, "{\n");
 		rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
@@ -178,9 +200,11 @@ rpc_create_description(GString *description, rpc_object_t object,
 			g_string_append(description, ",\n");
 			return ((bool)true);
 		});
-		if (indent_lvl > 0)
+
+		if (indent_lvl > 0) {
 			g_string_append_printf(description, "%*s",
 			    (indent_lvl * 4), "");
+		}
 
 		g_string_append(description, "}");
 		break;
@@ -209,27 +233,6 @@ rpc_create_description(GString *description, rpc_object_t object,
 
 	if (!nested)
 		g_string_append(description, "\n");
-}
-
-void
-rpc_set_last_error(GError *g_error) {
-	rpc_error_t error;
-
-	error = g_malloc(sizeof(rpc_error_t));
-	error->code = g_error->code;
-	error->message = g_strdup(g_error->message);
-
-	g_private_replace(&rpc_last_error, error);
-}
-
-rpc_error_t
-rpc_get_last_error(void) {
-	rpc_error_t error;
-
-	if ((error = g_private_get(&rpc_last_error)) == NULL)
-		return (NULL);
-
-	return error;
 }
 
 inline rpc_object_t
@@ -351,6 +354,11 @@ rpc_copy(rpc_object_t object)
 		    object->ro_value.rv_shmem.rsb_size));
 #endif
 
+	case RPC_TYPE_ERROR:
+		return (rpc_error_create(rpc_error_get_code(object),
+		    rpc_error_get_message(object),
+		    rpc_copy(rpc_error_get_extra(object))));
+
 	case RPC_TYPE_DICTIONARY:
 		tmp = rpc_dictionary_create();
 		rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
@@ -413,6 +421,11 @@ rpc_hash(rpc_object_t object)
 	case RPC_TYPE_BINARY:
 		return (rpc_data_hash((uint8_t *)rpc_data_get_bytes_ptr(object),
 		    rpc_data_get_length(object)));
+
+	case RPC_TYPE_ERROR:
+		return (object->ro_value.rv_error.code ^
+		    g_string_hash(object->ro_value.rv_error.message) ^
+		    rpc_hash(object->ro_value.rv_error.extra));
 
 #if defined(__linux__)
 	case RPC_TYPE_SHMEM:
@@ -979,6 +992,89 @@ off_t rpc_shmem_get_offset(rpc_object_t shmem)
 	return (shmem->ro_value.rv_shmem.rsb_offset);
 }
 #endif
+
+rpc_object_t
+rpc_error_create(int code, const char *msg, rpc_object_t extra)
+{
+	char *stack;
+	union rpc_value val;
+
+	stack = rpc_get_backtrace();
+
+	val.rv_error.code = code;
+	val.rv_error.message = g_strdup(msg);
+	val.rv_error.extra = extra;
+	val.rv_error.stack = rpc_string_create(stack);
+
+	free(stack);
+
+	if (extra != NULL)
+		rpc_retain(extra);
+
+	return (rpc_prim_create(RPC_TYPE_ERROR, val));
+}
+
+rpc_object_t
+rpc_error_create_with_stack(int code, const char *msg, rpc_object_t extra,
+    rpc_object_t stack)
+{
+	rpc_object_t result;
+
+	result = rpc_error_create(code, msg, extra);
+	result->ro_value.rv_error.stack = stack;
+	return (result);
+}
+
+
+int
+rpc_error_get_code(rpc_object_t error)
+{
+	if (rpc_get_type(error) != RPC_TYPE_ERROR)
+		return (-1);
+
+	return (error->ro_value.rv_error.code);
+}
+
+const char *
+rpc_error_get_message(rpc_object_t error)
+{
+	if (rpc_get_type(error) != RPC_TYPE_ERROR)
+		return (NULL);
+
+	return (error->ro_value.rv_error.message);
+}
+
+rpc_object_t
+rpc_error_get_extra(rpc_object_t error)
+{
+	if (rpc_get_type(error) != RPC_TYPE_ERROR)
+		return (NULL);
+
+	return (error->ro_value.rv_error.extra);
+}
+
+rpc_object_t
+rpc_error_get_stack(rpc_object_t error)
+{
+	if (rpc_get_type(error) != RPC_TYPE_ERROR)
+		return (NULL);
+
+	return (error->ro_value.rv_error.stack);
+}
+
+
+void
+rpc_error_set_extra(rpc_object_t error, rpc_object_t extra)
+{
+	if (rpc_get_type(error) != RPC_TYPE_ERROR)
+		return;
+
+	if (error->ro_value.rv_error.extra != NULL)
+		rpc_release(error->ro_value.rv_error.extra);
+
+	rpc_retain(extra);
+	error->ro_value.rv_error.extra = extra;
+}
 
 inline rpc_object_t
 rpc_array_create(void)
