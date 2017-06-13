@@ -1,5 +1,6 @@
 # This will run on Travis' 'new' container-based infrastructure
 sudo: false
+dist: trusty
 
 # Whitelist
 branches:
@@ -30,7 +31,7 @@ addons:
 # Build your code e.g. by calling make
 script:
   - mkdir build
-  - cd build && cmake ..
+  - cd build && CC=clang CXX=clang++ cmake ..
   - cd build && make
 
 # Generate and deploy documentation
