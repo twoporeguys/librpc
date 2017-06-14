@@ -46,7 +46,7 @@ setup(
             ["librpc.pyx"],
             extra_compile_args=["-fblocks"],
             cython_include_dirs=["./pxd"],
-            include_dirs=["./../include"],
+            include_dirs=["./../../include"],
             extra_link_args=["-g", "-lrpc"],
         )
     ]
