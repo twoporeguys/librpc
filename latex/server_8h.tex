@@ -1,0 +1,51 @@
+\hypertarget{server_8h}{\section{/home/travis/build/twoporeguys/librpc/include/rpc/server.h File Reference}
+\label{server_8h}\index{/home/travis/build/twoporeguys/librpc/include/rpc/server.\-h@{/home/travis/build/twoporeguys/librpc/include/rpc/server.\-h}}
+}
+{\ttfamily \#include $<$stdbool.\-h$>$}\\*
+{\ttfamily \#include $<$rpc/service.\-h$>$}\\*
+{\ttfamily \#include $<$rpc/connection.\-h$>$}\\*
+Include dependency graph for server.\-h\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{server_8h__incl}
+\end{center}
+\end{figure}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{typedef struct rpc\-\_\-server $\ast$ {\bfseries rpc\-\_\-server\-\_\-t}}\label{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}
+
+\item 
+\hypertarget{server_8h_a3b3e718b54bebba70da20b9a26c9af9f}{typedef void($^\wedge$ {\bfseries rpc\-\_\-server\-\_\-event\-\_\-handler\-\_\-t} )(rpc\-\_\-connection\-\_\-t source, const char $\ast$name, rpc\-\_\-object\-\_\-t args)}\label{server_8h_a3b3e718b54bebba70da20b9a26c9af9f}
+
+\item 
+\hypertarget{server_8h_ab7487bbae7df5e79fb333cd9958f1082}{typedef void($\ast$ {\bfseries rpc\-\_\-server\-\_\-event\-\_\-handler\-\_\-f} )(rpc\-\_\-connection\-\_\-t source, const char $\ast$name, rpc\-\_\-object\-\_\-t args, void $\ast$arg)}\label{server_8h_ab7487bbae7df5e79fb333cd9958f1082}
+
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{server_8h_ae2bd5e162ef71bc3290aac40f35503a6}{rpc\-\_\-server\-\_\-t {\bfseries rpc\-\_\-server\-\_\-create} (const char $\ast$uri, rpc\-\_\-context\-\_\-t context)}\label{server_8h_ae2bd5e162ef71bc3290aac40f35503a6}
+
+\item 
+\hypertarget{server_8h_a321bec95886308344cd511782afd08dd}{void {\bfseries rpc\-\_\-server\-\_\-broadcast\-\_\-event} (rpc\-\_\-server\-\_\-t server, const char $\ast$name, rpc\-\_\-object\-\_\-t args)}\label{server_8h_a321bec95886308344cd511782afd08dd}
+
+\item 
+\hypertarget{server_8h_a35bdfe6cc50c1e83a569fb05a85a7082}{void {\bfseries rpc\-\_\-server\-\_\-set\-\_\-event\-\_\-handler} (rpc\-\_\-server\-\_\-event\-\_\-handler\-\_\-t handler)}\label{server_8h_a35bdfe6cc50c1e83a569fb05a85a7082}
+
+\item 
+\hypertarget{server_8h_ab2bf570fd3fc9088b8e7db1196e1f275}{void {\bfseries rpc\-\_\-server\-\_\-set\-\_\-event\-\_\-handler\-\_\-f} (rpc\-\_\-server\-\_\-event\-\_\-handler\-\_\-f handler)}\label{server_8h_ab2bf570fd3fc9088b8e7db1196e1f275}
+
+\item 
+\hypertarget{server_8h_aecd13196295690cff8a48b90b9467c1d}{int {\bfseries rpc\-\_\-server\-\_\-close} (rpc\-\_\-server\-\_\-t server)}\label{server_8h_aecd13196295690cff8a48b90b9467c1d}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+R\-P\-C server A\-P\-I. 
+
+Definition in file \hyperlink{server_8h_source}{server.\-h}.
+

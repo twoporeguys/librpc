@@ -7,10 +7,26 @@
 
 var indexSectionsWithContent =
 {
+  0: "cdors",
+  1: "r",
+  2: "cdos",
+  3: "r",
+  4: "r",
+  5: "r",
+  6: "r",
+  7: "r"
 };
 
 var indexSectionNames =
 {
+  0: "all",
+  1: "classes",
+  2: "files",
+  3: "functions",
+  4: "typedefs",
+  5: "enums",
+  6: "enumvalues",
+  7: "defines"
 };
 
 function convertToId(search)

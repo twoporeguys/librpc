@@ -1,0 +1,97 @@
+\hypertarget{client_8h}{\section{/home/travis/build/twoporeguys/librpc/include/rpc/client.h File Reference}
+\label{client_8h}\index{/home/travis/build/twoporeguys/librpc/include/rpc/client.\-h@{/home/travis/build/twoporeguys/librpc/include/rpc/client.\-h}}
+}
+{\ttfamily \#include $<$stdbool.\-h$>$}\\*
+{\ttfamily \#include $<$rpc/connection.\-h$>$}\\*
+Include dependency graph for client.\-h\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{client_8h__incl}
+\end{center}
+\end{figure}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{client_8h_a4f7230a0c2c07d27a07a88d407a06b70}{typedef struct rpc\-\_\-client $\ast$ {\bfseries rpc\-\_\-client\-\_\-t}}\label{client_8h_a4f7230a0c2c07d27a07a88d407a06b70}
+
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+rpc\-\_\-client\-\_\-t \hyperlink{client_8h_aa2ee510504eb2546129fd29733666c34}{rpc\-\_\-client\-\_\-create} (const char $\ast$uri, int flags)
+\item 
+rpc\-\_\-connection\-\_\-t \hyperlink{client_8h_a115d9a7fa40d9ec52a2fb553426fc202}{rpc\-\_\-client\-\_\-get\-\_\-connection} (rpc\-\_\-client\-\_\-t client)
+\item 
+void \hyperlink{client_8h_ababbc19eeaefeab208c5b6d80411ee77}{rpc\-\_\-client\-\_\-close} (rpc\-\_\-client\-\_\-t client)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+R\-P\-C client A\-P\-I. 
+
+Definition in file \hyperlink{client_8h_source}{client.\-h}.
+
+
+
+\subsection{Function Documentation}
+\hypertarget{client_8h_ababbc19eeaefeab208c5b6d80411ee77}{\index{client.\-h@{client.\-h}!rpc\-\_\-client\-\_\-close@{rpc\-\_\-client\-\_\-close}}
+\index{rpc\-\_\-client\-\_\-close@{rpc\-\_\-client\-\_\-close}!client.h@{client.\-h}}
+\subsubsection[{rpc\-\_\-client\-\_\-close}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\-\_\-client\-\_\-close (
+\begin{DoxyParamCaption}
+\item[{rpc\-\_\-client\-\_\-t}]{client}
+\end{DoxyParamCaption}
+)}}\label{client_8h_ababbc19eeaefeab208c5b6d80411ee77}
+Closes the connection and frees associated resources.
+
+
+\begin{DoxyParams}{Parameters}
+{\em client} & Client object \\
+\hline
+\end{DoxyParams}
+\hypertarget{client_8h_aa2ee510504eb2546129fd29733666c34}{\index{client.\-h@{client.\-h}!rpc\-\_\-client\-\_\-create@{rpc\-\_\-client\-\_\-create}}
+\index{rpc\-\_\-client\-\_\-create@{rpc\-\_\-client\-\_\-create}!client.h@{client.\-h}}
+\subsubsection[{rpc\-\_\-client\-\_\-create}]{\setlength{\rightskip}{0pt plus 5cm}rpc\-\_\-client\-\_\-t rpc\-\_\-client\-\_\-create (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{uri, }
+\item[{int}]{flags}
+\end{DoxyParamCaption}
+)}}\label{client_8h_aa2ee510504eb2546129fd29733666c34}
+Creates a new, connected R\-P\-C client.
+
+U\-R\-I parameter can take multiple forms\-:
+\begin{DoxyItemize}
+\item unix\-://$<$path$>$ connects to an Unix domain socket
+\item tcp\-://$<$ip-\/address$>$\-:$<$port$>$ connects using a T\-C\-P socket
+\item ws\-://$<$ip-\/address$>$\-:$<$port$>$/$<$path$>$ connects using a Web\-Socket
+\item loopback\-://$<$id$>$ connects using a local transport
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em uri} & Endpoint U\-R\-I \\
+\hline
+{\em flags} & Currently unused \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Connect R\-P\-C client object 
+\end{DoxyReturn}
+\hypertarget{client_8h_a115d9a7fa40d9ec52a2fb553426fc202}{\index{client.\-h@{client.\-h}!rpc\-\_\-client\-\_\-get\-\_\-connection@{rpc\-\_\-client\-\_\-get\-\_\-connection}}
+\index{rpc\-\_\-client\-\_\-get\-\_\-connection@{rpc\-\_\-client\-\_\-get\-\_\-connection}!client.h@{client.\-h}}
+\subsubsection[{rpc\-\_\-client\-\_\-get\-\_\-connection}]{\setlength{\rightskip}{0pt plus 5cm}rpc\-\_\-connection\-\_\-t rpc\-\_\-client\-\_\-get\-\_\-connection (
+\begin{DoxyParamCaption}
+\item[{rpc\-\_\-client\-\_\-t}]{client}
+\end{DoxyParamCaption}
+)}}\label{client_8h_a115d9a7fa40d9ec52a2fb553426fc202}
+Gets the connection object from a client.
+
+
+\begin{DoxyParams}{Parameters}
+{\em client} & Client object to get the connection from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Connection object 
+\end{DoxyReturn}

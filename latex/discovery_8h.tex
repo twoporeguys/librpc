@@ -1,0 +1,63 @@
+\hypertarget{discovery_8h}{\section{/home/travis/build/twoporeguys/librpc/include/rpc/discovery.h File Reference}
+\label{discovery_8h}\index{/home/travis/build/twoporeguys/librpc/include/rpc/discovery.\-h@{/home/travis/build/twoporeguys/librpc/include/rpc/discovery.\-h}}
+}
+{\ttfamily \#include $<$rpc/service.\-h$>$}\\*
+Include dependency graph for discovery.\-h\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{discovery_8h__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{discovery_8h_a282ce669d70603a2a80f99c3dc926d8f}{rpc\-\_\-discovery\-\_\-register} (rpc\-\_\-context\-\_\-t context)
+\item 
+int \hyperlink{discovery_8h_aef4a5ebeff7f32031a8ef8be116205bc}{rpc\-\_\-discovery\-\_\-destroy} (rpc\-\_\-context\-\_\-t context)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Helpers for creating auto-\/discoverable services. 
+
+Definition in file \hyperlink{discovery_8h_source}{discovery.\-h}.
+
+
+
+\subsection{Function Documentation}
+\hypertarget{discovery_8h_aef4a5ebeff7f32031a8ef8be116205bc}{\index{discovery.\-h@{discovery.\-h}!rpc\-\_\-discovery\-\_\-destroy@{rpc\-\_\-discovery\-\_\-destroy}}
+\index{rpc\-\_\-discovery\-\_\-destroy@{rpc\-\_\-discovery\-\_\-destroy}!discovery.h@{discovery.\-h}}
+\subsubsection[{rpc\-\_\-discovery\-\_\-destroy}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-discovery\-\_\-destroy (
+\begin{DoxyParamCaption}
+\item[{rpc\-\_\-context\-\_\-t}]{context}
+\end{DoxyParamCaption}
+)}}\label{discovery_8h_aef4a5ebeff7f32031a8ef8be116205bc}
+Uninstalls previously installed discovery service.
+
+
+\begin{DoxyParams}{Parameters}
+{\em context} & R\-P\-C context to uninstall discovery service from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on failure 
+\end{DoxyReturn}
+\hypertarget{discovery_8h_a282ce669d70603a2a80f99c3dc926d8f}{\index{discovery.\-h@{discovery.\-h}!rpc\-\_\-discovery\-\_\-register@{rpc\-\_\-discovery\-\_\-register}}
+\index{rpc\-\_\-discovery\-\_\-register@{rpc\-\_\-discovery\-\_\-register}!discovery.h@{discovery.\-h}}
+\subsubsection[{rpc\-\_\-discovery\-\_\-register}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-discovery\-\_\-register (
+\begin{DoxyParamCaption}
+\item[{rpc\-\_\-context\-\_\-t}]{context}
+\end{DoxyParamCaption}
+)}}\label{discovery_8h_a282ce669d70603a2a80f99c3dc926d8f}
+Installs discovery service on an R\-P\-C context.
+
+
+\begin{DoxyParams}{Parameters}
+{\em context} & R\-P\-C context to install on \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on failure 
+\end{DoxyReturn}
