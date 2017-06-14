@@ -1,6 +1,6 @@
 set -e
 mkdir docs-build && cd docs-build
-git clone -b gh-pages git@github.com:twoporeguys/librpc.git && cd librpc
+git clone -b gh-pages https://github.com/twoporeguys/librpc.git && cd librpc
 git config --global push.default simple
 git config user.name "Travis CI"
 git config user.email "travis@travis-ci.org"
