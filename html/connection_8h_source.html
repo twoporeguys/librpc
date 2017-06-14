@@ -126,91 +126,117 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">struct </span>rpc_connection;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">struct </span>rpc_call;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">struct </span>rpc_ call;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span> rpc_error_code</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;{</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    INVALID_JSON_RESPONSE = 1,</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    CONNECTION_TIMEOUT,</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    CONNECTION_CLOSED,</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    RPC_CALL_TIMEOUT,</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    SPURIOUS_RPC_RESPONSE,</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    LOGOUT,</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    OTHER</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;} error_code_t;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="connection_8h.html#a22306445a7503bab94835382d07e0410">   62</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span> <a class="code" href="connection_8h.html#a22306445a7503bab94835382d07e0410">rpc_call_status</a></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;{</div>
-<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="connection_8h.html#a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1">   64</a></span>&#160;    <a class="code" href="connection_8h.html#a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1">RPC_CALL_IN_PROGRESS</a>,       </div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="connection_8h.html#a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f">   65</a></span>&#160;    <a class="code" href="connection_8h.html#a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f">RPC_CALL_MORE_AVAILABLE</a>,    </div>
-<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="connection_8h.html#a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d">   66</a></span>&#160;    <a class="code" href="connection_8h.html#a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d">RPC_CALL_DONE</a>,              </div>
-<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="connection_8h.html#a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856">   67</a></span>&#160;    <a class="code" href="connection_8h.html#a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856">RPC_CALL_ERROR</a>              </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;} <a class="code" href="connection_8h.html#a5e44285dc90be1f6bc541504a3f6d929">rpc_call_status_t</a>;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>rpc_connection *rpc_connection_t;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>rpc_call *rpc_call_t;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keyword">typedef</span> void (^rpc_handler_t)(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, rpc_object_t args);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keyword">typedef</span> bool (^rpc_callback_t)(rpc_object_t args, <a class="code" href="connection_8h.html#a5e44285dc90be1f6bc541504a3f6d929">rpc_call_status_t</a> status);</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
-<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="connection_8h.html#a4f7704822a76a6f293f6abbb59bf41f3">   78</a></span>&#160;<span class="preprocessor">#define RPC_HANDLER(_fn, _arg)                      \</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">    ^(const char *_name, rpc_object_t _args) {          \</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">        _fn(_arg, _name, _args);                \</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor">    }</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="connection_8h.html#a7512dc753949d75650bbec7527f9d0a6">   86</a></span>&#160;<span class="preprocessor">#define RPC_CALLBACK(_fn, _arg)                     \</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">    ^(rpc_object_t _args, rpc_call_status_t _status) {      \</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="preprocessor">        return ((bool)_fn(_arg, _args, _status));       \</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">    }</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;rpc_connection_t rpc_connection_create(<span class="keyword">const</span> <span class="keywordtype">char</span> *uri, <span class="keywordtype">int</span> flags);</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="keywordtype">int</span> rpc_connection_close(rpc_connection_t conn);</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keywordtype">int</span> rpc_connection_subscribe_event(rpc_connection_t conn, <span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="keywordtype">int</span> rpc_connection_unsubscribe_event(rpc_connection_t conn, <span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="keywordtype">void</span> *rpc_connection_register_event_handler(rpc_connection_t conn,</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *name, rpc_handler_t handler);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="keywordtype">void</span> rpc_connection_unregister_event_handler(rpc_connection_t conn,</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *name, <span class="keywordtype">void</span> *cookie);</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;rpc_object_t rpc_connection_call_sync(rpc_connection_t conn,</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *method, ...);</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;rpc_object_t rpc_connection_call_syncv(rpc_connection_t conn,</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *method, va_list ap);</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;rpc_call_t rpc_connection_call(rpc_connection_t conn, <span class="keyword">const</span> <span class="keywordtype">char</span> *name,</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    rpc_object_t args, rpc_callback_t callback);</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="keywordtype">int</span> rpc_connection_send_event(rpc_connection_t conn, <span class="keyword">const</span> <span class="keywordtype">char</span> *name,</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    rpc_object_t args);</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="keywordtype">void</span> rpc_connection_set_event_handler(rpc_connection_t conn,</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    rpc_handler_t handler);</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="keywordtype">int</span> <a class="code" href="connection_8h.html#ae600ee03958915ee116e90e3e7795ec7">rpc_call_wait</a>(rpc_call_t call);</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="keywordtype">int</span> <a class="code" href="connection_8h.html#a844f7384a38ef32d4d4b9d6994aed613">rpc_call_continue</a>(rpc_call_t call, <span class="keywordtype">bool</span> sync);</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="keywordtype">int</span> <a class="code" href="connection_8h.html#a17059d810db4d08d911e45d24704dacc">rpc_call_abort</a>(rpc_call_t call);</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="keywordtype">int</span> rpc_call_timedwait(rpc_call_t call, <span class="keyword">const</span> <span class="keyword">struct</span> timespec *ts);</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="keywordtype">int</span> rpc_call_success(rpc_call_t call);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="keywordtype">int</span> <a class="code" href="connection_8h.html#a22306445a7503bab94835382d07e0410">rpc_call_status</a>(rpc_call_t call);</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;rpc_object_t <a class="code" href="connection_8h.html#a6af73450be622a40f3cbc2b9425ca5dd">rpc_call_result</a>(rpc_call_t call);</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="keywordtype">void</span> <a class="code" href="connection_8h.html#ace66aca5d1c46e97128a3e09dbce89d1">rpc_call_free</a>(rpc_call_t call);</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="preprocessor"></span>}</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="preprocessor">#endif //LIBRPC_CONNECTION_H</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccd">   51</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span> <a class="code" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccd">rpc_error_code</a></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;{</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7">   53</a></span>&#160;    <a class="code" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7">RPC_INVALID_RESPONSE</a> = 1,   </div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55">   54</a></span>&#160;    <a class="code" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55">RPC_CONNECTION_TIMEOUT</a>,     </div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0">   55</a></span>&#160;    <a class="code" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0">RPC_CONNECTION_CLOSED</a>,      </div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70">   56</a></span>&#160;    <a class="code" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70">RPC_CALL_TIMEOUT</a>,       </div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d">   57</a></span>&#160;    <a class="code" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d">RPC_SPURIOUS_RESPONSE</a>,      </div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b">   58</a></span>&#160;    <a class="code" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b">RPC_LOGOUT</a>,         </div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1">   59</a></span>&#160;    <a class="code" href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1">RPC_OTHER</a>           </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;} rpc_error_code_t;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="connection_8h.html#a22306445a7503bab94835382d07e0410">   65</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span> <a class="code" href="connection_8h.html#a22306445a7503bab94835382d07e0410">rpc_call_status</a></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;{</div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="connection_8h.html#a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1">   67</a></span>&#160;    <a class="code" href="connection_8h.html#a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1">RPC_CALL_IN_PROGRESS</a>,       </div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="connection_8h.html#a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f">   68</a></span>&#160;    <a class="code" href="connection_8h.html#a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f">RPC_CALL_MORE_AVAILABLE</a>,    </div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="connection_8h.html#a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d">   69</a></span>&#160;    <a class="code" href="connection_8h.html#a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d">RPC_CALL_DONE</a>,          </div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="connection_8h.html#a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856">   70</a></span>&#160;    <a class="code" href="connection_8h.html#a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856">RPC_CALL_ERROR</a>          </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;} <a class="code" href="connection_8h.html#a5e44285dc90be1f6bc541504a3f6d929">rpc_call_status_t</a>;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>rpc_connection *rpc_connection_t;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>rpc_call *rpc_call_t;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="keyword">typedef</span> void (^rpc_handler_t)(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, rpc_object_t args);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="keyword">typedef</span> void (^rpc_error_handler_t)(rpc_error_code_t code, rpc_object_t args);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="keyword">typedef</span> bool (^rpc_callback_t)(rpc_object_t args, <a class="code" href="connection_8h.html#a5e44285dc90be1f6bc541504a3f6d929">rpc_call_status_t</a> status);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="connection_8h.html#a4f7704822a76a6f293f6abbb59bf41f3">   82</a></span>&#160;<span class="preprocessor">#define RPC_HANDLER(_fn, _arg)                      \</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">    ^(const char *_name, rpc_object_t _args) {          \</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">        _fn(_arg, _name, _args);                \</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">    }</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="connection_8h.html#ac6630daf34229f9dd8a754b119e4a94d">   90</a></span>&#160;<span class="preprocessor">#define RPC_ERROR_HANDLER(_fn, _arg)                    \</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">    ^(rpc_error_code_t _code, rpc_object_t _args) {         \</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="preprocessor">        _fn(_arg, _code, _args);                \</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="preprocessor">    }</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00098"></a><span class="lineno"><a class="line" href="connection_8h.html#a7512dc753949d75650bbec7527f9d0a6">   98</a></span>&#160;<span class="preprocessor">#define RPC_CALLBACK(_fn, _arg)                     \</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="preprocessor">    ^(rpc_object_t _args, rpc_call_status_t _status) {      \</span></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="preprocessor">        return ((bool)_fn(_arg, _args, _status));       \</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="preprocessor">    }</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;rpc_connection_t rpc_connection_create(<span class="keyword">const</span> <span class="keywordtype">char</span> *uri, <span class="keywordtype">int</span> flags);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="keywordtype">int</span> rpc_connection_close(rpc_connection_t conn);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="keywordtype">int</span> <a class="code" href="connection_8h.html#a820acf081ad5784aafde954b5ec9270a">rpc_connection_subscribe_event</a>(rpc_connection_t conn, <span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="keywordtype">int</span> rpc_connection_unsubscribe_event(rpc_connection_t conn, <span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="keywordtype">void</span> *rpc_connection_register_event_handler(rpc_connection_t conn,</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *name, rpc_handler_t handler);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="keywordtype">void</span> rpc_connection_unregister_event_handler(rpc_connection_t conn,</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *name, <span class="keywordtype">void</span> *cookie);</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;rpc_object_t rpc_connection_call_sync(rpc_connection_t conn,</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *method, ...);</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;rpc_object_t rpc_connection_call_syncv(rpc_connection_t conn,</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *method, va_list ap);</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;rpc_call_t rpc_connection_call(rpc_connection_t conn, <span class="keyword">const</span> <span class="keywordtype">char</span> *name,</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    rpc_object_t args, rpc_callback_t callback);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="keywordtype">int</span> <a class="code" href="connection_8h.html#a1bc22789ecc5ca9cbe8637c8f173ee4d">rpc_connection_send_event</a>(rpc_connection_t conn, <span class="keyword">const</span> <span class="keywordtype">char</span> *name,</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    rpc_object_t args);</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="keywordtype">void</span> <a class="code" href="connection_8h.html#ae843166183a4bd6dbf5a58133b3fcaf3">rpc_connection_set_event_handler</a>(rpc_connection_t conn,</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    rpc_handler_t handler);</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="keywordtype">void</span> <a class="code" href="connection_8h.html#a8f332abcc5d0a80c86f8317c7dcc79ec">rpc_connection_set_error_handler</a>(rpc_connection_t conn,</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    rpc_error_handler_t handler);</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="keywordtype">int</span> <a class="code" href="connection_8h.html#ae600ee03958915ee116e90e3e7795ec7">rpc_call_wait</a>(rpc_call_t call);</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;<span class="keywordtype">int</span> <a class="code" href="connection_8h.html#a844f7384a38ef32d4d4b9d6994aed613">rpc_call_continue</a>(rpc_call_t call, <span class="keywordtype">bool</span> sync);</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;<span class="keywordtype">int</span> <a class="code" href="connection_8h.html#a17059d810db4d08d911e45d24704dacc">rpc_call_abort</a>(rpc_call_t call);</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;<span class="keywordtype">int</span> rpc_call_timedwait(rpc_call_t call, <span class="keyword">const</span> <span class="keyword">struct</span> timespec *ts);</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="keywordtype">int</span> rpc_call_success(rpc_call_t call);</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;<span class="keywordtype">int</span> <a class="code" href="connection_8h.html#a22306445a7503bab94835382d07e0410">rpc_call_status</a>(rpc_call_t call);</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;rpc_object_t <a class="code" href="connection_8h.html#a6af73450be622a40f3cbc2b9425ca5dd">rpc_call_result</a>(rpc_call_t call);</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="keywordtype">void</span> <a class="code" href="connection_8h.html#ace66aca5d1c46e97128a3e09dbce89d1">rpc_call_free</a>(rpc_call_t call);</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<span class="preprocessor"></span>}</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="preprocessor">#endif //LIBRPC_CONNECTION_H</span></div>
+<div class="ttc" id="connection_8h_html_a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55"><div class="ttname"><a href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55">RPC_CONNECTION_TIMEOUT</a></div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00054">connection.h:54</a></div></div>
 <div class="ttc" id="connection_8h_html_a5e44285dc90be1f6bc541504a3f6d929"><div class="ttname"><a href="connection_8h.html#a5e44285dc90be1f6bc541504a3f6d929">rpc_call_status_t</a></div><div class="ttdeci">enum rpc_call_status rpc_call_status_t</div></div>
-<div class="ttc" id="connection_8h_html_a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f"><div class="ttname"><a href="connection_8h.html#a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f">RPC_CALL_MORE_AVAILABLE</a></div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00065">connection.h:65</a></div></div>
-<div class="ttc" id="connection_8h_html_a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d"><div class="ttname"><a href="connection_8h.html#a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d">RPC_CALL_DONE</a></div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00066">connection.h:66</a></div></div>
-<div class="ttc" id="connection_8h_html_a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1"><div class="ttname"><a href="connection_8h.html#a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1">RPC_CALL_IN_PROGRESS</a></div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00064">connection.h:64</a></div></div>
+<div class="ttc" id="connection_8h_html_a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0"><div class="ttname"><a href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0">RPC_CONNECTION_CLOSED</a></div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00055">connection.h:55</a></div></div>
+<div class="ttc" id="connection_8h_html_a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1"><div class="ttname"><a href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1">RPC_OTHER</a></div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00059">connection.h:59</a></div></div>
+<div class="ttc" id="connection_8h_html_a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b"><div class="ttname"><a href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b">RPC_LOGOUT</a></div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00058">connection.h:58</a></div></div>
+<div class="ttc" id="connection_8h_html_a1bc22789ecc5ca9cbe8637c8f173ee4d"><div class="ttname"><a href="connection_8h.html#a1bc22789ecc5ca9cbe8637c8f173ee4d">rpc_connection_send_event</a></div><div class="ttdeci">int rpc_connection_send_event(rpc_connection_t conn, const char *name, rpc_object_t args)</div></div>
+<div class="ttc" id="connection_8h_html_a8f332abcc5d0a80c86f8317c7dcc79ec"><div class="ttname"><a href="connection_8h.html#a8f332abcc5d0a80c86f8317c7dcc79ec">rpc_connection_set_error_handler</a></div><div class="ttdeci">void rpc_connection_set_error_handler(rpc_connection_t conn, rpc_error_handler_t handler)</div></div>
+<div class="ttc" id="connection_8h_html_a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f"><div class="ttname"><a href="connection_8h.html#a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f">RPC_CALL_MORE_AVAILABLE</a></div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00068">connection.h:68</a></div></div>
+<div class="ttc" id="connection_8h_html_a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d"><div class="ttname"><a href="connection_8h.html#a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d">RPC_CALL_DONE</a></div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00069">connection.h:69</a></div></div>
+<div class="ttc" id="connection_8h_html_a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1"><div class="ttname"><a href="connection_8h.html#a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1">RPC_CALL_IN_PROGRESS</a></div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00067">connection.h:67</a></div></div>
 <div class="ttc" id="connection_8h_html_ae600ee03958915ee116e90e3e7795ec7"><div class="ttname"><a href="connection_8h.html#ae600ee03958915ee116e90e3e7795ec7">rpc_call_wait</a></div><div class="ttdeci">int rpc_call_wait(rpc_call_t call)</div></div>
 <div class="ttc" id="connection_8h_html_a844f7384a38ef32d4d4b9d6994aed613"><div class="ttname"><a href="connection_8h.html#a844f7384a38ef32d4d4b9d6994aed613">rpc_call_continue</a></div><div class="ttdeci">int rpc_call_continue(rpc_call_t call, bool sync)</div></div>
+<div class="ttc" id="connection_8h_html_a88bd06a910a4ce0b9046b9beb4af5ccd"><div class="ttname"><a href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccd">rpc_error_code</a></div><div class="ttdeci">rpc_error_code</div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00051">connection.h:51</a></div></div>
+<div class="ttc" id="connection_8h_html_ae843166183a4bd6dbf5a58133b3fcaf3"><div class="ttname"><a href="connection_8h.html#ae843166183a4bd6dbf5a58133b3fcaf3">rpc_connection_set_event_handler</a></div><div class="ttdeci">void rpc_connection_set_event_handler(rpc_connection_t conn, rpc_handler_t handler)</div></div>
+<div class="ttc" id="connection_8h_html_a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d"><div class="ttname"><a href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d">RPC_SPURIOUS_RESPONSE</a></div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00057">connection.h:57</a></div></div>
 <div class="ttc" id="connection_8h_html_ace66aca5d1c46e97128a3e09dbce89d1"><div class="ttname"><a href="connection_8h.html#ace66aca5d1c46e97128a3e09dbce89d1">rpc_call_free</a></div><div class="ttdeci">void rpc_call_free(rpc_call_t call)</div></div>
+<div class="ttc" id="connection_8h_html_a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70"><div class="ttname"><a href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70">RPC_CALL_TIMEOUT</a></div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00056">connection.h:56</a></div></div>
 <div class="ttc" id="connection_8h_html_a6af73450be622a40f3cbc2b9425ca5dd"><div class="ttname"><a href="connection_8h.html#a6af73450be622a40f3cbc2b9425ca5dd">rpc_call_result</a></div><div class="ttdeci">rpc_object_t rpc_call_result(rpc_call_t call)</div></div>
 <div class="ttc" id="object_8h_html"><div class="ttname"><a href="object_8h.html">object.h</a></div></div>
 <div class="ttc" id="connection_8h_html_a17059d810db4d08d911e45d24704dacc"><div class="ttname"><a href="connection_8h.html#a17059d810db4d08d911e45d24704dacc">rpc_call_abort</a></div><div class="ttdeci">int rpc_call_abort(rpc_call_t call)</div></div>
-<div class="ttc" id="connection_8h_html_a22306445a7503bab94835382d07e0410"><div class="ttname"><a href="connection_8h.html#a22306445a7503bab94835382d07e0410">rpc_call_status</a></div><div class="ttdeci">rpc_call_status</div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00062">connection.h:62</a></div></div>
-<div class="ttc" id="connection_8h_html_a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856"><div class="ttname"><a href="connection_8h.html#a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856">RPC_CALL_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00067">connection.h:67</a></div></div>
+<div class="ttc" id="connection_8h_html_a22306445a7503bab94835382d07e0410"><div class="ttname"><a href="connection_8h.html#a22306445a7503bab94835382d07e0410">rpc_call_status</a></div><div class="ttdeci">rpc_call_status</div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00065">connection.h:65</a></div></div>
+<div class="ttc" id="connection_8h_html_a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7"><div class="ttname"><a href="connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7">RPC_INVALID_RESPONSE</a></div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00053">connection.h:53</a></div></div>
+<div class="ttc" id="connection_8h_html_a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856"><div class="ttname"><a href="connection_8h.html#a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856">RPC_CALL_ERROR</a></div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00070">connection.h:70</a></div></div>
+<div class="ttc" id="connection_8h_html_a820acf081ad5784aafde954b5ec9270a"><div class="ttname"><a href="connection_8h.html#a820acf081ad5784aafde954b5ec9270a">rpc_connection_subscribe_event</a></div><div class="ttdeci">int rpc_connection_subscribe_event(rpc_connection_t conn, const char *name)</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

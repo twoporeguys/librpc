@@ -25,12 +25,14 @@ This graph shows which files directly or indirectly include this file\-:
 \item 
 \#define \hyperlink{connection_8h_a4f7704822a76a6f293f6abbb59bf41f3}{R\-P\-C\-\_\-\-H\-A\-N\-D\-L\-E\-R}(\-\_\-fn, \-\_\-arg)
 \item 
+\#define \hyperlink{connection_8h_ac6630daf34229f9dd8a754b119e4a94d}{R\-P\-C\-\_\-\-E\-R\-R\-O\-R\-\_\-\-H\-A\-N\-D\-L\-E\-R}(\-\_\-fn, \-\_\-arg)
+\item 
 \#define \hyperlink{connection_8h_a7512dc753949d75650bbec7527f9d0a6}{R\-P\-C\-\_\-\-C\-A\-L\-L\-B\-A\-C\-K}(\-\_\-fn, \-\_\-arg)
 \end{DoxyCompactItemize}
 \subsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{connection_8h_a633ab75091635398a5cc66ab828420da}{typedef enum rpc\-\_\-error\-\_\-code {\bfseries error\-\_\-code\-\_\-t}}\label{connection_8h_a633ab75091635398a5cc66ab828420da}
+\hypertarget{connection_8h_a043170f29cb25827a88be4dab2313a91}{typedef enum \hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccd}{rpc\-\_\-error\-\_\-code} {\bfseries rpc\-\_\-error\-\_\-code\-\_\-t}}\label{connection_8h_a043170f29cb25827a88be4dab2313a91}
 
 \item 
 typedef enum \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\-\_\-call\-\_\-status} \hyperlink{connection_8h_a5e44285dc90be1f6bc541504a3f6d929}{rpc\-\_\-call\-\_\-status\-\_\-t}
@@ -44,21 +46,24 @@ typedef enum \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\-\_
 \hypertarget{connection_8h_a5b4b4d2a4e3a7585ea8fe7c25256cf9d}{typedef void($^\wedge$ {\bfseries rpc\-\_\-handler\-\_\-t} )(const char $\ast$name, rpc\-\_\-object\-\_\-t args)}\label{connection_8h_a5b4b4d2a4e3a7585ea8fe7c25256cf9d}
 
 \item 
+\hypertarget{connection_8h_a8dee2cbce5bf6bbb8de1d4bd95936a4a}{typedef void($^\wedge$ {\bfseries rpc\-\_\-error\-\_\-handler\-\_\-t} )(rpc\-\_\-error\-\_\-code\-\_\-t code, rpc\-\_\-object\-\_\-t args)}\label{connection_8h_a8dee2cbce5bf6bbb8de1d4bd95936a4a}
+
+\item 
 \hypertarget{connection_8h_adc95de7fabf9904e1be453f5c6392a6b}{typedef bool($^\wedge$ {\bfseries rpc\-\_\-callback\-\_\-t} )(rpc\-\_\-object\-\_\-t args, \hyperlink{connection_8h_a5e44285dc90be1f6bc541504a3f6d929}{rpc\-\_\-call\-\_\-status\-\_\-t} status)}\label{connection_8h_adc95de7fabf9904e1be453f5c6392a6b}
 
 \end{DoxyCompactItemize}
 \subsection*{Enumerations}
 \begin{DoxyCompactItemize}
 \item 
-enum {\bfseries rpc\-\_\-error\-\_\-code} \{ \\*
-{\bfseries I\-N\-V\-A\-L\-I\-D\-\_\-\-J\-S\-O\-N\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E} = 1, 
-{\bfseries C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-T\-I\-M\-E\-O\-U\-T}, 
-{\bfseries C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-C\-L\-O\-S\-E\-D}, 
-{\bfseries R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-T\-I\-M\-E\-O\-U\-T}, 
+enum \hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccd}{rpc\-\_\-error\-\_\-code} \{ \\*
+\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7}{R\-P\-C\-\_\-\-I\-N\-V\-A\-L\-I\-D\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E} = 1, 
+\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55}{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-T\-I\-M\-E\-O\-U\-T}, 
+\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0}{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-C\-L\-O\-S\-E\-D}, 
+\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70}{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-T\-I\-M\-E\-O\-U\-T}, 
 \\*
-{\bfseries S\-P\-U\-R\-I\-O\-U\-S\-\_\-\-R\-P\-C\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E}, 
-{\bfseries L\-O\-G\-O\-U\-T}, 
-{\bfseries O\-T\-H\-E\-R}
+\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d}{R\-P\-C\-\_\-\-S\-P\-U\-R\-I\-O\-U\-S\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E}, 
+\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b}{R\-P\-C\-\_\-\-L\-O\-G\-O\-U\-T}, 
+\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1}{R\-P\-C\-\_\-\-O\-T\-H\-E\-R}
  \}
 \item 
 enum \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\-\_\-call\-\_\-status} \{ \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1}{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-I\-N\-\_\-\-P\-R\-O\-G\-R\-E\-S\-S}, 
@@ -76,8 +81,7 @@ enum \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\-\_\-call\-
 \hypertarget{connection_8h_a6d4de49f4d9121c4077e62b73064b99d}{int {\bfseries rpc\-\_\-connection\-\_\-close} (rpc\-\_\-connection\-\_\-t conn)}\label{connection_8h_a6d4de49f4d9121c4077e62b73064b99d}
 
 \item 
-\hypertarget{connection_8h_a820acf081ad5784aafde954b5ec9270a}{int {\bfseries rpc\-\_\-connection\-\_\-subscribe\-\_\-event} (rpc\-\_\-connection\-\_\-t conn, const char $\ast$name)}\label{connection_8h_a820acf081ad5784aafde954b5ec9270a}
-
+int \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\-\_\-connection\-\_\-subscribe\-\_\-event} (rpc\-\_\-connection\-\_\-t conn, const char $\ast$name)
 \item 
 \hypertarget{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{int {\bfseries rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event} (rpc\-\_\-connection\-\_\-t conn, const char $\ast$name)}\label{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}
 
@@ -97,11 +101,11 @@ enum \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\-\_\-call\-
 \hypertarget{connection_8h_aee4f43c3790d07d116367646694cb1c0}{rpc\-\_\-call\-\_\-t {\bfseries rpc\-\_\-connection\-\_\-call} (rpc\-\_\-connection\-\_\-t conn, const char $\ast$name, rpc\-\_\-object\-\_\-t args, rpc\-\_\-callback\-\_\-t callback)}\label{connection_8h_aee4f43c3790d07d116367646694cb1c0}
 
 \item 
-\hypertarget{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}{int {\bfseries rpc\-\_\-connection\-\_\-send\-\_\-event} (rpc\-\_\-connection\-\_\-t conn, const char $\ast$name, rpc\-\_\-object\-\_\-t args)}\label{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}
-
+int \hyperlink{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}{rpc\-\_\-connection\-\_\-send\-\_\-event} (rpc\-\_\-connection\-\_\-t conn, const char $\ast$name, rpc\-\_\-object\-\_\-t args)
 \item 
-\hypertarget{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}{void {\bfseries rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler} (rpc\-\_\-connection\-\_\-t conn, rpc\-\_\-handler\-\_\-t handler)}\label{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}
-
+void \hyperlink{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}{rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler} (rpc\-\_\-connection\-\_\-t conn, rpc\-\_\-handler\-\_\-t handler)
+\item 
+void \hyperlink{connection_8h_a8f332abcc5d0a80c86f8317c7dcc79ec}{rpc\-\_\-connection\-\_\-set\-\_\-error\-\_\-handler} (rpc\-\_\-connection\-\_\-t conn, rpc\-\_\-error\-\_\-handler\-\_\-t handler)
 \item 
 int \hyperlink{connection_8h_ae600ee03958915ee116e90e3e7795ec7}{rpc\-\_\-call\-\_\-wait} (rpc\-\_\-call\-\_\-t call)
 \item 
@@ -121,6 +125,12 @@ int \hyperlink{connection_8h_a17059d810db4d08d911e45d24704dacc}{rpc\-\_\-call\-\
 rpc\-\_\-object\-\_\-t \hyperlink{connection_8h_a6af73450be622a40f3cbc2b9425ca5dd}{rpc\-\_\-call\-\_\-result} (rpc\-\_\-call\-\_\-t call)
 \item 
 void \hyperlink{connection_8h_ace66aca5d1c46e97128a3e09dbce89d1}{rpc\-\_\-call\-\_\-free} (rpc\-\_\-call\-\_\-t call)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{connection_8h_a9e6c38810a560a757e04e177872eb203}{struct rpc\-\_\- {\bfseries call}}\label{connection_8h_a9e6c38810a560a757e04e177872eb203}
+
 \end{DoxyCompactItemize}
 
 
@@ -148,7 +158,25 @@ Definition in file \hyperlink{connection_8h_source}{connection.\-h}.
 \end{DoxyCode}
 Converts function pointer to a \-::rpc\-\_\-callback\-\_\-t block type. 
 
-Definition at line 86 of file connection.\-h.
+Definition at line 98 of file connection.\-h.
+
+\hypertarget{connection_8h_ac6630daf34229f9dd8a754b119e4a94d}{\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-E\-R\-R\-O\-R\-\_\-\-H\-A\-N\-D\-L\-E\-R@{R\-P\-C\-\_\-\-E\-R\-R\-O\-R\-\_\-\-H\-A\-N\-D\-L\-E\-R}}
+\index{R\-P\-C\-\_\-\-E\-R\-R\-O\-R\-\_\-\-H\-A\-N\-D\-L\-E\-R@{R\-P\-C\-\_\-\-E\-R\-R\-O\-R\-\_\-\-H\-A\-N\-D\-L\-E\-R}!connection.h@{connection.\-h}}
+\subsubsection[{R\-P\-C\-\_\-\-E\-R\-R\-O\-R\-\_\-\-H\-A\-N\-D\-L\-E\-R}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-P\-C\-\_\-\-E\-R\-R\-O\-R\-\_\-\-H\-A\-N\-D\-L\-E\-R(
+\begin{DoxyParamCaption}
+\item[{}]{\-\_\-fn, }
+\item[{}]{\-\_\-arg}
+\end{DoxyParamCaption}
+)}}\label{connection_8h_ac6630daf34229f9dd8a754b119e4a94d}
+{\bfseries Value\-:}
+\begin{DoxyCode}
+^(rpc\_error\_code\_t \_code, rpc\_object\_t \_args) \{         \(\backslash\)
+        \_fn(\_arg, \_code, \_args);                \(\backslash\)
+    \}
+\end{DoxyCode}
+Converts function pointer to a \-::rpc\-\_\-error\-\_\-handler\-\_\-t block type. 
+
+Definition at line 90 of file connection.\-h.
 
 \hypertarget{connection_8h_a4f7704822a76a6f293f6abbb59bf41f3}{\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-H\-A\-N\-D\-L\-E\-R@{R\-P\-C\-\_\-\-H\-A\-N\-D\-L\-E\-R}}
 \index{R\-P\-C\-\_\-\-H\-A\-N\-D\-L\-E\-R@{R\-P\-C\-\_\-\-H\-A\-N\-D\-L\-E\-R}!connection.h@{connection.\-h}}
@@ -166,7 +194,7 @@ Definition at line 86 of file connection.\-h.
 \end{DoxyCode}
 Converts function pointer to a \-::rpc\-\_\-handler\-\_\-t block type. 
 
-Definition at line 78 of file connection.\-h.
+Definition at line 82 of file connection.\-h.
 
 
 
@@ -195,7 +223,33 @@ Enumerates possible remote procedure call status values. \begin{Desc}
 \end{Desc}
 
 
-Definition at line 62 of file connection.\-h.
+Definition at line 65 of file connection.\-h.
+
+\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccd}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-error\-\_\-code@{rpc\-\_\-error\-\_\-code}}
+\index{rpc\-\_\-error\-\_\-code@{rpc\-\_\-error\-\_\-code}!connection.h@{connection.\-h}}
+\subsubsection[{rpc\-\_\-error\-\_\-code}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf rpc\-\_\-error\-\_\-code}}}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccd}
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{R\-P\-C\-\_\-\-I\-N\-V\-A\-L\-I\-D\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E@{R\-P\-C\-\_\-\-I\-N\-V\-A\-L\-I\-D\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-I\-N\-V\-A\-L\-I\-D\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E@{R\-P\-C\-\_\-\-I\-N\-V\-A\-L\-I\-D\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E}}\item[{\em 
+\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7}{R\-P\-C\-\_\-\-I\-N\-V\-A\-L\-I\-D\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7}
+}]Received unreadable response \index{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-T\-I\-M\-E\-O\-U\-T@{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-T\-I\-M\-E\-O\-U\-T}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-T\-I\-M\-E\-O\-U\-T@{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-T\-I\-M\-E\-O\-U\-T}}\item[{\em 
+\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55}{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-T\-I\-M\-E\-O\-U\-T}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55}
+}]Connection timed out \index{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-C\-L\-O\-S\-E\-D@{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-C\-L\-O\-S\-E\-D}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-C\-L\-O\-S\-E\-D@{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-C\-L\-O\-S\-E\-D}}\item[{\em 
+\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0}{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-C\-L\-O\-S\-E\-D}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0}
+}]Disconnect received \index{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-T\-I\-M\-E\-O\-U\-T@{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-T\-I\-M\-E\-O\-U\-T}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-T\-I\-M\-E\-O\-U\-T@{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-T\-I\-M\-E\-O\-U\-T}}\item[{\em 
+\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70}{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-T\-I\-M\-E\-O\-U\-T}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70}
+}]Request timed out \index{R\-P\-C\-\_\-\-S\-P\-U\-R\-I\-O\-U\-S\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E@{R\-P\-C\-\_\-\-S\-P\-U\-R\-I\-O\-U\-S\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-S\-P\-U\-R\-I\-O\-U\-S\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E@{R\-P\-C\-\_\-\-S\-P\-U\-R\-I\-O\-U\-S\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E}}\item[{\em 
+\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d}{R\-P\-C\-\_\-\-S\-P\-U\-R\-I\-O\-U\-S\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d}
+}]Response to unknown request \index{R\-P\-C\-\_\-\-L\-O\-G\-O\-U\-T@{R\-P\-C\-\_\-\-L\-O\-G\-O\-U\-T}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-L\-O\-G\-O\-U\-T@{R\-P\-C\-\_\-\-L\-O\-G\-O\-U\-T}}\item[{\em 
+\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b}{R\-P\-C\-\_\-\-L\-O\-G\-O\-U\-T}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b}
+}]Logged out by server \index{R\-P\-C\-\_\-\-O\-T\-H\-E\-R@{R\-P\-C\-\_\-\-O\-T\-H\-E\-R}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-O\-T\-H\-E\-R@{R\-P\-C\-\_\-\-O\-T\-H\-E\-R}}\item[{\em 
+\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1}{R\-P\-C\-\_\-\-O\-T\-H\-E\-R}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1}
+}]Other or unknown reason \end{description}
+\end{Desc}
+
+
+Definition at line 51 of file connection.\-h.
 
 
 
@@ -278,6 +332,87 @@ Waits for a call to change status.
 
 \begin{DoxyParams}{Parameters}
 {\em call} & Call to wait on \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on failure 
+\end{DoxyReturn}
+\hypertarget{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-send\-\_\-event@{rpc\-\_\-connection\-\_\-send\-\_\-event}}
+\index{rpc\-\_\-connection\-\_\-send\-\_\-event@{rpc\-\_\-connection\-\_\-send\-\_\-event}!connection.h@{connection.\-h}}
+\subsubsection[{rpc\-\_\-connection\-\_\-send\-\_\-event}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-connection\-\_\-send\-\_\-event (
+\begin{DoxyParamCaption}
+\item[{rpc\-\_\-connection\-\_\-t}]{conn, }
+\item[{const char $\ast$}]{name, }
+\item[{rpc\-\_\-object\-\_\-t}]{args}
+\end{DoxyParamCaption}
+)}}\label{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}
+Sends an event.
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & Connection to send event across \\
+\hline
+{\em name} & Event name \\
+\hline
+{\em args} & Event arguments or N\-U\-L\-L \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on failure 
+\end{DoxyReturn}
+\hypertarget{connection_8h_a8f332abcc5d0a80c86f8317c7dcc79ec}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-set\-\_\-error\-\_\-handler@{rpc\-\_\-connection\-\_\-set\-\_\-error\-\_\-handler}}
+\index{rpc\-\_\-connection\-\_\-set\-\_\-error\-\_\-handler@{rpc\-\_\-connection\-\_\-set\-\_\-error\-\_\-handler}!connection.h@{connection.\-h}}
+\subsubsection[{rpc\-\_\-connection\-\_\-set\-\_\-error\-\_\-handler}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\-\_\-connection\-\_\-set\-\_\-error\-\_\-handler (
+\begin{DoxyParamCaption}
+\item[{rpc\-\_\-connection\-\_\-t}]{conn, }
+\item[{rpc\-\_\-error\-\_\-handler\-\_\-t}]{handler}
+\end{DoxyParamCaption}
+)}}\label{connection_8h_a8f332abcc5d0a80c86f8317c7dcc79ec}
+Sets global error handler for a connection.
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & Connection to set error handler for \\
+\hline
+{\em handler} & Error handler block \\
+\hline
+\end{DoxyParams}
+\hypertarget{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler@{rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler}}
+\index{rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler@{rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler}!connection.h@{connection.\-h}}
+\subsubsection[{rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler (
+\begin{DoxyParamCaption}
+\item[{rpc\-\_\-connection\-\_\-t}]{conn, }
+\item[{rpc\-\_\-handler\-\_\-t}]{handler}
+\end{DoxyParamCaption}
+)}}\label{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}
+Sets global event handler for a connection.
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & Connection to set event handler for \\
+\hline
+{\em handler} & Handler block \\
+\hline
+\end{DoxyParams}
+\hypertarget{connection_8h_a820acf081ad5784aafde954b5ec9270a}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-subscribe\-\_\-event@{rpc\-\_\-connection\-\_\-subscribe\-\_\-event}}
+\index{rpc\-\_\-connection\-\_\-subscribe\-\_\-event@{rpc\-\_\-connection\-\_\-subscribe\-\_\-event}!connection.h@{connection.\-h}}
+\subsubsection[{rpc\-\_\-connection\-\_\-subscribe\-\_\-event}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-connection\-\_\-subscribe\-\_\-event (
+\begin{DoxyParamCaption}
+\item[{rpc\-\_\-connection\-\_\-t}]{conn, }
+\item[{const char $\ast$}]{name}
+\end{DoxyParamCaption}
+)}}\label{connection_8h_a820acf081ad5784aafde954b5ec9270a}
+Subscribes for an event.
+
+This function can be called multiple times on a single event name -\/ subsequent calls will not send a subscribe message to the server, but instead increment internal reference count for a subscription.
+
+Calls to \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\-\_\-connection\-\_\-subscribe\-\_\-event()} must be paired with rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event().
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & Connection to subscribe on \\
+\hline
+{\em name} & Event name \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
