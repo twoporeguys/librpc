@@ -83,8 +83,7 @@ enum \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\-\_\-call\-
 \item 
 int \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\-\_\-connection\-\_\-subscribe\-\_\-event} (rpc\-\_\-connection\-\_\-t conn, const char $\ast$name)
 \item 
-\hypertarget{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{int {\bfseries rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event} (rpc\-\_\-connection\-\_\-t conn, const char $\ast$name)}\label{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}
-
+int \hyperlink{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event} (rpc\-\_\-connection\-\_\-t conn, const char $\ast$name)
 \item 
 \hypertarget{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}{void $\ast$ {\bfseries rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler} (rpc\-\_\-connection\-\_\-t conn, const char $\ast$name, rpc\-\_\-handler\-\_\-t handler)}\label{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}
 
@@ -125,12 +124,6 @@ int \hyperlink{connection_8h_a17059d810db4d08d911e45d24704dacc}{rpc\-\_\-call\-\
 rpc\-\_\-object\-\_\-t \hyperlink{connection_8h_a6af73450be622a40f3cbc2b9425ca5dd}{rpc\-\_\-call\-\_\-result} (rpc\-\_\-call\-\_\-t call)
 \item 
 void \hyperlink{connection_8h_ace66aca5d1c46e97128a3e09dbce89d1}{rpc\-\_\-call\-\_\-free} (rpc\-\_\-call\-\_\-t call)
-\end{DoxyCompactItemize}
-\subsection*{Variables}
-\begin{DoxyCompactItemize}
-\item 
-\hypertarget{connection_8h_a9e6c38810a560a757e04e177872eb203}{struct rpc\-\_\- {\bfseries call}}\label{connection_8h_a9e6c38810a560a757e04e177872eb203}
-
 \end{DoxyCompactItemize}
 
 
@@ -406,11 +399,37 @@ Subscribes for an event.
 
 This function can be called multiple times on a single event name -\/ subsequent calls will not send a subscribe message to the server, but instead increment internal reference count for a subscription.
 
-Calls to \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\-\_\-connection\-\_\-subscribe\-\_\-event()} must be paired with rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event().
+Calls to \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\-\_\-connection\-\_\-subscribe\-\_\-event()} must be paired with \hyperlink{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event()}.
 
 
 \begin{DoxyParams}{Parameters}
 {\em conn} & Connection to subscribe on \\
+\hline
+{\em name} & Event name \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on failure 
+\end{DoxyReturn}
+\hypertarget{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event@{rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event}}
+\index{rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event@{rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event}!connection.h@{connection.\-h}}
+\subsubsection[{rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event (
+\begin{DoxyParamCaption}
+\item[{rpc\-\_\-connection\-\_\-t}]{conn, }
+\item[{const char $\ast$}]{name}
+\end{DoxyParamCaption}
+)}}\label{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}
+Undoes previous event subscription.
+
+This function may either\-:
+\begin{DoxyItemize}
+\item decrement reference count of subscription for given event
+\item send unsubscribe message to the server (when subscription reference count reached value of 0)
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & Connection to undo the subscription on \\
 \hline
 {\em name} & Event name \\
 \hline
