@@ -322,8 +322,11 @@ on_rpc_continue(rpc_connection_t conn, rpc_object_t args __unused,
 
 	call = g_hash_table_lookup(conn->rco_inbound_calls,
 	    rpc_string_get_string_ptr(id));
-	if (call == NULL)
+	if (call == NULL) {
+		if (conn->rco_error_handler != NULL)
+			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, id);
 		return;
+	}
 
 	g_mutex_lock(&call->ric_mtx);
 	call->ric_consumer_seqno++;
@@ -332,14 +335,17 @@ on_rpc_continue(rpc_connection_t conn, rpc_object_t args __unused,
 }
 
 static void
-on_rpc_end(rpc_connection_t conn, rpc_object_t args __attribute__((unused)), rpc_object_t id)
+on_rpc_end(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 {
 	rpc_call_t call;
 
 	call = g_hash_table_lookup(conn->rco_calls,
 	    rpc_string_get_string_ptr(id));
-	if (call == NULL)
+	if (call == NULL) {
+		if (conn->rco_error_handler != NULL)
+			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, id);
 		return;
+	}
 
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_status = RPC_CALL_DONE;
@@ -350,14 +356,17 @@ on_rpc_end(rpc_connection_t conn, rpc_object_t args __attribute__((unused)), rpc
 }
 
 static void
-on_rpc_abort(rpc_connection_t conn, rpc_object_t args __attribute__((unused)), rpc_object_t id)
+on_rpc_abort(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 {
 	struct rpc_inbound_call *call;
 
 	call = g_hash_table_lookup(conn->rco_inbound_calls,
 	    rpc_string_get_string_ptr(id));
-	if (call == NULL)
+	if (call == NULL) {
+		if (conn->rco_error_handler != NULL)
+			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, id);
 		return;
+	}
 
 	g_mutex_lock(&call->ric_mtx);
 	call->ric_aborted = true;
@@ -372,8 +381,11 @@ on_rpc_error(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 
 	call = g_hash_table_lookup(conn->rco_calls,
 	    rpc_string_get_string_ptr(id));
-	if (call == NULL)
+	if (call == NULL) {
+		if (conn->rco_error_handler != NULL)
+			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, id);
 		return;
+	}
 
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_status = RPC_CALL_ERROR;
@@ -385,7 +397,7 @@ on_rpc_error(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 }
 
 static void
-on_events_event(rpc_connection_t conn, rpc_object_t args __attribute__((unused)),
+on_events_event(rpc_connection_t conn, rpc_object_t args __unused,
     rpc_object_t id __unused)
 {
 	struct work_item *item;
@@ -468,11 +480,18 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 
 	if ((conn->rco_flags & RPC_TRANSPORT_NO_SERIALIZE) == 0) {
 		msg = rpc_msgpack_deserialize(frame, len);
-		if (msg == NULL)
+		if (msg == NULL) {
+			if (conn->rco_error_handler != NULL) {
+				conn->rco_error_handler(RPC_SPURIOUS_RESPONSE,
+				    NULL);
+			}
 			return (-1);
+		}
 	}
 
 	if (rpc_get_type(msg) != RPC_TYPE_DICTIONARY) {
+		if (conn->rco_error_handler != NULL)
+			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, msg);
 		rpc_release(msg);
 		return (-1);
 	}
@@ -483,8 +502,11 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 }
 
 static int
-rpc_close(struct rpc_connection *conn __attribute__((unused)))
+rpc_close(rpc_connection_t conn)
 {
+
+	if (conn->rco_error_handler)
+		conn->rco_error_handler(RPC_CONNECTION_CLOSED, NULL);
 
 	return (0);
 }
@@ -970,14 +992,14 @@ void
 rpc_connection_set_event_handler(rpc_connection_t conn, rpc_handler_t h)
 {
 
-	conn->rco_event_handler = h;
+	conn->rco_event_handler = Block_copy(h);
 }
 
 void
 rpc_connection_set_error_handler(rpc_connection_t conn, rpc_error_handler_t h)
 {
 
-	conn->rco_error_handler = h;
+	conn->rco_error_handler = Block_copy(h);
 }
 
 int

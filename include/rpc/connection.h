@@ -43,7 +43,7 @@ extern "C" {
 #endif
 
 struct rpc_connection;
-struct rpc_ call;
+struct rpc_call;
 
 /**
  *
@@ -119,7 +119,18 @@ int rpc_connection_close(rpc_connection_t conn);
  */
 int rpc_connection_subscribe_event(rpc_connection_t conn, const char *name);
 
-
+/**
+ * Undoes previous event subscription.
+ *
+ * This function may either:
+ * - decrement reference count of subscription for given event
+ * - send unsubscribe message to the server (when subscription reference count
+ *   reached value of 0)
+ *
+ * @param conn Connection to undo the subscription on
+ * @param name Event name
+ * @return 0 on success, -1 on failure
+ */
 int rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name);
 void *rpc_connection_register_event_handler(rpc_connection_t conn,
     const char *name, rpc_handler_t handler);
