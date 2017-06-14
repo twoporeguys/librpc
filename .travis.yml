@@ -10,7 +10,7 @@ branches:
 # Environment variables
 env:
   global:
-    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxygen
+    - DOXYFILE_IN: $TRAVIS_BUILD_DIR/Doxyfile.in
 
 # Install dependencies
 addons:

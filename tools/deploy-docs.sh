@@ -5,7 +5,8 @@ git config --global push.default simple
 git config user.name "Travis CI"
 git config user.email "travis@travis-ci.org"
 rm -rf *
-doxygen ${DOXYFILE}
+sed "s/@CMAKE_SOURCE_DIR@/${TRAVIS_BUIL_DIR}/g" ${DOXYFILE_IN} > Doxyfile
+doxygen Doxyfile
 
 if [ -d "html" ] && [ -f "html/index.html" ]; then
 	git add --all
