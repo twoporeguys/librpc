@@ -967,10 +967,17 @@ rpc_connection_send_event(rpc_connection_t conn, const char *name,
 }
 
 void
-rpc_connection_set_event_handler(rpc_connection_t conn, rpc_handler_t handler)
+rpc_connection_set_event_handler(rpc_connection_t conn, rpc_handler_t h)
 {
 
-	conn->rco_event_handler = handler;
+	conn->rco_event_handler = h;
+}
+
+void
+rpc_connection_set_error_handler(rpc_connection_t conn, rpc_error_handler_t h)
+{
+
+	conn->rco_error_handler = h;
 }
 
 int

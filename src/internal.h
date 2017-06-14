@@ -181,7 +181,7 @@ struct rpc_connection
     	struct rpc_client *	rco_client;
     	struct rpc_credentials	rco_creds;
 	const char *        	rco_uri;
-	rpc_callback_t		rco_error_handler;
+	rpc_error_handler_t 	rco_error_handler;
 	rpc_handler_t		rco_event_handler;
 	guint                 	rco_rpc_timeout;
 	GHashTable *		rco_calls;

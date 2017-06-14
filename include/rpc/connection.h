@@ -43,18 +43,21 @@ extern "C" {
 #endif
 
 struct rpc_connection;
-struct rpc_call;
+struct rpc_ call;
 
+/**
+ *
+ */
 typedef enum rpc_error_code
 {
-	INVALID_JSON_RESPONSE = 1,
-	CONNECTION_TIMEOUT,
-	CONNECTION_CLOSED,
-	RPC_CALL_TIMEOUT,
-	SPURIOUS_RPC_RESPONSE,
-	LOGOUT,
-	OTHER
-} error_code_t;
+	RPC_INVALID_RESPONSE = 1,	/**< Received unreadable response */
+	RPC_CONNECTION_TIMEOUT,		/**< Connection timed out */
+	RPC_CONNECTION_CLOSED,		/**< Disconnect received */
+	RPC_CALL_TIMEOUT,		/**< Request timed out */
+	RPC_SPURIOUS_RESPONSE,		/**< Response to unknown request */
+	RPC_LOGOUT,			/**< Logged out by server */
+	RPC_OTHER			/**< Other or unknown reason */
+} rpc_error_code_t;
 
 /**
  * Enumerates possible remote procedure call status values.
@@ -63,13 +66,14 @@ typedef enum rpc_call_status
 {
 	RPC_CALL_IN_PROGRESS,		/**< Call in progress */
 	RPC_CALL_MORE_AVAILABLE,	/**< Streaming response, more data available */
-	RPC_CALL_DONE,				/**< Call finished, response received */
-	RPC_CALL_ERROR				/**< Call finished, error received */
+	RPC_CALL_DONE,			/**< Call finished, response received */
+	RPC_CALL_ERROR			/**< Call finished, error received */
 } rpc_call_status_t;
 
 typedef struct rpc_connection *rpc_connection_t;
 typedef struct rpc_call *rpc_call_t;
 typedef void (^rpc_handler_t)(const char *name, rpc_object_t args);
+typedef void (^rpc_error_handler_t)(rpc_error_code_t code, rpc_object_t args);
 typedef bool (^rpc_callback_t)(rpc_object_t args, rpc_call_status_t status);
 
 /**
@@ -78,6 +82,14 @@ typedef bool (^rpc_callback_t)(rpc_object_t args, rpc_call_status_t status);
 #define	RPC_HANDLER(_fn, _arg) 						\
 	^(const char *_name, rpc_object_t _args) {			\
 		_fn(_arg, _name, _args);				\
+	}
+
+/**
+ * Converts function pointer to a ::rpc_error_handler_t block type.
+ */
+#define	RPC_ERROR_HANDLER(_fn, _arg) 					\
+	^(rpc_error_code_t _code, rpc_object_t _args) {			\
+		_fn(_arg, _code, _args);				\
 	}
 
 /**
@@ -90,7 +102,24 @@ typedef bool (^rpc_callback_t)(rpc_object_t args, rpc_call_status_t status);
 
 rpc_connection_t rpc_connection_create(const char *uri, int flags);
 int rpc_connection_close(rpc_connection_t conn);
+
+/**
+ * Subscribes for an event.
+ *
+ * This function can be called multiple times on a single event name -
+ * subsequent calls will not send a subscribe message to the server,
+ * but instead increment internal reference count for a subscription.
+ *
+ * Calls to rpc_connection_subscribe_event() must be paired with
+ * rpc_connection_unsubscribe_event().
+ *
+ * @param conn Connection to subscribe on
+ * @param name Event name
+ * @return 0 on success, -1 on failure
+ */
 int rpc_connection_subscribe_event(rpc_connection_t conn, const char *name);
+
+
 int rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name);
 void *rpc_connection_register_event_handler(rpc_connection_t conn,
     const char *name, rpc_handler_t handler);
@@ -102,10 +131,35 @@ rpc_object_t rpc_connection_call_syncv(rpc_connection_t conn,
     const char *method, va_list ap);
 rpc_call_t rpc_connection_call(rpc_connection_t conn, const char *name,
     rpc_object_t args, rpc_callback_t callback);
+
+/**
+ * Sends an event.
+ *
+ * @param conn Connection to send event across
+ * @param name Event name
+ * @param args Event arguments or NULL
+ * @return 0 on success, -1 on failure
+ */
 int rpc_connection_send_event(rpc_connection_t conn, const char *name,
     rpc_object_t args);
+
+/**
+ * Sets global event handler for a connection.
+ *
+ * @param conn Connection to set event handler for
+ * @param handler Handler block
+ */
 void rpc_connection_set_event_handler(rpc_connection_t conn,
     rpc_handler_t handler);
+
+/**
+ * Sets global error handler for a connection.
+ *
+ * @param conn Connection to set error handler for
+ * @param handler Error handler block
+ */
+void rpc_connection_set_error_handler(rpc_connection_t conn,
+    rpc_error_handler_t handler);
 
 /**
  * Waits for a call to change status.
