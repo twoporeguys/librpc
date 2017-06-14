@@ -5,12 +5,12 @@ git config --global push.default simple
 git config user.name "Travis CI"
 git config user.email "travis@travis-ci.org"
 rm -rf *
-sed "s/@CMAKE_SOURCE_DIR@/${TRAVIS_BUIL_DIR}/g" ${DOXYFILE_IN} > Doxyfile
+sed "s/@CMAKE_SOURCE_DIR@/${TRAVIS_BUILD_DIR}/g" ${DOXYFILE_IN} > Doxyfile
 doxygen Doxyfile
 
 if [ -d "html" ] && [ -f "html/index.html" ]; then
 	git add --all
-	git commit -m "Deploy code docs to GitHub Pages (build ${TRAVIS_BUILD_NUMBER})" -m "Commit: ${TRAVIS_COMMIT}"
+	git commit -m "Deploy code docs to GitHub Pages (build #${TRAVIS_BUILD_NUMBER})" -m "Commit: ${TRAVIS_COMMIT}"
 	git push --force https://${GH_REPO_TOKEN}@github.com/twoporeguys/librpc.git > /dev/null 2>&1
 else
 	echo '' >&2
