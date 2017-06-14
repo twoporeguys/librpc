@@ -203,9 +203,6 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 static rpc_object_t
 rpc_msgpack_read_object(mpack_node_t node)
 {
-#if defined(__linux__)
-	struct rpc_msgpack_shmem_desc *desc;
-#endif
 	int *fd;
 	int64_t *date;
 	mpack_tree_t subtree;
