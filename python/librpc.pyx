@@ -24,6 +24,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+import os
 import sys
 import enum
 import errno
@@ -95,11 +96,7 @@ class LibException(Exception):
         self.stacktrace = stacktrace
 
     def __str__(self):
-        return "[{0}] {1} {2}".format(
-            self.code,
-            self.message,
-            self.extra if self.extra else ''
-        )
+        return "[{0}] {1}".format(os.strerror(self.code), self.message)
 
 
 class RpcException(LibException):
@@ -148,7 +145,7 @@ cdef class Object(object):
         if isinstance(value, RpcException):
             extra = Object(value.extra)
             stack = Object(value.stacktrace)
-            self.obj = rpc_error_create_with_stack(value.code, value.message, extra.obj, stack.obj)
+            self.obj = rpc_error_create_with_stack(value.code, value.message.encode('utf-8'), extra.obj, stack.obj)
             return
 
         if isinstance(value, list) or force_type == ObjectType.ARRAY:
@@ -193,6 +190,8 @@ cdef class Object(object):
         def __get__(self):
             cdef Array array
             cdef Dictionary dictionary
+            cdef Object extra
+            cdef Object stack
             cdef const char *c_string = NULL
             cdef const uint8_t *c_bytes = NULL
             cdef size_t c_len = 0
@@ -231,7 +230,17 @@ cdef class Object(object):
                 return <bytes>c_bytes[:c_len]
 
             if self.type == ObjectType.ERROR:
-                pass
+                extra = Object.__new__(Object)
+                extra.obj = rpc_error_get_extra(self.obj)
+                stack = Object.__new__(Object)
+                stack.obj = rpc_error_get_stack(self.obj)
+
+                return RpcException(
+                    rpc_error_get_code(self.obj),
+                    rpc_error_get_message(self.obj).decode('utf-8'),
+                    extra,
+                    stack
+                )
 
             if self.type == ObjectType.ARRAY:
                 array = Array.__new__(Array)
@@ -253,7 +262,7 @@ cdef class Object(object):
 cdef class Array(Object):
     def __init__(self, value, force_type=None):
         if not isinstance(value, list):
-            raise LibException(errno.EINVAL, "Cannot initialize arrayt from {0} type".format(type(value)))
+            raise LibException(errno.EINVAL, "Cannot initialize array from {0} type".format(type(value)))
 
         super(Array, self).__init__(value, force_type)
 
@@ -738,9 +747,7 @@ cdef class Connection(object):
         if call_status == CallStatus.ERROR:
             rpc_value = get_chunk()
             rpc_retain(rpc_value.obj)
-            error = Dictionary.__new__(Dictionary)
-            error.obj = rpc_value.obj
-            raise RpcException(error['code'].value, error['message'].value)
+            raise rpc_value.value
 
         if call_status == CallStatus.DONE:
             return get_chunk()

@@ -32,7 +32,7 @@ import errno
 
 
 def hello(string):
-    return f'Hello {0}'.format(string.value)
+    return 'Hello {0}'.format(string.value)
 
 
 def adder(n1, n2):

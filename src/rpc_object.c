@@ -111,6 +111,7 @@ rpc_create_description(GString *description, rpc_object_t object,
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
+		g_string_truncate(description, description->len - 1);
 		break;
 
 	case RPC_TYPE_BOOL:
@@ -162,7 +163,7 @@ rpc_create_description(GString *description, rpc_object_t object,
 			    data_ptr[i]);
 
 		if (data_length < object->ro_value.rv_bin.length)
-			g_string_append(description, " ...");
+			g_string_append(description, "...");
 
 		break;
 
@@ -177,6 +178,7 @@ rpc_create_description(GString *description, rpc_object_t object,
 		    local_indent_lvl * 4, "");
 		rpc_create_description(description, rpc_error_get_extra(object),
 		    local_indent_lvl, true);
+		g_string_append_printf(description, "\n");
 		g_string_append_printf(description, "%*sstack: ",
 		    local_indent_lvl * 4, "");
 		rpc_create_description(description, rpc_error_get_stack(object),
@@ -999,6 +1001,11 @@ rpc_error_create(int code, const char *msg, rpc_object_t extra)
 	char *stack;
 	union rpc_value val;
 
+	if (extra == NULL)
+		extra = rpc_null_create();
+	else
+		rpc_retain(extra);
+
 	stack = rpc_get_backtrace();
 
 	val.rv_error.code = code;
@@ -1007,9 +1014,6 @@ rpc_error_create(int code, const char *msg, rpc_object_t extra)
 	val.rv_error.stack = rpc_string_create(stack);
 
 	free(stack);
-
-	if (extra != NULL)
-		rpc_retain(extra);
 
 	return (rpc_prim_create(RPC_TYPE_ERROR, val));
 }
@@ -1022,6 +1026,7 @@ rpc_error_create_with_stack(int code, const char *msg, rpc_object_t extra,
 
 	result = rpc_error_create(code, msg, extra);
 	result->ro_value.rv_error.stack = stack;
+	rpc_retain(stack);
 	return (result);
 }
 

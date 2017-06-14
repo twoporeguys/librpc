@@ -547,8 +547,7 @@ void
 rpc_connection_send_err(rpc_connection_t conn, rpc_object_t id, int code,
     const char *descr, ...)
 {
-	rpc_object_t args;
-	rpc_object_t frame;
+	rpc_object_t err;
 	va_list ap;
 	char *str;
 
@@ -556,15 +555,8 @@ rpc_connection_send_err(rpc_connection_t conn, rpc_object_t id, int code,
 	g_vasprintf(&str, descr, ap);
 	va_end(ap);
 
-	args = rpc_dictionary_create();
-	rpc_dictionary_set_int64(args, "code", code);
-	rpc_dictionary_set_string(args, "message", str);
-	frame = rpc_pack_frame("rpc", "error", id, args);
-
-	if (rpc_send_frame(conn, frame) != 0) {
-
-	}
-
+	err = rpc_error_create(code, str, NULL);
+	rpc_connection_send_errx(conn, id, err);
 	g_free(str);
 }
 
@@ -592,10 +584,15 @@ rpc_call_timeout(gpointer user_data)
 }
 
 void
-rpc_connection_send_errx(rpc_connection_t conn __attribute__((unused)), rpc_object_t id __attribute__((unused)),
-    rpc_object_t err __attribute__((unused)))
+rpc_connection_send_errx(rpc_connection_t conn, rpc_object_t id __unused,
+    rpc_object_t err)
 {
+	rpc_object_t frame;
 
+	frame = rpc_pack_frame("rpc", "error", id, err);
+	if (rpc_send_frame(conn, frame) != 0) {
+
+	}
 }
 
 void

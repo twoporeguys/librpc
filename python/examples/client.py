@@ -25,6 +25,7 @@
 #
 
 import argparse
+import traceback
 import librpc
 
 
@@ -46,12 +47,15 @@ def main():
             method = tokens[0]
             args = [eval(s) for s in tokens[1:]]
 
-            result = client.call_sync(method, *args)
-            if hasattr(result, '__next__'):
-                for r in result:
-                    print(r)
-            else:
-                print(result)
+            try:
+                result = client.call_sync(method, *args)
+                if hasattr(result, '__next__'):
+                    for r in result:
+                        print(r)
+                else:
+                    print(result)
+            except Exception:
+                traceback.print_exc()
 
     except KeyboardInterrupt:
         pass
