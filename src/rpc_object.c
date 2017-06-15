@@ -579,6 +579,7 @@ int
 rpc_object_unpack(rpc_object_t obj, const char *fmt, ...)
 {
 	rpc_object_t array = NULL;
+	rpc_object_t dictionary = NULL;
 	rpc_object_t current;
 	va_list ap;
 	char ch;
@@ -590,6 +591,10 @@ rpc_object_unpack(rpc_object_t obj, const char *fmt, ...)
 	while ((ch = *fmt++) != '\0') {
 		if (array)
 			current = rpc_array_get_value(array, idx++);
+
+		if (dictionary)
+			current = rpc_dictionary_get_value(dictionary,
+			    va_arg(ap, const char *));
 
 		switch (ch) {
 		case '*':
@@ -632,6 +637,14 @@ rpc_object_unpack(rpc_object_t obj, const char *fmt, ...)
 
 			*va_arg(ap, rpc_object_t *) = rpc_array_slice(array,
 			    idx + 1, -1);
+			break;
+
+		case '{':
+			dictionary = current;
+			break;
+
+		case '}':
+			dictionary = NULL;
 			break;
 
 		case '[':
