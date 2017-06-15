@@ -90,7 +90,7 @@ struct rpc_shmem_block
 struct rpc_error_value
 {
 	int			code;
-	char *			message;
+	GString *		message;
 	rpc_object_t		extra;
     	rpc_object_t 		stack;
 };
@@ -151,7 +151,6 @@ enum rpc_inbound_state
 
 struct rpc_inbound_call
 {
-    	jmp_buf 		ric_state;
     	rpc_connection_t    	ric_conn;
 	rpc_object_t        	ric_id;
 	rpc_object_t        	ric_args;

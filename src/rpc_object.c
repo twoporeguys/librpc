@@ -290,6 +290,13 @@ rpc_release_impl(rpc_object_t object)
 		case RPC_TYPE_DICTIONARY:
 			g_hash_table_unref(object->ro_value.rv_dict);
 			break;
+
+		case RPC_TYPE_ERROR:
+			g_string_free(object->ro_value.rv_error.message, true);
+			rpc_release(object->ro_value.rv_error.extra);
+			rpc_release(object->ro_value.rv_error.stack);
+			break;
+
 #if defined(__linux__)
 		case RPC_TYPE_SHMEM:
 			close(object->ro_value.rv_shmem.rsb_fd);
@@ -1009,7 +1016,7 @@ rpc_error_create(int code, const char *msg, rpc_object_t extra)
 	stack = rpc_get_backtrace();
 
 	val.rv_error.code = code;
-	val.rv_error.message = g_strdup(msg);
+	val.rv_error.message = g_string_new(msg);
 	val.rv_error.extra = extra;
 	val.rv_error.stack = rpc_string_create(stack);
 
@@ -1046,7 +1053,7 @@ rpc_error_get_message(rpc_object_t error)
 	if (rpc_get_type(error) != RPC_TYPE_ERROR)
 		return (NULL);
 
-	return (error->ro_value.rv_error.message);
+	return (error->ro_value.rv_error.message->str);
 }
 
 rpc_object_t
