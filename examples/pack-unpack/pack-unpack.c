@@ -41,6 +41,9 @@ main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)
 	rpc_client_t client;
 	rpc_connection_t conn;
 	rpc_object_t result;
+	const char *keys[] = {"key"};
+	const rpc_object_t values[] = {rpc_int64_create(11234)};
+
 
 	ctx = rpc_context_create();
 
@@ -48,12 +51,14 @@ main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)
 	    ^(void *cookie, rpc_object_t args) {
 		const char *str;
 		int64_t num;
+		int64_t dict_num;
 		bool sure;
 
-		rpc_object_unpack(args, "[sib]", &str, &num, &sure);
+		rpc_object_unpack(args, "[sib{i}]", &str, &num, &sure, "key",
+		    &dict_num);
 
-		printf("str = %s, num = %jd, sure = %s\n", str, num,
-		    sure ? "true" : "false");
+		printf("str = %s, num = %jd, dict_num = %jd, sure = %s\n", str,
+		    num, dict_num, sure ? "true" : "false");
 
 	    	return rpc_object_pack("{siubn[iii{s}]}",
 		    "hello", "world",
@@ -80,7 +85,8 @@ main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)
 	conn = rpc_client_get_connection(client);
 	result = rpc_connection_call_sync(conn, "hello",
 	    rpc_string_create("world"), rpc_int64_create(123),
-	    rpc_bool_create(true), NULL);
+	    rpc_bool_create(true),
+	    rpc_dictionary_create_ex(keys, values, 1, true), NULL);
 
 	printf("result = %s\n", rpc_copy_description(result));
 
