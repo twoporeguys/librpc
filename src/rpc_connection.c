@@ -692,6 +692,7 @@ rpc_connection_alloc(rpc_server_t server)
 	conn->rco_rpc_timeout = DEFAULT_RPC_TIMEOUT;
 	conn->rco_recv_msg = &rpc_recv_msg;
 	conn->rco_close = &rpc_close;
+	conn->rco_closed = false;
 	g_mutex_init(&conn->rco_send_mtx);
 
 	return (conn);
@@ -744,6 +745,10 @@ fail:
 int
 rpc_connection_close(rpc_connection_t conn)
 {
+	if (conn->rco_closed)
+		return (0);
+
+	conn->rco_closed = true;
 	conn->rco_abort(conn->rco_arg);
 	g_hash_table_destroy(conn->rco_calls);
 	g_hash_table_destroy(conn->rco_inbound_calls);

@@ -192,6 +192,7 @@ struct rpc_connection
     	GMainContext *		rco_mainloop;
     	GThreadPool *		rco_callback_pool;
     	int			rco_flags;
+	bool			rco_closed;
 
     	/* Callbacks */
 	rpc_recv_msg_fn_t	rco_recv_msg;

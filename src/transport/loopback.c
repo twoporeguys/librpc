@@ -131,7 +131,7 @@ loopback_abort(void *arg)
 {
 	struct rpc_connection *conn = arg;
 
-	conn->rco_abort(arg);
+	rpc_connection_close(conn);
 	return (0);
 }
 
