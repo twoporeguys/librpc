@@ -57,7 +57,9 @@ static const char *rpc_types[] = {
     [RPC_TYPE_FD] = "fd",
     [RPC_TYPE_DICTIONARY] = "dictionary",
     [RPC_TYPE_ARRAY] = "array",
+#if defined(__linux__)
     [RPC_TYPE_SHMEM] = "shmem",
+#endif
     [RPC_TYPE_ERROR] = "error"
 };
 

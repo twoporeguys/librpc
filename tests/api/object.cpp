@@ -729,10 +729,11 @@ SCENARIO("RPC_FD_OBJECT", "Create a FD RPC object and perform basic operations o
 			THEN("Source and copy are equal"){
 				REQUIRE(rpc_equal(object, copy));
 			}
-
+#if defined(__linux__)
 			AND_THEN("Both sides of a pipe are referencing the same file") {
 				REQUIRE(rpc_equal(object, different_object));
 			}
+#endif
 		}
 
 		WHEN("File descriptor is duplicated") {
@@ -1351,9 +1352,9 @@ SCENARIO("RPC_DESCRIPTION_TEST", "Create a tree of RPC objects and print their d
 	GIVEN("RPC objects tree") {
 		int data = 0xff00ff00;
 		static const char *referene = "<dictionary> {\n"
-		    "    null_val: <null> ,\n"
+		    "    null_val: <null>,\n"
 		    "    array: <array> [\n"
-		    "        0: <null> ,\n"
+		    "        0: <null>,\n"
 		    "        1: <bool> true,\n"
 		    "        2: <uint64> 1234,\n"
 		    "        3: <int64> -1234,\n"
@@ -1394,7 +1395,7 @@ SCENARIO("RPC_DESCRIPTION_TEST", "Create a tree of RPC objects and print their d
 
 		rpc_dictionary_set_string(dict, "test_string2", "test_test_test");
 
-		THEN("Parent RPC object's description is equal to refrence description") {
+		THEN("Parent RPC object's description is equal to reference description") {
 			description = rpc_copy_description(dict);
 			REQUIRE(g_strcmp0(referene, description) == 0);
 		}

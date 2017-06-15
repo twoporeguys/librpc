@@ -34,9 +34,11 @@
 
 static void rpc_msgpack_write_error(mpack_writer_t *, rpc_object_t);
 static rpc_object_t rpc_msgpack_read_error(mpack_tree_t *);
-static void rpc_msgpack_write_shmem(mpack_writer_t *, rpc_object_t);
 static int rpc_msgpack_write_object(mpack_writer_t *, rpc_object_t);
+#if defined(__linux__)
 static rpc_object_t rpc_msgpack_read_shmem(mpack_tree_t *);
+static void rpc_msgpack_write_shmem(mpack_writer_t *, rpc_object_t);
+#endif
 static rpc_object_t rpc_msgpack_read_object(mpack_node_t);
 
 static void
@@ -81,6 +83,7 @@ rpc_msgpack_read_error(mpack_tree_t *tree)
 	return (result);
 }
 
+#if defined(__linux__)
 static void
 rpc_msgpack_write_shmem(mpack_writer_t *writer, rpc_object_t shmem)
 {
@@ -109,6 +112,7 @@ rpc_msgpack_read_shmem(mpack_tree_t *tree)
 	return (rpc_shmem_recreate(fd, (off_t)offset, (size_t)len));
 }
 
+#endif
 static int
 rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 {
