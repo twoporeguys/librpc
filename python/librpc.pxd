@@ -37,6 +37,15 @@ cdef extern from "rpc/object.h" nogil:
     ctypedef struct rpc_object_t:
         pass
 
+    ctypedef enum rpc_error_code_t:
+        RPC_INVALID_RESPONSE
+        RPC_CONNECTION_TIMEOUT
+        RPC_CONNECTION_CLOSED
+        RPC_CALL_TIMEOUT
+        RPC_SPURIOUS_RESPONSE
+        RPC_LOGOUT
+        RPC_OTHER
+
     ctypedef enum rpc_type_t:
         RPC_TYPE_NULL
         RPC_TYPE_BOOL
@@ -225,3 +234,5 @@ cdef class Connection(object):
     cdef Connection init_from_ptr(rpc_connection_t ptr)
     @staticmethod
     cdef void c_ev_handler(const char *name, rpc_object_t args, void *arg) with gil
+    @staticmethod
+    cdef void c_error_handler(rpc_error_code_t code, rpc_object_t args, void *arg) with gil

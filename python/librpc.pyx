@@ -40,6 +40,16 @@ cdef extern from "Python.h" nogil:
     void PyEval_InitThreads()
 
 
+class ErrorCode(enum.IntEnum):
+    INVALID_RESPONSE = RPC_INVALID_RESPONSE
+    CONNECTION_TIMEOUT = RPC_CONNECTION_TIMEOUT
+    CONNECTION_CLOSED = RPC_CONNECTION_CLOSED
+    CALL_TIMEOUT = RPC_CALL_TIMEOUT
+    SPURIOUS_RESPONSE = RPC_SPURIOUS_RESPONSE
+    LOGOUT = RPC_LOGOUT
+    OTHER = RPC_OTHER
+
+
 class ObjectType(enum.IntEnum):
     NIL = RPC_TYPE_NULL
     BOOL = RPC_TYPE_BOOL
@@ -142,7 +152,7 @@ cdef class Object(object):
             self.obj = rpc_data_create(<void *>value, <size_t>len(value), True)
             return
 
-        if isinstance(value, RpcException):
+        if isinstance(value, (RpcException, LibException)):
             extra = Object(value.extra)
             stack = Object(value.stacktrace)
             self.obj = rpc_error_create_with_stack(value.code, value.message.encode('utf-8'), extra.obj, stack.obj)
@@ -688,6 +698,21 @@ cdef class Connection(object):
         PyEval_InitThreads()
         self.ev_handlers = {}
 
+    property error_handler:
+        def __get__(self):
+            pass
+
+        def __set__(self, fn):
+            pass
+
+    property event_handler:
+        def __get__(self):
+            pass
+
+        def __set__(self, fn):
+            pass
+
+
     @staticmethod
     cdef Connection init_from_ptr(rpc_connection_t ptr):
         cdef Connection ret
@@ -707,6 +732,10 @@ cdef class Connection(object):
         rpc_retain(args)
 
         handler(event_args)
+
+    @staticmethod
+    cdef void c_error_handler(rpc_error_code_t error, rpc_object_t args, void *arg) with gil:
+        pass
 
     def call_sync(self, method, *args):
         cdef rpc_object_t rpc_result
@@ -832,6 +861,6 @@ cdef raise_internal_exc(rpc=False):
     error = rpc_get_last_error()
     if error != <rpc_object_t>NULL:
         try:
-            raise exc(error.code, error.message.decode('utf-8'))
+            raise exc(rpc_error_get_code(error), rpc_error_get_message(error).decode('utf-8'))
         finally:
             free(<void *>error)
