@@ -532,12 +532,6 @@ rpc_object_pack(const char *fmt, ...)
 			current = rpc_string_create(va_arg(ap, const char *));
 			break;
 
-#if defined(__linux__)
-		case 'h':
-			current = va_arg(ap, rpc_object_t);
-			break;
-#endif
-
 		case '{':
 			container = rpc_dictionary_create();
 			g_queue_push_tail(stack, container);
@@ -629,12 +623,6 @@ rpc_object_unpack(rpc_object_t obj, const char *fmt, ...)
 			*va_arg(ap, const char **) = rpc_string_get_string_ptr(
 			    current);
 			break;
-
-#if defined(__linux__)
-		case 'h':
-			*va_arg(ap, rpc_object_t *) = current;
-			break;
-#endif
 
 		case 'R':
 			if (array == NULL) {
