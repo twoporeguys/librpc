@@ -28,3 +28,7 @@ $ make install  # optional
 ```
 
 Please note that the only supported compiler is clang.
+
+## Documentation
+
+On-line documentation is available at https://twoporeguys.github.io/librpc/html/
