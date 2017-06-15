@@ -239,6 +239,98 @@ rpc_create_description(GString *description, rpc_object_t object,
 		g_string_append(description, "\n");
 }
 
+static int
+rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
+    va_list ap)
+{
+	rpc_object_t array = NULL;
+	rpc_object_t dictionary = NULL;
+	rpc_object_t current = branch;
+	int i = 0;
+	char ch;
+	size_t idx = 0;
+
+	for (i = fmt_cnt; fmt[i] != '\0'; i++) {
+		ch = fmt[i];
+		if (array)
+			current = rpc_array_get_value(array, idx++);
+
+		if ((dictionary) && (ch != '}'))
+			current = rpc_dictionary_get_value(dictionary,
+			    va_arg(ap, const char *));
+
+		switch (ch) {
+		case '*':
+			break;
+
+		case 'v':
+			*va_arg(ap, rpc_object_t *) = current;
+			break;
+
+		case 'b':
+			*va_arg(ap, bool *) = rpc_bool_get_value(current);
+			break;
+
+		case 'i':
+			*va_arg(ap, int64_t *) = rpc_int64_get_value(current);
+			break;
+
+		case 'u':
+			*va_arg(ap, uint64_t *) = rpc_uint64_get_value(current);
+			break;
+
+		case 'd':
+			*va_arg(ap, double *) = rpc_double_get_value(current);
+			break;
+
+		case 'f':
+			*va_arg(ap, int *) = rpc_fd_get_value(current);
+			break;
+
+		case 's':
+			*va_arg(ap, const char **) = rpc_string_get_string_ptr(
+			    current);
+			break;
+
+		case 'R':
+			if (array == NULL) {
+				errno = EINVAL;
+				return (-1);
+			}
+
+			*va_arg(ap, rpc_object_t *) = rpc_array_slice(array,
+			    idx + 1, -1);
+			break;
+
+		case '[':
+			if ((array == NULL) && (dictionary == NULL)) {
+				array = current;
+				break;
+			}
+
+		case '{':
+			if ((array == NULL) && (dictionary == NULL)) {
+				dictionary = current;
+				break;
+			}
+
+			i = rpc_object_unpack_layer(current, fmt, i, ap);
+			if (i == -1)
+				return (i);
+			break;
+
+		case ']':
+		case '}':
+			return (i);
+
+		default:
+			return (-1);
+		}
+	}
+
+	return (i);
+}
+
 inline rpc_object_t
 rpc_object_from_json(const void *frame, size_t size)
 {
@@ -578,90 +670,15 @@ rpc_object_pack(const char *fmt, ...)
 int
 rpc_object_unpack(rpc_object_t obj, const char *fmt, ...)
 {
-	rpc_object_t array = NULL;
-	rpc_object_t dictionary = NULL;
-	rpc_object_t current;
 	va_list ap;
-	char ch;
-	size_t idx = 0;
+	int cnt;
 
-	current = obj;
 	va_start(ap, fmt);
 
-	while ((ch = *fmt++) != '\0') {
-		if (array)
-			current = rpc_array_get_value(array, idx++);
+	cnt = rpc_object_unpack_layer(obj, fmt, 0, ap);
 
-		if (dictionary)
-			current = rpc_dictionary_get_value(dictionary,
-			    va_arg(ap, const char *));
-
-		switch (ch) {
-		case '*':
-			break;
-
-		case 'v':
-			*va_arg(ap, rpc_object_t *) = current;
-			break;
-
-		case 'b':
-			*va_arg(ap, bool *) = rpc_bool_get_value(current);
-			break;
-
-		case 'i':
-			*va_arg(ap, int64_t *) = rpc_int64_get_value(current);
-			break;
-
-		case 'u':
-			*va_arg(ap, uint64_t *) = rpc_uint64_get_value(current);
-			break;
-
-		case 'd':
-			*va_arg(ap, double *) = rpc_double_get_value(current);
-			break;
-
-		case 'f':
-			*va_arg(ap, int *) = rpc_fd_get_value(current);
-			break;
-
-		case 's':
-			*va_arg(ap, const char **) = rpc_string_get_string_ptr(
-			    current);
-			break;
-
-		case 'R':
-			if (array == NULL) {
-				errno = EINVAL;
-				return (-1);
-			}
-
-			*va_arg(ap, rpc_object_t *) = rpc_array_slice(array,
-			    idx + 1, -1);
-			break;
-
-		case '{':
-			dictionary = current;
-			break;
-
-		case '}':
-			dictionary = NULL;
-			break;
-
-		case '[':
-			array = current;
-			idx = 0;
-			break;
-
-		case ']':
-			array = NULL;
-			break;
-
-		default:
-			return (-1);
-		}
-	}
-
-	return (0);
+	va_end(ap);
+	return ((cnt == (int)strlen(fmt)) ? 0 : -1);
 }
 
 
