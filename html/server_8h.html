@@ -109,10 +109,10 @@ Typedefs</h2></td></tr>
 typedef struct rpc_server *&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_server_t</b></td></tr>
 <tr class="separator:a46fd27cbcf75a54103df9d51d90a7fca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b3e718b54bebba70da20b9a26c9af9f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3b3e718b54bebba70da20b9a26c9af9f"></a>
-typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_server_event_handler_t</b> )(rpc_connection_t source, const char *name, rpc_object_t args)</td></tr>
+typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_server_event_handler_t</b> )(rpc_connection_t source, const char *name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:a3b3e718b54bebba70da20b9a26c9af9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7487bbae7df5e79fb333cd9958f1082"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab7487bbae7df5e79fb333cd9958f1082"></a>
-typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_server_event_handler_f</b> )(rpc_connection_t source, const char *name, rpc_object_t args, void *arg)</td></tr>
+typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_server_event_handler_f</b> )(rpc_connection_t source, const char *name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args, void *arg)</td></tr>
 <tr class="separator:ab7487bbae7df5e79fb333cd9958f1082"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -121,7 +121,7 @@ Functions</h2></td></tr>
 rpc_server_t&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_server_create</b> (const char *uri, rpc_context_t context)</td></tr>
 <tr class="separator:ae2bd5e162ef71bc3290aac40f35503a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a321bec95886308344cd511782afd08dd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a321bec95886308344cd511782afd08dd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_server_broadcast_event</b> (rpc_server_t server, const char *name, rpc_object_t args)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_server_broadcast_event</b> (rpc_server_t server, const char *name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:a321bec95886308344cd511782afd08dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35bdfe6cc50c1e83a569fb05a85a7082"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a35bdfe6cc50c1e83a569fb05a85a7082"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_server_set_event_handler</b> (rpc_server_event_handler_t handler)</td></tr>

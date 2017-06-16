@@ -119,7 +119,7 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a4c7094875a0bd8cc87e7c1d24a4481a6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4c7094875a0bd8cc87e7c1d24a4481a6"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>RPC_FUNCTION_STILL_RUNNING</b>&#160;&#160;&#160;((rpc_object_t)1)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>RPC_FUNCTION_STILL_RUNNING</b>&#160;&#160;&#160;((<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>)1)</td></tr>
 <tr class="separator:a4c7094875a0bd8cc87e7c1d24a4481a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -128,10 +128,10 @@ Typedefs</h2></td></tr>
 typedef struct rpc_context *&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_context_t</b></td></tr>
 <tr class="separator:a55087f28cb63ff45b6c798a5dabaedd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aacbe55ace3fb9f574028b8d4ed28bb70"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aacbe55ace3fb9f574028b8d4ed28bb70"></a>
-typedef rpc_object_t(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_function_t</b> )(void *cookie, rpc_object_t args)</td></tr>
+typedef <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_function_t</b> )(void *cookie, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:aacbe55ace3fb9f574028b8d4ed28bb70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9aa88314a3b4620186bf3142798a708c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9aa88314a3b4620186bf3142798a708c"></a>
-typedef rpc_object_t(*&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_function_f</b> )(void *cookie, rpc_object_t args)</td></tr>
+typedef <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_function_f</b> )(void *cookie, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:a9aa88314a3b4620186bf3142798a708c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -156,18 +156,18 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_context_register_f
 int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_context_unregister_method</b> (rpc_context_t context, const char *name)</td></tr>
 <tr class="separator:ab71a7949b47080bceed777eab0cb4c67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a206fab24804db208f9b4d44f4c303596"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a206fab24804db208f9b4d44f4c303596"></a>
-rpc_call_t&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_context_dispatch_call</b> (rpc_context_t context, const char *name, rpc_object_t args)</td></tr>
+rpc_call_t&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_context_dispatch_call</b> (rpc_context_t context, const char *name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:a206fab24804db208f9b4d44f4c303596"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62e71e6c0208e7ed1e23e2f9f3cd78f2"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a62e71e6c0208e7ed1e23e2f9f3cd78f2">rpc_function_get_arg</a> (void *cookie)</td></tr>
 <tr class="separator:a62e71e6c0208e7ed1e23e2f9f3cd78f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b73c8714198994d5055bf5cfe3012a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a1b73c8714198994d5055bf5cfe3012a4">rpc_function_respond</a> (void *cookie, rpc_object_t object)</td></tr>
+<tr class="memitem:a1b73c8714198994d5055bf5cfe3012a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a1b73c8714198994d5055bf5cfe3012a4">rpc_function_respond</a> (void *cookie, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:a1b73c8714198994d5055bf5cfe3012a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7d639f2063a65279f159175a473b881"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ad7d639f2063a65279f159175a473b881">rpc_function_error</a> (void *cookie, int code, const char *message,...)</td></tr>
 <tr class="separator:ad7d639f2063a65279f159175a473b881"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfe4732dbbfa89a8b2972e80b6d65de1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acfe4732dbbfa89a8b2972e80b6d65de1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_function_error_ex</b> (void *cookie, rpc_object_t exception)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_function_error_ex</b> (void *cookie, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> exception)</td></tr>
 <tr class="separator:acfe4732dbbfa89a8b2972e80b6d65de1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36b4ff5a09f3a8139f1d5b59ab930139"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a36b4ff5a09f3a8139f1d5b59ab930139">rpc_function_yield</a> (void *cookie, rpc_object_t fragment)</td></tr>
+<tr class="memitem:a36b4ff5a09f3a8139f1d5b59ab930139"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a36b4ff5a09f3a8139f1d5b59ab930139">rpc_function_yield</a> (void *cookie, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> fragment)</td></tr>
 <tr class="separator:a36b4ff5a09f3a8139f1d5b59ab930139"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e912e42af9c3899e74e1ef539ca7e50"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a7e912e42af9c3899e74e1ef539ca7e50">rpc_function_end</a> (void *cookie)</td></tr>
 <tr class="separator:a7e912e42af9c3899e74e1ef539ca7e50"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -331,7 +331,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_function_error_ex
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">rpc_object_t&#160;</td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
           <td class="paramname"><em>object</em>&#160;</td>
         </tr>
         <tr>
@@ -390,7 +390,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_function_error_ex
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">rpc_object_t&#160;</td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
           <td class="paramname"><em>fragment</em>&#160;</td>
         </tr>
         <tr>

@@ -129,8 +129,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">struct </span>rpc_context;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>rpc_context *rpc_context_t;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">typedef</span> rpc_object_t (^rpc_function_t)(<span class="keywordtype">void</span> *cookie, rpc_object_t args);</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">typedef</span> rpc_object_t (*rpc_function_f)(<span class="keywordtype">void</span> *cookie, rpc_object_t args);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">typedef</span> <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> (^rpc_function_t)(<span class="keywordtype">void</span> *cookie, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">typedef</span> <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> (*rpc_function_f)(<span class="keywordtype">void</span> *cookie, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args);</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
 <div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="structrpc__method.html">   56</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structrpc__method.html">rpc_method</a></div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;{</div>
@@ -152,16 +152,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="keywordtype">int</span> rpc_context_unregister_method(rpc_context_t context, <span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;rpc_call_t rpc_context_dispatch_call(rpc_context_t context, <span class="keyword">const</span> <span class="keywordtype">char</span> *name,</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    rpc_object_t args);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args);</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="keywordtype">void</span> *<a class="code" href="service_8h.html#a62e71e6c0208e7ed1e23e2f9f3cd78f2">rpc_function_get_arg</a>(<span class="keywordtype">void</span> *cookie);</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="keywordtype">void</span> <a class="code" href="service_8h.html#a1b73c8714198994d5055bf5cfe3012a4">rpc_function_respond</a>(<span class="keywordtype">void</span> *cookie, rpc_object_t <span class="keywordtype">object</span>);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="keywordtype">void</span> <a class="code" href="service_8h.html#a1b73c8714198994d5055bf5cfe3012a4">rpc_function_respond</a>(<span class="keywordtype">void</span> *cookie, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> <span class="keywordtype">object</span>);</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="keywordtype">void</span> <a class="code" href="service_8h.html#ad7d639f2063a65279f159175a473b881">rpc_function_error</a>(<span class="keywordtype">void</span> *cookie, <span class="keywordtype">int</span> code, <span class="keyword">const</span> <span class="keywordtype">char</span> *message, ...);</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="keywordtype">void</span> rpc_function_error_ex(<span class="keywordtype">void</span> *cookie, rpc_object_t exception);</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="keywordtype">void</span> rpc_function_error_ex(<span class="keywordtype">void</span> *cookie, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> exception);</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="keywordtype">int</span> <a class="code" href="service_8h.html#a36b4ff5a09f3a8139f1d5b59ab930139">rpc_function_yield</a>(<span class="keywordtype">void</span> *cookie, rpc_object_t fragment);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="keywordtype">int</span> <a class="code" href="service_8h.html#a36b4ff5a09f3a8139f1d5b59ab930139">rpc_function_yield</a>(<span class="keywordtype">void</span> *cookie, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> fragment);</div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;</div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="keywordtype">void</span> <a class="code" href="service_8h.html#a7e912e42af9c3899e74e1ef539ca7e50">rpc_function_end</a>(<span class="keywordtype">void</span> *cookie);</div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;</div>
@@ -172,6 +172,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="preprocessor">#endif //LIBRPC_SERVICE_H</span></div>
+<div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00072">object.h:72</a></div></div>
 <div class="ttc" id="connection_8h_html"><div class="ttname"><a href="connection_8h.html">connection.h</a></div></div>
 <div class="ttc" id="service_8h_html_a62e71e6c0208e7ed1e23e2f9f3cd78f2"><div class="ttname"><a href="service_8h.html#a62e71e6c0208e7ed1e23e2f9f3cd78f2">rpc_function_get_arg</a></div><div class="ttdeci">void * rpc_function_get_arg(void *cookie)</div></div>
 <div class="ttc" id="service_8h_html_a1b73c8714198994d5055bf5cfe3012a4"><div class="ttname"><a href="service_8h.html#a1b73c8714198994d5055bf5cfe3012a4">rpc_function_respond</a></div><div class="ttdeci">void rpc_function_respond(void *cookie, rpc_object_t object)</div></div>

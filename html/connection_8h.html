@@ -135,13 +135,13 @@ typedef struct rpc_connection *&#160;</td><td class="memItemRight" valign="botto
 typedef struct rpc_call *&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_call_t</b></td></tr>
 <tr class="separator:aeb6f25e395cc04930537960ef6b50106"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b4b4d2a4e3a7585ea8fe7c25256cf9d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5b4b4d2a4e3a7585ea8fe7c25256cf9d"></a>
-typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_handler_t</b> )(const char *name, rpc_object_t args)</td></tr>
+typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_handler_t</b> )(const char *name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:a5b4b4d2a4e3a7585ea8fe7c25256cf9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8dee2cbce5bf6bbb8de1d4bd95936a4a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8dee2cbce5bf6bbb8de1d4bd95936a4a"></a>
-typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_error_handler_t</b> )(rpc_error_code_t code, rpc_object_t args)</td></tr>
+typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_error_handler_t</b> )(rpc_error_code_t code, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:a8dee2cbce5bf6bbb8de1d4bd95936a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc95de7fabf9904e1be453f5c6392a6b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adc95de7fabf9904e1be453f5c6392a6b"></a>
-typedef bool(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_callback_t</b> )(rpc_object_t args, <a class="el" href="connection_8h.html#a5e44285dc90be1f6bc541504a3f6d929">rpc_call_status_t</a> status)</td></tr>
+typedef bool(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_callback_t</b> )(<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args, <a class="el" href="connection_8h.html#a5e44285dc90be1f6bc541504a3f6d929">rpc_call_status_t</a> status)</td></tr>
 <tr class="separator:adc95de7fabf9904e1be453f5c6392a6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
@@ -184,15 +184,15 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_regi
 void&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_unregister_event_handler</b> (rpc_connection_t conn, const char *name, void *cookie)</td></tr>
 <tr class="separator:a209856a794a9a10a53735787926f4b95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba014ae3408ed96b696ab70066076f13"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aba014ae3408ed96b696ab70066076f13"></a>
-rpc_object_t&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_call_sync</b> (rpc_connection_t conn, const char *method,...)</td></tr>
+<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_call_sync</b> (rpc_connection_t conn, const char *method,...)</td></tr>
 <tr class="separator:aba014ae3408ed96b696ab70066076f13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1dd48a58161cbf375719ecde4480c8a9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1dd48a58161cbf375719ecde4480c8a9"></a>
-rpc_object_t&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_call_syncv</b> (rpc_connection_t conn, const char *method, va_list ap)</td></tr>
+<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_call_syncv</b> (rpc_connection_t conn, const char *method, va_list ap)</td></tr>
 <tr class="separator:a1dd48a58161cbf375719ecde4480c8a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee4f43c3790d07d116367646694cb1c0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aee4f43c3790d07d116367646694cb1c0"></a>
-rpc_call_t&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_call</b> (rpc_connection_t conn, const char *name, rpc_object_t args, rpc_callback_t callback)</td></tr>
+rpc_call_t&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_call</b> (rpc_connection_t conn, const char *name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args, rpc_callback_t callback)</td></tr>
 <tr class="separator:aee4f43c3790d07d116367646694cb1c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1bc22789ecc5ca9cbe8637c8f173ee4d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a1bc22789ecc5ca9cbe8637c8f173ee4d">rpc_connection_send_event</a> (rpc_connection_t conn, const char *name, rpc_object_t args)</td></tr>
+<tr class="memitem:a1bc22789ecc5ca9cbe8637c8f173ee4d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a1bc22789ecc5ca9cbe8637c8f173ee4d">rpc_connection_send_event</a> (rpc_connection_t conn, const char *name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:a1bc22789ecc5ca9cbe8637c8f173ee4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae843166183a4bd6dbf5a58133b3fcaf3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ae843166183a4bd6dbf5a58133b3fcaf3">rpc_connection_set_event_handler</a> (rpc_connection_t conn, rpc_handler_t handler)</td></tr>
 <tr class="separator:ae843166183a4bd6dbf5a58133b3fcaf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -213,7 +213,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_call_success</b> (
 <tr class="memitem:a109ba3b143a1931263d8716f3ac51cb0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a109ba3b143a1931263d8716f3ac51cb0"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_call_status</b> (rpc_call_t call)</td></tr>
 <tr class="separator:a109ba3b143a1931263d8716f3ac51cb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6af73450be622a40f3cbc2b9425ca5dd"><td class="memItemLeft" align="right" valign="top">rpc_object_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a6af73450be622a40f3cbc2b9425ca5dd">rpc_call_result</a> (rpc_call_t call)</td></tr>
+<tr class="memitem:a6af73450be622a40f3cbc2b9425ca5dd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a6af73450be622a40f3cbc2b9425ca5dd">rpc_call_result</a> (rpc_call_t call)</td></tr>
 <tr class="separator:a6af73450be622a40f3cbc2b9425ca5dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace66aca5d1c46e97128a3e09dbce89d1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ace66aca5d1c46e97128a3e09dbce89d1">rpc_call_free</a> (rpc_call_t call)</td></tr>
 <tr class="separator:ace66aca5d1c46e97128a3e09dbce89d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -246,10 +246,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_call_status</b> (r
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">^(rpc_object_t _args, <a class="code" href="connection_8h.html#a5e44285dc90be1f6bc541504a3f6d929">rpc_call_status_t</a> _status) {      \</div>
+<b>Value:</b><div class="fragment"><div class="line">^(<a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _args, <a class="code" href="connection_8h.html#a5e44285dc90be1f6bc541504a3f6d929">rpc_call_status_t</a> _status) {      \</div>
 <div class="line">        return ((<span class="keywordtype">bool</span>)_fn(_arg, _args, _status));       \</div>
 <div class="line">    }</div>
 <div class="ttc" id="connection_8h_html_a5e44285dc90be1f6bc541504a3f6d929"><div class="ttname"><a href="connection_8h.html#a5e44285dc90be1f6bc541504a3f6d929">rpc_call_status_t</a></div><div class="ttdeci">enum rpc_call_status rpc_call_status_t</div></div>
+<div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00072">object.h:72</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to a ::rpc_callback_t block type. </p>
 
 <p>Definition at line <a class="el" href="connection_8h_source.html#l00098">98</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
@@ -279,9 +280,10 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_call_status</b> (r
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">^(rpc_error_code_t _code, rpc_object_t _args) {         \</div>
+<b>Value:</b><div class="fragment"><div class="line">^(rpc_error_code_t _code, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _args) {         \</div>
 <div class="line">        _fn(_arg, _code, _args);                \</div>
 <div class="line">    }</div>
+<div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00072">object.h:72</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to a ::rpc_error_handler_t block type. </p>
 
 <p>Definition at line <a class="el" href="connection_8h_source.html#l00090">90</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
@@ -311,9 +313,10 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_call_status</b> (r
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">^(<span class="keyword">const</span> <span class="keywordtype">char</span> *_name, rpc_object_t _args) {          \</div>
+<b>Value:</b><div class="fragment"><div class="line">^(<span class="keyword">const</span> <span class="keywordtype">char</span> *_name, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _args) {          \</div>
 <div class="line">        _fn(_arg, _name, _args);                \</div>
 <div class="line">    }</div>
+<div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00072">object.h:72</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to a ::rpc_handler_t block type. </p>
 
 <p>Definition at line <a class="el" href="connection_8h_source.html#l00082">82</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
@@ -489,7 +492,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_call_status</b> (r
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">rpc_object_t rpc_call_result </td>
+          <td class="memname"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> rpc_call_result </td>
           <td>(</td>
           <td class="paramtype">rpc_call_t&#160;</td>
           <td class="paramname"><em>call</em></td><td>)</td>
@@ -551,7 +554,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_call_status</b> (r
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">rpc_object_t&#160;</td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
           <td class="paramname"><em>args</em>&#160;</td>
         </tr>
         <tr>

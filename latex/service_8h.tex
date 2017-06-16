@@ -27,7 +27,7 @@ struct \hyperlink{structrpc__method}{rpc\-\_\-method}
 \subsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{service_8h_a4c7094875a0bd8cc87e7c1d24a4481a6}{\#define {\bfseries R\-P\-C\-\_\-\-F\-U\-N\-C\-T\-I\-O\-N\-\_\-\-S\-T\-I\-L\-L\-\_\-\-R\-U\-N\-N\-I\-N\-G}~((rpc\-\_\-object\-\_\-t)1)}\label{service_8h_a4c7094875a0bd8cc87e7c1d24a4481a6}
+\hypertarget{service_8h_a4c7094875a0bd8cc87e7c1d24a4481a6}{\#define {\bfseries R\-P\-C\-\_\-\-F\-U\-N\-C\-T\-I\-O\-N\-\_\-\-S\-T\-I\-L\-L\-\_\-\-R\-U\-N\-N\-I\-N\-G}~((\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t})1)}\label{service_8h_a4c7094875a0bd8cc87e7c1d24a4481a6}
 
 \end{DoxyCompactItemize}
 \subsection*{Typedefs}
@@ -36,10 +36,10 @@ struct \hyperlink{structrpc__method}{rpc\-\_\-method}
 \hypertarget{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{typedef struct rpc\-\_\-context $\ast$ {\bfseries rpc\-\_\-context\-\_\-t}}\label{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}
 
 \item 
-\hypertarget{service_8h_aacbe55ace3fb9f574028b8d4ed28bb70}{typedef rpc\-\_\-object\-\_\-t($^\wedge$ {\bfseries rpc\-\_\-function\-\_\-t} )(void $\ast$cookie, rpc\-\_\-object\-\_\-t args)}\label{service_8h_aacbe55ace3fb9f574028b8d4ed28bb70}
+\hypertarget{service_8h_aacbe55ace3fb9f574028b8d4ed28bb70}{typedef \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t}($^\wedge$ {\bfseries rpc\-\_\-function\-\_\-t} )(void $\ast$cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} args)}\label{service_8h_aacbe55ace3fb9f574028b8d4ed28bb70}
 
 \item 
-\hypertarget{service_8h_a9aa88314a3b4620186bf3142798a708c}{typedef rpc\-\_\-object\-\_\-t($\ast$ {\bfseries rpc\-\_\-function\-\_\-f} )(void $\ast$cookie, rpc\-\_\-object\-\_\-t args)}\label{service_8h_a9aa88314a3b4620186bf3142798a708c}
+\hypertarget{service_8h_a9aa88314a3b4620186bf3142798a708c}{typedef \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t}($\ast$ {\bfseries rpc\-\_\-function\-\_\-f} )(void $\ast$cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} args)}\label{service_8h_a9aa88314a3b4620186bf3142798a708c}
 
 \end{DoxyCompactItemize}
 \subsection*{Functions}
@@ -64,19 +64,19 @@ void \hyperlink{service_8h_ae62c27a53aea99a9c87e5b12b3d3cbbc}{rpc\-\_\-context\-
 \hypertarget{service_8h_ab71a7949b47080bceed777eab0cb4c67}{int {\bfseries rpc\-\_\-context\-\_\-unregister\-\_\-method} (rpc\-\_\-context\-\_\-t context, const char $\ast$name)}\label{service_8h_ab71a7949b47080bceed777eab0cb4c67}
 
 \item 
-\hypertarget{service_8h_a206fab24804db208f9b4d44f4c303596}{rpc\-\_\-call\-\_\-t {\bfseries rpc\-\_\-context\-\_\-dispatch\-\_\-call} (rpc\-\_\-context\-\_\-t context, const char $\ast$name, rpc\-\_\-object\-\_\-t args)}\label{service_8h_a206fab24804db208f9b4d44f4c303596}
+\hypertarget{service_8h_a206fab24804db208f9b4d44f4c303596}{rpc\-\_\-call\-\_\-t {\bfseries rpc\-\_\-context\-\_\-dispatch\-\_\-call} (rpc\-\_\-context\-\_\-t context, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} args)}\label{service_8h_a206fab24804db208f9b4d44f4c303596}
 
 \item 
 void $\ast$ \hyperlink{service_8h_a62e71e6c0208e7ed1e23e2f9f3cd78f2}{rpc\-\_\-function\-\_\-get\-\_\-arg} (void $\ast$cookie)
 \item 
-void \hyperlink{service_8h_a1b73c8714198994d5055bf5cfe3012a4}{rpc\-\_\-function\-\_\-respond} (void $\ast$cookie, rpc\-\_\-object\-\_\-t object)
+void \hyperlink{service_8h_a1b73c8714198994d5055bf5cfe3012a4}{rpc\-\_\-function\-\_\-respond} (void $\ast$cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} object)
 \item 
 void \hyperlink{service_8h_ad7d639f2063a65279f159175a473b881}{rpc\-\_\-function\-\_\-error} (void $\ast$cookie, int code, const char $\ast$message,...)
 \item 
-\hypertarget{service_8h_acfe4732dbbfa89a8b2972e80b6d65de1}{void {\bfseries rpc\-\_\-function\-\_\-error\-\_\-ex} (void $\ast$cookie, rpc\-\_\-object\-\_\-t exception)}\label{service_8h_acfe4732dbbfa89a8b2972e80b6d65de1}
+\hypertarget{service_8h_acfe4732dbbfa89a8b2972e80b6d65de1}{void {\bfseries rpc\-\_\-function\-\_\-error\-\_\-ex} (void $\ast$cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} exception)}\label{service_8h_acfe4732dbbfa89a8b2972e80b6d65de1}
 
 \item 
-int \hyperlink{service_8h_a36b4ff5a09f3a8139f1d5b59ab930139}{rpc\-\_\-function\-\_\-yield} (void $\ast$cookie, rpc\-\_\-object\-\_\-t fragment)
+int \hyperlink{service_8h_a36b4ff5a09f3a8139f1d5b59ab930139}{rpc\-\_\-function\-\_\-yield} (void $\ast$cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} fragment)
 \item 
 void \hyperlink{service_8h_a7e912e42af9c3899e74e1ef539ca7e50}{rpc\-\_\-function\-\_\-end} (void $\ast$cookie)
 \item 
@@ -183,7 +183,7 @@ Returns the argument associated with metod.
 \subsubsection[{rpc\-\_\-function\-\_\-respond}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\-\_\-function\-\_\-respond (
 \begin{DoxyParamCaption}
 \item[{void $\ast$}]{cookie, }
-\item[{rpc\-\_\-object\-\_\-t}]{object}
+\item[{{\bf rpc\-\_\-object\-\_\-t}}]{object}
 \end{DoxyParamCaption}
 )}}\label{service_8h_a1b73c8714198994d5055bf5cfe3012a4}
 Sends a response to a call.
@@ -219,7 +219,7 @@ Whether or not function should abort
 \subsubsection[{rpc\-\_\-function\-\_\-yield}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-function\-\_\-yield (
 \begin{DoxyParamCaption}
 \item[{void $\ast$}]{cookie, }
-\item[{rpc\-\_\-object\-\_\-t}]{fragment}
+\item[{{\bf rpc\-\_\-object\-\_\-t}}]{fragment}
 \end{DoxyParamCaption}
 )}}\label{service_8h_a36b4ff5a09f3a8139f1d5b59ab930139}
 Generates a new value in a streaming response.
