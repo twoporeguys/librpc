@@ -126,8 +126,6 @@ Macros</h2></td></tr>
 Typedefs</h2></td></tr>
 <tr class="memitem:ab365f726b4975c0c8376b808d111d01b"><td class="memItemLeft" align="right" valign="top">typedef struct rpc_object *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></td></tr>
 <tr class="separator:ab365f726b4975c0c8376b808d111d01b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a438bdd0ffc3f9f78b8ea957f2ba9e34f"><td class="memItemLeft" align="right" valign="top">typedef struct rpc_error *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a438bdd0ffc3f9f78b8ea957f2ba9e34f">rpc_error_t</a></td></tr>
-<tr class="separator:a438bdd0ffc3f9f78b8ea957f2ba9e34f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbd36072a4116c378f0ce243173251d1"><td class="memItemLeft" align="right" valign="top">typedef bool(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#afbd36072a4116c378f0ce243173251d1">rpc_array_applier_t</a> )(size_t index, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
 <tr class="separator:afbd36072a4116c378f0ce243173251d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d7c845c8ab67dc47ec85d89b7dbee2d"><td class="memItemLeft" align="right" valign="top">typedef bool(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a7d7c845c8ab67dc47ec85d89b7dbee2d">rpc_dictionary_applier_t</a> )(const char *key, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
@@ -387,7 +385,7 @@ Functions</h2></td></tr>
 <div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00072">object.h:72</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to an rpc_array_applier_t block type. </p>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00106">106</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00102">102</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -420,7 +418,7 @@ Functions</h2></td></tr>
 <div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00072">object.h:72</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to an rpc_dictionary_applier_t block type. </p>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00114">114</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00110">110</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -445,7 +443,7 @@ Functions</h2></td></tr>
 </div><!-- fragment --><p>Decrements reference count of an object.</p>
 <p>Also sets it to NULL if as a result of the operation reference count dropped to 0 and the object was freed. </p>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00192">192</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00188">188</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -470,7 +468,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Continue iteration signal. </dd></dl>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00088">88</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00084">84</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -494,22 +492,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Continue iteration signal. </dd></dl>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00101">101</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a438bdd0ffc3f9f78b8ea957f2ba9e34f"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct rpc_error* <a class="el" href="object_8h.html#a438bdd0ffc3f9f78b8ea957f2ba9e34f">rpc_error_t</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Definition of error object pointer. </p>
-
-<p>Definition at line <a class="el" href="object_8h_source.html#l00076">76</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00097">97</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>

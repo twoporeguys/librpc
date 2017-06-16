@@ -35,8 +35,6 @@ This graph shows which files directly or indirectly include this file\-:
 \item 
 typedef struct rpc\-\_\-object $\ast$ \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t}
 \item 
-typedef struct rpc\-\_\-error $\ast$ \hyperlink{object_8h_a438bdd0ffc3f9f78b8ea957f2ba9e34f}{rpc\-\_\-error\-\_\-t}
-\item 
 typedef bool($^\wedge$ \hyperlink{object_8h_afbd36072a4116c378f0ce243173251d1}{rpc\-\_\-array\-\_\-applier\-\_\-t} )(size\-\_\-t index, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} value)
 \item 
 typedef bool($^\wedge$ \hyperlink{object_8h_a7d7c845c8ab67dc47ec85d89b7dbee2d}{rpc\-\_\-dictionary\-\_\-applier\-\_\-t} )(const char $\ast$key, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} value)
@@ -286,7 +284,7 @@ Definition in file \hyperlink{object_8h_source}{object.\-h}.
 \end{DoxyCode}
 Converts function pointer to an rpc\-\_\-array\-\_\-applier\-\_\-t block type. 
 
-Definition at line 106 of file object.\-h.
+Definition at line 102 of file object.\-h.
 
 \hypertarget{object_8h_a814f85a172b4dae9c201063cad92514e}{\index{object.\-h@{object.\-h}!R\-P\-C\-\_\-\-D\-I\-C\-T\-I\-O\-N\-A\-R\-Y\-\_\-\-A\-P\-P\-L\-I\-E\-R@{R\-P\-C\-\_\-\-D\-I\-C\-T\-I\-O\-N\-A\-R\-Y\-\_\-\-A\-P\-P\-L\-I\-E\-R}}
 \index{R\-P\-C\-\_\-\-D\-I\-C\-T\-I\-O\-N\-A\-R\-Y\-\_\-\-A\-P\-P\-L\-I\-E\-R@{R\-P\-C\-\_\-\-D\-I\-C\-T\-I\-O\-N\-A\-R\-Y\-\_\-\-A\-P\-P\-L\-I\-E\-R}!object.h@{object.\-h}}
@@ -304,7 +302,7 @@ Definition at line 106 of file object.\-h.
 \end{DoxyCode}
 Converts function pointer to an rpc\-\_\-dictionary\-\_\-applier\-\_\-t block type. 
 
-Definition at line 114 of file object.\-h.
+Definition at line 110 of file object.\-h.
 
 \hypertarget{object_8h_aac19be935f72b35eeb2851bc509eabb2}{\index{object.\-h@{object.\-h}!rpc\-\_\-release@{rpc\-\_\-release}}
 \index{rpc\-\_\-release@{rpc\-\_\-release}!object.h@{object.\-h}}
@@ -324,7 +322,7 @@ Decrements reference count of an object.
 
 Also sets it to N\-U\-L\-L if as a result of the operation reference count dropped to 0 and the object was freed. 
 
-Definition at line 192 of file object.\-h.
+Definition at line 188 of file object.\-h.
 
 
 
@@ -348,7 +346,7 @@ Continue iteration signal.
 \end{DoxyReturn}
 
 
-Definition at line 88 of file object.\-h.
+Definition at line 84 of file object.\-h.
 
 \hypertarget{object_8h_a7d7c845c8ab67dc47ec85d89b7dbee2d}{\index{object.\-h@{object.\-h}!rpc\-\_\-dictionary\-\_\-applier\-\_\-t@{rpc\-\_\-dictionary\-\_\-applier\-\_\-t}}
 \index{rpc\-\_\-dictionary\-\_\-applier\-\_\-t@{rpc\-\_\-dictionary\-\_\-applier\-\_\-t}!object.h@{object.\-h}}
@@ -369,14 +367,7 @@ Continue iteration signal.
 \end{DoxyReturn}
 
 
-Definition at line 101 of file object.\-h.
-
-\hypertarget{object_8h_a438bdd0ffc3f9f78b8ea957f2ba9e34f}{\index{object.\-h@{object.\-h}!rpc\-\_\-error\-\_\-t@{rpc\-\_\-error\-\_\-t}}
-\index{rpc\-\_\-error\-\_\-t@{rpc\-\_\-error\-\_\-t}!object.h@{object.\-h}}
-\subsubsection[{rpc\-\_\-error\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct rpc\-\_\-error$\ast$ {\bf rpc\-\_\-error\-\_\-t}}}\label{object_8h_a438bdd0ffc3f9f78b8ea957f2ba9e34f}
-Definition of error object pointer. 
-
-Definition at line 76 of file object.\-h.
+Definition at line 97 of file object.\-h.
 
 \hypertarget{object_8h_ab365f726b4975c0c8376b808d111d01b}{\index{object.\-h@{object.\-h}!rpc\-\_\-object\-\_\-t@{rpc\-\_\-object\-\_\-t}}
 \index{rpc\-\_\-object\-\_\-t@{rpc\-\_\-object\-\_\-t}!object.h@{object.\-h}}
