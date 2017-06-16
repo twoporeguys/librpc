@@ -70,10 +70,6 @@ typedef enum {
  * Definition of data object pointer.
  */
 typedef struct rpc_object *rpc_object_t;
-/**
- * Definition of error object pointer.
- */
-typedef struct rpc_error *rpc_error_t;
 
 /**
  * Definition of array applier block type.
