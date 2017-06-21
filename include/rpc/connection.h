@@ -46,7 +46,7 @@ struct rpc_connection;
 struct rpc_call;
 
 /**
- *
+ * Enumerates possible RPC error codes.
  */
 typedef enum rpc_error_code
 {
@@ -191,6 +191,7 @@ int rpc_call_continue(rpc_call_t call, bool sync);
 
 /**
  * Aborts a pending call.
+ *
  * @param call
  * @return
  */
