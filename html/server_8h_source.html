@@ -125,29 +125,43 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor"></span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">struct </span>rpc_server;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>rpc_server *rpc_server_t;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">typedef</span> void (^rpc_server_event_handler_t)(rpc_connection_t source,</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *name, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">typedef</span> void (*rpc_server_event_handler_f)(rpc_connection_t source,</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *name, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args, <span class="keywordtype">void</span> *arg);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;rpc_server_t rpc_server_create(<span class="keyword">const</span> <span class="keywordtype">char</span> *uri, rpc_context_t context);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keywordtype">void</span> rpc_server_broadcast_event(rpc_server_t server, <span class="keyword">const</span> <span class="keywordtype">char</span> *name,</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args);</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keywordtype">void</span> rpc_server_set_event_handler(rpc_server_event_handler_t handler);</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keywordtype">void</span> rpc_server_set_event_handler_f(rpc_server_event_handler_f handler);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keywordtype">int</span> rpc_server_close(rpc_server_t server);</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor"></span>}</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#endif //LIBRPC_SERVER_H</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">struct </span>rpc_server;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">   53</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>rpc_server *<a class="code" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="server_8h.html#a3b3e718b54bebba70da20b9a26c9af9f">   58</a></span>&#160;<span class="keyword">typedef</span> void (^<a class="code" href="server_8h.html#a3b3e718b54bebba70da20b9a26c9af9f">rpc_server_event_handler_t</a>)(<a class="code" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> source,</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *name, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="server_8h.html#a34749fc2472ddb06c6d36006e2a948c3">   64</a></span>&#160;<span class="preprocessor">#define RPC_SERVER_HANDLER(_fn, _arg)                       \</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">    ^(rpc_connection_t _source, const char *_name, rpc_object_t _args) {    \</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">        _fn(_arg, _source, _name, _args);               \</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">    }</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;rpc_server_t <a class="code" href="server_8h.html#ae2bd5e162ef71bc3290aac40f35503a6">rpc_server_create</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *uri, <a class="code" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keywordtype">void</span> <a class="code" href="server_8h.html#a321bec95886308344cd511782afd08dd">rpc_server_broadcast_event</a>(rpc_server_t server, <span class="keyword">const</span> <span class="keywordtype">char</span> *name,</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keywordtype">void</span> <a class="code" href="server_8h.html#a35bdfe6cc50c1e83a569fb05a85a7082">rpc_server_set_event_handler</a>(<a class="code" href="server_8h.html#a3b3e718b54bebba70da20b9a26c9af9f">rpc_server_event_handler_t</a> handler);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="keywordtype">int</span> <a class="code" href="server_8h.html#aecd13196295690cff8a48b90b9467c1d">rpc_server_close</a>(rpc_server_t server);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="preprocessor"></span>}</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="preprocessor">#endif //LIBRPC_SERVER_H</span></div>
 <div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00072">object.h:72</a></div></div>
 <div class="ttc" id="connection_8h_html"><div class="ttname"><a href="connection_8h.html">connection.h</a></div></div>
+<div class="ttc" id="connection_8h_html_a70838cb106c3464db299522c5fe2782d"><div class="ttname"><a href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a></div><div class="ttdeci">struct rpc_connection * rpc_connection_t</div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00076">connection.h:76</a></div></div>
+<div class="ttc" id="server_8h_html_a35bdfe6cc50c1e83a569fb05a85a7082"><div class="ttname"><a href="server_8h.html#a35bdfe6cc50c1e83a569fb05a85a7082">rpc_server_set_event_handler</a></div><div class="ttdeci">void rpc_server_set_event_handler(rpc_server_event_handler_t handler)</div></div>
+<div class="ttc" id="server_8h_html_a46fd27cbcf75a54103df9d51d90a7fca"><div class="ttname"><a href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a></div><div class="ttdeci">struct rpc_server * rpc_server_t</div><div class="ttdef"><b>Definition:</b> <a href="server_8h_source.html#l00053">server.h:53</a></div></div>
+<div class="ttc" id="service_8h_html_a55087f28cb63ff45b6c798a5dabaedd7"><div class="ttname"><a href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a></div><div class="ttdeci">struct rpc_context * rpc_context_t</div><div class="ttdef"><b>Definition:</b> <a href="service_8h_source.html#l00055">service.h:55</a></div></div>
+<div class="ttc" id="server_8h_html_a321bec95886308344cd511782afd08dd"><div class="ttname"><a href="server_8h.html#a321bec95886308344cd511782afd08dd">rpc_server_broadcast_event</a></div><div class="ttdeci">void rpc_server_broadcast_event(rpc_server_t server, const char *name, rpc_object_t args)</div></div>
+<div class="ttc" id="server_8h_html_aecd13196295690cff8a48b90b9467c1d"><div class="ttname"><a href="server_8h.html#aecd13196295690cff8a48b90b9467c1d">rpc_server_close</a></div><div class="ttdeci">int rpc_server_close(rpc_server_t server)</div></div>
 <div class="ttc" id="service_8h_html"><div class="ttname"><a href="service_8h.html">service.h</a></div></div>
+<div class="ttc" id="server_8h_html_ae2bd5e162ef71bc3290aac40f35503a6"><div class="ttname"><a href="server_8h.html#ae2bd5e162ef71bc3290aac40f35503a6">rpc_server_create</a></div><div class="ttdeci">rpc_server_t rpc_server_create(const char *uri, rpc_context_t context)</div></div>
+<div class="ttc" id="server_8h_html_a3b3e718b54bebba70da20b9a26c9af9f"><div class="ttname"><a href="server_8h.html#a3b3e718b54bebba70da20b9a26c9af9f">rpc_server_event_handler_t</a></div><div class="ttdeci">void(^ rpc_server_event_handler_t)(rpc_connection_t source, const char *name, rpc_object_t args)</div><div class="ttdef"><b>Definition:</b> <a href="server_8h_source.html#l00058">server.h:58</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
