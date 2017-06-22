@@ -44,14 +44,28 @@ extern "C" {
 
 #define	RPC_FUNCTION_STILL_RUNNING	((rpc_object_t)1)
 
+/**
+ * RPC context structure definition.
+ */
 struct rpc_context;
 
+/**
+ * RPC context structure pointer definition.
+ */
 typedef struct rpc_context *rpc_context_t;
+
+/**
+ * Definition of RPC method block type.
+ */
 typedef rpc_object_t (^rpc_function_t)(void *cookie, rpc_object_t args);
+
+/**
+ * Definition of RPC method function type.
+ */
 typedef rpc_object_t (*rpc_function_f)(void *cookie, rpc_object_t args);
 
 /**
- * RPC method descriptor
+ * RPC method descriptor.
  */
 struct rpc_method
 {
@@ -74,22 +88,73 @@ rpc_context_t rpc_context_create(void);
  * @param context Context to dispose
  */
 void rpc_context_free(rpc_context_t context);
+
+/**
+ * Finds and returns a registered RPC method of a given name.
+ *
+ * @param name Method name.
+ * @return RPC method.
+ */
 struct rpc_method *rpc_context_find_method(rpc_context_t, const char *name);
+
+/**
+ * Registers a given rpc_method structure as an RPC method in a given context.
+ *
+ * @param context Target context.
+ * @param m RPC method structure.
+ * @return Status.
+ */
 int rpc_context_register_method(rpc_context_t context, struct rpc_method *m);
+
+/**
+ * Registers a given block as a RPC method for a given context.
+ *
+ * @param context Target context.
+ * @param name Method name.
+ * @param descr Method description.
+ * @param arg Method context.
+ * @param func RPC method block.
+ * @return Status.
+ */
 int rpc_context_register_block(rpc_context_t context, const char *name,
     const char *descr, void *arg, rpc_function_t func);
+
+/**
+ * Registers a given function as a RPC method for a given context.
+ *
+ * @param context Target context.
+ * @param name Method name.
+ * @param descr Method description.
+ * @param arg Method context.
+ * @param func RPC method function
+ * @return Status.
+ */
 int rpc_context_register_func(rpc_context_t context, const char *name,
     const char *descr, void *arg, rpc_function_f func);
+
+/**
+ * Unregisters a given RPC method.
+ *
+ * @param context Target context.
+ * @param name Method name.
+ * @return Status.
+ */
 int rpc_context_unregister_method(rpc_context_t context, const char *name);
 
+/**
+ *
+ * @param context
+ * @param name
+ * @param args
+ * @return
+ */
 rpc_call_t rpc_context_dispatch_call(rpc_context_t context, const char *name,
     rpc_object_t args);
 
 /**
- * Returns the argument associated with metod.
+ * Returns the argument associated with method.
  *
- * @param cookie
- * @return
+ * @param cookie Running call identifier.
  */
 void *rpc_function_get_arg(void *cookie);
 
@@ -100,8 +165,8 @@ void *rpc_function_get_arg(void *cookie);
  * call (for a given cookie). When called, return value of a method
  * is silently ignored (it is preferred to return NULL).
  *
- * @param cookie Running call identifier
- * @param object Response
+ * @param cookie Running call identifier.
+ * @param object Response.
  */
 void rpc_function_respond(void *cookie, rpc_object_t object);
 
@@ -114,22 +179,27 @@ void rpc_function_respond(void *cookie, rpc_object_t object);
  *
  * When called in a streaming function, implicitly ends streaming response.
  *
- * @param cookie Running call identifier
- * @param code Error (errno) code
- * @param message Error message format
- * @param ... Format arguments
+ * @param cookie Running call identifier.
+ * @param code Error (errno) code.
+ * @param message Error message format.
+ * @param ... Format arguments.
  */
 void rpc_function_error(void *cookie, int code, const char *message, ...);
+
+/**
+ * Reports an exception for a given ongoing call identifier.
+ *
+ * @param cookie Running call identifier.
+ * @param exception Exception data.
+ */
 void rpc_function_error_ex(void *cookie, rpc_object_t exception);
 
 /**
  * Generates a new value in a streaming response.
  *
- *
- *
- * @param cookie
- * @param fragment
- * @return
+ * @param cookie Running call identifier.
+ * @param fragment Next data fragment.
+ * @return Status. Success is reported by returning 0.
  */
 int rpc_function_yield(void *cookie, rpc_object_t fragment);
 
@@ -140,7 +210,7 @@ int rpc_function_yield(void *cookie, rpc_object_t fragment);
  * streaming or error responses) is not allowed. Return value of a method
  * functions is ignored.
  *
- * @param cookie Running call identifier
+ * @param cookie Running call identifier.
  */
 void rpc_function_end(void *cookie);
 
@@ -148,8 +218,8 @@ void rpc_function_end(void *cookie);
  * Returns the value of a flag saying whether or not a method should
  * immediately stop because it was aborted on the client side.
  *
- * @param cookie Running call identifier
- * @return Whether or not function should abort
+ * @param cookie Running call identifier.
+ * @return Whether or not function should abort.
  */
 bool rpc_function_should_abort(void *cookie);
 
