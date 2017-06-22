@@ -1060,9 +1060,25 @@ rpc_call_abort(rpc_call_t call)
 }
 
 inline int
-rpc_call_timedwait(rpc_call_t call __attribute__((unused)), const struct timespec *ts __attribute__((unused)))
+rpc_call_timedwait(rpc_call_t call, const struct timeval *ts)
 {
+	int ret = 0;
+	int64_t end_time;
 
+	end_time = g_get_monotonic_time();
+	end_time += ts->tv_sec * 1000000;
+	end_time += ts->tv_usec;
+
+	g_mutex_lock(&call->rc_mtx);
+	while (call->rc_status == RPC_CALL_IN_PROGRESS)
+		if (!g_cond_wait_until(&call->rc_cv, &call->rc_mtx, end_time)) {
+			ret = -1;
+			break;
+		}
+
+	g_mutex_unlock(&call->rc_mtx);
+
+	return (ret);
 }
 
 int
