@@ -42,19 +42,62 @@
 extern "C" {
 #endif
 
+/**
+ * RPC server structure definition.
+ */
 struct rpc_server;
 
+/**
+ * RPC server pointer structure definition.
+ */
 typedef struct rpc_server *rpc_server_t;
+
+/**
+ * Definition of RPC server event handler block type.
+ */
 typedef void (^rpc_server_event_handler_t)(rpc_connection_t source,
     const char *name, rpc_object_t args);
-typedef void (*rpc_server_event_handler_f)(rpc_connection_t source,
-    const char *name, rpc_object_t args, void *arg);
 
+/**
+ * Converts function pointer to a ::rpc_server_event_handler_t block type.
+ */
+#define	RPC_SERVER_HANDLER(_fn, _arg) 						\
+	^(rpc_connection_t _source, const char *_name, rpc_object_t _args) {	\
+		_fn(_arg, _source, _name, _args);				\
+	}
+
+/**
+ * Creates a server instance listening on a given URI.
+ *
+ * @param uri URI to listen on.
+ * @param context RPC context for a server instance.
+ * @return Server structure.
+ */
 rpc_server_t rpc_server_create(const char *uri, rpc_context_t context);
+
+/**
+ * Broadcasts an event of a given name among its subscribers.
+ *
+ * @param server Target server.
+ * @param name Name of an event to be broadcasted.
+ * @param args Event arguments.
+ */
 void rpc_server_broadcast_event(rpc_server_t server, const char *name,
     rpc_object_t args);
+
+/**
+ * Creates an event handler internal to a server for an event of a given name.
+ *
+ * @param handler
+ */
 void rpc_server_set_event_handler(rpc_server_event_handler_t handler);
-void rpc_server_set_event_handler_f(rpc_server_event_handler_f handler);
+
+/**
+ * Closes a given RPC server.
+ *
+ * @param server Server to be closed.
+ * @return 0 on successful teardown.
+ */
 int rpc_server_close(rpc_server_t server);
 
 #ifdef __cplusplus
