@@ -9,6 +9,7 @@ option(BUILD_DOC "Create and install HTML API documentation")
 option(BUILD_TESTS "Build and install tests")
 option(BUILD_EXAMPLES "Build and install example programs" ON)
 option(BUILD_PYTHON "Build and install Python extension" ON)
+option(BUILD_BUS "Build and install bus transport" ON)
 
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
@@ -27,6 +28,10 @@ pkg_check_modules (GLIB REQUIRED glib-2.0>=2.52)
 pkg_check_modules (GIO REQUIRED gio-unix-2.0)
 pkg_check_modules(SOUP REQUIRED libsoup-2.4)
 pkg_check_modules(YAJL REQUIRED yajl>=2.1.0)
+
+if(BUILD_BUS)
+    pkg_check_modules(UDEV REQUIRED libudev)
+endif()
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_FLAGS "-fblocks -Wall -Wextra -DRPC_TRACE")
@@ -137,6 +142,10 @@ endif()
 
 if(BUILD_PYTHON)
     add_subdirectory(python)
+endif()
+
+if(BUILD_BUS)
+    set(TRANSPORT_FILES ${TRANSPORT_FILES} bus.c)
 endif()
 
 if(BUILD_DOC)

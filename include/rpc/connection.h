@@ -238,6 +238,11 @@ int rpc_connection_send_event(rpc_connection_t conn, const char *name,
     rpc_object_t args);
 
 /**
+ * Ping the other end of a connection.
+ */
+int rpc_connection_ping(rpc_connection_t conn);
+
+/**
  * Sets global event handler for a connection.
  *
  * @param conn Connection to set event handler for.
