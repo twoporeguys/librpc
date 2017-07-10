@@ -751,7 +751,9 @@ cdef class Connection(object):
         if call == <rpc_call_t>NULL:
             raise_internal_exc(rpc=True)
 
-        rpc_call_wait(call)
+        with nogil:
+            rpc_call_wait(call)
+
         call_status = <rpc_call_status_t>rpc_call_status(call)
 
         def get_chunk():
