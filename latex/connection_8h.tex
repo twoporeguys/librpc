@@ -91,6 +91,8 @@ void \hyperlink{connection_8h_a209856a794a9a10a53735787926f4b95}{rpc\-\_\-connec
 \item 
 int \hyperlink{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}{rpc\-\_\-connection\-\_\-send\-\_\-event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} args)
 \item 
+int \hyperlink{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}{rpc\-\_\-connection\-\_\-ping} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn)
+\item 
 void \hyperlink{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}{rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn, \hyperlink{connection_8h_a5b4b4d2a4e3a7585ea8fe7c25256cf9d}{rpc\-\_\-handler\-\_\-t} handler)
 \item 
 void \hyperlink{connection_8h_a8f332abcc5d0a80c86f8317c7dcc79ec}{rpc\-\_\-connection\-\_\-set\-\_\-error\-\_\-handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn, \hyperlink{connection_8h_a8dee2cbce5bf6bbb8de1d4bd95936a4a}{rpc\-\_\-error\-\_\-handler\-\_\-t} handler)
@@ -496,7 +498,14 @@ Instead of variable arguments length in \hyperlink{connection_8h_aee4f43c3790d07
 \begin{DoxyReturn}{Returns}
 Result of the call. 
 \end{DoxyReturn}
-\hypertarget{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler@{rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler}}
+\hypertarget{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-ping@{rpc\-\_\-connection\-\_\-ping}}
+\index{rpc\-\_\-connection\-\_\-ping@{rpc\-\_\-connection\-\_\-ping}!connection.h@{connection.\-h}}
+\subsubsection[{rpc\-\_\-connection\-\_\-ping}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-connection\-\_\-ping (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\-\_\-connection\-\_\-t}}]{conn}
+\end{DoxyParamCaption}
+)}}\label{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}
+Ping the other end of a connection. \hypertarget{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler@{rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler}}
 \index{rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler@{rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler}!connection.h@{connection.\-h}}
 \subsubsection[{rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler (
 \begin{DoxyParamCaption}
