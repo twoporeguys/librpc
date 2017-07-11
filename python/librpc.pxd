@@ -219,6 +219,7 @@ cdef class Object(object):
 cdef class Context(object):
     cdef rpc_context_t context
     cdef bint borrowed
+    cdef object methods
 
     @staticmethod
     cdef Context init_from_ptr(rpc_context_t ptr)

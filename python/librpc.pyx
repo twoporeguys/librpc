@@ -629,6 +629,7 @@ cdef class Dictionary(Object):
 cdef class Context(object):
     def __init__(self):
         PyEval_InitThreads()
+        self.methods = {}
         self.context = rpc_context_create()
 
     @staticmethod
@@ -636,6 +637,7 @@ cdef class Context(object):
         cdef Context ret
 
         ret = Context.__new__(Context)
+        ret.methods = {}
         ret.borrowed = True
         ret.context = ptr
         return ret
@@ -677,6 +679,7 @@ cdef class Context(object):
         return rpc_obj.obj
 
     def register_method(self, name, description, fn):
+        self.methods[name] = fn
         rpc_context_register_func(
             self.context,
             name.encode('utf-8'),
@@ -686,6 +689,7 @@ cdef class Context(object):
         )
 
     def unregister_method(self, name):
+        del self.methods[name]
         rpc_context_unregister_method(self.context, name)
 
     def __dealloc__(self):
