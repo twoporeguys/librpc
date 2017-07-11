@@ -821,8 +821,12 @@ cdef class Client(Connection):
         self.connection = <rpc_connection_t>NULL
 
     def connect(self, uri):
-        self.uri = uri.encode('utf-8')
-        self.client = rpc_client_create(self.uri, 0)
+        cdef char* c_uri
+
+        self.uri = c_uri = uri.encode('utf-8')
+        with nogil:
+            self.client = rpc_client_create(c_uri, 0)
+
         if self.client == <rpc_client_t>NULL:
             raise_internal_exc(rpc=False)
 
