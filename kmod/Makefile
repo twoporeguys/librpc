@@ -1,1 +1,1 @@
-obj-m := librpc.o librpc_dummy.o
+obj-m := librpc.o librpc_usb.o

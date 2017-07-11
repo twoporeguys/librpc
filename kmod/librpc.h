@@ -28,8 +28,10 @@
 #ifndef _LIBRPC_H
 #define _LIBRPC_H
 
+#ifdef __KERNEL
 #include <linux/uio.h>
 #include <linux/connector.h>
+#endif
 
 #define CN_LIBRPC_IDX           (CN_NETLINK_USERS + 1)
 #define CN_LIBRPC_VAL           1
@@ -38,16 +40,7 @@ struct librpc_endpoint
 {
         char                    name[NAME_MAX];
         char                    serial[NAME_MAX];
-};
-
-struct librpc_device
-{
-        int                             address;
-        const char *                    name;
-        struct librpc_endpoint          endp;
-        struct module *                 owner;
-        struct device                   dev;
-        const struct librpc_ops *       ops;
+    	char 			description[NAME_MAX];
 };
 
 enum librpc_opcode
@@ -64,10 +57,21 @@ enum librpc_opcode
 struct librpc_message
 {
         uint8_t                 opcode;
-        uint64_t                id;
         uint32_t                address;
         int                     status;
         char                    data[];
+};
+
+#ifdef __KERNEL__
+
+struct librpc_device
+{
+        int                             address;
+        const char *                    name;
+        struct librpc_endpoint          endp;
+        struct module *                 owner;
+        struct device                   dev;
+        const struct librpc_ops *       ops;
 };
 
 struct librpc_ops
@@ -86,4 +90,5 @@ struct librpc_device *librpc_device_register(const char *name,
 void librpc_device_unregister(struct librpc_device *rpcdev);
 void librpc_device_answer(struct device *, uint64_t, const void *, size_t);
 
+#endif /* __KERNEL__ */
 #endif /* _LIBRPC_H */

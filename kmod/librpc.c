@@ -35,11 +35,15 @@
 #include "librpc.h"
 
 static int librpc_bus_match(struct device *dev, struct device_driver *drv);
-static int librpc_cn_callback(struct cn_msg *, struct netlink_skb_parms *);
+static void librpc_cn_callback(struct cn_msg *, struct netlink_skb_parms *);
 static struct device *librpc_find_device(uint32_t);
 static ssize_t librpc_device_show_address(struct device *,
     struct device_attribute *, char *);
 static ssize_t librpc_device_show_name(struct device *,
+    struct device_attribute *, char *);
+static ssize_t librpc_device_show_descr(struct device *,
+    struct device_attribute *, char *);
+static ssize_t librpc_device_show_serial(struct device *,
     struct device_attribute *, char *);
 
 struct librpc_call
@@ -51,7 +55,6 @@ struct librpc_call
 struct librpc_dev
 {
         struct device *         dev;
-        struct cdev             cdev;
 };
 
 static struct cb_id librpc_cb_id = {
@@ -64,16 +67,11 @@ static struct bus_type librpc_bus_type = {
         .match = librpc_bus_match
 };
 
-static const struct file_operations librpc_fops = {
-        .owner = THIS_MODULE,
-        .open = librpc_cdev_open,
-        .release = librpc_cdev_release,
-        .unlocked_ioctl = librpc_cdev_ioctl
-};
-
 static const struct device_attribute librpc_device_attrs[] = {
         __ATTR(address, S_IRUGO, librpc_device_show_address, NULL),
         __ATTR(name, S_IRUGO, librpc_device_show_name, NULL),
+        __ATTR(description, S_IRUGO, librpc_device_show_descr, NULL),
+        __ATTR(serial, S_IRUGO, librpc_device_show_serial, NULL)
 };
 
 static struct class *librpc_class;
@@ -169,7 +167,7 @@ librpc_find_device(uint32_t address)
             librpc_match_device));
 }
 
-static int
+static void
 librpc_cn_callback(struct cn_msg *cn, struct netlink_skb_parms *nsp)
 {
         struct librpc_message *msg = (struct librpc_message *)(cn + 1);
@@ -187,8 +185,7 @@ librpc_cn_callback(struct cn_msg *cn, struct netlink_skb_parms *nsp)
                         return (-ENOENT);
 
                 rpcdev = to_librpc_device(dev);
-                ret = rpcdev->ops->ping(dev->parent, req);
-                librpc_cn_send_ack()
+                ret = rpcdev->ops->ping(dev->parent);
 
         case LIBRPC_REQUEST:
                 dev = librpc_find_device(msg->address);
@@ -196,13 +193,13 @@ librpc_cn_callback(struct cn_msg *cn, struct netlink_skb_parms *nsp)
                         return (-ENOENT);
 
                 rpcdev = to_librpc_device(dev);
-                ret = rpcdev->ops->request(dev->parent, req);
+                //ret = rpcdev->ops->request(dev->parent, req);
                 break;
         }
 }
 
 static void
-librpc_cn_send_ack(uint64_t id, uint32_t seq, uint32_t portid, int error)
+librpc_cn_send_ack(uint32_t seq, uint32_t portid, int error)
 {
         struct {
                 struct cn_msg cn;
@@ -213,13 +210,12 @@ librpc_cn_send_ack(uint64_t id, uint32_t seq, uint32_t portid, int error)
         packet.cn.seq = seq;
         packet.cn.len = sizeof(struct librpc_message);
         packet.msg.opcode = LIBRPC_ACK;
-        packet.msg.id = id;
         packet.msg.status = error;
         cn_netlink_send(&packet.cn, portid, CN_LIBRPC_IDX, GFP_KERNEL);
 }
 
 static void
-librpc_cn_send_response()
+librpc_cn_send_response(void)
 {
         struct {
                 struct cn_msg cn;
@@ -243,6 +239,24 @@ librpc_device_show_name(struct device *dev, struct device_attribute *attr,
         struct librpc_device *rpcdev = to_librpc_device(dev);
 
         return (sprintf(buf, "%s\n", rpcdev->endp.name));
+}
+
+static ssize_t
+librpc_device_show_descr(struct device *dev, struct device_attribute *attr,
+    char *buf)
+{
+        struct librpc_device *rpcdev = to_librpc_device(dev);
+
+        return (sprintf(buf, "%s\n", rpcdev->endp.description));
+}
+
+static ssize_t
+librpc_device_show_serial(struct device *dev, struct device_attribute *attr,
+    char *buf)
+{
+        struct librpc_device *rpcdev = to_librpc_device(dev);
+
+        return (sprintf(buf, "%s\n", rpcdev->endp.serial));
 }
 
 static int __init
