@@ -209,6 +209,17 @@ cdef extern from "rpc/server.h" nogil:
     void rpc_server_broadcast_event(rpc_server_t server, const char *name, rpc_object_t args)
 
 
+cdef extern from "rpc/bus.h" nogil:
+    cdef struct rpc_bus_node:
+        const char *rbn_name
+        const char *rbn_description
+        uint32_t rbn_address
+
+    int rpc_bus_ping(const char *name)
+    int rpc_bus_enumerate(rpc_bus_node **result)
+    int rpc_bus_free_result(rpc_bus_node *result)
+
+
 cdef class Object(object):
     cdef rpc_object_t obj
 
@@ -225,6 +236,7 @@ cdef class Context(object):
     cdef Context init_from_ptr(rpc_context_t ptr)
     @staticmethod
     cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil
+
 
 cdef class Connection(object):
     cdef rpc_connection_t connection

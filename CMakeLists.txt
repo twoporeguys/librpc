@@ -78,6 +78,12 @@ set(SERIALIZER_FILES
         src/serializer/json.h
         contrib/mpack/mpack.c)
 
+
+if(BUILD_BUS)
+    set(CORE_FILES ${CORE_FILES} src/rpc_bus.c)
+    set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/bus.c)
+endif()
+
 add_library(librpc SHARED
         ${HEADERS}
         ${TRANSPORT_FILES}
@@ -89,6 +95,11 @@ target_link_libraries(librpc ${GLIB_LIBRARIES})
 target_link_libraries(librpc ${GIO_LIBRARIES})
 target_link_libraries(librpc ${SOUP_LIBRARIES})
 target_link_libraries(librpc ${YAJL_LIBRARIES})
+
+if(BUILD_BUS)
+    target_link_libraries(librpc ${UDEV_LIBRARIES})
+endif()
+
 if(NOT APPLE)
     target_link_libraries(librpc BlocksRuntime)
 endif()
@@ -142,10 +153,6 @@ endif()
 
 if(BUILD_PYTHON)
     add_subdirectory(python)
-endif()
-
-if(BUILD_BUS)
-    set(TRANSPORT_FILES ${TRANSPORT_FILES} bus.c)
 endif()
 
 if(BUILD_DOC)

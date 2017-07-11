@@ -32,6 +32,7 @@
 #include <rpc/connection.h>
 #include <rpc/service.h>
 #include <rpc/server.h>
+#include <rpc/bus.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include <glib.h>
@@ -244,6 +245,8 @@ struct rpc_transport
 {
 	int (*connect)(struct rpc_connection *, const char *, rpc_object_t);
 	int (*listen)(struct rpc_server *, const char *, rpc_object_t);
+    	int (*ping)(const char *);
+    	int (*enumerate)(struct rpc_bus_node **, size_t *);
     	int flags;
 	const char *name;
 	const char *schemas[];
