@@ -7,9 +7,9 @@
 
 var indexSectionsWithContent =
 {
-  0: "cdors",
+  0: "bcdors",
   1: "r",
-  2: "cdos",
+  2: "bcdos",
   3: "r",
   4: "r",
   5: "r",

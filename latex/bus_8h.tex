@@ -1,0 +1,71 @@
+\hypertarget{bus_8h}{\section{/home/travis/build/twoporeguys/librpc/include/rpc/bus.h File Reference}
+\label{bus_8h}\index{/home/travis/build/twoporeguys/librpc/include/rpc/bus.\-h@{/home/travis/build/twoporeguys/librpc/include/rpc/bus.\-h}}
+}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structrpc__bus__node}{rpc\-\_\-bus\-\_\-node}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{bus_8h_a069e6d67eba0248bc2de6d185d91e9d9}{rpc\-\_\-bus\-\_\-ping} (const char $\ast$name)
+\item 
+int \hyperlink{bus_8h_a85cd042c0a2e2bddaea2a09ca10af76f}{rpc\-\_\-bus\-\_\-enumerate} (struct \hyperlink{structrpc__bus__node}{rpc\-\_\-bus\-\_\-node} $\ast$$\ast$result)
+\item 
+void \hyperlink{bus_8h_a9e0894b8914690e83a155b33a2854d8c}{rpc\-\_\-bus\-\_\-free\-\_\-result} (struct \hyperlink{structrpc__bus__node}{rpc\-\_\-bus\-\_\-node} $\ast$result)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Bus transport A\-P\-I 
+
+Definition in file \hyperlink{bus_8h_source}{bus.\-h}.
+
+
+
+\subsection{Function Documentation}
+\hypertarget{bus_8h_a85cd042c0a2e2bddaea2a09ca10af76f}{\index{bus.\-h@{bus.\-h}!rpc\-\_\-bus\-\_\-enumerate@{rpc\-\_\-bus\-\_\-enumerate}}
+\index{rpc\-\_\-bus\-\_\-enumerate@{rpc\-\_\-bus\-\_\-enumerate}!bus.h@{bus.\-h}}
+\subsubsection[{rpc\-\_\-bus\-\_\-enumerate}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-bus\-\_\-enumerate (
+\begin{DoxyParamCaption}
+\item[{struct {\bf rpc\-\_\-bus\-\_\-node} $\ast$$\ast$}]{result}
+\end{DoxyParamCaption}
+)}}\label{bus_8h_a85cd042c0a2e2bddaea2a09ca10af76f}
+
+\begin{DoxyParams}{Parameters}
+{\em result} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{bus_8h_a9e0894b8914690e83a155b33a2854d8c}{\index{bus.\-h@{bus.\-h}!rpc\-\_\-bus\-\_\-free\-\_\-result@{rpc\-\_\-bus\-\_\-free\-\_\-result}}
+\index{rpc\-\_\-bus\-\_\-free\-\_\-result@{rpc\-\_\-bus\-\_\-free\-\_\-result}!bus.h@{bus.\-h}}
+\subsubsection[{rpc\-\_\-bus\-\_\-free\-\_\-result}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\-\_\-bus\-\_\-free\-\_\-result (
+\begin{DoxyParamCaption}
+\item[{struct {\bf rpc\-\_\-bus\-\_\-node} $\ast$}]{result}
+\end{DoxyParamCaption}
+)}}\label{bus_8h_a9e0894b8914690e83a155b33a2854d8c}
+
+\begin{DoxyParams}{Parameters}
+{\em result} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{bus_8h_a069e6d67eba0248bc2de6d185d91e9d9}{\index{bus.\-h@{bus.\-h}!rpc\-\_\-bus\-\_\-ping@{rpc\-\_\-bus\-\_\-ping}}
+\index{rpc\-\_\-bus\-\_\-ping@{rpc\-\_\-bus\-\_\-ping}!bus.h@{bus.\-h}}
+\subsubsection[{rpc\-\_\-bus\-\_\-ping}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-bus\-\_\-ping (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{name}
+\end{DoxyParamCaption}
+)}}\label{bus_8h_a069e6d67eba0248bc2de6d185d91e9d9}
+Checks whether a node with specified name is reachable.
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
