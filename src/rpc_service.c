@@ -74,7 +74,7 @@ rpc_context_create(void)
 	result = g_malloc0(sizeof(*result));
 	result->rcx_methods = g_hash_table_new(g_str_hash, g_str_equal);
 	result->rcx_threadpool = g_thread_pool_new(rpc_context_tp_handler,
-	    result, g_get_num_processors(), true, &err);
+	    result, g_get_num_processors() * 4, true, &err);
 
 	return (result);
 }
