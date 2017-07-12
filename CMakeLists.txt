@@ -9,7 +9,9 @@ option(BUILD_DOC "Create and install HTML API documentation")
 option(BUILD_TESTS "Build and install tests")
 option(BUILD_EXAMPLES "Build and install example programs" ON)
 option(BUILD_PYTHON "Build and install Python extension" ON)
-option(BUILD_BUS "Build and install bus transport" ON)
+if(LINUX)
+    option(BUILD_BUS "Build and install bus transport" ON)
+endif()
 
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
@@ -29,7 +31,7 @@ pkg_check_modules (GIO REQUIRED gio-unix-2.0)
 pkg_check_modules(SOUP REQUIRED libsoup-2.4)
 pkg_check_modules(YAJL REQUIRED yajl>=2.1.0)
 
-if(BUILD_BUS)
+if(BUILD_BUS AND LINUX)
     pkg_check_modules(UDEV REQUIRED libudev)
 endif()
 
@@ -79,7 +81,7 @@ set(SERIALIZER_FILES
         contrib/mpack/mpack.c)
 
 
-if(BUILD_BUS)
+if(BUILD_BUS AND LINUX)
     set(CORE_FILES ${CORE_FILES} src/rpc_bus.c)
     set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/bus.c)
 endif()
@@ -96,7 +98,7 @@ target_link_libraries(librpc ${GIO_LIBRARIES})
 target_link_libraries(librpc ${SOUP_LIBRARIES})
 target_link_libraries(librpc ${YAJL_LIBRARIES})
 
-if(BUILD_BUS)
+if(BUILD_BUS AND LINUX)
     target_link_libraries(librpc ${UDEV_LIBRARIES})
 endif()
 
