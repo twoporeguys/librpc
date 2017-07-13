@@ -653,21 +653,12 @@ cdef class Context(object):
         cdef object cb = <object>rpc_function_get_arg(cookie)
         cdef int ret
 
-        print("librpc.Context.c_cb_function")
-
         args_array = Array.__new__(Array)
         args_array.obj = args
 
-        print(type(cb))
-        print(cb)
-
         try:
-            print("librpc.Context.c_cb_function, try")
-            print("librpc.Context.c_cb_function, pre calling cb function")
             output = cb(*[a for a in args_array])
-            print("librpc.Context.c_cb_function, post calling cb function")
             if isinstance(output, types.GeneratorType):
-                print("librpc.Context.c_cb_function, try, is generator")
                 for chunk in output:
                     rpc_obj = Object(chunk)
                     rpc_retain(rpc_obj.obj)
@@ -678,10 +669,8 @@ cdef class Context(object):
                     if ret:
                         break
 
-                print("librpc.Context.c_cb_function, try, is generatotor, exit")
                 return <rpc_object_t>NULL
         except Exception as e:
-            print("librpc.Context.c_cb_function, Exception")
             if not isinstance(e, RpcException):
                 e = RpcException(errno.EFAULT, str(e))
 
@@ -689,10 +678,8 @@ cdef class Context(object):
             rpc_function_error_ex(cookie, rpc_obj.obj)
             return <rpc_object_t>NULL
 
-        print("librpc.Context.c_cb_function, after try")
         rpc_obj = Object(output)
         rpc_retain(rpc_obj.obj)
-        print("librpc.Context.c_cb_function, return")
         return rpc_obj.obj
 
     def register_method(self, name, description, fn):
@@ -738,7 +725,6 @@ cdef class Connection(object):
     cdef Connection init_from_ptr(rpc_connection_t ptr):
         cdef Connection ret
 
-        print("librpc.Connection.call_sync()")
         ret = Connection.__new__(Connection)
         ret.borrowed = True
         ret.connection = ptr
@@ -767,27 +753,15 @@ cdef class Connection(object):
         cdef Object rpc_value
         cdef rpc_call_status_t call_status
 
-        print("librpc.Connection.call_sync")
-        print("method = ", method)
-        print("args = ", args)
-
         rpc_args = Array(list(args))
 
-        print("librpc.Connection.call_sync, pre rpc_connection_call")
-
         call = rpc_connection_call(self.connection, method.encode('utf-8'), rpc_args.obj, NULL)
-
-        print("librpc.Connection.call_sync, post rpc_connection_call")
-
 
         if call == <rpc_call_t>NULL:
             raise_internal_exc(rpc=True)
 
-        print("librpc.Connection.call_sync, pre rpc_call_wait")
         with nogil:
             rpc_call_wait(call)
-
-        print("librpc.Connection.call_sync, post rpc_call_wait")
 
         call_status = <rpc_call_status_t>rpc_call_status(call)
 
