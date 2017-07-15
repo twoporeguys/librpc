@@ -33,7 +33,7 @@
 #include <linux/connector.h>
 #endif
 
-#define CN_LIBRPC_IDX           (CN_NETLINK_USERS + 1)
+#define CN_LIBRPC_IDX           (CN_NETLINK_USERS + 5)
 #define CN_LIBRPC_VAL           1
 
 struct librpc_endpoint
@@ -80,7 +80,7 @@ struct librpc_ops
         void (*release)(struct device *);
         int (*enumerate)(struct device *, struct librpc_endpoint *);
         int (*ping)(struct device *);
-        int (*request)(struct device *, uint64_t, const void *, size_t);
+        int (*request)(struct device *, void *, const void *, size_t);
 };
 
 #define to_librpc_device(dev)   container_of(dev, struct librpc_device, dev)
@@ -88,7 +88,7 @@ struct librpc_ops
 struct librpc_device *librpc_device_register(const char *name,
     struct device *dev, const struct librpc_ops *ops, struct module *owner);
 void librpc_device_unregister(struct librpc_device *rpcdev);
-void librpc_device_answer(struct device *, uint64_t, const void *, size_t);
+void librpc_device_answer(struct device *, void *, const void *, size_t);
 
 #endif /* __KERNEL__ */
 #endif /* _LIBRPC_H */

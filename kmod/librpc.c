@@ -30,6 +30,7 @@
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/fs.h>
+#include <linux/workqueue.h>
 #include <linux/connector.h>
 #include <linux/stat.h>
 #include "librpc.h"
@@ -45,264 +46,356 @@ static ssize_t librpc_device_show_descr(struct device *,
     struct device_attribute *, char *);
 static ssize_t librpc_device_show_serial(struct device *,
     struct device_attribute *, char *);
+static void librpc_cn_send_ack(uint32_t, uint32_t, uint32_t, int);
+static void librpc_request(struct work_struct *);
 
 struct librpc_call
 {
-        uint64_t                id;
-        uint32_t                portid;
+	uint64_t                id;
+	uint32_t                portid;
+    	uint32_t 		seq;
+    	uint32_t 		ack;
+    	struct librpc_device *	rpcdev;
+    	struct device *		dev;
+    	void *			data;
+    	size_t			len;
+    	struct work_struct	work;
 };
 
 struct librpc_dev
 {
-        struct device *         dev;
+	struct device *         dev;
+    	uint32_t		seq;
 };
 
 static struct cb_id librpc_cb_id = {
-        .idx = CN_LIBRPC_IDX,
-        .val = CN_LIBRPC_VAL
+	.idx = CN_LIBRPC_IDX,
+	.val = CN_LIBRPC_VAL
 };
 
 static struct bus_type librpc_bus_type = {
-        .name = "librpc",
-        .match = librpc_bus_match
+	.name = "librpc",
+	.match = librpc_bus_match
 };
 
 static const struct device_attribute librpc_device_attrs[] = {
-        __ATTR(address, S_IRUGO, librpc_device_show_address, NULL),
-        __ATTR(name, S_IRUGO, librpc_device_show_name, NULL),
-        __ATTR(description, S_IRUGO, librpc_device_show_descr, NULL),
-        __ATTR(serial, S_IRUGO, librpc_device_show_serial, NULL)
+	__ATTR(address, S_IRUGO, librpc_device_show_address, NULL),
+	__ATTR(name, S_IRUGO, librpc_device_show_name, NULL),
+	__ATTR(description, S_IRUGO, librpc_device_show_descr, NULL),
+	__ATTR(serial, S_IRUGO, librpc_device_show_serial, NULL)
 };
 
+static struct workqueue_struct *librpc_wq;
 static struct class *librpc_class;
 static struct librpc_dev *dev;
-static dev_t librpc_devid;
 static DEFINE_MUTEX(librpc_mtx);
 static DEFINE_IDR(librpc_device_ids);
+static uint32_t resp_seq;
 
 struct librpc_device *
 librpc_device_register(const char *name, struct device *dev,
     const struct librpc_ops *ops, struct module *owner)
 {
-        struct librpc_device *rpcdev;
-        int ret;
-        int id;
-        int i;
+	struct librpc_device *rpcdev;
+	int ret;
+	int id;
+	int i;
 
-        mutex_lock(&librpc_mtx);
-        rpcdev = kzalloc(sizeof(*rpcdev), GFP_KERNEL);
-        id = idr_alloc(&librpc_device_ids, rpcdev, 0, 64, GFP_KERNEL);
+	mutex_lock(&librpc_mtx);
+	rpcdev = kzalloc(sizeof(*rpcdev), GFP_KERNEL);
+	id = idr_alloc(&librpc_device_ids, rpcdev, 0, 64, GFP_KERNEL);
 
-        rpcdev->address = id;
-        rpcdev->name = name;
-        rpcdev->owner = owner;
-        rpcdev->ops = ops;
+	rpcdev->address = id;
+	rpcdev->name = name;
+	rpcdev->owner = owner;
+	rpcdev->ops = ops;
 
-        rpcdev->dev.parent = dev;
-        rpcdev->dev.bus = &librpc_bus_type;
+	rpcdev->dev.parent = dev;
+	rpcdev->dev.bus = &librpc_bus_type;
 
-        dev_set_name(&rpcdev->dev, "librpc%d", id);
-        ret = device_register(&rpcdev->dev);
-        if (ret != 0) {
-                kfree(rpcdev);
-                mutex_unlock(&librpc_mtx);
-                return (ERR_PTR(ret));
-        }
+	dev_set_name(&rpcdev->dev, "librpc%d", id);
+	ret = device_register(&rpcdev->dev);
+	if (ret != 0) {
+		kfree(rpcdev);
+		mutex_unlock(&librpc_mtx);
+		return (ERR_PTR(ret));
+	}
 
-        for (i = 0; i < ARRAY_SIZE(librpc_device_attrs); i++)
-                device_create_file(&rpcdev->dev, &librpc_device_attrs[i]);
+	for (i = 0; i < ARRAY_SIZE(librpc_device_attrs); i++)
+		device_create_file(&rpcdev->dev, &librpc_device_attrs[i]);
 
-        ops->enumerate(dev, &rpcdev->endp);
-        mutex_unlock(&librpc_mtx);
-        return (rpcdev);
+	ops->enumerate(dev, &rpcdev->endp);
+	dev_info(&rpcdev->dev, "new librpc endpoint: %s\n", rpcdev->endp.name);
+	mutex_unlock(&librpc_mtx);
+	return (rpcdev);
 }
 
 void
 librpc_device_unregister(struct librpc_device *rpcdev)
 {
+	int i;
 
+	mutex_lock(&librpc_mtx);
+	for (i = 0; i < ARRAY_SIZE(librpc_device_attrs); i++)
+		device_remove_file(&rpcdev->dev, &librpc_device_attrs[i]);
+
+	device_unregister(&rpcdev->dev);
+	idr_remove(&librpc_device_ids, rpcdev->address);
+	kfree(rpcdev);
+	mutex_unlock(&librpc_mtx);
 }
 
 void
-librpc_device_answer(struct device *dev, uint64_t id, const void *buf,
+librpc_device_answer(struct device *dev, void *arg, const void *buf,
     size_t length)
 {
+	struct librpc_call *call = arg;
+	struct {
+	    struct cn_msg cn;
+	    struct librpc_message msg;
+	    char response[length];
+	} packet;
 
+	printk("librpc_device_answer: buf=%p, length=%ld\n", buf, sizeof(packet));
+	print_hex_dump(KERN_INFO, "response: ", DUMP_PREFIX_ADDRESS, 16,
+	    1, buf, length, true);
+
+	packet.cn.id = librpc_cb_id;
+	packet.cn.seq = resp_seq++;
+	packet.cn.ack = 0;
+	packet.cn.len = sizeof(packet);
+	packet.cn.flags = 0;
+	packet.msg.opcode = LIBRPC_RESPONSE;
+	packet.msg.status = 0;
+
+	memcpy(packet.response, buf, length);
+	cn_netlink_send(&packet.cn, call->portid, 0, GFP_KERNEL);
 }
 
 int
 librpc_ping(uint32_t address)
 {
-        struct librpc_device *rpcdev;
-        struct device *dev;
+	struct librpc_device *rpcdev;
+	struct device *dev;
 
-        dev = librpc_find_device(address);
-        if (dev == NULL)
-                return (-ENOENT);
+	dev = librpc_find_device(address);
+	if (dev == NULL)
+		return (-ENOENT);
 
-        rpcdev = to_librpc_device(dev);
-        return (rpcdev->ops->ping(dev->parent));
+	rpcdev = to_librpc_device(dev);
+	return (rpcdev->ops->ping(dev->parent));
 }
 
 static int
 librpc_bus_match(struct device *dev, struct device_driver *drv)
 {
 
-        return (0);
+	return (0);
 }
 
 static int
 librpc_match_device(struct device *dev, void *data)
 {
-        uint32_t address = (uint32_t)data;
+	uint32_t address = (uint32_t)data;
 
-        return (0);
+	return (1);
 }
 
 static struct device *
 librpc_find_device(uint32_t address)
 {
 
-        return (bus_find_device(&librpc_bus_type, NULL, (void *)address,
-            librpc_match_device));
+	return (bus_find_device(&librpc_bus_type, NULL, (void *)address,
+	    librpc_match_device));
+}
+
+static void
+librpc_request(struct work_struct *work)
+{
+	struct librpc_call *call = container_of(work, struct librpc_call, work);
+	int ret;
+
+	ret = call->rpcdev->ops->request(call->dev, call, call->data,
+            call->len);
 }
 
 static void
 librpc_cn_callback(struct cn_msg *cn, struct netlink_skb_parms *nsp)
 {
-        struct librpc_message *msg = (struct librpc_message *)(cn + 1);
-        struct librpc_device *rpcdev;
-        struct device *dev;
-        int ret;
+	struct librpc_message *msg = (struct librpc_message *)(cn + 1);
+	struct librpc_call *call;
+	struct librpc_device *rpcdev;
+	struct device *dev;
+	int ret = 0;
 
-        switch (msg->opcode) {
-        case LIBRPC_QUERY:
-                break;
+	printk("librpc_cn_callback: msg: opcode=%d, address=0x%08x, len=%d, "
+	    "seq=%d, portid=%d",  msg->opcode, msg->address, cn->len,
+	    cn->seq, nsp->portid);
 
-        case LIBRPC_PING:
-                dev = librpc_find_device(msg->address);
-                if (dev == NULL)
-                        return (-ENOENT);
+	switch (msg->opcode) {
+	case LIBRPC_QUERY:
+		break;
 
-                rpcdev = to_librpc_device(dev);
-                ret = rpcdev->ops->ping(dev->parent);
+	case LIBRPC_PING:
+		dev = librpc_find_device(msg->address);
+		if (dev == NULL) {
+			ret = ENOENT;
+			goto ack;
+		}
 
-        case LIBRPC_REQUEST:
-                dev = librpc_find_device(msg->address);
-                if (dev == NULL)
-                        return (-ENOENT);
+		rpcdev = to_librpc_device(dev);
+		ret = rpcdev->ops->ping(dev->parent);
+		break;
 
-                rpcdev = to_librpc_device(dev);
-                //ret = rpcdev->ops->request(dev->parent, req);
-                break;
-        }
+	case LIBRPC_REQUEST:
+		dev = librpc_find_device(msg->address);
+		if (dev == NULL) {
+			ret = ENOENT;
+			goto ack;
+		}
+
+		call = kzalloc(sizeof(*call), GFP_KERNEL);
+		call->rpcdev = to_librpc_device(dev);
+		call->dev = dev->parent;
+		call->len = cn->len - sizeof(*msg);
+		call->data = kmalloc(call->len, GFP_KERNEL);
+		call->portid = nsp->portid;
+		call->seq = cn->seq;
+		call->ack = cn->ack;
+		call->id = cn->seq;
+
+		memcpy(call->data, msg->data, call->len);
+		INIT_WORK(&call->work, &librpc_request);
+		queue_work(librpc_wq, &call->work);
+		break;
+	}
+
+ack:
+	librpc_cn_send_ack(cn->seq, cn->ack, nsp->portid, ret);
 }
 
 static void
-librpc_cn_send_ack(uint32_t seq, uint32_t portid, int error)
+librpc_cn_send_ack(uint32_t seq, uint32_t ack, uint32_t portid, int error)
 {
-        struct {
-                struct cn_msg cn;
-                struct librpc_message msg;
-        } packet;
+	int ret;
+	struct {
+		struct cn_msg cn;
+		struct librpc_message msg;
+	} packet;
 
-        packet.cn.id = librpc_cb_id;
-        packet.cn.seq = seq;
-        packet.cn.len = sizeof(struct librpc_message);
-        packet.msg.opcode = LIBRPC_ACK;
-        packet.msg.status = error;
-        cn_netlink_send(&packet.cn, portid, CN_LIBRPC_IDX, GFP_KERNEL);
-}
+	printk("librpc_cn_send_ack: seq=%d, portid=%d, status=%d\n",
+	    seq, portid, error);
 
-static void
-librpc_cn_send_response(void)
-{
-        struct {
-                struct cn_msg cn;
-                struct librpc_message msg;
-        } packet;
+	packet.cn.id = librpc_cb_id;
+	packet.cn.seq = seq;
+	packet.cn.ack = ack + 1;
+	packet.cn.len = sizeof(packet);
+	packet.cn.flags = 0;
+	packet.msg.opcode = LIBRPC_ACK;
+	packet.msg.status = error;
+
+	ret = cn_netlink_send(&packet.cn, portid, 0, GFP_KERNEL);
+	if (ret < 0)
+		printk("librpc_cn_send_ack: send failed, err=%d\n", ret);
 }
 
 static ssize_t
 librpc_device_show_address(struct device *dev, struct device_attribute *attr,
     char *buf)
 {
-        struct librpc_device *rpcdev = to_librpc_device(dev);
+	struct librpc_device *rpcdev = to_librpc_device(dev);
 
-        return (sprintf(buf, "%u\n", rpcdev->address));
+	return (sprintf(buf, "%u\n", rpcdev->address));
 }
 
 static ssize_t
 librpc_device_show_name(struct device *dev, struct device_attribute *attr,
     char *buf)
 {
-        struct librpc_device *rpcdev = to_librpc_device(dev);
+	struct librpc_device *rpcdev = to_librpc_device(dev);
 
-        return (sprintf(buf, "%s\n", rpcdev->endp.name));
+	return (sprintf(buf, "%s\n", rpcdev->endp.name));
 }
 
 static ssize_t
 librpc_device_show_descr(struct device *dev, struct device_attribute *attr,
     char *buf)
 {
-        struct librpc_device *rpcdev = to_librpc_device(dev);
+	struct librpc_device *rpcdev = to_librpc_device(dev);
 
-        return (sprintf(buf, "%s\n", rpcdev->endp.description));
+	return (sprintf(buf, "%s\n", rpcdev->endp.description));
 }
 
 static ssize_t
 librpc_device_show_serial(struct device *dev, struct device_attribute *attr,
     char *buf)
 {
-        struct librpc_device *rpcdev = to_librpc_device(dev);
+	struct librpc_device *rpcdev = to_librpc_device(dev);
 
-        return (sprintf(buf, "%s\n", rpcdev->endp.serial));
+	return (sprintf(buf, "%s\n", rpcdev->endp.serial));
+}
+
+static int
+librpc_device_destroy(struct device *dev, void *data)
+{
+
+	librpc_device_unregister(to_librpc_device(dev));
+	return (0);
 }
 
 static int __init
 librpc_init(void)
 {
-        dev_t devid;
-        int ret;
+	int ret;
 
-        dev = kzalloc(sizeof(*dev), GFP_KERNEL);
-        if (dev == NULL)
-                return (-ENOMEM);
+	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+	if (dev == NULL)
+		return (-ENOMEM);
 
-        ret = bus_register(&librpc_bus_type);
-        if (ret != 0)
-                goto done;
+	ret = bus_register(&librpc_bus_type);
+	if (ret != 0)
+		goto done;
 
-        librpc_class = class_create(THIS_MODULE, "librpc");
-        if (IS_ERR(librpc_class)) {
-                ret = PTR_ERR(librpc_class);
-                goto done;
-        }
+	librpc_class = class_create(THIS_MODULE, "librpc");
+	if (IS_ERR(librpc_class)) {
+		ret = PTR_ERR(librpc_class);
+		goto done;
+	}
 
-        dev->dev = device_create(librpc_class, NULL, devid, NULL, "librpc");
-        if (IS_ERR(dev->dev)) {
-                ret = PTR_ERR(dev->dev);
-                goto done;
-        }
+	dev->dev = device_create(librpc_class, NULL, MKDEV(0, 0), NULL, "librpc");
+	if (IS_ERR(dev->dev)) {
+		ret = PTR_ERR(dev->dev);
+		goto done;
+	}
 
-        ret = cn_add_callback(&librpc_cb_id, "librpc", &librpc_cn_callback);
-        if (ret != 0)
-                goto done;
+	librpc_wq = alloc_workqueue("librpc-wq", 0, 0);
+	if (librpc_wq == NULL) {
+		ret = -ENOMEM;
+		goto done;
+	}
+
+	ret = cn_add_callback(&librpc_cb_id, "librpc", &librpc_cn_callback);
+	if (ret != 0)
+		goto done;
 
 done:
-        kfree(dev);
-        return (ret);
+	kfree(dev);
+	return (ret);
 }
 
 static void
 librpc_exit(void)
 {
-        device_destroy(librpc_class, MKDEV(MAJOR(librpc_devid), 1));
-        class_destroy(librpc_class);
+	cn_del_callback(&librpc_cb_id);
+	bus_for_each_dev(&librpc_bus_type, NULL, NULL, &librpc_device_destroy);
+	device_destroy(librpc_class, MKDEV(0, 0));
+	class_destroy(librpc_class);
+	bus_unregister(&librpc_bus_type);
 }
 
 EXPORT_SYMBOL(librpc_device_register);
 EXPORT_SYMBOL(librpc_device_unregister);
+EXPORT_SYMBOL(librpc_device_answer);
 MODULE_AUTHOR("Jakub Klama");
 MODULE_LICENSE("Dual BSD/GPL");
 

@@ -210,7 +210,6 @@ rpc_msgpack_read_object(mpack_node_t node)
 	int *fd;
 	int64_t *date;
 	mpack_tree_t subtree;
-	mpack_node_t subnode;
 	__block size_t i;
 	__block char *cstr;
 	__block mpack_node_t tmp;

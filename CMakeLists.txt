@@ -151,6 +151,9 @@ if(BUILD_EXAMPLES)
         add_subdirectory(examples/shm-client)
         add_subdirectory(examples/shm-server)
     endif()
+    if (BUILD_BUS)
+        add_subdirectory(examples/bus)
+    endif()
 endif()
 
 if(BUILD_PYTHON)
@@ -164,4 +167,8 @@ if(BUILD_DOC)
     add_custom_target(doc ALL
             ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc)
+endif()
+
+if(BUILD_BUS)
+    add_subdirectory(kmod)
 endif()

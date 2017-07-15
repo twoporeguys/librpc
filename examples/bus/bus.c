@@ -30,32 +30,42 @@
 #include <string.h>
 #include <rpc/object.h>
 #include <rpc/client.h>
+#include <rpc/bus.h>
 
 int
 main(int argc, const char *argv[])
 {
-	rpc_client_t client;
-	rpc_connection_t conn;
-	rpc_object_t result;
+	struct rpc_bus_node *nodes;
+	int n, i;
+	int ret;
 
 	(void)argc;
 	(void)argv;
 
-	client = rpc_client_create("bus://", 0);
-	if (client == NULL) {
-		fprintf(stderr, "cannot connect: %s", strerror(errno));
+
+	n = rpc_bus_enumerate(&nodes);
+	if (n < 0) {
+		fprintf(stderr, "rpc_bus_enumerate: %s\n", strerror(errno));
 		return (1);
 	}
 
-	conn = rpc_client_get_connection(client);
-	result = rpc_connection_call_sync(conn, "hello", rpc_string_create("world"), NULL);
-	printf("result = %s\n", rpc_string_get_string_ptr(result));
-	rpc_release(result);
+	for (i = 0; i < n; i++) {
+		printf("%d: %s (%s)\n", nodes[i].rbn_address,
+		    nodes[i].rbn_name, nodes[i].rbn_description);
 
-	result = rpc_connection_call_sync(conn, "hello", rpc_string_create("world"), NULL);
-	printf("result = %s\n", rpc_string_get_string_ptr(result));
-	rpc_release(result);
+		ret = rpc_bus_ping(nodes[i].rbn_name);
+		switch (ret) {
+		case 1:
+			printf("    responds to ping\n");
+			break;
 
-	rpc_client_close(client);
+		default:
+			printf("    failed to ping, error %d [%s]\n", errno,
+			    strerror(errno));
+			break;
+		}
+	}
+
+	rpc_bus_free_result(nodes);
 	return (0);
 }

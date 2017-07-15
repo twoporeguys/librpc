@@ -49,7 +49,7 @@
 #define	RPC_TRANSPORT_CREDENTIALS		(1 << 1)
 #define RPC_TRANSPORT_FD_PASSING		(1 << 2)
 
-#define RPC_DEBUG	0
+#define RPC_DEBUG	1
 #if RPC_DEBUG
 #define debugf(...) 				\
     do { 					\

@@ -31,7 +31,7 @@
 int
 rpc_bus_ping(const char *name)
 {
-	struct rpc_transport *bus;
+	const struct rpc_transport *bus;
 
 	bus = rpc_find_transport("bus");
 	if (bus == NULL) {
@@ -47,10 +47,11 @@ rpc_bus_ping(const char *name)
 	return (bus->ping(name));
 }
 
+
 int
 rpc_bus_enumerate(struct rpc_bus_node **resultp)
 {
-	struct rpc_transport *bus;
+	const struct rpc_transport *bus;
 	struct rpc_bus_node *result;
 	size_t count;
 
@@ -69,7 +70,7 @@ rpc_bus_enumerate(struct rpc_bus_node **resultp)
 		return (-1);
 
 	*resultp = result;
-	return (count);
+	return ((int)count);
 }
 
 void

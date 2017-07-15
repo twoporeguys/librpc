@@ -25,6 +25,7 @@
  *
  */
 
+#include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <fcntl.h>
@@ -42,10 +43,12 @@
 #include "../internal.h"
 #include "../../kmod/librpc.h"
 
-#define	BUS_NL_MSGSIZE	65536
+#define	BUS_NL_MSGSIZE	16384
 
 struct bus_netlink;
 struct bus_connection;
+typedef void (*bus_netlink_cb_t)(void *, struct librpc_message *, void *,
+    size_t);
 
 static int bus_connect(struct rpc_connection *, const char *, rpc_object_t);
 static int bus_send_msg(void *, void *, size_t, const int *, size_t);
@@ -56,9 +59,10 @@ static int bus_get_fd(void *);
 static int bus_netlink_open(struct bus_netlink *);
 static int bus_netlink_send(struct bus_netlink *, struct librpc_message *,
     void *, size_t);
-static int bus_netlink_recv(struct bus_netlink *, struct librpc_message *,
-    void **, size_t *);
-static int bus_lookup_address(const char *);
+static int bus_netlink_recv(struct bus_netlink *);
+static int bus_netlink_wait(struct bus_ack *);
+static int bus_lookup_address(const char *, uint32_t *);
+static void bus_process_message(void *, struct librpc_message *, void *, size_t);
 static void *bus_reader(void *);
 
 struct rpc_transport bus_transport = {
@@ -70,10 +74,23 @@ struct rpc_transport bus_transport = {
 	.listen = NULL
 };
 
+struct bus_ack
+{
+    	GMutex			ba_mtx;
+    	GCond			ba_cv;
+    	bool			ba_done;
+    	int			ba_status;
+};
+
 struct bus_netlink
 {
     	int 			bn_sock;
     	uint32_t 		bn_seq;
+    	GHashTable *		bn_ack;
+    	GMutex			bn_mtx;
+    	GThread *		bn_thread;
+    	bus_netlink_cb_t	bn_callback;
+    	void *			bn_arg;
 };
 
 struct bus_connection
@@ -82,7 +99,6 @@ struct bus_connection
     	uint32_t		bc_address;
     	struct bus_netlink	bc_bn;
     	struct rpc_connection *	bc_parent;
-    	GThread *		bc_thread;
 };
 
 static int
@@ -91,22 +107,26 @@ bus_connect(struct rpc_connection *rco, const char *uri_string,
 {
 	SoupURI *uri;
 	struct bus_connection *conn;
-	int ret;
 
 	uri = soup_uri_new(uri_string);
-	conn->bc_address = bus_lookup_address(uri->host);
 	conn = g_malloc0(sizeof(struct bus_connection));
 	conn->bc_parent = rco;
+
+	if (bus_lookup_address(uri->host, &conn->bc_address) != 0) {
+		g_free(conn);
+		return (-1);
+	}
 
 	if (bus_netlink_open(&conn->bc_bn) != 0) {
 		g_free(conn);
 		return (-1);
 	}
 
-	conn->bc_thread = g_thread_new("bus reader", &bus_reader, conn);
-
+	conn->bc_bn.bn_callback = &bus_process_message;
+	conn->bc_bn.bn_arg = conn;
 	rco->rco_send_msg = &bus_send_msg;
 	rco->rco_abort = &bus_abort;
+	rco->rco_get_fd = &bus_get_fd;
 	rco->rco_arg = conn;
 	return (0);
 }
@@ -129,15 +149,14 @@ bus_get_fd(void *arg)
 static int
 bus_ping(const char *name)
 {
-	struct bus_netlink bn;
+	struct bus_netlink bn = { 0 };
 	struct librpc_message msg;
 	uint32_t address;
 
 	if (bus_netlink_open(&bn) != 0)
 		return (-1);
 
-	address = bus_lookup_address(name);
-	if (address == -1) {
+	if (bus_lookup_address(name, &address)) {
 		close(bn.bn_sock);
 		return (-1);
 	}
@@ -171,11 +190,19 @@ bus_enumerate(struct rpc_bus_node **resultp, size_t *countp)
 		const char *path = udev_list_entry_get_name(entry);
 
 		dev = udev_device_new_from_syspath(udev, path);
+		if (dev == NULL)
+			continue;
+
+		if (g_strcmp0(udev_device_get_sysname(dev), "librpc") == 0)
+			continue;
+
 		result = g_realloc(result, count + 1);
+		result[count].rbn_address = (uint32_t)strtol(
+		    udev_device_get_sysattr_value(dev, "address"), NULL, 10);
 		result[count].rbn_name = g_strdup(
-		    udev_device_get_property_value(dev, "name"));
+		    udev_device_get_sysattr_value(dev, "name"));
 		result[count].rbn_description = g_strdup(
-		    udev_device_get_property_value(dev, "description"));
+		    udev_device_get_sysattr_value(dev, "description"));
 		count++;
 	}
 
@@ -185,20 +212,19 @@ bus_enumerate(struct rpc_bus_node **resultp, size_t *countp)
 }
 
 static int
-bus_lookup_address(const char *name)
+bus_lookup_address(const char *name, uint32_t *address)
 {
 	struct udev *udev;
 	struct udev_enumerate *iter;
 	struct udev_list_entry *entry, *list;
 	struct udev_device *dev = NULL;
-	const char *address;
-	int ret;
+	const char *str;
 
 	udev = udev_new();
 	iter = udev_enumerate_new(udev);
 
 	udev_enumerate_add_match_subsystem(iter, "librpc");
-	udev_enumerate_add_match_property(iter, "name", name);
+	udev_enumerate_add_match_sysattr(iter, "name", name);
 	udev_enumerate_scan_devices(iter);
 
 	list = udev_enumerate_get_list_entry(iter);
@@ -217,8 +243,9 @@ bus_lookup_address(const char *name)
 	if (dev == NULL)
 		return (-1);
 
-	address = udev_device_get_property_value(dev, "address");
-	return (strtol(address, NULL, 0));
+	str = udev_device_get_sysattr_value(dev, "address");
+	*address = (uint32_t)strtol(str, NULL, 10);
+	return (0);
 }
 
 static int
@@ -238,16 +265,27 @@ bus_send_msg(void *arg, void *buf, size_t len, const int *fds __unused,
 static int
 bus_netlink_open(struct bus_netlink *bn)
 {
+	struct sockaddr_nl sa;
 	int group = CN_LIBRPC_IDX;
 
 	bn->bn_seq = 0;
-	bn->bn_sock = socket(AF_NETLINK, SOCK_DGRAM, NETLINK_CONNECTOR);
+	bn->bn_sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_CONNECTOR);
 	if (bn->bn_sock < 0)
+		return (-1);
+
+	g_mutex_init(&bn->bn_mtx);
+	bn->bn_ack = g_hash_table_new(NULL, NULL);
+
+	sa.nl_family = AF_NETLINK;
+	sa.nl_groups = (uint32_t)-1;
+	sa.nl_pid = 0;
+	if (bind(bn->bn_sock, (struct sockaddr *)&sa, sizeof(sa)) != 0)
 		return (-1);
 
 	setsockopt(bn->bn_sock, SOL_NETLINK, NETLINK_ADD_MEMBERSHIP, &group,
 	    sizeof(group));
 
+	bn->bn_thread = g_thread_new("bus reader", &bus_reader, bn);
 	return (0);
 }
 
@@ -256,73 +294,121 @@ bus_netlink_send(struct bus_netlink *bn, struct librpc_message *msg,
     void *payload, size_t len)
 {
 	char buf[BUS_NL_MSGSIZE];
+	struct bus_ack ack;
 	struct nlmsghdr *nlh = (struct nlmsghdr *)buf;
 	struct cn_msg *cn = NLMSG_DATA(nlh);
-	size_t size = NLMSG_SPACE(sizeof(msg) + len);
+	size_t size = NLMSG_SPACE(sizeof(*cn) + sizeof(*msg) + len);
 
 	nlh->nlmsg_seq = bn->bn_seq++;
-	nlh->nlmsg_pid = getpid();
+	nlh->nlmsg_pid = (uint32_t)getpid();
+	nlh->nlmsg_len = (uint32_t)size;
 	nlh->nlmsg_type = NLMSG_DONE;
-	nlh->nlmsg_flags = 0;
+	nlh->nlmsg_flags = NLM_F_REQUEST;
 
 	cn->id.idx = CN_LIBRPC_IDX;
 	cn->id.val = CN_LIBRPC_VAL;
 	cn->seq = nlh->nlmsg_seq;
+	cn->ack = 100;
 	cn->flags = 0;
+	cn->len = sizeof(struct librpc_message) + (uint16_t)len;
 	memcpy(cn->data, msg, sizeof(struct librpc_message));
 
 	if (payload != NULL)
 		memcpy(cn->data + sizeof(struct librpc_message), payload, len);
 
-	if (send(bn->bn_sock, buf, size, 0) != 0)
+	g_mutex_lock(&bn->bn_mtx);
+
+	ack.ba_done = false;
+	ack.ba_status = 0;
+	g_mutex_init(&ack.ba_mtx);
+	g_cond_init(&ack.ba_cv);
+	g_hash_table_insert(bn->bn_ack, GUINT_TO_POINTER(cn->seq), &ack);
+
+	if (send(bn->bn_sock, buf, size, 0) != (ssize_t)size)
 		return (-1);
+
+	g_mutex_unlock(&bn->bn_mtx);
+	g_mutex_lock(&ack.ba_mtx);
+
+	while (!ack.ba_done)
+		g_cond_wait(&ack.ba_cv, &ack.ba_mtx);
+
+	g_mutex_unlock(&ack.ba_mtx);
+	return (ack.ba_status);
+}
+
+static int
+bus_netlink_recv(struct bus_netlink *bn)
+{
+	char buf[BUS_NL_MSGSIZE];
+	struct bus_ack *ack;
+	struct nlmsghdr *nlh = (struct nlmsghdr *)buf;
+	struct cn_msg *cn = NLMSG_DATA(nlh);
+	struct librpc_message *msg = (struct librpc_message *)(cn + 1);
+	struct librpc_message *out;
+	void *payload;
+	ssize_t msglen = 0;
+
+	msglen = recv(bn->bn_sock, buf, BUS_NL_MSGSIZE, 0);
+	nlh = (struct nlmsghdr *)buf;
+
+	debugf("message: type=%d, seq=%d, len=%d", nlh->nlmsg_type, cn->seq,
+	    cn->len);
+
+	switch (nlh->nlmsg_type) {
+		case NLMSG_ERROR:
+			out = NULL;
+			payload = NULL;
+			break;
+
+		case NLMSG_DONE:
+			out = g_malloc(sizeof(*out));
+			payload = g_malloc(cn->len);
+			memcpy(out, msg, sizeof(struct librpc_message));
+			memcpy(payload, msg + 1, cn->len);
+			break;
+
+		default:
+			return (0);
+	}
+
+	switch (msg->opcode) {
+	case LIBRPC_ACK:
+		g_mutex_lock(&bn->bn_mtx);
+		ack = g_hash_table_lookup(bn->bn_ack, GUINT_TO_POINTER(cn->seq));
+		g_mutex_unlock(&bn->bn_mtx);
+
+		if (ack != NULL) {
+			g_mutex_lock(&ack->ba_mtx);
+			ack->ba_done = true;
+			ack->ba_status = msg->status;
+			g_cond_broadcast(&ack->ba_cv);
+			g_mutex_unlock(&ack->ba_mtx);
+		}
+		break;
+
+	default:
+		if (bn->bn_callback != NULL) {
+			bn->bn_callback(bn->bn_arg, msg, payload,
+			    cn->len - sizeof(*cn));
+		}
+		break;
+	}
+
 
 	return (0);
 }
 
-static int
-bus_netlink_recv(struct bus_netlink *bn, struct librpc_message *msgo,
-    void **payload, size_t *len)
-{
-	char buf[BUS_NL_MSGSIZE];
-	struct nlmsghdr *nlh = (struct nlmsghdr *)buf;
-	struct cn_msg *cn = NLMSG_DATA(nlh);
-	struct librpc_message *msg = (struct librpc_message *)(cn + 1);
-
-	ssize_t msglen;
-
-	msglen = recv(bn->bn_sock, buf, sizeof(buf), 0);
-	nlh = (struct nlmsghdr *)buf;
-
-	switch (nlh->nlmsg_type) {
-		case NLMSG_ERROR:
-			break;
-
-		case NLMSG_DONE:
-			*payload = g_malloc0(cn->len);
-			memcpy(msgo, msg, sizeof(struct librpc_message));
-			memcpy(*payload, msg + 1, cn->len);
-			break;
-	}
-}
-
 static void
-bus_netlink_process_msg(struct bus_connection *conn, struct librpc_message *msg,
-    void *payload, size_t len)
+bus_process_message(void *arg, struct librpc_message *msg, void *payload,
+    size_t len)
 {
+	struct bus_connection *conn = arg;
 
 	switch (msg->opcode) {
-	case LIBRPC_ACK:
+	case LIBRPC_RESPONSE:
 		conn->bc_parent->rco_recv_msg(conn->bc_parent, payload, len,
 		    NULL, 0, NULL);
-		break;
-
-	case LIBRPC_ARRIVE:
-	case LIBRPC_DEPART:
-		/* XXX implement */
-		break;
-
-	default:
 		break;
 	}
 }
@@ -330,19 +416,14 @@ bus_netlink_process_msg(struct bus_connection *conn, struct librpc_message *msg,
 static void *
 bus_reader(void *arg)
 {
-	struct librpc_message msg;
-	struct bus_connection *conn = arg;
-	void *frame;
-	size_t len;
+	struct bus_netlink *bn = arg;
 
 	for (;;) {
-		if (bus_netlink_recv(&conn->bc_bn, &msg, &frame, &len) != 0)
+		if (bus_netlink_recv(bn) != 0)
 			break;
-
-		bus_netlink_process_msg(conn, &msg, frame, len);
 	}
 
-	conn->bc_parent->rco_close(conn->bc_parent);
+	//conn->bc_parent->rco_close(conn->bc_parent);
 	return (NULL);
 }
 
