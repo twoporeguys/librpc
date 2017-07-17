@@ -1,6 +1,16 @@
 set(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/timestamp)
 set(DEPS librpc.c librpc.h librpc_usb.c Makefile)
-set(KERNEL_BUILD /lib/modules/4.10.0-26-generic/build)
+
+if (DEFINED ENV{KERNEL_BUILD_DIR})
+        set(KERNEL_BUILD $ENV{KERNEL_BUILD_DIR})
+else()
+        execute_process(
+                COMMAND uname -r
+                OUTPUT_VARIABLE UNAME_R
+                OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+        set(KERNEL_BUILD /lib/modules/${UNAME_R}/build)
+endif()
 
 add_custom_command(OUTPUT ${OUTPUT}
         COMMAND cp -a ${CMAKE_SOURCE_DIR}/kmod/* ${CMAKE_CURRENT_BINARY_DIR}/
