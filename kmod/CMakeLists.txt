@@ -21,3 +21,4 @@ add_custom_command(OUTPUT ${OUTPUT}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 add_custom_target(bus-kmod ALL DEPENDS ${OUTPUT})
+install(CODE "execute_process(COMMAND make -C ${KERNEL_BUILD} M=${CMAKE_CURRENT_BINARY_DIR} modules_install)")
