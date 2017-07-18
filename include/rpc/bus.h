@@ -37,6 +37,11 @@
 extern "C" {
 #endif
 
+typedef enum {
+    RPC_BUS_ATTACHED,
+    RPC_BUS_DETACHED
+} rpc_bus_event_t;
+
 /**
  * Bus node descriptor.
  */
@@ -46,6 +51,17 @@ struct rpc_bus_node
     	const char *	rbn_description;
     	uint32_t 	rbn_address;
 };
+
+typedef void (^rpc_bus_event_handler_t)(struct rpc_bus_node *node,
+    rpc_bus_event_t event);
+
+/**
+ * Converts function pointer to an rpc_bus_event_t block type.
+ */
+#define	RPC_BUS_EVENT_HANDLER(_fn, _arg)				\
+	^(struct rpc_bus_node *_node, rpc_bus_event_t _event) {		\
+                return (_fn(_arg, _node, _event));			\
+        }
 
 /**
  * Checks whether a node with specified name is reachable.
@@ -69,6 +85,10 @@ int rpc_bus_enumerate(struct rpc_bus_node **result);
  * @param result
  */
 void rpc_bus_free_result(struct rpc_bus_node *result);
+
+void rpc_bus_register_event_handler(rpc_bus_event_handler_t handler);
+void rpc_bus_unregister_event_handler(void);
+
 
 #ifdef __cplusplus
 }
