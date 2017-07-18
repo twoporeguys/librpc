@@ -6,6 +6,24 @@
 \item 
 struct \hyperlink{structrpc__bus__node}{rpc\-\_\-bus\-\_\-node}
 \end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{bus_8h_aaa8f0d5a3405318f9df38fc2ae8dd587}{R\-P\-C\-\_\-\-B\-U\-S\-\_\-\-E\-V\-E\-N\-T\-\_\-\-H\-A\-N\-D\-L\-E\-R}(\-\_\-fn, \-\_\-arg)
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{bus_8h_aac2924724f4e5b525242ab364f61431b}{typedef void($^\wedge$ {\bfseries rpc\-\_\-bus\-\_\-event\-\_\-handler\-\_\-t} )(struct \hyperlink{structrpc__bus__node}{rpc\-\_\-bus\-\_\-node} $\ast$node, rpc\-\_\-bus\-\_\-event\-\_\-t event)}\label{bus_8h_aac2924724f4e5b525242ab364f61431b}
+
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum {\bfseries rpc\-\_\-bus\-\_\-event\-\_\-t} \{ {\bfseries R\-P\-C\-\_\-\-B\-U\-S\-\_\-\-A\-T\-T\-A\-C\-H\-E\-D}, 
+{\bfseries R\-P\-C\-\_\-\-B\-U\-S\-\_\-\-D\-E\-T\-A\-C\-H\-E\-D}
+ \}
+\end{DoxyCompactItemize}
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -14,6 +32,12 @@ int \hyperlink{bus_8h_a069e6d67eba0248bc2de6d185d91e9d9}{rpc\-\_\-bus\-\_\-ping}
 int \hyperlink{bus_8h_a85cd042c0a2e2bddaea2a09ca10af76f}{rpc\-\_\-bus\-\_\-enumerate} (struct \hyperlink{structrpc__bus__node}{rpc\-\_\-bus\-\_\-node} $\ast$$\ast$result)
 \item 
 void \hyperlink{bus_8h_a9e0894b8914690e83a155b33a2854d8c}{rpc\-\_\-bus\-\_\-free\-\_\-result} (struct \hyperlink{structrpc__bus__node}{rpc\-\_\-bus\-\_\-node} $\ast$result)
+\item 
+\hypertarget{bus_8h_a1c9f3676441138dfb89655d3ad080d08}{void {\bfseries rpc\-\_\-bus\-\_\-register\-\_\-event\-\_\-handler} (rpc\-\_\-bus\-\_\-event\-\_\-handler\-\_\-t handler)}\label{bus_8h_a1c9f3676441138dfb89655d3ad080d08}
+
+\item 
+\hypertarget{bus_8h_ae6437acd78bb490baac4517ddffb0792}{void {\bfseries rpc\-\_\-bus\-\_\-unregister\-\_\-event\-\_\-handler} (void)}\label{bus_8h_ae6437acd78bb490baac4517ddffb0792}
+
 \end{DoxyCompactItemize}
 
 
@@ -21,6 +45,27 @@ void \hyperlink{bus_8h_a9e0894b8914690e83a155b33a2854d8c}{rpc\-\_\-bus\-\_\-free
 Bus transport A\-P\-I 
 
 Definition in file \hyperlink{bus_8h_source}{bus.\-h}.
+
+
+
+\subsection{Macro Definition Documentation}
+\hypertarget{bus_8h_aaa8f0d5a3405318f9df38fc2ae8dd587}{\index{bus.\-h@{bus.\-h}!R\-P\-C\-\_\-\-B\-U\-S\-\_\-\-E\-V\-E\-N\-T\-\_\-\-H\-A\-N\-D\-L\-E\-R@{R\-P\-C\-\_\-\-B\-U\-S\-\_\-\-E\-V\-E\-N\-T\-\_\-\-H\-A\-N\-D\-L\-E\-R}}
+\index{R\-P\-C\-\_\-\-B\-U\-S\-\_\-\-E\-V\-E\-N\-T\-\_\-\-H\-A\-N\-D\-L\-E\-R@{R\-P\-C\-\_\-\-B\-U\-S\-\_\-\-E\-V\-E\-N\-T\-\_\-\-H\-A\-N\-D\-L\-E\-R}!bus.h@{bus.\-h}}
+\subsubsection[{R\-P\-C\-\_\-\-B\-U\-S\-\_\-\-E\-V\-E\-N\-T\-\_\-\-H\-A\-N\-D\-L\-E\-R}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-P\-C\-\_\-\-B\-U\-S\-\_\-\-E\-V\-E\-N\-T\-\_\-\-H\-A\-N\-D\-L\-E\-R(
+\begin{DoxyParamCaption}
+\item[{}]{\-\_\-fn, }
+\item[{}]{\-\_\-arg}
+\end{DoxyParamCaption}
+)}}\label{bus_8h_aaa8f0d5a3405318f9df38fc2ae8dd587}
+{\bfseries Value\-:}
+\begin{DoxyCode}
+^(\textcolor{keyword}{struct }\hyperlink{structrpc__bus__node}{rpc\_bus\_node} *\_node, rpc\_bus\_event\_t \_event) \{     \(\backslash\)
+                return (\_fn(\_arg, \_node, \_event));          \(\backslash\)
+        \}
+\end{DoxyCode}
+Converts function pointer to an rpc\-\_\-bus\-\_\-event\-\_\-t block type. 
+
+Definition at line 61 of file bus.\-h.
 
 
 

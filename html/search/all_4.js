@@ -33,6 +33,7 @@ var searchData=
   ['rpc_5fbool_5fcreate',['rpc_bool_create',['../object_8h.html#a92cb61d1c1e25294fcbab898dff13b53',1,'object.h']]],
   ['rpc_5fbool_5fget_5fvalue',['rpc_bool_get_value',['../object_8h.html#a8b7678e59eb5f76e136fdcc3b6158c39',1,'object.h']]],
   ['rpc_5fbus_5fenumerate',['rpc_bus_enumerate',['../bus_8h.html#a85cd042c0a2e2bddaea2a09ca10af76f',1,'bus.h']]],
+  ['rpc_5fbus_5fevent_5fhandler',['RPC_BUS_EVENT_HANDLER',['../bus_8h.html#aaa8f0d5a3405318f9df38fc2ae8dd587',1,'bus.h']]],
   ['rpc_5fbus_5ffree_5fresult',['rpc_bus_free_result',['../bus_8h.html#a9e0894b8914690e83a155b33a2854d8c',1,'bus.h']]],
   ['rpc_5fbus_5fnode',['rpc_bus_node',['../structrpc__bus__node.html',1,'']]],
   ['rpc_5fbus_5fping',['rpc_bus_ping',['../bus_8h.html#a069e6d67eba0248bc2de6d185d91e9d9',1,'bus.h']]],

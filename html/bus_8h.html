@@ -85,6 +85,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">bus.h File Reference</div>  </div>
@@ -98,6 +101,24 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrpc__bus__node.html">rpc_bus_node</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:aaa8f0d5a3405318f9df38fc2ae8dd587"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#aaa8f0d5a3405318f9df38fc2ae8dd587">RPC_BUS_EVENT_HANDLER</a>(_fn, _arg)</td></tr>
+<tr class="separator:aaa8f0d5a3405318f9df38fc2ae8dd587"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:aac2924724f4e5b525242ab364f61431b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aac2924724f4e5b525242ab364f61431b"></a>
+typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_bus_event_handler_t</b> )(struct <a class="el" href="structrpc__bus__node.html">rpc_bus_node</a> *node, rpc_bus_event_t event)</td></tr>
+<tr class="separator:aac2924724f4e5b525242ab364f61431b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a38a66d3c4093e9ca458510dd2eea7ba7"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>rpc_bus_event_t</b> { <b>RPC_BUS_ATTACHED</b>, 
+<b>RPC_BUS_DETACHED</b>
+ }</td></tr>
+<tr class="separator:a38a66d3c4093e9ca458510dd2eea7ba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a069e6d67eba0248bc2de6d185d91e9d9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#a069e6d67eba0248bc2de6d185d91e9d9">rpc_bus_ping</a> (const char *name)</td></tr>
@@ -106,12 +127,52 @@ Functions</h2></td></tr>
 <tr class="separator:a85cd042c0a2e2bddaea2a09ca10af76f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e0894b8914690e83a155b33a2854d8c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#a9e0894b8914690e83a155b33a2854d8c">rpc_bus_free_result</a> (struct <a class="el" href="structrpc__bus__node.html">rpc_bus_node</a> *result)</td></tr>
 <tr class="separator:a9e0894b8914690e83a155b33a2854d8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c9f3676441138dfb89655d3ad080d08"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1c9f3676441138dfb89655d3ad080d08"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_bus_register_event_handler</b> (rpc_bus_event_handler_t handler)</td></tr>
+<tr class="separator:a1c9f3676441138dfb89655d3ad080d08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6437acd78bb490baac4517ddffb0792"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae6437acd78bb490baac4517ddffb0792"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_bus_unregister_event_handler</b> (void)</td></tr>
+<tr class="separator:ae6437acd78bb490baac4517ddffb0792"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Bus transport API </p>
 
 <p>Definition in file <a class="el" href="bus_8h_source.html">bus.h</a>.</p>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="aaa8f0d5a3405318f9df38fc2ae8dd587"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define RPC_BUS_EVENT_HANDLER</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_fn, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_arg&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">^(<span class="keyword">struct </span><a class="code" href="structrpc__bus__node.html">rpc_bus_node</a> *_node, rpc_bus_event_t _event) {     \</div>
+<div class="line">                return (_fn(_arg, _node, _event));          \</div>
+<div class="line">        }</div>
+<div class="ttc" id="structrpc__bus__node_html"><div class="ttname"><a href="structrpc__bus__node.html">rpc_bus_node</a></div><div class="ttdef"><b>Definition:</b> <a href="bus_8h_source.html#l00048">bus.h:48</a></div></div>
+</div><!-- fragment --><p>Converts function pointer to an rpc_bus_event_t block type. </p>
+
+<p>Definition at line <a class="el" href="bus_8h_source.html#l00061">61</a> of file <a class="el" href="bus_8h_source.html">bus.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a class="anchor" id="a85cd042c0a2e2bddaea2a09ca10af76f"></a>
 <div class="memitem">
 <div class="memproto">
