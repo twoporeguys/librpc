@@ -37,6 +37,7 @@
 
 static int librpc_bus_match(struct device *dev, struct device_driver *drv);
 static void librpc_cn_callback(struct cn_msg *, struct netlink_skb_parms *);
+static void librpc_dev_release(struct device *);
 static struct device *librpc_find_device(uint32_t);
 static ssize_t librpc_device_show_address(struct device *,
     struct device_attribute *, char *);
@@ -111,6 +112,7 @@ librpc_device_register(const char *name, struct device *dev,
 	rpcdev->ops = ops;
 
 	rpcdev->dev.parent = dev;
+	rpcdev->dev.release = &librpc_dev_release;
 	rpcdev->dev.bus = &librpc_bus_type;
 
 	dev_set_name(&rpcdev->dev, "librpc%d", id);
@@ -124,7 +126,14 @@ librpc_device_register(const char *name, struct device *dev,
 	for (i = 0; i < ARRAY_SIZE(librpc_device_attrs); i++)
 		device_create_file(&rpcdev->dev, &librpc_device_attrs[i]);
 
-	ops->enumerate(dev, &rpcdev->endp);
+	ret = ops->enumerate(dev, &rpcdev->endp);
+	if (ret != 0) {
+		dev_err(&rpcdev->dev, "cannot enumerate librpc endpoint: %d\n", ret);
+		kfree(rpcdev);
+		mutex_unlock(&librpc_mtx);
+		return (ret);
+	}
+
 	dev_info(&rpcdev->dev, "new librpc endpoint: %s\n", rpcdev->endp.name);
 	mutex_unlock(&librpc_mtx);
 	return (rpcdev);
@@ -172,6 +181,14 @@ librpc_device_answer(struct device *dev, void *arg, const void *buf,
 	cn_netlink_send(&packet.cn, call->portid, 0, GFP_KERNEL);
 }
 
+void
+librpc_device_log(struct device *dev, const char *log, size_t len)
+{
+
+	printk("librpc_device_log: len=%d, buf=%p\n", len, log);
+	dev_info(dev, "%*s\n", len, log);
+}
+
 int
 librpc_ping(uint32_t address)
 {
@@ -217,6 +234,12 @@ librpc_request(struct work_struct *work)
 
 	ret = call->rpcdev->ops->request(call->dev, call, call->data,
             call->len);
+}
+
+static void
+librpc_dev_release(struct device *dev)
+{
+
 }
 
 static void
@@ -396,6 +419,7 @@ librpc_exit(void)
 EXPORT_SYMBOL(librpc_device_register);
 EXPORT_SYMBOL(librpc_device_unregister);
 EXPORT_SYMBOL(librpc_device_answer);
+EXPORT_SYMBOL(librpc_device_log);
 MODULE_AUTHOR("Jakub Klama");
 MODULE_LICENSE("Dual BSD/GPL");
 

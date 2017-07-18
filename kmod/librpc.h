@@ -89,6 +89,7 @@ struct librpc_device *librpc_device_register(const char *name,
     struct device *dev, const struct librpc_ops *ops, struct module *owner);
 void librpc_device_unregister(struct librpc_device *rpcdev);
 void librpc_device_answer(struct device *, void *, const void *, size_t);
+void librpc_device_log(struct device *, const char *, size_t);
 
 #endif /* __KERNEL__ */
 #endif /* _LIBRPC_H */

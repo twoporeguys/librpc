@@ -60,7 +60,6 @@ static int bus_netlink_open(struct bus_netlink *);
 static int bus_netlink_send(struct bus_netlink *, struct librpc_message *,
     void *, size_t);
 static int bus_netlink_recv(struct bus_netlink *);
-static int bus_netlink_wait(struct bus_ack *);
 static int bus_lookup_address(const char *, uint32_t *);
 static void bus_process_message(void *, struct librpc_message *, void *, size_t);
 static void *bus_reader(void *);
@@ -149,7 +148,7 @@ bus_get_fd(void *arg)
 static int
 bus_ping(const char *name)
 {
-	struct bus_netlink bn = { 0 };
+	struct bus_netlink bn = {};
 	struct librpc_message msg;
 	uint32_t address;
 

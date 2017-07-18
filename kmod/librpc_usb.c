@@ -29,6 +29,7 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/init.h>
+#include <linux/kthread.h>
 #include <linux/usb.h>
 #include "librpc.h"
 
@@ -38,6 +39,7 @@ static int librpc_usb_enumerate(struct device *, struct librpc_endpoint *);
 static int librpc_usb_ping(struct device *);
 static int librpc_usb_request(struct device *, void *, const void *, size_t);
 static int librpc_usb_xfer(struct usb_device *, int, void *, size_t, int);
+static int librpc_usb_thread(void *);
 
 #define	LIBRPC_MAX_MSGSIZE	4096
 
@@ -48,7 +50,8 @@ enum librpc_usb_opcode
         LIBRPC_USB_IDENTIFY,
         LIBRPC_USB_SEND_REQ,
         LIBRPC_USB_READ_RESP,
-        LIBRPC_USB_READ_EVENTS
+        LIBRPC_USB_READ_EVENTS,
+    	LIBRPC_USB_READ_LOG
 };
 
 enum librpc_usb_status
@@ -68,10 +71,21 @@ struct librpc_usb_identification
 {
         uint16_t        iName;
     	uint16_t 	iDescription;
+    	uint16_t 	log_size;
 };
 
+struct librpc_usb_log
+{
+    	uint8_t 	status;
+    	uint16_t 	start;
+    	uint16_t 	end;
+    	char 		buffer[];
+} __attribute__((packed));
+
 struct librpc_usb_device {
+    	struct usb_device *	udev;
         struct librpc_device *  rpcdev;
+    	struct task_struct *	thread;
 };
 
 static struct librpc_ops librpc_usb_ops = {
@@ -99,6 +113,8 @@ librpc_usb_probe(struct usb_interface *intf, const struct usb_device_id *id)
                 return (ret);
 
         usb_set_intfdata(intf, rpcusbdev);
+	rpcusbdev->udev = udev;
+	rpcusbdev->thread = kthread_run(&librpc_usb_thread, rpcusbdev, "librpc");
         rpcusbdev->rpcdev = librpc_device_register("usb", &udev->dev,
             &librpc_usb_ops, THIS_MODULE);
 	return (0);
@@ -119,6 +135,7 @@ librpc_usb_enumerate(struct device *dev, struct librpc_endpoint *endp)
         struct librpc_usb_identification *ident;
         int ret = 0;
 
+
         ident = kmalloc(sizeof(*ident), GFP_KERNEL);
         ret = librpc_usb_xfer(udev, LIBRPC_USB_IDENTIFY, ident, sizeof(*ident), 500);
         if (ret < 0)
@@ -127,6 +144,8 @@ librpc_usb_enumerate(struct device *dev, struct librpc_endpoint *endp)
         ret = usb_string(udev, ident->iName, endp->name, NAME_MAX);
         if (ret < 0)
                 goto done;
+
+	printk("librpc_usb_enumerate: iName=%s, ret=%d\n", endp->name, ret);
 
         ret = usb_string(udev, ident->iDescription, endp->description, NAME_MAX);
         if (ret < 0)
@@ -168,7 +187,7 @@ librpc_usb_request(struct device *dev, void *cookie, const void *buf, size_t len
 
 	resp = kmalloc(sizeof(*resp) + LIBRPC_MAX_MSGSIZE, GFP_KERNEL);
 	ret = usb_control_msg(udev, wpipe, LIBRPC_USB_SEND_REQ, USB_TYPE_VENDOR,
-	    0, 0, buf, len, 500);
+	    0, 0, (void *)buf, len, 500);
 
 	if (ret < 0)
 		return (ret);
@@ -201,6 +220,50 @@ librpc_usb_xfer(struct usb_device *udev, int opcode, void *buf, size_t len,
 
         return (usb_control_msg(udev, rpipe, opcode,
             USB_TYPE_VENDOR | USB_DIR_IN, 0, 0, buf, len, timeout));
+}
+
+static int
+librpc_usb_thread(void *arg)
+{
+	struct librpc_usb_device *rpcusbdev = arg;
+	struct usb_device *udev = rpcusbdev->udev;
+	struct librpc_usb_log *log;
+	int rpipe = usb_rcvctrlpipe(udev, 1);
+	int ret;
+
+	log = kzalloc(sizeof(*log) + 8192, GFP_KERNEL);
+	if (log == NULL)
+		return (-ENOMEM);
+
+	for (;;) {
+		if (kthread_should_stop())
+			break;
+
+		ret = usb_control_msg(udev, rpipe, LIBRPC_USB_READ_LOG,
+		    USB_TYPE_VENDOR | USB_DIR_IN, 0, 0,
+		    log, sizeof(*log) + 8192, 500);
+
+		if (ret < 0)
+			break;
+
+		if (log->start == log->end)
+			continue;
+
+		if (log->end > log->start) {
+			/* All the log goes in one chunk */
+			librpc_device_log(&udev->dev, &log->buffer[log->start],
+			    log->end - log->start);
+		}
+
+		if (log->start > log->end) {
+
+		}
+
+		msleep(500);
+	}
+
+	kfree(log);
+	return (0);
 }
 
 static struct usb_device_id librpc_usb_id_table[] = {
