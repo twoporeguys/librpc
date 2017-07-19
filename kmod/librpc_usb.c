@@ -109,14 +109,21 @@ librpc_usb_probe(struct usb_interface *intf, const struct usb_device_id *id)
                 return (-ENOMEM);
 
         ret = librpc_usb_enumerate(&udev->dev, &endp);
-        if (ret != 0)
+        if (ret != 0) {
+                kfree(rpcusbdev);
                 return (ret);
+        }
 
         usb_set_intfdata(intf, rpcusbdev);
 	rpcusbdev->udev = udev;
-	rpcusbdev->thread = kthread_run(&librpc_usb_thread, rpcusbdev, "librpc");
         rpcusbdev->rpcdev = librpc_device_register("usb", &udev->dev,
             &librpc_usb_ops, THIS_MODULE);
+	if (IS_ERR(rpcusbdev->rpcdev)) {
+		kfree(rpcusbdev);
+		return (PTR_ERR(rpcusbdev->rpcdev));
+	}
+
+	rpcusbdev->thread = kthread_run(&librpc_usb_thread, rpcusbdev, "librpc");
 	return (0);
 }
 

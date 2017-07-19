@@ -56,11 +56,11 @@ struct librpc_call
 	uint32_t                portid;
     	uint32_t 		seq;
     	uint32_t 		ack;
-    	struct librpc_device *	rpcdev;
-    	struct device *		dev;
-    	void *			data;
-    	size_t			len;
-    	struct work_struct	work;
+	struct librpc_device *	rpcdev;
+	struct device *		dev;
+	void *			data;
+	size_t			len;
+	struct work_struct	work;
 };
 
 struct librpc_dev
@@ -116,7 +116,16 @@ librpc_device_register(const char *name, struct device *dev,
 	rpcdev->dev.bus = &librpc_bus_type;
 
 	dev_set_name(&rpcdev->dev, "librpc%d", id);
-	ret = device_register(&rpcdev->dev);
+
+	ret = ops->enumerate(dev, &rpcdev->endp);
+	if (ret != 0) {
+		dev_err(&rpcdev->dev, "cannot enumerate librpc endpoint: %d\n", ret);
+		kfree(rpcdev);
+		mutex_unlock(&librpc_mtx);
+		return (ERR_PTR(ret));
+	}
+
+        ret = device_register(&rpcdev->dev);
 	if (ret != 0) {
 		kfree(rpcdev);
 		mutex_unlock(&librpc_mtx);
@@ -125,14 +134,6 @@ librpc_device_register(const char *name, struct device *dev,
 
 	for (i = 0; i < ARRAY_SIZE(librpc_device_attrs); i++)
 		device_create_file(&rpcdev->dev, &librpc_device_attrs[i]);
-
-	ret = ops->enumerate(dev, &rpcdev->endp);
-	if (ret != 0) {
-		dev_err(&rpcdev->dev, "cannot enumerate librpc endpoint: %d\n", ret);
-		kfree(rpcdev);
-		mutex_unlock(&librpc_mtx);
-		return (ret);
-	}
 
 	dev_info(&rpcdev->dev, "new librpc endpoint: %s\n", rpcdev->endp.name);
 	mutex_unlock(&librpc_mtx);
@@ -182,11 +183,33 @@ librpc_device_answer(struct device *dev, void *arg, const void *buf,
 }
 
 void
+librpc_device_error(struct device *dev, void *arg, int error)
+{
+	struct librpc_call *call = arg;
+	struct {
+	    struct cn_msg cn;
+	    struct librpc_message msg;
+	} packet;
+
+	printk("librpc_device_error: error=%d\n", error);
+
+	packet.cn.id = librpc_cb_id;
+	packet.cn.seq = resp_seq++;
+	packet.cn.ack = 0;
+	packet.cn.len = sizeof(packet);
+	packet.cn.flags = 0;
+	packet.msg.opcode = LIBRPC_RESPONSE;
+	packet.msg.status = error;
+
+	cn_netlink_send(&packet.cn, call->portid, 0, GFP_KERNEL);
+}
+
+void
 librpc_device_log(struct device *dev, const char *log, size_t len)
 {
 
-	printk("librpc_device_log: len=%d, buf=%p\n", len, log);
-	dev_info(dev, "%*s\n", len, log);
+	printk("librpc_device_log: len=%ld, buf=%p\n", len, log);
+	dev_info(dev, "%*s\n", (int)len, log);
 }
 
 int
@@ -419,6 +442,7 @@ librpc_exit(void)
 EXPORT_SYMBOL(librpc_device_register);
 EXPORT_SYMBOL(librpc_device_unregister);
 EXPORT_SYMBOL(librpc_device_answer);
+EXPORT_SYMBOL(librpc_device_error);
 EXPORT_SYMBOL(librpc_device_log);
 MODULE_AUTHOR("Jakub Klama");
 MODULE_LICENSE("Dual BSD/GPL");
