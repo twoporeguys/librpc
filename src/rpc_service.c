@@ -172,6 +172,14 @@ rpc_function_get_arg(void *cookie)
 	return (call->ric_arg);
 }
 
+inline const char *
+rpc_function_get_name(void *cookie)
+{
+	struct rpc_inbound_call *call = cookie;
+
+	return (call->ric_name);
+}
+
 void
 rpc_function_respond(void *cookie, rpc_object_t object)
 {

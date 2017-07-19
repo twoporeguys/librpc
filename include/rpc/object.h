@@ -87,8 +87,8 @@ typedef bool (^rpc_array_applier_t)(size_t index, rpc_object_t value);
  * Definition of dictionary applier block type.
  *
  * Body of block is being executed for each of the dictionary's elements, until
- * generator reaches end of the dictionary,
- * or until applier block returns false.
+ * generator reaches end of the dictionary, or until applier block returns
+ * false.
  *
  * @param key Currently processed key.
  * @param value Object stored at currently processed key.

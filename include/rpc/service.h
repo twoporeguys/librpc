@@ -159,6 +159,13 @@ rpc_call_t rpc_context_dispatch_call(rpc_context_t context, const char *name,
 void *rpc_function_get_arg(void *cookie);
 
 /**
+ * Returns the called method name.
+ *
+ * @param cookie Running call identifier.
+ */
+const char *rpc_function_get_name(void *cookie);
+
+/**
  * Sends a response to a call.
  *
  * This function may be called only once during the lifetime of a single
