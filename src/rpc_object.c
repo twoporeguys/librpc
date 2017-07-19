@@ -856,6 +856,9 @@ rpc_string_create(const char *string)
 {
 	union rpc_value val;
 
+	if (string == NULL)
+		return (rpc_null_create());
+
 	val.rv_str = g_string_new(string);
 	return (rpc_prim_create(RPC_TYPE_STRING, val));
 }
