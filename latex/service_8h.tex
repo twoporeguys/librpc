@@ -60,6 +60,8 @@ int \hyperlink{service_8h_ab71a7949b47080bceed777eab0cb4c67}{rpc\-\_\-context\-\
 \item 
 void $\ast$ \hyperlink{service_8h_a62e71e6c0208e7ed1e23e2f9f3cd78f2}{rpc\-\_\-function\-\_\-get\-\_\-arg} (void $\ast$cookie)
 \item 
+const char $\ast$ \hyperlink{service_8h_a0d57a21163cd2d8bd06add360270809c}{rpc\-\_\-function\-\_\-get\-\_\-name} (void $\ast$cookie)
+\item 
 void \hyperlink{service_8h_a1b73c8714198994d5055bf5cfe3012a4}{rpc\-\_\-function\-\_\-respond} (void $\ast$cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} object)
 \item 
 void \hyperlink{service_8h_ad7d639f2063a65279f159175a473b881}{rpc\-\_\-function\-\_\-error} (void $\ast$cookie, int code, const char $\ast$message,...)
@@ -337,6 +339,20 @@ Reports an exception for a given ongoing call identifier.
 \end{DoxyParamCaption}
 )}}\label{service_8h_a62e71e6c0208e7ed1e23e2f9f3cd78f2}
 Returns the argument associated with method.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cookie} & Running call identifier. \\
+\hline
+\end{DoxyParams}
+\hypertarget{service_8h_a0d57a21163cd2d8bd06add360270809c}{\index{service.\-h@{service.\-h}!rpc\-\_\-function\-\_\-get\-\_\-name@{rpc\-\_\-function\-\_\-get\-\_\-name}}
+\index{rpc\-\_\-function\-\_\-get\-\_\-name@{rpc\-\_\-function\-\_\-get\-\_\-name}!service.h@{service.\-h}}
+\subsubsection[{rpc\-\_\-function\-\_\-get\-\_\-name}]{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ rpc\-\_\-function\-\_\-get\-\_\-name (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{cookie}
+\end{DoxyParamCaption}
+)}}\label{service_8h_a0d57a21163cd2d8bd06add360270809c}
+Returns the called method name.
 
 
 \begin{DoxyParams}{Parameters}
