@@ -28,6 +28,7 @@
 #include <Block.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <fnmatch.h>
 #include <string.h>
 #include <rpc/object.h>
 #include <rpc/connection.h>
@@ -92,11 +93,26 @@ int
 rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 {
 	GError *err = NULL;
+	GHashTableIter iter;
+	const char *key;
+	gpointer value;
+
 
 	debugf("call=%p, name=%s", call, call->ric_name);
 
 	call->ric_method = g_hash_table_lookup(context->rcx_methods,
 	    call->ric_name);
+
+	if (call->ric_method == NULL) {
+		/* Lookup failed, try fuzzy match */
+		g_hash_table_iter_init(&iter, context->rcx_methods);
+		while (g_hash_table_iter_next(&iter, (gpointer)&key, &value)) {
+			if (fnmatch(call->ric_name, key, 0) == 0) {
+				call->ric_method = value;
+				break;
+			}
+		}
+	}
 
 	g_thread_pool_push(context->rcx_threadpool, call, &err);
 	if (err != NULL) {
