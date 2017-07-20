@@ -1,6 +1,15 @@
 \hypertarget{bus_8h}{\section{/home/travis/build/twoporeguys/librpc/include/rpc/bus.h File Reference}
 \label{bus_8h}\index{/home/travis/build/twoporeguys/librpc/include/rpc/bus.\-h@{/home/travis/build/twoporeguys/librpc/include/rpc/bus.\-h}}
 }
+{\ttfamily \#include $<$stdint.\-h$>$}\\*
+Include dependency graph for bus.\-h\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=180pt]{bus_8h__incl}
+\end{center}
+\end{figure}
 \subsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
@@ -14,7 +23,7 @@ struct \hyperlink{structrpc__bus__node}{rpc\-\_\-bus\-\_\-node}
 \subsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{bus_8h_aac2924724f4e5b525242ab364f61431b}{typedef void($^\wedge$ {\bfseries rpc\-\_\-bus\-\_\-event\-\_\-handler\-\_\-t} )(struct \hyperlink{structrpc__bus__node}{rpc\-\_\-bus\-\_\-node} $\ast$node, rpc\-\_\-bus\-\_\-event\-\_\-t event)}\label{bus_8h_aac2924724f4e5b525242ab364f61431b}
+\hypertarget{bus_8h_af284f4baded8aaa1ad77f5e41f9809c4}{typedef void($^\wedge$ {\bfseries rpc\-\_\-bus\-\_\-event\-\_\-handler\-\_\-t} )(rpc\-\_\-bus\-\_\-event\-\_\-t event, struct \hyperlink{structrpc__bus__node}{rpc\-\_\-bus\-\_\-node} $\ast$node)}\label{bus_8h_af284f4baded8aaa1ad77f5e41f9809c4}
 
 \end{DoxyCompactItemize}
 \subsection*{Enumerations}
@@ -59,13 +68,13 @@ Definition in file \hyperlink{bus_8h_source}{bus.\-h}.
 )}}\label{bus_8h_aaa8f0d5a3405318f9df38fc2ae8dd587}
 {\bfseries Value\-:}
 \begin{DoxyCode}
-^(\textcolor{keyword}{struct }\hyperlink{structrpc__bus__node}{rpc\_bus\_node} *\_node, rpc\_bus\_event\_t \_event) \{     \(\backslash\)
+^(rpc\_bus\_event\_t \_event, \textcolor{keyword}{struct }\hyperlink{structrpc__bus__node}{rpc\_bus\_node} *\_node) \{     \(\backslash\)
                 return (\_fn(\_arg, \_node, \_event));          \(\backslash\)
         \}
 \end{DoxyCode}
 Converts function pointer to an rpc\-\_\-bus\-\_\-event\-\_\-t block type. 
 
-Definition at line 61 of file bus.\-h.
+Definition at line 64 of file bus.\-h.
 
 
 
