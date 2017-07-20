@@ -72,6 +72,11 @@ class CallStatus(enum.IntEnum):
     ERROR = RPC_CALL_ERROR
 
 
+class BusEvent(enum.IntEnum):
+    ATTACHED = RPC_BUS_ATTACHED
+    DETACHED = RPC_BUS_DETACHED
+
+
 class LibException(Exception):
     def __init__(self, code=None, message=None, extra=None, stacktrace=None, obj=None):
         if obj:
@@ -869,43 +874,67 @@ cdef class Server(object):
 cdef class BusNode(object):
     cdef readonly object name
     cdef readonly object description
+    cdef readonly object serial
     cdef readonly uint32_t address
 
 
-def bus_ping(name):
-    cdef const char *c_name
-    cdef int ret
+cdef class Bus(object):
+    def ping(self, name):
+        cdef const char *c_name
+        cdef int ret
 
-    b_name = name.encode('utf-8')
-    c_name = b_name
+        b_name = name.encode('utf-8')
+        c_name = b_name
 
-    with nogil:
-        ret = rpc_bus_ping(c_name)
+        with nogil:
+            ret = rpc_bus_ping(c_name)
 
-    if ret < 0:
-        raise_internal_exc()
+        if ret < 0:
+            raise_internal_exc()
 
+    def enumerate(self):
+        cdef BusNode node
+        cdef rpc_bus_node *result
+        cdef int ret
 
-def bus_enumerate():
-    cdef BusNode node
-    cdef rpc_bus_node *result
-    cdef int ret
+        with nogil:
+            ret = rpc_bus_enumerate(&result)
 
-    with nogil:
-        ret = rpc_bus_enumerate(&result)
+        if ret < 0:
+            raise_internal_exc()
 
-    if ret < 0:
-        raise_internal_exc()
+        try:
+            for i in range(0, ret):
+                node = BusNode.__new__(BusNode)
+                node.name = result[i].rbn_name
+                node.description = result[i].rbn_description
+                node.address = result[i].rbn_address
+                yield node
+        finally:
+            rpc_bus_free_result(result)
 
-    try:
-        for i in range(0, ret):
-            node = BusNode.__new__(BusNode)
-            node.name = result[i].rbn_name
-            node.description = result[i].rbn_description
-            node.address = result[i].rbn_address
-            yield node
-    finally:
-        rpc_bus_free_result(result)
+    @staticmethod
+    cdef void c_ev_handler(void *arg, rpc_bus_event_t ev, rpc_bus_node *bn):
+        cdef object fn = <object>arg
+        cdef BusNode node
+
+        node = BusNode.__new__(BusNode)
+        node.name = bn.rbn_name.decode('utf-8')
+        node.description = bn.rbn_description.decode('utf-8')
+        node.serial = bn.rbn_serial.decode('utf-8')
+        node.address = bn.rbn_address
+        fn(BusEvent(ev), node)
+
+    property event_handler:
+        def __set__(self, value):
+            if not value:
+                rpc_bus_unregister_event_handler()
+                return
+
+            rpc_bus_register_event_handler(RPC_BUS_EVENT_HANDLER(
+                self.c_ev_handler,
+                <void *>value
+            ))
 
 
 cdef raise_internal_exc(rpc=False):

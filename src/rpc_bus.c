@@ -26,7 +26,10 @@
 
 #include <errno.h>
 #include <glib.h>
+#include <rpc/bus.h>
 #include "internal.h"
+
+static rpc_bus_event_handler_t rpc_bus_event_handler;
 
 int
 rpc_bus_ping(const char *name)
@@ -79,4 +82,26 @@ rpc_bus_free_result(struct rpc_bus_node *result)
 
 	g_free(result);
 
+}
+
+void
+rpc_bus_register_event_handler(rpc_bus_event_handler_t handler)
+{
+
+	rpc_bus_event_handler = handler;
+}
+
+void
+rpc_bus_unregister_event_handler(void)
+{
+
+	rpc_bus_event_handler = NULL;
+}
+
+void
+rpc_bus_event(rpc_bus_event_t event, struct rpc_bus_node *node)
+{
+
+	if (rpc_bus_event_handler != NULL)
+		rpc_bus_event_handler(node, event);
 }

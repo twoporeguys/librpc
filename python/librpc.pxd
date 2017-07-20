@@ -31,6 +31,7 @@ ctypedef bint (*rpc_dictionary_applier_f)(void *arg, const char *key, rpc_object
 ctypedef bint (*rpc_array_applier_f)(void *arg, size_t index, rpc_object_t value)
 ctypedef void (*rpc_handler_f)(void *arg, const char *name, rpc_object_t args)
 ctypedef bint (*rpc_callback_f)(void *arg, rpc_call_t call, rpc_call_status_t status)
+ctypedef void (*rpc_bus_event_handler_f)(void *arg, rpc_bus_event_t, rpc_bus_node *)
 
 
 cdef extern from "rpc/object.h" nogil:
@@ -210,14 +211,23 @@ cdef extern from "rpc/server.h" nogil:
 
 
 cdef extern from "rpc/bus.h" nogil:
+    ctypedef enum rpc_bus_event_t:
+        RPC_BUS_ATTACHED
+        RPC_BUS_DETACHED
+
     cdef struct rpc_bus_node:
         const char *rbn_name
         const char *rbn_description
+        const char *rbn_serial
         uint32_t rbn_address
+
+    void *RPC_BUS_EVENT_HANDLER(rpc_bus_event_handler_f fn, void *arg)
 
     int rpc_bus_ping(const char *name)
     int rpc_bus_enumerate(rpc_bus_node **result)
     int rpc_bus_free_result(rpc_bus_node *result)
+    void rpc_bus_register_event_handler(void *handler)
+    void rpc_bus_unregister_event_handler()
 
 
 cdef class Object(object):
@@ -249,3 +259,10 @@ cdef class Connection(object):
     cdef void c_ev_handler(const char *name, rpc_object_t args, void *arg) with gil
     @staticmethod
     cdef void c_error_handler(rpc_error_code_t code, rpc_object_t args, void *arg) with gil
+
+
+cdef class Bus(object):
+    cdef object event_handler
+
+    @staticmethod
+    cdef void c_ev_handler(void *arg, rpc_bus_event_t ev, rpc_bus_node *bn)

@@ -27,6 +27,8 @@
 #ifndef LIBRPC_BUS_H
 #define LIBRPC_BUS_H
 
+#include <stdint.h>
+
 /**
  * @file bus.h
  *
@@ -49,17 +51,18 @@ struct rpc_bus_node
 {
     	const char *	rbn_name;
     	const char *	rbn_description;
+	const char *	rbn_serial;
     	uint32_t 	rbn_address;
 };
 
-typedef void (^rpc_bus_event_handler_t)(struct rpc_bus_node *node,
-    rpc_bus_event_t event);
+typedef void (^rpc_bus_event_handler_t)(rpc_bus_event_t event,
+    struct rpc_bus_node *node);
 
 /**
  * Converts function pointer to an rpc_bus_event_t block type.
  */
 #define	RPC_BUS_EVENT_HANDLER(_fn, _arg)				\
-	^(struct rpc_bus_node *_node, rpc_bus_event_t _event) {		\
+	^(rpc_bus_event_t _event, struct rpc_bus_node *_node) {		\
                 return (_fn(_arg, _node, _event));			\
         }
 

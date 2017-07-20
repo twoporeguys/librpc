@@ -345,6 +345,8 @@ bus_netlink_recv(struct bus_netlink *bn)
 	struct cn_msg *cn = NLMSG_DATA(nlh);
 	struct librpc_message *msg = (struct librpc_message *)(cn + 1);
 	struct librpc_message *out;
+	struct librpc_endpoint *endp;
+	struct rpc_bus_node node;
 	void *payload;
 	ssize_t msglen = 0;
 
@@ -372,6 +374,22 @@ bus_netlink_recv(struct bus_netlink *bn)
 	}
 
 	switch (msg->opcode) {
+	case LIBRPC_ARRIVE:
+	case LIBRPC_DEPART:
+		endp = (struct librpc_endpoint *)(msg + 1);
+		node.rbn_name = endp->name;
+		node.rbn_description = endp->description;
+		node.rbn_serial = endp->serial;
+		node.rbn_address = msg->address;
+
+		if (msg->opcode == LIBRPC_ARRIVE)
+			rpc_bus_event(RPC_BUS_ATTACHED, &node);
+
+		if (msg->opcode == LIBRPC_DEPART)
+			rpc_bus_event(RPC_BUS_DETACHED, &node);
+
+		break;
+
 	case LIBRPC_ACK:
 		g_mutex_lock(&bn->bn_mtx);
 		ack = g_hash_table_lookup(bn->bn_ack, GUINT_TO_POINTER(cn->seq));
