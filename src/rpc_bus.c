@@ -103,5 +103,5 @@ rpc_bus_event(rpc_bus_event_t event, struct rpc_bus_node *node)
 {
 
 	if (rpc_bus_event_handler != NULL)
-		rpc_bus_event_handler(node, event);
+		rpc_bus_event_handler(event, node);
 }

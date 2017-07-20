@@ -75,7 +75,7 @@ typedef void (^rpc_bus_event_handler_t)(rpc_bus_event_t event,
 int rpc_bus_ping(const char *name);
 
 /**
- *
+ * Enumerates connected devices on the RPC bus.
  *
  * @param result
  * @return
@@ -89,7 +89,18 @@ int rpc_bus_enumerate(struct rpc_bus_node **result);
  */
 void rpc_bus_free_result(struct rpc_bus_node *result);
 
+/**
+ * Configures an event handler block to be called whenever a bus
+ * event occurs.
+ *
+ * @param handler Bus event handler
+ */
 void rpc_bus_register_event_handler(rpc_bus_event_handler_t handler);
+
+/**
+ * Unsets the previously set event handler. If there was no handler previously
+ * configured, does nothing.
+ */
 void rpc_bus_unregister_event_handler(void);
 
 
