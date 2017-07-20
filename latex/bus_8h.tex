@@ -42,11 +42,9 @@ int \hyperlink{bus_8h_a85cd042c0a2e2bddaea2a09ca10af76f}{rpc\-\_\-bus\-\_\-enume
 \item 
 void \hyperlink{bus_8h_a9e0894b8914690e83a155b33a2854d8c}{rpc\-\_\-bus\-\_\-free\-\_\-result} (struct \hyperlink{structrpc__bus__node}{rpc\-\_\-bus\-\_\-node} $\ast$result)
 \item 
-\hypertarget{bus_8h_a1c9f3676441138dfb89655d3ad080d08}{void {\bfseries rpc\-\_\-bus\-\_\-register\-\_\-event\-\_\-handler} (rpc\-\_\-bus\-\_\-event\-\_\-handler\-\_\-t handler)}\label{bus_8h_a1c9f3676441138dfb89655d3ad080d08}
-
+void \hyperlink{bus_8h_a1c9f3676441138dfb89655d3ad080d08}{rpc\-\_\-bus\-\_\-register\-\_\-event\-\_\-handler} (rpc\-\_\-bus\-\_\-event\-\_\-handler\-\_\-t handler)
 \item 
-\hypertarget{bus_8h_ae6437acd78bb490baac4517ddffb0792}{void {\bfseries rpc\-\_\-bus\-\_\-unregister\-\_\-event\-\_\-handler} (void)}\label{bus_8h_ae6437acd78bb490baac4517ddffb0792}
-
+void \hyperlink{bus_8h_ae6437acd78bb490baac4517ddffb0792}{rpc\-\_\-bus\-\_\-unregister\-\_\-event\-\_\-handler} (void)
 \end{DoxyCompactItemize}
 
 
@@ -86,6 +84,8 @@ Definition at line 64 of file bus.\-h.
 \item[{struct {\bf rpc\-\_\-bus\-\_\-node} $\ast$$\ast$}]{result}
 \end{DoxyParamCaption}
 )}}\label{bus_8h_a85cd042c0a2e2bddaea2a09ca10af76f}
+Enumerates connected devices on the R\-P\-C bus.
+
 
 \begin{DoxyParams}{Parameters}
 {\em result} & \\
@@ -123,3 +123,25 @@ Checks whether a node with specified name is reachable.
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
+\hypertarget{bus_8h_a1c9f3676441138dfb89655d3ad080d08}{\index{bus.\-h@{bus.\-h}!rpc\-\_\-bus\-\_\-register\-\_\-event\-\_\-handler@{rpc\-\_\-bus\-\_\-register\-\_\-event\-\_\-handler}}
+\index{rpc\-\_\-bus\-\_\-register\-\_\-event\-\_\-handler@{rpc\-\_\-bus\-\_\-register\-\_\-event\-\_\-handler}!bus.h@{bus.\-h}}
+\subsubsection[{rpc\-\_\-bus\-\_\-register\-\_\-event\-\_\-handler}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\-\_\-bus\-\_\-register\-\_\-event\-\_\-handler (
+\begin{DoxyParamCaption}
+\item[{rpc\-\_\-bus\-\_\-event\-\_\-handler\-\_\-t}]{handler}
+\end{DoxyParamCaption}
+)}}\label{bus_8h_a1c9f3676441138dfb89655d3ad080d08}
+Configures an event handler block to be called whenever a bus event occurs.
+
+
+\begin{DoxyParams}{Parameters}
+{\em handler} & Bus event handler \\
+\hline
+\end{DoxyParams}
+\hypertarget{bus_8h_ae6437acd78bb490baac4517ddffb0792}{\index{bus.\-h@{bus.\-h}!rpc\-\_\-bus\-\_\-unregister\-\_\-event\-\_\-handler@{rpc\-\_\-bus\-\_\-unregister\-\_\-event\-\_\-handler}}
+\index{rpc\-\_\-bus\-\_\-unregister\-\_\-event\-\_\-handler@{rpc\-\_\-bus\-\_\-unregister\-\_\-event\-\_\-handler}!bus.h@{bus.\-h}}
+\subsubsection[{rpc\-\_\-bus\-\_\-unregister\-\_\-event\-\_\-handler}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\-\_\-bus\-\_\-unregister\-\_\-event\-\_\-handler (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bus_8h_ae6437acd78bb490baac4517ddffb0792}
+Unsets the previously set event handler. If there was no handler previously configured, does nothing. 
