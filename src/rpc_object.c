@@ -482,6 +482,15 @@ rpc_copy(rpc_object_t object)
 	return (NULL);
 }
 
+inline int
+rpc_cmp(rpc_object_t o1, rpc_object_t o2)
+{
+	int h1 = (int)rpc_hash(o1);
+	int h2 = (int)rpc_hash(o2);
+
+	return (h1 - h2);
+}
+
 inline bool
 rpc_equal(rpc_object_t o1, rpc_object_t o2)
 {

@@ -166,6 +166,25 @@ int rpc_release_impl(rpc_object_t object);
 rpc_object_t rpc_copy(rpc_object_t object);
 
 /**
+ * Compares objects provided as the function arguments
+ * and returns the comparison result.
+ *
+ * The function returns negative value if object passed in first argument
+ * is smaller than the object passed in the second argument.
+ *
+ * The function returns zero if object passed in first argument
+ * is equal to the object passed in the second argument.
+ *
+ * The function returns positive value if object passed in first argument
+ * is greater than the object passed in the second argument.
+ *
+ * @param o1 Object to be compared.
+ * @param o2 Object to be compared.
+ * @return Negative value - o1 < o2, zero - o1 = o2, positive value - o1 > o2
+ */
+int rpc_cmp(rpc_object_t o1, rpc_object_t o2);
+
+/**
  * Compares objects provided as the function arguments and returns true
  * if they are equivalent, otherwise returns false.
  *
