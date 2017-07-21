@@ -1282,6 +1282,26 @@ rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier)
 }
 
 inline bool
+rpc_array_contains(rpc_object_t array, rpc_object_t value)
+{
+	__block bool match = false;
+
+	if (rpc_get_type(array) != RPC_TYPE_ARRAY)
+		return (false);
+
+	rpc_array_apply(array, ^(size_t idx __unused, rpc_object_t v) {
+		if (rpc_equal(v, value)) {
+			match = true;
+			return ((bool)false);
+		}
+
+	    	return ((bool)true);
+	});
+
+	return (match);
+}
+
+inline bool
 rpc_array_reverse_apply(rpc_object_t array, rpc_array_applier_t applier)
 {
 	bool flag = false;

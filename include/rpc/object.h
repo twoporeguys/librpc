@@ -692,6 +692,18 @@ size_t rpc_array_get_count(rpc_object_t array);
 bool rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier);
 
 /**
+ * Checks if an entry with the same value as provided
+ * in the second argument of the function exists in a given array.
+ *
+ * The function returns boolean result of that check.
+ *
+ * @param array Array to be searched.
+ * @param value RPC object representing value of a searched object.
+ * @return Boolean result of the search operation.
+ */
+bool rpc_array_contains(rpc_object_t array, rpc_object_t value);
+
+/**
  * Iterates over a given array in reversed order (starting from its end).
  * Besides of that the function is acting exactly the same as rpc_array_apply.
  *
