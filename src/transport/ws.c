@@ -180,7 +180,7 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 done:
 	g_object_unref(addr);
 	if (err != NULL) {
-		rpc_set_last_error(err);
+		rpc_set_last_gerror(err);
 		g_error_free(err);
 	}
 

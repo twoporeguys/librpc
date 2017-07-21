@@ -280,7 +280,8 @@ char *rpc_get_backtrace(void);
 const struct rpc_transport *rpc_find_transport(const char *scheme);
 const struct rpc_serializer *rpc_find_serializer(const char *name);
 
-void rpc_set_last_error(GError *error);
+void rpc_set_last_error(int code, const char *msg, rpc_object_t extra);
+void rpc_set_last_gerror(GError *error);
 rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
 int rpc_context_dispatch(rpc_context_t, struct rpc_inbound_call *);

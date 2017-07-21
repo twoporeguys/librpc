@@ -156,7 +156,7 @@ socket_connect(struct rpc_connection *rco, const char *uri,
 		g_object_unref(addr);
 		g_free((gpointer)conn->sc_uri);
 		g_free(conn);
-		rpc_set_last_error(err);
+		rpc_set_last_gerror(err);
 		g_error_free(err);
 		return (-1);
 	}
@@ -206,7 +206,7 @@ socket_listen(struct rpc_server *srv, const char *uri,
 		if (g_file_query_exists(file, NULL)) {
 			g_file_delete(file, NULL, &err);
 			if (err != NULL) {
-				rpc_set_last_error(err);
+				rpc_set_last_gerror(err);
 				g_error_free(err);
 				g_free(server);
 				return (-1);
@@ -217,7 +217,7 @@ socket_listen(struct rpc_server *srv, const char *uri,
 	g_socket_listener_add_address(server->ss_listener, addr,
 	    G_SOCKET_TYPE_STREAM, G_SOCKET_PROTOCOL_DEFAULT, NULL, NULL, &err);
 	if (err != NULL) {
-		rpc_set_last_error(err);
+		rpc_set_last_gerror(err);
 		g_error_free(err);
 		g_free(server);
 		return (-1);
@@ -258,7 +258,7 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 	g_socket_send_message(sock, NULL, iov, 1, cmsg, ncmsg, 0,
 	    NULL, &err);
 	if (err != NULL) {
-		rpc_set_last_error(err);
+		rpc_set_last_gerror(err);
 		g_error_free(err);
 		ret = -1;
 		goto done;
@@ -266,7 +266,7 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 
 	g_output_stream_write(conn->sc_ostream, buf, size, NULL, &err);
 	if (err != NULL) {
-		rpc_set_last_error(err);
+		rpc_set_last_gerror(err);
 		g_error_free(err);
 		ret = -1;
 		goto done;
@@ -299,7 +299,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	g_socket_receive_message(sock, NULL, &iov, 1, &cmsg, &ncmsg, &flags,
 	    NULL, &err);
 	if (err != NULL) {
-		rpc_set_last_error(err);
+		rpc_set_last_gerror(err);
 		g_error_free(err);
 		return (-1);
 	}

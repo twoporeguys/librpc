@@ -68,7 +68,16 @@ rpc_find_serializer(const char *name)
 }
 
 void
-rpc_set_last_error(GError *g_error)
+rpc_set_last_error(int code, const char *msg, rpc_object_t extra)
+{
+	rpc_object_t error;
+
+	error = rpc_error_create(code, msg, extra);
+	g_private_replace(&rpc_last_error, error);
+}
+
+void
+rpc_set_last_gerror(GError *g_error)
 {
 	rpc_object_t error;
 
