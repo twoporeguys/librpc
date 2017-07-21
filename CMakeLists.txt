@@ -55,7 +55,8 @@ set(HEADERS
         include/rpc/connection.h
         include/rpc/server.h
         include/rpc/client.h
-        include/rpc/discovery.h)
+        include/rpc/discovery.h
+        include/rpc/query.h)
 
 set(CORE_FILES
         src/rpc_connection.c
@@ -67,7 +68,8 @@ set(CORE_FILES
         src/utils.c
         src/internal.h
         src/linker_set.h
-        src/memfd.h)
+        src/memfd.h
+        src/rpc_query.c)
 
 set(TRANSPORT_FILES
         src/transport/socket.c

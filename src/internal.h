@@ -29,6 +29,7 @@
 #define LIBRPC_INTERNAL_H
 
 #include <rpc/object.h>
+#include <rpc/query.h>
 #include <rpc/connection.h>
 #include <rpc/service.h>
 #include <rpc/server.h>
@@ -73,6 +74,16 @@ typedef int (*rpc_get_fd_fn_t)(void *);
 typedef int (*rpc_close_fn_t)(struct rpc_connection *);
 typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
 typedef int (*rpc_teardown_fn_t)(struct rpc_server *);
+
+struct rpc_query_iter {
+	rpc_object_t 		source;
+	size_t 			cur_idx;
+	rpc_object_t 		rules;
+	rpc_query_params_t 	params;
+	bool			done;
+	bool			initialized;
+	uint32_t		limit_cnt;
+};
 
 struct rpc_binary_value
 {
