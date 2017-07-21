@@ -331,6 +331,15 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 	return (i);
 }
 
+static int
+rpc_array_comparator_converter(const void *p1, const void *p2, void *data)
+{
+	rpc_object_t o1 = *(rpc_object_t *)p1;
+	rpc_object_t o2 = *(rpc_object_t *)p2;
+
+	return (((rpc_array_cmp_t)data)(o1, o2));
+}
+
 inline rpc_object_t
 rpc_object_from_json(const void *frame, size_t size)
 {
