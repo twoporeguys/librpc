@@ -692,6 +692,16 @@ size_t rpc_array_get_count(rpc_object_t array);
 bool rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier);
 
 /**
+ * Iterates over a given array in reversed order (starting from its end).
+ * Besides of that the function is acting exactly the same as rpc_array_apply.
+ *
+ * @param array Input array.
+ * @param applier Block of code to be executed for each of an array's elements.
+ * @return Iteration terminated (true)/finished (false) boolean flag.
+ */
+bool rpc_array_reverse_apply(rpc_object_t array, rpc_array_applier_t applier);
+
+/**
  * Sorts contents of a given array using provided comparator code block.
  *
  * The desired behavior of the comparator block is described in

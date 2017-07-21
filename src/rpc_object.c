@@ -1272,6 +1272,25 @@ rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier)
 	return (flag);
 }
 
+inline bool
+rpc_array_reverse_apply(rpc_object_t array, rpc_array_applier_t applier)
+{
+	bool flag = false;
+	size_t i;
+	size_t idx;
+
+	for (i = array->ro_value.rv_list->len; i > 0 ; i--) {
+		idx = i - 1;
+		if (!applier(idx, g_ptr_array_index(array->ro_value.rv_list,
+		    idx))) {
+			flag = true;
+			break;
+		}
+	}
+
+	return (flag);
+}
+
 inline void
 rpc_array_sort(rpc_object_t array, rpc_array_cmp_t comparator)
 {
