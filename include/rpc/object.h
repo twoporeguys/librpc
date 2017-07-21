@@ -274,6 +274,19 @@ int rpc_object_to_json(rpc_object_t object, void **frame, size_t *size);
 rpc_object_t rpc_object_pack(const char *fmt, ...);
 
 /**
+ * Packs provided values accordingly to a specified format string an into object
+ * compatible with library's data model.
+ *
+ * The functions acts exactly the same as the rpc_object_pack function,
+ * but takes assembled variable arguments list structure as its argument.
+ *
+ * @param fmt Format string.
+ * @param ap Variable arguments list structure.
+ * @return Packed object.
+ */
+rpc_object_t rpc_object_vpack(const char *fmt, va_list ap);
+
+/**
  * Unpacks provided values accordingly to a specified format string from an
  * object.
  *
@@ -305,6 +318,19 @@ rpc_object_t rpc_object_pack(const char *fmt, ...);
  * @return Unpacking status. Errors are reported as non-zero values.
  */
 int rpc_object_unpack(rpc_object_t, const char *fmt, ...);
+
+/**
+ * Unpacks provided values accordingly to a specified format string from an
+ * object.
+ *
+ * The functions acts exactly the same as the rpc_object_unpack function,
+ * but takes assembled variable arguments list structure as its argument.
+ *
+ * @param fmt Format string.
+ * @param ap Variable arguments list structure.
+ * @return Unpacking status. Errors are reported as non-zero values.
+ */
+int rpc_object_vunpack(rpc_object_t, const char *fmt, va_list ap);
 
 /**
  * Creates an object holding null value.

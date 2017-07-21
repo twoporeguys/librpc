@@ -570,15 +570,26 @@ rpc_copy_description(rpc_object_t object)
 rpc_object_t
 rpc_object_pack(const char *fmt, ...)
 {
+	va_list ap;
+	rpc_object_t result;
+
+	va_start(ap, fmt);
+
+	result = rpc_object_vpack(fmt, ap);
+
+	va_end(ap);
+	return result;
+}
+
+rpc_object_t
+rpc_object_vpack(const char *fmt, va_list ap)
+{
 	GQueue *stack = g_queue_new();
 	GQueue *keys = g_queue_new();
 	rpc_object_t current = NULL;
 	rpc_object_t container = NULL;
-	va_list ap;
 	const char *key;
 	char ch;
-
-	va_start(ap, fmt);
 
 	while ((ch = *fmt++) != '\0') {
 		if (rpc_get_type(container) == RPC_TYPE_DICTIONARY && ch != '}') {
@@ -671,16 +682,25 @@ int
 rpc_object_unpack(rpc_object_t obj, const char *fmt, ...)
 {
 	va_list ap;
-	int cnt;
+	int result;
 
 	va_start(ap, fmt);
 
-	cnt = rpc_object_unpack_layer(obj, fmt, 0, ap);
+	result = rpc_object_vunpack(obj, fmt, ap);
 
 	va_end(ap);
-	return ((cnt == (int)strlen(fmt)) ? 0 : -1);
+	return (result);
 }
 
+int
+rpc_object_vunpack(rpc_object_t obj, const char *fmt, va_list ap)
+{
+	int cnt;
+
+	cnt = rpc_object_unpack_layer(obj, fmt, 0, ap);
+
+	return ((cnt == (int)strlen(fmt)) ? 0 : -1);
+}
 
 inline rpc_object_t
 rpc_null_create(void)
