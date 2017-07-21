@@ -28,6 +28,8 @@ This graph shows which files directly or indirectly include this file\-:
 \item 
 \#define \hyperlink{object_8h_a814f85a172b4dae9c201063cad92514e}{R\-P\-C\-\_\-\-D\-I\-C\-T\-I\-O\-N\-A\-R\-Y\-\_\-\-A\-P\-P\-L\-I\-E\-R}(\-\_\-fn, \-\_\-arg)
 \item 
+\#define \hyperlink{object_8h_af7b40854202a0a6708b0611b4fdf9121}{R\-P\-C\-\_\-\-A\-R\-R\-A\-Y\-\_\-\-C\-M\-P}(\-\_\-fn, \-\_\-arg)
+\item 
 \#define \hyperlink{object_8h_aac19be935f72b35eeb2851bc509eabb2}{rpc\-\_\-release}(\-\_\-object)
 \end{DoxyCompactItemize}
 \subsection*{Typedefs}
@@ -38,6 +40,8 @@ typedef struct rpc\-\_\-object $\ast$ \hyperlink{object_8h_ab365f726b4975c0c8376
 typedef bool($^\wedge$ \hyperlink{object_8h_afbd36072a4116c378f0ce243173251d1}{rpc\-\_\-array\-\_\-applier\-\_\-t} )(size\-\_\-t index, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} value)
 \item 
 typedef bool($^\wedge$ \hyperlink{object_8h_a7d7c845c8ab67dc47ec85d89b7dbee2d}{rpc\-\_\-dictionary\-\_\-applier\-\_\-t} )(const char $\ast$key, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} value)
+\item 
+typedef int($^\wedge$ \hyperlink{object_8h_a23bdaa1b433c1ae44515a60f06a86866}{rpc\-\_\-array\-\_\-cmp\-\_\-t} )(\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} o1, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} o2)
 \end{DoxyCompactItemize}
 \subsection*{Enumerations}
 \begin{DoxyCompactItemize}
@@ -68,6 +72,8 @@ int \hyperlink{object_8h_a2d85324f75b20628a5d32e8117277e18}{rpc\-\_\-release\-\_
 \item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} \hyperlink{object_8h_aa5de9854b486016a16ac230ae0ba1d3a}{rpc\-\_\-copy} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} object)
 \item 
+int \hyperlink{object_8h_a1fd38947da5673eb2db4910878bebb36}{rpc\-\_\-cmp} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} o1, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} o2)
+\item 
 bool \hyperlink{object_8h_a2f5ccf4e702bdfc6ff82fcac4ce18e84}{rpc\-\_\-equal} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} o1, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} o2)
 \item 
 size\-\_\-t \hyperlink{object_8h_ab84acb5ad97a61ccc08548a3e5d85bc1}{rpc\-\_\-hash} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} object)
@@ -84,7 +90,11 @@ int \hyperlink{object_8h_a583eee9f2f5292677ec130a1b6746a32}{rpc\-\_\-object\-\_\
 \item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} \hyperlink{object_8h_a87da19ea6b0ec7daf50ce660162e26be}{rpc\-\_\-object\-\_\-pack} (const char $\ast$fmt,...)
 \item 
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} \hyperlink{object_8h_a15bdca8f36858885773a6a1f717782fa}{rpc\-\_\-object\-\_\-vpack} (const char $\ast$fmt, va\-\_\-list ap)
+\item 
 int \hyperlink{object_8h_a522ca7df7ed77f09b7c4e9efea42ed83}{rpc\-\_\-object\-\_\-unpack} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t}, const char $\ast$fmt,...)
+\item 
+int \hyperlink{object_8h_a583484fcddc086aa6eefbc6b0b86dd9b}{rpc\-\_\-object\-\_\-vunpack} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t}, const char $\ast$fmt, va\-\_\-list ap)
 \item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} \hyperlink{object_8h_a0a56b4b5320160f6cbcee59a034fa8f7}{rpc\-\_\-null\-\_\-create} (void)
 \item 
@@ -155,6 +165,12 @@ void \hyperlink{object_8h_a446bace2d79bfd63d985e8bf97d284ff}{rpc\-\_\-array\-\_\
 size\-\_\-t \hyperlink{object_8h_ac6d963cbeefa944666692696aebc663a}{rpc\-\_\-array\-\_\-get\-\_\-count} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} array)
 \item 
 bool \hyperlink{object_8h_a8a6a6a91d7e5ccdadf4ae08d6aed1a2a}{rpc\-\_\-array\-\_\-apply} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} array, \hyperlink{object_8h_afbd36072a4116c378f0ce243173251d1}{rpc\-\_\-array\-\_\-applier\-\_\-t} applier)
+\item 
+bool \hyperlink{object_8h_a37244ac71308e8f4e3d886727211c371}{rpc\-\_\-array\-\_\-contains} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} array, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} value)
+\item 
+bool \hyperlink{object_8h_aa3abd89de4c7dc3d5d20ed624cf5f748}{rpc\-\_\-array\-\_\-reverse\-\_\-apply} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} array, \hyperlink{object_8h_afbd36072a4116c378f0ce243173251d1}{rpc\-\_\-array\-\_\-applier\-\_\-t} applier)
+\item 
+void \hyperlink{object_8h_aaa8222bb9416af081f44cef36b8f0161}{rpc\-\_\-array\-\_\-sort} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} array, \hyperlink{object_8h_a23bdaa1b433c1ae44515a60f06a86866}{rpc\-\_\-array\-\_\-cmp\-\_\-t} comparator)
 \item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} \hyperlink{object_8h_a2e6be4443b432a011f9858f005ea00cd}{rpc\-\_\-array\-\_\-slice} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} array, size\-\_\-t start, ssize\-\_\-t len)
 \item 
@@ -284,7 +300,25 @@ Definition in file \hyperlink{object_8h_source}{object.\-h}.
 \end{DoxyCode}
 Converts function pointer to an rpc\-\_\-array\-\_\-applier\-\_\-t block type. 
 
-Definition at line 102 of file object.\-h.
+Definition at line 118 of file object.\-h.
+
+\hypertarget{object_8h_af7b40854202a0a6708b0611b4fdf9121}{\index{object.\-h@{object.\-h}!R\-P\-C\-\_\-\-A\-R\-R\-A\-Y\-\_\-\-C\-M\-P@{R\-P\-C\-\_\-\-A\-R\-R\-A\-Y\-\_\-\-C\-M\-P}}
+\index{R\-P\-C\-\_\-\-A\-R\-R\-A\-Y\-\_\-\-C\-M\-P@{R\-P\-C\-\_\-\-A\-R\-R\-A\-Y\-\_\-\-C\-M\-P}!object.h@{object.\-h}}
+\subsubsection[{R\-P\-C\-\_\-\-A\-R\-R\-A\-Y\-\_\-\-C\-M\-P}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-P\-C\-\_\-\-A\-R\-R\-A\-Y\-\_\-\-C\-M\-P(
+\begin{DoxyParamCaption}
+\item[{}]{\-\_\-fn, }
+\item[{}]{\-\_\-arg}
+\end{DoxyParamCaption}
+)}}\label{object_8h_af7b40854202a0a6708b0611b4fdf9121}
+{\bfseries Value\-:}
+\begin{DoxyCode}
+^(\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} \_o1, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} \_o2) \{             \(\backslash\)
+                return ((\textcolor{keywordtype}{int})\_fn(\_arg, \_o1, \_o2));          \(\backslash\)
+        \}
+\end{DoxyCode}
+Converts function pointer to an rpc\-\_\-array\-\_\-cmp\-\_\-t block type. 
+
+Definition at line 134 of file object.\-h.
 
 \hypertarget{object_8h_a814f85a172b4dae9c201063cad92514e}{\index{object.\-h@{object.\-h}!R\-P\-C\-\_\-\-D\-I\-C\-T\-I\-O\-N\-A\-R\-Y\-\_\-\-A\-P\-P\-L\-I\-E\-R@{R\-P\-C\-\_\-\-D\-I\-C\-T\-I\-O\-N\-A\-R\-Y\-\_\-\-A\-P\-P\-L\-I\-E\-R}}
 \index{R\-P\-C\-\_\-\-D\-I\-C\-T\-I\-O\-N\-A\-R\-Y\-\_\-\-A\-P\-P\-L\-I\-E\-R@{R\-P\-C\-\_\-\-D\-I\-C\-T\-I\-O\-N\-A\-R\-Y\-\_\-\-A\-P\-P\-L\-I\-E\-R}!object.h@{object.\-h}}
@@ -302,7 +336,7 @@ Definition at line 102 of file object.\-h.
 \end{DoxyCode}
 Converts function pointer to an rpc\-\_\-dictionary\-\_\-applier\-\_\-t block type. 
 
-Definition at line 110 of file object.\-h.
+Definition at line 126 of file object.\-h.
 
 \hypertarget{object_8h_aac19be935f72b35eeb2851bc509eabb2}{\index{object.\-h@{object.\-h}!rpc\-\_\-release@{rpc\-\_\-release}}
 \index{rpc\-\_\-release@{rpc\-\_\-release}!object.h@{object.\-h}}
@@ -322,7 +356,7 @@ Decrements reference count of an object.
 
 Also sets it to N\-U\-L\-L if as a result of the operation reference count dropped to 0 and the object was freed. 
 
-Definition at line 188 of file object.\-h.
+Definition at line 231 of file object.\-h.
 
 
 
@@ -347,6 +381,29 @@ Continue iteration signal.
 
 
 Definition at line 84 of file object.\-h.
+
+\hypertarget{object_8h_a23bdaa1b433c1ae44515a60f06a86866}{\index{object.\-h@{object.\-h}!rpc\-\_\-array\-\_\-cmp\-\_\-t@{rpc\-\_\-array\-\_\-cmp\-\_\-t}}
+\index{rpc\-\_\-array\-\_\-cmp\-\_\-t@{rpc\-\_\-array\-\_\-cmp\-\_\-t}!object.h@{object.\-h}}
+\subsubsection[{rpc\-\_\-array\-\_\-cmp\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}typedef int($^\wedge$ rpc\-\_\-array\-\_\-cmp\-\_\-t)({\bf rpc\-\_\-object\-\_\-t} o1, {\bf rpc\-\_\-object\-\_\-t} o2)}}\label{object_8h_a23bdaa1b433c1ae44515a60f06a86866}
+Definition of array compare block type.
+
+Body of block is being executed for pairs of array's members during sort operation.
+
+The block should return a negative integer if the first value comes before the second, 0 if they are equal, or a positive integer if the first value comes after the second.
+
+
+\begin{DoxyParams}{Parameters}
+{\em o1} & A value. \\
+\hline
+{\em o2} & A value to compare with. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Negative value if a $<$ b ; zero if a = b ; positive value if a $>$ b. 
+\end{DoxyReturn}
+
+
+Definition at line 113 of file object.\-h.
 
 \hypertarget{object_8h_a7d7c845c8ab67dc47ec85d89b7dbee2d}{\index{object.\-h@{object.\-h}!rpc\-\_\-dictionary\-\_\-applier\-\_\-t@{rpc\-\_\-dictionary\-\_\-applier\-\_\-t}}
 \index{rpc\-\_\-dictionary\-\_\-applier\-\_\-t@{rpc\-\_\-dictionary\-\_\-applier\-\_\-t}!object.h@{object.\-h}}
@@ -473,6 +530,28 @@ If an applier returns false, iteration is terminated and the function returns tr
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 Iteration terminated (true)/finished (false) boolean flag. 
+\end{DoxyReturn}
+\hypertarget{object_8h_a37244ac71308e8f4e3d886727211c371}{\index{object.\-h@{object.\-h}!rpc\-\_\-array\-\_\-contains@{rpc\-\_\-array\-\_\-contains}}
+\index{rpc\-\_\-array\-\_\-contains@{rpc\-\_\-array\-\_\-contains}!object.h@{object.\-h}}
+\subsubsection[{rpc\-\_\-array\-\_\-contains}]{\setlength{\rightskip}{0pt plus 5cm}bool rpc\-\_\-array\-\_\-contains (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\-\_\-object\-\_\-t}}]{array, }
+\item[{{\bf rpc\-\_\-object\-\_\-t}}]{value}
+\end{DoxyParamCaption}
+)}}\label{object_8h_a37244ac71308e8f4e3d886727211c371}
+Checks if an entry with the same value as provided in the second argument of the function exists in a given array.
+
+The function returns boolean result of that check.
+
+
+\begin{DoxyParams}{Parameters}
+{\em array} & Array to be searched. \\
+\hline
+{\em value} & R\-P\-C object representing value of a searched object. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Boolean result of the search operation. 
 \end{DoxyReturn}
 \hypertarget{object_8h_a0c717b38ae14f998362fc3969ed5f54e}{\index{object.\-h@{object.\-h}!rpc\-\_\-array\-\_\-create@{rpc\-\_\-array\-\_\-create}}
 \index{rpc\-\_\-array\-\_\-create@{rpc\-\_\-array\-\_\-create}!object.h@{object.\-h}}
@@ -766,6 +845,26 @@ Removes an object from a given index of a provided array.
 {\em index} & Index to be removed. \\
 \hline
 \end{DoxyParams}
+\hypertarget{object_8h_aa3abd89de4c7dc3d5d20ed624cf5f748}{\index{object.\-h@{object.\-h}!rpc\-\_\-array\-\_\-reverse\-\_\-apply@{rpc\-\_\-array\-\_\-reverse\-\_\-apply}}
+\index{rpc\-\_\-array\-\_\-reverse\-\_\-apply@{rpc\-\_\-array\-\_\-reverse\-\_\-apply}!object.h@{object.\-h}}
+\subsubsection[{rpc\-\_\-array\-\_\-reverse\-\_\-apply}]{\setlength{\rightskip}{0pt plus 5cm}bool rpc\-\_\-array\-\_\-reverse\-\_\-apply (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\-\_\-object\-\_\-t}}]{array, }
+\item[{{\bf rpc\-\_\-array\-\_\-applier\-\_\-t}}]{applier}
+\end{DoxyParamCaption}
+)}}\label{object_8h_aa3abd89de4c7dc3d5d20ed624cf5f748}
+Iterates over a given array in reversed order (starting from its end). Besides of that the function is acting exactly the same as rpc\-\_\-array\-\_\-apply.
+
+
+\begin{DoxyParams}{Parameters}
+{\em array} & Input array. \\
+\hline
+{\em applier} & Block of code to be executed for each of an array's elements. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Iteration terminated (true)/finished (false) boolean flag. 
+\end{DoxyReturn}
 \hypertarget{object_8h_a9dbe873eb749066483c87f47427baa66}{\index{object.\-h@{object.\-h}!rpc\-\_\-array\-\_\-set\-\_\-bool@{rpc\-\_\-array\-\_\-set\-\_\-bool}}
 \index{rpc\-\_\-array\-\_\-set\-\_\-bool@{rpc\-\_\-array\-\_\-set\-\_\-bool}!object.h@{object.\-h}}
 \subsubsection[{rpc\-\_\-array\-\_\-set\-\_\-bool}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\-\_\-array\-\_\-set\-\_\-bool (
@@ -998,6 +1097,25 @@ If during a copy operation, the end of an input array is reached before size req
 \begin{DoxyReturn}{Returns}
 Newly created array containing elements copied from an input array. 
 \end{DoxyReturn}
+\hypertarget{object_8h_aaa8222bb9416af081f44cef36b8f0161}{\index{object.\-h@{object.\-h}!rpc\-\_\-array\-\_\-sort@{rpc\-\_\-array\-\_\-sort}}
+\index{rpc\-\_\-array\-\_\-sort@{rpc\-\_\-array\-\_\-sort}!object.h@{object.\-h}}
+\subsubsection[{rpc\-\_\-array\-\_\-sort}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\-\_\-array\-\_\-sort (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\-\_\-object\-\_\-t}}]{array, }
+\item[{{\bf rpc\-\_\-array\-\_\-cmp\-\_\-t}}]{comparator}
+\end{DoxyParamCaption}
+)}}\label{object_8h_aaa8222bb9416af081f44cef36b8f0161}
+Sorts contents of a given array using provided comparator code block.
+
+The desired behavior of the comparator block is described in rpc\-\_\-array\-\_\-cmp\-\_\-t type's documentation.
+
+
+\begin{DoxyParams}{Parameters}
+{\em array} & Array to be sorted. \\
+\hline
+{\em comparator} & Comparator to be used during sort operation. \\
+\hline
+\end{DoxyParams}
 \hypertarget{object_8h_aeb892aa166cc1e6d9834c8bb8ebbf435}{\index{object.\-h@{object.\-h}!rpc\-\_\-array\-\_\-steal\-\_\-value@{rpc\-\_\-array\-\_\-steal\-\_\-value}}
 \index{rpc\-\_\-array\-\_\-steal\-\_\-value@{rpc\-\_\-array\-\_\-steal\-\_\-value}!object.h@{object.\-h}}
 \subsubsection[{rpc\-\_\-array\-\_\-steal\-\_\-value}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\-\_\-array\-\_\-steal\-\_\-value (
@@ -1059,6 +1177,32 @@ If rpc\-\_\-object\-\_\-t passed as the first argument if not of R\-P\-C\-\_\-\-
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 Boolean value of the object (true or false). 
+\end{DoxyReturn}
+\hypertarget{object_8h_a1fd38947da5673eb2db4910878bebb36}{\index{object.\-h@{object.\-h}!rpc\-\_\-cmp@{rpc\-\_\-cmp}}
+\index{rpc\-\_\-cmp@{rpc\-\_\-cmp}!object.h@{object.\-h}}
+\subsubsection[{rpc\-\_\-cmp}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-cmp (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\-\_\-object\-\_\-t}}]{o1, }
+\item[{{\bf rpc\-\_\-object\-\_\-t}}]{o2}
+\end{DoxyParamCaption}
+)}}\label{object_8h_a1fd38947da5673eb2db4910878bebb36}
+Compares objects provided as the function arguments and returns the comparison result.
+
+The function returns negative value if object passed in first argument is smaller than the object passed in the second argument.
+
+The function returns zero if object passed in first argument is equal to the object passed in the second argument.
+
+The function returns positive value if object passed in first argument is greater than the object passed in the second argument.
+
+
+\begin{DoxyParams}{Parameters}
+{\em o1} & Object to be compared. \\
+\hline
+{\em o2} & Object to be compared. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Negative value -\/ o1 $<$ o2, zero -\/ o1 = o2, positive value -\/ o1 $>$ o2 
 \end{DoxyReturn}
 \hypertarget{object_8h_aa5de9854b486016a16ac230ae0ba1d3a}{\index{object.\-h@{object.\-h}!rpc\-\_\-copy@{rpc\-\_\-copy}}
 \index{rpc\-\_\-copy@{rpc\-\_\-copy}!object.h@{object.\-h}}
@@ -2235,6 +2379,51 @@ Format string syntax\-:
 {\em fmt} & Format string. \\
 \hline
 {\em ...} & Variable length list of values to be unpacked. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Unpacking status. Errors are reported as non-\/zero values. 
+\end{DoxyReturn}
+\hypertarget{object_8h_a15bdca8f36858885773a6a1f717782fa}{\index{object.\-h@{object.\-h}!rpc\-\_\-object\-\_\-vpack@{rpc\-\_\-object\-\_\-vpack}}
+\index{rpc\-\_\-object\-\_\-vpack@{rpc\-\_\-object\-\_\-vpack}!object.h@{object.\-h}}
+\subsubsection[{rpc\-\_\-object\-\_\-vpack}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\-\_\-object\-\_\-t} rpc\-\_\-object\-\_\-vpack (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{fmt, }
+\item[{va\-\_\-list}]{ap}
+\end{DoxyParamCaption}
+)}}\label{object_8h_a15bdca8f36858885773a6a1f717782fa}
+Packs provided values accordingly to a specified format string an into object compatible with library's data model.
+
+The functions acts exactly the same as the rpc\-\_\-object\-\_\-pack function, but takes assembled variable arguments list structure as its argument.
+
+
+\begin{DoxyParams}{Parameters}
+{\em fmt} & Format string. \\
+\hline
+{\em ap} & Variable arguments list structure. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Packed object. 
+\end{DoxyReturn}
+\hypertarget{object_8h_a583484fcddc086aa6eefbc6b0b86dd9b}{\index{object.\-h@{object.\-h}!rpc\-\_\-object\-\_\-vunpack@{rpc\-\_\-object\-\_\-vunpack}}
+\index{rpc\-\_\-object\-\_\-vunpack@{rpc\-\_\-object\-\_\-vunpack}!object.h@{object.\-h}}
+\subsubsection[{rpc\-\_\-object\-\_\-vunpack}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-object\-\_\-vunpack (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\-\_\-object\-\_\-t}}]{, }
+\item[{const char $\ast$}]{fmt, }
+\item[{va\-\_\-list}]{ap}
+\end{DoxyParamCaption}
+)}}\label{object_8h_a583484fcddc086aa6eefbc6b0b86dd9b}
+Unpacks provided values accordingly to a specified format string from an object.
+
+The functions acts exactly the same as the rpc\-\_\-object\-\_\-unpack function, but takes assembled variable arguments list structure as its argument.
+
+
+\begin{DoxyParams}{Parameters}
+{\em fmt} & Format string. \\
+\hline
+{\em ap} & Variable arguments list structure. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}

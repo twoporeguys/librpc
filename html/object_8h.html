@@ -108,7 +108,7 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="object_8h__dep__incl.png" border="0" usemap="#_2home_2travis_2build_2twoporeguys_2librpc_2include_2rpc_2object_8hdep" alt=""/></div>
 <map name="_2home_2travis_2build_2twoporeguys_2librpc_2include_2rpc_2object_8hdep" id="_2home_2travis_2build_2twoporeguys_2librpc_2include_2rpc_2object_8hdep">
-<area shape="rect" id="node2" href="connection_8h.html" title="/home/travis/build\l/twoporeguys/librpc\l/include/rpc/connection.h" alt="" coords="91,109,257,165"/><area shape="rect" id="node5" href="service_8h.html" title="/home/travis/build\l/twoporeguys/librpc\l/include/rpc/service.h" alt="" coords="217,213,364,269"/><area shape="rect" id="node3" href="client_8h.html" title="/home/travis/build\l/twoporeguys/librpc\l/include/rpc/client.h" alt="" coords="5,213,139,269"/><area shape="rect" id="node4" href="server_8h.html" title="/home/travis/build\l/twoporeguys/librpc\l/include/rpc/server.h" alt="" coords="107,317,247,373"/><area shape="rect" id="node6" href="discovery_8h.html" title="/home/travis/build\l/twoporeguys/librpc\l/include/rpc/discovery.h" alt="" coords="272,317,431,373"/></map>
+<area shape="rect" id="node2" href="connection_8h.html" title="/home/travis/build\l/twoporeguys/librpc\l/include/rpc/connection.h" alt="" coords="91,109,257,165"/><area shape="rect" id="node5" href="service_8h.html" title="/home/travis/build\l/twoporeguys/librpc\l/include/rpc/service.h" alt="" coords="217,213,364,269"/><area shape="rect" id="node7" href="query_8h_source.html" title="/home/travis/build\l/twoporeguys/librpc\l/include/rpc/query.h" alt="" coords="333,109,468,165"/><area shape="rect" id="node3" href="client_8h.html" title="/home/travis/build\l/twoporeguys/librpc\l/include/rpc/client.h" alt="" coords="5,213,139,269"/><area shape="rect" id="node4" href="server_8h.html" title="/home/travis/build\l/twoporeguys/librpc\l/include/rpc/server.h" alt="" coords="107,317,247,373"/><area shape="rect" id="node6" href="discovery_8h.html" title="/home/travis/build\l/twoporeguys/librpc\l/include/rpc/discovery.h" alt="" coords="272,317,431,373"/></map>
 </div>
 </div>
 <p><a href="object_8h_source.html">Go to the source code of this file.</a></p>
@@ -119,6 +119,8 @@ Macros</h2></td></tr>
 <tr class="separator:a33c2b5ad21d20059d031e6a390021822"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a814f85a172b4dae9c201063cad92514e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a814f85a172b4dae9c201063cad92514e">RPC_DICTIONARY_APPLIER</a>(_fn, _arg)</td></tr>
 <tr class="separator:a814f85a172b4dae9c201063cad92514e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7b40854202a0a6708b0611b4fdf9121"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#af7b40854202a0a6708b0611b4fdf9121">RPC_ARRAY_CMP</a>(_fn, _arg)</td></tr>
+<tr class="separator:af7b40854202a0a6708b0611b4fdf9121"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac19be935f72b35eeb2851bc509eabb2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">rpc_release</a>(_object)</td></tr>
 <tr class="separator:aac19be935f72b35eeb2851bc509eabb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -130,6 +132,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:afbd36072a4116c378f0ce243173251d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d7c845c8ab67dc47ec85d89b7dbee2d"><td class="memItemLeft" align="right" valign="top">typedef bool(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a7d7c845c8ab67dc47ec85d89b7dbee2d">rpc_dictionary_applier_t</a> )(const char *key, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
 <tr class="separator:a7d7c845c8ab67dc47ec85d89b7dbee2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23bdaa1b433c1ae44515a60f06a86866"><td class="memItemLeft" align="right" valign="top">typedef int(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a23bdaa1b433c1ae44515a60f06a86866">rpc_array_cmp_t</a> )(<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> o1, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> o2)</td></tr>
+<tr class="separator:a23bdaa1b433c1ae44515a60f06a86866"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -160,6 +164,8 @@ Functions</h2></td></tr>
 <tr class="separator:a2d85324f75b20628a5d32e8117277e18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5de9854b486016a16ac230ae0ba1d3a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aa5de9854b486016a16ac230ae0ba1d3a">rpc_copy</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:aa5de9854b486016a16ac230ae0ba1d3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1fd38947da5673eb2db4910878bebb36"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a1fd38947da5673eb2db4910878bebb36">rpc_cmp</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> o1, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> o2)</td></tr>
+<tr class="separator:a1fd38947da5673eb2db4910878bebb36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f5ccf4e702bdfc6ff82fcac4ce18e84"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a2f5ccf4e702bdfc6ff82fcac4ce18e84">rpc_equal</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> o1, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> o2)</td></tr>
 <tr class="separator:a2f5ccf4e702bdfc6ff82fcac4ce18e84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab84acb5ad97a61ccc08548a3e5d85bc1"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#ab84acb5ad97a61ccc08548a3e5d85bc1">rpc_hash</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
@@ -176,8 +182,12 @@ Functions</h2></td></tr>
 <tr class="separator:a583eee9f2f5292677ec130a1b6746a32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87da19ea6b0ec7daf50ce660162e26be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a87da19ea6b0ec7daf50ce660162e26be">rpc_object_pack</a> (const char *fmt,...)</td></tr>
 <tr class="separator:a87da19ea6b0ec7daf50ce660162e26be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15bdca8f36858885773a6a1f717782fa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a15bdca8f36858885773a6a1f717782fa">rpc_object_vpack</a> (const char *fmt, va_list ap)</td></tr>
+<tr class="separator:a15bdca8f36858885773a6a1f717782fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a522ca7df7ed77f09b7c4e9efea42ed83"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a522ca7df7ed77f09b7c4e9efea42ed83">rpc_object_unpack</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>, const char *fmt,...)</td></tr>
 <tr class="separator:a522ca7df7ed77f09b7c4e9efea42ed83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a583484fcddc086aa6eefbc6b0b86dd9b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a583484fcddc086aa6eefbc6b0b86dd9b">rpc_object_vunpack</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>, const char *fmt, va_list ap)</td></tr>
+<tr class="separator:a583484fcddc086aa6eefbc6b0b86dd9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a56b4b5320160f6cbcee59a034fa8f7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a0a56b4b5320160f6cbcee59a034fa8f7">rpc_null_create</a> (void)</td></tr>
 <tr class="separator:a0a56b4b5320160f6cbcee59a034fa8f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92cb61d1c1e25294fcbab898dff13b53"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a92cb61d1c1e25294fcbab898dff13b53">rpc_bool_create</a> (bool value)</td></tr>
@@ -248,6 +258,12 @@ Functions</h2></td></tr>
 <tr class="separator:ac6d963cbeefa944666692696aebc663a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a6a6a91d7e5ccdadf4ae08d6aed1a2a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a8a6a6a91d7e5ccdadf4ae08d6aed1a2a">rpc_array_apply</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> array, <a class="el" href="object_8h.html#afbd36072a4116c378f0ce243173251d1">rpc_array_applier_t</a> applier)</td></tr>
 <tr class="separator:a8a6a6a91d7e5ccdadf4ae08d6aed1a2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37244ac71308e8f4e3d886727211c371"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a37244ac71308e8f4e3d886727211c371">rpc_array_contains</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> array, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
+<tr class="separator:a37244ac71308e8f4e3d886727211c371"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3abd89de4c7dc3d5d20ed624cf5f748"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aa3abd89de4c7dc3d5d20ed624cf5f748">rpc_array_reverse_apply</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> array, <a class="el" href="object_8h.html#afbd36072a4116c378f0ce243173251d1">rpc_array_applier_t</a> applier)</td></tr>
+<tr class="separator:aa3abd89de4c7dc3d5d20ed624cf5f748"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa8222bb9416af081f44cef36b8f0161"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aaa8222bb9416af081f44cef36b8f0161">rpc_array_sort</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> array, <a class="el" href="object_8h.html#a23bdaa1b433c1ae44515a60f06a86866">rpc_array_cmp_t</a> comparator)</td></tr>
+<tr class="separator:aaa8222bb9416af081f44cef36b8f0161"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e6be4443b432a011f9858f005ea00cd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a2e6be4443b432a011f9858f005ea00cd">rpc_array_slice</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> array, size_t start, ssize_t len)</td></tr>
 <tr class="separator:a2e6be4443b432a011f9858f005ea00cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9dbe873eb749066483c87f47427baa66"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a9dbe873eb749066483c87f47427baa66">rpc_array_set_bool</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> array, size_t index, bool value)</td></tr>
@@ -385,7 +401,40 @@ Functions</h2></td></tr>
 <div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00072">object.h:72</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to an rpc_array_applier_t block type. </p>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00102">102</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00118">118</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af7b40854202a0a6708b0611b4fdf9121"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define RPC_ARRAY_CMP</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_fn, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_arg&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">^(<a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _o1, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _o2) {             \</div>
+<div class="line">                return ((<span class="keywordtype">int</span>)_fn(_arg, _o1, _o2));          \</div>
+<div class="line">        }</div>
+<div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00072">object.h:72</a></div></div>
+</div><!-- fragment --><p>Converts function pointer to an rpc_array_cmp_t block type. </p>
+
+<p>Definition at line <a class="el" href="object_8h_source.html#l00134">134</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -418,7 +467,7 @@ Functions</h2></td></tr>
 <div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00072">object.h:72</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to an rpc_dictionary_applier_t block type. </p>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00110">110</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00126">126</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -443,7 +492,7 @@ Functions</h2></td></tr>
 </div><!-- fragment --><p>Decrements reference count of an object.</p>
 <p>Also sets it to NULL if as a result of the operation reference count dropped to 0 and the object was freed. </p>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00188">188</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00231">231</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -469,6 +518,31 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Continue iteration signal. </dd></dl>
 
 <p>Definition at line <a class="el" href="object_8h_source.html#l00084">84</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a23bdaa1b433c1ae44515a60f06a86866"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef int(^ rpc_array_cmp_t)(<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> o1, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> o2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Definition of array compare block type.</p>
+<p>Body of block is being executed for pairs of array's members during sort operation.</p>
+<p>The block should return a negative integer if the first value comes before the second, 0 if they are equal, or a positive integer if the first value comes after the second.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">o1</td><td>A value. </td></tr>
+    <tr><td class="paramname">o2</td><td>A value to compare with. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Negative value if a &lt; b ; zero if a = b ; positive value if a &gt; b. </dd></dl>
+
+<p>Definition at line <a class="el" href="object_8h_source.html#l00113">113</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -667,6 +741,42 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Iteration terminated (true)/finished (false) boolean flag. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a37244ac71308e8f4e3d886727211c371"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rpc_array_contains </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Checks if an entry with the same value as provided in the second argument of the function exists in a given array.</p>
+<p>The function returns boolean result of that check.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">array</td><td>Array to be searched. </td></tr>
+    <tr><td class="paramname">value</td><td>RPC object representing value of a searched object. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Boolean result of the search operation. </dd></dl>
 
 </div>
 </div>
@@ -1155,6 +1265,41 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="aa3abd89de4c7dc3d5d20ed624cf5f748"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rpc_array_reverse_apply </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="object_8h.html#afbd36072a4116c378f0ce243173251d1">rpc_array_applier_t</a>&#160;</td>
+          <td class="paramname"><em>applier</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Iterates over a given array in reversed order (starting from its end). Besides of that the function is acting exactly the same as rpc_array_apply.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">array</td><td>Input array. </td></tr>
+    <tr><td class="paramname">applier</td><td>Block of code to be executed for each of an array's elements. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Iteration terminated (true)/finished (false) boolean flag. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a9dbe873eb749066483c87f47427baa66"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1586,6 +1731,41 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="aaa8222bb9416af081f44cef36b8f0161"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rpc_array_sort </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="object_8h.html#a23bdaa1b433c1ae44515a60f06a86866">rpc_array_cmp_t</a>&#160;</td>
+          <td class="paramname"><em>comparator</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sorts contents of a given array using provided comparator code block.</p>
+<p>The desired behavior of the comparator block is described in rpc_array_cmp_t type's documentation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">array</td><td>Array to be sorted. </td></tr>
+    <tr><td class="paramname">comparator</td><td>Comparator to be used during sort operation. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="aeb892aa166cc1e6d9834c8bb8ebbf435"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1676,6 +1856,44 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Boolean value of the object (true or false). </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a1fd38947da5673eb2db4910878bebb36"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_cmp </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>o1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>o2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Compares objects provided as the function arguments and returns the comparison result.</p>
+<p>The function returns negative value if object passed in first argument is smaller than the object passed in the second argument.</p>
+<p>The function returns zero if object passed in first argument is equal to the object passed in the second argument.</p>
+<p>The function returns positive value if object passed in first argument is greater than the object passed in the second argument.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">o1</td><td>Object to be compared. </td></tr>
+    <tr><td class="paramname">o2</td><td>Object to be compared. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Negative value - o1 &lt; o2, zero - o1 = o2, positive value - o1 &gt; o2 </dd></dl>
 
 </div>
 </div>
@@ -3612,6 +3830,84 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">fmt</td><td>Format string. </td></tr>
     <tr><td class="paramname">...</td><td>Variable length list of values to be unpacked. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Unpacking status. Errors are reported as non-zero values. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a15bdca8f36858885773a6a1f717782fa"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> rpc_object_vpack </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">va_list&#160;</td>
+          <td class="paramname"><em>ap</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Packs provided values accordingly to a specified format string an into object compatible with library's data model.</p>
+<p>The functions acts exactly the same as the rpc_object_pack function, but takes assembled variable arguments list structure as its argument.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fmt</td><td>Format string. </td></tr>
+    <tr><td class="paramname">ap</td><td>Variable arguments list structure. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Packed object. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a583484fcddc086aa6eefbc6b0b86dd9b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_object_vunpack </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">va_list&#160;</td>
+          <td class="paramname"><em>ap</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Unpacks provided values accordingly to a specified format string from an object.</p>
+<p>The functions acts exactly the same as the rpc_object_unpack function, but takes assembled variable arguments list structure as its argument.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fmt</td><td>Format string. </td></tr>
+    <tr><td class="paramname">ap</td><td>Variable arguments list structure. </td></tr>
   </table>
   </dd>
 </dl>

@@ -1,6 +1,7 @@
 var searchData=
 [
   ['rpc_5farray_5fapplier_5ft',['rpc_array_applier_t',['../object_8h.html#afbd36072a4116c378f0ce243173251d1',1,'object.h']]],
+  ['rpc_5farray_5fcmp_5ft',['rpc_array_cmp_t',['../object_8h.html#a23bdaa1b433c1ae44515a60f06a86866',1,'object.h']]],
   ['rpc_5fcall_5fstatus_5ft',['rpc_call_status_t',['../connection_8h.html#a5e44285dc90be1f6bc541504a3f6d929',1,'connection.h']]],
   ['rpc_5fcall_5ft',['rpc_call_t',['../connection_8h.html#aeb6f25e395cc04930537960ef6b50106',1,'connection.h']]],
   ['rpc_5fcallback_5ft',['rpc_callback_t',['../connection_8h.html#adc95de7fabf9904e1be453f5c6392a6b',1,'connection.h']]],

@@ -152,254 +152,273 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;</div>
 <div class="line"><a name="l00097"></a><span class="lineno"><a class="line" href="object_8h.html#a7d7c845c8ab67dc47ec85d89b7dbee2d">   97</a></span>&#160;<span class="keyword">typedef</span> bool (^<a class="code" href="object_8h.html#a7d7c845c8ab67dc47ec85d89b7dbee2d">rpc_dictionary_applier_t</a>)(<span class="keyword">const</span> <span class="keywordtype">char</span> *key, rpc_object_t value);</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
-<div class="line"><a name="l00102"></a><span class="lineno"><a class="line" href="object_8h.html#a33c2b5ad21d20059d031e6a390021822">  102</a></span>&#160;<span class="preprocessor">#define RPC_ARRAY_APPLIER(_fn, _arg)                    \</span></div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="preprocessor">    ^(size_t _index, rpc_object_t _value) {             \</span></div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="preprocessor">                return ((bool)_fn(_arg, _index, _value));       \</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="preprocessor">        }</span></div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="object_8h.html#a814f85a172b4dae9c201063cad92514e">  110</a></span>&#160;<span class="preprocessor">#define RPC_DICTIONARY_APPLIER(_fn, _arg)               \</span></div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="preprocessor">    ^(const char *_key, rpc_object_t _value) {          \</span></div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="preprocessor">                return ((bool)_fn(_arg, _key, _value));         \</span></div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="preprocessor">        }</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a9f5c8073f6c079852f39f409be1f777b">rpc_retain</a>(rpc_object_t <span class="keywordtype">object</span>);</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a2d85324f75b20628a5d32e8117277e18">rpc_release_impl</a>(rpc_object_t <span class="keywordtype">object</span>);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;rpc_object_t <a class="code" href="object_8h.html#aa5de9854b486016a16ac230ae0ba1d3a">rpc_copy</a>(rpc_object_t <span class="keywordtype">object</span>);</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#a2f5ccf4e702bdfc6ff82fcac4ce18e84">rpc_equal</a>(rpc_object_t o1, rpc_object_t o2);</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="object_8h.html#ab84acb5ad97a61ccc08548a3e5d85bc1">rpc_hash</a>(rpc_object_t <span class="keywordtype">object</span>);</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<span class="keywordtype">char</span> *<a class="code" href="object_8h.html#a8687bd8dcf67458dbb09549d2a9b6059">rpc_copy_description</a>(rpc_object_t <span class="keywordtype">object</span>);</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;<a class="code" href="object_8h.html#a40ea3143863f0a2b47446ccaf655638e">rpc_type_t</a> <a class="code" href="object_8h.html#a842969702ab17ad4b7e1b0c2ed9a4aef">rpc_get_type</a>(rpc_object_t <span class="keywordtype">object</span>);</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;</div>
-<div class="line"><a name="l00188"></a><span class="lineno"><a class="line" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">  188</a></span>&#160;<span class="preprocessor">#define rpc_release(_object)                        \</span></div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;<span class="preprocessor">    do {                                \</span></div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<span class="preprocessor">        if (rpc_release_impl(_object) == 0)         \</span></div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<span class="preprocessor">            _object = NULL;                 \</span></div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;<span class="preprocessor">    } while(0)</span></div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a3041a1bbc93de9f4753ed5191d6a8f29">rpc_get_last_error</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;rpc_object_t <a class="code" href="object_8h.html#adde6020ca4c5be010850ca4295d1a4e5">rpc_object_from_json</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *frame, <span class="keywordtype">size_t</span> size);</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a583eee9f2f5292677ec130a1b6746a32">rpc_object_to_json</a>(rpc_object_t <span class="keywordtype">object</span>, <span class="keywordtype">void</span> **frame, <span class="keywordtype">size_t</span> *size);</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a87da19ea6b0ec7daf50ce660162e26be">rpc_object_pack</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *fmt, ...);</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a522ca7df7ed77f09b7c4e9efea42ed83">rpc_object_unpack</a>(rpc_object_t, <span class="keyword">const</span> <span class="keywordtype">char</span> *fmt, ...);</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a0a56b4b5320160f6cbcee59a034fa8f7">rpc_null_create</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a92cb61d1c1e25294fcbab898dff13b53">rpc_bool_create</a>(<span class="keywordtype">bool</span> value);</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#a8b7678e59eb5f76e136fdcc3b6158c39">rpc_bool_get_value</a>(rpc_object_t xbool);</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;rpc_object_t <a class="code" href="object_8h.html#ad1ce3319d7b452bc5400518ff727a87f">rpc_int64_create</a>(int64_t value);</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;int64_t <a class="code" href="object_8h.html#a4d9f3fc2fe16b2a09b1f7b5fbcf78d99">rpc_int64_get_value</a>(rpc_object_t xint);</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a38142d7d5e24b774c7cda93734d7f643">rpc_uint64_create</a>(uint64_t value);</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;uint64_t <a class="code" href="object_8h.html#a141bf4e57cabf5a2b15ab12a1a3c587d">rpc_uint64_get_value</a>(rpc_object_t xuint);</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;rpc_object_t <a class="code" href="object_8h.html#ad327d0505386ea397aff6a2ffc9d4e52">rpc_double_create</a>(<span class="keywordtype">double</span> value);</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;<span class="keywordtype">double</span> <a class="code" href="object_8h.html#a44be10360860fa14d66037e92b19c600">rpc_double_get_value</a>(rpc_object_t xdouble);</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a56c5b9ed4b759b484d612bc3bbcd5b69">rpc_date_create</a>(int64_t interval);</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a3f7fe1bd56938b077470b8dc811a001a">rpc_date_create_from_current</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;int64_t <a class="code" href="object_8h.html#a1d4007edcf66361777f074b8a79e8e12">rpc_date_get_value</a>(rpc_object_t xdate);</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;rpc_object_t <a class="code" href="object_8h.html#af82b4d55631d1b9c59bd10b6939fac52">rpc_data_create</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *bytes, <span class="keywordtype">size_t</span> length, <span class="keywordtype">bool</span> copy);</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="object_8h.html#a17b4b5077bb28dad2b678e64001c6824">rpc_data_get_length</a>(rpc_object_t xdata);</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;<span class="keyword">const</span> <span class="keywordtype">void</span> *<a class="code" href="object_8h.html#a626c045e08849189e2d75f191ce6c903">rpc_data_get_bytes_ptr</a>(rpc_object_t xdata);</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="object_8h.html#a0453cb25c7fbeffd9151bfd8960c1656">rpc_data_get_bytes</a>(rpc_object_t xdata, <span class="keywordtype">void</span> *buffer, <span class="keywordtype">size_t</span> off,</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    <span class="keywordtype">size_t</span> length);</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;rpc_object_t <a class="code" href="object_8h.html#adb3c34ac47a7c15a41758ca1de5ab356">rpc_string_create</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keywordtype">string</span>);</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;</div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;rpc_object_t <a class="code" href="object_8h.html#ae6d2218dce384ad5f90e6c3cf2c4d93b">rpc_string_create_len</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keywordtype">string</span>, <span class="keywordtype">size_t</span> length);</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;</div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a8cbd21846d3957acd8dffe43b9b7e442">rpc_string_create_with_format</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *fmt, ...);</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;</div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a9db6feb6897323de3c3d6d6137a1a6c2">rpc_string_create_with_format_and_arguments</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *fmt,</div>
-<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;    va_list ap);</div>
-<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;</div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="object_8h.html#abb26dd739074c3d16a9555fcd054ac0a">rpc_string_get_length</a>(rpc_object_t xstring);</div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;</div>
-<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="object_8h.html#a98c3ec0132389e4a30d208894578b83c">rpc_string_get_string_ptr</a>(rpc_object_t xstring);</div>
-<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;</div>
-<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;rpc_object_t <a class="code" href="object_8h.html#ab0a4b1ae9e282c596c40c41fb025fa4a">rpc_fd_create</a>(<span class="keywordtype">int</span> fd);</div>
-<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;</div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a3343e6a1513fec2541dcb1027581a64c">rpc_fd_dup</a>(rpc_object_t xfd);</div>
-<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;</div>
-<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#aa3cfb922c202ab7b6e574a4db79143ff">rpc_fd_get_value</a>(rpc_object_t xfd);</div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;</div>
-<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a0c717b38ae14f998362fc3969ed5f54e">rpc_array_create</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;</div>
-<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;rpc_object_t <a class="code" href="object_8h.html#aef23f0b3d4302c2ff1e26f495137644b">rpc_array_create_ex</a>(<span class="keyword">const</span> rpc_object_t *objects, <span class="keywordtype">size_t</span> count,</div>
-<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;    <span class="keywordtype">bool</span> steal);</div>
-<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;</div>
-<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a140729688c5772adc7f345cc51448d1f">rpc_array_set_value</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, rpc_object_t value);</div>
-<div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;</div>
-<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#aeb892aa166cc1e6d9834c8bb8ebbf435">rpc_array_steal_value</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, rpc_object_t value);</div>
-<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;</div>
-<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a4c2fe7fb304ed1ac9f1729faa8d7e501">rpc_array_remove_index</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
-<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;</div>
-<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a9da12b0343c47a16a0356d5ba355a32c">rpc_array_append_value</a>(rpc_object_t array, rpc_object_t value);</div>
-<div class="line"><a name="l00582"></a><span class="lineno">  582</span>&#160;</div>
-<div class="line"><a name="l00589"></a><span class="lineno">  589</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a446bace2d79bfd63d985e8bf97d284ff">rpc_array_append_stolen_value</a>(rpc_object_t array, rpc_object_t value);</div>
-<div class="line"><a name="l00590"></a><span class="lineno">  590</span>&#160;</div>
-<div class="line"><a name="l00600"></a><span class="lineno">  600</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a4fbba33994188dff303718ac07f137fc">rpc_array_get_value</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
-<div class="line"><a name="l00601"></a><span class="lineno">  601</span>&#160;</div>
-<div class="line"><a name="l00608"></a><span class="lineno">  608</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="object_8h.html#ac6d963cbeefa944666692696aebc663a">rpc_array_get_count</a>(rpc_object_t array);</div>
-<div class="line"><a name="l00609"></a><span class="lineno">  609</span>&#160;</div>
-<div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#a8a6a6a91d7e5ccdadf4ae08d6aed1a2a">rpc_array_apply</a>(rpc_object_t array, <a class="code" href="object_8h.html#afbd36072a4116c378f0ce243173251d1">rpc_array_applier_t</a> applier);</div>
-<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;</div>
-<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a2e6be4443b432a011f9858f005ea00cd">rpc_array_slice</a>(rpc_object_t array, <span class="keywordtype">size_t</span> start, ssize_t len);</div>
+<div class="line"><a name="l00113"></a><span class="lineno"><a class="line" href="object_8h.html#a23bdaa1b433c1ae44515a60f06a86866">  113</a></span>&#160;<span class="keyword">typedef</span> int (^<a class="code" href="object_8h.html#a23bdaa1b433c1ae44515a60f06a86866">rpc_array_cmp_t</a>)(rpc_object_t o1, rpc_object_t o2);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
+<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="object_8h.html#a33c2b5ad21d20059d031e6a390021822">  118</a></span>&#160;<span class="preprocessor">#define RPC_ARRAY_APPLIER(_fn, _arg)                    \</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="preprocessor">    ^(size_t _index, rpc_object_t _value) {             \</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor">                return ((bool)_fn(_arg, _index, _value));       \</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="preprocessor">        }</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00126"></a><span class="lineno"><a class="line" href="object_8h.html#a814f85a172b4dae9c201063cad92514e">  126</a></span>&#160;<span class="preprocessor">#define RPC_DICTIONARY_APPLIER(_fn, _arg)               \</span></div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="preprocessor">    ^(const char *_key, rpc_object_t _value) {          \</span></div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="preprocessor">                return ((bool)_fn(_arg, _key, _value));         \</span></div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="preprocessor">        }</span></div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00134"></a><span class="lineno"><a class="line" href="object_8h.html#af7b40854202a0a6708b0611b4fdf9121">  134</a></span>&#160;<span class="preprocessor">#define RPC_ARRAY_CMP(_fn, _arg)                    \</span></div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="preprocessor">    ^(rpc_object_t _o1, rpc_object_t _o2) {             \</span></div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="preprocessor">                return ((int)_fn(_arg, _o1, _o2));          \</span></div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="preprocessor">        }</span></div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a9f5c8073f6c079852f39f409be1f777b">rpc_retain</a>(rpc_object_t <span class="keywordtype">object</span>);</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a2d85324f75b20628a5d32e8117277e18">rpc_release_impl</a>(rpc_object_t <span class="keywordtype">object</span>);</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;rpc_object_t <a class="code" href="object_8h.html#aa5de9854b486016a16ac230ae0ba1d3a">rpc_copy</a>(rpc_object_t <span class="keywordtype">object</span>);</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a1fd38947da5673eb2db4910878bebb36">rpc_cmp</a>(rpc_object_t o1, rpc_object_t o2);</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#a2f5ccf4e702bdfc6ff82fcac4ce18e84">rpc_equal</a>(rpc_object_t o1, rpc_object_t o2);</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="object_8h.html#ab84acb5ad97a61ccc08548a3e5d85bc1">rpc_hash</a>(rpc_object_t <span class="keywordtype">object</span>);</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;<span class="keywordtype">char</span> *<a class="code" href="object_8h.html#a8687bd8dcf67458dbb09549d2a9b6059">rpc_copy_description</a>(rpc_object_t <span class="keywordtype">object</span>);</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;<a class="code" href="object_8h.html#a40ea3143863f0a2b47446ccaf655638e">rpc_type_t</a> <a class="code" href="object_8h.html#a842969702ab17ad4b7e1b0c2ed9a4aef">rpc_get_type</a>(rpc_object_t <span class="keywordtype">object</span>);</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;</div>
+<div class="line"><a name="l00231"></a><span class="lineno"><a class="line" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">  231</a></span>&#160;<span class="preprocessor">#define rpc_release(_object)                        \</span></div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="preprocessor">    do {                                \</span></div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;<span class="preprocessor">        if (rpc_release_impl(_object) == 0)         \</span></div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="preprocessor">            _object = NULL;                 \</span></div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="preprocessor">    } while(0)</span></div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a3041a1bbc93de9f4753ed5191d6a8f29">rpc_get_last_error</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;rpc_object_t <a class="code" href="object_8h.html#adde6020ca4c5be010850ca4295d1a4e5">rpc_object_from_json</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *frame, <span class="keywordtype">size_t</span> size);</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a583eee9f2f5292677ec130a1b6746a32">rpc_object_to_json</a>(rpc_object_t <span class="keywordtype">object</span>, <span class="keywordtype">void</span> **frame, <span class="keywordtype">size_t</span> *size);</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a87da19ea6b0ec7daf50ce660162e26be">rpc_object_pack</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *fmt, ...);</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a15bdca8f36858885773a6a1f717782fa">rpc_object_vpack</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *fmt, va_list ap);</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a522ca7df7ed77f09b7c4e9efea42ed83">rpc_object_unpack</a>(rpc_object_t, <span class="keyword">const</span> <span class="keywordtype">char</span> *fmt, ...);</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a583484fcddc086aa6eefbc6b0b86dd9b">rpc_object_vunpack</a>(rpc_object_t, <span class="keyword">const</span> <span class="keywordtype">char</span> *fmt, va_list ap);</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a0a56b4b5320160f6cbcee59a034fa8f7">rpc_null_create</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a92cb61d1c1e25294fcbab898dff13b53">rpc_bool_create</a>(<span class="keywordtype">bool</span> value);</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#a8b7678e59eb5f76e136fdcc3b6158c39">rpc_bool_get_value</a>(rpc_object_t xbool);</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;rpc_object_t <a class="code" href="object_8h.html#ad1ce3319d7b452bc5400518ff727a87f">rpc_int64_create</a>(int64_t value);</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;int64_t <a class="code" href="object_8h.html#a4d9f3fc2fe16b2a09b1f7b5fbcf78d99">rpc_int64_get_value</a>(rpc_object_t xint);</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a38142d7d5e24b774c7cda93734d7f643">rpc_uint64_create</a>(uint64_t value);</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;uint64_t <a class="code" href="object_8h.html#a141bf4e57cabf5a2b15ab12a1a3c587d">rpc_uint64_get_value</a>(rpc_object_t xuint);</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;rpc_object_t <a class="code" href="object_8h.html#ad327d0505386ea397aff6a2ffc9d4e52">rpc_double_create</a>(<span class="keywordtype">double</span> value);</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;<span class="keywordtype">double</span> <a class="code" href="object_8h.html#a44be10360860fa14d66037e92b19c600">rpc_double_get_value</a>(rpc_object_t xdouble);</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a56c5b9ed4b759b484d612bc3bbcd5b69">rpc_date_create</a>(int64_t interval);</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;</div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a3f7fe1bd56938b077470b8dc811a001a">rpc_date_create_from_current</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;int64_t <a class="code" href="object_8h.html#a1d4007edcf66361777f074b8a79e8e12">rpc_date_get_value</a>(rpc_object_t xdate);</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;</div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;rpc_object_t <a class="code" href="object_8h.html#af82b4d55631d1b9c59bd10b6939fac52">rpc_data_create</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *bytes, <span class="keywordtype">size_t</span> length, <span class="keywordtype">bool</span> copy);</div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;</div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="object_8h.html#a17b4b5077bb28dad2b678e64001c6824">rpc_data_get_length</a>(rpc_object_t xdata);</div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;</div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;<span class="keyword">const</span> <span class="keywordtype">void</span> *<a class="code" href="object_8h.html#a626c045e08849189e2d75f191ce6c903">rpc_data_get_bytes_ptr</a>(rpc_object_t xdata);</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="object_8h.html#a0453cb25c7fbeffd9151bfd8960c1656">rpc_data_get_bytes</a>(rpc_object_t xdata, <span class="keywordtype">void</span> *buffer, <span class="keywordtype">size_t</span> off,</div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;    <span class="keywordtype">size_t</span> length);</div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;</div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;rpc_object_t <a class="code" href="object_8h.html#adb3c34ac47a7c15a41758ca1de5ab356">rpc_string_create</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keywordtype">string</span>);</div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;</div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;rpc_object_t <a class="code" href="object_8h.html#ae6d2218dce384ad5f90e6c3cf2c4d93b">rpc_string_create_len</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keywordtype">string</span>, <span class="keywordtype">size_t</span> length);</div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;</div>
+<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a8cbd21846d3957acd8dffe43b9b7e442">rpc_string_create_with_format</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *fmt, ...);</div>
+<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;</div>
+<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a9db6feb6897323de3c3d6d6137a1a6c2">rpc_string_create_with_format_and_arguments</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *fmt,</div>
+<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;    va_list ap);</div>
+<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;</div>
+<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="object_8h.html#abb26dd739074c3d16a9555fcd054ac0a">rpc_string_get_length</a>(rpc_object_t xstring);</div>
+<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;</div>
+<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="object_8h.html#a98c3ec0132389e4a30d208894578b83c">rpc_string_get_string_ptr</a>(rpc_object_t xstring);</div>
+<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;</div>
+<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;rpc_object_t <a class="code" href="object_8h.html#ab0a4b1ae9e282c596c40c41fb025fa4a">rpc_fd_create</a>(<span class="keywordtype">int</span> fd);</div>
+<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;</div>
+<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a3343e6a1513fec2541dcb1027581a64c">rpc_fd_dup</a>(rpc_object_t xfd);</div>
+<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;</div>
+<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#aa3cfb922c202ab7b6e574a4db79143ff">rpc_fd_get_value</a>(rpc_object_t xfd);</div>
+<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;</div>
+<div class="line"><a name="l00584"></a><span class="lineno">  584</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a0c717b38ae14f998362fc3969ed5f54e">rpc_array_create</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160;</div>
+<div class="line"><a name="l00595"></a><span class="lineno">  595</span>&#160;rpc_object_t <a class="code" href="object_8h.html#aef23f0b3d4302c2ff1e26f495137644b">rpc_array_create_ex</a>(<span class="keyword">const</span> rpc_object_t *objects, <span class="keywordtype">size_t</span> count,</div>
+<div class="line"><a name="l00596"></a><span class="lineno">  596</span>&#160;    <span class="keywordtype">bool</span> steal);</div>
+<div class="line"><a name="l00597"></a><span class="lineno">  597</span>&#160;</div>
+<div class="line"><a name="l00615"></a><span class="lineno">  615</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a140729688c5772adc7f345cc51448d1f">rpc_array_set_value</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, rpc_object_t value);</div>
+<div class="line"><a name="l00616"></a><span class="lineno">  616</span>&#160;</div>
+<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#aeb892aa166cc1e6d9834c8bb8ebbf435">rpc_array_steal_value</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, rpc_object_t value);</div>
+<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;</div>
+<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a4c2fe7fb304ed1ac9f1729faa8d7e501">rpc_array_remove_index</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
 <div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160;</div>
-<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a9dbe873eb749066483c87f47427baa66">rpc_array_set_bool</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, <span class="keywordtype">bool</span> value);</div>
-<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;</div>
-<div class="line"><a name="l00667"></a><span class="lineno">  667</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#aa6710620f1acde01dd62c467a44f18c2">rpc_array_set_int64</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, int64_t value);</div>
-<div class="line"><a name="l00668"></a><span class="lineno">  668</span>&#160;</div>
-<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a360d2e8c74227b576f95f9aa3f6e0138">rpc_array_set_uint64</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, uint64_t value);</div>
-<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;</div>
-<div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#ad0a9648195928da0978c15e8b8736e5a">rpc_array_set_double</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, <span class="keywordtype">double</span> value);</div>
-<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160;</div>
-<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#aaeec0f05e4409680172b54e715f2ff44">rpc_array_set_date</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, int64_t value);</div>
-<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;</div>
-<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#adad50da5c5a3a2eaf33a85cbf5218d27">rpc_array_set_data</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, <span class="keyword">const</span> <span class="keywordtype">void</span> *bytes,</div>
-<div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160;    <span class="keywordtype">size_t</span> length);</div>
-<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;</div>
-<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a18b175344695a268401293da46e40c0d">rpc_array_set_string</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, <span class="keyword">const</span> <span class="keywordtype">char</span> *value);</div>
-<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;</div>
-<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#aab29b896749f1f7427f1addfde3125f9">rpc_array_set_fd</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, <span class="keywordtype">int</span> value);</div>
-<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;</div>
-<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#a5b743b07aa7cbad62b77e0b812e79e0e">rpc_array_get_bool</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
-<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;</div>
-<div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;int64_t <a class="code" href="object_8h.html#a16b71175e32e6aeed71d49dc04de69af">rpc_array_get_int64</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
-<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;</div>
-<div class="line"><a name="l00786"></a><span class="lineno">  786</span>&#160;uint64_t <a class="code" href="object_8h.html#ae01fab09becaf8d57b36a124e1410b09">rpc_array_get_uint64</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
-<div class="line"><a name="l00787"></a><span class="lineno">  787</span>&#160;</div>
-<div class="line"><a name="l00799"></a><span class="lineno">  799</span>&#160;<span class="keywordtype">double</span> <a class="code" href="object_8h.html#ae1d0f58ae6388c7eac92906c14fdc61a">rpc_array_get_double</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
-<div class="line"><a name="l00800"></a><span class="lineno">  800</span>&#160;</div>
-<div class="line"><a name="l00812"></a><span class="lineno">  812</span>&#160;int64_t <a class="code" href="object_8h.html#a084b46af068b5c48dbd3e4f08a995dd9">rpc_array_get_date</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
-<div class="line"><a name="l00813"></a><span class="lineno">  813</span>&#160;</div>
-<div class="line"><a name="l00826"></a><span class="lineno">  826</span>&#160;<span class="keyword">const</span> <span class="keywordtype">void</span> *<a class="code" href="object_8h.html#a90cb248aeac4a38990a1b91fdc022ffc">rpc_array_get_data</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index,</div>
-<div class="line"><a name="l00827"></a><span class="lineno">  827</span>&#160;    <span class="keywordtype">size_t</span> *length);</div>
-<div class="line"><a name="l00828"></a><span class="lineno">  828</span>&#160;</div>
-<div class="line"><a name="l00840"></a><span class="lineno">  840</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="object_8h.html#a01e6ca99a87a802b012c9120489d5894">rpc_array_get_string</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
-<div class="line"><a name="l00841"></a><span class="lineno">  841</span>&#160;</div>
-<div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a96459be40290e65692aaebc15ed6b1de">rpc_array_get_fd</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
-<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;</div>
-<div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a951a49f2e19cfc0296afae62af9dd72f">rpc_array_dup_fd</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
-<div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;<span class="preprocessor">#if defined(__linux__)</span></div>
-<div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00875"></a><span class="lineno">  875</span>&#160;rpc_object_t rpc_shmem_create(<span class="keywordtype">size_t</span> size);</div>
+<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a9da12b0343c47a16a0356d5ba355a32c">rpc_array_append_value</a>(rpc_object_t array, rpc_object_t value);</div>
+<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;</div>
+<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a446bace2d79bfd63d985e8bf97d284ff">rpc_array_append_stolen_value</a>(rpc_object_t array, rpc_object_t value);</div>
+<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;</div>
+<div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a4fbba33994188dff303718ac07f137fc">rpc_array_get_value</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
+<div class="line"><a name="l00670"></a><span class="lineno">  670</span>&#160;</div>
+<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="object_8h.html#ac6d963cbeefa944666692696aebc663a">rpc_array_get_count</a>(rpc_object_t array);</div>
+<div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160;</div>
+<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#a8a6a6a91d7e5ccdadf4ae08d6aed1a2a">rpc_array_apply</a>(rpc_object_t array, <a class="code" href="object_8h.html#afbd36072a4116c378f0ce243173251d1">rpc_array_applier_t</a> applier);</div>
+<div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160;</div>
+<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#a37244ac71308e8f4e3d886727211c371">rpc_array_contains</a>(rpc_object_t array, rpc_object_t value);</div>
+<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;</div>
+<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#aa3abd89de4c7dc3d5d20ed624cf5f748">rpc_array_reverse_apply</a>(rpc_object_t array, <a class="code" href="object_8h.html#afbd36072a4116c378f0ce243173251d1">rpc_array_applier_t</a> applier);</div>
+<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;</div>
+<div class="line"><a name="l00725"></a><span class="lineno">  725</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#aaa8222bb9416af081f44cef36b8f0161">rpc_array_sort</a>(rpc_object_t array, <a class="code" href="object_8h.html#a23bdaa1b433c1ae44515a60f06a86866">rpc_array_cmp_t</a> comparator);</div>
+<div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160;</div>
+<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a2e6be4443b432a011f9858f005ea00cd">rpc_array_slice</a>(rpc_object_t array, <span class="keywordtype">size_t</span> start, ssize_t len);</div>
+<div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160;</div>
+<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a9dbe873eb749066483c87f47427baa66">rpc_array_set_bool</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, <span class="keywordtype">bool</span> value);</div>
+<div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160;</div>
+<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#aa6710620f1acde01dd62c467a44f18c2">rpc_array_set_int64</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, int64_t value);</div>
+<div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;</div>
+<div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a360d2e8c74227b576f95f9aa3f6e0138">rpc_array_set_uint64</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, uint64_t value);</div>
+<div class="line"><a name="l00783"></a><span class="lineno">  783</span>&#160;</div>
+<div class="line"><a name="l00795"></a><span class="lineno">  795</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#ad0a9648195928da0978c15e8b8736e5a">rpc_array_set_double</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, <span class="keywordtype">double</span> value);</div>
+<div class="line"><a name="l00796"></a><span class="lineno">  796</span>&#160;</div>
+<div class="line"><a name="l00808"></a><span class="lineno">  808</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#aaeec0f05e4409680172b54e715f2ff44">rpc_array_set_date</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, int64_t value);</div>
+<div class="line"><a name="l00809"></a><span class="lineno">  809</span>&#160;</div>
+<div class="line"><a name="l00822"></a><span class="lineno">  822</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#adad50da5c5a3a2eaf33a85cbf5218d27">rpc_array_set_data</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, <span class="keyword">const</span> <span class="keywordtype">void</span> *bytes,</div>
+<div class="line"><a name="l00823"></a><span class="lineno">  823</span>&#160;    <span class="keywordtype">size_t</span> length);</div>
+<div class="line"><a name="l00824"></a><span class="lineno">  824</span>&#160;</div>
+<div class="line"><a name="l00836"></a><span class="lineno">  836</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a18b175344695a268401293da46e40c0d">rpc_array_set_string</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, <span class="keyword">const</span> <span class="keywordtype">char</span> *value);</div>
+<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160;</div>
+<div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#aab29b896749f1f7427f1addfde3125f9">rpc_array_set_fd</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index, <span class="keywordtype">int</span> value);</div>
+<div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;</div>
+<div class="line"><a name="l00862"></a><span class="lineno">  862</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#a5b743b07aa7cbad62b77e0b812e79e0e">rpc_array_get_bool</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
+<div class="line"><a name="l00863"></a><span class="lineno">  863</span>&#160;</div>
+<div class="line"><a name="l00875"></a><span class="lineno">  875</span>&#160;int64_t <a class="code" href="object_8h.html#a16b71175e32e6aeed71d49dc04de69af">rpc_array_get_int64</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
 <div class="line"><a name="l00876"></a><span class="lineno">  876</span>&#160;</div>
-<div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160;<span class="keywordtype">void</span> *rpc_shmem_map(rpc_object_t shmem);</div>
-<div class="line"><a name="l00884"></a><span class="lineno">  884</span>&#160;</div>
-<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;<span class="keywordtype">void</span> rpc_shmem_unmap(rpc_object_t shmem, <span class="keywordtype">void</span> *addr);</div>
-<div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;</div>
-<div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160;<span class="keywordtype">size_t</span> rpc_shmem_get_size(rpc_object_t shmem);</div>
-<div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00916"></a><span class="lineno">  916</span>&#160;rpc_object_t <a class="code" href="object_8h.html#ae97f0c2a0033d6b538bd48f79c105931">rpc_error_create</a>(<span class="keywordtype">int</span> code, <span class="keyword">const</span> <span class="keywordtype">char</span> *msg, rpc_object_t extra);</div>
-<div class="line"><a name="l00917"></a><span class="lineno">  917</span>&#160;</div>
-<div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a3e2bba92d67fd012fb097fdb8f098df7">rpc_error_create_with_stack</a>(<span class="keywordtype">int</span> code, <span class="keyword">const</span> <span class="keywordtype">char</span> *msg,</div>
-<div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;    rpc_object_t extra, rpc_object_t stack);</div>
-<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;</div>
-<div class="line"><a name="l00942"></a><span class="lineno">  942</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a7c8e7458d5d06473b817f9a7316c7132">rpc_error_get_code</a>(rpc_object_t error);</div>
+<div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;uint64_t <a class="code" href="object_8h.html#ae01fab09becaf8d57b36a124e1410b09">rpc_array_get_uint64</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
+<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;</div>
+<div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160;<span class="keywordtype">double</span> <a class="code" href="object_8h.html#ae1d0f58ae6388c7eac92906c14fdc61a">rpc_array_get_double</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
+<div class="line"><a name="l00902"></a><span class="lineno">  902</span>&#160;</div>
+<div class="line"><a name="l00914"></a><span class="lineno">  914</span>&#160;int64_t <a class="code" href="object_8h.html#a084b46af068b5c48dbd3e4f08a995dd9">rpc_array_get_date</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
+<div class="line"><a name="l00915"></a><span class="lineno">  915</span>&#160;</div>
+<div class="line"><a name="l00928"></a><span class="lineno">  928</span>&#160;<span class="keyword">const</span> <span class="keywordtype">void</span> *<a class="code" href="object_8h.html#a90cb248aeac4a38990a1b91fdc022ffc">rpc_array_get_data</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index,</div>
+<div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;    <span class="keywordtype">size_t</span> *length);</div>
+<div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160;</div>
+<div class="line"><a name="l00942"></a><span class="lineno">  942</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="object_8h.html#a01e6ca99a87a802b012c9120489d5894">rpc_array_get_string</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
 <div class="line"><a name="l00943"></a><span class="lineno">  943</span>&#160;</div>
-<div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="object_8h.html#a2bb21a0e2e9f46a072b13c3525bd0792">rpc_error_get_message</a>(rpc_object_t error);</div>
-<div class="line"><a name="l00951"></a><span class="lineno">  951</span>&#160;</div>
-<div class="line"><a name="l00959"></a><span class="lineno">  959</span>&#160;rpc_object_t <a class="code" href="object_8h.html#ad6f7b09153f903b78c1a93b9e4938350">rpc_error_get_extra</a>(rpc_object_t error);</div>
-<div class="line"><a name="l00960"></a><span class="lineno">  960</span>&#160;</div>
-<div class="line"><a name="l00967"></a><span class="lineno">  967</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a388db2244bb129cd3a783b1a50822c4c">rpc_error_set_extra</a>(rpc_object_t error, rpc_object_t extra);</div>
-<div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160;</div>
-<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a05a79628ec5a59dfc8d735ac08a83f42">rpc_error_get_stack</a>(rpc_object_t error);</div>
-<div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;</div>
-<div class="line"><a name="l00983"></a><span class="lineno">  983</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a2d3b7789a013d7084663fc2f241b6d2c">rpc_dictionary_create</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;</div>
-<div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a8428569b3059a2939c8c7121df0d3400">rpc_dictionary_create_ex</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keyword">const</span> *keys,</div>
-<div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160;    <span class="keyword">const</span> rpc_object_t *values, <span class="keywordtype">size_t</span> count, <span class="keywordtype">bool</span> steal);</div>
-<div class="line"><a name="l00997"></a><span class="lineno">  997</span>&#160;</div>
-<div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a932082c08de1ae9aca29778dc259f8c9">rpc_dictionary_set_value</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
-<div class="line"><a name="l01013"></a><span class="lineno"> 1013</span>&#160;    rpc_object_t value);</div>
-<div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160;</div>
-<div class="line"><a name="l01028"></a><span class="lineno"> 1028</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a486874b7177c98b8e82580d4aac9530c">rpc_dictionary_steal_value</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
-<div class="line"><a name="l01029"></a><span class="lineno"> 1029</span>&#160;    rpc_object_t value);</div>
-<div class="line"><a name="l01030"></a><span class="lineno"> 1030</span>&#160;</div>
-<div class="line"><a name="l01037"></a><span class="lineno"> 1037</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a58b0d4747d853a75bdffd71a5235a9ba">rpc_dictionary_remove_key</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
-<div class="line"><a name="l01038"></a><span class="lineno"> 1038</span>&#160;</div>
-<div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;rpc_object_t <a class="code" href="object_8h.html#ae2ffdb7864d2abc5313b33a1af1c19dd">rpc_dictionary_get_value</a>(rpc_object_t dictionary,</div>
-<div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
-<div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160;</div>
-<div class="line"><a name="l01057"></a><span class="lineno"> 1057</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="object_8h.html#ab280f7c274f2428f819c87d457e090c4">rpc_dictionary_get_count</a>(rpc_object_t dictionary);</div>
-<div class="line"><a name="l01058"></a><span class="lineno"> 1058</span>&#160;</div>
-<div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#abc68776153fe2aee12d37c0623c5b94f">rpc_dictionary_apply</a>(rpc_object_t dictionary,</div>
-<div class="line"><a name="l01073"></a><span class="lineno"> 1073</span>&#160;    <a class="code" href="object_8h.html#a7d7c845c8ab67dc47ec85d89b7dbee2d">rpc_dictionary_applier_t</a> applier);</div>
-<div class="line"><a name="l01074"></a><span class="lineno"> 1074</span>&#160;</div>
-<div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#aa4994f9aee8421b3b3e310e19af9746a">rpc_dictionary_has_key</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
-<div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160;</div>
-<div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a2f2906bc0e54bce4cba3bfe90285b582">rpc_dictionary_set_bool</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
-<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;    <span class="keywordtype">bool</span> value);</div>
-<div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160;</div>
-<div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a24e2f74d342e15eb8277ac6629d17a46">rpc_dictionary_set_int64</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
-<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;    int64_t value);</div>
-<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;</div>
-<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#ab526d14403ef53efae6d397aaea69ffb">rpc_dictionary_set_uint64</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
-<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160;    uint64_t value);</div>
+<div class="line"><a name="l00955"></a><span class="lineno">  955</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a96459be40290e65692aaebc15ed6b1de">rpc_array_get_fd</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
+<div class="line"><a name="l00956"></a><span class="lineno">  956</span>&#160;</div>
+<div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a951a49f2e19cfc0296afae62af9dd72f">rpc_array_dup_fd</a>(rpc_object_t array, <span class="keywordtype">size_t</span> index);</div>
+<div class="line"><a name="l00969"></a><span class="lineno">  969</span>&#160;<span class="preprocessor">#if defined(__linux__)</span></div>
+<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;rpc_object_t rpc_shmem_create(<span class="keywordtype">size_t</span> size);</div>
+<div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160;</div>
+<div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160;<span class="keywordtype">void</span> *rpc_shmem_map(rpc_object_t shmem);</div>
+<div class="line"><a name="l00986"></a><span class="lineno">  986</span>&#160;</div>
+<div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;<span class="keywordtype">void</span> rpc_shmem_unmap(rpc_object_t shmem, <span class="keywordtype">void</span> *addr);</div>
+<div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160;</div>
+<div class="line"><a name="l01001"></a><span class="lineno"> 1001</span>&#160;<span class="keywordtype">size_t</span> rpc_shmem_get_size(rpc_object_t shmem);</div>
+<div class="line"><a name="l01002"></a><span class="lineno"> 1002</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160;rpc_object_t <a class="code" href="object_8h.html#ae97f0c2a0033d6b538bd48f79c105931">rpc_error_create</a>(<span class="keywordtype">int</span> code, <span class="keyword">const</span> <span class="keywordtype">char</span> *msg, rpc_object_t extra);</div>
+<div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160;</div>
+<div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a3e2bba92d67fd012fb097fdb8f098df7">rpc_error_create_with_stack</a>(<span class="keywordtype">int</span> code, <span class="keyword">const</span> <span class="keywordtype">char</span> *msg,</div>
+<div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160;    rpc_object_t extra, rpc_object_t stack);</div>
+<div class="line"><a name="l01037"></a><span class="lineno"> 1037</span>&#160;</div>
+<div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a7c8e7458d5d06473b817f9a7316c7132">rpc_error_get_code</a>(rpc_object_t error);</div>
+<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;</div>
+<div class="line"><a name="l01052"></a><span class="lineno"> 1052</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="object_8h.html#a2bb21a0e2e9f46a072b13c3525bd0792">rpc_error_get_message</a>(rpc_object_t error);</div>
+<div class="line"><a name="l01053"></a><span class="lineno"> 1053</span>&#160;</div>
+<div class="line"><a name="l01061"></a><span class="lineno"> 1061</span>&#160;rpc_object_t <a class="code" href="object_8h.html#ad6f7b09153f903b78c1a93b9e4938350">rpc_error_get_extra</a>(rpc_object_t error);</div>
+<div class="line"><a name="l01062"></a><span class="lineno"> 1062</span>&#160;</div>
+<div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a388db2244bb129cd3a783b1a50822c4c">rpc_error_set_extra</a>(rpc_object_t error, rpc_object_t extra);</div>
+<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;</div>
+<div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a05a79628ec5a59dfc8d735ac08a83f42">rpc_error_get_stack</a>(rpc_object_t error);</div>
+<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;</div>
+<div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a2d3b7789a013d7084663fc2f241b6d2c">rpc_dictionary_create</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;</div>
+<div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;rpc_object_t <a class="code" href="object_8h.html#a8428569b3059a2939c8c7121df0d3400">rpc_dictionary_create_ex</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keyword">const</span> *keys,</div>
+<div class="line"><a name="l01098"></a><span class="lineno"> 1098</span>&#160;    <span class="keyword">const</span> rpc_object_t *values, <span class="keywordtype">size_t</span> count, <span class="keywordtype">bool</span> steal);</div>
+<div class="line"><a name="l01099"></a><span class="lineno"> 1099</span>&#160;</div>
+<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a932082c08de1ae9aca29778dc259f8c9">rpc_dictionary_set_value</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
+<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160;    rpc_object_t value);</div>
 <div class="line"><a name="l01116"></a><span class="lineno"> 1116</span>&#160;</div>
-<div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a354b88b2b98fa525da1212b770917b55">rpc_dictionary_set_double</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
-<div class="line"><a name="l01126"></a><span class="lineno"> 1126</span>&#160;    <span class="keywordtype">double</span> value);</div>
-<div class="line"><a name="l01127"></a><span class="lineno"> 1127</span>&#160;</div>
-<div class="line"><a name="l01136"></a><span class="lineno"> 1136</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a24f9779d17fda96d0562303145c4bf15">rpc_dictionary_set_date</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
-<div class="line"><a name="l01137"></a><span class="lineno"> 1137</span>&#160;    int64_t value);</div>
-<div class="line"><a name="l01138"></a><span class="lineno"> 1138</span>&#160;</div>
-<div class="line"><a name="l01148"></a><span class="lineno"> 1148</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a03f1496e74201d134f90e3465c30a05d">rpc_dictionary_set_data</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
-<div class="line"><a name="l01149"></a><span class="lineno"> 1149</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">void</span> *value, <span class="keywordtype">size_t</span> length);</div>
-<div class="line"><a name="l01150"></a><span class="lineno"> 1150</span>&#160;</div>
-<div class="line"><a name="l01159"></a><span class="lineno"> 1159</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#aaa3a73efec8f0d62513c37e8650da77c">rpc_dictionary_set_string</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
-<div class="line"><a name="l01160"></a><span class="lineno"> 1160</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *value);</div>
-<div class="line"><a name="l01161"></a><span class="lineno"> 1161</span>&#160;</div>
-<div class="line"><a name="l01170"></a><span class="lineno"> 1170</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#aaa1d268468f916d6b771a349df9fe863">rpc_dictionary_set_fd</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
-<div class="line"><a name="l01171"></a><span class="lineno"> 1171</span>&#160;    <span class="keywordtype">int</span> value);</div>
-<div class="line"><a name="l01172"></a><span class="lineno"> 1172</span>&#160;</div>
-<div class="line"><a name="l01184"></a><span class="lineno"> 1184</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#a126bb730c66bb6f5041618863f664004">rpc_dictionary_get_bool</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
+<div class="line"><a name="l01130"></a><span class="lineno"> 1130</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a486874b7177c98b8e82580d4aac9530c">rpc_dictionary_steal_value</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
+<div class="line"><a name="l01131"></a><span class="lineno"> 1131</span>&#160;    rpc_object_t value);</div>
+<div class="line"><a name="l01132"></a><span class="lineno"> 1132</span>&#160;</div>
+<div class="line"><a name="l01139"></a><span class="lineno"> 1139</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a58b0d4747d853a75bdffd71a5235a9ba">rpc_dictionary_remove_key</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
+<div class="line"><a name="l01140"></a><span class="lineno"> 1140</span>&#160;</div>
+<div class="line"><a name="l01150"></a><span class="lineno"> 1150</span>&#160;rpc_object_t <a class="code" href="object_8h.html#ae2ffdb7864d2abc5313b33a1af1c19dd">rpc_dictionary_get_value</a>(rpc_object_t dictionary,</div>
+<div class="line"><a name="l01151"></a><span class="lineno"> 1151</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
+<div class="line"><a name="l01152"></a><span class="lineno"> 1152</span>&#160;</div>
+<div class="line"><a name="l01159"></a><span class="lineno"> 1159</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="object_8h.html#ab280f7c274f2428f819c87d457e090c4">rpc_dictionary_get_count</a>(rpc_object_t dictionary);</div>
+<div class="line"><a name="l01160"></a><span class="lineno"> 1160</span>&#160;</div>
+<div class="line"><a name="l01174"></a><span class="lineno"> 1174</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#abc68776153fe2aee12d37c0623c5b94f">rpc_dictionary_apply</a>(rpc_object_t dictionary,</div>
+<div class="line"><a name="l01175"></a><span class="lineno"> 1175</span>&#160;    <a class="code" href="object_8h.html#a7d7c845c8ab67dc47ec85d89b7dbee2d">rpc_dictionary_applier_t</a> applier);</div>
+<div class="line"><a name="l01176"></a><span class="lineno"> 1176</span>&#160;</div>
+<div class="line"><a name="l01184"></a><span class="lineno"> 1184</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#aa4994f9aee8421b3b3e310e19af9746a">rpc_dictionary_has_key</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
 <div class="line"><a name="l01185"></a><span class="lineno"> 1185</span>&#160;</div>
-<div class="line"><a name="l01197"></a><span class="lineno"> 1197</span>&#160;int64_t <a class="code" href="object_8h.html#a3c00003d59872fe380ab08b1069c268f">rpc_dictionary_get_int64</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
-<div class="line"><a name="l01198"></a><span class="lineno"> 1198</span>&#160;</div>
-<div class="line"><a name="l01210"></a><span class="lineno"> 1210</span>&#160;uint64_t <a class="code" href="object_8h.html#af8294bde819421a934d76087dbc1d196">rpc_dictionary_get_uint64</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
-<div class="line"><a name="l01211"></a><span class="lineno"> 1211</span>&#160;</div>
-<div class="line"><a name="l01223"></a><span class="lineno"> 1223</span>&#160;<span class="keywordtype">double</span> <a class="code" href="object_8h.html#a0dc4a7120dddb1ab35657cda03c28955">rpc_dictionary_get_double</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
-<div class="line"><a name="l01224"></a><span class="lineno"> 1224</span>&#160;</div>
-<div class="line"><a name="l01236"></a><span class="lineno"> 1236</span>&#160;int64_t <a class="code" href="object_8h.html#a6d9b4fdb1307098b39ba37cc4a89f02d">rpc_dictionary_get_date</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
-<div class="line"><a name="l01237"></a><span class="lineno"> 1237</span>&#160;</div>
-<div class="line"><a name="l01250"></a><span class="lineno"> 1250</span>&#160;<span class="keyword">const</span> <span class="keywordtype">void</span> *<a class="code" href="object_8h.html#a718b7afc5188b051143d7b1509c4aba4">rpc_dictionary_get_data</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
-<div class="line"><a name="l01251"></a><span class="lineno"> 1251</span>&#160;    <span class="keywordtype">size_t</span> *length);</div>
+<div class="line"><a name="l01194"></a><span class="lineno"> 1194</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a2f2906bc0e54bce4cba3bfe90285b582">rpc_dictionary_set_bool</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
+<div class="line"><a name="l01195"></a><span class="lineno"> 1195</span>&#160;    <span class="keywordtype">bool</span> value);</div>
+<div class="line"><a name="l01196"></a><span class="lineno"> 1196</span>&#160;</div>
+<div class="line"><a name="l01205"></a><span class="lineno"> 1205</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a24e2f74d342e15eb8277ac6629d17a46">rpc_dictionary_set_int64</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
+<div class="line"><a name="l01206"></a><span class="lineno"> 1206</span>&#160;    int64_t value);</div>
+<div class="line"><a name="l01207"></a><span class="lineno"> 1207</span>&#160;</div>
+<div class="line"><a name="l01216"></a><span class="lineno"> 1216</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#ab526d14403ef53efae6d397aaea69ffb">rpc_dictionary_set_uint64</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
+<div class="line"><a name="l01217"></a><span class="lineno"> 1217</span>&#160;    uint64_t value);</div>
+<div class="line"><a name="l01218"></a><span class="lineno"> 1218</span>&#160;</div>
+<div class="line"><a name="l01227"></a><span class="lineno"> 1227</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a354b88b2b98fa525da1212b770917b55">rpc_dictionary_set_double</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
+<div class="line"><a name="l01228"></a><span class="lineno"> 1228</span>&#160;    <span class="keywordtype">double</span> value);</div>
+<div class="line"><a name="l01229"></a><span class="lineno"> 1229</span>&#160;</div>
+<div class="line"><a name="l01238"></a><span class="lineno"> 1238</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a24f9779d17fda96d0562303145c4bf15">rpc_dictionary_set_date</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
+<div class="line"><a name="l01239"></a><span class="lineno"> 1239</span>&#160;    int64_t value);</div>
+<div class="line"><a name="l01240"></a><span class="lineno"> 1240</span>&#160;</div>
+<div class="line"><a name="l01250"></a><span class="lineno"> 1250</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#a03f1496e74201d134f90e3465c30a05d">rpc_dictionary_set_data</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
+<div class="line"><a name="l01251"></a><span class="lineno"> 1251</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">void</span> *value, <span class="keywordtype">size_t</span> length);</div>
 <div class="line"><a name="l01252"></a><span class="lineno"> 1252</span>&#160;</div>
-<div class="line"><a name="l01264"></a><span class="lineno"> 1264</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="object_8h.html#a4d0f09c328083503c263da0ab1604ea8">rpc_dictionary_get_string</a>(rpc_object_t dictionary,</div>
-<div class="line"><a name="l01265"></a><span class="lineno"> 1265</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
-<div class="line"><a name="l01266"></a><span class="lineno"> 1266</span>&#160;</div>
-<div class="line"><a name="l01278"></a><span class="lineno"> 1278</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a4aee4950326fc01cbbe2243f48e196f6">rpc_dictionary_get_fd</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
-<div class="line"><a name="l01279"></a><span class="lineno"> 1279</span>&#160;</div>
-<div class="line"><a name="l01291"></a><span class="lineno"> 1291</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a1ce8270c2a63ce9cde4305dcf8bc04ce">rpc_dictionary_dup_fd</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
-<div class="line"><a name="l01292"></a><span class="lineno"> 1292</span>&#160;</div>
-<div class="line"><a name="l01293"></a><span class="lineno"> 1293</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l01294"></a><span class="lineno"> 1294</span>&#160;<span class="preprocessor"></span>}</div>
-<div class="line"><a name="l01295"></a><span class="lineno"> 1295</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l01296"></a><span class="lineno"> 1296</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l01297"></a><span class="lineno"> 1297</span>&#160;<span class="preprocessor">#endif //LIBRPC_OBJECT_H</span></div>
+<div class="line"><a name="l01261"></a><span class="lineno"> 1261</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#aaa3a73efec8f0d62513c37e8650da77c">rpc_dictionary_set_string</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
+<div class="line"><a name="l01262"></a><span class="lineno"> 1262</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *value);</div>
+<div class="line"><a name="l01263"></a><span class="lineno"> 1263</span>&#160;</div>
+<div class="line"><a name="l01272"></a><span class="lineno"> 1272</span>&#160;<span class="keywordtype">void</span> <a class="code" href="object_8h.html#aaa1d268468f916d6b771a349df9fe863">rpc_dictionary_set_fd</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
+<div class="line"><a name="l01273"></a><span class="lineno"> 1273</span>&#160;    <span class="keywordtype">int</span> value);</div>
+<div class="line"><a name="l01274"></a><span class="lineno"> 1274</span>&#160;</div>
+<div class="line"><a name="l01286"></a><span class="lineno"> 1286</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="object_8h.html#a126bb730c66bb6f5041618863f664004">rpc_dictionary_get_bool</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
+<div class="line"><a name="l01287"></a><span class="lineno"> 1287</span>&#160;</div>
+<div class="line"><a name="l01299"></a><span class="lineno"> 1299</span>&#160;int64_t <a class="code" href="object_8h.html#a3c00003d59872fe380ab08b1069c268f">rpc_dictionary_get_int64</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
+<div class="line"><a name="l01300"></a><span class="lineno"> 1300</span>&#160;</div>
+<div class="line"><a name="l01312"></a><span class="lineno"> 1312</span>&#160;uint64_t <a class="code" href="object_8h.html#af8294bde819421a934d76087dbc1d196">rpc_dictionary_get_uint64</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
+<div class="line"><a name="l01313"></a><span class="lineno"> 1313</span>&#160;</div>
+<div class="line"><a name="l01325"></a><span class="lineno"> 1325</span>&#160;<span class="keywordtype">double</span> <a class="code" href="object_8h.html#a0dc4a7120dddb1ab35657cda03c28955">rpc_dictionary_get_double</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
+<div class="line"><a name="l01326"></a><span class="lineno"> 1326</span>&#160;</div>
+<div class="line"><a name="l01338"></a><span class="lineno"> 1338</span>&#160;int64_t <a class="code" href="object_8h.html#a6d9b4fdb1307098b39ba37cc4a89f02d">rpc_dictionary_get_date</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
+<div class="line"><a name="l01339"></a><span class="lineno"> 1339</span>&#160;</div>
+<div class="line"><a name="l01352"></a><span class="lineno"> 1352</span>&#160;<span class="keyword">const</span> <span class="keywordtype">void</span> *<a class="code" href="object_8h.html#a718b7afc5188b051143d7b1509c4aba4">rpc_dictionary_get_data</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key,</div>
+<div class="line"><a name="l01353"></a><span class="lineno"> 1353</span>&#160;    <span class="keywordtype">size_t</span> *length);</div>
+<div class="line"><a name="l01354"></a><span class="lineno"> 1354</span>&#160;</div>
+<div class="line"><a name="l01366"></a><span class="lineno"> 1366</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="object_8h.html#a4d0f09c328083503c263da0ab1604ea8">rpc_dictionary_get_string</a>(rpc_object_t dictionary,</div>
+<div class="line"><a name="l01367"></a><span class="lineno"> 1367</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
+<div class="line"><a name="l01368"></a><span class="lineno"> 1368</span>&#160;</div>
+<div class="line"><a name="l01380"></a><span class="lineno"> 1380</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a4aee4950326fc01cbbe2243f48e196f6">rpc_dictionary_get_fd</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
+<div class="line"><a name="l01381"></a><span class="lineno"> 1381</span>&#160;</div>
+<div class="line"><a name="l01393"></a><span class="lineno"> 1393</span>&#160;<span class="keywordtype">int</span> <a class="code" href="object_8h.html#a1ce8270c2a63ce9cde4305dcf8bc04ce">rpc_dictionary_dup_fd</a>(rpc_object_t dictionary, <span class="keyword">const</span> <span class="keywordtype">char</span> *key);</div>
+<div class="line"><a name="l01394"></a><span class="lineno"> 1394</span>&#160;</div>
+<div class="line"><a name="l01395"></a><span class="lineno"> 1395</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l01396"></a><span class="lineno"> 1396</span>&#160;<span class="preprocessor"></span>}</div>
+<div class="line"><a name="l01397"></a><span class="lineno"> 1397</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l01398"></a><span class="lineno"> 1398</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l01399"></a><span class="lineno"> 1399</span>&#160;<span class="preprocessor">#endif //LIBRPC_OBJECT_H</span></div>
 <div class="ttc" id="object_8h_html_adad50da5c5a3a2eaf33a85cbf5218d27"><div class="ttname"><a href="object_8h.html#adad50da5c5a3a2eaf33a85cbf5218d27">rpc_array_set_data</a></div><div class="ttdeci">void rpc_array_set_data(rpc_object_t array, size_t index, const void *bytes, size_t length)</div></div>
 <div class="ttc" id="object_8h_html_aef23f0b3d4302c2ff1e26f495137644b"><div class="ttname"><a href="object_8h.html#aef23f0b3d4302c2ff1e26f495137644b">rpc_array_create_ex</a></div><div class="ttdeci">rpc_object_t rpc_array_create_ex(const rpc_object_t *objects, size_t count, bool steal)</div></div>
 <div class="ttc" id="object_8h_html_a1ce8270c2a63ce9cde4305dcf8bc04ce"><div class="ttname"><a href="object_8h.html#a1ce8270c2a63ce9cde4305dcf8bc04ce">rpc_dictionary_dup_fd</a></div><div class="ttdeci">int rpc_dictionary_dup_fd(rpc_object_t dictionary, const char *key)</div></div>
@@ -414,6 +433,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="object_8h_html_aaa1d268468f916d6b771a349df9fe863"><div class="ttname"><a href="object_8h.html#aaa1d268468f916d6b771a349df9fe863">rpc_dictionary_set_fd</a></div><div class="ttdeci">void rpc_dictionary_set_fd(rpc_object_t dictionary, const char *key, int value)</div></div>
 <div class="ttc" id="object_8h_html_a3343e6a1513fec2541dcb1027581a64c"><div class="ttname"><a href="object_8h.html#a3343e6a1513fec2541dcb1027581a64c">rpc_fd_dup</a></div><div class="ttdeci">int rpc_fd_dup(rpc_object_t xfd)</div></div>
 <div class="ttc" id="object_8h_html_af82b4d55631d1b9c59bd10b6939fac52"><div class="ttname"><a href="object_8h.html#af82b4d55631d1b9c59bd10b6939fac52">rpc_data_create</a></div><div class="ttdeci">rpc_object_t rpc_data_create(const void *bytes, size_t length, bool copy)</div></div>
+<div class="ttc" id="object_8h_html_a583484fcddc086aa6eefbc6b0b86dd9b"><div class="ttname"><a href="object_8h.html#a583484fcddc086aa6eefbc6b0b86dd9b">rpc_object_vunpack</a></div><div class="ttdeci">int rpc_object_vunpack(rpc_object_t, const char *fmt, va_list ap)</div></div>
+<div class="ttc" id="object_8h_html_a23bdaa1b433c1ae44515a60f06a86866"><div class="ttname"><a href="object_8h.html#a23bdaa1b433c1ae44515a60f06a86866">rpc_array_cmp_t</a></div><div class="ttdeci">int(^ rpc_array_cmp_t)(rpc_object_t o1, rpc_object_t o2)</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00113">object.h:113</a></div></div>
 <div class="ttc" id="object_8h_html_a8cbd21846d3957acd8dffe43b9b7e442"><div class="ttname"><a href="object_8h.html#a8cbd21846d3957acd8dffe43b9b7e442">rpc_string_create_with_format</a></div><div class="ttdeci">rpc_object_t rpc_string_create_with_format(const char *fmt,...)</div></div>
 <div class="ttc" id="object_8h_html_a0a56b4b5320160f6cbcee59a034fa8f7"><div class="ttname"><a href="object_8h.html#a0a56b4b5320160f6cbcee59a034fa8f7">rpc_null_create</a></div><div class="ttdeci">rpc_object_t rpc_null_create(void)</div></div>
 <div class="ttc" id="object_8h_html_aaeec0f05e4409680172b54e715f2ff44"><div class="ttname"><a href="object_8h.html#aaeec0f05e4409680172b54e715f2ff44">rpc_array_set_date</a></div><div class="ttdeci">void rpc_array_set_date(rpc_object_t array, size_t index, int64_t value)</div></div>
@@ -437,6 +458,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="object_8h_html_a522ca7df7ed77f09b7c4e9efea42ed83"><div class="ttname"><a href="object_8h.html#a522ca7df7ed77f09b7c4e9efea42ed83">rpc_object_unpack</a></div><div class="ttdeci">int rpc_object_unpack(rpc_object_t, const char *fmt,...)</div></div>
 <div class="ttc" id="object_8h_html_a87da19ea6b0ec7daf50ce660162e26be"><div class="ttname"><a href="object_8h.html#a87da19ea6b0ec7daf50ce660162e26be">rpc_object_pack</a></div><div class="ttdeci">rpc_object_t rpc_object_pack(const char *fmt,...)</div></div>
 <div class="ttc" id="object_8h_html_a3e2bba92d67fd012fb097fdb8f098df7"><div class="ttname"><a href="object_8h.html#a3e2bba92d67fd012fb097fdb8f098df7">rpc_error_create_with_stack</a></div><div class="ttdeci">rpc_object_t rpc_error_create_with_stack(int code, const char *msg, rpc_object_t extra, rpc_object_t stack)</div></div>
+<div class="ttc" id="object_8h_html_a1fd38947da5673eb2db4910878bebb36"><div class="ttname"><a href="object_8h.html#a1fd38947da5673eb2db4910878bebb36">rpc_cmp</a></div><div class="ttdeci">int rpc_cmp(rpc_object_t o1, rpc_object_t o2)</div></div>
 <div class="ttc" id="object_8h_html_a2d85324f75b20628a5d32e8117277e18"><div class="ttname"><a href="object_8h.html#a2d85324f75b20628a5d32e8117277e18">rpc_release_impl</a></div><div class="ttdeci">int rpc_release_impl(rpc_object_t object)</div></div>
 <div class="ttc" id="object_8h_html_a90cb248aeac4a38990a1b91fdc022ffc"><div class="ttname"><a href="object_8h.html#a90cb248aeac4a38990a1b91fdc022ffc">rpc_array_get_data</a></div><div class="ttdeci">const void * rpc_array_get_data(rpc_object_t array, size_t index, size_t *length)</div></div>
 <div class="ttc" id="object_8h_html_a38142d7d5e24b774c7cda93734d7f643"><div class="ttname"><a href="object_8h.html#a38142d7d5e24b774c7cda93734d7f643">rpc_uint64_create</a></div><div class="ttdeci">rpc_object_t rpc_uint64_create(uint64_t value)</div></div>
@@ -461,6 +483,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="object_8h_html_a8a6a6a91d7e5ccdadf4ae08d6aed1a2a"><div class="ttname"><a href="object_8h.html#a8a6a6a91d7e5ccdadf4ae08d6aed1a2a">rpc_array_apply</a></div><div class="ttdeci">bool rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier)</div></div>
 <div class="ttc" id="object_8h_html_a9db6feb6897323de3c3d6d6137a1a6c2"><div class="ttname"><a href="object_8h.html#a9db6feb6897323de3c3d6d6137a1a6c2">rpc_string_create_with_format_and_arguments</a></div><div class="ttdeci">rpc_object_t rpc_string_create_with_format_and_arguments(const char *fmt, va_list ap)</div></div>
 <div class="ttc" id="object_8h_html_ae97f0c2a0033d6b538bd48f79c105931"><div class="ttname"><a href="object_8h.html#ae97f0c2a0033d6b538bd48f79c105931">rpc_error_create</a></div><div class="ttdeci">rpc_object_t rpc_error_create(int code, const char *msg, rpc_object_t extra)</div></div>
+<div class="ttc" id="object_8h_html_a15bdca8f36858885773a6a1f717782fa"><div class="ttname"><a href="object_8h.html#a15bdca8f36858885773a6a1f717782fa">rpc_object_vpack</a></div><div class="ttdeci">rpc_object_t rpc_object_vpack(const char *fmt, va_list ap)</div></div>
 <div class="ttc" id="object_8h_html_a0c717b38ae14f998362fc3969ed5f54e"><div class="ttname"><a href="object_8h.html#a0c717b38ae14f998362fc3969ed5f54e">rpc_array_create</a></div><div class="ttdeci">rpc_object_t rpc_array_create(void)</div></div>
 <div class="ttc" id="object_8h_html_ae2ffdb7864d2abc5313b33a1af1c19dd"><div class="ttname"><a href="object_8h.html#ae2ffdb7864d2abc5313b33a1af1c19dd">rpc_dictionary_get_value</a></div><div class="ttdeci">rpc_object_t rpc_dictionary_get_value(rpc_object_t dictionary, const char *key)</div></div>
 <div class="ttc" id="object_8h_html_a8687bd8dcf67458dbb09549d2a9b6059"><div class="ttname"><a href="object_8h.html#a8687bd8dcf67458dbb09549d2a9b6059">rpc_copy_description</a></div><div class="ttdeci">char * rpc_copy_description(rpc_object_t object)</div></div>
@@ -479,6 +502,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="object_8h_html_a932082c08de1ae9aca29778dc259f8c9"><div class="ttname"><a href="object_8h.html#a932082c08de1ae9aca29778dc259f8c9">rpc_dictionary_set_value</a></div><div class="ttdeci">void rpc_dictionary_set_value(rpc_object_t dictionary, const char *key, rpc_object_t value)</div></div>
 <div class="ttc" id="object_8h_html_ad327d0505386ea397aff6a2ffc9d4e52"><div class="ttname"><a href="object_8h.html#ad327d0505386ea397aff6a2ffc9d4e52">rpc_double_create</a></div><div class="ttdeci">rpc_object_t rpc_double_create(double value)</div></div>
 <div class="ttc" id="object_8h_html_ad1ce3319d7b452bc5400518ff727a87f"><div class="ttname"><a href="object_8h.html#ad1ce3319d7b452bc5400518ff727a87f">rpc_int64_create</a></div><div class="ttdeci">rpc_object_t rpc_int64_create(int64_t value)</div></div>
+<div class="ttc" id="object_8h_html_aa3abd89de4c7dc3d5d20ed624cf5f748"><div class="ttname"><a href="object_8h.html#aa3abd89de4c7dc3d5d20ed624cf5f748">rpc_array_reverse_apply</a></div><div class="ttdeci">bool rpc_array_reverse_apply(rpc_object_t array, rpc_array_applier_t applier)</div></div>
+<div class="ttc" id="object_8h_html_a37244ac71308e8f4e3d886727211c371"><div class="ttname"><a href="object_8h.html#a37244ac71308e8f4e3d886727211c371">rpc_array_contains</a></div><div class="ttdeci">bool rpc_array_contains(rpc_object_t array, rpc_object_t value)</div></div>
 <div class="ttc" id="object_8h_html_a03f1496e74201d134f90e3465c30a05d"><div class="ttname"><a href="object_8h.html#a03f1496e74201d134f90e3465c30a05d">rpc_dictionary_set_data</a></div><div class="ttdeci">void rpc_dictionary_set_data(rpc_object_t dictionary, const char *key, const void *value, size_t length)</div></div>
 <div class="ttc" id="object_8h_html_a141bf4e57cabf5a2b15ab12a1a3c587d"><div class="ttname"><a href="object_8h.html#a141bf4e57cabf5a2b15ab12a1a3c587d">rpc_uint64_get_value</a></div><div class="ttdeci">uint64_t rpc_uint64_get_value(rpc_object_t xuint)</div></div>
 <div class="ttc" id="object_8h_html_a40ea3143863f0a2b47446ccaf655638ea81f15a333335dc830b45d39600491796"><div class="ttname"><a href="object_8h.html#a40ea3143863f0a2b47446ccaf655638ea81f15a333335dc830b45d39600491796">RPC_TYPE_DOUBLE</a></div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00056">object.h:56</a></div></div>
@@ -499,6 +524,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="object_8h_html_af8294bde819421a934d76087dbc1d196"><div class="ttname"><a href="object_8h.html#af8294bde819421a934d76087dbc1d196">rpc_dictionary_get_uint64</a></div><div class="ttdeci">uint64_t rpc_dictionary_get_uint64(rpc_object_t dictionary, const char *key)</div></div>
 <div class="ttc" id="object_8h_html_a24f9779d17fda96d0562303145c4bf15"><div class="ttname"><a href="object_8h.html#a24f9779d17fda96d0562303145c4bf15">rpc_dictionary_set_date</a></div><div class="ttdeci">void rpc_dictionary_set_date(rpc_object_t dictionary, const char *key, int64_t value)</div></div>
 <div class="ttc" id="object_8h_html_a40ea3143863f0a2b47446ccaf655638e"><div class="ttname"><a href="object_8h.html#a40ea3143863f0a2b47446ccaf655638e">rpc_type_t</a></div><div class="ttdeci">rpc_type_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00051">object.h:51</a></div></div>
+<div class="ttc" id="object_8h_html_aaa8222bb9416af081f44cef36b8f0161"><div class="ttname"><a href="object_8h.html#aaa8222bb9416af081f44cef36b8f0161">rpc_array_sort</a></div><div class="ttdeci">void rpc_array_sort(rpc_object_t array, rpc_array_cmp_t comparator)</div></div>
 <div class="ttc" id="object_8h_html_a626c045e08849189e2d75f191ce6c903"><div class="ttname"><a href="object_8h.html#a626c045e08849189e2d75f191ce6c903">rpc_data_get_bytes_ptr</a></div><div class="ttdeci">const void * rpc_data_get_bytes_ptr(rpc_object_t xdata)</div></div>
 <div class="ttc" id="object_8h_html_ab0a4b1ae9e282c596c40c41fb025fa4a"><div class="ttname"><a href="object_8h.html#ab0a4b1ae9e282c596c40c41fb025fa4a">rpc_fd_create</a></div><div class="ttdeci">rpc_object_t rpc_fd_create(int fd)</div></div>
 <div class="ttc" id="object_8h_html_abb26dd739074c3d16a9555fcd054ac0a"><div class="ttname"><a href="object_8h.html#abb26dd739074c3d16a9555fcd054ac0a">rpc_string_get_length</a></div><div class="ttdeci">size_t rpc_string_get_length(rpc_object_t xstring)</div></div>
