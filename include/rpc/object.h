@@ -97,6 +97,22 @@ typedef bool (^rpc_array_applier_t)(size_t index, rpc_object_t value);
 typedef bool (^rpc_dictionary_applier_t)(const char *key, rpc_object_t value);
 
 /**
+ * Definition of array compare block type.
+ *
+ * Body of block is being executed for pairs of array's members
+ * during sort operation.
+ *
+ * The block should return a negative integer
+ * if the first value comes before the second, 0 if they are equal,
+ * or a positive integer if the first value comes after the second.
+ *
+ * @param o1 A value.
+ * @param o2 A value to compare with.
+ * @return Negative value if a < b ; zero if a = b ; positive value if a > b.
+ */
+typedef int (^rpc_array_cmp_t)(rpc_object_t o1, rpc_object_t o2);
+
+/**
  * Converts function pointer to an rpc_array_applier_t block type.
  */
 #define	RPC_ARRAY_APPLIER(_fn, _arg)					\
@@ -110,6 +126,14 @@ typedef bool (^rpc_dictionary_applier_t)(const char *key, rpc_object_t value);
 #define	RPC_DICTIONARY_APPLIER(_fn, _arg)				\
 	^(const char *_key, rpc_object_t _value) {			\
                 return ((bool)_fn(_arg, _key, _value));			\
+        }
+
+/**
+ * Converts function pointer to an rpc_array_cmp_t block type.
+ */
+#define	RPC_ARRAY_CMP(_fn, _arg)					\
+	^(rpc_object_t _o1, rpc_object_t _o2) {				\
+                return ((int)_fn(_arg, _o1, _o2));			\
         }
 
 /**
@@ -621,6 +645,17 @@ size_t rpc_array_get_count(rpc_object_t array);
  * @return Iteration terminated (true)/finished (false) boolean flag.
  */
 bool rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier);
+
+/**
+ * Sorts contents of a given array using provided comparator code block.
+ *
+ * The desired behavior of the comparator block is described in
+ * rpc_array_cmp_t type's documentation.
+ *
+ * @param array Array to be sorted.
+ * @param comparator Comparator to be used during sort operation.
+ */
+void rpc_array_sort(rpc_object_t array, rpc_array_cmp_t comparator);
 
 /**
  * Takes an input array and copies a selected number of its elements,

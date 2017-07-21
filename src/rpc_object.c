@@ -1243,6 +1243,17 @@ rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier)
 	return (flag);
 }
 
+inline void
+rpc_array_sort(rpc_object_t array, rpc_array_cmp_t comparator)
+{
+
+	if (array->ro_type != RPC_TYPE_ARRAY)
+		abort();
+
+	g_ptr_array_sort_with_data(array->ro_value.rv_list,
+	    &rpc_array_comparator_converter, (void *)comparator);
+}
+
 rpc_object_t
 rpc_array_slice(rpc_object_t array, size_t index, ssize_t len)
 {
