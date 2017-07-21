@@ -48,7 +48,7 @@ static ssize_t librpc_device_show_descr(struct device *,
 static ssize_t librpc_device_show_serial(struct device *,
     struct device_attribute *, char *);
 static void librpc_cn_send_ack(uint32_t, uint32_t, uint32_t, int);
-static void librpc_cn_send_presence(int, struct librpc_endpoint *);
+static void librpc_cn_send_presence(int, uint32_t, struct librpc_endpoint *);
 static void librpc_request(struct work_struct *);
 
 struct librpc_call
@@ -137,7 +137,7 @@ librpc_device_register(const char *name, struct device *dev,
 		device_create_file(&rpcdev->dev, &librpc_device_attrs[i]);
 
 	dev_info(&rpcdev->dev, "new librpc endpoint: %s\n", rpcdev->endp.name);
-	librpc_cn_send_presence(LIBRPC_ARRIVE, &rpcdev->endp);
+	librpc_cn_send_presence(LIBRPC_ARRIVE, rpcdev->address, &rpcdev->endp);
 	mutex_unlock(&librpc_mtx);
 	return (rpcdev);
 }
@@ -153,7 +153,7 @@ librpc_device_unregister(struct librpc_device *rpcdev)
 
 	device_unregister(&rpcdev->dev);
 	idr_remove(&librpc_device_ids, rpcdev->address);
-	librpc_cn_send_presence(LIBRPC_ARRIVE, &rpcdev->endp);
+	librpc_cn_send_presence(LIBRPC_DEPART, rpcdev->address, &rpcdev->endp);
 	kfree(rpcdev);
 	mutex_unlock(&librpc_mtx);
 }
@@ -349,7 +349,8 @@ librpc_cn_send_ack(uint32_t seq, uint32_t ack, uint32_t portid, int error)
 }
 
 static void
-librpc_cn_send_presence(int opcode, struct librpc_endpoint *endpoint)
+librpc_cn_send_presence(int opcode, uint32_t address,
+    struct librpc_endpoint *endpoint)
 {
 	struct {
 		struct cn_msg cn;
@@ -357,12 +358,16 @@ librpc_cn_send_presence(int opcode, struct librpc_endpoint *endpoint)
 		struct librpc_endpoint endp;
 	} packet;
 
+	printk("librpc_cn_send_presence: opcode=%d, epname=%s\n",
+	    opcode, endpoint->name);
+
 	packet.cn.id = librpc_cb_id;
 	packet.cn.seq = resp_seq++;
 	packet.cn.ack = 0;
 	packet.cn.len = sizeof(packet);
 	packet.cn.flags = 0;
-	packet.msg.opcode = LIBRPC_RESPONSE;
+	packet.msg.opcode = opcode;
+	packet.msg.address = address;
 	packet.msg.status = 0;
 	packet.endp = *endpoint;
 

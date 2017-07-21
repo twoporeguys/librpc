@@ -879,6 +879,14 @@ cdef class BusNode(object):
 
 
 cdef class Bus(object):
+    def __init__(self):
+        with nogil:
+            rpc_bus_open();
+
+    def __dealloc__(self):
+        with nogil:
+            rpc_bus_close();
+
     def ping(self, name):
         cdef const char *c_name
         cdef int ret

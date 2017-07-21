@@ -50,13 +50,16 @@ struct bus_connection;
 typedef void (*bus_netlink_cb_t)(void *, struct librpc_message *, void *,
     size_t);
 
+static void *bus_open(void);
+static void bus_close(void *);
 static int bus_connect(struct rpc_connection *, const char *, rpc_object_t);
 static int bus_send_msg(void *, void *, size_t, const int *, size_t);
-static int bus_ping(const char *);
-static int bus_enumerate(struct rpc_bus_node **, size_t *);
+static int bus_ping(void *, const char *);
+static int bus_enumerate(void *, struct rpc_bus_node **, size_t *);
 static int bus_abort(void *);
 static int bus_get_fd(void *);
 static int bus_netlink_open(struct bus_netlink *);
+static int bus_netlink_close(struct bus_netlink *);
 static int bus_netlink_send(struct bus_netlink *, struct librpc_message *,
     void *, size_t);
 static int bus_netlink_recv(struct bus_netlink *);
@@ -64,12 +67,18 @@ static int bus_lookup_address(const char *, uint32_t *);
 static void bus_process_message(void *, struct librpc_message *, void *, size_t);
 static void *bus_reader(void *);
 
-struct rpc_transport bus_transport = {
+static const struct rpc_bus_transport bus_transport_ops = {
+	.open = bus_open,
+	.close = bus_close,
+	.ping = bus_ping,
+	.enumerate = bus_enumerate,
+};
+
+static const struct rpc_transport bus_transport = {
 	.name = "bus",
 	.schemas = {"bus", "usb", NULL},
+	.bus_ops = &bus_transport_ops,
 	.connect = bus_connect,
-    	.ping = bus_ping,
-    	.enumerate = bus_enumerate,
 	.listen = NULL
 };
 
@@ -99,6 +108,28 @@ struct bus_connection
     	struct bus_netlink	bc_bn;
     	struct rpc_connection *	bc_parent;
 };
+
+static void *
+bus_open(void)
+{
+	struct bus_netlink *bn;
+
+	bn = g_malloc0(sizeof(*bn));
+	if (bus_netlink_open(bn) != 0) {
+		free(bn);
+		return (NULL);
+	}
+
+	return (0);
+}
+
+static void
+bus_close(void *arg)
+{
+	struct bus_netlink *bn = arg;
+
+	(void)bus_netlink_close(bn);
+}
 
 static int
 bus_connect(struct rpc_connection *rco, const char *uri_string,
@@ -146,29 +177,24 @@ bus_get_fd(void *arg)
 }
 
 static int
-bus_ping(const char *name)
+bus_ping(void *arg, const char *name)
 {
-	struct bus_netlink bn = {};
+	struct bus_netlink *bn = arg;
 	struct librpc_message msg;
 	uint32_t address;
 
-	if (bus_netlink_open(&bn) != 0)
+	if (bus_lookup_address(name, &address))
 		return (-1);
-
-	if (bus_lookup_address(name, &address)) {
-		close(bn.bn_sock);
-		return (-1);
-	}
 
 	msg.opcode = LIBRPC_PING;
 	msg.address = address;
 	msg.status = 0;
 
-	return (bus_netlink_send(&bn, &msg, NULL, 0));
+	return (bus_netlink_send(bn, &msg, NULL, 0));
 }
 
 static int
-bus_enumerate(struct rpc_bus_node **resultp, size_t *countp)
+bus_enumerate(void *arg __unused, struct rpc_bus_node **resultp, size_t *countp)
 {
 	struct rpc_bus_node *result = NULL;
 	struct udev *udev;
@@ -285,6 +311,13 @@ bus_netlink_open(struct bus_netlink *bn)
 	    sizeof(group));
 
 	bn->bn_thread = g_thread_new("bus reader", &bus_reader, bn);
+	return (0);
+}
+
+static int
+bus_netlink_close(struct bus_netlink *bn)
+{
+	close(bn->bn_sock);
 	return (0);
 }
 

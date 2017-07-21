@@ -24,12 +24,60 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <Block.h>
 #include <errno.h>
 #include <glib.h>
 #include <rpc/bus.h>
 #include "internal.h"
 
-static rpc_bus_event_handler_t rpc_bus_event_handler;
+static rpc_bus_event_handler_t rpc_bus_event_handler = NULL;
+static void *rpc_bus_context = NULL;
+
+int
+rpc_bus_open(void)
+{
+	const struct rpc_transport *bus;
+
+	bus = rpc_find_transport("bus");
+	if (bus == NULL) {
+		errno = ENXIO;
+		return (-1);
+	}
+
+	if (bus->bus_ops == NULL) {
+		errno = ENXIO;
+		return (-1);
+	}
+
+	if (rpc_bus_context != NULL)
+		return (0);
+
+	rpc_bus_context = bus->bus_ops->open();
+	return (rpc_bus_context != NULL ? 0 : -1);
+}
+
+int
+rpc_bus_close(void)
+{
+	const struct rpc_transport *bus;
+
+	bus = rpc_find_transport("bus");
+	if (bus == NULL) {
+		errno = ENXIO;
+		return (-1);
+	}
+
+	if (bus->bus_ops == NULL) {
+		errno = ENXIO;
+		return (-1);
+	}
+
+	if (rpc_bus_context == NULL)
+		return (0);
+
+	bus->bus_ops->close(rpc_bus_context);
+	return (0);
+}
 
 int
 rpc_bus_ping(const char *name)
@@ -42,12 +90,12 @@ rpc_bus_ping(const char *name)
 		return (-1);
 	}
 
-	if (bus->ping == NULL) {
+	if (bus->bus_ops == NULL) {
 		errno = ENXIO;
 		return (-1);
 	}
 
-	return (bus->ping(name));
+	return (bus->bus_ops->ping(rpc_bus_context, name));
 }
 
 
@@ -64,12 +112,12 @@ rpc_bus_enumerate(struct rpc_bus_node **resultp)
 		return (-1);
 	}
 
-	if (bus->enumerate == NULL) {
+	if (bus->bus_ops == NULL) {
 		errno = ENXIO;
 		return (-1);
 	}
 
-	if (bus->enumerate(&result, &count) != 0)
+	if (bus->bus_ops->enumerate(rpc_bus_context, &result, &count) != 0)
 		return (-1);
 
 	*resultp = result;
@@ -88,14 +136,17 @@ void
 rpc_bus_register_event_handler(rpc_bus_event_handler_t handler)
 {
 
-	rpc_bus_event_handler = handler;
+	rpc_bus_event_handler = Block_copy(handler);
 }
 
 void
 rpc_bus_unregister_event_handler(void)
 {
 
-	rpc_bus_event_handler = NULL;
+	if (rpc_bus_event_handler != NULL) {
+		Block_release(rpc_bus_event_handler);
+		rpc_bus_event_handler = NULL;
+	}
 }
 
 void

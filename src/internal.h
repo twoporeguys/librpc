@@ -241,13 +241,20 @@ struct rpc_context
     	GThreadPool *		rcx_threadpool;
 };
 
+struct rpc_bus_transport
+{
+        void *(*open)(void);
+        void (*close)(void *);
+        int (*ping)(void *, const char *);
+        int (*enumerate)(void *, struct rpc_bus_node **, size_t *);
+};
+
 struct rpc_transport
 {
 	int (*connect)(struct rpc_connection *, const char *, rpc_object_t);
 	int (*listen)(struct rpc_server *, const char *, rpc_object_t);
-    	int (*ping)(const char *);
-    	int (*enumerate)(struct rpc_bus_node **, size_t *);
     	int flags;
+        const struct rpc_bus_transport *bus_ops;
 	const char *name;
 	const char *schemas[];
 };

@@ -83,6 +83,7 @@ set(SERIALIZER_FILES
 
 
 if(BUILD_BUS AND LINUX)
+    set(HEADERS ${HEADERS} include/rpc/bus.h)
     set(CORE_FILES ${CORE_FILES} src/rpc_bus.c)
     set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/bus.c)
 endif()

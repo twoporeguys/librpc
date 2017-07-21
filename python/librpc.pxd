@@ -223,6 +223,8 @@ cdef extern from "rpc/bus.h" nogil:
 
     void *RPC_BUS_EVENT_HANDLER(rpc_bus_event_handler_f fn, void *arg)
 
+    int rpc_bus_open();
+    int rpc_bus_close();
     int rpc_bus_ping(const char *name)
     int rpc_bus_enumerate(rpc_bus_node **result)
     int rpc_bus_free_result(rpc_bus_node *result)

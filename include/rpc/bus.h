@@ -62,9 +62,23 @@ typedef void (^rpc_bus_event_handler_t)(rpc_bus_event_t event,
  * Converts function pointer to an rpc_bus_event_t block type.
  */
 #define	RPC_BUS_EVENT_HANDLER(_fn, _arg)				\
-	^(rpc_bus_event_t _event, struct rpc_bus_node *_node) {		\
-                return (_fn(_arg, _node, _event));			\
-        }
+    ^(rpc_bus_event_t _event, struct rpc_bus_node *_node) {		\
+            _fn(_arg, _event, _node);					\
+    }
+
+/**
+ * Opens the librpc bus connection.
+ *
+ * @return 0 on success, -1 on error
+ */
+int rpc_bus_open(void);
+
+/**
+ * Closes the librpc bus connection.
+ *
+ * @return 0 on success, -1 on error
+ */
+int rpc_bus_close(void);
 
 /**
  * Checks whether a node with specified name is reachable.
