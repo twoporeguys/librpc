@@ -129,6 +129,10 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a845c8c255ac97bb03ac9ad1418eb66f0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#a845c8c255ac97bb03ac9ad1418eb66f0">rpc_bus_open</a> (void)</td></tr>
+<tr class="separator:a845c8c255ac97bb03ac9ad1418eb66f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fa0c254755deec118b2e3dcb4ec9bdf"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#a5fa0c254755deec118b2e3dcb4ec9bdf">rpc_bus_close</a> (void)</td></tr>
+<tr class="separator:a5fa0c254755deec118b2e3dcb4ec9bdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a069e6d67eba0248bc2de6d185d91e9d9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#a069e6d67eba0248bc2de6d185d91e9d9">rpc_bus_ping</a> (const char *name)</td></tr>
 <tr class="separator:a069e6d67eba0248bc2de6d185d91e9d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85cd042c0a2e2bddaea2a09ca10af76f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#a85cd042c0a2e2bddaea2a09ca10af76f">rpc_bus_enumerate</a> (struct <a class="el" href="structrpc__bus__node.html">rpc_bus_node</a> **result)</td></tr>
@@ -169,8 +173,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">^(rpc_bus_event_t _event, <span class="keyword">struct </span><a class="code" href="structrpc__bus__node.html">rpc_bus_node</a> *_node) {     \</div>
-<div class="line">                return (_fn(_arg, _node, _event));          \</div>
-<div class="line">        }</div>
+<div class="line">            _fn(_arg, _event, _node);                   \</div>
+<div class="line">    }</div>
 <div class="ttc" id="structrpc__bus__node_html"><div class="ttname"><a href="structrpc__bus__node.html">rpc_bus_node</a></div><div class="ttdef"><b>Definition:</b> <a href="bus_8h_source.html#l00050">bus.h:50</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to an rpc_bus_event_t block type. </p>
 
@@ -179,6 +183,24 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="a5fa0c254755deec118b2e3dcb4ec9bdf"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_bus_close </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Closes the librpc bus connection.</p>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a85cd042c0a2e2bddaea2a09ca10af76f"></a>
 <div class="memitem">
 <div class="memproto">
@@ -222,6 +244,24 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a class="anchor" id="a845c8c255ac97bb03ac9ad1418eb66f0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_bus_open </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Opens the librpc bus connection.</p>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
 
 </div>
 </div>

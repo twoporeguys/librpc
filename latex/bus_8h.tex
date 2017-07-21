@@ -36,6 +36,10 @@ enum {\bfseries rpc\-\_\-bus\-\_\-event\-\_\-t} \{ {\bfseries R\-P\-C\-\_\-\-B\-
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
+int \hyperlink{bus_8h_a845c8c255ac97bb03ac9ad1418eb66f0}{rpc\-\_\-bus\-\_\-open} (void)
+\item 
+int \hyperlink{bus_8h_a5fa0c254755deec118b2e3dcb4ec9bdf}{rpc\-\_\-bus\-\_\-close} (void)
+\item 
 int \hyperlink{bus_8h_a069e6d67eba0248bc2de6d185d91e9d9}{rpc\-\_\-bus\-\_\-ping} (const char $\ast$name)
 \item 
 int \hyperlink{bus_8h_a85cd042c0a2e2bddaea2a09ca10af76f}{rpc\-\_\-bus\-\_\-enumerate} (struct \hyperlink{structrpc__bus__node}{rpc\-\_\-bus\-\_\-node} $\ast$$\ast$result)
@@ -67,8 +71,8 @@ Definition in file \hyperlink{bus_8h_source}{bus.\-h}.
 {\bfseries Value\-:}
 \begin{DoxyCode}
 ^(rpc\_bus\_event\_t \_event, \textcolor{keyword}{struct }\hyperlink{structrpc__bus__node}{rpc\_bus\_node} *\_node) \{     \(\backslash\)
-                return (\_fn(\_arg, \_node, \_event));          \(\backslash\)
-        \}
+            \_fn(\_arg, \_event, \_node);                   \(\backslash\)
+    \}
 \end{DoxyCode}
 Converts function pointer to an rpc\-\_\-bus\-\_\-event\-\_\-t block type. 
 
@@ -77,6 +81,18 @@ Definition at line 64 of file bus.\-h.
 
 
 \subsection{Function Documentation}
+\hypertarget{bus_8h_a5fa0c254755deec118b2e3dcb4ec9bdf}{\index{bus.\-h@{bus.\-h}!rpc\-\_\-bus\-\_\-close@{rpc\-\_\-bus\-\_\-close}}
+\index{rpc\-\_\-bus\-\_\-close@{rpc\-\_\-bus\-\_\-close}!bus.h@{bus.\-h}}
+\subsubsection[{rpc\-\_\-bus\-\_\-close}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-bus\-\_\-close (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bus_8h_a5fa0c254755deec118b2e3dcb4ec9bdf}
+Closes the librpc bus connection.
+
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on error 
+\end{DoxyReturn}
 \hypertarget{bus_8h_a85cd042c0a2e2bddaea2a09ca10af76f}{\index{bus.\-h@{bus.\-h}!rpc\-\_\-bus\-\_\-enumerate@{rpc\-\_\-bus\-\_\-enumerate}}
 \index{rpc\-\_\-bus\-\_\-enumerate@{rpc\-\_\-bus\-\_\-enumerate}!bus.h@{bus.\-h}}
 \subsubsection[{rpc\-\_\-bus\-\_\-enumerate}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-bus\-\_\-enumerate (
@@ -106,6 +122,18 @@ Enumerates connected devices on the R\-P\-C bus.
 {\em result} & \\
 \hline
 \end{DoxyParams}
+\hypertarget{bus_8h_a845c8c255ac97bb03ac9ad1418eb66f0}{\index{bus.\-h@{bus.\-h}!rpc\-\_\-bus\-\_\-open@{rpc\-\_\-bus\-\_\-open}}
+\index{rpc\-\_\-bus\-\_\-open@{rpc\-\_\-bus\-\_\-open}!bus.h@{bus.\-h}}
+\subsubsection[{rpc\-\_\-bus\-\_\-open}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-bus\-\_\-open (
+\begin{DoxyParamCaption}
+\item[{void}]{}
+\end{DoxyParamCaption}
+)}}\label{bus_8h_a845c8c255ac97bb03ac9ad1418eb66f0}
+Opens the librpc bus connection.
+
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on error 
+\end{DoxyReturn}
 \hypertarget{bus_8h_a069e6d67eba0248bc2de6d185d91e9d9}{\index{bus.\-h@{bus.\-h}!rpc\-\_\-bus\-\_\-ping@{rpc\-\_\-bus\-\_\-ping}}
 \index{rpc\-\_\-bus\-\_\-ping@{rpc\-\_\-bus\-\_\-ping}!bus.h@{bus.\-h}}
 \subsubsection[{rpc\-\_\-bus\-\_\-ping}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-bus\-\_\-ping (
