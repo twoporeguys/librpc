@@ -154,12 +154,17 @@ eval_logic_operator(rpc_object_t obj, rpc_object_t rule)
 
 	if (!g_strcmp0(op, "or")) {
 		return (eval_logic_or(obj, lst));
-	} else if (!g_strcmp0(op, "and")) {
+	}
+
+	if (!g_strcmp0(op, "and")) {
 		return (eval_logic_and(obj, lst));
-	} else if (!g_strcmp0(op, "nor")) {
+	}
+
+	if (!g_strcmp0(op, "nor")) {
 		return (eval_logic_nor(obj, lst));
-	} else
-		return (false);
+	}
+
+	return (false);
 }
 
 static bool
@@ -167,10 +172,13 @@ op_in(rpc_object_t o1, rpc_object_t o2)
 {
 	if (rpc_get_type(o2) == RPC_TYPE_ARRAY) {
 		return (rpc_array_contains(o2, o1));
-	} else if (rpc_get_type(o1) == RPC_TYPE_ARRAY) {
+	}
+
+	if (rpc_get_type(o1) == RPC_TYPE_ARRAY) {
 		return (rpc_array_contains(o1, o2));
-	} else
-		return (false);
+	}
+
+	return (false);
 }
 
 static bool
@@ -193,22 +201,34 @@ eval_field_operator(rpc_object_t obj, rpc_object_t rule)
 	if (!g_strcmp0(op, "=")) {
 		return (rpc_equal(item, right));
 
-	} else if (!g_strcmp0(op, "!=")) {
+	}
+
+	if (!g_strcmp0(op, "!=")) {
 		return (rpc_cmp(item, right) != 0);
 
-	} else if (!g_strcmp0(op, ">")) {
+	}
+
+	if (!g_strcmp0(op, ">")) {
 		return (rpc_cmp(item, right) > 0);
 
-	} else if (!g_strcmp0(op, "<")) {
+	}
+
+	if (!g_strcmp0(op, "<")) {
 		return (rpc_cmp(item, right) < 0);
 
-	} else if (!g_strcmp0(op, ">=")) {
+	}
+
+	if (!g_strcmp0(op, ">=")) {
 		return (rpc_cmp(item, right) >= 0);
 
-	} else if (!g_strcmp0(op, "<=")) {
+	}
+
+	if (!g_strcmp0(op, "<=")) {
 		return (rpc_cmp(item, right) <= 0);
 
-	} else if (!g_strcmp0(op, "~")) {
+	}
+
+	if (!g_strcmp0(op, "~")) {
 		if (rpc_get_type(right) != RPC_TYPE_STRING)
 			return (false);
 		if (rpc_get_type(item) != RPC_TYPE_STRING)
@@ -218,13 +238,19 @@ eval_field_operator(rpc_object_t obj, rpc_object_t rule)
 		    rpc_string_get_string_ptr(right),
 		    rpc_string_get_string_ptr(item), 0, 0));
 
-	} else if ((!g_strcmp0(op, "in")) || (!g_strcmp0(op, "contains"))) {
+	}
+
+	if ((!g_strcmp0(op, "in")) || (!g_strcmp0(op, "contains"))) {
 		return (op_in(item, right));
 
-	} else if ((!g_strcmp0(op, "nin")) || (!g_strcmp0(op, "ncontains"))) {
+	}
+
+	if ((!g_strcmp0(op, "nin")) || (!g_strcmp0(op, "ncontains"))) {
 		return (!op_in(item, right));
 
-	} else if (!g_strcmp0(op, "match")) {
+	}
+
+	if (!g_strcmp0(op, "match")) {
 		if (rpc_get_type(right) != RPC_TYPE_STRING)
 			return (false);
 		if (rpc_get_type(item) != RPC_TYPE_STRING)
@@ -232,8 +258,9 @@ eval_field_operator(rpc_object_t obj, rpc_object_t rule)
 
 		return (fnmatch(rpc_string_get_string_ptr(right),
 		    rpc_string_get_string_ptr(item), 0) == 0);
-	} else
-		return (false);
+	}
+
+	return (false);
 }
 
 
