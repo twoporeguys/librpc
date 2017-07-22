@@ -274,7 +274,6 @@ eval_rule(rpc_object_t obj, rpc_object_t rule)
 	case 2:
 		return (eval_logic_operator(obj, rule));
 	case 3:
-	case 4:
 		return (eval_field_operator(obj, rule));
 	default:
 		return (false);
