@@ -1,6 +1,10 @@
 \hypertarget{structrpc__query__params}{\section{rpc\-\_\-query\-\_\-params Struct Reference}
 \label{structrpc__query__params}\index{rpc\-\_\-query\-\_\-params@{rpc\-\_\-query\-\_\-params}}
 }
+
+
+{\ttfamily \#include $<$query.\-h$>$}
+
 \subsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
@@ -28,9 +32,20 @@
 
 
 \subsection{Detailed Description}
+Query parameters structure definition.
 
+Following options could be specified\-:
+\begin{DoxyItemize}
+\item single (boolean) -\/ return only first matching element.
+\item count (boolean) -\/ return only the number of matching elements.
+\item offset (unsigned int) -\/ skip specified number of matching elements before yielding the first result.
+\item limit (unsigned int) -\/ yield no more than a specified number of matching elements.
+\item sort (rpc\-\_\-array\-\_\-cmp\-\_\-t) -\/ sort the input array before yielding the results -\/ the sorting function is taking a rpc\-\_\-array\-\_\-cmp\-\_\-t block as an argument to figure out relations between input an array's elements (a $>$ b, a = b, a $<$ b).
+\item reverse (boolean) -\/ reverse the order of elements of an input array (always done after eventual sorting) -\/ be aware that this operation has to create an intermediate object to store elements in the reversed order, so it might be expensive for large data sets.
+\item callback (rpc\-\_\-query\-\_\-cb\-\_\-t) -\/ for each of the matching elements run a callback function first -\/ query will return an R\-P\-C object returned by a callback function, but will skip it if a callback function returns N\-U\-L\-L instead of an R\-P\-C object. 
+\end{DoxyItemize}
 
-Definition at line 43 of file query.\-h.
+Definition at line 91 of file query.\-h.
 
 
 
