@@ -349,6 +349,8 @@ rpc_query_set(rpc_object_t object, const char *path, rpc_object_t value,
 {
 	rpc_object_t container;
 	const char *child;
+	size_t idx;
+	char *next_char;
 
 	container = rpc_query_get_parent(object, path, &child, NULL);
 	if (container == NULL) {
@@ -374,12 +376,15 @@ rpc_query_set(rpc_object_t object, const char *path, rpc_object_t value,
 		break;
 
 	case RPC_TYPE_ARRAY:
+		idx = (size_t)strtol(child, &next_char, 10);
+		if (next_char != NULL)
+			rpc_set_last_error(ENOENT,
+			    "SET: String to index conversion failed.", NULL);
+
 		if (steal)
-			rpc_array_steal_value(container,
-			    (size_t)atoi(child), value);
+			rpc_array_steal_value(container, idx, value);
 		else
-			rpc_array_set_value(container,
-			    (size_t)atoi(child), value);
+			rpc_array_set_value(container, idx, value);
 
 		break;
 
@@ -395,6 +400,8 @@ rpc_query_delete(rpc_object_t object, const char *path)
 {
 	rpc_object_t container;
 	const char *child;
+	size_t idx;
+	char *next_char;
 
 	container = rpc_query_get_parent(object, path, &child, NULL);
 	if (container == NULL) {
@@ -416,7 +423,12 @@ rpc_query_delete(rpc_object_t object, const char *path)
 		break;
 
 	case RPC_TYPE_ARRAY:
-		rpc_array_remove_index(container, (size_t)atoi(child));
+		idx = (size_t)strtol(child, &next_char, 10);
+			if (next_char != NULL)
+				rpc_set_last_error(ENOENT,
+				    "DELETE: String to index conversion failed."
+				    , NULL);
+		rpc_array_remove_index(container, idx);
 		break;
 
 	default:
