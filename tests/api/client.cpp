@@ -26,3 +26,89 @@
  */
 
 #include "../catch.hpp"
+#include <rpc/object.h>
+#include <rpc/service.h>
+#include <rpc/server.h>
+#include <rpc/client.h>
+#include <string.h>
+#include "../src/internal.h"
+
+static rpc_object_t
+hello(void *cookie __unused, rpc_object_t args)
+{
+
+	return rpc_string_create_with_format("hello %s!",
+	    rpc_array_get_string(args, 0));
+}
+
+SCENARIO("RPC_CLIENT", "Create a simple RPC server and connect to it") {
+	GIVEN("A simple RPC server") {
+		rpc_client_t client = NULL;
+		rpc_connection_t conn;
+		rpc_object_t result = NULL;
+		rpc_context_t ctx = NULL;
+		__block rpc_server_t srv = NULL;
+
+		ctx = rpc_context_create();
+		rpc_context_register_func(ctx, "hello", "Hello world function",
+		    NULL, hello);
+
+		srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
+
+		client = rpc_client_create("tcp://127.0.0.1:5000", 0);
+		conn = rpc_client_get_connection(client);
+
+		WHEN("Client is connected") {
+			THEN("Connection has been successfully established") {
+				REQUIRE(client != NULL);
+			}
+
+			THEN("Connection is not NULL") {
+				REQUIRE(conn != NULL);
+			}
+
+			AND_WHEN("Client calls an RPC method") {
+				result = rpc_connection_call_sync(conn, "hello",
+				    rpc_string_create("world"), NULL);
+
+				THEN("Result is not NULL") {
+					REQUIRE(result != NULL);
+				}
+
+				THEN("Results says: hello world!") {
+					REQUIRE(!strcmp(
+					    rpc_string_get_string_ptr(result),
+					    "hello world!"));
+				}
+
+				rpc_release(result);
+			}
+
+			AND_WHEN("Client calls an RPC method again") {
+				result = rpc_connection_call_sync(conn, "hello",
+				    rpc_string_create("world"), NULL);
+
+				THEN("Result is not NULL") {
+					REQUIRE(result != NULL);
+				}
+
+				THEN("Results says: hello world!") {
+					REQUIRE(!strcmp(
+					    rpc_string_get_string_ptr(result),
+					    "hello world!"));
+				}
+
+				rpc_release(result);
+			}
+		}
+
+		if (client != NULL)
+			rpc_client_close(client);
+
+		if (srv != NULL)
+			rpc_server_close(srv);
+
+		if (ctx != NULL)
+			rpc_context_free(ctx);
+	}
+}
