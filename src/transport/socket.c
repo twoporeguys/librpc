@@ -40,6 +40,7 @@ static GSocketAddress *socket_parse_uri(const char *);
 static int socket_connect(struct rpc_connection *, const char *, rpc_object_t);
 static int socket_listen(struct rpc_server *, const char *, rpc_object_t);
 static int socket_send_msg(void *, void *, size_t, const int *, size_t);
+static int socket_teardown(struct rpc_server *);
 static int socket_abort(void *);
 static int socket_get_fd(void *);
 static void *socket_reader(void *);
@@ -194,6 +195,9 @@ socket_listen(struct rpc_server *srv, const char *uri,
 	server->ss_server = srv;
 	server->ss_uri = strdup(uri);
 	server->ss_listener = g_socket_listener_new();
+
+	srv->rs_teardown = &socket_teardown;
+	srv->rs_arg = server;
 
 	/*
 	 * If using Unix domain sockets, make sure there's no stale socket
@@ -363,6 +367,15 @@ socket_get_fd(void *arg)
 	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
 
 	return (g_socket_get_fd(sock));
+}
+
+static int
+socket_teardown(struct rpc_server *srv __unused)
+{
+	struct socket_server *socket_srv = srv->rs_arg;
+
+	g_socket_listener_close(socket_srv->ss_listener);
+	return (0);
 }
 
 static void *
