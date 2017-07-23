@@ -136,7 +136,7 @@ rpc_server_close(rpc_server_t server)
 	/* Drop all connections */
 	for (iter = server->rs_connections; iter != NULL; iter = iter->next) {
 		conn = iter->data;
-		conn->rco_abort(conn);
+		conn->rco_abort(conn->rco_arg);
 	}
 
 	return (server->rs_teardown(server));
