@@ -135,7 +135,7 @@ if(BUILD_TESTS)
             tests/transport/ws.cpp
             tests/internal.cpp
             tests/method_stress.cpp
-            tests/api/query.c)
+            tests/api/query.cpp)
 
     add_executable(catch_tests ${TEST_SOURCES})
     target_link_libraries(catch_tests Catch)
