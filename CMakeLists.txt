@@ -9,6 +9,7 @@ option(BUILD_DOC "Create and install HTML API documentation")
 option(BUILD_TESTS "Build and install tests")
 option(BUILD_EXAMPLES "Build and install example programs" ON)
 option(BUILD_PYTHON "Build and install Python extension" ON)
+option(BUILD_LIBUSB "Build and install libusb transport" ON)
 if(LINUX)
     option(BUILD_BUS "Build and install bus transport" ON)
     option(BUILD_KMOD "Build and install kmod" ON)
@@ -32,6 +33,10 @@ pkg_check_modules (GIO REQUIRED gio-unix-2.0)
 pkg_check_modules(SOUP REQUIRED libsoup-2.4)
 pkg_check_modules(YAJL REQUIRED yajl>=2.1.0)
 
+if(BUILD_LIBUSB)
+    pkg_check_modules(LIBUSB REQUIRED libusb-1.0)
+endif()
+
 if(BUILD_BUS AND LINUX)
     pkg_check_modules(UDEV REQUIRED libudev)
 endif()
@@ -49,6 +54,11 @@ link_directories(${SOUP_LIBRARY_DIRS})
 include_directories(${YAJL_INCLUDE_DIRS})
 link_directories(${YAJL_LIBRARY_DIRS})
 
+if(BUILD_LIBUSB)
+    include_directories(${LIBUSB_INCLUDE_DIRS})
+    link_directories(${LIBUSB_LIBRARY_DIRS})
+endif()
+
 set(HEADERS
         include/rpc/service.h
         include/rpc/object.h
@@ -56,7 +66,8 @@ set(HEADERS
         include/rpc/server.h
         include/rpc/client.h
         include/rpc/discovery.h
-        include/rpc/query.h)
+        include/rpc/query.h
+        include/rpc/bus.h)
 
 set(CORE_FILES
         src/rpc_connection.c
@@ -65,11 +76,12 @@ set(CORE_FILES
         src/rpc_service.c
         src/rpc_client.c
         src/rpc_discovery.c
+        src/rpc_query.c
+        src/rpc_bus.c
         src/utils.c
         src/internal.h
         src/linker_set.h
-        src/memfd.h
-        src/rpc_query.c)
+        src/memfd.h)
 
 set(TRANSPORT_FILES
         src/transport/socket.c
@@ -83,10 +95,11 @@ set(SERIALIZER_FILES
         src/serializer/json.h
         contrib/mpack/mpack.c)
 
+if(BUILD_LIBUSB)
+    set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/libusb.c)
+endif()
 
 if(BUILD_BUS AND LINUX)
-    set(HEADERS ${HEADERS} include/rpc/bus.h)
-    set(CORE_FILES ${CORE_FILES} src/rpc_bus.c)
     set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/bus.c)
 endif()
 
@@ -101,6 +114,10 @@ target_link_libraries(librpc ${GLIB_LIBRARIES})
 target_link_libraries(librpc ${GIO_LIBRARIES})
 target_link_libraries(librpc ${SOUP_LIBRARIES})
 target_link_libraries(librpc ${YAJL_LIBRARIES})
+
+if(BUILD_LIBUSB)
+    target_link_libraries(librpc ${LIBUSB_LIBRARIES})
+endif()
 
 if(BUILD_BUS AND LINUX)
     target_link_libraries(librpc ${UDEV_LIBRARIES})
