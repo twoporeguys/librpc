@@ -413,7 +413,6 @@ usb_msg_thread(void *arg)
 	} packet;
 
 	for (;;) {
-restart:
 		state = g_async_queue_pop(conn->uc_msg_queue);
 		if (state == NULL)
 			return (NULL);
@@ -434,20 +433,26 @@ restart:
 				continue;
 
 			switch (packet.status) {
-				case LIBRPC_USB_OK:
-					conn->uc_rco->rco_recv_msg(conn->uc_rco,
-					    &packet.request, (size_t)ret, NULL,
-					    0, NULL);
-					goto restart;
+			case LIBRPC_USB_OK:
+				conn->uc_rco->rco_recv_msg(conn->uc_rco,
+				    &packet.request, (size_t)ret, NULL,
+				    0, NULL);
+				break;
 
-				case LIBRPC_USB_NOT_READY:
-					g_usleep(1000 * 50); /* 50ms */
-					continue;
+			case LIBRPC_USB_NOT_READY:
+				g_usleep(1000 * 50); /* 50ms */
+				continue;
 
-				case LIBRPC_USB_ERROR:
-					return (NULL);
+			case LIBRPC_USB_ERROR:
+				break;
+
+			default:
+				g_assert_not_reached();
 			}
 		}
+
+		g_free(state->uss_buf);
+		g_free(state);
 	}
 }
 
