@@ -25,8 +25,10 @@
  *
  */
 
+#include <errno.h>
 #include <string.h>
 #include <glib.h>
+#include <libsoup/soup.h>
 #include <libusb-1.0/libusb.h>
 #include "../internal.h"
 #include "../linker_set.h"
@@ -47,7 +49,10 @@ static int usb_ping(void *, const char *);
 static int usb_enumerate(void *, struct rpc_bus_node **, size_t *);
 static int usb_xfer(struct libusb_device_handle *, int, void *, size_t,
     unsigned int);
-static void *usb_thread(void *);
+static libusb_device_handle *usb_find_by_name(struct libusb_context *,
+    const char *);
+static void *usb_event_thread(void *);
+static void *usb_msg_thread(void *arg);
 static void goddamned_control_transfer_cb(struct libusb_transfer *);
 static int goddamned_control_transfer(struct libusb_device_handle *, int,
     uint8_t, uint8_t, uint16_t, uint16_t, void *, uint16_t, unsigned int);
@@ -97,6 +102,13 @@ struct usb_thread_state
 	bool				uts_exit;
 };
 
+struct usb_send_state
+{
+	struct usb_connection *		uss_conn;
+	void *				uss_buf;
+	size_t 				uss_len;
+};
+
 struct usb_context
 {
 	libusb_context *		uc_libusb;
@@ -107,9 +119,14 @@ struct usb_context
 
 struct usb_connection
 {
+	struct rpc_connection *		uc_rco;
 	libusb_context *		uc_libusb;
 	libusb_device *			uc_dev;
 	libusb_device_handle *		uc_handle;
+	GThread *			uc_event_thread;
+	GThread *			uc_msg_thread;
+	GAsyncQueue *			uc_msg_queue;
+	struct usb_thread_state		uc_state;
 };
 
 struct rpc_bus_transport libusb_bus_ops = {
@@ -164,7 +181,7 @@ usb_open(void)
 		return (NULL);
 	}
 
-	ctx->uc_thread = g_thread_new("libusb worker", usb_thread,
+	ctx->uc_thread = g_thread_new("libusb worker", usb_event_thread,
 	    &ctx->uc_state);
 	return (ctx);
 }
@@ -182,14 +199,30 @@ static int
 usb_connect(struct rpc_connection *rco, const char *uri_string,
     rpc_object_t args __unused)
 {
+	SoupURI *uri;
 	struct usb_connection *conn;
+
+	uri = soup_uri_new(uri_string);
 
 	conn = g_malloc0(sizeof(*conn));
 	libusb_init(&conn->uc_libusb);
 
+	conn->uc_state.uts_libusb = conn->uc_libusb;
+	conn->uc_state.uts_exit = false;
+	conn->uc_msg_queue = g_async_queue_new();
+	conn->uc_event_thread = g_thread_new("libusb worker", usb_event_thread, &conn->uc_state);
+	conn->uc_msg_thread = g_thread_new("libusb send", usb_msg_thread, conn);
+	conn->uc_rco = rco;
+
+	conn->uc_handle = usb_find_by_name(conn->uc_libusb, uri->host);
+	if (conn->uc_handle == NULL) {
+		return (-1);
+	}
+
 	rco->rco_send_msg = usb_send_msg;
 	rco->rco_abort = usb_abort;
 	rco->rco_get_fd = usb_get_fd;
+	rco->rco_arg = conn;
 
 	return (0);
 }
@@ -198,9 +231,15 @@ static int
 usb_send_msg(void *arg, void *buf, size_t len, const int *fds __unused,
     size_t nfds __unused)
 {
-	struct usb_connection *conn = arg;
 
-	//goddamned_control_transfer(conn->uc_handle, 1, )
+	struct usb_connection *conn = arg;
+	struct usb_send_state *send = g_malloc0(sizeof(*send));
+
+	send->uss_buf = g_memdup(buf, (guint)len);
+	send->uss_len = len;
+	send->uss_conn = conn;
+	g_async_queue_push(conn->uc_msg_queue, send);
+	return (0);
 }
 
 static int
@@ -219,15 +258,25 @@ usb_get_fd(void *arg)
 static int
 usb_ping(void *arg, const char *name)
 {
+	libusb_device_handle *handle;
 	struct usb_context *ctx = arg;
 	struct {
 		uint8_t setup[8];
 		uint8_t status;
 	} packet;
 
-	if (usb_xfer(0, LIBRPC_USB_PING, &packet, sizeof(packet), 500) != 0)
+	handle = usb_find_by_name(ctx->uc_libusb, name);
+	if (handle == NULL) {
+		errno = ENOENT;
 		return (-1);
+	}
 
+	if (usb_xfer(handle, LIBRPC_USB_PING, &packet, sizeof(uint8_t), 500) < 0) {
+		libusb_close(handle);
+		return (-1);
+	}
+
+	libusb_close(handle);
 	return (packet.status == LIBRPC_USB_OK);
 }
 
@@ -267,7 +316,7 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 			continue;
 
 		if (usb_xfer(handle, LIBRPC_USB_IDENTIFY, &packet,
-		    sizeof(packet), 500) != 0)
+		    sizeof(struct librpc_usb_identification), 500) < 0)
 			goto done;
 
 		libusb_get_string_descriptor_ascii(handle,
@@ -279,11 +328,12 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 		libusb_get_string_descriptor_ascii(handle, desc.iSerialNumber,
 		     serial, sizeof(serial));
 
-		*resultp = g_realloc(*resultp, ++(*countp) * sizeof(struct rpc_bus_node));
+		*resultp = g_realloc(*resultp, (*countp + 1) * sizeof(struct rpc_bus_node));
 		(*resultp)[*countp].rbn_address = libusb_get_device_address(dev);
 		(*resultp)[*countp].rbn_name = g_strndup(name, sizeof(name));
 		(*resultp)[*countp].rbn_description = g_strndup(descr, sizeof(descr));
 		(*resultp)[*countp].rbn_serial = g_strndup(serial, sizeof(serial));
+		(*countp)++;
 
 done:
 		libusb_close(handle);
@@ -309,19 +359,100 @@ usb_xfer(struct libusb_device_handle *handle, int opcode, void *buf, size_t len,
 static libusb_device_handle *
 usb_find_by_name(struct libusb_context *libusb, const char *name)
 {
+	struct libusb_device_descriptor desc;
 	libusb_device **devices;
 	libusb_device *dev;
+	libusb_device_handle *handle;
+	uint8_t str[NAME_MAX];
+	struct {
+		uint8_t setup[8];
+		struct librpc_usb_identification ident;
+	} packet;
 
 	libusb_get_device_list(libusb, &devices);
 
 	for (; *devices != NULL; devices++) {
 		dev = *devices;
+		libusb_get_device_descriptor(dev, &desc);
 
+		debugf("trying device %d (vid=0x%04x, pid=0x%04x)",
+		    libusb_get_device_address(dev), desc.idVendor,
+		    desc.idProduct);
+
+		if (desc.idVendor != LIBRPC_USB_VID ||
+		    desc.idProduct != LIBRPC_USB_PID)
+			continue;
+
+		if (libusb_open(dev, &handle) != 0)
+			continue;
+
+		if (usb_xfer(handle, LIBRPC_USB_IDENTIFY, &packet,
+		    sizeof(struct librpc_usb_identification), 500) < 0)
+			continue;
+
+		libusb_get_string_descriptor_ascii(handle,
+		    (uint8_t)packet.ident.iName, str, sizeof(str));
+
+		if (g_strcmp0((const char *)str, name) == 0)
+			return (handle);
+	}
+
+	return (NULL);
+}
+
+static void *
+usb_msg_thread(void *arg)
+{
+	struct usb_connection *conn = arg;
+	struct usb_send_state *state;
+	int ret;
+	struct {
+		uint8_t setup[8];
+		uint8_t status;
+		uint8_t request[4096];
+	} packet;
+
+	for (;;) {
+restart:
+		state = g_async_queue_pop(conn->uc_msg_queue);
+		if (state == NULL)
+			return (NULL);
+
+		memcpy(&packet.status, state->uss_buf, state->uss_len);
+		if (goddamned_control_transfer(conn->uc_handle, 1,
+		    LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_OUT,
+		    LIBRPC_USB_SEND_REQ, 0, 0, &packet,
+		    (uint16_t)state->uss_len, 500) < 0)
+			break;
+
+		for (;;) {
+			ret = goddamned_control_transfer(conn->uc_handle, 1,
+			    LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_IN,
+			    LIBRPC_USB_READ_RESP, 0, 0, &packet, 4096, 500);
+
+			if (ret < 0)
+				continue;
+
+			switch (packet.status) {
+				case LIBRPC_USB_OK:
+					conn->uc_rco->rco_recv_msg(conn->uc_rco,
+					    &packet.request, (size_t)ret, NULL,
+					    0, NULL);
+					goto restart;
+
+				case LIBRPC_USB_NOT_READY:
+					g_usleep(1000 * 50); /* 50ms */
+					continue;
+
+				case LIBRPC_USB_ERROR:
+					return (NULL);
+			}
+		}
 	}
 }
 
 static void *
-usb_thread(void *arg)
+usb_event_thread(void *arg)
 {
 	struct usb_thread_state *uts = arg;
 
@@ -347,6 +478,7 @@ goddamned_control_transfer(struct libusb_device_handle *handle, int ep,
     void *buf, uint16_t len, unsigned int timeout)
 {
 	struct libusb_transfer *xfer;
+	int ret;
 
 	g_mutex_lock(&usb_mtx);
 
@@ -357,12 +489,20 @@ goddamned_control_transfer(struct libusb_device_handle *handle, int ep,
 	    goddamned_control_transfer_cb, NULL, timeout);
 
 	xfer->endpoint = (uint8_t)ep;
-	libusb_submit_transfer(xfer);
+	ret = libusb_submit_transfer(xfer);
+	if (ret != 0) {
+		g_mutex_unlock(&usb_mtx);
+		return (ret);
+	}
 
 	g_cond_wait(&usb_cv, &usb_mtx);
+	g_cond_clear(&usb_cv);
+
+	ret = xfer->actual_length;
+	libusb_free_transfer(xfer);
 	g_mutex_unlock(&usb_mtx);
 
-	return (xfer->status);
+	return (ret);
 }
 
 DECLARE_TRANSPORT(libusb_transport);
