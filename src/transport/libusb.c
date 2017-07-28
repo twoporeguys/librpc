@@ -51,8 +51,9 @@ static int usb_xfer(struct libusb_device_handle *, int, void *, size_t,
     unsigned int);
 static libusb_device_handle *usb_find_by_name(struct libusb_context *,
     const char *);
+static void *usb_libusb_thread(void *);
 static void *usb_event_thread(void *);
-static void *usb_msg_thread(void *arg);
+static void *usb_msg_thread(void *);
 static void goddamned_control_transfer_cb(struct libusb_transfer *);
 static int goddamned_control_transfer(struct libusb_device_handle *, int,
     uint8_t, uint8_t, uint16_t, uint16_t, void *, uint16_t, unsigned int);
@@ -123,10 +124,12 @@ struct usb_connection
 	libusb_context *		uc_libusb;
 	libusb_device *			uc_dev;
 	libusb_device_handle *		uc_handle;
-	GThread *			uc_event_thread;
+	GThread *			uc_libusb_thread;
 	GThread *			uc_msg_thread;
+	GThread *			uc_event_thread;
 	GAsyncQueue *			uc_msg_queue;
 	struct usb_thread_state		uc_state;
+	int				uc_logfd;
 };
 
 struct rpc_bus_transport libusb_bus_ops = {
@@ -144,6 +147,7 @@ static const struct rpc_transport libusb_transport = {
 	.bus_ops = &libusb_bus_ops
 };
 
+static GMutex usb_request_mtx;
 static GMutex usb_mtx;
 static GCond usb_cv;
 
@@ -181,7 +185,7 @@ usb_open(void)
 		return (NULL);
 	}
 
-	ctx->uc_thread = g_thread_new("libusb worker", usb_event_thread,
+	ctx->uc_thread = g_thread_new("libusb worker", usb_libusb_thread,
 	    &ctx->uc_state);
 	return (ctx);
 }
@@ -192,12 +196,13 @@ usb_close(void *arg)
 	struct usb_context *ctx = arg;
 
 	ctx->uc_state.uts_exit = true;
+	libusb_exit(ctx->uc_libusb);
 	g_thread_join(ctx->uc_thread);
 }
 
 static int
 usb_connect(struct rpc_connection *rco, const char *uri_string,
-    rpc_object_t args __unused)
+    rpc_object_t args)
 {
 	SoupURI *uri;
 	struct usb_connection *conn;
@@ -210,14 +215,18 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	conn->uc_state.uts_libusb = conn->uc_libusb;
 	conn->uc_state.uts_exit = false;
 	conn->uc_msg_queue = g_async_queue_new();
-	conn->uc_event_thread = g_thread_new("libusb worker", usb_event_thread, &conn->uc_state);
-	conn->uc_msg_thread = g_thread_new("libusb send", usb_msg_thread, conn);
-	conn->uc_rco = rco;
+	conn->uc_libusb_thread = g_thread_new("libusb worker",
+	    usb_libusb_thread, &conn->uc_state);
 
 	conn->uc_handle = usb_find_by_name(conn->uc_libusb, uri->host);
 	if (conn->uc_handle == NULL) {
 		return (-1);
 	}
+
+	conn->uc_msg_thread = g_thread_new("libusb send", usb_msg_thread, conn);
+	conn->uc_event_thread = g_thread_new("libusb event", usb_event_thread, conn);
+	conn->uc_rco = rco;
+
 
 	rco->rco_send_msg = usb_send_msg;
 	rco->rco_abort = usb_abort;
@@ -245,7 +254,13 @@ usb_send_msg(void *arg, void *buf, size_t len, const int *fds __unused,
 static int
 usb_abort(void *arg)
 {
+	struct usb_connection *conn = arg;
 
+	g_async_queue_push(conn->uc_msg_queue, NULL);
+	libusb_close(conn->uc_handle);
+	g_thread_join(conn->uc_libusb_thread);
+	g_thread_join(conn->uc_msg_thread);
+	return (0);
 }
 
 static int
@@ -349,10 +364,12 @@ usb_xfer(struct libusb_device_handle *handle, int opcode, void *buf, size_t len,
 {
 	int ret;
 
+	g_mutex_lock(&usb_request_mtx);
 	ret = goddamned_control_transfer(handle, 1,
 	    LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_IN, (uint8_t)opcode,
 	    0, 0, buf, (uint16_t)len, timeout);
 
+	g_mutex_unlock(&usb_request_mtx);
 	return (ret);
 }
 
@@ -417,6 +434,7 @@ usb_msg_thread(void *arg)
 		if (state == NULL)
 			return (NULL);
 
+		g_mutex_lock(&usb_request_mtx);
 		memcpy(&packet.status, state->uss_buf, state->uss_len);
 		if (goddamned_control_transfer(conn->uc_handle, 1,
 		    LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_OUT,
@@ -425,39 +443,81 @@ usb_msg_thread(void *arg)
 			break;
 
 		for (;;) {
+
 			ret = goddamned_control_transfer(conn->uc_handle, 1,
 			    LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_IN,
-			    LIBRPC_USB_READ_RESP, 0, 0, &packet, 4096, 500);
+			    LIBRPC_USB_READ_RESP, 0, 0, &packet, 4095, 500);
 
-			if (ret < 0)
+			if (ret < 0) {
+				debugf("failed to submit transfer, ret=%d", ret);
 				continue;
+			}
 
 			switch (packet.status) {
 			case LIBRPC_USB_OK:
 				conn->uc_rco->rco_recv_msg(conn->uc_rco,
 				    &packet.request, (size_t)ret, NULL,
 				    0, NULL);
-				break;
+				goto out;
 
 			case LIBRPC_USB_NOT_READY:
 				g_usleep(1000 * 50); /* 50ms */
-				continue;
+				break;
 
 			case LIBRPC_USB_ERROR:
 				break;
 
 			default:
-				g_assert_not_reached();
+				//g_assert_not_reached();
+				g_usleep(1000 * 50); /* 50ms */
+				break;
 			}
 		}
 
+out:
+		g_mutex_unlock(&usb_request_mtx);
 		g_free(state->uss_buf);
 		g_free(state);
 	}
+
+	return (NULL);
 }
 
 static void *
 usb_event_thread(void *arg)
+{
+	struct usb_connection *conn = arg;
+	int ret;
+	struct {
+		uint8_t setup[8];
+		struct librpc_usb_log log;
+	} *packet;
+
+	packet = g_malloc0(sizeof(*packet) + 1024);
+
+	while (!conn->uc_state.uts_exit) {
+		ret = usb_xfer(conn->uc_handle, LIBRPC_USB_READ_LOG, packet,
+		    sizeof(*packet) + 1024, 500);
+
+		if (ret < 0)
+			goto done;
+
+		if (packet->log.start == packet->log.end)
+			goto done;
+
+		if (packet->log.start < packet->log.end)
+			fprintf(stderr, "%*s\n",
+			    packet->log.end - packet->log.start,
+			    &packet->log.buffer[packet->log.start]);
+done:
+		g_usleep(1000 * 500);
+	}
+
+	return (NULL);
+}
+
+static void *
+usb_libusb_thread(void *arg)
 {
 	struct usb_thread_state *uts = arg;
 
@@ -484,6 +544,9 @@ goddamned_control_transfer(struct libusb_device_handle *handle, int ep,
 {
 	struct libusb_transfer *xfer;
 	int ret;
+
+	debugf("handle=%p, ep=%d, request_type=0x%02x, bRequest=0x%02x",
+	    handle, ep, request_type, bRequest);
 
 	g_mutex_lock(&usb_mtx);
 
