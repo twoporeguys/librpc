@@ -51,7 +51,9 @@ enum librpc_opcode
         LIBRPC_RESPONSE,
         LIBRPC_ACK,
         LIBRPC_ARRIVE,
-        LIBRPC_DEPART
+        LIBRPC_DEPART,
+	LIBRPC_EVENT,
+	LIBRPC_LOG
 };
 
 struct librpc_message
@@ -90,6 +92,7 @@ struct librpc_device *librpc_device_register(const char *name,
 void librpc_device_unregister(struct librpc_device *rpcdev);
 void librpc_device_answer(struct device *, void *, const void *, size_t);
 void librpc_device_error(struct device *, void *, int);
+void librpc_device_event(struct device *, const void *, size_t);
 void librpc_device_log(struct device *, const char *, size_t);
 
 #endif /* __KERNEL__ */

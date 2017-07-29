@@ -208,6 +208,29 @@ librpc_device_error(struct device *dev, void *arg, int error)
 }
 
 void
+librpc_device_event(struct device *dev, const void *buf, size_t length)
+{
+	struct {
+		struct cn_msg cn;
+		struct librpc_message msg;
+		char response[length];
+	} packet;
+
+	printk("librpc_device_event: device=%p\n", dev);
+
+	packet.cn.id = librpc_cb_id;
+	packet.cn.seq = resp_seq++;
+	packet.cn.ack = 0;
+	packet.cn.len = sizeof(packet);
+	packet.cn.flags = 0;
+	packet.msg.opcode = LIBRPC_EVENT;
+	packet.msg.status = 0;
+
+	memcpy(packet.response, buf, length);
+	cn_netlink_send(&packet.cn, 0, 0, GFP_KERNEL);
+}
+
+void
 librpc_device_log(struct device *dev, const char *log, size_t len)
 {
 
@@ -472,6 +495,7 @@ EXPORT_SYMBOL(librpc_device_register);
 EXPORT_SYMBOL(librpc_device_unregister);
 EXPORT_SYMBOL(librpc_device_answer);
 EXPORT_SYMBOL(librpc_device_error);
+EXPORT_SYMBOL(librpc_device_event);
 EXPORT_SYMBOL(librpc_device_log);
 MODULE_AUTHOR("Jakub Klama");
 MODULE_LICENSE("Dual BSD/GPL");
