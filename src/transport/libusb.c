@@ -330,6 +330,9 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 		if (libusb_open(dev, &handle) != 0)
 			continue;
 
+		if (libusb_claim_interface(handle, 0) != 0)
+			continue;
+
 		if (usb_xfer(handle, LIBRPC_USB_IDENTIFY, &packet,
 		    sizeof(struct librpc_usb_identification), 500) < 0)
 			goto done;
@@ -351,6 +354,7 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 		(*countp)++;
 
 done:
+		libusb_release_interface(handle, 0);
 		libusb_close(handle);
 	}
 
