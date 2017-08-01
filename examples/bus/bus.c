@@ -42,6 +42,7 @@ main(int argc, const char *argv[])
 	(void)argc;
 	(void)argv;
 
+	rpc_bus_open();
 
 	n = rpc_bus_enumerate(&nodes);
 	if (n < 0) {
@@ -67,5 +68,6 @@ main(int argc, const char *argv[])
 	}
 
 	rpc_bus_free_result(nodes);
+	rpc_bus_close();
 	return (0);
 }
