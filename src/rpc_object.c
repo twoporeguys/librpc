@@ -250,12 +250,15 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 	char ch;
 	size_t idx = 0;
 
+	if (branch == NULL)
+		return (0);
+
 	for (i = fmt_cnt; fmt[i] != '\0'; i++) {
 		ch = fmt[i];
 		if (array)
 			current = rpc_array_get_value(array, idx++);
 
-		if ((dictionary) && (ch != '}'))
+		if (dictionary != NULL && (ch != '}'))
 			current = rpc_dictionary_get_value(dictionary,
 			    va_arg(ap, const char *));
 
