@@ -54,9 +54,6 @@ static libusb_device_handle *usb_find_by_name(struct libusb_context *,
 static void *usb_libusb_thread(void *);
 static void *usb_event_thread(void *);
 static void *usb_msg_thread(void *);
-static void goddamned_control_transfer_cb(struct libusb_transfer *);
-static int goddamned_control_transfer(struct libusb_device_handle *, int,
-    uint8_t, uint8_t, uint16_t, uint16_t, void *, uint16_t, unsigned int);
 
 enum librpc_usb_opcode
 {
@@ -148,8 +145,6 @@ static const struct rpc_transport libusb_transport = {
 };
 
 static GMutex usb_request_mtx;
-static GMutex usb_mtx;
-static GCond usb_cv;
 
 static int
 usb_hotplug_callback(libusb_context *ctx, libusb_device *dev,
@@ -226,8 +221,7 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	conn->uc_msg_thread = g_thread_new("libusb send", usb_msg_thread, conn);
 	conn->uc_event_thread = g_thread_new("libusb event", usb_event_thread, conn);
 	conn->uc_rco = rco;
-
-
+	
 	rco->rco_send_msg = usb_send_msg;
 	rco->rco_abort = usb_abort;
 	rco->rco_get_fd = usb_get_fd;
@@ -275,10 +269,7 @@ usb_ping(void *arg, const char *name)
 {
 	libusb_device_handle *handle;
 	struct usb_context *ctx = arg;
-	struct {
-		uint8_t setup[8];
-		uint8_t status;
-	} packet;
+	uint8_t status;
 
 	handle = usb_find_by_name(ctx->uc_libusb, name);
 	if (handle == NULL) {
@@ -286,13 +277,13 @@ usb_ping(void *arg, const char *name)
 		return (-1);
 	}
 
-	if (usb_xfer(handle, LIBRPC_USB_PING, &packet, sizeof(uint8_t), 500) < 0) {
+	if (usb_xfer(handle, LIBRPC_USB_PING, &status, sizeof(status), 500) < 0) {
 		libusb_close(handle);
 		return (-1);
 	}
 
 	libusb_close(handle);
-	return (packet.status == LIBRPC_USB_OK);
+	return (status == LIBRPC_USB_OK);
 }
 
 static int
@@ -306,10 +297,7 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 	uint8_t name[NAME_MAX];
 	uint8_t descr[NAME_MAX];
 	uint8_t serial[NAME_MAX];
-	struct {
-		uint8_t setup[8];
-		struct librpc_usb_identification ident;
-	} packet;
+	struct librpc_usb_identification ident;
 
 	*countp = 0;
 	*resultp = NULL;
@@ -330,18 +318,15 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 		if (libusb_open(dev, &handle) != 0)
 			continue;
 
-		if (libusb_claim_interface(handle, 0) != 0)
-			continue;
-
-		if (usb_xfer(handle, LIBRPC_USB_IDENTIFY, &packet,
-		    sizeof(struct librpc_usb_identification), 500) < 0)
+		if (usb_xfer(handle, LIBRPC_USB_IDENTIFY, &ident,
+		    sizeof(ident), 500) < 0)
 			goto done;
 
 		libusb_get_string_descriptor_ascii(handle,
-		    (uint8_t)packet.ident.iName, name, sizeof(name));
+		    (uint8_t)ident.iName, name, sizeof(name));
 
 		libusb_get_string_descriptor_ascii(handle,
-		    (uint8_t)packet.ident.iDescription, descr, sizeof(descr));
+		    (uint8_t)ident.iDescription, descr, sizeof(descr));
 
 		libusb_get_string_descriptor_ascii(handle, desc.iSerialNumber,
 		     serial, sizeof(serial));
@@ -354,7 +339,6 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 		(*countp)++;
 
 done:
-		libusb_release_interface(handle, 0);
 		libusb_close(handle);
 	}
 
@@ -369,7 +353,7 @@ usb_xfer(struct libusb_device_handle *handle, int opcode, void *buf, size_t len,
 	int ret;
 
 	g_mutex_lock(&usb_request_mtx);
-	ret = goddamned_control_transfer(handle, 1,
+	ret = libusb_control_transfer(handle,
 	    LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_IN, (uint8_t)opcode,
 	    0, 0, buf, (uint16_t)len, timeout);
 
@@ -385,10 +369,7 @@ usb_find_by_name(struct libusb_context *libusb, const char *name)
 	libusb_device *dev;
 	libusb_device_handle *handle;
 	uint8_t str[NAME_MAX];
-	struct {
-		uint8_t setup[8];
-		struct librpc_usb_identification ident;
-	} packet;
+	struct librpc_usb_identification ident;
 
 	libusb_get_device_list(libusb, &devices);
 
@@ -407,12 +388,12 @@ usb_find_by_name(struct libusb_context *libusb, const char *name)
 		if (libusb_open(dev, &handle) != 0)
 			continue;
 
-		if (usb_xfer(handle, LIBRPC_USB_IDENTIFY, &packet,
-		    sizeof(struct librpc_usb_identification), 500) < 0)
+		if (usb_xfer(handle, LIBRPC_USB_IDENTIFY, &ident,
+		    sizeof(ident), 500) < 0)
 			continue;
 
 		libusb_get_string_descriptor_ascii(handle,
-		    (uint8_t)packet.ident.iName, str, sizeof(str));
+		    (uint8_t)ident.iName, str, sizeof(str));
 
 		if (g_strcmp0((const char *)str, name) == 0)
 			return (handle);
@@ -428,7 +409,6 @@ usb_msg_thread(void *arg)
 	struct usb_send_state *state;
 	int ret;
 	struct {
-		uint8_t setup[8];
 		uint8_t status;
 		uint8_t request[4096];
 	} packet;
@@ -440,17 +420,18 @@ usb_msg_thread(void *arg)
 
 		g_mutex_lock(&usb_request_mtx);
 		memcpy(&packet.status, state->uss_buf, state->uss_len);
-		if (goddamned_control_transfer(conn->uc_handle, 1,
+		if (libusb_control_transfer(conn->uc_handle,
 		    LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_OUT,
-		    LIBRPC_USB_SEND_REQ, 0, 0, &packet,
+		    LIBRPC_USB_SEND_REQ, 0, 0, (uint8_t *)&packet,
 		    (uint16_t)state->uss_len, 500) < 0)
 			break;
 
 		for (;;) {
 
-			ret = goddamned_control_transfer(conn->uc_handle, 1,
+			ret = libusb_control_transfer(conn->uc_handle,
 			    LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_IN,
-			    LIBRPC_USB_READ_RESP, 0, 0, &packet, 4095, 500);
+			    LIBRPC_USB_READ_RESP, 0, 0, (uint8_t *)&packet,
+			    4095, 500);
 
 			if (ret < 0) {
 				debugf("failed to submit transfer, ret=%d", ret);
@@ -529,52 +510,6 @@ usb_libusb_thread(void *arg)
 		libusb_handle_events(uts->uts_libusb);
 
 	return (NULL);
-}
-
-static void
-goddamned_control_transfer_cb(struct libusb_transfer *xfer)
-{
-	debugf("xfer=%p", xfer);
-
-	g_mutex_lock(&usb_mtx);
-	g_cond_broadcast(&usb_cv);
-	g_mutex_unlock(&usb_mtx);
-}
-
-static int
-goddamned_control_transfer(struct libusb_device_handle *handle, int ep,
-    uint8_t request_type, uint8_t bRequest, uint16_t wValue, uint16_t wIndex,
-    void *buf, uint16_t len, unsigned int timeout)
-{
-	struct libusb_transfer *xfer;
-	int ret;
-
-	debugf("handle=%p, ep=%d, request_type=0x%02x, bRequest=0x%02x",
-	    handle, ep, request_type, bRequest);
-
-	g_mutex_lock(&usb_mtx);
-
-	xfer = libusb_alloc_transfer(0);
-	libusb_fill_control_setup(buf, request_type, bRequest, wValue,
-	    wIndex, len);
-	libusb_fill_control_transfer(xfer, handle, buf,
-	    goddamned_control_transfer_cb, NULL, timeout);
-
-	xfer->endpoint = (uint8_t)ep;
-	ret = libusb_submit_transfer(xfer);
-	if (ret != 0) {
-		g_mutex_unlock(&usb_mtx);
-		return (ret);
-	}
-
-	g_cond_wait(&usb_cv, &usb_mtx);
-	g_cond_clear(&usb_cv);
-
-	ret = xfer->actual_length;
-	libusb_free_transfer(xfer);
-	g_mutex_unlock(&usb_mtx);
-
-	return (ret);
 }
 
 DECLARE_TRANSPORT(libusb_transport);
