@@ -221,7 +221,7 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	conn->uc_msg_thread = g_thread_new("libusb send", usb_msg_thread, conn);
 	conn->uc_event_thread = g_thread_new("libusb event", usb_event_thread, conn);
 	conn->uc_rco = rco;
-	
+
 	rco->rco_send_msg = usb_send_msg;
 	rco->rco_abort = usb_abort;
 	rco->rco_get_fd = usb_get_fd;
@@ -258,7 +258,7 @@ usb_abort(void *arg)
 }
 
 static int
-usb_get_fd(void *arg)
+usb_get_fd(void *arg __unused)
 {
 
 	return (-1);
@@ -294,9 +294,9 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 	libusb_device **devices;
 	libusb_device *dev;
 	libusb_device_handle *handle;
-	uint8_t name[NAME_MAX];
-	uint8_t descr[NAME_MAX];
-	uint8_t serial[NAME_MAX];
+	char name[NAME_MAX];
+	char descr[NAME_MAX];
+	char serial[NAME_MAX];
 	struct librpc_usb_identification ident;
 
 	*countp = 0;
@@ -323,13 +323,13 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 			goto done;
 
 		libusb_get_string_descriptor_ascii(handle,
-		    (uint8_t)ident.iName, name, sizeof(name));
+		    (uint8_t)ident.iName, (uint8_t *)name, sizeof(name));
 
 		libusb_get_string_descriptor_ascii(handle,
-		    (uint8_t)ident.iDescription, descr, sizeof(descr));
+		    (uint8_t)ident.iDescription, (uint8_t *)descr, sizeof(descr));
 
 		libusb_get_string_descriptor_ascii(handle, desc.iSerialNumber,
-		     serial, sizeof(serial));
+		    (uint8_t *)serial, sizeof(serial));
 
 		*resultp = g_realloc(*resultp, (*countp + 1) * sizeof(struct rpc_bus_node));
 		(*resultp)[*countp].rbn_address = libusb_get_device_address(dev);
