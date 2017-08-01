@@ -35,11 +35,7 @@
 #define __used          __attribute__((__used__))
 #endif
 #ifndef __section
-#ifdef __APPLE__
-#define __section(x)    __attribute__((__section__("__DATA," #x)))
-#else
 #define __section(x)    __attribute__((__section__(x)))
-#endif
 #endif
 #define __GLOBL1(sym)   __asm__(".globl " #sym)
 #define __GLOBL(sym)    __GLOBL1(sym)
@@ -67,12 +63,22 @@
 /*
  * Private macros, not to be used outside this header file.
  */
-#define __MAKE_SET(set, sym)				\
-	__GLOBL(__CONCAT(__start_set_, set));		\
-	__GLOBL(__CONCAT(__stop_set_, set));		\
-	static void const * __MAKE_SET_CONST		\
-	__set_##set##_sym_##sym __section("set_" #set)	\
+#ifdef __APPLE__
+#define __MAKE_SET(set, sym)					\
+	__GLOBL(__CONCAT(__start_set_, set));			\
+	__GLOBL(__CONCAT(__stop_set_, set));			\
+	static void const * __MAKE_SET_CONST			\
+	__set_##set##_sym_##sym 				\
+	__attribute__((__section__("__DATA,set_" #set))) 	\
 	__used = &(sym)
+#else
+#define __MAKE_SET(set, sym)					\
+	__GLOBL(__CONCAT(__start_set_, set));			\
+	__GLOBL(__CONCAT(__stop_set_, set));			\
+	static void const * __MAKE_SET_CONST			\
+	__set_##set##_sym_##sym __section("set_" #set)		\
+	__used = &(sym)
+#endif
 #else /* !__GNUCLIKE___SECTION */
 
 /*
