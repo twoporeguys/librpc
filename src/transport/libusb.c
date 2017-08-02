@@ -458,8 +458,7 @@ usb_msg_thread(void *arg)
 				break;
 
 			default:
-				//g_assert_not_reached();
-				g_usleep(1000 * 50); /* 50ms */
+				g_assert_not_reached();
 				break;
 			}
 		}
