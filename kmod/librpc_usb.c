@@ -310,7 +310,7 @@ librpc_usb_thread(void *arg)
 }
 
 static struct usb_device_id librpc_usb_id_table[] = {
-        { USB_DEVICE_AND_INTERFACE_INFO(0xbeef, 0xfeed, 0xff, 0x00, 0xff) },
+        { USB_DEVICE(0xbeef, 0xfeed) },
         { }
 };
 
