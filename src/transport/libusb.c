@@ -30,6 +30,7 @@
 #include <glib.h>
 #include <libsoup/soup.h>
 #include <libusb-1.0/libusb.h>
+#include <rpc/object.h>
 #include "../internal.h"
 #include "../linker_set.h"
 
@@ -62,7 +63,7 @@ enum librpc_usb_opcode
 	LIBRPC_USB_IDENTIFY,
 	LIBRPC_USB_SEND_REQ,
 	LIBRPC_USB_READ_RESP,
-	LIBRPC_USB_READ_EVENTS,
+	LIBRPC_USB_READ_EVENT,
 	LIBRPC_USB_READ_LOG
 };
 
@@ -126,6 +127,7 @@ struct usb_connection
 	GThread *			uc_event_thread;
 	GAsyncQueue *			uc_msg_queue;
 	struct usb_thread_state		uc_state;
+	size_t 				uc_logsize;
 	int				uc_logfd;
 };
 
@@ -205,7 +207,10 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	uri = soup_uri_new(uri_string);
 
 	conn = g_malloc0(sizeof(*conn));
+	conn->uc_logfd = -1;
 	libusb_init(&conn->uc_libusb);
+
+	rpc_object_unpack(args, "[f]", &conn->uc_logfd);
 
 	conn->uc_state.uts_libusb = conn->uc_libusb;
 	conn->uc_state.uts_exit = false;
@@ -473,27 +478,24 @@ usb_event_thread(void *arg)
 {
 	struct usb_connection *conn = arg;
 	int ret;
-	struct {
-		uint8_t setup[8];
-		struct librpc_usb_log log;
-	} *packet;
+	struct librpc_usb_log *log;
 
-	packet = g_malloc0(sizeof(*packet) + 1024);
+	log = g_malloc0(sizeof(*log) + conn->uc_logsize);
 
 	while (!conn->uc_state.uts_exit) {
-		ret = usb_xfer(conn->uc_handle, LIBRPC_USB_READ_LOG, packet,
-		    sizeof(*packet) + 1024, 500);
+		ret = usb_xfer(conn->uc_handle, LIBRPC_USB_READ_LOG, log,
+		    sizeof(*log) + conn->uc_logsize, 500);
 
 		if (ret < 0)
 			goto done;
 
-		if (packet->log.start == packet->log.end)
+		if (log->start == log->end || conn->uc_logfd < 0)
 			goto done;
 
-		if (packet->log.start < packet->log.end)
-			fprintf(stderr, "%*s\n",
-			    packet->log.end - packet->log.start,
-			    &packet->log.buffer[packet->log.start]);
+		if (log->start < log->end)
+			dprintf(conn->uc_logfd, "%*s",
+			    log->end - log->start,
+			    &log->buffer[log->start]);
 done:
 		g_usleep(1000 * 500);
 	}
