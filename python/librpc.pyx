@@ -948,13 +948,16 @@ cdef class Bus(object):
 cdef raise_internal_exc(rpc=False):
     cdef rpc_object_t error
 
+    error = rpc_get_last_error()
     exc = LibException
+
     if rpc:
         exc = RpcException
 
-    error = rpc_get_last_error()
     if error != <rpc_object_t>NULL:
         try:
             raise exc(rpc_error_get_code(error), rpc_error_get_message(error).decode('utf-8'))
         finally:
             free(<void *>error)
+
+    raise exc(errno.EFAULT, "Unknown error")
