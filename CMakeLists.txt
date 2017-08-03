@@ -5,6 +5,7 @@ if(UNIX AND NOT APPLE)
     set(LINUX TRUE)
 endif()
 
+option(RPC_DEBUG "Enable debug output")
 option(BUILD_DOC "Create and install HTML API documentation")
 option(BUILD_TESTS "Build and install tests")
 option(BUILD_EXAMPLES "Build and install example programs" ON)
@@ -53,6 +54,10 @@ include_directories(${SOUP_INCLUDE_DIRS})
 link_directories(${SOUP_LIBRARY_DIRS})
 include_directories(${YAJL_INCLUDE_DIRS})
 link_directories(${YAJL_LIBRARY_DIRS})
+
+if(RPC_DEBUG)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DRPC_DEBUG")
+endif()
 
 if(BUILD_LIBUSB)
     include_directories(${LIBUSB_INCLUDE_DIRS})
