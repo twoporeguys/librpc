@@ -74,21 +74,22 @@ typedef int (*rpc_close_fn_t)(struct rpc_connection *);
 typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
 typedef int (*rpc_teardown_fn_t)(struct rpc_server *);
 
-struct rpc_query_iter {
-	rpc_object_t 		source;
-	size_t 			cur_idx;
-	rpc_object_t 		rules;
-	rpc_query_params_t 	params;
-	bool			done;
-	bool			initialized;
-	uint32_t		limit_cnt;
+struct rpc_query_iter
+{
+	rpc_object_t 		rqi_source;
+	size_t 			rqi_idx;
+	rpc_object_t 		rqi_rules;
+	rpc_query_params_t 	rqi_params;
+	bool			rqi_done;
+	bool			rqi_initialized;
+	uint32_t		rqi_limit;
 };
 
 struct rpc_binary_value
 {
-	uintptr_t 		ptr;
-	size_t 			length;
-	bool 			copy;
+	uintptr_t 		rbv_ptr;
+	size_t 			rbv_length;
+	bool 			rbv_copy;
 };
 
 struct rpc_shmem_block
@@ -100,10 +101,10 @@ struct rpc_shmem_block
 
 struct rpc_error_value
 {
-	int			code;
-	GString *		message;
-	rpc_object_t		extra;
-    	rpc_object_t 		stack;
+	int			rev_code;
+	GString *		rev_message;
+	rpc_object_t		rev_extra;
+	rpc_object_t 		rev_stack;
 };
 
 union rpc_value
@@ -202,6 +203,7 @@ struct rpc_connection
     	GMutex			rco_send_mtx;
     	GMainContext *		rco_mainloop;
     	GThreadPool *		rco_callback_pool;
+	rpc_object_t 		rco_params;
     	int			rco_flags;
 	bool			rco_closed;
 
@@ -242,7 +244,7 @@ struct rpc_client
     	GThread *		rci_thread;
     	rpc_connection_t 	rci_connection;
     	const char *		rci_uri;
-    	int 			rci_flags;
+	rpc_object_t 		rci_params;
 };
 
 struct rpc_context

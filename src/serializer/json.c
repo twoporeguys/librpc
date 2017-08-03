@@ -345,7 +345,7 @@ rpc_json_write_object_ext(yajl_gen gen, rpc_object_t object,
 	case RPC_TYPE_BINARY:
 		data_buf = rpc_data_get_bytes_ptr(object);
 		base64_data = g_base64_encode((const guchar *)data_buf,
-		    object->ro_value.rv_bin.length);
+		    object->ro_value.rv_bin.rbv_length);
 
 		status = yajl_gen_string(gen, (const uint8_t *)base64_data,
 		    strlen(base64_data));

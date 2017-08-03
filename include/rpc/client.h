@@ -55,10 +55,10 @@ typedef struct rpc_client *rpc_client_t;
  * - loopback://<id> connects using a local transport
  *
  * @param uri Endpoint URI
- * @param flags Currently unused
+ * @param params Transport-specific parameters or NULL
  * @return Connect RPC client object
  */
-rpc_client_t rpc_client_create(const char *uri, int flags);
+rpc_client_t rpc_client_create(const char *uri, rpc_object_t params);
 
 /**
  * Gets the connection object from a client.

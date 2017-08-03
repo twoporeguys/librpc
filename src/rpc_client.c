@@ -40,7 +40,7 @@ rpc_client_worker(void *arg)
 }
 
 rpc_client_t
-rpc_client_create(const char *uri, int flags)
+rpc_client_create(const char *uri, rpc_object_t params)
 {
 	rpc_client_t client;
 
@@ -50,11 +50,13 @@ rpc_client_create(const char *uri, int flags)
 	client->rci_thread = g_thread_new("librpc client", rpc_client_worker,
 	    client);
 	client->rci_uri = uri;
-	client->rci_flags = flags;
+	client->rci_params = params;
+
+	if (params)
+		rpc_retain(params);
 	
 	g_main_context_push_thread_default(client->rci_g_context);
-	client->rci_connection = rpc_connection_create(client->rci_uri,
-	    client->rci_flags);
+	client->rci_connection = rpc_connection_create(client->rci_uri, params);
 	g_main_context_pop_thread_default(client->rci_g_context);
 
 	if (client->rci_connection == NULL) {

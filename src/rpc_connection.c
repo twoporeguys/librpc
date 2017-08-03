@@ -699,7 +699,7 @@ rpc_connection_alloc(rpc_server_t server)
 }
 
 rpc_connection_t
-rpc_connection_create(const char *uri, int flags __attribute__((unused)))
+rpc_connection_create(const char *uri, rpc_object_t params)
 {
 	GError *err = NULL;
 	const struct rpc_transport *transport;
@@ -718,6 +718,7 @@ rpc_connection_create(const char *uri, int flags __attribute__((unused)))
 	g_mutex_init(&conn->rco_send_mtx);
 	g_mutex_init(&conn->rco_subscription_mtx);
 	conn->rco_flags = transport->flags;
+	conn->rco_params = params;
 	conn->rco_uri = uri;
 	conn->rco_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_inbound_calls = g_hash_table_new(g_str_hash, g_str_equal);
@@ -732,7 +733,7 @@ rpc_connection_create(const char *uri, int flags __attribute__((unused)))
 
 	}
 
-	if (transport->connect(conn, uri, NULL) != 0)
+	if (transport->connect(conn, uri, params) != 0)
 		goto fail;
 
 	return (conn);

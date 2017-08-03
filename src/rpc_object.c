@@ -158,13 +158,13 @@ rpc_create_description(GString *description, rpc_object_t object,
 
 	case RPC_TYPE_BINARY:
 		data_ptr = (uint8_t *)rpc_data_get_bytes_ptr(object);
-		data_length = MIN(object->ro_value.rv_bin.length, 16);
+		data_length = MIN(object->ro_value.rv_bin.rbv_length, 16);
 
 		for (i = 0; i < data_length; i++)
 			g_string_append_printf(description, "%02x",
 			    data_ptr[i]);
 
-		if (data_length < object->ro_value.rv_bin.length)
+		if (data_length < object->ro_value.rv_bin.rbv_length)
 			g_string_append(description, "...");
 
 		break;
@@ -376,8 +376,8 @@ rpc_release_impl(rpc_object_t object)
 	if (g_atomic_int_dec_and_test(&object->ro_refcnt)) {
 		switch (object->ro_type) {
 		case RPC_TYPE_BINARY:
-			if (object->ro_value.rv_bin.copy == true)
-				g_free((void *)object->ro_value.rv_bin.ptr);
+			if (object->ro_value.rv_bin.rbv_copy == true)
+				g_free((void *)object->ro_value.rv_bin.rbv_ptr);
 
 			break;
 
@@ -398,9 +398,10 @@ rpc_release_impl(rpc_object_t object)
 			break;
 
 		case RPC_TYPE_ERROR:
-			g_string_free(object->ro_value.rv_error.message, true);
-			rpc_release(object->ro_value.rv_error.extra);
-			rpc_release(object->ro_value.rv_error.stack);
+			rpc_release(object->ro_value.rv_error.rev_extra);
+			rpc_release(object->ro_value.rv_error.rev_stack);
+			g_string_free(object->ro_value.rv_error.rev_message,
+			    true);
 			break;
 
 #if defined(__linux__)
@@ -547,9 +548,9 @@ rpc_hash(rpc_object_t object)
 		    rpc_data_get_length(object)));
 
 	case RPC_TYPE_ERROR:
-		return (object->ro_value.rv_error.code ^
-		    g_string_hash(object->ro_value.rv_error.message) ^
-		    rpc_hash(object->ro_value.rv_error.extra));
+		return (object->ro_value.rv_error.rev_code ^
+		    g_string_hash(object->ro_value.rv_error.rev_message) ^
+		    rpc_hash(object->ro_value.rv_error.rev_extra));
 
 #if defined(__linux__)
 	case RPC_TYPE_SHMEM:
@@ -842,13 +843,13 @@ rpc_data_create(const void *bytes, size_t length, bool copy)
 	union rpc_value value;
 
 	if (copy) {
-		value.rv_bin.ptr = (uintptr_t)malloc(length);
-		memcpy((void *)value.rv_bin.ptr, bytes, length);
+		value.rv_bin.rbv_ptr = (uintptr_t)malloc(length);
+		memcpy((void *)value.rv_bin.rbv_ptr, bytes, length);
 	} else
-		value.rv_bin.ptr = (uintptr_t)bytes;
+		value.rv_bin.rbv_ptr = (uintptr_t)bytes;
 
-	value.rv_bin.copy = copy;
-	value.rv_bin.length = length;
+	value.rv_bin.rbv_copy = copy;
+	value.rv_bin.rbv_length = length;
 
 	return (rpc_prim_create(RPC_TYPE_BINARY, value));
 }
@@ -860,7 +861,7 @@ rpc_data_get_length(rpc_object_t xdata)
 	if (xdata->ro_type != RPC_TYPE_BINARY)
 		return (0);
 
-	return (xdata->ro_value.rv_bin.length);
+	return (xdata->ro_value.rv_bin.rbv_length);
 }
 
 inline const void *
@@ -870,7 +871,7 @@ rpc_data_get_bytes_ptr(rpc_object_t xdata)
 	if (xdata->ro_type != RPC_TYPE_BINARY)
 		return (NULL);
 
-	return ((const void *)xdata->ro_value.rv_bin.ptr);
+	return ((const void *)xdata->ro_value.rv_bin.rbv_ptr);
 }
 
 inline size_t
@@ -1079,10 +1080,10 @@ rpc_error_create(int code, const char *msg, rpc_object_t extra)
 
 	stack = rpc_get_backtrace();
 
-	val.rv_error.code = code;
-	val.rv_error.message = g_string_new(msg);
-	val.rv_error.extra = extra;
-	val.rv_error.stack = rpc_string_create(stack);
+	val.rv_error.rev_code = code;
+	val.rv_error.rev_message = g_string_new(msg);
+	val.rv_error.rev_extra = extra;
+	val.rv_error.rev_stack = rpc_string_create(stack);
 
 	free(stack);
 
@@ -1096,7 +1097,7 @@ rpc_error_create_with_stack(int code, const char *msg, rpc_object_t extra,
 	rpc_object_t result;
 
 	result = rpc_error_create(code, msg, extra);
-	result->ro_value.rv_error.stack = stack;
+	result->ro_value.rv_error.rev_stack = stack;
 	rpc_retain(stack);
 	return (result);
 }
@@ -1108,7 +1109,7 @@ rpc_error_get_code(rpc_object_t error)
 	if (rpc_get_type(error) != RPC_TYPE_ERROR)
 		return (-1);
 
-	return (error->ro_value.rv_error.code);
+	return (error->ro_value.rv_error.rev_code);
 }
 
 const char *
@@ -1117,7 +1118,7 @@ rpc_error_get_message(rpc_object_t error)
 	if (rpc_get_type(error) != RPC_TYPE_ERROR)
 		return (NULL);
 
-	return (error->ro_value.rv_error.message->str);
+	return (error->ro_value.rv_error.rev_message->str);
 }
 
 rpc_object_t
@@ -1126,7 +1127,7 @@ rpc_error_get_extra(rpc_object_t error)
 	if (rpc_get_type(error) != RPC_TYPE_ERROR)
 		return (NULL);
 
-	return (error->ro_value.rv_error.extra);
+	return (error->ro_value.rv_error.rev_extra);
 }
 
 rpc_object_t
@@ -1135,7 +1136,7 @@ rpc_error_get_stack(rpc_object_t error)
 	if (rpc_get_type(error) != RPC_TYPE_ERROR)
 		return (NULL);
 
-	return (error->ro_value.rv_error.stack);
+	return (error->ro_value.rv_error.rev_stack);
 }
 
 
@@ -1145,11 +1146,11 @@ rpc_error_set_extra(rpc_object_t error, rpc_object_t extra)
 	if (rpc_get_type(error) != RPC_TYPE_ERROR)
 		return;
 
-	if (error->ro_value.rv_error.extra != NULL)
-		rpc_release(error->ro_value.rv_error.extra);
+	if (error->ro_value.rv_error.rev_extra != NULL)
+		rpc_release(error->ro_value.rv_error.rev_extra);
 
 	rpc_retain(extra);
-	error->ro_value.rv_error.extra = extra;
+	error->ro_value.rv_error.rev_extra = extra;
 }
 
 inline rpc_object_t
@@ -1474,7 +1475,7 @@ rpc_array_get_data(rpc_object_t array, size_t index, size_t *length)
 		return (NULL);
 
 	if (length != NULL)
-		*length = xdata->ro_value.rv_bin.length;
+		*length = xdata->ro_value.rv_bin.rbv_length;
 
 	return rpc_data_get_bytes_ptr(xdata);
 }
@@ -1729,7 +1730,7 @@ rpc_dictionary_get_data(rpc_object_t dictionary, const char *key,
 		return (NULL);
 
 	if (length != NULL)
-		*length = xdata->ro_value.rv_bin.length;
+		*length = xdata->ro_value.rv_bin.rbv_length;
 
 	return rpc_data_get_bytes_ptr(xdata);
 }

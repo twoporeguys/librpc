@@ -835,7 +835,7 @@ cdef class Client(Connection):
         self.client = <rpc_client_t>NULL
         self.connection = <rpc_connection_t>NULL
 
-    def connect(self, uri):
+    def connect(self, uri, params=None):
         cdef char* c_uri
 
         self.uri = c_uri = uri.encode('utf-8')

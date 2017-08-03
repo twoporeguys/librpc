@@ -36,7 +36,7 @@ static bool eval_rule(rpc_object_t obj, rpc_object_t rule);
 
 static rpc_object_t
 rpc_query_steal_get(rpc_object_t object, const char *path,
-		    rpc_object_t default_val)
+    rpc_object_t default_val)
 {
 	char *split_path = g_strdup(path);
 	char *token;
@@ -82,12 +82,13 @@ rpc_query_get_parent(rpc_object_t object, const char *path,
 	char *get_path;
 	size_t get_path_len;
 	rpc_object_t parent;
-	char *last_segment = g_strrstr(path, ".") + 1;
+	char *last_segment;
 
+	last_segment = g_strrstr(path, ".") + 1;
 	get_path_len = strlen(path) - strlen(last_segment) - 1;
 	get_path = g_strndup(path, get_path_len);
-
-	parent = rpc_query_steal_get(object, (const char *)get_path, default_val);
+	parent = rpc_query_steal_get(object, (const char *)get_path,
+	    default_val);
 
 	g_free(get_path);
 	*child = (const char *)last_segment;
@@ -111,7 +112,8 @@ eval_logic_and(rpc_object_t obj, rpc_object_t lst)
 }
 
 static bool
-eval_logic_or(rpc_object_t obj, rpc_object_t lst) {
+eval_logic_or(rpc_object_t obj, rpc_object_t lst)
+{
 	__block bool result = false;
 
 	if (rpc_get_type(lst) != RPC_TYPE_ARRAY)
@@ -126,7 +128,8 @@ eval_logic_or(rpc_object_t obj, rpc_object_t lst) {
 }
 
 static bool
-eval_logic_nor(rpc_object_t obj, rpc_object_t lst) {
+eval_logic_nor(rpc_object_t obj, rpc_object_t lst)
+{
 	__block bool result = false;
 
 	if (rpc_get_type(lst) != RPC_TYPE_ARRAY)
@@ -152,17 +155,14 @@ eval_logic_operator(rpc_object_t obj, rpc_object_t rule)
 	op = rpc_array_get_string(rule, 0);
 	lst = rpc_array_get_value(rule, 1);
 
-	if (!g_strcmp0(op, "or")) {
+	if (!g_strcmp0(op, "or"))
 		return (eval_logic_or(obj, lst));
-	}
 
-	if (!g_strcmp0(op, "and")) {
+	if (!g_strcmp0(op, "and"))
 		return (eval_logic_and(obj, lst));
-	}
 
-	if (!g_strcmp0(op, "nor")) {
+	if (!g_strcmp0(op, "nor"))
 		return (eval_logic_nor(obj, lst));
-	}
 
 	return (false);
 }
@@ -170,13 +170,11 @@ eval_logic_operator(rpc_object_t obj, rpc_object_t rule)
 static bool
 op_in(rpc_object_t o1, rpc_object_t o2)
 {
-	if (rpc_get_type(o2) == RPC_TYPE_ARRAY) {
+	if (rpc_get_type(o2) == RPC_TYPE_ARRAY)
 		return (rpc_array_contains(o2, o1));
-	}
 
-	if (rpc_get_type(o1) == RPC_TYPE_ARRAY) {
+	if (rpc_get_type(o1) == RPC_TYPE_ARRAY)
 		return (rpc_array_contains(o1, o2));
-	}
 
 	return (false);
 }
@@ -198,39 +196,28 @@ eval_field_operator(rpc_object_t obj, rpc_object_t rule)
 
 	item = rpc_query_steal_get(obj, left, NULL);
 
-	if (!g_strcmp0(op, "=")) {
+	if (!g_strcmp0(op, "="))
 		return (rpc_equal(item, right));
 
-	}
-
-	if (!g_strcmp0(op, "!=")) {
+	if (!g_strcmp0(op, "!="))
 		return (rpc_cmp(item, right) != 0);
 
-	}
-
-	if (!g_strcmp0(op, ">")) {
+	if (!g_strcmp0(op, ">"))
 		return (rpc_cmp(item, right) > 0);
 
-	}
-
-	if (!g_strcmp0(op, "<")) {
+	if (!g_strcmp0(op, "<"))
 		return (rpc_cmp(item, right) < 0);
 
-	}
-
-	if (!g_strcmp0(op, ">=")) {
+	if (!g_strcmp0(op, ">="))
 		return (rpc_cmp(item, right) >= 0);
 
-	}
-
-	if (!g_strcmp0(op, "<=")) {
+	if (!g_strcmp0(op, "<="))
 		return (rpc_cmp(item, right) <= 0);
-
-	}
 
 	if (!g_strcmp0(op, "~")) {
 		if (rpc_get_type(right) != RPC_TYPE_STRING)
 			return (false);
+
 		if (rpc_get_type(item) != RPC_TYPE_STRING)
 			return (false);
 
@@ -240,19 +227,16 @@ eval_field_operator(rpc_object_t obj, rpc_object_t rule)
 
 	}
 
-	if ((!g_strcmp0(op, "in")) || (!g_strcmp0(op, "contains"))) {
+	if ((!g_strcmp0(op, "in")) || (!g_strcmp0(op, "contains")))
 		return (op_in(item, right));
 
-	}
-
-	if ((!g_strcmp0(op, "nin")) || (!g_strcmp0(op, "ncontains"))) {
+	if ((!g_strcmp0(op, "nin")) || (!g_strcmp0(op, "ncontains")))
 		return (!op_in(item, right));
-
-	}
 
 	if (!g_strcmp0(op, "match")) {
 		if (rpc_get_type(right) != RPC_TYPE_STRING)
 			return (false);
+
 		if (rpc_get_type(item) != RPC_TYPE_STRING)
 			return (false);
 
@@ -262,7 +246,6 @@ eval_field_operator(rpc_object_t obj, rpc_object_t rule)
 
 	return (false);
 }
-
 
 static bool
 eval_rule(rpc_object_t obj, rpc_object_t rule)
@@ -312,16 +295,16 @@ rpc_query_find_next(rpc_query_iter_t iter)
 	rpc_object_t result = NULL;
 
 	do {
-		current = rpc_array_get_value(iter->source, iter->cur_idx);
-		iter->cur_idx++;
-		result = rpc_query_steal_apply(current, iter->rules);
+		current = rpc_array_get_value(iter->rqi_source, iter->rqi_idx);
+		iter->rqi_idx++;
+		result = rpc_query_steal_apply(current, iter->rqi_rules);
 
 	} while ((current != NULL) && (result == NULL));
 
-	if (iter->params->limit > 0) {
-		if ((result != NULL) && (iter->initialized)) {
-			if (iter->limit_cnt < iter->params->limit)
-				iter->limit_cnt++;
+	if (iter->rqi_params->limit > 0) {
+		if ((result != NULL) && (iter->rqi_initialized)) {
+			if (iter->rqi_limit < iter->rqi_params->limit)
+				iter->rqi_limit++;
 			else
 				result = NULL;
 		}
@@ -336,7 +319,6 @@ rpc_query_get(rpc_object_t object, const char *path, rpc_object_t default_val)
 	rpc_object_t retval;
 
 	retval = rpc_query_steal_get(object, path, default_val);
-
 	if (retval != NULL)
 		rpc_retain(retval);
 
@@ -466,13 +448,13 @@ rpc_query(rpc_object_t object, rpc_query_params_t params, rpc_object_t rules)
 	if (params != NULL)
 		*local_params = *params;
 
-	iter->source = object;
-	iter->cur_idx = 0;
-	iter->params = local_params;
-	iter->rules = rules;
-	iter->done = false;
-	iter->initialized = false;
-	iter->limit_cnt = 0;
+	iter->rqi_source = object;
+	iter->rqi_idx = 0;
+	iter->rqi_params = local_params;
+	iter->rqi_rules = rules;
+	iter->rqi_done = false;
+	iter->rqi_initialized = false;
+	iter->rqi_limit = 0;
 
 	rpc_retain(rules);
 	rpc_retain(object);
@@ -519,54 +501,54 @@ rpc_query_next(rpc_query_iter_t iter, rpc_object_t *chunk)
 	uint32_t match_cnt = 0;
 	uint32_t i;
 
-	if (iter->done) {
+	if (iter->rqi_done) {
 		*chunk = NULL;
 		return (false);
 	}
 
-	if (!iter->initialized) {
-		if (iter->params->sort)
-			rpc_array_sort(iter->source, iter->params->sort);
+	if (!iter->rqi_initialized) {
+		if (iter->rqi_params->sort)
+			rpc_array_sort(iter->rqi_source, iter->rqi_params->sort);
 
-		if (iter->params->reverse) {
+		if (iter->rqi_params->reverse) {
 			temp_obj = rpc_array_create();
-			rpc_array_reverse_apply(iter->source,
+			rpc_array_reverse_apply(iter->rqi_source,
 			    ^(size_t idx __unused, rpc_object_t v) {
 				rpc_array_append_value(temp_obj, v);
 				return ((bool) true);
 			});
 
-			rpc_release(iter->source);
-			iter->source = temp_obj;
+			rpc_release(iter->rqi_source);
+			iter->rqi_source = temp_obj;
 		}
 
-		for (i = 0; i < iter->params->offset; i++) {
+		for (i = 0; i < iter->rqi_params->offset; i++) {
 			temp_obj = rpc_query_find_next(iter);
 			if (temp_obj == NULL)
 				break;
 		}
 
-		iter->initialized = true;
+		iter->rqi_initialized = true;
 	}
 
-	if (iter->params->count) {
+	if (iter->rqi_params->count) {
 		do {
 			temp_obj = rpc_query_find_next(iter);
 			match_cnt++;
 
 		} while (temp_obj != NULL);
-		iter->done = true;
+		iter->rqi_done = true;
 		*chunk = rpc_uint64_create(match_cnt);
 		return (false);
 	}
 
-	if (iter->params->single) {
+	if (iter->rqi_params->single) {
 		temp_obj = rpc_query_find_next(iter);
 		if (temp_obj != NULL)
 			rpc_retain(temp_obj);
 
 		*chunk = temp_obj;
-		iter->done = true;
+		iter->rqi_done = true;
 		return (false);
 	}
 
@@ -576,15 +558,15 @@ rpc_query_next(rpc_query_iter_t iter, rpc_object_t *chunk)
 		if (temp_obj == NULL)
 			break;
 
-		if (iter->params->callback)
-			temp_obj = iter->params->callback(temp_obj);
+		if (iter->rqi_params->callback)
+			temp_obj = iter->rqi_params->callback(temp_obj);
 
 	} while (temp_obj == NULL);
 
 	*chunk = temp_obj;
 
 	if (temp_obj == NULL) {
-		iter->done = true;
+		iter->rqi_done = true;
 		return (false);
 	}
 
@@ -596,8 +578,8 @@ void
 rpc_query_iter_free(rpc_query_iter_t iter)
 {
 
-	rpc_release(iter->rules);
-	rpc_release(iter->source);
-	g_free(iter->params);
+	rpc_release(iter->rqi_rules);
+	rpc_release(iter->rqi_source);
+	g_free(iter->rqi_params);
 	g_free(iter);
 }
