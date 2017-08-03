@@ -64,7 +64,7 @@ var searchData=
   ['rpc_5fcallback',['RPC_CALLBACK',['../connection_8h.html#a7512dc753949d75650bbec7527f9d0a6',1,'connection.h']]],
   ['rpc_5fcallback_5ft',['rpc_callback_t',['../connection_8h.html#adc95de7fabf9904e1be453f5c6392a6b',1,'connection.h']]],
   ['rpc_5fclient_5fclose',['rpc_client_close',['../client_8h.html#ababbc19eeaefeab208c5b6d80411ee77',1,'client.h']]],
-  ['rpc_5fclient_5fcreate',['rpc_client_create',['../client_8h.html#aa2ee510504eb2546129fd29733666c34',1,'client.h']]],
+  ['rpc_5fclient_5fcreate',['rpc_client_create',['../client_8h.html#aba8b2ed8b613a26a6e241f6122e1cb5e',1,'client.h']]],
   ['rpc_5fclient_5fget_5fconnection',['rpc_client_get_connection',['../client_8h.html#a115d9a7fa40d9ec52a2fb553426fc202',1,'client.h']]],
   ['rpc_5fcmp',['rpc_cmp',['../object_8h.html#a1fd38947da5673eb2db4910878bebb36',1,'object.h']]],
   ['rpc_5fconnection_5fcall',['rpc_connection_call',['../connection_8h.html#aee4f43c3790d07d116367646694cb1c0',1,'connection.h']]],
