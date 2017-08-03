@@ -758,10 +758,12 @@ cdef class Connection(object):
         cdef Object rpc_value
         cdef rpc_call_status_t call_status
 
+        if self.connection == <rpc_connection_t>NULL:
+            raise RuntimeError("Not connected")
+
         rpc_args = Array(list(args))
 
         call = rpc_connection_call(self.connection, method.encode('utf-8'), rpc_args.obj, NULL)
-
         if call == <rpc_call_t>NULL:
             raise_internal_exc(rpc=True)
 
@@ -809,6 +811,9 @@ cdef class Connection(object):
         pass
 
     def register_event_handler(self, name, fn):
+        if self.connection == <rpc_connection_t>NULL:
+            raise RuntimeError("Not connected")
+
         byte_name = name.encode('utf-8')
         self.ev_handlers[name] = fn
         rpc_connection_register_event_handler(
@@ -843,6 +848,9 @@ cdef class Client(Connection):
         self.connection = rpc_client_get_connection(self.client)
 
     def disconnect(self):
+        if self.client == <rpc_client_t>NULL:
+            raise RuntimeError("Not connected")
+
         rpc_client_close(self.client)
 
 
