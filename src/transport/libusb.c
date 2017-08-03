@@ -203,6 +203,7 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 {
 	SoupURI *uri;
 	struct usb_connection *conn;
+	struct librpc_usb_identification ident;
 
 	uri = soup_uri_new(uri_string);
 
@@ -223,6 +224,15 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 		return (-1);
 	}
 
+	/* Read the log buffer size */
+	if (usb_xfer(conn->uc_handle, LIBRPC_USB_IDENTIFY, &ident,
+	    sizeof(ident), 500) < 0) {
+		libusb_close(conn->uc_handle);
+		g_free(conn);
+		return (-1);
+	}
+
+	conn->uc_logsize = ident.log_size;
 	conn->uc_msg_thread = g_thread_new("libusb send", usb_msg_thread, conn);
 	conn->uc_event_thread = g_thread_new("libusb event", usb_event_thread, conn);
 	conn->uc_rco = rco;
