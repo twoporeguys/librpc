@@ -30,6 +30,7 @@ from libc.stdint cimport *
 ctypedef bint (*rpc_dictionary_applier_f)(void *arg, const char *key, rpc_object_t value)
 ctypedef bint (*rpc_array_applier_f)(void *arg, size_t index, rpc_object_t value)
 ctypedef void (*rpc_handler_f)(void *arg, const char *name, rpc_object_t args)
+ctypedef void (*rpc_error_handler_f)(void *arg, rpc_error_code_t code, rpc_object_t args)
 ctypedef bint (*rpc_callback_f)(void *arg, rpc_call_t call, rpc_call_status_t status)
 ctypedef void (*rpc_bus_event_handler_f)(void *arg, rpc_bus_event_t, rpc_bus_node *)
 
@@ -142,9 +143,10 @@ cdef extern from "rpc/connection.h" nogil:
         pass
 
     void *RPC_HANDLER(rpc_handler_f fn, void *arg)
+    void *RPC_ERROR_HANDLER(rpc_error_handler_f fn, void *arg)
     void *RPC_CALLBACK(rpc_callback_f fn, void *arg)
 
-    rpc_connection_t rpc_connection_create(const char *uri, int flags)
+    rpc_connection_t rpc_connection_create(const char *uri, rpc_object_t params)
     int rpc_connection_close(rpc_connection_t conn)
     int rpc_connection_subscribe_event(rpc_connection_t conn, const char *name)
     int rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name)
@@ -154,6 +156,7 @@ cdef extern from "rpc/connection.h" nogil:
     int rpc_connection_send_event(rpc_connection_t conn, const char *name,
         rpc_object_t args)
     void rpc_connection_set_event_handler(rpc_connection_t conn, void *handler)
+    void rpc_connection_set_error_handler(rpc_connection_t conn, void *handler)
     int rpc_call_status(rpc_call_t call)
     int rpc_call_wait(rpc_call_t call)
     int rpc_call_continue(rpc_call_t call, bint sync)
@@ -191,7 +194,7 @@ cdef extern from "rpc/client.h" nogil:
     ctypedef struct rpc_client_t:
         pass
 
-    rpc_client_t rpc_client_create(const char *uri, int flags)
+    rpc_client_t rpc_client_create(const char *uri, rpc_object_t params)
     rpc_connection_t rpc_client_get_connection(rpc_client_t client)
     void rpc_client_close(rpc_client_t client)
 
@@ -252,6 +255,8 @@ cdef class Context(object):
 
 cdef class Connection(object):
     cdef rpc_connection_t connection
+    cdef object error_handler
+    cdef object event_handler
     cdef object ev_handlers
     cdef bint borrowed
 
@@ -260,7 +265,7 @@ cdef class Connection(object):
     @staticmethod
     cdef void c_ev_handler(const char *name, rpc_object_t args, void *arg) with gil
     @staticmethod
-    cdef void c_error_handler(rpc_error_code_t code, rpc_object_t args, void *arg) with gil
+    cdef void c_error_handler(void *arg, rpc_error_code_t code, rpc_object_t args) with gil
 
 
 cdef class Bus(object):

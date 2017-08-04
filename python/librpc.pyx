@@ -128,16 +128,16 @@ cdef class Object(object):
             self.obj = rpc_bool_create(value)
             return
 
-        if isinstance(value, int) or force_type == ObjectType.INT64:
-            self.obj = rpc_int64_create(value)
-            return
-
         if isinstance(value, int) and force_type == ObjectType.UINT64:
             self.obj = rpc_uint64_create(value)
             return
 
         if isinstance(value, int) and force_type == ObjectType.FD:
             self.obj = rpc_fd_create(value)
+            return
+
+        if isinstance(value, int) or force_type == ObjectType.INT64:
+            self.obj = rpc_int64_create(value)
             return
 
         if isinstance(value, str) or force_type == ObjectType.STRING:
@@ -709,22 +709,32 @@ cdef class Context(object):
 cdef class Connection(object):
     def __init__(self):
         PyEval_InitThreads()
+        self.error_handler = None
+        self.event_handler = None
         self.ev_handlers = {}
 
     property error_handler:
         def __get__(self):
-            pass
+            return self.error_handler
 
         def __set__(self, fn):
-            pass
+            if not callable(fn):
+                fn = None
+
+            self.error_handler = fn
+            rpc_connection_set_error_handler(self.connection,
+                RPC_ERROR_HANDLER(
+                    self.c_error_handler,
+                    <void *>self.error_handler
+                )
+            )
 
     property event_handler:
         def __get__(self):
-            pass
+            return self.event_handler
 
         def __set__(self, fn):
-            pass
-
+            self.event_handler = fn
 
     @staticmethod
     cdef Connection init_from_ptr(rpc_connection_t ptr):
@@ -747,8 +757,16 @@ cdef class Connection(object):
         handler(event_args)
 
     @staticmethod
-    cdef void c_error_handler(rpc_error_code_t error, rpc_object_t args, void *arg) with gil:
-        pass
+    cdef void c_error_handler(void *arg, rpc_error_code_t error, rpc_object_t args) with gil:
+        cdef Object error_args = None
+        cdef object handler = <object>arg
+
+        if args != <rpc_object_t>NULL:
+            error_args = Object.__new__(Object)
+            error_args.obj = args
+            rpc_retain(args)
+
+        handler(ErrorCode(error), error_args)
 
     def call_sync(self, method, *args):
         cdef rpc_object_t rpc_result
@@ -835,12 +853,12 @@ cdef class Client(Connection):
         self.client = <rpc_client_t>NULL
         self.connection = <rpc_connection_t>NULL
 
-    def connect(self, uri, params=None):
+    def connect(self, uri, Object params=None):
         cdef char* c_uri
 
         self.uri = c_uri = uri.encode('utf-8')
         with nogil:
-            self.client = rpc_client_create(c_uri, 0)
+            self.client = rpc_client_create(c_uri, params.obj)
 
         if self.client == <rpc_client_t>NULL:
             raise_internal_exc(rpc=False)
@@ -922,8 +940,9 @@ cdef class Bus(object):
         try:
             for i in range(0, ret):
                 node = BusNode.__new__(BusNode)
-                node.name = result[i].rbn_name
-                node.description = result[i].rbn_description
+                node.name = result[i].rbn_name.decode('utf-8')
+                node.description = result[i].rbn_description.decode('utf-8')
+                node.serial = result[i].rbn_serial.decode('utf-8')
                 node.address = result[i].rbn_address
                 yield node
         finally:
