@@ -47,6 +47,7 @@ static int usb_send_msg(void *, void *, size_t, const int *fds, size_t nfds);
 static int usb_abort(void *);
 static int usb_get_fd(void *);
 static int usb_ping(void *, const char *);
+static int usb_enumerate_one(libusb_device *, struct rpc_bus_node *);
 static int usb_enumerate(void *, struct rpc_bus_node **, size_t *);
 static int usb_xfer(struct libusb_device_handle *, int, void *, size_t,
     unsigned int);
@@ -152,6 +153,25 @@ static int
 usb_hotplug_callback(libusb_context *ctx, libusb_device *dev,
     libusb_hotplug_event evt, void *arg)
 {
+	struct usb_context *context = arg;
+	struct rpc_bus_node node = {};
+
+	switch (evt) {
+	case LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED:
+		if (usb_enumerate_one(dev, &node) < 0)
+			return (0);
+
+		rpc_bus_event(RPC_BUS_ATTACHED, &node);
+		break;
+
+	case LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT:
+		node.rbn_address = libusb_get_device_address(dev);
+		rpc_bus_event(RPC_BUS_DETACHED, &node);
+		break;
+
+	default:
+		g_assert_not_reached();
+	}
 
 	return (0);
 }
@@ -211,7 +231,7 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	conn->uc_logfd = -1;
 	libusb_init(&conn->uc_libusb);
 
-	rpc_object_unpack(args, "[f]", &conn->uc_logfd);
+	rpc_object_unpack(args, "f", &conn->uc_logfd);
 
 	conn->uc_state.uts_libusb = conn->uc_libusb;
 	conn->uc_state.uts_exit = false;
@@ -302,6 +322,59 @@ usb_ping(void *arg, const char *name)
 }
 
 static int
+usb_enumerate_one(libusb_device *dev, struct rpc_bus_node *node)
+{
+	struct libusb_device_descriptor desc;
+	struct librpc_usb_identification ident;
+	libusb_device_handle *handle;
+	char name[NAME_MAX];
+	char descr[NAME_MAX];
+	char serial[NAME_MAX];
+	int ret = 0;
+
+	libusb_get_device_descriptor(dev, &desc);
+
+	if (desc.idVendor != LIBRPC_USB_VID ||
+	    desc.idProduct != LIBRPC_USB_PID)
+		return (-1);
+
+	if (libusb_open(dev, &handle) != 0)
+		return (-1);
+
+	if (usb_xfer(handle, LIBRPC_USB_IDENTIFY, &ident,
+	    sizeof(ident), 500) < 0) {
+		ret = -1;
+		goto done;
+	}
+
+	if (libusb_get_string_descriptor_ascii(handle, (uint8_t)ident.iName,
+	    (uint8_t *)name, sizeof(name)) < 0) {
+		ret = -1;
+		goto done;
+	}
+
+	if (libusb_get_string_descriptor_ascii(handle, (uint8_t)ident.iDescription,
+	    (uint8_t *)descr, sizeof(descr)) < 0) {
+		ret = -1;
+		goto done;
+	}
+
+	if (libusb_get_string_descriptor_ascii(handle, desc.iSerialNumber,
+	    (uint8_t *)serial, sizeof(serial)) < 0) {
+		ret = -1;
+		goto done;
+	}
+
+	node->rbn_address = libusb_get_device_address(dev);
+	node->rbn_name = g_strdup(name);
+	node->rbn_description = g_strdup(descr);
+	node->rbn_serial = g_strdup(serial);
+done:
+	libusb_close(handle);
+	return (ret);
+}
+
+static int
 usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 {
 	struct usb_context *ctx = arg;
@@ -309,9 +382,7 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 	libusb_device **devices;
 	libusb_device *dev;
 	libusb_device_handle *handle;
-	char name[NAME_MAX];
-	char descr[NAME_MAX];
-	char serial[NAME_MAX];
+	struct rpc_bus_node node;
 	struct librpc_usb_identification ident;
 
 	*countp = 0;
@@ -326,35 +397,12 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 		    libusb_get_device_address(dev), desc.idVendor,
 		    desc.idProduct);
 
-		if (desc.idVendor != LIBRPC_USB_VID ||
-		    desc.idProduct != LIBRPC_USB_PID)
+		if (usb_enumerate_one(dev, &node) < 0)
 			continue;
-
-		if (libusb_open(dev, &handle) != 0)
-			continue;
-
-		if (usb_xfer(handle, LIBRPC_USB_IDENTIFY, &ident,
-		    sizeof(ident), 500) < 0)
-			goto done;
-
-		libusb_get_string_descriptor_ascii(handle,
-		    (uint8_t)ident.iName, (uint8_t *)name, sizeof(name));
-
-		libusb_get_string_descriptor_ascii(handle,
-		    (uint8_t)ident.iDescription, (uint8_t *)descr, sizeof(descr));
-
-		libusb_get_string_descriptor_ascii(handle, desc.iSerialNumber,
-		    (uint8_t *)serial, sizeof(serial));
 
 		*resultp = g_realloc(*resultp, (*countp + 1) * sizeof(struct rpc_bus_node));
-		(*resultp)[*countp].rbn_address = libusb_get_device_address(dev);
-		(*resultp)[*countp].rbn_name = g_strndup(name, sizeof(name));
-		(*resultp)[*countp].rbn_description = g_strndup(descr, sizeof(descr));
-		(*resultp)[*countp].rbn_serial = g_strndup(serial, sizeof(serial));
+		(*resultp)[*countp] = node;
 		(*countp)++;
-
-done:
-		libusb_close(handle);
 	}
 
 	return (0);
@@ -493,10 +541,10 @@ usb_event_thread(void *arg)
 
 	while (!conn->uc_state.uts_exit) {
 		ret = usb_xfer(conn->uc_handle, LIBRPC_USB_READ_LOG, log,
-		    sizeof(*log) + conn->uc_logsize, 500);
+		    sizeof(*log) + conn->uc_logsize - 1024, 500);
 
 		if (ret < 0)
-			goto done;
+			goto disconnected;
 
 		if (log->start == log->end || conn->uc_logfd < 0)
 			goto done;
@@ -505,10 +553,13 @@ usb_event_thread(void *arg)
 			dprintf(conn->uc_logfd, "%*s",
 			    log->end - log->start,
 			    &log->buffer[log->start]);
+
 done:
 		g_usleep(1000 * 500);
 	}
 
+disconnected:
+	conn->uc_rco->rco_close(conn->uc_rco);
 	return (NULL);
 }
 
