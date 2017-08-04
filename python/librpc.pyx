@@ -906,6 +906,7 @@ cdef class BusNode(object):
 
 cdef class Bus(object):
     def __init__(self):
+        PyEval_InitThreads()
         with nogil:
             rpc_bus_open();
 
@@ -949,15 +950,22 @@ cdef class Bus(object):
             rpc_bus_free_result(result)
 
     @staticmethod
-    cdef void c_ev_handler(void *arg, rpc_bus_event_t ev, rpc_bus_node *bn):
+    cdef void c_ev_handler(void *arg, rpc_bus_event_t ev, rpc_bus_node *bn) with gil:
         cdef object fn = <object>arg
         cdef BusNode node
 
         node = BusNode.__new__(BusNode)
-        node.name = bn.rbn_name.decode('utf-8')
-        node.description = bn.rbn_description.decode('utf-8')
-        node.serial = bn.rbn_serial.decode('utf-8')
         node.address = bn.rbn_address
+
+        if bn.rbn_name:
+            node.name = bn.rbn_name.decode('utf-8')
+
+        if bn.rbn_description:
+            node.description = bn.rbn_description.decode('utf-8')
+
+        if bn.rbn_serial:
+            node.serial = bn.rbn_serial.decode('utf-8')
+
         fn(BusEvent(ev), node)
 
     property event_handler:
