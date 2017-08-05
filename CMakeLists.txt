@@ -6,6 +6,7 @@ if(UNIX AND NOT APPLE)
 endif()
 
 option(RPC_DEBUG "Enable debug output")
+option(PYTHON_VERSION "Target Python version for py-librpc (2 or 3)" 3)
 option(BUILD_DOC "Create and install HTML API documentation")
 option(BUILD_TESTS "Build and install tests")
 option(BUILD_EXAMPLES "Build and install example programs" ON)
