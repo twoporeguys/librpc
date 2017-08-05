@@ -35,7 +35,9 @@ rpc_client_worker(void *arg)
 {
 	rpc_client_t client = arg;
 
+	g_main_context_acquire(client->rci_g_context);
 	g_main_loop_run(client->rci_g_loop);
+	g_main_context_release(client->rci_g_context);
 	return (NULL);
 }
 
@@ -64,6 +66,7 @@ rpc_client_create(const char *uri, rpc_object_t params)
 		return (NULL);
 	}
 
+	client->rci_connection->rco_mainloop = client->rci_g_context;
 	client->rci_connection->rco_client = client;
 	return (client);
 }
