@@ -6,23 +6,16 @@ Loosely based on Apple XPC interface.
 
 ## Building librpc
 
-Following packages are required to build libprc (using Ubuntu 17.04 as an example, please adjust do your distribution if needed):
+Install the packages required to build librpc for Ubuntu 17.04 or Mac OS 12.
+adjust do your distribution if needed):
 
 ```
-cmake
-clang
-libglib2.0-dev
-libsoup-gnome2.4-dev
-libyajl-dev
-libblocksruntime-dev
+./requirements.sh
 ```
 
 Build/install procedure:
 
 ```
-$ mkdir -p build
-$ cd build
-$ cmake ..
 $ make
 $ make install  # optional
 ```
