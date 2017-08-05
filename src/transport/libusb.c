@@ -40,8 +40,11 @@
 struct usb_context;
 struct usb_connection;
 
-static void *usb_open(void);
+static void *usb_open(GMainContext *main_context);
 static void usb_close(void *);
+static int usb_hotplug_callback(libusb_context *, libusb_device *,
+    libusb_hotplug_event, void *);
+static gboolean usb_hotplug_impl(void *);
 static int usb_connect(struct rpc_connection *, const char *, rpc_object_t);
 static int usb_send_msg(void *, void *, size_t, const int *fds, size_t nfds);
 static int usb_abort(void *);
@@ -53,9 +56,9 @@ static int usb_xfer(struct libusb_device_handle *, int, void *, size_t,
     unsigned int);
 static libusb_device_handle *usb_find_by_name(struct libusb_context *,
     const char *);
+static gboolean usb_send_msg_impl(void *);
+static gboolean usb_event_impl(void *);
 static void *usb_libusb_thread(void *);
-static void *usb_event_thread(void *);
-static void *usb_msg_thread(void *);
 
 enum librpc_usb_opcode
 {
@@ -109,11 +112,19 @@ struct usb_send_state
 	size_t 				uss_len;
 };
 
+struct usb_hotplug_state
+{
+	struct usb_context *		uss_ctx;
+	libusb_device *			uss_dev;
+	libusb_hotplug_event		uss_event;
+};
+
 struct usb_context
 {
 	libusb_context *		uc_libusb;
 	libusb_hotplug_callback_handle 	uc_handle;
 	GThread *			uc_thread;
+	GMainContext *			uc_main_context;
 	struct usb_thread_state		uc_state;
 };
 
@@ -124,9 +135,7 @@ struct usb_connection
 	libusb_device *			uc_dev;
 	libusb_device_handle *		uc_handle;
 	GThread *			uc_libusb_thread;
-	GThread *			uc_msg_thread;
-	GThread *			uc_event_thread;
-	GAsyncQueue *			uc_msg_queue;
+	GSource *			uc_event_source;
 	struct usb_thread_state		uc_state;
 	size_t 				uc_logsize;
 	int				uc_logfd;
@@ -154,18 +163,33 @@ usb_hotplug_callback(libusb_context *ctx, libusb_device *dev,
     libusb_hotplug_event evt, void *arg)
 {
 	struct usb_context *context = arg;
+	struct usb_hotplug_state *state;
+
+	state = g_malloc0(sizeof(*state));
+	state->uss_ctx = context;
+	state->uss_dev = dev;
+	state->uss_event = evt;
+
+	g_main_context_invoke(context->uc_main_context, usb_hotplug_impl, state);
+	return (0);
+}
+
+static gboolean
+usb_hotplug_impl(void *arg)
+{
+	struct usb_hotplug_state *state = arg;
 	struct rpc_bus_node node = {};
 
-	switch (evt) {
+	switch (state->uss_event) {
 	case LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED:
-		if (usb_enumerate_one(dev, &node) < 0)
-			return (0);
+		if (usb_enumerate_one(state->uss_dev, &node) < 0)
+			break;
 
 		rpc_bus_event(RPC_BUS_ATTACHED, &node);
 		break;
 
 	case LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT:
-		node.rbn_address = libusb_get_device_address(dev);
+		node.rbn_address = libusb_get_device_address(state->uss_dev);
 		rpc_bus_event(RPC_BUS_DETACHED, &node);
 		break;
 
@@ -173,16 +197,18 @@ usb_hotplug_callback(libusb_context *ctx, libusb_device *dev,
 		g_assert_not_reached();
 	}
 
-	return (0);
+	g_free(state);
+	return (false);
 }
 
 static void *
-usb_open(void)
+usb_open(GMainContext *main_context)
 {
 	struct usb_context *ctx;
 	int ret;
 
 	ctx = g_malloc0(sizeof(*ctx));
+	ctx->uc_main_context = main_context;
 
 	if (libusb_init(&ctx->uc_libusb) != 0) {
 		g_free(ctx);
@@ -235,7 +261,6 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 
 	conn->uc_state.uts_libusb = conn->uc_libusb;
 	conn->uc_state.uts_exit = false;
-	conn->uc_msg_queue = g_async_queue_new();
 	conn->uc_libusb_thread = g_thread_new("libusb worker",
 	    usb_libusb_thread, &conn->uc_state);
 
@@ -252,11 +277,12 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 		return (-1);
 	}
 
-	conn->uc_logsize = ident.log_size;
-	conn->uc_msg_thread = g_thread_new("libusb send", usb_msg_thread, conn);
-	conn->uc_event_thread = g_thread_new("libusb event", usb_event_thread, conn);
-	conn->uc_rco = rco;
+	conn->uc_event_source = g_timeout_source_new(500);
+	g_source_set_callback(conn->uc_event_source, usb_event_impl, conn, NULL);
+	g_source_attach(conn->uc_event_source, rco->rco_mainloop);
 
+	conn->uc_logsize = ident.log_size;
+	conn->uc_rco = rco;
 	rco->rco_send_msg = usb_send_msg;
 	rco->rco_abort = usb_abort;
 	rco->rco_get_fd = usb_get_fd;
@@ -276,7 +302,7 @@ usb_send_msg(void *arg, void *buf, size_t len, const int *fds __unused,
 	send->uss_buf = g_memdup(buf, (guint)len);
 	send->uss_len = len;
 	send->uss_conn = conn;
-	g_async_queue_push(conn->uc_msg_queue, send);
+	g_main_context_invoke(conn->uc_rco->rco_mainloop, usb_send_msg_impl, send);
 	return (0);
 }
 
@@ -285,10 +311,8 @@ usb_abort(void *arg)
 {
 	struct usb_connection *conn = arg;
 
-	g_async_queue_push(conn->uc_msg_queue, NULL);
 	libusb_close(conn->uc_handle);
 	g_thread_join(conn->uc_libusb_thread);
-	g_thread_join(conn->uc_msg_thread);
 	return (0);
 }
 
@@ -332,7 +356,8 @@ usb_enumerate_one(libusb_device *dev, struct rpc_bus_node *node)
 	char serial[NAME_MAX];
 	int ret = 0;
 
-	libusb_get_device_descriptor(dev, &desc);
+	if (libusb_get_device_descriptor(dev, &desc) < 0)
+		return (-1);
 
 	if (desc.idVendor != LIBRPC_USB_VID ||
 	    desc.idProduct != LIBRPC_USB_PID)
@@ -465,102 +490,92 @@ usb_find_by_name(struct libusb_context *libusb, const char *name)
 	return (NULL);
 }
 
-static void *
-usb_msg_thread(void *arg)
+static gboolean
+usb_send_msg_impl(void *arg)
 {
-	struct usb_connection *conn = arg;
-	struct usb_send_state *state;
+	struct usb_send_state *state = arg;
+	struct usb_connection *conn = state->uss_conn;
 	int ret;
 	struct {
 		uint8_t status;
 		uint8_t request[4096];
 	} packet;
 
+	g_mutex_lock(&usb_request_mtx);
+	memcpy(&packet.status, state->uss_buf, state->uss_len);
+	if (libusb_control_transfer(conn->uc_handle,
+	    LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_OUT,
+	    LIBRPC_USB_SEND_REQ, 0, 0, (uint8_t *)&packet,
+	    (uint16_t)state->uss_len, 500) < 0)
+		goto out;
+
 	for (;;) {
-		state = g_async_queue_pop(conn->uc_msg_queue);
-		if (state == NULL)
-			return (NULL);
 
-		g_mutex_lock(&usb_request_mtx);
-		memcpy(&packet.status, state->uss_buf, state->uss_len);
-		if (libusb_control_transfer(conn->uc_handle,
-		    LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_OUT,
-		    LIBRPC_USB_SEND_REQ, 0, 0, (uint8_t *)&packet,
-		    (uint16_t)state->uss_len, 500) < 0)
-			break;
+		ret = libusb_control_transfer(conn->uc_handle,
+		    LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_IN,
+		    LIBRPC_USB_READ_RESP, 0, 0, (uint8_t *)&packet,
+		    4095, 500);
 
-		for (;;) {
-
-			ret = libusb_control_transfer(conn->uc_handle,
-			    LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_IN,
-			    LIBRPC_USB_READ_RESP, 0, 0, (uint8_t *)&packet,
-			    4095, 500);
-
-			if (ret < 0) {
-				debugf("failed to submit transfer, ret=%d", ret);
-				continue;
-			}
-
-			switch (packet.status) {
-			case LIBRPC_USB_OK:
-				conn->uc_rco->rco_recv_msg(conn->uc_rco,
-				    &packet.request, (size_t)ret, NULL,
-				    0, NULL);
-				goto out;
-
-			case LIBRPC_USB_NOT_READY:
-				g_usleep(1000 * 50); /* 50ms */
-				break;
-
-			case LIBRPC_USB_ERROR:
-				break;
-
-			default:
-				g_assert_not_reached();
-				break;
-			}
+		if (ret < 0) {
+			debugf("failed to submit transfer, ret=%d", ret);
+			continue;
 		}
 
-out:
-		g_mutex_unlock(&usb_request_mtx);
-		g_free(state->uss_buf);
-		g_free(state);
+		switch (packet.status) {
+		case LIBRPC_USB_OK:
+			conn->uc_rco->rco_recv_msg(conn->uc_rco,
+			    &packet.request, (size_t)ret, NULL,
+			    0, NULL);
+			goto out;
+
+		case LIBRPC_USB_NOT_READY:
+			g_usleep(1000 * 50); /* 50ms */
+			break;
+
+		case LIBRPC_USB_ERROR:
+			break;
+
+		default:
+			g_assert_not_reached();
+			break;
+		}
 	}
 
-	return (NULL);
+out:
+	g_mutex_unlock(&usb_request_mtx);
+	g_free(state->uss_buf);
+	g_free(state);
+	return (false);
 }
 
-static void *
-usb_event_thread(void *arg)
+static gboolean
+usb_event_impl(void *arg)
 {
 	struct usb_connection *conn = arg;
 	int ret;
 	struct librpc_usb_log *log;
 
 	log = g_malloc0(sizeof(*log) + conn->uc_logsize);
+	ret = usb_xfer(conn->uc_handle, LIBRPC_USB_READ_LOG, log,
+	    sizeof(*log) + conn->uc_logsize - 1024, 500);
 
-	while (!conn->uc_state.uts_exit) {
-		ret = usb_xfer(conn->uc_handle, LIBRPC_USB_READ_LOG, log,
-		    sizeof(*log) + conn->uc_logsize - 1024, 500);
+	if (ret < 0)
+		goto disconnected;
 
-		if (ret < 0)
-			goto disconnected;
+	if (log->start == log->end || conn->uc_logfd < 0)
+		goto done;
 
-		if (log->start == log->end || conn->uc_logfd < 0)
-			goto done;
-
-		if (log->start < log->end)
-			dprintf(conn->uc_logfd, "%*s",
-			    log->end - log->start,
-			    &log->buffer[log->start]);
+	if (log->start < log->end)
+		dprintf(conn->uc_logfd, "%*s",
+		    log->end - log->start,
+		    &log->buffer[log->start]);
 
 done:
-		g_usleep(1000 * 500);
-	}
+	return (!conn->uc_state.uts_exit);
 
 disconnected:
 	conn->uc_rco->rco_close(conn->uc_rco);
-	return (NULL);
+	return (false);
 }
 
 static void *

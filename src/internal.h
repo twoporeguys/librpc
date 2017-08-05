@@ -255,7 +255,7 @@ struct rpc_context
 
 struct rpc_bus_transport
 {
-        void *(*open)(void);
+        void *(*open)(GMainContext *);
         void (*close)(void *);
         int (*ping)(void *, const char *);
         int (*enumerate)(void *, struct rpc_bus_node **, size_t *);
