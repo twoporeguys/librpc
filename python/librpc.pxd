@@ -269,7 +269,7 @@ cdef class Connection(object):
 
 
 cdef class Bus(object):
-    cdef object event_handler
+    cdef object event_fn
 
     @staticmethod
     cdef void c_ev_handler(void *arg, rpc_bus_event_t ev, rpc_bus_node *bn) with gil

@@ -88,6 +88,7 @@ class LibException(Exception):
         self.code = code
         self.message = message
         self.extra = extra
+        self.obj = obj
 
         tb = sys.exc_info()[2]
         if stacktrace is None and tb:
@@ -972,11 +973,13 @@ cdef class Bus(object):
         def __set__(self, value):
             if not value:
                 rpc_bus_unregister_event_handler()
+                self.event_fn = None
                 return
 
+            self.event_fn = value
             rpc_bus_register_event_handler(RPC_BUS_EVENT_HANDLER(
                 self.c_ev_handler,
-                <void *>value
+                <void *>self.event_fn
             ))
 
 
