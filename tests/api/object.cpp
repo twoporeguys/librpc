@@ -597,12 +597,12 @@ SCENARIO("RPC_BINARY_OBJECT", "Create a BINARY RPC object and perform basic oper
 		}
 
 		THEN("Object is referencing a copy of inital data") {
-			REQUIRE(object->ro_value.rv_bin.copy);
+			REQUIRE(object->ro_value.rv_bin.rbv_copy);
 			REQUIRE(rpc_data_get_bytes_ptr(object) != &value);
 		}
 
 		THEN("Length of data inside of the object is the same as length of initial data") {
-			REQUIRE(object->ro_value.rv_bin.length == sizeof(value));
+			REQUIRE(object->ro_value.rv_bin.rbv_length == sizeof(value));
 		}
 
 		THEN("Extracted value matches") {
@@ -618,7 +618,7 @@ SCENARIO("RPC_BINARY_OBJECT", "Create a BINARY RPC object and perform basic oper
 			}
 
 			AND_THEN("Object and its copy are referencing different buffers") {
-				REQUIRE(copy->ro_value.rv_bin.copy);
+				REQUIRE(copy->ro_value.rv_bin.rbv_copy);
 				REQUIRE(rpc_data_get_bytes_ptr(object) != rpc_data_get_bytes_ptr(copy));
 			}
 
@@ -663,12 +663,12 @@ SCENARIO("RPC_BINARY_OBJECT", "Create a BINARY RPC object and perform basic oper
 			}
 
 			THEN("Object is referencing inital data") {
-				REQUIRE(!object->ro_value.rv_bin.copy);
+				REQUIRE(!object->ro_value.rv_bin.rbv_copy);
 				REQUIRE(rpc_data_get_bytes_ptr(object) == &value);
 			}
 
 			THEN("Length of data inside of the object is the same as length of initial data") {
-				REQUIRE(object->ro_value.rv_bin.length == sizeof(value));
+				REQUIRE(object->ro_value.rv_bin.rbv_length == sizeof(value));
 			}
 
 			THEN("Extracted value matches") {
