@@ -251,7 +251,7 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 	size_t idx = 0;
 
 	if (branch == NULL)
-		return (0);
+		return (-1);
 
 	for (i = fmt_cnt; fmt[i] != '\0'; i++) {
 		ch = fmt[i];
@@ -721,7 +721,7 @@ rpc_object_vunpack(rpc_object_t obj, const char *fmt, va_list ap)
 
 	cnt = rpc_object_unpack_layer(obj, fmt, 0, ap);
 
-	return ((cnt == (int)strlen(fmt)) ? 0 : -1);
+	return (cnt < 0 ? cnt : 0);
 }
 
 inline rpc_object_t
