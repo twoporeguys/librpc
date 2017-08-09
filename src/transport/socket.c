@@ -356,6 +356,7 @@ socket_abort(void *arg)
 	struct socket_connection *conn = arg;
 	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
 
+	g_socket_shutdown(sock, true, true, NULL);
 	g_socket_close(sock, NULL);
 	g_thread_join(conn->sc_reader_thread);
 
