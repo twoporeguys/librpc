@@ -262,6 +262,9 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 			current = rpc_dictionary_get_value(dictionary,
 			    va_arg(ap, const char *));
 
+		if (current == NULL)
+			return (-1);
+
 		switch (ch) {
 		case '*':
 			break;
