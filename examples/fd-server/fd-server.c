@@ -38,7 +38,7 @@ write_to_pipe(void *cookie, rpc_object_t args)
 {
 	int fd;
 
-	if (rpc_object_unpack(args, "[f]", &fd) != 0) {
+	if (rpc_object_unpack(args, "[f]", &fd) < 1) {
 		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
 		return (NULL);
 	}

@@ -315,6 +315,9 @@ rpc_object_t rpc_object_vpack(const char *fmt, va_list ap);
  *     three char ** arguments to be passed to the function
  *     after the format string.
  *
+ * The function returns the number of successfully processed format characters
+ * (excluding '{', '[', ']', '}'), or an error as a negative value.
+ *
  * Format string syntax:
  * - * - Array's no-op - skip index
  * - v - Librpc object - args: rpc_object_t *object
@@ -334,7 +337,7 @@ rpc_object_t rpc_object_vpack(const char *fmt, va_list ap);
  *
  * @param fmt Format string.
  * @param ... Variable length list of values to be unpacked.
- * @return Unpacking status. Errors are reported as non-zero values.
+ * @return Unpacking status. Errors are reported as negative values.
  */
 int rpc_object_unpack(rpc_object_t, const char *fmt, ...);
 
@@ -347,7 +350,7 @@ int rpc_object_unpack(rpc_object_t, const char *fmt, ...);
  *
  * @param fmt Format string.
  * @param ap Variable arguments list structure.
- * @return Unpacking status. Errors are reported as non-zero values.
+ * @return Unpacking status. Errors are reported as negative values.
  */
 int rpc_object_vunpack(rpc_object_t, const char *fmt, va_list ap);
 

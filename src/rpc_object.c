@@ -241,7 +241,7 @@ rpc_create_description(GString *description, rpc_object_t object,
 
 static int
 rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
-    va_list ap)
+    int *cnt, va_list ap)
 {
 	rpc_object_t array = NULL;
 	rpc_object_t dictionary = NULL;
@@ -267,36 +267,36 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 
 		switch (ch) {
 		case '*':
-			break;
+			goto inc;
 
 		case 'v':
 			*va_arg(ap, rpc_object_t *) = current;
-			break;
+			goto inc;
 
 		case 'b':
 			*va_arg(ap, bool *) = rpc_bool_get_value(current);
-			break;
+			goto inc;
 
 		case 'i':
 			*va_arg(ap, int64_t *) = rpc_int64_get_value(current);
-			break;
+			goto inc;
 
 		case 'u':
 			*va_arg(ap, uint64_t *) = rpc_uint64_get_value(current);
-			break;
+			goto inc;
 
 		case 'd':
 			*va_arg(ap, double *) = rpc_double_get_value(current);
-			break;
+			goto inc;
 
 		case 'f':
 			*va_arg(ap, int *) = rpc_fd_get_value(current);
-			break;
+			goto inc;
 
 		case 's':
 			*va_arg(ap, const char **) = rpc_string_get_string_ptr(
 			    current);
-			break;
+			goto inc;
 
 		case 'R':
 			if (array == NULL) {
@@ -306,6 +306,8 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 
 			*va_arg(ap, rpc_object_t *) = rpc_array_slice(array,
 			    idx + 1, -1);
+
+inc:			(*cnt)++;
 			break;
 
 		case '[':
@@ -320,7 +322,7 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 				break;
 			}
 
-			i = rpc_object_unpack_layer(current, fmt, i, ap);
+			i = rpc_object_unpack_layer(current, fmt, i, cnt, ap);
 			if (i == -1)
 				return (i);
 			break;
@@ -720,11 +722,9 @@ rpc_object_unpack(rpc_object_t obj, const char *fmt, ...)
 int
 rpc_object_vunpack(rpc_object_t obj, const char *fmt, va_list ap)
 {
-	int cnt;
+	int cnt = 0;
 
-	cnt = rpc_object_unpack_layer(obj, fmt, 0, ap);
-
-	return (cnt < 0 ? cnt : 0);
+	return (rpc_object_unpack_layer(obj, fmt, 0, &cnt, ap) > 0 ? cnt : -1);
 }
 
 inline rpc_object_t

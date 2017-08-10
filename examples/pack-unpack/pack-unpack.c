@@ -52,10 +52,13 @@ main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)
 		const char *str;
 		int64_t num;
 		int64_t dict_num;
+		int cnt;
 		bool sure;
 
-		rpc_object_unpack(args, "[sib{i}]", &str, &num, &sure, "key",
-		    &dict_num);
+		cnt = rpc_object_unpack(args, "[sib{i}]", &str, &num, &sure,
+		    "key", &dict_num);
+
+		printf("unpack cnt: %i\n", cnt);
 
 		printf("str = %s, num = %jd, dict_num = %jd, sure = %s\n", str,
 		    num, dict_num, sure ? "true" : "false");

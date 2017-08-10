@@ -41,7 +41,7 @@ exchange_blob(void *cookie, rpc_object_t args)
 	rpc_object_t shmem;
 	void *addr;
 
-	if (rpc_object_unpack(args, "[v]", &shmem) != 0) {
+	if (rpc_object_unpack(args, "[v]", &shmem) < 1) {
 		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
 		return (NULL);
 	}
