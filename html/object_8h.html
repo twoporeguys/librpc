@@ -3810,6 +3810,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Unpacks provided values accordingly to a specified format string from an object.</p>
 <p>Each character of the format string represents a single unpack step and may require from 0 to n arguments. Example: [sss] represents an array containing three strings and require three char ** arguments to be passed to the function after the format string.</p>
+<p>The function returns the number of successfully processed format characters (excluding '{', '[', ']', '}'), or an error as a negative value.</p>
 <p>Format string syntax:</p>
 <ul>
 <li>* - Array's no-op - skip index</li>
@@ -3833,7 +3834,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Unpacking status. Errors are reported as non-zero values. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Unpacking status. Errors are reported as negative values. </dd></dl>
 
 </div>
 </div>
@@ -3911,7 +3912,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Unpacking status. Errors are reported as non-zero values. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Unpacking status. Errors are reported as negative values. </dd></dl>
 
 </div>
 </div>

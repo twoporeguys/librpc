@@ -2357,6 +2357,8 @@ Unpacks provided values accordingly to a specified format string from an object.
 
 Each character of the format string represents a single unpack step and may require from 0 to n arguments. Example\-: \mbox{[}sss\mbox{]} represents an array containing three strings and require three char $\ast$$\ast$ arguments to be passed to the function after the format string.
 
+The function returns the number of successfully processed format characters (excluding '\{', '\mbox{[}', '\mbox{]}', '\}'), or an error as a negative value.
+
 Format string syntax\-:
 \begin{DoxyItemize}
 \item $\ast$ -\/ Array's no-\/op -\/ skip index
@@ -2382,7 +2384,7 @@ Format string syntax\-:
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Unpacking status. Errors are reported as non-\/zero values. 
+Unpacking status. Errors are reported as negative values. 
 \end{DoxyReturn}
 \hypertarget{object_8h_a15bdca8f36858885773a6a1f717782fa}{\index{object.\-h@{object.\-h}!rpc\-\_\-object\-\_\-vpack@{rpc\-\_\-object\-\_\-vpack}}
 \index{rpc\-\_\-object\-\_\-vpack@{rpc\-\_\-object\-\_\-vpack}!object.h@{object.\-h}}
@@ -2427,7 +2429,7 @@ The functions acts exactly the same as the rpc\-\_\-object\-\_\-unpack function,
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Unpacking status. Errors are reported as non-\/zero values. 
+Unpacking status. Errors are reported as negative values. 
 \end{DoxyReturn}
 \hypertarget{object_8h_a2d85324f75b20628a5d32e8117277e18}{\index{object.\-h@{object.\-h}!rpc\-\_\-release\-\_\-impl@{rpc\-\_\-release\-\_\-impl}}
 \index{rpc\-\_\-release\-\_\-impl@{rpc\-\_\-release\-\_\-impl}!object.h@{object.\-h}}
