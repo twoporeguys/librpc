@@ -255,10 +255,10 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 
 	for (i = fmt_cnt; fmt[i] != '\0'; i++) {
 		ch = fmt[i];
-		if (array)
+		if ((array != NULL) && (ch != ']'))
 			current = rpc_array_get_value(array, idx++);
 
-		if (dictionary != NULL && (ch != '}'))
+		if ((dictionary != NULL) && (ch != '}'))
 			current = rpc_dictionary_get_value(dictionary,
 			    va_arg(ap, const char *));
 
