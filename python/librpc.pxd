@@ -235,6 +235,11 @@ cdef extern from "rpc/bus.h" nogil:
     void rpc_bus_unregister_event_handler()
 
 
+cdef extern from "rpc/serializer.h" nogil:
+    rpc_object_t rpc_serializer_load(const char *serializer, const void *frame, size_t len)
+    int rpc_serializer_dump(const char *serializer, rpc_object_t obj, void **framep, size_t *lenp)
+
+
 cdef class Object(object):
     cdef rpc_object_t obj
 

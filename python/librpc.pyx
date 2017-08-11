@@ -32,6 +32,7 @@ import types
 import traceback
 import datetime
 from librpc cimport *
+from libc.string cimport strdup
 from libc.stdint cimport *
 from libc.stdlib cimport malloc, free
 
@@ -981,6 +982,45 @@ cdef class Bus(object):
                 self.c_ev_handler,
                 <void *>self.event_fn
             ))
+
+
+cdef class Serializer(object):
+    cdef const char *type
+
+    def __init__(self, type):
+        self.type = strdup(type.encode('ascii'))
+
+    def __dealloc__(self):
+        free(<void *>self.type)
+
+    def loads(self, bytes blob):
+        cdef Object ret
+        cdef char *buf = blob
+        cdef int length = len(blob)
+
+        ret = Object.__new__(Object)
+
+        with nogil:
+            ret.obj = rpc_serializer_load(self.type, buf, length)
+
+        if ret.obj == <rpc_object_t>NULL:
+            raise_internal_exc()
+
+        return ret
+
+    def dumps(self, Object obj):
+        cdef void *frame
+        cdef size_t len
+        cdef int ret
+
+        with nogil:
+            ret = rpc_serializer_dump(self.type, obj.obj, &frame, &len)
+
+        if ret != 0:
+            raise_internal_exc()
+
+        return <bytes>(<char *>frame)[:len]
+
 
 
 cdef raise_internal_exc(rpc=False):
