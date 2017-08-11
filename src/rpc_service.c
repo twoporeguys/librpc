@@ -216,6 +216,7 @@ rpc_function_error(void *cookie, int code, const char *message, ...)
 	g_vasprintf(&msg, message, ap);
 	va_end(ap);
 	rpc_connection_send_err(call->ric_conn, call->ric_id, code, msg);
+	call->ric_responded = true;
 	g_free(msg);
 }
 
