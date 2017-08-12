@@ -504,7 +504,7 @@ end:	yajl_gen_free(gen);
 	return (status);
 }
 
-	rpc_object_t
+rpc_object_t
 rpc_json_deserialize(const void *frame, size_t size)
 {
 	yajl_handle handle;
