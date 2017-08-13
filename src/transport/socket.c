@@ -397,7 +397,6 @@ socket_reader(void *arg)
 		if (conn->sc_parent->rco_recv_msg(conn->sc_parent, frame, len,
 		    fds, nfds, &creds) != 0)
 			break;
-
 	}
 
 	conn->sc_parent->rco_close(conn->sc_parent);
