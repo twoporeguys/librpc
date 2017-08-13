@@ -226,6 +226,7 @@ rpc_function_error_ex(void *cookie, rpc_object_t exception)
 	struct rpc_inbound_call *call = cookie;
 
 	rpc_connection_send_errx(call->ric_conn, call->ric_id, exception);
+	call->ric_responded = true;
 }
 
 int
