@@ -320,7 +320,7 @@ rpc_object_t rpc_object_vpack(const char *fmt, va_list ap);
  *
  * Format string syntax:
  * - * - Array's no-op - skip index
- * - v - Librpc object - args: rpc_object_t *object
+ * - v - Object - args: rpc_object_t *object
  * - b - Boolean object - args: bool *value
  * - f - File descriptor object - args: int *fd
  * - i - Integer object - args: int *value

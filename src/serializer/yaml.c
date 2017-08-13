@@ -45,25 +45,40 @@ rpc_yaml_read_scalar(yaml_event_t *event)
 	char *value = (char *)event->data.scalar.value;
 	size_t len = event->data.scalar.length;
 	int64_t intval;
+	rpc_object_t ret;
 	char *endptr;
 
-	if (strncmp(value, "null", len) == 0)
-		return rpc_null_create();
+	if (strncmp(value, "null", len) == 0) {
+		ret = rpc_null_create();
+		goto done;
+	}
 
-	if (strncmp(value, "true", len) == 0)
-		return rpc_bool_create(true);
+	if (strncmp(value, "true", len) == 0) {
+		ret = rpc_bool_create(true);
+		goto done;
+	}
 
-	if (strncmp(value, "false", len) == 0)
-		return rpc_bool_create(false);
+	if (strncmp(value, "false", len) == 0) {
+		ret = rpc_bool_create(false);
+		goto done;
+	}
 
 	intval = (int64_t)g_ascii_strtoll(value, &endptr, 10);
-	if (endptr == NULL)
-		return rpc_int64_create(intval);
+	if (endptr == NULL) {
+		ret = rpc_int64_create(intval);
+		goto done;
+	}
 
-	if (value[0] == '"' && value[len-1] == '"')
-		return rpc_string_create_len(&value[1], len - 2);
+	if (value[0] == '"' && value[len-1] == '"') {
+		ret = rpc_string_create_len(&value[1], len - 2);
+		goto done;
+	}
 
-	return rpc_string_create_len(value, len);
+	ret = rpc_string_create_len(value, len);
+done:
+	ret->ro_column = event->start_mark.column;
+	ret->ro_line = event->start_mark.line;
+	return (ret);
 }
 
 static rpc_object_t
