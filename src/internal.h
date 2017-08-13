@@ -129,6 +129,8 @@ struct rpc_object
 {
 	rpc_type_t		ro_type;
 	volatile int		ro_refcnt;
+	size_t			ro_line;
+	size_t			ro_column;
 	union rpc_value		ro_value;
 };
 
