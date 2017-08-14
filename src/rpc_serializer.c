@@ -26,7 +26,7 @@
  */
 
 #include <errno.h>
-#include <rpc/object.h>
+#include <rpc/serializer.h>
 #include "internal.h"
 
 rpc_object_t
