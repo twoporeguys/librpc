@@ -53,7 +53,7 @@ rpc_serializer_dump(const char *serializer, rpc_object_t obj, void **framep,
 	impl = rpc_find_serializer(serializer);
 	if (impl == NULL) {
 		rpc_set_last_error(ENOENT, "Serializer not found", NULL);
-		return (NULL);
+		return (-1);
 	}
 
 	return (impl->serialize(obj, framep, lenp));
