@@ -117,9 +117,11 @@ rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 	const char *base64_data;
 	GHashTableIter iter;
 	gpointer key, value;
+#if defined(__linux__)
 	int shmem_fd;
 	off_t shmem_addr;
 	size_t shmem_size;
+#endif
 
 	if (rpc_dictionary_has_key(leaf, JSON_EXTTYPE_UINT64)) {
 		dict_value = rpc_dictionary_get_value(leaf,
