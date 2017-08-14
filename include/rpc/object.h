@@ -179,7 +179,7 @@ size_t rpc_get_line_number(rpc_object_t object);
  * @param object Object to get column number from
  * @return A column number in source file or 0
  */
-size_t rpc_get_column_Number(rpc_object_t object);
+size_t rpc_get_column_number(rpc_object_t object);
 
 /**
  * Creates and returns independent copy of an object.
