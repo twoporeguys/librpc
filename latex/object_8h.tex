@@ -70,6 +70,10 @@ enum \hyperlink{object_8h_a40ea3143863f0a2b47446ccaf655638e}{rpc\-\_\-type\-\_\-
 \item 
 int \hyperlink{object_8h_a2d85324f75b20628a5d32e8117277e18}{rpc\-\_\-release\-\_\-impl} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} object)
 \item 
+size\-\_\-t \hyperlink{object_8h_a67e5a3ceea99d8b298a5b5d5f1051fcc}{rpc\-\_\-get\-\_\-line\-\_\-number} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} object)
+\item 
+size\-\_\-t \hyperlink{object_8h_a0f259cfef4da0cec90b466f7e28fcb57}{rpc\-\_\-get\-\_\-column\-\_\-\-Number} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} object)
+\item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} \hyperlink{object_8h_aa5de9854b486016a16ac230ae0ba1d3a}{rpc\-\_\-copy} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} object)
 \item 
 int \hyperlink{object_8h_a1fd38947da5673eb2db4910878bebb36}{rpc\-\_\-cmp} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} o1, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} o2)
@@ -356,7 +360,7 @@ Decrements reference count of an object.
 
 Also sets it to N\-U\-L\-L if as a result of the operation reference count dropped to 0 and the object was freed. 
 
-Definition at line 231 of file object.\-h.
+Definition at line 255 of file object.\-h.
 
 
 
@@ -2168,6 +2172,25 @@ Returns a value of a file descriptor helf by a provided object.
 \begin{DoxyReturn}{Returns}
 File descriptor's value. 
 \end{DoxyReturn}
+\hypertarget{object_8h_a0f259cfef4da0cec90b466f7e28fcb57}{\index{object.\-h@{object.\-h}!rpc\-\_\-get\-\_\-column\-\_\-\-Number@{rpc\-\_\-get\-\_\-column\-\_\-\-Number}}
+\index{rpc\-\_\-get\-\_\-column\-\_\-\-Number@{rpc\-\_\-get\-\_\-column\-\_\-\-Number}!object.h@{object.\-h}}
+\subsubsection[{rpc\-\_\-get\-\_\-column\-\_\-\-Number}]{\setlength{\rightskip}{0pt plus 5cm}size\-\_\-t rpc\-\_\-get\-\_\-column\-\_\-\-Number (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\-\_\-object\-\_\-t}}]{object}
+\end{DoxyParamCaption}
+)}}\label{object_8h_a0f259cfef4da0cec90b466f7e28fcb57}
+Gets column number of object location in source file (if any).
+
+If the object was read from a file using R\-P\-C serializer A\-P\-I, this function might return a column number where the object was located in the source file. Otherwise, it returns 0.
+
+
+\begin{DoxyParams}{Parameters}
+{\em object} & Object to get column number from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A column number in source file or 0 
+\end{DoxyReturn}
 \hypertarget{object_8h_a3041a1bbc93de9f4753ed5191d6a8f29}{\index{object.\-h@{object.\-h}!rpc\-\_\-get\-\_\-last\-\_\-error@{rpc\-\_\-get\-\_\-last\-\_\-error}}
 \index{rpc\-\_\-get\-\_\-last\-\_\-error@{rpc\-\_\-get\-\_\-last\-\_\-error}!object.h@{object.\-h}}
 \subsubsection[{rpc\-\_\-get\-\_\-last\-\_\-error}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\-\_\-object\-\_\-t} rpc\-\_\-get\-\_\-last\-\_\-error (
@@ -2179,6 +2202,25 @@ Returns last runtime error reported by the library.
 
 \begin{DoxyReturn}{Returns}
 Error object. 
+\end{DoxyReturn}
+\hypertarget{object_8h_a67e5a3ceea99d8b298a5b5d5f1051fcc}{\index{object.\-h@{object.\-h}!rpc\-\_\-get\-\_\-line\-\_\-number@{rpc\-\_\-get\-\_\-line\-\_\-number}}
+\index{rpc\-\_\-get\-\_\-line\-\_\-number@{rpc\-\_\-get\-\_\-line\-\_\-number}!object.h@{object.\-h}}
+\subsubsection[{rpc\-\_\-get\-\_\-line\-\_\-number}]{\setlength{\rightskip}{0pt plus 5cm}size\-\_\-t rpc\-\_\-get\-\_\-line\-\_\-number (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\-\_\-object\-\_\-t}}]{object}
+\end{DoxyParamCaption}
+)}}\label{object_8h_a67e5a3ceea99d8b298a5b5d5f1051fcc}
+Gets line number of object location in source file (if any).
+
+If the object was read from a file using R\-P\-C serializer A\-P\-I, this function might return a line number where the object was located in the source file. Otherwise, it returns 0.
+
+
+\begin{DoxyParams}{Parameters}
+{\em object} & Object to get line number from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A line number in source file or 0 
 \end{DoxyReturn}
 \hypertarget{object_8h_a842969702ab17ad4b7e1b0c2ed9a4aef}{\index{object.\-h@{object.\-h}!rpc\-\_\-get\-\_\-type@{rpc\-\_\-get\-\_\-type}}
 \index{rpc\-\_\-get\-\_\-type@{rpc\-\_\-get\-\_\-type}!object.h@{object.\-h}}

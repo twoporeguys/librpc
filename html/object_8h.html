@@ -162,6 +162,10 @@ Functions</h2></td></tr>
 <tr class="separator:a9f5c8073f6c079852f39f409be1f777b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d85324f75b20628a5d32e8117277e18"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a2d85324f75b20628a5d32e8117277e18">rpc_release_impl</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:a2d85324f75b20628a5d32e8117277e18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67e5a3ceea99d8b298a5b5d5f1051fcc"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a67e5a3ceea99d8b298a5b5d5f1051fcc">rpc_get_line_number</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
+<tr class="separator:a67e5a3ceea99d8b298a5b5d5f1051fcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f259cfef4da0cec90b466f7e28fcb57"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a0f259cfef4da0cec90b466f7e28fcb57">rpc_get_column_Number</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
+<tr class="separator:a0f259cfef4da0cec90b466f7e28fcb57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5de9854b486016a16ac230ae0ba1d3a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aa5de9854b486016a16ac230ae0ba1d3a">rpc_copy</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:aa5de9854b486016a16ac230ae0ba1d3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fd38947da5673eb2db4910878bebb36"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a1fd38947da5673eb2db4910878bebb36">rpc_cmp</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> o1, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> o2)</td></tr>
@@ -492,7 +496,7 @@ Functions</h2></td></tr>
 </div><!-- fragment --><p>Decrements reference count of an object.</p>
 <p>Also sets it to NULL if as a result of the operation reference count dropped to 0 and the object was freed. </p>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00231">231</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00255">255</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -3517,6 +3521,31 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a0f259cfef4da0cec90b466f7e28fcb57"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t rpc_get_column_Number </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>object</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets column number of object location in source file (if any).</p>
+<p>If the object was read from a file using RPC serializer API, this function might return a column number where the object was located in the source file. Otherwise, it returns 0.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">object</td><td>Object to get column number from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A column number in source file or 0 </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a3041a1bbc93de9f4753ed5191d6a8f29"></a>
 <div class="memitem">
 <div class="memproto">
@@ -3532,6 +3561,31 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns last runtime error reported by the library.</p>
 <dl class="section return"><dt>Returns</dt><dd>Error object. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a67e5a3ceea99d8b298a5b5d5f1051fcc"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t rpc_get_line_number </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>object</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets line number of object location in source file (if any).</p>
+<p>If the object was read from a file using RPC serializer API, this function might return a line number where the object was located in the source file. Otherwise, it returns 0.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">object</td><td>Object to get line number from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A line number in source file or 0 </dd></dl>
 
 </div>
 </div>
