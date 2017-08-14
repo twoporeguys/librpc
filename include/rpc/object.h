@@ -158,6 +158,30 @@ rpc_object_t rpc_retain(rpc_object_t object);
 int rpc_release_impl(rpc_object_t object);
 
 /**
+ * Gets line number of object location in source file (if any).
+ *
+ * If the object was read from a file using RPC serializer API,
+ * this function might return a line number where the object was located
+ * in the source file. Otherwise, it returns 0.
+ *
+ * @param object Object to get line number from
+ * @return A line number in source file or 0
+ */
+size_t rpc_get_line_number(rpc_object_t object);
+
+/**
+ * Gets column number of object location in source file (if any).
+ *
+ * If the object was read from a file using RPC serializer API,
+ * this function might return a column number where the object was located
+ * in the source file. Otherwise, it returns 0.
+ *
+ * @param object Object to get column number from
+ * @return A column number in source file or 0
+ */
+size_t rpc_get_column_Number(rpc_object_t object);
+
+/**
  * Creates and returns independent copy of an object.
  *
  * @param object Object to be copied.

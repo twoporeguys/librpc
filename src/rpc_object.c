@@ -423,6 +423,20 @@ rpc_release_impl(rpc_object_t object)
 	return (object->ro_refcnt);
 }
 
+inline size_t
+rpc_get_line_number(rpc_object_t object)
+{
+
+	return (object->ro_line);
+}
+
+inline size_t
+rpc_get_column_number(rpc_object_t object)
+{
+
+	return (object->ro_column);
+}
+
 inline rpc_type_t
 rpc_get_type(rpc_object_t object)
 {
