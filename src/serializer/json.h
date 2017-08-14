@@ -36,6 +36,12 @@ extern "C" {
 #define	JSON_EXTTYPE_DATE	"$date"
 #define	JSON_EXTTYPE_BINARY	"$bin"
 #define	JSON_EXTTYPE_FD		"$fd"
+#define	JSON_EXTTYPE_ERROR	"$error"
+
+#define JSON_EXTTYPE_ERROR_CODE	"code"
+#define JSON_EXTTYPE_ERROR_MSG	"msg"
+#define JSON_EXTTYPE_ERROR_XTRA	"extra"
+#define JSON_EXTTYPE_ERROR_STCK	"stack"
 
 #if defined(__linux__)
 #define	JSON_EXTTYPE_SHMEM	"$shmem"
