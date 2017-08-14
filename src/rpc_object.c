@@ -1102,7 +1102,7 @@ rpc_error_create(int code, const char *msg, rpc_object_t extra)
 	val.rv_error.rev_extra = extra;
 	val.rv_error.rev_stack = rpc_string_create(stack);
 
-	free(stack);
+	g_free(stack);
 
 	return (rpc_prim_create(RPC_TYPE_ERROR, val));
 }
