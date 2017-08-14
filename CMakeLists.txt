@@ -34,6 +34,7 @@ pkg_check_modules (GLIB REQUIRED glib-2.0>=2.52)
 pkg_check_modules (GIO REQUIRED gio-unix-2.0)
 pkg_check_modules(SOUP REQUIRED libsoup-2.4)
 pkg_check_modules(YAJL REQUIRED yajl>=2.1.0)
+pkg_check_modules(YAML REQUIRED yaml-0.1)
 
 if(BUILD_LIBUSB)
     pkg_check_modules(LIBUSB REQUIRED libusb-1.0)
@@ -55,6 +56,8 @@ include_directories(${SOUP_INCLUDE_DIRS})
 link_directories(${SOUP_LIBRARY_DIRS})
 include_directories(${YAJL_INCLUDE_DIRS})
 link_directories(${YAJL_LIBRARY_DIRS})
+include_directories(${YAML_INCLUDE_DIRS})
+link_directories(${YAML_LIBRARY_DIRS})
 
 if(RPC_DEBUG)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DRPC_DEBUG")
@@ -73,7 +76,8 @@ set(HEADERS
         include/rpc/client.h
         include/rpc/discovery.h
         include/rpc/query.h
-        include/rpc/bus.h)
+        include/rpc/bus.h
+        include/rpc/serializer.h)
 
 set(CORE_FILES
         src/rpc_connection.c
@@ -84,6 +88,7 @@ set(CORE_FILES
         src/rpc_discovery.c
         src/rpc_query.c
         src/rpc_bus.c
+        src/rpc_serializer.c
         src/utils.c
         src/internal.h
         src/linker_set.h
@@ -99,6 +104,8 @@ set(SERIALIZER_FILES
         src/serializer/msgpack.h
         src/serializer/json.c
         src/serializer/json.h
+        src/serializer/yaml.c
+        src/serializer/yaml.h
         contrib/mpack/mpack.c)
 
 if(BUILD_LIBUSB)
@@ -120,6 +127,7 @@ target_link_libraries(librpc ${GLIB_LIBRARIES})
 target_link_libraries(librpc ${GIO_LIBRARIES})
 target_link_libraries(librpc ${SOUP_LIBRARIES})
 target_link_libraries(librpc ${YAJL_LIBRARIES})
+target_link_libraries(librpc ${YAML_LIBRARIES})
 
 if(BUILD_LIBUSB)
     target_link_libraries(librpc ${LIBUSB_LIBRARIES})
