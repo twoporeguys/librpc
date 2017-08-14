@@ -1114,6 +1114,7 @@ rpc_error_create_with_stack(int code, const char *msg, rpc_object_t extra,
 	rpc_object_t result;
 
 	result = rpc_error_create(code, msg, extra);
+	rpc_release(result->ro_value.rv_error.rev_stack);
 	result->ro_value.rv_error.rev_stack = stack;
 	rpc_retain(stack);
 	return (result);
