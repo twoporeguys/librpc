@@ -5,9 +5,8 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'mkdir build' 
-                sh 'cd build'
-                sh 'cmake .. -DBUILD_LIBUSB=ON'
-                sh 'make'
+                sh 'cd build && cmake .. -DBUILD_LIBUSB=ON'
+                sh 'cd build && make'
             }
         }
     }
