@@ -1,0 +1,8 @@
+---
+meta:
+  version: 1
+  realm: *
+  description: Discovery interface definition
+
+struct DiscoveryMethod:
+  members:

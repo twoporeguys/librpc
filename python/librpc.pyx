@@ -910,11 +910,11 @@ cdef class Bus(object):
     def __init__(self):
         PyEval_InitThreads()
         with nogil:
-            rpc_bus_open();
+            rpc_bus_open()
 
     def __dealloc__(self):
         with nogil:
-            rpc_bus_close();
+            rpc_bus_close()
 
     def ping(self, name):
         cdef const char *c_name
@@ -1020,6 +1020,87 @@ cdef class Serializer(object):
             raise_internal_exc()
 
         return <bytes>(<char *>frame)[:len]
+
+
+cdef class Typing(object):
+    def __init__(self):
+        with nogil:
+            rpct_init()
+
+    @staticmethod
+    cdef bint c_iter(void *arg, rpct_type_t val):
+        cdef Type rpctype
+        cdef object container
+
+        container = <object>arg
+        rpctype = Type.__new__(Type)
+        rpctype.rpctype = val
+        container.append(rpctype)
+        return True
+
+    def load_type(self, decl, type):
+        pass
+
+    def load_types(self, path):
+        rpct_load_types(path)
+
+    property types:
+        def __get__(self):
+            ret = []
+            rpct_types_apply(RPCT_TYPE_APPLIER(self.c_iter, <void *>ret))
+            return ret
+
+    property functions:
+        def __get__(self):
+            pass
+
+
+cdef class Type(object):
+    cdef rpct_type_t rpctype
+
+    @staticmethod
+    cdef bint c_iter(void *arg, rpct_member_t val):
+        cdef Member member
+        cdef object container
+
+        container = <object>arg
+        member = Member.__new__(Member)
+        member.rpcmem = val
+        container.append(member)
+        return True
+
+    def __str__(self):
+        return "<librpc.Type '{0}'>".format(self.name)
+
+    def __repr__(self):
+        return str(self)
+
+    property name:
+        def __get__(self):
+            return rpct_type_get_name(self.rpctype)
+
+    property description:
+        def __get__(self):
+            return rpct_type_get_description(self.rpctype)
+
+    property generic:
+        def __get__(self):
+            return rpct_type_is_generic(self.rpctype)
+
+    property members:
+        def __get__(self):
+            ret = []
+            rpct_members_apply(self.rpctype, RPCT_MEMBER_APPLIER(self.c_iter, <void *>ret))
+            return ret
+
+
+cdef class Member(object):
+    cdef rpct_member_t rpcmem
+
+    property description:
+        def __get__(self):
+            return rpct_member_get_description(self.rpcmem)
+
 
 
 

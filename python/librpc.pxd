@@ -33,6 +33,8 @@ ctypedef void (*rpc_handler_f)(void *arg, const char *name, rpc_object_t args)
 ctypedef void (*rpc_error_handler_f)(void *arg, rpc_error_code_t code, rpc_object_t args)
 ctypedef bint (*rpc_callback_f)(void *arg, rpc_call_t call, rpc_call_status_t status)
 ctypedef void (*rpc_bus_event_handler_f)(void *arg, rpc_bus_event_t, rpc_bus_node *)
+ctypedef bint (*rpct_type_applier_f)(void *arg, rpct_type_t type)
+ctypedef bint (*rpct_member_applier_f)(void *arg, rpct_member_t member)
 
 
 cdef extern from "rpc/object.h" nogil:
@@ -238,6 +240,32 @@ cdef extern from "rpc/bus.h" nogil:
 cdef extern from "rpc/serializer.h" nogil:
     rpc_object_t rpc_serializer_load(const char *serializer, const void *frame, size_t len)
     int rpc_serializer_dump(const char *serializer, rpc_object_t obj, void **framep, size_t *lenp)
+
+
+cdef extern from "rpc/typing.h" nogil:
+    ctypedef struct rpct_type_t:
+        pass
+
+    ctypedef struct rpct_member_t:
+        pass
+
+    void *RPCT_TYPE_APPLIER(rpct_type_applier_f fn, void *arg)
+    void *RPCT_MEMBER_APPLIER(rpct_member_applier_f fn, void *arg)
+
+    void rpct_init()
+    int rpct_load_types(const char *path)
+
+    void rpct_types_apply(void *applier);
+    void rpct_members_apply(rpct_type_t type, void *applier);
+
+    const char *rpct_type_get_name(rpct_type_t type)
+    const char *rpct_type_get_realm(rpct_type_t type)
+    const char *rpct_type_get_description(rpct_type_t type)
+    rpct_type_t rpct_type_get_parent(rpct_type_t type)
+    bint rpct_type_is_generic(rpct_type_t type)
+
+    const char *rpct_member_get_name(rpct_member_t member);
+    const char *rpct_member_get_description(rpct_member_t member);
 
 
 cdef class Object(object):
