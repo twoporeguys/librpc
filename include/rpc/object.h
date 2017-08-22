@@ -247,10 +247,19 @@ char *rpc_copy_description(rpc_object_t object);
 rpc_type_t rpc_get_type(rpc_object_t object);
 
 /**
+ * Checks if an object is of type RPC_TYPE_ERROR.
+ *
+ * @param object Object to check.
+ */
+#define	rpc_is_error(_object)	(rpc_get_type(_object) == RPC_TYPE_ERROR)
+
+/**
  * Decrements reference count of an object.
  *
  * Also sets it to NULL if as a result of the operation
  * reference count dropped to 0 and the object was freed.
+ *
+ * @param object Object to release.
  */
 #define	rpc_release(_object)						\
 	do {								\
