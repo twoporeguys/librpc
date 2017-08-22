@@ -166,6 +166,7 @@ var searchData=
   ['rpc_5fint64_5fcreate',['rpc_int64_create',['../object_8h.html#ad1ce3319d7b452bc5400518ff727a87f',1,'object.h']]],
   ['rpc_5fint64_5fget_5fvalue',['rpc_int64_get_value',['../object_8h.html#a4d9f3fc2fe16b2a09b1f7b5fbcf78d99',1,'object.h']]],
   ['rpc_5finvalid_5fresponse',['RPC_INVALID_RESPONSE',['../connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7',1,'connection.h']]],
+  ['rpc_5fis_5ferror',['rpc_is_error',['../object_8h.html#aa125ec0a73c4c9953b07e5da1712573e',1,'object.h']]],
   ['rpc_5flogout',['RPC_LOGOUT',['../connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b',1,'connection.h']]],
   ['rpc_5fmethod',['rpc_method',['../structrpc__method.html',1,'']]],
   ['rpc_5fnull_5fcreate',['rpc_null_create',['../object_8h.html#a0a56b4b5320160f6cbcee59a034fa8f7',1,'object.h']]],

@@ -30,6 +30,8 @@ This graph shows which files directly or indirectly include this file\-:
 \item 
 \#define \hyperlink{object_8h_af7b40854202a0a6708b0611b4fdf9121}{R\-P\-C\-\_\-\-A\-R\-R\-A\-Y\-\_\-\-C\-M\-P}(\-\_\-fn, \-\_\-arg)
 \item 
+\#define \hyperlink{object_8h_aa125ec0a73c4c9953b07e5da1712573e}{rpc\-\_\-is\-\_\-error}(\-\_\-object)~(\hyperlink{object_8h_a842969702ab17ad4b7e1b0c2ed9a4aef}{rpc\-\_\-get\-\_\-type}(\-\_\-object) == \hyperlink{object_8h_a40ea3143863f0a2b47446ccaf655638ea7c63246a7c7bc5912d499fb117358506}{R\-P\-C\-\_\-\-T\-Y\-P\-E\-\_\-\-E\-R\-R\-O\-R})
+\item 
 \#define \hyperlink{object_8h_aac19be935f72b35eeb2851bc509eabb2}{rpc\-\_\-release}(\-\_\-object)
 \end{DoxyCompactItemize}
 \subsection*{Typedefs}
@@ -342,6 +344,24 @@ Converts function pointer to an rpc\-\_\-dictionary\-\_\-applier\-\_\-t block ty
 
 Definition at line 126 of file object.\-h.
 
+\hypertarget{object_8h_aa125ec0a73c4c9953b07e5da1712573e}{\index{object.\-h@{object.\-h}!rpc\-\_\-is\-\_\-error@{rpc\-\_\-is\-\_\-error}}
+\index{rpc\-\_\-is\-\_\-error@{rpc\-\_\-is\-\_\-error}!object.h@{object.\-h}}
+\subsubsection[{rpc\-\_\-is\-\_\-error}]{\setlength{\rightskip}{0pt plus 5cm}\#define rpc\-\_\-is\-\_\-error(
+\begin{DoxyParamCaption}
+\item[{}]{\-\_\-object}
+\end{DoxyParamCaption}
+)~({\bf rpc\-\_\-get\-\_\-type}(\-\_\-object) == {\bf R\-P\-C\-\_\-\-T\-Y\-P\-E\-\_\-\-E\-R\-R\-O\-R})}}\label{object_8h_aa125ec0a73c4c9953b07e5da1712573e}
+Checks if an object is of type R\-P\-C\-\_\-\-T\-Y\-P\-E\-\_\-\-E\-R\-R\-O\-R.
+
+
+\begin{DoxyParams}{Parameters}
+{\em object} & Object to check. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 254 of file object.\-h.
+
 \hypertarget{object_8h_aac19be935f72b35eeb2851bc509eabb2}{\index{object.\-h@{object.\-h}!rpc\-\_\-release@{rpc\-\_\-release}}
 \index{rpc\-\_\-release@{rpc\-\_\-release}!object.h@{object.\-h}}
 \subsubsection[{rpc\-\_\-release}]{\setlength{\rightskip}{0pt plus 5cm}\#define rpc\-\_\-release(
@@ -358,9 +378,16 @@ Definition at line 126 of file object.\-h.
 \end{DoxyCode}
 Decrements reference count of an object.
 
-Also sets it to N\-U\-L\-L if as a result of the operation reference count dropped to 0 and the object was freed. 
+Also sets it to N\-U\-L\-L if as a result of the operation reference count dropped to 0 and the object was freed.
 
-Definition at line 255 of file object.\-h.
+
+\begin{DoxyParams}{Parameters}
+{\em object} & Object to release. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 264 of file object.\-h.
 
 
 
