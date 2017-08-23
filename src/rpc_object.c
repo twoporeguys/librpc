@@ -1612,15 +1612,18 @@ rpc_dictionary_apply(rpc_object_t dictionary, rpc_dictionary_applier_t applier)
 {
 	GHashTableIter iter;
 	gpointer key, value;
+	bool flag = false;
 
 	g_hash_table_iter_init(&iter, dictionary->ro_value.rv_dict);
 
 	while (g_hash_table_iter_next(&iter, &key, &value)) {
-		if (!applier((const char *)key, (rpc_object_t)value))
+		if (!applier((const char *)key, (rpc_object_t)value)) {
+			flag = true;
 			break;
+		}
 	}
 
-	return (true);
+	return (flag);
 }
 
 inline bool
