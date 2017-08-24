@@ -124,6 +124,13 @@ void
 rpct_struct_set_value(rpc_object_t instance, const char *value)
 {
 
+	if ((instance == NULL) || (instance->ro_typei == NULL))
+		return;
+
+	if (rpc_get_type(instance) != RPC_TYPE_DICTIONARY)
+		return;
+
+	rpc_dictionary_set_string(instance, RPCT_VALUE_FIELD, value);
 }
 
 static inline struct rpct_realm *
