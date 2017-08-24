@@ -91,6 +91,10 @@ rpct_class_t
 rpct_get_class(rpc_object_t instance)
 {
 
+	if ((instance == NULL) || (instance->ro_typei == NULL))
+		return (NULL);
+
+	return (instance->ro_typei->type->clazz);
 }
 
 char *
