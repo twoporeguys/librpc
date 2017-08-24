@@ -34,6 +34,7 @@
 #include <rpc/service.h>
 #include <rpc/server.h>
 #include <rpc/bus.h>
+#include <rpc/typing.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include <glib.h>
@@ -60,6 +61,10 @@
 #else
 #define debugf(...)
 #endif
+
+#define	TYPE_REGEX	"(struct|union|type|enum) (\\w+)(<(.*)>)?"
+#define	INSTANCE_REGEX	"(\\w+)(<(.*)>)?"
+#define	FUNC_REGEX	"function (\\w+)"
 
 struct rpc_connection;
 struct rpc_credentials;
@@ -279,6 +284,81 @@ struct rpc_serializer
     	rpc_object_t (*deserialize)(const void *, size_t);
 	const char *name;
 };
+
+struct rpct_context
+{
+	GHashTable *		types;
+	GHashTable *		files;
+	GHashTable *		realms;
+};
+
+struct rpct_realm
+{
+	const char *		name;
+	GHashTable *		types;
+};
+
+struct rpct_file
+{
+	const char *		path;
+	const char *		realm;
+	const char *		description;
+	int64_t			version;
+	GHashTable *		types;
+};
+
+/**
+ * An RPC type.
+ */
+struct rpct_type
+{
+	rpct_class_t		clazz;
+	const char *		realm;
+	const char *		name;
+	const char *		description;
+	struct rpct_type *	parent;
+	bool			generic;
+	GPtrArray *		generic_vars;
+	GHashTable *		members;
+	GHashTable *		constraints;
+};
+
+/**
+ * This structure has two uses. It can hold either:
+ * a) An instantiated (specialized or partially specialized) type
+ * b) A "proxy" type that refers to parent's type generic variable
+ */
+struct rpct_typei
+{
+	bool			proxy;
+	struct rpct_type *	type;
+	GPtrArray *		specializations;
+	GHashTable *		constraints;
+};
+
+/**
+ *
+ */
+struct rpct_member
+{
+	char *			name;
+	char *			description;
+	struct rpct_typei *	type;
+	struct rpct_type *	origin;
+	GHashTable *		constraints;
+};
+
+struct rpct_function
+{
+	char *			name;
+	char *			description;
+	GPtrArray *		arguments;
+	struct rpct_typei *	result;
+
+};
+
+typedef struct rpct_realm *rpct_realm_t;
+typedef bool (^rpct_realm_applier_t)(rpct_realm_t);
 
 rpc_object_t rpc_prim_create(rpc_type_t type, union rpc_value val);
 

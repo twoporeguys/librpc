@@ -29,7 +29,6 @@
 
 #include <rpc/object.h>
 
-#define	RPCT_CLASS_FIELD	"%class"
 #define	RPCT_TYPE_FIELD		"%type"
 #define	RPCT_VALUE_FIELD	"%value"
 
@@ -39,9 +38,6 @@ typedef struct rpct_type *rpct_type_t;
 struct rpct_member;
 typedef struct rpct_member *rpct_member_t;
 
-struct rpct_instance;
-typedef struct rpct_instance *rpct_instance_t;
-
 typedef enum {
 	RPC_TYPING_STRUCT,
 	RPC_TYPING_UNION,
@@ -50,11 +46,6 @@ typedef enum {
 	RPC_TYPING_SPECIALIZATION,
 	RPC_TYPING_BUILTIN
 } rpct_class_t;
-
-struct rpct_error
-{
-	
-};
 
 typedef bool (^rpct_type_applier_t)(rpct_type_t);
 typedef bool (^rpct_member_applier_t)(rpct_member_t);
@@ -87,24 +78,13 @@ bool rpct_type_is_generic(rpct_type_t type);
 const char *rpct_member_get_name(rpct_member_t member);
 const char *rpct_member_get_description(rpct_member_t member);
 
-void rpct_types_apply(rpct_type_applier_t applier);
-void rpct_members_apply(rpct_type_t type, rpct_member_applier_t applier);
+bool rpct_types_apply(rpct_type_applier_t applier);
+bool rpct_members_apply(rpct_type_t type, rpct_member_applier_t applier);
 
-rpct_instance_t rpct_new(const char *type, ...);
-rpct_instance_t rpct_unpack(rpc_object_t obj);
-rpc_object_t rpct_pack(rpct_instance_t instance);
-void rpct_free(rpct_instance_t instance);
+rpc_object_t rpct_new(const char *decl, const char *realm);
 
-rpct_class_t rpct_get_class(rpct_instance_t instance);
-const char *rpct_get_type(rpct_instance_t instance);
-const char *rpct_get_value(rpct_instance_t instance);
-void rpct_set_value(rpct_instance_t, const char *value);
-
-rpc_object_t rpct_get_dict(rpct_instance_t instance);
-
-#define	rpct_get(_instance, _type, _key)				\
-	rpc_dictionary_get_##_type(rpct_get_dict(_instance), _key)
-
-#define	rpct_set()
+const char *rpct_get_type(rpc_object_t instance);
+const char *rpct_get_value(rpc_object_t instance);
+void rpct_set_value(rpc_object_t object, const char *value);
 
 #endif //LIBRPCT_H
