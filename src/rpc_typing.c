@@ -53,81 +53,61 @@ static int rpct_read_meta(struct rpct_file *, rpc_object_t);
 static struct rpct_member *rpct_read_member(const char *, rpc_object_t,
     struct rpct_type *);
 static struct rpct_typei *rpct_instantiate_type(const char *,
-    struct rpct_type *);
+    const char *);
 static inline bool rpct_type_is_fully_specialized(struct rpct_typei *);
 static char *rpct_canonical_type(struct rpct_typei *);
 static int rpct_read_type(const char *, const char *, rpc_object_t);
 static int rpct_read_func(const char *, const char *, rpc_object_t);
 static int rpct_read_file(const char *);
+static inline bool rpct_realms_apply(rpct_realm_applier_t applier);
 static int rpct_validate_args(struct rpct_function *, rpc_object_t);
 static int rpct_validate_return(struct rpct_function *, rpc_object_t);
+static int rpct_parse_type(const char *decl, GPtrArray *variables);
 
 static struct rpct_context *context = NULL;
 
-rpct_instance_t
-rpct_new(const char *decl, ...)
+rpc_object_t
+rpct_new(const char *decl, const char *realm)
 {
-	struct rpct_instance *inst;
+	rpc_object_t inst;
 	struct rpct_typei *typei;
 	char *canon;
 
-	typei = rpct_instantiate_type(decl, NULL);
+	typei = rpct_instantiate_type(decl, realm);
 	if (typei == NULL)
 		return (NULL);
 
-	canon = rpct_canonical_type(typei);
-	inst = g_malloc0(sizeof(*inst));
-	inst->type = typei;
-	inst->dict = rpc_dictionary_create();
-	rpc_dictionary_set_string(inst->dict, RPCT_TYPE_FIELD, canon);
-	g_free(canon);
+	if (typei->type->clazz == RPC_TYPING_BUILTIN) {
+		rpct_type_free(typei);
+		return (NULL);
+	}
+
+	inst = rpc_dictionary_create();
+	inst->ro_typei = typei;
+
 	return (inst);
 }
 
-rpct_instance_t
-rpct_unpack(rpc_object_t obj)
-{
-
-}
-
-rpc_object_t
-rpct_pack(rpct_instance_t instance)
-{
-
-}
-
-void
-rpct_free(rpct_instance_t instance)
-{
-
-}
-
 rpct_class_t
-rpct_get_class(rpct_instance_t instance)
+rpct_get_class(rpc_object_t instance)
 {
 
 }
 
 const char *
-rpct_get_type(rpct_instance_t instance)
+rpct_get_type(rpc_object_t instance)
 {
 
 }
 
 const char *
-rpct_get_value(rpct_instance_t instance)
+rpct_get_value(rpc_object_t instance)
 {
 
 }
 
 void
-rpct_struct_set_value(rpct_instance_t instance, const char *value)
-{
-
-}
-
-rpc_object_t
-rpct_get_dict(rpct_instance_t instance)
+rpct_struct_set_value(rpc_object_t instance, const char *value)
 {
 
 }
@@ -139,11 +119,11 @@ rpct_find_realm(const char *realm)
 	return (g_hash_table_lookup(context->realms, realm));
 }
 
-static struct rpct_type *
+static rpct_type_t
 rpct_find_type(const char *realm_name, const char *name)
 {
-	struct rpct_realm *realm;
-	struct rpct_type *type;
+	rpct_realm_t realm;
+	rpct_type_t type;
 	const char **b;
 
 	for (b = builtin_types; *b != NULL; b++) {
@@ -156,17 +136,15 @@ rpct_find_type(const char *realm_name, const char *name)
 		return (type);
 	}
 
-	realm = rpct_find_realm("*");
-	if (realm != NULL) {
-
-	}
-
 	realm = rpct_find_realm(realm_name);
-	if (realm != NULL) {
+	if (realm == NULL)
+		realm = rpct_find_realm("*");
 
-	}
+	if (realm == NULL)
+		return (NULL);
 
-	return (NULL);
+	return (g_hash_table_lookup(realm->types, name));
+
 }
 
 static int
@@ -198,49 +176,101 @@ rpct_read_member(const char *decl, rpc_object_t obj,
 	member->name = g_strdup(decl);
 	member->description = g_strdup(description);
 	member->origin = type;
-	member->type = rpct_instantiate_type(typedecl, type);
+	member->type = rpct_instantiate_type(typedecl, type->realm);
 
 	return (member);
 }
 
 static struct rpct_typei *
-rpct_instantiate_type(const char *decl, struct rpct_type *parent)
+rpct_instantiate_type(const char *decl, const char *realm)
 {
 	GError *err = NULL;
 	GRegex *regex;
-	GMatchInfo *match;
+	GMatchInfo *match = NULL;
+	GPtrArray *splitvars = NULL;
 	struct rpct_type *type;
-	struct rpct_typei *ret;
-	const char *decltype;
-	const char *declvars;
+	struct rpct_typei *ret = NULL;
+	struct rpct_typei *subtype;
+	char *decltype = NULL;
+	char *declvars = NULL;
 
 	regex = g_regex_new(INSTANCE_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
-	if (err != NULL) {
-		g_error_free(err);
-		g_regex_unref(regex);
-		return (NULL);
-	}
+	if (err != NULL)
+		goto error;
 
-	if (!g_regex_match(regex, decl, 0, &match)) {
-		g_regex_unref(regex);
-		return (NULL);
-	}
+	if (!g_regex_match(regex, decl, 0, &match))
+		goto error;
 
-	if (g_match_info_get_match_count(match) < 1) {
-		g_regex_unref(regex);
-		g_match_info_free(match);
-		return (NULL);
-	}
+	if (g_match_info_get_match_count(match) < 1)
+		goto error;
 
-	type = rpct_find_type(parent->realm, decltype);
+	decltype = g_match_info_fetch(match, 1);
+
+	type = rpct_find_type(realm, decltype);
 	if (type == NULL)
-		return (NULL);
+		goto error;
 
 	ret = g_malloc0(sizeof(*ret));
 	ret->type = type;
 	ret->specializations = g_ptr_array_new();
+	ret->constraints = type->constraints;
+
+	if (type->generic) {
+		declvars = g_match_info_fetch(match, 3);
+		if (declvars == NULL)
+			goto error;
+
+		splitvars = g_ptr_array_new();
+
+		rpct_parse_type(declvars, splitvars);
+		if (splitvars->len != type->generic_vars->len)
+			goto error;
+
+		for (int i = 0; i < splitvars->len; i++) {
+			subtype = rpct_instantiate_type(
+			    g_ptr_array_index(splitvars, i), realm);
+			g_ptr_array_add(ret->specializations, subtype);
+		}
+	}
+
+	goto end;
+
+error:	if (ret != NULL) {
+		rpct_type_free(ret);
+		ret = NULL;
+	}
+
+end:	g_regex_unref(regex);
+
+	if (err != NULL)
+		g_error_free(err);
+
+	if (match != NULL)
+		g_match_info_free(match);
+
+	if (splitvars != NULL)
+		g_ptr_array_free(splitvars, true);
+
+	if (decltype != NULL)
+		g_free(decltype);
+
+	if (declvars != NULL)
+		g_free(declvars);
 
 	return (ret);
+}
+
+void
+rpct_type_free(struct rpct_typei *inst)
+{
+
+	if (inst->specializations != NULL) {
+		for (int i = 0; i < inst->specializations->len; i++) {
+			rpct_type_free(
+			    g_ptr_array_index(inst->specializations, i));
+		}
+	}
+	g_free(inst);
 }
 
 static inline bool
@@ -272,6 +302,14 @@ rpct_type_is_compatible(struct rpct_typei *decl, struct rpct_typei *type)
 
 }
 
+/**
+ *
+ * "int, string, Struct2<bool, int>"
+ *
+ * @param decl
+ * @param variables
+ * @return
+ */
 static int
 rpct_parse_type(const char *decl, GPtrArray *variables)
 {
@@ -293,9 +331,12 @@ rpct_parse_type(const char *decl, GPtrArray *variables)
 			if (nesting == 0) {
 				groups++;
 				g_ptr_array_add(variables, g_strndup(
-			 	   &decl[istart], i - istart));
+			 	   &decl[istart], (gsize)(i - istart)));
 			}
 			break;
+
+		default:
+			continue;
 		}
 	}
 
@@ -320,6 +361,9 @@ rpct_canonical_type(struct rpct_typei *typei)
 		substr = rpct_canonical_type(subtype);
 		g_string_append(ret, substr);
 		g_free(substr);
+
+		if (i < typei->specializations->len)
+			g_string_append(ret, ",");
 	}
 
 	g_string_append(ret, ">");
@@ -478,6 +522,7 @@ static int
 rpct_read_file(const char *path)
 {
 	struct rpct_file *file;
+	struct rpct_realm *realm;
 	char *contents;
 	size_t length;
 	rpc_object_t obj;
@@ -496,6 +541,14 @@ rpct_read_file(const char *path)
 
 	file = g_malloc0(sizeof(*file));
 	rpct_read_meta(file, rpc_dictionary_get_value(obj, "meta"));
+
+	if (rpct_find_realm(file->realm) == NULL) {
+		realm = g_malloc0(sizeof(*realm));
+		realm->name = g_strdup(file->realm);
+		realm->types= g_hash_table_new(g_str_hash, g_str_equal);
+		g_hash_table_insert(context->realms, (gpointer)realm->name,
+		    realm);
+	}
 
 	rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t value) {
 		if (g_strcmp0(key, "meta") == 0)
@@ -533,6 +586,25 @@ static int
 rpct_validate_return(struct rpct_function *func, rpc_object_t result)
 {
 
+}
+
+static inline bool
+rpct_realms_apply(rpct_realm_applier_t applier)
+{
+	GHashTableIter iter;
+	rpct_realm_t value;
+	char *key;
+	bool flag = false;
+
+	g_hash_table_iter_init(&iter, context->realms);
+	while (g_hash_table_iter_next(&iter, (gpointer *)&key,
+	    (gpointer *)&value))
+		if (!applier(value)) {
+			flag = true;
+			break;
+		}
+
+	return (flag);
 }
 
 int
@@ -602,26 +674,40 @@ rpct_member_get_description(rpct_member_t member)
 	return (member->description);
 }
 
-void
+bool
 rpct_types_apply(rpct_type_applier_t applier)
 {
-	GHashTableIter iter;
-	char *key;
-	struct rpct_type *value;
 
-	g_hash_table_iter_init(&iter, context->types);
-	while (g_hash_table_iter_next(&iter, &key, &value))
-		applier(value);
+	return (rpct_realms_apply(^(rpct_realm_t realm) {
+		GHashTableIter iter;
+		char *key;
+		rpct_type_t value;
+
+		g_hash_table_iter_init(&iter, realm->types);
+		while (g_hash_table_iter_next(&iter, (gpointer *)&key,
+		    (gpointer *)&value))
+			if (!applier(value))
+				return ((bool)false);
+
+		return ((bool)true);
+	}));
 }
 
-void
+bool
 rpct_members_apply(rpct_type_t type, rpct_member_applier_t applier)
 {
 	GHashTableIter iter;
 	char *key;
 	struct rpct_member *value;
+	bool flag = false;
 
 	g_hash_table_iter_init(&iter, type->members);
-	while (g_hash_table_iter_next(&iter, &key, &value))
-		applier(value);
+	while (g_hash_table_iter_next(&iter, (gpointer *)&key,
+	    (gpointer *)&value))
+		if (!applier(value)) {
+			flag = true;
+			break;
+		}
+
+	return (flag);
 }
