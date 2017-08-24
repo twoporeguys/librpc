@@ -137,6 +137,7 @@ struct rpc_object
 	size_t			ro_line;
 	size_t			ro_column;
 	union rpc_value		ro_value;
+	struct rpct_typei *	ro_typei;
 };
 
 struct rpc_call
@@ -390,5 +391,7 @@ void rpc_connection_send_end(rpc_connection_t, rpc_object_t, int64_t);
 void rpc_connection_close_inbound_call(struct rpc_inbound_call *);
 
 void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
+
+void rpct_type_free(struct rpct_typei *inst);
 
 #endif //LIBRPC_INTERNAL_H

@@ -416,6 +416,10 @@ rpc_release_impl(rpc_object_t object)
 		default:
 			break;
 		}
+
+		if (object->ro_typei != NULL)
+			rpct_type_free(object->ro_typei);
+
 		g_free(object);
 		return (0);
 	}
