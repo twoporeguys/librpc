@@ -71,7 +71,6 @@ rpct_new(const char *decl, const char *realm)
 {
 	rpc_object_t inst;
 	struct rpct_typei *typei;
-	char *canon;
 
 	typei = rpct_instantiate_type(decl, realm);
 	if (typei == NULL)
