@@ -111,6 +111,13 @@ const char *
 rpct_get_value(rpc_object_t instance)
 {
 
+	if ((instance == NULL) || (instance->ro_typei == NULL))
+		return (NULL);
+
+	if (rpc_get_type(instance) != RPC_TYPE_DICTIONARY)
+		return (NULL);
+
+	return (rpc_dictionary_get_string(instance, RPCT_VALUE_FIELD));
 }
 
 void
