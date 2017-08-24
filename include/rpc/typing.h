@@ -83,7 +83,7 @@ bool rpct_members_apply(rpct_type_t type, rpct_member_applier_t applier);
 
 rpc_object_t rpct_new(const char *decl, const char *realm);
 
-const char *rpct_get_type(rpc_object_t instance);
+char *rpct_get_type(rpc_object_t instance);
 const char *rpct_get_value(rpc_object_t instance);
 void rpct_set_value(rpc_object_t object, const char *value);
 

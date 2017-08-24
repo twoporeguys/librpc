@@ -93,10 +93,14 @@ rpct_get_class(rpc_object_t instance)
 
 }
 
-const char *
+char *
 rpct_get_type(rpc_object_t instance)
 {
 
+	if ((instance == NULL) || (instance->ro_typei == NULL))
+		return (NULL);
+
+	return (rpct_canonical_type(instance->ro_typei));
 }
 
 const char *
