@@ -68,7 +68,7 @@ rpc_prim_create(rpc_type_t type, union rpc_value val)
 {
 	struct rpc_object *ro;
 
-	ro = (rpc_object_t)g_malloc(sizeof(*ro));
+	ro = (rpc_object_t)g_malloc0(sizeof(*ro));
 	if (ro == NULL)
 		abort();
 
