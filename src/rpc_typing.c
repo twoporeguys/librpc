@@ -80,7 +80,7 @@ rpct_new(const char *decl, const char *realm)
 		return (NULL);
 
 	if (typei->type->clazz == RPC_TYPING_BUILTIN) {
-		rpct_type_free(typei);
+		rpct_typei_free(typei);
 		return (NULL);
 	}
 
@@ -260,7 +260,7 @@ rpct_instantiate_type(const char *decl, const char *realm)
 	goto end;
 
 error:	if (ret != NULL) {
-		rpct_type_free(ret);
+		rpct_typei_free(ret);
 		ret = NULL;
 	}
 
@@ -282,6 +282,18 @@ end:	g_regex_unref(regex);
 		g_free(declvars);
 
 	return (ret);
+}
+void
+rpct_typei_free(struct rpct_typei *inst)
+{
+
+	if (inst->specializations != NULL) {
+		for (int i = 0; i < inst->specializations->len; i++) {
+			rpct_typei_free(
+			    g_ptr_array_index(inst->specializations, i));
+		}
+	}
+	g_free(inst);
 }
 
 void
