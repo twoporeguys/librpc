@@ -29,9 +29,11 @@
 #include <string.h>
 #include <errno.h>
 #include <gio/gio.h>
+#ifndef _WIN32
 #include <gio/gunixcredentialsmessage.h>
 #include <gio/gunixfdmessage.h>
 #include <gio/gunixsocketaddress.h>
+#endif
 #include <libsoup/soup.h>
 #include "../linker_set.h"
 #include "../internal.h"
@@ -84,10 +86,12 @@ socket_parse_uri(const char *uri_string)
 		goto done;
 	}
 
+#ifndef _WIN32
 	if (!g_strcmp0(uri->scheme, "unix")) {
 		addr = g_unix_socket_address_new(uri->path);
 		goto done;
 	}
+#endif
 
 done:
 	soup_uri_free(uri);
@@ -199,6 +203,7 @@ socket_listen(struct rpc_server *srv, const char *uri,
 	srv->rs_teardown = &socket_teardown;
 	srv->rs_arg = server;
 
+#ifndef _WIN32
 	/*
 	 * If using Unix domain sockets, make sure there's no stale socket
 	 * file on the filesystem.
@@ -217,6 +222,7 @@ socket_listen(struct rpc_server *srv, const char *uri,
 			}
 		}
 	}
+#endif
 
 	g_socket_listener_add_address(server->ss_listener, addr,
 	    G_SOCKET_TYPE_STREAM, G_SOCKET_PROTOCOL_DEFAULT, NULL, NULL, &err);
@@ -251,6 +257,7 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 	iov[0] = (GOutputVector){ .buffer = header, .size = sizeof(header) };
 	iov[1] = (GOutputVector){ .buffer = buf, .size = size };
 
+#ifndef _WIN32
 	if (g_unix_credentials_message_is_supported()) {
 		cmsg[ncmsg++] = g_unix_credentials_message_new();
 		if (nfds > 0) {
@@ -258,6 +265,7 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 			    g_unix_fd_list_new_from_array(fds, (gint)nfds));
 		}
 	}
+#endif
 
 	g_socket_send_message(sock, NULL, iov, 1, cmsg, ncmsg, 0,
 	    NULL, &err);
@@ -315,6 +323,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	*frame = malloc(length);
 	*size = length;
 
+#ifndef _WIN32
 	for (i = 0; i < ncmsg; i++) {
 		if (G_IS_UNIX_CREDENTIALS_MESSAGE(cmsg[i])) {
 			cr = g_unix_credentials_message_get_credentials(
@@ -333,6 +342,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 			continue;
 		}
 	}
+#endif
 
 	read = g_input_stream_read(conn->sc_istream, *frame, *size, NULL, &err);
 	if (err != NULL) {

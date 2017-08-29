@@ -28,7 +28,9 @@
 
 #include <unistd.h>
 #include <sys/types.h>
+#ifndef _WIN32
 #include <sys/mman.h>
+#endif
 #include <inttypes.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -346,20 +348,6 @@ rpc_array_comparator_converter(const void *p1, const void *p2, void *data)
 	rpc_object_t o2 = *(rpc_object_t *)p2;
 
 	return (((rpc_array_cmp_t)data)(o1, o2));
-}
-
-inline rpc_object_t
-rpc_object_from_json(const void *frame, size_t size)
-{
-
-	return rpc_json_deserialize(frame, size);
-}
-
-inline int
-rpc_object_to_json(rpc_object_t object, void **frame, size_t *size)
-{
-
-	return rpc_json_serialize(object, frame, size);
 }
 
 inline rpc_object_t

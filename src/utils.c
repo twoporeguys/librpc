@@ -26,7 +26,9 @@
  */
 
 #include <stdlib.h>
+#ifndef _WIN32
 #include <execinfo.h>
+#endif
 #include "linker_set.h"
 #include "internal.h"
 
@@ -118,6 +120,14 @@ rpc_trace(const char *msg, rpc_object_t frame)
 	g_free(descr);
 }
 
+#ifdef _WIN32
+char *
+rpc_get_backtrace(void)
+{
+
+	return (NULL);
+}
+#else
 char *
 rpc_get_backtrace(void)
 {
@@ -142,3 +152,4 @@ rpc_get_backtrace(void)
 	free(names);
 	return (g_string_free(result, false));
 }
+#endif

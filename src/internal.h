@@ -61,6 +61,11 @@
 #define debugf(...)
 #endif
 
+#ifdef _WIN32
+typedef int uid_t;
+typedef int gid_t;
+#endif
+
 struct rpc_connection;
 struct rpc_credentials;
 struct rpc_server;

@@ -28,7 +28,9 @@
 #include <Block.h>
 #include <errno.h>
 #include <stdlib.h>
+#ifndef _WIN32
 #include <fnmatch.h>
+#endif
 #include <string.h>
 #include <rpc/object.h>
 #include <rpc/connection.h>
@@ -103,6 +105,7 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 	call->ric_method = g_hash_table_lookup(context->rcx_methods,
 	    call->ric_name);
 
+#ifndef _WIN32
 	if (call->ric_method == NULL) {
 		/* Lookup failed, try fuzzy match */
 		g_hash_table_iter_init(&iter, context->rcx_methods);
@@ -113,6 +116,7 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 			}
 		}
 	}
+#endif
 
 	g_thread_pool_push(context->rcx_threadpool, call, &err);
 	if (err != NULL) {
