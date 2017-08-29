@@ -1,0 +1,808 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="librpc"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="clang"/>
+		<Option virtualFolders="CMake Files\;CMake Files\examples\;CMake Files\examples\client\;CMake Files\examples\discovery\;CMake Files\examples\event\;CMake Files\examples\loopback\;CMake Files\examples\pack-unpack\;CMake Files\examples\server\;CMake Files\examples\error-backtrace\;CMake Files\examples\query\;CMake Files\python\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="package_source">
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 package_source"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="package">
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 package"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="librpc">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/librpc.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 librpc"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="librpc/fast">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/librpc.dll" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 librpc/fast"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 install/local"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 list_install_components"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 install"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-client">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/client/example-client.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/client"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/client/Makefile&quot;  VERBOSE=1 example-client"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/client/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/client/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/client/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-client/fast">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/client/example-client.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/client"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/client/Makefile&quot;  VERBOSE=1 example-client/fast"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/client/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/client/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/client/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-discovery">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/discovery/example-discovery.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/discovery"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/discovery/Makefile&quot;  VERBOSE=1 example-discovery"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/discovery/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/discovery/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/discovery/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-discovery/fast">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/discovery/example-discovery.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/discovery"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/discovery/Makefile&quot;  VERBOSE=1 example-discovery/fast"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/discovery/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/discovery/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/discovery/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-event">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/event/example-event.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/event"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/event/Makefile&quot;  VERBOSE=1 example-event"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/event/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/event/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/event/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-event/fast">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/event/example-event.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/event"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/event/Makefile&quot;  VERBOSE=1 example-event/fast"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/event/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/event/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/event/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-loopback">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/loopback/example-loopback.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/loopback"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/loopback/Makefile&quot;  VERBOSE=1 example-loopback"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/loopback/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/loopback/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/loopback/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-loopback/fast">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/loopback/example-loopback.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/loopback"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/loopback/Makefile&quot;  VERBOSE=1 example-loopback/fast"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/loopback/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/loopback/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/loopback/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-pack-unpack">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/pack-unpack/example-pack-unpack.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/pack-unpack"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/pack-unpack/Makefile&quot;  VERBOSE=1 example-pack-unpack"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/pack-unpack/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/pack-unpack/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/pack-unpack/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-pack-unpack/fast">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/pack-unpack/example-pack-unpack.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/pack-unpack"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/pack-unpack/Makefile&quot;  VERBOSE=1 example-pack-unpack/fast"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/pack-unpack/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/pack-unpack/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/pack-unpack/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-server">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/server/example-server.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/server"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/server/Makefile&quot;  VERBOSE=1 example-server"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/server/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/server/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/server/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-server/fast">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/server/example-server.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/server"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/server/Makefile&quot;  VERBOSE=1 example-server/fast"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/server/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/server/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/server/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-error-backtrace">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/error-backtrace/example-error-backtrace.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/error-backtrace"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/error-backtrace/Makefile&quot;  VERBOSE=1 example-error-backtrace"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/error-backtrace/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/error-backtrace/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/error-backtrace/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-error-backtrace/fast">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/error-backtrace/example-error-backtrace.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/error-backtrace"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/error-backtrace/Makefile&quot;  VERBOSE=1 example-error-backtrace/fast"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/error-backtrace/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/error-backtrace/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/error-backtrace/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-query">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/query/example-query.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/query"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/query/Makefile&quot;  VERBOSE=1 example-query"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/query/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/query/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/query/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example-query/fast">
+				<Option output="C:/Users/jakub/Documents/GitHub/librpc/build/examples/query/example-query.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/examples/query"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime"/>
+					<Add directory="C:/Users/jakub/Documents/GitHub/librpc/include"/>
+					<Add directory="C:/msys64/mingw64/include/glib-2.0"/>
+					<Add directory="C:/msys64/mingw64/lib/glib-2.0/include"/>
+					<Add directory="C:/msys64/mingw64/include"/>
+					<Add directory="C:/msys64/mingw64/include/libsoup-2.4"/>
+					<Add directory="C:/msys64/mingw64/include/libxml2"/>
+					<Add directory="C:\msys64\mingw64\bin\..\lib\clang\3.8.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include"/>
+					<Add directory="C:\msys64\mingw64\lib\gcc\x86_64-w64-mingw32\6.2.0\include-fixed"/>
+					<Add directory="C:\msys64\mingw64\x86_64-w64-mingw32\include"/>
+					<Add directory="C:\msys64\mingw64\include"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\x86_64-w64-mingw32"/>
+					<Add directory="C:\msys64\mingw64\include\c++\6.2.0\backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/query/Makefile&quot;  VERBOSE=1 example-query/fast"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/query/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/query/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/examples/query/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="py-librpc">
+				<Option working_dir="C:/Users/jakub/Documents/GitHub/librpc/build/python"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/python/Makefile&quot;  VERBOSE=1 py-librpc"/>
+					<CompileFile command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/python/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/python/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="C:/msys64/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/jakub/Documents/GitHub/librpc/build/python/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime/data.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/contrib/BlocksRuntime/runtime.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/contrib/mpack/mpack.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/contrib/mpack/mpack.h">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/client/client.c">
+			<Option target="example-client"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/discovery/discovery.c">
+			<Option target="example-discovery"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/error-backtrace/error-backtrace.c">
+			<Option target="example-error-backtrace"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/event/event.c">
+			<Option target="example-event"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/loopback/loopback.c">
+			<Option target="example-loopback"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/pack-unpack/pack-unpack.c">
+			<Option target="example-pack-unpack"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/query/query.c">
+			<Option target="example-query"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/server/server.c">
+			<Option target="example-server"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/include/rpc/bus.h">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/include/rpc/client.h">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/include/rpc/connection.h">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/include/rpc/discovery.h">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/include/rpc/object.h">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/include/rpc/query.h">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/include/rpc/serializer.h">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/include/rpc/server.h">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/include/rpc/service.h">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/internal.h">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/linker_set.h">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/memfd.h">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/rpc_bus.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/rpc_client.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/rpc_connection.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/rpc_discovery.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/rpc_object.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/rpc_query.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/rpc_serializer.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/rpc_server.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/rpc_service.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/serializer/msgpack.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/serializer/msgpack.h">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/serializer/yaml.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/serializer/yaml.h">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/transport/loopback.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/transport/socket.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/transport/ws.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/src/utils.c">
+			<Option target="librpc"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/librpc.pc.in">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/client/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\examples\client\"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/discovery/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\examples\discovery\"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/event/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\examples\event\"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/loopback/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\examples\loopback\"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/pack-unpack/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\examples\pack-unpack\"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/server/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\examples\server\"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/error-backtrace/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\examples\error-backtrace\"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/examples/query/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\examples\query\"/>
+		</Unit>
+		<Unit filename="C:/Users/jakub/Documents/GitHub/librpc/python/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\python\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

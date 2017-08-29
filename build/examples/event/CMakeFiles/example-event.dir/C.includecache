@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../contrib/BlocksRuntime/Block.h
+
+../include/rpc/client.h
+stdbool.h
+-
+rpc/connection.h
+-
+
+../include/rpc/connection.h
+Block.h
+-
+sys/time.h
+-
+rpc/object.h
+-
+
+../include/rpc/object.h
+stdint.h
+-
+stdbool.h
+-
+stdarg.h
+-
+sys/types.h
+-
+
+C:/Users/jakub/Documents/GitHub/librpc/examples/event/event.c
+stdio.h
+-
+rpc/object.h
+-
+rpc/client.h
+-
+

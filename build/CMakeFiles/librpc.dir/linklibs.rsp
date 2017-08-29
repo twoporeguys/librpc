@@ -1,0 +1,1 @@
+-lglib-2.0 -lintl -lsoup-2.4 -lgio-2.0 -lgobject-2.0 -lglib-2.0 -lintl -lyaml -lBlocksRuntime -lsoup-2.4 -lgio-2.0 -lgobject-2.0 -lyaml -lBlocksRuntime -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
