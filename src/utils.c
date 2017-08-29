@@ -29,6 +29,7 @@
 #ifndef _WIN32
 #include <execinfo.h>
 #endif
+#include <glib.h>
 #include "linker_set.h"
 #include "internal.h"
 
@@ -153,3 +154,24 @@ rpc_get_backtrace(void)
 	return (g_string_free(result, false));
 }
 #endif
+
+char *
+rpc_generate_v4_uuid(void)
+{
+	uint8_t bytes[16];
+	int i;
+
+	for (i = 0; i < 16; i++)
+		bytes[i] = (uint8_t)g_random_int_range(0, 256);
+
+	bytes[6] &= 0x0f;
+	bytes[6] |= 4 << 4; /* version 4 */
+	bytes[8] &= 0x3f;
+	bytes[8] |= 0x80;
+
+	return (g_strdup_printf("%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x"
+	    "-%02x%02x%02x%02x%02x%02x", bytes[0], bytes[1], bytes[2],
+	    bytes[3], bytes[4], bytes[5], bytes[6], bytes[7], bytes[8],
+	    bytes[9], bytes[10], bytes[11], bytes[12], bytes[13],
+	    bytes[14], bytes[15]));
+}

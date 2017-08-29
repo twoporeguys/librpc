@@ -671,7 +671,7 @@ rpc_connection_close_inbound_call(struct rpc_inbound_call *call)
 static rpc_object_t
 rpc_new_id(void)
 {
-	char *str = g_uuid_string_random();
+	char *str = rpc_generate_v4_uuid();
 	rpc_object_t ret = rpc_string_create(str);
 
 	g_free(str);
