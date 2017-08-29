@@ -6,6 +6,7 @@ if(UNIX AND NOT APPLE)
 endif()
 
 option(RPC_DEBUG "Enable debug output")
+option(BUNDLED_BLOCKS_RUNTIME "Use bundled BlocksRuntime")
 option(PYTHON_VERSION "Target Python version for py-librpc (2 or 3)" 3)
 option(BUILD_DOC "Create and install HTML API documentation")
 option(BUILD_TESTS "Build and install tests")
@@ -42,6 +43,10 @@ endif()
 
 if(BUILD_BUS AND LINUX)
     pkg_check_modules(UDEV REQUIRED libudev)
+endif()
+
+if(BUNDLED_BLOCKS_RUNTIME)
+    include_directories(contrib/BlocksRuntime)
 endif()
 
 set(CMAKE_C_STANDARD 11)
@@ -107,6 +112,12 @@ set(SERIALIZER_FILES
         src/serializer/yaml.c
         src/serializer/yaml.h
         contrib/mpack/mpack.c)
+
+if(BUNDLED_BLOCKS_RUNTIME)
+    set(CORE_FILES ${CORE_FILES}
+            contrib/BlocksRuntime/data.c
+            contrib/BlocksRuntime/runtime.c)
+endif()
 
 if(BUILD_LIBUSB)
     set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/libusb.c)
