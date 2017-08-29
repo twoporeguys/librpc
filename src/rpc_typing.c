@@ -49,19 +49,22 @@ static const char *builtin_types[] = {
 	NULL
 };
 
-static int rpct_read_meta(struct rpct_file *, rpc_object_t);
-static struct rpct_member *rpct_read_member(const char *, rpc_object_t,
-    struct rpct_type *);
-static struct rpct_typei *rpct_instantiate_type(const char *,
-    const char *);
-static inline bool rpct_type_is_fully_specialized(struct rpct_typei *);
-static char *rpct_canonical_type(struct rpct_typei *);
-static int rpct_read_type(const char *, const char *, rpc_object_t);
-static int rpct_read_func(const char *, const char *, rpc_object_t);
-static int rpct_read_file(const char *);
+static int rpct_read_meta(struct rpct_file *file, rpc_object_t obj);
+static struct rpct_member *rpct_read_member(const char *decl, rpc_object_t obj,
+    struct rpct_type *type);
+static struct rpct_typei *rpct_instantiate_type(const char *decl,
+    const char *realm);
+static inline bool rpct_type_is_fully_specialized(struct rpct_typei *inst);
+static char *rpct_canonical_type(struct rpct_typei *typei);
+static int rpct_read_type(const char *realm, const char *decl,
+    rpc_object_t obj);
+static int rpct_read_func(const char *realm, const char *decl,
+    rpc_object_t obj);
+static int rpct_read_file(const char *path);
 static inline bool rpct_realms_apply(rpct_realm_applier_t applier);
-static int rpct_validate_args(struct rpct_function *, rpc_object_t);
-static int rpct_validate_return(struct rpct_function *, rpc_object_t);
+static int rpct_validate_args(struct rpct_function *func, rpc_object_t args);
+static int rpct_validate_return(struct rpct_function *func,
+    rpc_object_t result);
 static int rpct_parse_type(const char *decl, GPtrArray *variables);
 
 static struct rpct_context *context = NULL;
