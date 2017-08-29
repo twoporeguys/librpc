@@ -908,9 +908,14 @@ cdef class BusNode(object):
 
 cdef class Bus(object):
     def __init__(self):
+        cdef int ret
+
         PyEval_InitThreads()
         with nogil:
-            rpc_bus_open();
+            ret = rpc_bus_open();
+
+        if ret != 0:
+            raise_internal_exc()
 
     def __dealloc__(self):
         with nogil:
