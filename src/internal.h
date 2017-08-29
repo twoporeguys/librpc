@@ -295,6 +295,7 @@ off_t rpc_shmem_get_offset(rpc_object_t shmem);
 
 void rpc_trace(const char *msg, rpc_object_t frame);
 char *rpc_get_backtrace(void);
+char *rpc_generate_v4_uuid(void);
 
 const struct rpc_transport *rpc_find_transport(const char *scheme);
 const struct rpc_serializer *rpc_find_serializer(const char *name);
