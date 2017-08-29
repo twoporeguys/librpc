@@ -25,20 +25,21 @@
  *
  */
 
-#include <printf.h>
 #include <stdio.h>
 #include <rpc/query.h>
 #include <rpc/object.h>
 
 int
-main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)))
+main(int argc, const char *argv[])
 {
 	rpc_object_t start_object;
 	rpc_object_t retval;
-
 	rpc_query_iter_t iter;
 	struct rpc_query_params params = {.offset = 1, .reverse = true};
 	rpc_object_t chunk;
+
+	(void)argc;
+	(void)argv;
 
 	start_object = rpc_object_pack("{siubn[iii{s}]}",
 	    "hello", "world",

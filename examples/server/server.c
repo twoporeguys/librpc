@@ -70,5 +70,10 @@ main(int argc, const char *argv[])
 
 	rpc_discovery_register(ctx);
 	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
+#ifdef _WIN32
+	for (;;)
+		sleep(1);
+#else
 	pause();
+#endif
 }
