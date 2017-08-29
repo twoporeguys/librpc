@@ -34,6 +34,10 @@
 #include "../internal.h"
 #include "../linker_set.h"
 
+#ifndef NAME_MAX
+#define NAME_MAX		255
+#endif
+
 #define	LIBRPC_USB_VID		0xbeef
 #define	LIBRPC_USB_PID		0xfeed
 
@@ -139,6 +143,7 @@ struct usb_connection
 	struct usb_thread_state		uc_state;
 	size_t 				uc_logsize;
 	int				uc_logfd;
+	FILE *				uc_logfile;
 };
 
 struct rpc_bus_transport libusb_bus_ops = {
@@ -209,8 +214,9 @@ usb_open(GMainContext *main_context)
 
 	ctx = g_malloc0(sizeof(*ctx));
 	ctx->uc_main_context = main_context;
+	ret = libusb_init(&ctx->uc_libusb);
 
-	if (libusb_init(&ctx->uc_libusb) != 0) {
+	if (ret != 0) {
 		g_free(ctx);
 		return (NULL);
 	}
@@ -258,6 +264,8 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	libusb_init(&conn->uc_libusb);
 
 	rpc_object_unpack(args, "f", &conn->uc_logfd);
+	if (conn->uc_logfd != -1)
+		conn->uc_logfile = fdopen(conn->uc_logfd, "a+");
 
 	conn->uc_state.uts_libusb = conn->uc_libusb;
 	conn->uc_state.uts_exit = false;
@@ -310,6 +318,9 @@ static int
 usb_abort(void *arg)
 {
 	struct usb_connection *conn = arg;
+
+	if (conn->uc_logfile != NULL)
+		fclose(conn->uc_logfile);
 
 	libusb_close(conn->uc_handle);
 	g_thread_join(conn->uc_libusb_thread);
@@ -566,7 +577,7 @@ usb_event_impl(void *arg)
 		goto done;
 
 	if (log->start < log->end)
-		dprintf(conn->uc_logfd, "%*s",
+		fprintf(conn->uc_logfile, "%*s",
 		    log->end - log->start,
 		    &log->buffer[log->start]);
 
