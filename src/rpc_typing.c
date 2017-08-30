@@ -585,48 +585,104 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 static int
 rpct_read_func(const char *realm, const char *decl, rpc_object_t obj)
 {
-	struct rpct_function *func;
+	int ret = -1;
+	struct rpct_function *func = NULL;
 	GError *err = NULL;
-	GRegex *regex;
-	GMatchInfo *match;
+	GRegex *regex = NULL;
+	GMatchInfo *match = NULL;
 	const char *name;
 	const char *description;
+	const char *returns_type;
+	rpc_object_t decl_obj;
 	rpc_object_t args;
 	rpc_object_t returns;
+	rpct_realm_t realm_obj;
 
-	rpc_object_unpack(obj, "{ssvv}",
+	decl_obj = rpc_dictionary_get_value(obj, decl);
+
+	rpc_object_unpack(decl_obj, "{ssvv}",
 	    "description", &description,
 	    "arguments", &args,
 	    "return", &returns);
 
 	regex = g_regex_new(FUNC_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
-	if (err != NULL) {
-		g_error_free(err);
-		g_regex_unref(regex);
-		return (-1);
-	}
+	if (err != NULL)
+		goto error;
 
-	if (!g_regex_match(regex, decl, 0, &match)) {
-		g_regex_unref(regex);
-		return (-1);
-	}
+	if (!g_regex_match(regex, decl, 0, &match))
+		goto error;
 
-	if (g_match_info_get_match_count(match) < 1) {
-		g_regex_unref(regex);
-		g_match_info_free(match);
-		return (-1);
-	}
+	if (g_match_info_get_match_count(match) < 1)
+		goto error;
 
 	name = g_match_info_fetch(match, 1);
 	func = g_malloc0(sizeof(*func));
-	func->name = g_strdup(name);
+	func->arguments = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
+	    (GDestroyNotify)rpct_typei_free);
 
 	if (args != NULL) {
-		rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
+		if (rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
+			const char *arg_name;
+			const char* arg_type;
+			struct rpct_typei *arg_inst;
+
+			arg_name = rpc_dictionary_get_string(i, "name");
+			if (arg_name == NULL)
+				return ((bool)false);
+
+			arg_type = rpc_dictionary_get_string(i, "type");
+			if (arg_type == NULL)
+				return ((bool)false);
+
+			if (rpct_find_or_load(arg_type, realm, obj) != 0)
+				return ((bool)false);
+
+			arg_inst = rpct_instantiate_type(arg_type, realm);
+			if (arg_inst == NULL)
+				return ((bool)false);
+
+			g_hash_table_insert(func->arguments, g_strdup(arg_name),
+			    arg_inst);
+
 			return ((bool)true);
-		});
+		}))
+			goto error;
 	}
 
+	if (returns != NULL) {
+		returns_type = rpc_string_get_string_ptr(returns);
+		if (rpct_find_or_load(returns_type, realm, obj) != 0)
+			goto error;
+
+		func->result = rpct_instantiate_type(returns_type, realm);
+		if (func->result == NULL)
+			goto error;
+	}
+
+	func->name = g_strdup(name);
+	func->realm = g_strdup(realm);
+	func->description = g_strdup(description);
+
+	realm_obj = rpct_find_realm(realm);
+	g_hash_table_insert(realm_obj->functions, g_strdup(name), func);
+	ret = 0;
+	goto done;
+
+error:	if (func != NULL) {
+		g_hash_table_unref(func->arguments);
+		g_free(func);
+	}
+
+done:	if (err != NULL)
+		g_error_free(err);
+
+	if (regex != NULL)
+		g_regex_unref(regex);
+
+	if (match != NULL)
+		g_match_info_free(match);
+
+	return (ret);
 }
 
 static int
