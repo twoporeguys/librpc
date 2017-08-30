@@ -66,7 +66,7 @@ static int rpct_validate_args(struct rpct_function *func, rpc_object_t args);
 static int rpct_validate_return(struct rpct_function *func,
     rpc_object_t result);
 static int rpct_parse_type(const char *decl, GPtrArray *variables);
-static inline int rpct_find_or_load(const char *decl, const char *realm,
+static inline int rpct_find_or_load(const char *realm, const char *decl,
     rpc_object_t obj);
 
 static struct rpct_context *context = NULL;
@@ -409,7 +409,7 @@ rpct_canonical_type(struct rpct_typei *typei)
 }
 
 static inline int
-rpct_find_or_load(const char *decl, const char *realm, rpc_object_t obj)
+rpct_find_or_load(const char *realm, const char *decl, rpc_object_t obj)
 {
 	GError *err = NULL;
 	GRegex *regex;
@@ -453,8 +453,8 @@ rpct_find_or_load(const char *decl, const char *realm, rpc_object_t obj)
 			goto done;
 
 		for (int i = 0; i < splitvars->len; i++) {
-			if (rpct_find_or_load(g_ptr_array_index(splitvars, i),
-			    realm, obj) != 0)
+			if (rpct_find_or_load(realm,
+			    g_ptr_array_index(splitvars, i), obj) != 0)
 				goto done;
 		}
 	}
@@ -634,7 +634,7 @@ rpct_read_func(const char *realm, const char *decl, rpc_object_t obj)
 			if (arg_type == NULL)
 				return ((bool)false);
 
-			if (rpct_find_or_load(arg_type, realm, obj) != 0)
+			if (rpct_find_or_load(realm, arg_type, obj) != 0)
 				return ((bool)false);
 
 			arg_inst = rpct_instantiate_type(arg_type, realm);
@@ -651,7 +651,7 @@ rpct_read_func(const char *realm, const char *decl, rpc_object_t obj)
 
 	if (returns != NULL) {
 		returns_type = rpc_string_get_string_ptr(returns);
-		if (rpct_find_or_load(returns_type, realm, obj) != 0)
+		if (rpct_find_or_load(realm, returns_type, obj) != 0)
 			goto error;
 
 		func->result = rpct_instantiate_type(returns_type, realm);
