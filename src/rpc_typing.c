@@ -66,6 +66,8 @@ static int rpct_validate_args(struct rpct_function *func, rpc_object_t args);
 static int rpct_validate_return(struct rpct_function *func,
     rpc_object_t result);
 static int rpct_parse_type(const char *decl, GPtrArray *variables);
+static inline int rpct_find_or_load(const char *decl, const char *realm,
+    rpc_object_t obj);
 
 static struct rpct_context *context = NULL;
 
@@ -404,6 +406,79 @@ rpct_canonical_type(struct rpct_typei *typei)
 
 	g_string_append(ret, ">");
 	return (g_string_free(ret, false));
+}
+
+static inline int
+rpct_find_or_load(const char *decl, const char *realm, rpc_object_t obj)
+{
+	GError *err = NULL;
+	GRegex *regex;
+	GMatchInfo *match = NULL;
+	GPtrArray *splitvars = NULL;
+	struct rpct_type *type;
+	char *decltype = NULL;
+	char *declvars = NULL;
+	int ret = -1;
+
+	regex = g_regex_new(INSTANCE_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
+	if (err != NULL)
+		goto done;
+
+	if (!g_regex_match(regex, decl, 0, &match))
+		goto done;
+
+	if (g_match_info_get_match_count(match) < 1)
+		goto done;
+
+	decltype = g_match_info_fetch(match, 1);
+
+	type = rpct_find_type(realm, decltype);
+
+	if (type == NULL) {
+		if (rpct_read_type(realm, decltype, obj) != 0)
+			goto done;
+
+		type = rpct_find_type(realm, decltype);
+	}
+
+	if (type->generic) {
+		declvars = g_match_info_fetch(match, 3);
+		if (declvars == NULL)
+			goto done;
+
+		splitvars = g_ptr_array_new();
+
+		rpct_parse_type(declvars, splitvars);
+		if (splitvars->len != type->generic_vars->len)
+			goto done;
+
+		for (int i = 0; i < splitvars->len; i++) {
+			if (rpct_find_or_load(g_ptr_array_index(splitvars, i),
+			    realm, obj) != 0)
+				goto done;
+		}
+	}
+
+	ret = 0;
+
+done:	g_regex_unref(regex);
+
+	if (err != NULL)
+		g_error_free(err);
+
+	if (match != NULL)
+		g_match_info_free(match);
+
+	if (splitvars != NULL)
+		g_ptr_array_free(splitvars, true);
+
+	if (decltype != NULL)
+		g_free(decltype);
+
+	if (declvars != NULL)
+		g_free(declvars);
+
+	return (ret);
 }
 
 static int
