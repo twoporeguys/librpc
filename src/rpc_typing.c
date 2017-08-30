@@ -493,13 +493,20 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 	GRegex *regex;
 	GMatchInfo *match;
 	rpc_object_t members = NULL;
+	rpc_object_t decl_obj = NULL;
+	rpct_realm_t realm_obj;
 
-	rpc_object_unpack(obj, "{ssv}",
+	decl_obj = rpc_dictionary_get_value(obj, decl);
+
+	rpc_object_unpack(decl_obj, "{ssv}",
 	    "inherits", &inherits,
 	    "description", &description,
 	    "members", &members);
 
 	if (inherits != NULL) {
+		if (rpct_find_or_load(realm, inherits, obj) != 0)
+			return (-1);
+
 		parent = rpct_find_type(realm, inherits);
 		if (parent == NULL)
 			return (-1);
@@ -528,10 +535,14 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 
 	type = g_malloc0(sizeof(*type));
 	type->name = g_strdup(declname);
+	type->realm = g_strdup(realm);
 	type->parent = parent;
-	type->members = g_hash_table_new(g_str_hash, g_str_equal);
-	type->constraints = g_hash_table_new(g_str_hash, g_str_equal);
+	type->members = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
+	    (GDestroyNotify)rpct_member_free);
+	type->constraints = g_hash_table_new_full(g_str_hash, g_str_equal,
+	    g_free, (GDestroyNotify)rpct_constraint_free);
 	type->description = g_strdup(description);
+	type->generic_vars = g_ptr_array_new();
 
 	if (g_strcmp0(decltype, "struct") == 0)
 		type->clazz = RPC_TYPING_STRUCT;
@@ -578,7 +589,9 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 		});
 	}
 
-	g_hash_table_insert(context->types, g_strdup(declname), type);
+
+	realm_obj = rpct_find_realm(realm);
+	g_hash_table_insert(realm_obj, g_strdup(declname), type);
 	return (0);
 }
 
