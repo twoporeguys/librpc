@@ -259,14 +259,14 @@ rpct_instantiate_type(const char *decl, const char *realm)
 		}
 	}
 
-	goto end;
+	goto done;
 
 error:	if (ret != NULL) {
 		rpct_typei_free(ret);
 		ret = NULL;
 	}
 
-end:	g_regex_unref(regex);
+done:	g_regex_unref(regex);
 
 	if (err != NULL)
 		g_error_free(err);
