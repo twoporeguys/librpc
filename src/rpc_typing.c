@@ -707,11 +707,10 @@ rpct_read_file(const char *path)
 	size_t length;
 	rpc_object_t obj;
 	GError *err = NULL;
+	int ret = 0;
 
-	if (!g_file_get_contents(path, &contents, &length, &err)) {
-		/* XXX */
+	if (!g_file_get_contents(path, &contents, &length, &err))
 		return (-1);
-	}
 
 	obj = rpc_serializer_load("yaml", contents, length);
 	g_free(contents);
@@ -721,30 +720,40 @@ rpct_read_file(const char *path)
 
 	file = g_malloc0(sizeof(*file));
 	rpct_read_meta(file, rpc_dictionary_get_value(obj, "meta"));
+	file->path = g_strdup(path);
+	file->types = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
+	    NULL);
 
 	if (rpct_find_realm(file->realm) == NULL) {
 		realm = g_malloc0(sizeof(*realm));
 		realm->name = g_strdup(file->realm);
-		realm->types= g_hash_table_new(g_str_hash, g_str_equal);
-		g_hash_table_insert(context->realms, (gpointer)realm->name,
+		realm->types= g_hash_table_new_full(g_str_hash, g_str_equal,
+		    g_free, (GDestroyNotify)rpct_type_free);
+		realm->functions= g_hash_table_new_full(g_str_hash, g_str_equal,
+		    g_free, (GDestroyNotify)rpct_function_free);
+		g_hash_table_insert(context->realms, g_strdup(realm->name),
 		    realm);
 	}
 
-	rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t value) {
+	if (rpc_dictionary_apply(obj, ^(const char *key,
+	    rpc_object_t v __unused) {
 		if (g_strcmp0(key, "meta") == 0)
 			return ((bool)true);
 
 		if (g_str_has_prefix(key, "function")) {
-			rpct_read_func(file->realm, key, value);
+			if (rpct_read_func(file->realm, key, obj) != 0)
+				return ((bool)false);
 			return ((bool)true);
 		}
 
-		rpct_read_type(file->realm, key, value);
+		if (rpct_find_or_load(file->realm, key, obj) != 0)
+			return ((bool)false);
 		return ((bool)true);
-	});
+	}))
+		ret = -1;
 
 	rpc_release(obj);
-	return (0);
+	return (ret);
 }
 
 static int
