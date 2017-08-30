@@ -443,19 +443,19 @@ rpct_find_or_load(const char *realm, const char *decl, rpc_object_t obj)
 
 	if (type->generic) {
 		declvars = g_match_info_fetch(match, 3);
-		if (declvars == NULL)
-			goto done;
 
-		splitvars = g_ptr_array_new();
+		if (!g_strcmp0(declvars, "")) {
+			splitvars = g_ptr_array_new();
 
-		rpct_parse_type(declvars, splitvars);
-		if (splitvars->len != type->generic_vars->len)
-			goto done;
-
-		for (int i = 0; i < splitvars->len; i++) {
-			if (rpct_find_or_load(realm,
-			    g_ptr_array_index(splitvars, i), obj) != 0)
+			rpct_parse_type(declvars, splitvars);
+			if (splitvars->len != type->generic_vars->len)
 				goto done;
+
+			for (int i = 0; i < splitvars->len; i++) {
+				if (rpct_find_or_load(realm,
+				    g_ptr_array_index(splitvars, i), obj) != 0)
+					goto done;
+			}
 		}
 	}
 
