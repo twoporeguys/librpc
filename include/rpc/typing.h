@@ -66,6 +66,7 @@ typedef bool (^rpct_member_applier_t)(rpct_member_t);
  * @return 0 on success, -1 on error
  */
 int rpct_init(void);
+void rpct_free(void);
 int rpct_load_types(const char *path);
 int rpct_load_types_stream(int fd);
 
