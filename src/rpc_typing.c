@@ -599,18 +599,22 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 
 	/* Read member list */
 	if (members != NULL) {
-		rpc_dictionary_apply(members, ^(const char *key, rpc_object_t value) {
+		if (rpc_dictionary_apply(members, ^(const char *key,
+		    rpc_object_t value) {
 			struct rpct_member *m;
 
 			m = rpct_read_member(key, value, type);
 			if (m != NULL) {
-				g_hash_table_insert(type->members, g_strdup(key), m);
+				g_hash_table_insert(type->members,
+				    g_strdup(key), m);
 				return ((bool)true);
 			}
 
-			/* XXX handle error */
 			return ((bool)false);
-		});
+		})) {
+			rpct_type_free(type);
+			return (-1);
+		}
 	}
 
 	/*XXX Add constraints support */
