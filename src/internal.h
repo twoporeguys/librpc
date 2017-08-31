@@ -288,22 +288,22 @@ struct rpc_serializer
 
 struct rpct_context
 {
-	GHashTable *		types;
 	GHashTable *		files;
 	GHashTable *		realms;
 };
 
 struct rpct_realm
 {
-	const char *		name;
+	char *			name;
 	GHashTable *		types;
+	GHashTable *		functions;
 };
 
 struct rpct_file
 {
-	const char *		path;
-	const char *		realm;
-	const char *		description;
+	char *			path;
+	char *			realm;
+	char *			description;
 	int64_t			version;
 	GHashTable *		types;
 };
@@ -314,9 +314,9 @@ struct rpct_file
 struct rpct_type
 {
 	rpct_class_t		clazz;
-	const char *		realm;
-	const char *		name;
-	const char *		description;
+	char *			realm;
+	char *			name;
+	char *			description;
 	struct rpct_type *	parent;
 	bool			generic;
 	GPtrArray *		generic_vars;
@@ -352,10 +352,16 @@ struct rpct_member
 struct rpct_function
 {
 	char *			name;
+	char *			realm;
 	char *			description;
-	GPtrArray *		arguments;
+	GHashTable *		arguments;
 	struct rpct_typei *	result;
 
+};
+
+struct rpct_constraint
+{
+	char * 			name;
 };
 
 typedef struct rpct_realm *rpct_realm_t;
