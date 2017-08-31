@@ -97,9 +97,6 @@ rpct_class_t
 rpct_get_class(rpc_object_t instance)
 {
 
-	if ((instance == NULL) || (instance->ro_typei == NULL))
-		return (NULL);
-
 	return (instance->ro_typei->type->clazz);
 }
 
@@ -243,7 +240,7 @@ rpct_instantiate_type(const char *decl, const char *realm)
 		if (splitvars->len != type->generic_vars->len)
 			goto error;
 
-		for (int i = 0; i < splitvars->len; i++) {
+		for (guint i = 0; i < splitvars->len; i++) {
 			subtype = rpct_instantiate_type(
 			    g_ptr_array_index(splitvars, i), realm);
 			g_ptr_array_add(ret->specializations, subtype);
@@ -378,8 +375,9 @@ rpct_parse_type(const char *decl, GPtrArray *variables)
 	int istart = 0;
 	int nesting = 0;
 	int groups = 0;
+	size_t len = strlen(decl);
 
-	for (int i = 0; i < strlen(decl); i++) {
+	for (size_t i = 0; i < len; i++) {
 		switch (decl[i]) {
 		case '<':
 			nesting++;
@@ -475,7 +473,7 @@ rpct_find_or_load(const char *realm, const char *decl, rpc_object_t obj)
 			if (splitvars->len != type->generic_vars->len)
 				goto done;
 
-			for (int i = 0; i < splitvars->len; i++) {
+			for (guint i = 0; i < splitvars->len; i++) {
 				if (rpct_find_or_load(realm,
 				    g_ptr_array_index(splitvars, i), obj) != 0)
 					goto done;
@@ -663,7 +661,8 @@ rpct_read_func(const char *realm, const char *decl, rpc_object_t obj)
 	    (GDestroyNotify)rpct_typei_free);
 
 	if (args != NULL) {
-		if (rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
+		if (rpc_array_apply(args, ^(size_t idx __unused,
+		    rpc_object_t i) {
 			const char *arg_name;
 			const char* arg_type;
 			struct rpct_typei *arg_inst;
@@ -872,7 +871,7 @@ rpct_typei_free(struct rpct_typei *inst)
 {
 
 	if (inst->specializations != NULL) {
-		for (int i = 0; i < inst->specializations->len; i++) {
+		for (guint i = 0; i < inst->specializations->len; i++) {
 			rpct_typei_free(
 			    g_ptr_array_index(inst->specializations, i));
 		}
