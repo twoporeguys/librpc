@@ -31,7 +31,6 @@
 #include <yaml.h>
 #include "../linker_set.h"
 #include "../internal.h"
-#include "yaml.h"
 
 static int
 rpc_yaml_serialize(rpc_object_t obj, void **frame, size_t *size)
