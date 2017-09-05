@@ -288,6 +288,7 @@ struct rpc_serializer
 
 struct rpct_context
 {
+	const char *		global_realm;
 	GHashTable *		files;
 	GHashTable *		realms;
 };
