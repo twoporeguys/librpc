@@ -863,6 +863,8 @@ rpct_init(void)
 		type->description = g_strdup_printf("builtin %s type", *b);
 		type->generic_vars = g_ptr_array_new();
 	}
+
+	g_hash_table_insert(context->realms, g_strdup(realm->name), realm);
 	return (0);
 }
 
