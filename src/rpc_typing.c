@@ -151,15 +151,19 @@ static rpct_type_t
 rpct_find_type(const char *realm_name, const char *name)
 {
 	rpct_realm_t realm;
+	rpct_type_t type = NULL;
 
 	realm = rpct_find_realm(realm_name);
 	if (realm == NULL)
 		realm = rpct_find_realm("*");
 
-	if (realm == NULL)
-		return (NULL);
+	type = g_hash_table_lookup(realm->types, name);
+	if (type == NULL) {
+		realm = rpct_find_realm("*");
+		type = g_hash_table_lookup(realm->types, name);
+	}
 
-	return (g_hash_table_lookup(realm->types, name));
+	return (type);
 
 }
 
