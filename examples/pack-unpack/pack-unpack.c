@@ -63,13 +63,12 @@ main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)
 		printf("str = %s, num = %jd, dict_num = %jd, sure = %s\n", str,
 		    num, dict_num, sure ? "true" : "false");
 
-	    	return rpc_object_pack("{siubn[iii{s}]}",
+	    	return rpc_object_pack("{s,i,uint:u,b,n,array:[i,5:i,i,{s}]}",
 		    "hello", "world",
 		    "int", -12345L,
-		    "uint", 0x80808080L,
+		    0x80808080L,
 		    "true_or_false", true,
 		    "nothing",
-		    "array",
 		    1L, 2L, 3L, "!", "?");
 	});
 

@@ -40,7 +40,7 @@ main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)
 	struct rpc_query_params params = {.offset = 1, .reverse = true};
 	rpc_object_t chunk;
 
-	start_object = rpc_object_pack("{siubn[iii{s}]}",
+	start_object = rpc_object_pack("{s,i,u,b,n,[i,i,i,{s}]}",
 	    "hello", "world",
 	    "int", -12345L,
 	    "uint", 0x80808080L,
@@ -76,7 +76,7 @@ main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)
 
 	rpc_release(start_object);
 
-	start_object = rpc_object_pack("[{u}{u}{u}{u}{u}]",
+	start_object = rpc_object_pack("[{u},{u},{u},{u},{u}]",
 	    "value", 1,
 	    "value", 2,
 	    "value", 3,
