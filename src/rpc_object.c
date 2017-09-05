@@ -633,13 +633,97 @@ rpc_object_vpack(const char *fmt, va_list ap)
 	GQueue *keys = g_queue_new();
 	rpc_object_t current = NULL;
 	rpc_object_t container = NULL;
-	const char *key;
+	const char *ptr;
+	const char *search_ptr;
+	const char *comma_ptr;
+	const char *colon_ptr;
+	const char *type_end;
+	char *idx_end_ptr;
+	char *key;
+	char *type = NULL;
 	char ch;
+	char delim;
+	size_t idx = 0;
 
-	while ((ch = *fmt++) != '\0') {
-		if (rpc_get_type(container) == RPC_TYPE_DICTIONARY && ch != '}') {
-			key = va_arg(ap, const char *);
-			g_queue_push_tail(keys, (gpointer)key);
+	for (ptr = fmt; *ptr != '\0'; ptr++) {
+
+		ch = *ptr;
+		if (container != NULL) {
+			if (rpc_get_type(container) == RPC_TYPE_ARRAY)
+				delim = ']';
+			else
+				delim = '}';
+		}
+
+		if ((container != NULL) && (ch != delim)) {
+			comma_ptr = NULL;
+			colon_ptr = NULL;
+			search_ptr = ptr;
+			while (1) {
+				if (*search_ptr == ',') {
+					comma_ptr = search_ptr;
+					break;
+				}
+
+				if (*search_ptr == ':')
+					colon_ptr = search_ptr;
+
+				if (*search_ptr == '<')
+					break;
+
+				if (*search_ptr == '[')
+					break;
+
+				if (*search_ptr == ']')
+					break;
+
+				if (*search_ptr == '{')
+					break;
+
+				if (*search_ptr == '}')
+					break;
+
+				search_ptr++;
+			}
+
+			if (rpc_get_type(container) == RPC_TYPE_ARRAY) {
+				if (colon_ptr != NULL) {
+					idx = (size_t)strtol(ptr,
+					    &idx_end_ptr, 10);
+
+					if (idx_end_ptr != colon_ptr)
+						goto error;
+				} else {
+					idx = rpc_array_get_count(
+					    container);
+				}
+			} else {
+				if (colon_ptr != NULL) {
+					g_queue_push_tail(keys,
+					    g_strndup(ptr,
+					    (colon_ptr - ptr)));
+
+				} else {
+					key = g_strdup(
+					    va_arg(ap, const char *));
+					g_queue_push_tail(keys,
+					    (gpointer)key);
+				}
+			}
+
+			if ((comma_ptr == NULL) &&
+			    (*search_ptr != delim)) {
+				ptr = search_ptr;
+				ch = *search_ptr;
+			} else if ((comma_ptr == NULL) &&
+			    (*search_ptr == delim)) {
+				ch = *(search_ptr - 1);
+				ptr = search_ptr - 1;
+			} else {
+				ch = *(search_ptr - 1);
+				ptr = search_ptr;
+			}
+
 		}
 
 		switch (ch) {
@@ -680,8 +764,22 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			current = rpc_string_create(va_arg(ap, const char *));
 			break;
 
+		case '<':
+			ptr++;
+			type_end = strchr(ptr, '>');
+			type = g_strndup(ptr, (type_end - ptr));
+			ptr = type_end + 1;
+			if (*(ptr) != '{')
+				goto error;
+
 		case '{':
-			container = rpc_dictionary_create();
+			if (type !=NULL) {
+				container = rpct_new(type, NULL);
+				g_free(type);
+				type = NULL;
+			} else
+				container = rpc_dictionary_create();
+
 			g_queue_push_tail(stack, container);
 			continue;
 
@@ -697,9 +795,7 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			break;
 
 		default:
-			rpc_release(current);
-			errno = EINVAL;
-			return (NULL);
+			goto error;
 		}
 
 		if (container != NULL) {
@@ -710,15 +806,23 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			}
 
 			if (rpc_get_type(container) == RPC_TYPE_ARRAY) {
-				rpc_array_append_stolen_value(container,
-				    current);
+				rpc_array_steal_value(container, idx, current);
 			}
 
 			continue;
 		}
 
+		g_queue_free(stack);
+		g_queue_free_full(keys, g_free);
+
 		return (current);
 	}
+
+error:	rpc_release(current);
+
+	g_queue_free(stack);
+	g_queue_free_full(keys, g_free);
+	errno = EINVAL;
 
 	return (NULL);
 }
