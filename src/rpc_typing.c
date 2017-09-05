@@ -77,8 +77,12 @@ rpct_new(const char *decl, const char *realm)
 {
 	rpc_object_t inst;
 	struct rpct_typei *typei;
+	const char *type_realm = realm;
 
-	typei = rpct_instantiate_type(decl, realm);
+	if (type_realm == NULL)
+		type_realm = context->global_realm;
+
+	typei = rpct_instantiate_type(decl, type_realm);
 	if (typei == NULL)
 		return (NULL);
 
@@ -839,6 +843,7 @@ rpct_init(void)
 
 	realm = g_malloc(sizeof(*realm));
 	realm->name = g_strdup("*");
+	context->global_realm = realm->name;
 	realm->types = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 	    (GDestroyNotify)rpct_type_free);
 
@@ -884,6 +889,19 @@ rpct_load_types(const char *path)
 {
 
 	return (rpct_read_file(path));
+}
+
+int
+rpct_set_realm(const char *realm)
+{
+	struct rpct_realm *realm_obj;
+
+	realm_obj = rpct_find_realm(realm);
+	if (realm_obj == NULL)
+		return (-1);
+
+	context->global_realm = realm_obj->name;
+	return (0);
 }
 
 const char *

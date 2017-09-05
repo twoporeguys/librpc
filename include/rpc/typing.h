@@ -70,6 +70,7 @@ void rpct_free(void);
 int rpct_load_types(const char *path);
 int rpct_load_types_stream(int fd);
 
+int rpct_set_realm(const char *realm);
 const char *rpct_type_get_name(rpct_type_t type);
 const char *rpct_type_get_realm(rpct_type_t type);
 const char *rpct_type_get_description(rpct_type_t type);
