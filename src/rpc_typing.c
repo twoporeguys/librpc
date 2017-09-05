@@ -898,6 +898,12 @@ rpct_load_types(const char *path)
 }
 
 int
+rpct_load_types_stream(int fd)
+{
+
+}
+
+int
 rpct_set_realm(const char *realm)
 {
 	struct rpct_realm *realm_obj;
