@@ -848,6 +848,8 @@ rpct_init(void)
 	context->global_realm = realm->name;
 	realm->types = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 	    (GDestroyNotify)rpct_type_free);
+	realm->functions = g_hash_table_new_full(g_str_hash, g_str_equal,
+	    g_free, (GDestroyNotify)rpct_function_free);
 
 	for (b = builtin_types; *b != NULL; b++) {
 		type = g_malloc0(sizeof(*type));
@@ -860,6 +862,7 @@ rpct_init(void)
 		    g_str_equal, g_free, (GDestroyNotify)rpct_constraint_free);
 		type->description = g_strdup_printf("builtin %s type", *b);
 		type->generic_vars = g_ptr_array_new();
+		g_hash_table_insert(realm->types, g_strdup(type->name), type);
 	}
 
 	g_hash_table_insert(context->realms, g_strdup(realm->name), realm);
