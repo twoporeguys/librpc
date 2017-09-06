@@ -73,7 +73,7 @@ static void rpct_constraint_free(struct rpct_constraint *constraint);
 static struct rpct_context *context = NULL;
 
 rpc_object_t
-rpct_new(const char *decl, const char *realm)
+rpct_new(const char *decl, const char *realm, rpc_object_t object)
 {
 	rpc_object_t inst;
 	struct rpct_typei *typei;
@@ -86,12 +86,10 @@ rpct_new(const char *decl, const char *realm)
 	if (typei == NULL)
 		return (NULL);
 
-	if (typei->type->clazz == RPC_TYPING_BUILTIN) {
-		rpct_typei_free(typei);
-		return (NULL);
-	}
+	inst = object;
+	if (object == NULL)
+		inst = rpc_dictionary_create();
 
-	inst = rpc_dictionary_create();
 	inst->ro_typei = typei;
 
 	return (inst);
