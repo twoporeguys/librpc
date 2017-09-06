@@ -637,13 +637,14 @@ rpc_object_vpack(const char *fmt, va_list ap)
 	const char *search_ptr;
 	const char *comma_ptr;
 	const char *colon_ptr;
-	const char *type_end;
+	const char *type_start;
 	char *idx_end_ptr;
 	char *key;
 	char *type = NULL;
 	char ch;
 	char delim;
 	size_t idx = 0;
+	uint32_t nesting;
 
 	for (ptr = fmt; *ptr != '\0'; ptr++) {
 
@@ -765,21 +766,22 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			break;
 
 		case '<':
-			ptr++;
-			type_end = strchr(ptr, '>');
-			type = g_strndup(ptr, (type_end - ptr));
-			ptr = type_end + 1;
-			if (*(ptr) != '{')
-				goto error;
+			type_start = ptr + 1;
+			nesting = 1;
+			while (nesting != 0) {
+				ptr++;
+
+				if (*(ptr) == '<')
+					nesting++;
+
+				if (*(ptr) == '>')
+					nesting--;
+			}
+			type = g_strndup(type_start, (ptr - type_start));
+			continue;
 
 		case '{':
-			if (type !=NULL) {
-				container = rpct_new(type, NULL);
-				g_free(type);
-				type = NULL;
-			} else
-				container = rpc_dictionary_create();
-
+			container = rpc_dictionary_create();
 			g_queue_push_tail(stack, container);
 			continue;
 
@@ -796,6 +798,15 @@ rpc_object_vpack(const char *fmt, va_list ap)
 
 		default:
 			goto error;
+		}
+
+		if (type != NULL) {
+			current = rpct_new(type, NULL, current);
+			if (current == NULL)
+				goto error;
+
+			g_free(type);
+			type = NULL;
 		}
 
 		if (container != NULL) {
