@@ -31,6 +31,7 @@
 #include <rpc/object.h>
 #include <rpc/client.h>
 #include <rpc/server.h>
+#include <rpc/typing.h>
 #include <rpc/service.h>
 
 int
@@ -55,6 +56,7 @@ main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)
 		int cnt;
 		bool sure;
 
+		rpct_init();
 		cnt = rpc_object_unpack(args, "[sib{i}]", &str, &num, &sure,
 		    "key", &dict_num);
 
@@ -63,7 +65,7 @@ main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)
 		printf("str = %s, num = %jd, dict_num = %jd, sure = %s\n", str,
 		    num, dict_num, sure ? "true" : "false");
 
-	    	return rpc_object_pack("{s,i,uint:u,b,n,array:[i,5:i,i,{s}]}",
+	    	return rpc_object_pack("{s,i,uint:u,b,n,array:[i,5:i,<int64>i,{s}]}",
 		    "hello", "world",
 		    "int", -12345L,
 		    0x80808080L,
