@@ -40,8 +40,8 @@ extern "C" {
 #endif
 
 typedef enum {
-    RPC_BUS_ATTACHED,
-    RPC_BUS_DETACHED
+	RPC_BUS_ATTACHED,
+	RPC_BUS_DETACHED
 } rpc_bus_event_t;
 
 /**
