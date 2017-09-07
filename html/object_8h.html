@@ -517,7 +517,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                \</div>
 <div class="line">        if (<a class="code" href="object_8h.html#a2d85324f75b20628a5d32e8117277e18">rpc_release_impl</a>(_object) == 0)         \</div>
-<div class="line">            _object = NULL;                 \</div>
+<div class="line">            (_object) = NULL;               \</div>
 <div class="line">    } <span class="keywordflow">while</span>(0)</div>
 <div class="ttc" id="object_8h_html_a2d85324f75b20628a5d32e8117277e18"><div class="ttname"><a href="object_8h.html#a2d85324f75b20628a5d32e8117277e18">rpc_release_impl</a></div><div class="ttdeci">int rpc_release_impl(rpc_object_t object)</div></div>
 </div><!-- fragment --><p>Decrements reference count of an object.</p>
