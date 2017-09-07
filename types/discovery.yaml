@@ -1,0 +1,14 @@
+---
+meta:
+  version: 1
+  realm: *
+  description: Discovery interface definition
+
+struct DiscoveryMethod:
+  members:
+    name:
+      type: string
+    description:
+      type: string
+    arguments:
+      type: List<DiscoveryMethodArgument>

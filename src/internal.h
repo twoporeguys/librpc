@@ -258,6 +258,10 @@ struct rpc_context
 {
     	GHashTable *		rcx_methods;
     	GThreadPool *		rcx_threadpool;
+
+	/* Hooks */
+	rpc_function_f		rcx_pre_call_hook;
+	rpc_function_f		rcx_post_call_hook;
 };
 
 struct rpc_bus_transport

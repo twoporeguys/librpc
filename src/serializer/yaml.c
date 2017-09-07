@@ -64,7 +64,7 @@ rpc_yaml_read_scalar(yaml_event_t *event)
 	}
 
 	intval = (int64_t)g_ascii_strtoll(value, &endptr, 10);
-	if (endptr == NULL) {
+	if (*endptr == '\0') {
 		ret = rpc_int64_create(intval);
 		goto done;
 	}
