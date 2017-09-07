@@ -264,7 +264,7 @@ rpc_type_t rpc_get_type(rpc_object_t object);
 #define	rpc_release(_object)						\
 	do {								\
 		if (rpc_release_impl(_object) == 0)			\
-			_object = NULL;					\
+			(_object) = NULL;				\
 	} while(0)
 
 /**
