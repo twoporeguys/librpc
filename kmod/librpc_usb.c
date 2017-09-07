@@ -239,7 +239,7 @@ librpc_usb_xfer(struct usb_device *udev, int opcode, void *buf, size_t len,
         int rpipe = usb_rcvctrlpipe(udev, 1);
 
 	if (len > LIBRPC_MAX_MSGSIZE)
-		return (-ESIZE);
+		return (-E2BIG);
 
         return (usb_control_msg(udev, rpipe, opcode,
             USB_TYPE_VENDOR | USB_DIR_IN, 0, 0, buf, len, timeout));
