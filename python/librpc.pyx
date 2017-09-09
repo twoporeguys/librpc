@@ -445,6 +445,9 @@ cdef class Array(Object):
         idx = self.index(value)
         self.__delitem__(idx)
 
+    def __str__(self):
+        return repr(self)
+
     def __contains__(self, value):
         try:
             self.index(value)
@@ -599,6 +602,9 @@ cdef class Dictionary(Object):
 
         self.__applier(collect)
         return result
+
+    def __str__(self):
+        return repr(self)
 
     def __contains__(self, value):
         cdef Object v1
