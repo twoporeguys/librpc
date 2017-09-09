@@ -194,6 +194,24 @@ cdef class Object(object):
         byte_descr = rpc_copy_description(self.obj)
         return byte_descr.decode('utf-8')
 
+    def __str__(self):
+        return str(self.value)
+
+    def __bool__(self):
+        return bool(self.value)
+
+    def __int__(self):
+        if self.type in (ObjectType.BOOL, ObjectType.UINT64, ObjectType.INT64, ObjectType.FD, ObjectType.DOUBLE):
+            return int(self.value)
+
+        raise TypeError('int() argument must be a number, bool or fd')
+
+    def __float__(self):
+        if self.type in (ObjectType.BOOL, ObjectType.UINT64, ObjectType.INT64, ObjectType.DOUBLE):
+            return int(self.value)
+
+        raise TypeError('float() argument must be a number or bool')
+
     def __dealloc__(self):
         if self.obj != <rpc_object_t>NULL:
             rpc_release(self.obj)
