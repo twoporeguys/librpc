@@ -225,6 +225,15 @@ cdef class Object(object):
         rpc_retain(ret.obj)
         return ret
 
+    def unpack(self):
+        if self.type == ObjectType.DICTIONARY:
+            return {k: v.unpack() for k, v in self.value.items()}
+
+        if self.type == ObjectType.ARRAY:
+            return [i.unpack() for i in self.value]
+
+        return self.value
+
     property value:
         def __get__(self):
             cdef Array array
@@ -253,8 +262,7 @@ cdef class Object(object):
             if self.type == ObjectType.STRING:
                 c_string = rpc_string_get_string_ptr(self.obj)
                 c_len = rpc_string_get_length(self.obj)
-
-                return c_string[:c_len].decode('UTF-8')
+                return c_string[:c_len].decode('utf-8')
 
             if self.type == ObjectType.DOUBLE:
                 return rpc_double_get_value(self.obj)
@@ -265,7 +273,6 @@ cdef class Object(object):
             if self.type == ObjectType.BINARY:
                 c_bytes = <uint8_t *>rpc_data_get_bytes_ptr(self.obj)
                 c_len = rpc_data_get_length(self.obj)
-
                 return <bytes>c_bytes[:c_len]
 
             if self.type == ObjectType.ERROR:
@@ -930,7 +937,7 @@ cdef class Bus(object):
 
         PyEval_InitThreads()
         with nogil:
-            ret = rpc_bus_open();
+            ret = rpc_bus_open()
 
         if ret != 0:
             raise_internal_exc()
@@ -1043,7 +1050,6 @@ cdef class Serializer(object):
             raise_internal_exc()
 
         return <bytes>(<char *>frame)[:len]
-
 
 
 cdef raise_internal_exc(rpc=False):
