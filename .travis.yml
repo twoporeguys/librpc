@@ -24,8 +24,8 @@ before_script:
   - ${EXEC} "git config --global http.sslVerify false"
 
 script:
-  - ${EXEC} 'cd /code && mkdir build'
-  - ${EXEC} 'cd /code/build && cmake .. -DBUILD_BUS=OFF -DBUILD_LIBUSB=ON -DPYTHON_VERSION=2'
-  - ${EXEC} 'cd /code/build && make'
-  - ${EXEC} 'cd /code && sh tools/deploy-docs.sh'
-  - ${EXEC} 'kill 1'
+  - ${EXEC} "cd /code && mkdir build"
+  - ${EXEC} "cd /code/build && cmake .. -DBUILD_BUS=OFF -DBUILD_LIBUSB=ON -DPYTHON_VERSION=2"
+  - ${EXEC} "cd /code/build && make"
+  - ${EXEC} "DOXYFILE_IN=${DOXYFILE_IN} TRAVIS_BUILD_DIR=/code TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER} TRAVIS_COMMIT=${TRAVIS_COMMIT} GH_REPO_TOKEN=${GH_REPO_TOKEN} /code && sh tools/deploy-docs.sh"
+  - ${EXEC} "kill 1"
