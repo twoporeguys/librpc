@@ -28,7 +28,10 @@ set(CPACK_PACKAGE_VERSION_MAJOR 6)
 set(CPACK_PACKAGE_VERSION_MAJOR 0)
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER Jakub Klama <jakub.klama@twoporeguys.com>)
 set(CPACK_GENERATOR DEB)
-execute_process(COMMAND git rev-parse --short HEAD OUTPUT_VARIABLE CPACK_PACKAGE_VERSION_PATCH)
+execute_process(
+        COMMAND git rev-parse --short HEAD
+        OUTPUT_VARIABLE CPACK_PACKAGE_VERSION_PATCH
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
 include(CPack)
 
 find_package (PkgConfig REQUIRED)
