@@ -34,6 +34,6 @@ addons:
 script:
   - cd $TRAVIS_BUILD_DIR
   - mkdir build && cd build
-  - cmake ..
+  - cmake .. -DBUILD_BUS=OFF -DBUILD_LIBUSB=ON -DPYTHON_VERSION=2
   - make
   - sh tools/deploy-docs.sh
