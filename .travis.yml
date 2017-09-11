@@ -1,11 +1,7 @@
 sudo: required
 language: c++
 services:
-
 - docker
-branches:
-  only:
-  - master
 
 env:
   global:
@@ -40,4 +36,6 @@ deploy:
   - ${EXEC} "cd /code/build && cpack"
   - ${EXEC} "cd /code/build && mv *.deb librpc.deb"
   on:
+    repo: twoporeguys/librpc
+    all_branches: true
     tags: true
