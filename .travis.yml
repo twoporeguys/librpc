@@ -26,9 +26,14 @@ addons:
       - libglib2.0-dev
       - libsoup-gnome2.4-dev
       - libyajl-dev
+      - libyaml-dev
       - libblocksruntime-dev
+      - libusb-1.0-0-dev
 
 # Build your code e.g. by calling make
 script:
   - cd $TRAVIS_BUILD_DIR
+  - mkdir build && cd build
+  - cmake ..
+  - make
   - sh tools/deploy-docs.sh
