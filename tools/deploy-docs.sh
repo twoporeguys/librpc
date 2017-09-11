@@ -1,4 +1,5 @@
 set -e
+set -x
 mkdir docs-build && cd docs-build
 git clone -b gh-pages /code && cd librpc
 git config --global push.default simple
