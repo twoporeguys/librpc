@@ -1,10 +1,9 @@
-\hypertarget{connection_8h}{\section{/home/travis/build/twoporeguys/librpc/include/rpc/connection.h File Reference}
-\label{connection_8h}\index{/home/travis/build/twoporeguys/librpc/include/rpc/connection.\-h@{/home/travis/build/twoporeguys/librpc/include/rpc/connection.\-h}}
-}
-{\ttfamily \#include $<$Block.\-h$>$}\\*
-{\ttfamily \#include $<$sys/time.\-h$>$}\\*
-{\ttfamily \#include $<$rpc/object.\-h$>$}\\*
-Include dependency graph for connection.\-h\-:
+\hypertarget{connection_8h}{}\section{/code/include/rpc/connection.h File Reference}
+\label{connection_8h}\index{/code/include/rpc/connection.\+h@{/code/include/rpc/connection.\+h}}
+{\ttfamily \#include $<$Block.\+h$>$}\\*
+{\ttfamily \#include $<$sys/time.\+h$>$}\\*
+{\ttfamily \#include $<$rpc/object.\+h$>$}\\*
+Include dependency graph for connection.\+h\+:
 \nopagebreak
 \begin{figure}[H]
 \begin{center}
@@ -12,7 +11,7 @@ Include dependency graph for connection.\-h\-:
 \includegraphics[width=350pt]{connection_8h__incl}
 \end{center}
 \end{figure}
-This graph shows which files directly or indirectly include this file\-:
+This graph shows which files directly or indirectly include this file\+:
 \nopagebreak
 \begin{figure}[H]
 \begin{center}
@@ -23,263 +22,259 @@ This graph shows which files directly or indirectly include this file\-:
 \subsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\#define \hyperlink{connection_8h_a4f7704822a76a6f293f6abbb59bf41f3}{R\-P\-C\-\_\-\-H\-A\-N\-D\-L\-E\-R}(\-\_\-fn, \-\_\-arg)
+\#define \hyperlink{connection_8h_a4f7704822a76a6f293f6abbb59bf41f3}{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER}(\+\_\+fn,  \+\_\+arg)
 \item 
-\#define \hyperlink{connection_8h_ac6630daf34229f9dd8a754b119e4a94d}{R\-P\-C\-\_\-\-E\-R\-R\-O\-R\-\_\-\-H\-A\-N\-D\-L\-E\-R}(\-\_\-fn, \-\_\-arg)
+\#define \hyperlink{connection_8h_ac6630daf34229f9dd8a754b119e4a94d}{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER}(\+\_\+fn,  \+\_\+arg)
 \item 
-\#define \hyperlink{connection_8h_a7512dc753949d75650bbec7527f9d0a6}{R\-P\-C\-\_\-\-C\-A\-L\-L\-B\-A\-C\-K}(\-\_\-fn, \-\_\-arg)
+\#define \hyperlink{connection_8h_a7512dc753949d75650bbec7527f9d0a6}{R\+P\+C\+\_\+\+C\+A\+L\+L\+B\+A\+CK}(\+\_\+fn,  \+\_\+arg)
 \end{DoxyCompactItemize}
 \subsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
-typedef enum \hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccd}{rpc\-\_\-error\-\_\-code} \hyperlink{connection_8h_a043170f29cb25827a88be4dab2313a91}{rpc\-\_\-error\-\_\-code\-\_\-t}
+typedef enum \hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccd}{rpc\+\_\+error\+\_\+code} \hyperlink{connection_8h_a043170f29cb25827a88be4dab2313a91}{rpc\+\_\+error\+\_\+code\+\_\+t}
 \item 
-typedef enum \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\-\_\-call\-\_\-status} \hyperlink{connection_8h_a5e44285dc90be1f6bc541504a3f6d929}{rpc\-\_\-call\-\_\-status\-\_\-t}
+typedef enum \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\+\_\+call\+\_\+status} \hyperlink{connection_8h_a5e44285dc90be1f6bc541504a3f6d929}{rpc\+\_\+call\+\_\+status\+\_\+t}
 \item 
-typedef struct rpc\-\_\-connection $\ast$ \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t}
+typedef struct rpc\+\_\+connection $\ast$ \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}
 \item 
-typedef struct rpc\-\_\-call $\ast$ \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\-\_\-call\-\_\-t}
+typedef struct rpc\+\_\+call $\ast$ \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}
 \item 
-typedef void($^\wedge$ \hyperlink{connection_8h_a5b4b4d2a4e3a7585ea8fe7c25256cf9d}{rpc\-\_\-handler\-\_\-t} )(const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} args)
+typedef void($^\wedge$ \hyperlink{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{rpc\+\_\+handler\+\_\+t}) (const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
-typedef void($^\wedge$ \hyperlink{connection_8h_a8dee2cbce5bf6bbb8de1d4bd95936a4a}{rpc\-\_\-error\-\_\-handler\-\_\-t} )(\hyperlink{connection_8h_a043170f29cb25827a88be4dab2313a91}{rpc\-\_\-error\-\_\-code\-\_\-t} code, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} args)
+typedef void($^\wedge$ \hyperlink{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}{rpc\+\_\+error\+\_\+handler\+\_\+t}) (\hyperlink{connection_8h_a043170f29cb25827a88be4dab2313a91}{rpc\+\_\+error\+\_\+code\+\_\+t} code, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
-typedef bool($^\wedge$ \hyperlink{connection_8h_adc95de7fabf9904e1be453f5c6392a6b}{rpc\-\_\-callback\-\_\-t} )(\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} args, \hyperlink{connection_8h_a5e44285dc90be1f6bc541504a3f6d929}{rpc\-\_\-call\-\_\-status\-\_\-t} status)
+typedef bool($^\wedge$ \hyperlink{connection_8h_a659dfc386fa0add62a07c17662a29641}{rpc\+\_\+callback\+\_\+t}) (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args, \hyperlink{connection_8h_a5e44285dc90be1f6bc541504a3f6d929}{rpc\+\_\+call\+\_\+status\+\_\+t} status)
 \end{DoxyCompactItemize}
 \subsection*{Enumerations}
 \begin{DoxyCompactItemize}
 \item 
-enum \hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccd}{rpc\-\_\-error\-\_\-code} \{ \\*
-\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7}{R\-P\-C\-\_\-\-I\-N\-V\-A\-L\-I\-D\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E} = 1, 
-\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55}{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-T\-I\-M\-E\-O\-U\-T}, 
-\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0}{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-C\-L\-O\-S\-E\-D}, 
-\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70}{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-T\-I\-M\-E\-O\-U\-T}, 
+enum \hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccd}{rpc\+\_\+error\+\_\+code} \{ \\*
+\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7}{R\+P\+C\+\_\+\+I\+N\+V\+A\+L\+I\+D\+\_\+\+R\+E\+S\+P\+O\+N\+SE} = 1, 
+\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55}{R\+P\+C\+\_\+\+C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+\_\+\+T\+I\+M\+E\+O\+UT}, 
+\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0}{R\+P\+C\+\_\+\+C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+\_\+\+C\+L\+O\+S\+ED}, 
+\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70}{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+T\+I\+M\+E\+O\+UT}, 
 \\*
-\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d}{R\-P\-C\-\_\-\-S\-P\-U\-R\-I\-O\-U\-S\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E}, 
-\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b}{R\-P\-C\-\_\-\-L\-O\-G\-O\-U\-T}, 
-\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1}{R\-P\-C\-\_\-\-O\-T\-H\-E\-R}
+\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d}{R\+P\+C\+\_\+\+S\+P\+U\+R\+I\+O\+U\+S\+\_\+\+R\+E\+S\+P\+O\+N\+SE}, 
+\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b}{R\+P\+C\+\_\+\+L\+O\+G\+O\+UT}, 
+\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1}{R\+P\+C\+\_\+\+O\+T\+H\+ER}
  \}
 \item 
-enum \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\-\_\-call\-\_\-status} \{ \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1}{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-I\-N\-\_\-\-P\-R\-O\-G\-R\-E\-S\-S}, 
-\hyperlink{connection_8h_a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f}{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-M\-O\-R\-E\-\_\-\-A\-V\-A\-I\-L\-A\-B\-L\-E}, 
-\hyperlink{connection_8h_a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d}{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-D\-O\-N\-E}, 
-\hyperlink{connection_8h_a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856}{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-E\-R\-R\-O\-R}
+enum \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\+\_\+call\+\_\+status} \{ \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1}{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+I\+N\+\_\+\+P\+R\+O\+G\+R\+E\+SS}, 
+\hyperlink{connection_8h_a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f}{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+M\+O\+R\+E\+\_\+\+A\+V\+A\+I\+L\+A\+B\+LE}, 
+\hyperlink{connection_8h_a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d}{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+D\+O\+NE}, 
+\hyperlink{connection_8h_a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856}{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+E\+R\+R\+OR}
  \}
 \end{DoxyCompactItemize}
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{connection_8h_a9d3264d7fa52034608cf8cc7d60df61f}{\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} {\bfseries rpc\-\_\-connection\-\_\-create} (const char $\ast$uri, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} params)}\label{connection_8h_a9d3264d7fa52034608cf8cc7d60df61f}
+\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} {\bfseries rpc\+\_\+connection\+\_\+create} (const char $\ast$uri, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} params)\hypertarget{connection_8h_a9d3264d7fa52034608cf8cc7d60df61f}{}\label{connection_8h_a9d3264d7fa52034608cf8cc7d60df61f}
 
 \item 
-\hypertarget{connection_8h_a6d4de49f4d9121c4077e62b73064b99d}{int {\bfseries rpc\-\_\-connection\-\_\-close} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn)}\label{connection_8h_a6d4de49f4d9121c4077e62b73064b99d}
+int {\bfseries rpc\+\_\+connection\+\_\+close} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)\hypertarget{connection_8h_a6d4de49f4d9121c4077e62b73064b99d}{}\label{connection_8h_a6d4de49f4d9121c4077e62b73064b99d}
 
 \item 
-int \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\-\_\-connection\-\_\-subscribe\-\_\-event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn, const char $\ast$name)
+int \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\+\_\+connection\+\_\+subscribe\+\_\+event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name)
 \item 
-int \hyperlink{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn, const char $\ast$name)
+int \hyperlink{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name)
 \item 
-void $\ast$ \hyperlink{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}{rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn, const char $\ast$name, \hyperlink{connection_8h_a5b4b4d2a4e3a7585ea8fe7c25256cf9d}{rpc\-\_\-handler\-\_\-t} handler)
+void $\ast$ \hyperlink{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, \hyperlink{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{rpc\+\_\+handler\+\_\+t} handler)
 \item 
-void \hyperlink{connection_8h_a209856a794a9a10a53735787926f4b95}{rpc\-\_\-connection\-\_\-unregister\-\_\-event\-\_\-handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn, const char $\ast$name, void $\ast$cookie)
+void \hyperlink{connection_8h_a209856a794a9a10a53735787926f4b95}{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, void $\ast$cookie)
 \item 
-\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} \hyperlink{connection_8h_aba014ae3408ed96b696ab70066076f13}{rpc\-\_\-connection\-\_\-call\-\_\-sync} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn, const char $\ast$method,...)
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_aba014ae3408ed96b696ab70066076f13}{rpc\+\_\+connection\+\_\+call\+\_\+sync} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$method,...)
 \item 
-\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} \hyperlink{connection_8h_a1dd48a58161cbf375719ecde4480c8a9}{rpc\-\_\-connection\-\_\-call\-\_\-syncv} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn, const char $\ast$method, va\-\_\-list ap)
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a1dd48a58161cbf375719ecde4480c8a9}{rpc\+\_\+connection\+\_\+call\+\_\+syncv} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$method, va\+\_\+list ap)
 \item 
-\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\-\_\-call\-\_\-t} \hyperlink{connection_8h_aee4f43c3790d07d116367646694cb1c0}{rpc\-\_\-connection\-\_\-call} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} args, \hyperlink{connection_8h_adc95de7fabf9904e1be453f5c6392a6b}{rpc\-\_\-callback\-\_\-t} callback)
+\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} \hyperlink{connection_8h_aee4f43c3790d07d116367646694cb1c0}{rpc\+\_\+connection\+\_\+call} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args, \hyperlink{connection_8h_a659dfc386fa0add62a07c17662a29641}{rpc\+\_\+callback\+\_\+t} callback)
 \item 
-int \hyperlink{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}{rpc\-\_\-connection\-\_\-send\-\_\-event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} args)
+int \hyperlink{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}{rpc\+\_\+connection\+\_\+send\+\_\+event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
-int \hyperlink{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}{rpc\-\_\-connection\-\_\-ping} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn)
+int \hyperlink{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}{rpc\+\_\+connection\+\_\+ping} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
-void \hyperlink{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}{rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn, \hyperlink{connection_8h_a5b4b4d2a4e3a7585ea8fe7c25256cf9d}{rpc\-\_\-handler\-\_\-t} handler)
+void \hyperlink{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}{rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, \hyperlink{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{rpc\+\_\+handler\+\_\+t} handler)
 \item 
-void \hyperlink{connection_8h_a8f332abcc5d0a80c86f8317c7dcc79ec}{rpc\-\_\-connection\-\_\-set\-\_\-error\-\_\-handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\-\_\-connection\-\_\-t} conn, \hyperlink{connection_8h_a8dee2cbce5bf6bbb8de1d4bd95936a4a}{rpc\-\_\-error\-\_\-handler\-\_\-t} handler)
+void \hyperlink{connection_8h_a8f332abcc5d0a80c86f8317c7dcc79ec}{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, \hyperlink{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}{rpc\+\_\+error\+\_\+handler\+\_\+t} handler)
 \item 
-int \hyperlink{connection_8h_ae600ee03958915ee116e90e3e7795ec7}{rpc\-\_\-call\-\_\-wait} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\-\_\-call\-\_\-t} call)
+int \hyperlink{connection_8h_ae600ee03958915ee116e90e3e7795ec7}{rpc\+\_\+call\+\_\+wait} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
 \item 
-int \hyperlink{connection_8h_a844f7384a38ef32d4d4b9d6994aed613}{rpc\-\_\-call\-\_\-continue} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\-\_\-call\-\_\-t} call, bool sync)
+int \hyperlink{connection_8h_a844f7384a38ef32d4d4b9d6994aed613}{rpc\+\_\+call\+\_\+continue} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call, bool sync)
 \item 
-int \hyperlink{connection_8h_a17059d810db4d08d911e45d24704dacc}{rpc\-\_\-call\-\_\-abort} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\-\_\-call\-\_\-t} call)
+int \hyperlink{connection_8h_a17059d810db4d08d911e45d24704dacc}{rpc\+\_\+call\+\_\+abort} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
 \item 
-int \hyperlink{connection_8h_a095af0b0676ae8ba03d5b9838e51f7fa}{rpc\-\_\-call\-\_\-timedwait} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\-\_\-call\-\_\-t} call, const struct timeval $\ast$ts)
+int \hyperlink{connection_8h_a095af0b0676ae8ba03d5b9838e51f7fa}{rpc\+\_\+call\+\_\+timedwait} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call, const struct timeval $\ast$ts)
 \item 
-int \hyperlink{connection_8h_a1a8f2d8cf42309295e425ca58bdfecbd}{rpc\-\_\-call\-\_\-success} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\-\_\-call\-\_\-t} call)
+int \hyperlink{connection_8h_a1a8f2d8cf42309295e425ca58bdfecbd}{rpc\+\_\+call\+\_\+success} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
 \item 
-int \hyperlink{connection_8h_a109ba3b143a1931263d8716f3ac51cb0}{rpc\-\_\-call\-\_\-status} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\-\_\-call\-\_\-t} call)
+int \hyperlink{connection_8h_a109ba3b143a1931263d8716f3ac51cb0}{rpc\+\_\+call\+\_\+status} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
 \item 
-\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\-\_\-object\-\_\-t} \hyperlink{connection_8h_a6af73450be622a40f3cbc2b9425ca5dd}{rpc\-\_\-call\-\_\-result} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\-\_\-call\-\_\-t} call)
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a6af73450be622a40f3cbc2b9425ca5dd}{rpc\+\_\+call\+\_\+result} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
 \item 
-void \hyperlink{connection_8h_ace66aca5d1c46e97128a3e09dbce89d1}{rpc\-\_\-call\-\_\-free} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\-\_\-call\-\_\-t} call)
+void \hyperlink{connection_8h_ace66aca5d1c46e97128a3e09dbce89d1}{rpc\+\_\+call\+\_\+free} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
 \end{DoxyCompactItemize}
 
 
 \subsection{Detailed Description}
-R\-P\-C connection A\-P\-I. 
-
-Definition in file \hyperlink{connection_8h_source}{connection.\-h}.
-
-
+R\+PC connection A\+PI. 
 
 \subsection{Macro Definition Documentation}
-\hypertarget{connection_8h_a7512dc753949d75650bbec7527f9d0a6}{\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-C\-A\-L\-L\-B\-A\-C\-K@{R\-P\-C\-\_\-\-C\-A\-L\-L\-B\-A\-C\-K}}
-\index{R\-P\-C\-\_\-\-C\-A\-L\-L\-B\-A\-C\-K@{R\-P\-C\-\_\-\-C\-A\-L\-L\-B\-A\-C\-K}!connection.h@{connection.\-h}}
-\subsubsection[{R\-P\-C\-\_\-\-C\-A\-L\-L\-B\-A\-C\-K}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-P\-C\-\_\-\-C\-A\-L\-L\-B\-A\-C\-K(
+\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+C\+A\+L\+L\+B\+A\+CK@{R\+P\+C\+\_\+\+C\+A\+L\+L\+B\+A\+CK}}
+\index{R\+P\+C\+\_\+\+C\+A\+L\+L\+B\+A\+CK@{R\+P\+C\+\_\+\+C\+A\+L\+L\+B\+A\+CK}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{R\+P\+C\+\_\+\+C\+A\+L\+L\+B\+A\+CK}{RPC_CALLBACK}}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\+P\+C\+\_\+\+C\+A\+L\+L\+B\+A\+CK(
 \begin{DoxyParamCaption}
-\item[{}]{\-\_\-fn, }
-\item[{}]{\-\_\-arg}
+\item[{}]{\+\_\+fn, }
+\item[{}]{\+\_\+arg}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a7512dc753949d75650bbec7527f9d0a6}
-{\bfseries Value\-:}
+)}\hypertarget{connection_8h_a7512dc753949d75650bbec7527f9d0a6}{}\label{connection_8h_a7512dc753949d75650bbec7527f9d0a6}
+{\bfseries Value\+:}
 \begin{DoxyCode}
 ^(\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} \_args, \hyperlink{connection_8h_a5e44285dc90be1f6bc541504a3f6d929}{rpc\_call\_status\_t} \_status) \{     \(\backslash\)
         return ((\textcolor{keywordtype}{bool})\_fn(\_arg, \_args, \_status));       \(\backslash\)
     \}
 \end{DoxyCode}
-Converts function pointer to a \hyperlink{connection_8h_adc95de7fabf9904e1be453f5c6392a6b}{rpc\-\_\-callback\-\_\-t} block type. 
+Converts function pointer to a \hyperlink{connection_8h_a659dfc386fa0add62a07c17662a29641}{rpc\+\_\+callback\+\_\+t} block type. 
 
-Definition at line 117 of file connection.\-h.
+Definition at line 117 of file connection.\+h.
 
-\hypertarget{connection_8h_ac6630daf34229f9dd8a754b119e4a94d}{\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-E\-R\-R\-O\-R\-\_\-\-H\-A\-N\-D\-L\-E\-R@{R\-P\-C\-\_\-\-E\-R\-R\-O\-R\-\_\-\-H\-A\-N\-D\-L\-E\-R}}
-\index{R\-P\-C\-\_\-\-E\-R\-R\-O\-R\-\_\-\-H\-A\-N\-D\-L\-E\-R@{R\-P\-C\-\_\-\-E\-R\-R\-O\-R\-\_\-\-H\-A\-N\-D\-L\-E\-R}!connection.h@{connection.\-h}}
-\subsubsection[{R\-P\-C\-\_\-\-E\-R\-R\-O\-R\-\_\-\-H\-A\-N\-D\-L\-E\-R}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-P\-C\-\_\-\-E\-R\-R\-O\-R\-\_\-\-H\-A\-N\-D\-L\-E\-R(
+\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER}}
+\index{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER}{RPC_ERROR_HANDLER}}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER(
 \begin{DoxyParamCaption}
-\item[{}]{\-\_\-fn, }
-\item[{}]{\-\_\-arg}
+\item[{}]{\+\_\+fn, }
+\item[{}]{\+\_\+arg}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_ac6630daf34229f9dd8a754b119e4a94d}
-{\bfseries Value\-:}
+)}\hypertarget{connection_8h_ac6630daf34229f9dd8a754b119e4a94d}{}\label{connection_8h_ac6630daf34229f9dd8a754b119e4a94d}
+{\bfseries Value\+:}
 \begin{DoxyCode}
 ^(\hyperlink{connection_8h_a043170f29cb25827a88be4dab2313a91}{rpc\_error\_code\_t} \_code, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} \_args) \{         \(\backslash\)
         \_fn(\_arg, \_code, \_args);                \(\backslash\)
     \}
 \end{DoxyCode}
-Converts function pointer to a \hyperlink{connection_8h_a8dee2cbce5bf6bbb8de1d4bd95936a4a}{rpc\-\_\-error\-\_\-handler\-\_\-t} block type. 
+Converts function pointer to a \hyperlink{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}{rpc\+\_\+error\+\_\+handler\+\_\+t} block type. 
 
-Definition at line 109 of file connection.\-h.
+Definition at line 109 of file connection.\+h.
 
-\hypertarget{connection_8h_a4f7704822a76a6f293f6abbb59bf41f3}{\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-H\-A\-N\-D\-L\-E\-R@{R\-P\-C\-\_\-\-H\-A\-N\-D\-L\-E\-R}}
-\index{R\-P\-C\-\_\-\-H\-A\-N\-D\-L\-E\-R@{R\-P\-C\-\_\-\-H\-A\-N\-D\-L\-E\-R}!connection.h@{connection.\-h}}
-\subsubsection[{R\-P\-C\-\_\-\-H\-A\-N\-D\-L\-E\-R}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-P\-C\-\_\-\-H\-A\-N\-D\-L\-E\-R(
+\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER}}
+\index{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER}{RPC_HANDLER}}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER(
 \begin{DoxyParamCaption}
-\item[{}]{\-\_\-fn, }
-\item[{}]{\-\_\-arg}
+\item[{}]{\+\_\+fn, }
+\item[{}]{\+\_\+arg}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a4f7704822a76a6f293f6abbb59bf41f3}
-{\bfseries Value\-:}
+)}\hypertarget{connection_8h_a4f7704822a76a6f293f6abbb59bf41f3}{}\label{connection_8h_a4f7704822a76a6f293f6abbb59bf41f3}
+{\bfseries Value\+:}
 \begin{DoxyCode}
 ^(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} \_args) \{          \(\backslash\)
         \_fn(\_arg, \_name, \_args);                \(\backslash\)
     \}
 \end{DoxyCode}
-Converts function pointer to a \hyperlink{connection_8h_a5b4b4d2a4e3a7585ea8fe7c25256cf9d}{rpc\-\_\-handler\-\_\-t} block type. 
+Converts function pointer to a \hyperlink{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{rpc\+\_\+handler\+\_\+t} block type. 
 
-Definition at line 101 of file connection.\-h.
+Definition at line 101 of file connection.\+h.
 
 
 
 \subsection{Typedef Documentation}
-\hypertarget{connection_8h_a5e44285dc90be1f6bc541504a3f6d929}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-call\-\_\-status\-\_\-t@{rpc\-\_\-call\-\_\-status\-\_\-t}}
-\index{rpc\-\_\-call\-\_\-status\-\_\-t@{rpc\-\_\-call\-\_\-status\-\_\-t}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-call\-\_\-status\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}typedef enum {\bf rpc\-\_\-call\-\_\-status}  {\bf rpc\-\_\-call\-\_\-status\-\_\-t}}}\label{connection_8h_a5e44285dc90be1f6bc541504a3f6d929}
-Enumerates possible remote procedure call status values. \hypertarget{connection_8h_aeb6f25e395cc04930537960ef6b50106}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-call\-\_\-t@{rpc\-\_\-call\-\_\-t}}
-\index{rpc\-\_\-call\-\_\-t@{rpc\-\_\-call\-\_\-t}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-call\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct rpc\-\_\-call$\ast$ {\bf rpc\-\_\-call\-\_\-t}}}\label{connection_8h_aeb6f25e395cc04930537960ef6b50106}
-Definition of R\-P\-C call pointer. 
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+status\+\_\+t@{rpc\+\_\+call\+\_\+status\+\_\+t}}
+\index{rpc\+\_\+call\+\_\+status\+\_\+t@{rpc\+\_\+call\+\_\+status\+\_\+t}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+call\+\_\+status\+\_\+t}{rpc_call_status_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef enum {\bf rpc\+\_\+call\+\_\+status}  {\bf rpc\+\_\+call\+\_\+status\+\_\+t}}\hypertarget{connection_8h_a5e44285dc90be1f6bc541504a3f6d929}{}\label{connection_8h_a5e44285dc90be1f6bc541504a3f6d929}
+Enumerates possible remote procedure call status values. \index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+t@{rpc\+\_\+call\+\_\+t}}
+\index{rpc\+\_\+call\+\_\+t@{rpc\+\_\+call\+\_\+t}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+call\+\_\+t}{rpc_call_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct rpc\+\_\+call$\ast$ {\bf rpc\+\_\+call\+\_\+t}}\hypertarget{connection_8h_aeb6f25e395cc04930537960ef6b50106}{}\label{connection_8h_aeb6f25e395cc04930537960ef6b50106}
+Definition of R\+PC call pointer. 
 
-Definition at line 81 of file connection.\-h.
+Definition at line 81 of file connection.\+h.
 
-\hypertarget{connection_8h_adc95de7fabf9904e1be453f5c6392a6b}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-callback\-\_\-t@{rpc\-\_\-callback\-\_\-t}}
-\index{rpc\-\_\-callback\-\_\-t@{rpc\-\_\-callback\-\_\-t}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-callback\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}typedef bool($^\wedge$ rpc\-\_\-callback\-\_\-t)({\bf rpc\-\_\-object\-\_\-t} args, {\bf rpc\-\_\-call\-\_\-status\-\_\-t} status)}}\label{connection_8h_adc95de7fabf9904e1be453f5c6392a6b}
-Definition of R\-P\-C callback block type. 
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+callback\+\_\+t@{rpc\+\_\+callback\+\_\+t}}
+\index{rpc\+\_\+callback\+\_\+t@{rpc\+\_\+callback\+\_\+t}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+callback\+\_\+t}{rpc_callback_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef bool($^\wedge$ rpc\+\_\+callback\+\_\+t) ({\bf rpc\+\_\+object\+\_\+t} args, {\bf rpc\+\_\+call\+\_\+status\+\_\+t} status)}\hypertarget{connection_8h_a659dfc386fa0add62a07c17662a29641}{}\label{connection_8h_a659dfc386fa0add62a07c17662a29641}
+Definition of R\+PC callback block type. 
 
-Definition at line 96 of file connection.\-h.
+Definition at line 96 of file connection.\+h.
 
-\hypertarget{connection_8h_a70838cb106c3464db299522c5fe2782d}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-t@{rpc\-\_\-connection\-\_\-t}}
-\index{rpc\-\_\-connection\-\_\-t@{rpc\-\_\-connection\-\_\-t}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-connection\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct rpc\-\_\-connection$\ast$ {\bf rpc\-\_\-connection\-\_\-t}}}\label{connection_8h_a70838cb106c3464db299522c5fe2782d}
-Definition of R\-P\-C connection pointer. 
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+t@{rpc\+\_\+connection\+\_\+t}}
+\index{rpc\+\_\+connection\+\_\+t@{rpc\+\_\+connection\+\_\+t}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+t}{rpc_connection_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct rpc\+\_\+connection$\ast$ {\bf rpc\+\_\+connection\+\_\+t}}\hypertarget{connection_8h_a70838cb106c3464db299522c5fe2782d}{}\label{connection_8h_a70838cb106c3464db299522c5fe2782d}
+Definition of R\+PC connection pointer. 
 
-Definition at line 76 of file connection.\-h.
+Definition at line 76 of file connection.\+h.
 
-\hypertarget{connection_8h_a043170f29cb25827a88be4dab2313a91}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-error\-\_\-code\-\_\-t@{rpc\-\_\-error\-\_\-code\-\_\-t}}
-\index{rpc\-\_\-error\-\_\-code\-\_\-t@{rpc\-\_\-error\-\_\-code\-\_\-t}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-error\-\_\-code\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}typedef enum {\bf rpc\-\_\-error\-\_\-code}  {\bf rpc\-\_\-error\-\_\-code\-\_\-t}}}\label{connection_8h_a043170f29cb25827a88be4dab2313a91}
-Enumerates possible R\-P\-C error codes. \hypertarget{connection_8h_a8dee2cbce5bf6bbb8de1d4bd95936a4a}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-error\-\_\-handler\-\_\-t@{rpc\-\_\-error\-\_\-handler\-\_\-t}}
-\index{rpc\-\_\-error\-\_\-handler\-\_\-t@{rpc\-\_\-error\-\_\-handler\-\_\-t}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-error\-\_\-handler\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\-\_\-error\-\_\-handler\-\_\-t)({\bf rpc\-\_\-error\-\_\-code\-\_\-t} code, {\bf rpc\-\_\-object\-\_\-t} args)}}\label{connection_8h_a8dee2cbce5bf6bbb8de1d4bd95936a4a}
-Definition of R\-P\-C error handler block type. 
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+error\+\_\+code\+\_\+t@{rpc\+\_\+error\+\_\+code\+\_\+t}}
+\index{rpc\+\_\+error\+\_\+code\+\_\+t@{rpc\+\_\+error\+\_\+code\+\_\+t}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+error\+\_\+code\+\_\+t}{rpc_error_code_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef enum {\bf rpc\+\_\+error\+\_\+code}  {\bf rpc\+\_\+error\+\_\+code\+\_\+t}}\hypertarget{connection_8h_a043170f29cb25827a88be4dab2313a91}{}\label{connection_8h_a043170f29cb25827a88be4dab2313a91}
+Enumerates possible R\+PC error codes. \index{connection.\+h@{connection.\+h}!rpc\+\_\+error\+\_\+handler\+\_\+t@{rpc\+\_\+error\+\_\+handler\+\_\+t}}
+\index{rpc\+\_\+error\+\_\+handler\+\_\+t@{rpc\+\_\+error\+\_\+handler\+\_\+t}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+error\+\_\+handler\+\_\+t}{rpc_error_handler_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\+\_\+error\+\_\+handler\+\_\+t) ({\bf rpc\+\_\+error\+\_\+code\+\_\+t} code, {\bf rpc\+\_\+object\+\_\+t} args)}\hypertarget{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}{}\label{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}
+Definition of R\+PC error handler block type. 
 
-Definition at line 91 of file connection.\-h.
+Definition at line 91 of file connection.\+h.
 
-\hypertarget{connection_8h_a5b4b4d2a4e3a7585ea8fe7c25256cf9d}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-handler\-\_\-t@{rpc\-\_\-handler\-\_\-t}}
-\index{rpc\-\_\-handler\-\_\-t@{rpc\-\_\-handler\-\_\-t}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-handler\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\-\_\-handler\-\_\-t)(const char $\ast$name, {\bf rpc\-\_\-object\-\_\-t} args)}}\label{connection_8h_a5b4b4d2a4e3a7585ea8fe7c25256cf9d}
-Definition of R\-P\-C event handler block type. 
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+handler\+\_\+t@{rpc\+\_\+handler\+\_\+t}}
+\index{rpc\+\_\+handler\+\_\+t@{rpc\+\_\+handler\+\_\+t}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+handler\+\_\+t}{rpc_handler_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\+\_\+handler\+\_\+t) (const char $\ast$name, {\bf rpc\+\_\+object\+\_\+t} args)}\hypertarget{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{}\label{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}
+Definition of R\+PC event handler block type. 
 
-Definition at line 86 of file connection.\-h.
+Definition at line 86 of file connection.\+h.
 
 
 
 \subsection{Enumeration Type Documentation}
-\hypertarget{connection_8h_a22306445a7503bab94835382d07e0410}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-call\-\_\-status@{rpc\-\_\-call\-\_\-status}}
-\index{rpc\-\_\-call\-\_\-status@{rpc\-\_\-call\-\_\-status}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-call\-\_\-status}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf rpc\-\_\-call\-\_\-status}}}\label{connection_8h_a22306445a7503bab94835382d07e0410}
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+status@{rpc\+\_\+call\+\_\+status}}
+\index{rpc\+\_\+call\+\_\+status@{rpc\+\_\+call\+\_\+status}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+call\+\_\+status}{rpc_call_status}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf rpc\+\_\+call\+\_\+status}}\hypertarget{connection_8h_a22306445a7503bab94835382d07e0410}{}\label{connection_8h_a22306445a7503bab94835382d07e0410}
 Enumerates possible remote procedure call status values. \begin{Desc}
 \item[Enumerator]\par
 \begin{description}
-\index{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-I\-N\-\_\-\-P\-R\-O\-G\-R\-E\-S\-S@{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-I\-N\-\_\-\-P\-R\-O\-G\-R\-E\-S\-S}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-I\-N\-\_\-\-P\-R\-O\-G\-R\-E\-S\-S@{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-I\-N\-\_\-\-P\-R\-O\-G\-R\-E\-S\-S}}\item[{\em 
-\hypertarget{connection_8h_a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1}{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-I\-N\-\_\-\-P\-R\-O\-G\-R\-E\-S\-S}\label{connection_8h_a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1}
-}]Call in progress \index{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-M\-O\-R\-E\-\_\-\-A\-V\-A\-I\-L\-A\-B\-L\-E@{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-M\-O\-R\-E\-\_\-\-A\-V\-A\-I\-L\-A\-B\-L\-E}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-M\-O\-R\-E\-\_\-\-A\-V\-A\-I\-L\-A\-B\-L\-E@{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-M\-O\-R\-E\-\_\-\-A\-V\-A\-I\-L\-A\-B\-L\-E}}\item[{\em 
-\hypertarget{connection_8h_a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f}{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-M\-O\-R\-E\-\_\-\-A\-V\-A\-I\-L\-A\-B\-L\-E}\label{connection_8h_a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f}
-}]Streaming response, more data available \index{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-D\-O\-N\-E@{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-D\-O\-N\-E}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-D\-O\-N\-E@{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-D\-O\-N\-E}}\item[{\em 
-\hypertarget{connection_8h_a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d}{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-D\-O\-N\-E}\label{connection_8h_a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d}
-}]Call finished, response received \index{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-E\-R\-R\-O\-R@{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-E\-R\-R\-O\-R}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-E\-R\-R\-O\-R@{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-E\-R\-R\-O\-R}}\item[{\em 
-\hypertarget{connection_8h_a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856}{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-E\-R\-R\-O\-R}\label{connection_8h_a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856}
+\index{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+I\+N\+\_\+\+P\+R\+O\+G\+R\+E\+SS@{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+I\+N\+\_\+\+P\+R\+O\+G\+R\+E\+SS}!connection.\+h@{connection.\+h}}\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+I\+N\+\_\+\+P\+R\+O\+G\+R\+E\+SS@{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+I\+N\+\_\+\+P\+R\+O\+G\+R\+E\+SS}}\item[{\em 
+R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+I\+N\+\_\+\+P\+R\+O\+G\+R\+E\+SS\hypertarget{connection_8h_a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1}{}\label{connection_8h_a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1}
+}]Call in progress \index{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+M\+O\+R\+E\+\_\+\+A\+V\+A\+I\+L\+A\+B\+LE@{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+M\+O\+R\+E\+\_\+\+A\+V\+A\+I\+L\+A\+B\+LE}!connection.\+h@{connection.\+h}}\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+M\+O\+R\+E\+\_\+\+A\+V\+A\+I\+L\+A\+B\+LE@{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+M\+O\+R\+E\+\_\+\+A\+V\+A\+I\+L\+A\+B\+LE}}\item[{\em 
+R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+M\+O\+R\+E\+\_\+\+A\+V\+A\+I\+L\+A\+B\+LE\hypertarget{connection_8h_a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f}{}\label{connection_8h_a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f}
+}]Streaming response, more data available \index{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+D\+O\+NE@{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+D\+O\+NE}!connection.\+h@{connection.\+h}}\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+D\+O\+NE@{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+D\+O\+NE}}\item[{\em 
+R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+D\+O\+NE\hypertarget{connection_8h_a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d}{}\label{connection_8h_a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d}
+}]Call finished, response received \index{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+E\+R\+R\+OR@{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+E\+R\+R\+OR}!connection.\+h@{connection.\+h}}\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+E\+R\+R\+OR@{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+E\+R\+R\+OR}}\item[{\em 
+R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+E\+R\+R\+OR\hypertarget{connection_8h_a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856}{}\label{connection_8h_a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856}
 }]Call finished, error received \end{description}
 \end{Desc}
 
 
-Definition at line 65 of file connection.\-h.
+Definition at line 65 of file connection.\+h.
 
-\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccd}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-error\-\_\-code@{rpc\-\_\-error\-\_\-code}}
-\index{rpc\-\_\-error\-\_\-code@{rpc\-\_\-error\-\_\-code}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-error\-\_\-code}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf rpc\-\_\-error\-\_\-code}}}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccd}
-Enumerates possible R\-P\-C error codes. \begin{Desc}
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+error\+\_\+code@{rpc\+\_\+error\+\_\+code}}
+\index{rpc\+\_\+error\+\_\+code@{rpc\+\_\+error\+\_\+code}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+error\+\_\+code}{rpc_error_code}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf rpc\+\_\+error\+\_\+code}}\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccd}{}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccd}
+Enumerates possible R\+PC error codes. \begin{Desc}
 \item[Enumerator]\par
 \begin{description}
-\index{R\-P\-C\-\_\-\-I\-N\-V\-A\-L\-I\-D\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E@{R\-P\-C\-\_\-\-I\-N\-V\-A\-L\-I\-D\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-I\-N\-V\-A\-L\-I\-D\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E@{R\-P\-C\-\_\-\-I\-N\-V\-A\-L\-I\-D\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E}}\item[{\em 
-\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7}{R\-P\-C\-\_\-\-I\-N\-V\-A\-L\-I\-D\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7}
-}]Received unreadable response \index{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-T\-I\-M\-E\-O\-U\-T@{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-T\-I\-M\-E\-O\-U\-T}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-T\-I\-M\-E\-O\-U\-T@{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-T\-I\-M\-E\-O\-U\-T}}\item[{\em 
-\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55}{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-T\-I\-M\-E\-O\-U\-T}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55}
-}]Connection timed out \index{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-C\-L\-O\-S\-E\-D@{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-C\-L\-O\-S\-E\-D}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-C\-L\-O\-S\-E\-D@{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-C\-L\-O\-S\-E\-D}}\item[{\em 
-\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0}{R\-P\-C\-\_\-\-C\-O\-N\-N\-E\-C\-T\-I\-O\-N\-\_\-\-C\-L\-O\-S\-E\-D}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0}
-}]Disconnect received \index{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-T\-I\-M\-E\-O\-U\-T@{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-T\-I\-M\-E\-O\-U\-T}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-T\-I\-M\-E\-O\-U\-T@{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-T\-I\-M\-E\-O\-U\-T}}\item[{\em 
-\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70}{R\-P\-C\-\_\-\-C\-A\-L\-L\-\_\-\-T\-I\-M\-E\-O\-U\-T}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70}
-}]Request timed out \index{R\-P\-C\-\_\-\-S\-P\-U\-R\-I\-O\-U\-S\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E@{R\-P\-C\-\_\-\-S\-P\-U\-R\-I\-O\-U\-S\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-S\-P\-U\-R\-I\-O\-U\-S\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E@{R\-P\-C\-\_\-\-S\-P\-U\-R\-I\-O\-U\-S\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E}}\item[{\em 
-\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d}{R\-P\-C\-\_\-\-S\-P\-U\-R\-I\-O\-U\-S\-\_\-\-R\-E\-S\-P\-O\-N\-S\-E}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d}
-}]Response to unknown request \index{R\-P\-C\-\_\-\-L\-O\-G\-O\-U\-T@{R\-P\-C\-\_\-\-L\-O\-G\-O\-U\-T}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-L\-O\-G\-O\-U\-T@{R\-P\-C\-\_\-\-L\-O\-G\-O\-U\-T}}\item[{\em 
-\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b}{R\-P\-C\-\_\-\-L\-O\-G\-O\-U\-T}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b}
-}]Logged out by server \index{R\-P\-C\-\_\-\-O\-T\-H\-E\-R@{R\-P\-C\-\_\-\-O\-T\-H\-E\-R}!connection.\-h@{connection.\-h}}\index{connection.\-h@{connection.\-h}!R\-P\-C\-\_\-\-O\-T\-H\-E\-R@{R\-P\-C\-\_\-\-O\-T\-H\-E\-R}}\item[{\em 
-\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1}{R\-P\-C\-\_\-\-O\-T\-H\-E\-R}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1}
+\index{R\+P\+C\+\_\+\+I\+N\+V\+A\+L\+I\+D\+\_\+\+R\+E\+S\+P\+O\+N\+SE@{R\+P\+C\+\_\+\+I\+N\+V\+A\+L\+I\+D\+\_\+\+R\+E\+S\+P\+O\+N\+SE}!connection.\+h@{connection.\+h}}\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+I\+N\+V\+A\+L\+I\+D\+\_\+\+R\+E\+S\+P\+O\+N\+SE@{R\+P\+C\+\_\+\+I\+N\+V\+A\+L\+I\+D\+\_\+\+R\+E\+S\+P\+O\+N\+SE}}\item[{\em 
+R\+P\+C\+\_\+\+I\+N\+V\+A\+L\+I\+D\+\_\+\+R\+E\+S\+P\+O\+N\+SE\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7}{}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7}
+}]Received unreadable response \index{R\+P\+C\+\_\+\+C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+\_\+\+T\+I\+M\+E\+O\+UT@{R\+P\+C\+\_\+\+C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+\_\+\+T\+I\+M\+E\+O\+UT}!connection.\+h@{connection.\+h}}\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+\_\+\+T\+I\+M\+E\+O\+UT@{R\+P\+C\+\_\+\+C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+\_\+\+T\+I\+M\+E\+O\+UT}}\item[{\em 
+R\+P\+C\+\_\+\+C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+\_\+\+T\+I\+M\+E\+O\+UT\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55}{}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55}
+}]Connection timed out \index{R\+P\+C\+\_\+\+C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+\_\+\+C\+L\+O\+S\+ED@{R\+P\+C\+\_\+\+C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+\_\+\+C\+L\+O\+S\+ED}!connection.\+h@{connection.\+h}}\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+\_\+\+C\+L\+O\+S\+ED@{R\+P\+C\+\_\+\+C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+\_\+\+C\+L\+O\+S\+ED}}\item[{\em 
+R\+P\+C\+\_\+\+C\+O\+N\+N\+E\+C\+T\+I\+O\+N\+\_\+\+C\+L\+O\+S\+ED\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0}{}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0}
+}]Disconnect received \index{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+T\+I\+M\+E\+O\+UT@{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+T\+I\+M\+E\+O\+UT}!connection.\+h@{connection.\+h}}\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+T\+I\+M\+E\+O\+UT@{R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+T\+I\+M\+E\+O\+UT}}\item[{\em 
+R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+T\+I\+M\+E\+O\+UT\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70}{}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70}
+}]Request timed out \index{R\+P\+C\+\_\+\+S\+P\+U\+R\+I\+O\+U\+S\+\_\+\+R\+E\+S\+P\+O\+N\+SE@{R\+P\+C\+\_\+\+S\+P\+U\+R\+I\+O\+U\+S\+\_\+\+R\+E\+S\+P\+O\+N\+SE}!connection.\+h@{connection.\+h}}\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+S\+P\+U\+R\+I\+O\+U\+S\+\_\+\+R\+E\+S\+P\+O\+N\+SE@{R\+P\+C\+\_\+\+S\+P\+U\+R\+I\+O\+U\+S\+\_\+\+R\+E\+S\+P\+O\+N\+SE}}\item[{\em 
+R\+P\+C\+\_\+\+S\+P\+U\+R\+I\+O\+U\+S\+\_\+\+R\+E\+S\+P\+O\+N\+SE\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d}{}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d}
+}]Response to unknown request \index{R\+P\+C\+\_\+\+L\+O\+G\+O\+UT@{R\+P\+C\+\_\+\+L\+O\+G\+O\+UT}!connection.\+h@{connection.\+h}}\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+L\+O\+G\+O\+UT@{R\+P\+C\+\_\+\+L\+O\+G\+O\+UT}}\item[{\em 
+R\+P\+C\+\_\+\+L\+O\+G\+O\+UT\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b}{}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b}
+}]Logged out by server \index{R\+P\+C\+\_\+\+O\+T\+H\+ER@{R\+P\+C\+\_\+\+O\+T\+H\+ER}!connection.\+h@{connection.\+h}}\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+O\+T\+H\+ER@{R\+P\+C\+\_\+\+O\+T\+H\+ER}}\item[{\em 
+R\+P\+C\+\_\+\+O\+T\+H\+ER\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1}{}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1}
 }]Other or unknown reason \end{description}
 \end{Desc}
 
 
-Definition at line 51 of file connection.\-h.
+Definition at line 51 of file connection.\+h.
 
 
 
 \subsection{Function Documentation}
-\hypertarget{connection_8h_a17059d810db4d08d911e45d24704dacc}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-call\-\_\-abort@{rpc\-\_\-call\-\_\-abort}}
-\index{rpc\-\_\-call\-\_\-abort@{rpc\-\_\-call\-\_\-abort}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-call\-\_\-abort}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-call\-\_\-abort (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+abort@{rpc\+\_\+call\+\_\+abort}}
+\index{rpc\+\_\+call\+\_\+abort@{rpc\+\_\+call\+\_\+abort}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+call\+\_\+abort(rpc\+\_\+call\+\_\+t call)}{rpc_call_abort(rpc_call_t call)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+call\+\_\+abort (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-call\-\_\-t}}]{call}
+\item[{{\bf rpc\+\_\+call\+\_\+t}}]{call}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a17059d810db4d08d911e45d24704dacc}
+)}\hypertarget{connection_8h_a17059d810db4d08d911e45d24704dacc}{}\label{connection_8h_a17059d810db4d08d911e45d24704dacc}
 Aborts a pending call.
 
 
@@ -290,14 +285,14 @@ Aborts a pending call.
 \begin{DoxyReturn}{Returns}
 Function status -\/ success is being reported as 0. 
 \end{DoxyReturn}
-\hypertarget{connection_8h_a844f7384a38ef32d4d4b9d6994aed613}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-call\-\_\-continue@{rpc\-\_\-call\-\_\-continue}}
-\index{rpc\-\_\-call\-\_\-continue@{rpc\-\_\-call\-\_\-continue}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-call\-\_\-continue}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-call\-\_\-continue (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+continue@{rpc\+\_\+call\+\_\+continue}}
+\index{rpc\+\_\+call\+\_\+continue@{rpc\+\_\+call\+\_\+continue}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+call\+\_\+continue(rpc\+\_\+call\+\_\+t call, bool sync)}{rpc_call_continue(rpc_call_t call, bool sync)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+call\+\_\+continue (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-call\-\_\-t}}]{call, }
+\item[{{\bf rpc\+\_\+call\+\_\+t}}]{call, }
 \item[{bool}]{sync}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a844f7384a38ef32d4d4b9d6994aed613}
+)}\hypertarget{connection_8h_a844f7384a38ef32d4d4b9d6994aed613}{}\label{connection_8h_a844f7384a38ef32d4d4b9d6994aed613}
 Requests a next chunk of a result from a call.
 
 When sync is set to true the function waits until the call finishes and returns 1 if it has completed successfully -\/ otherwise the function returns 0.
@@ -310,29 +305,29 @@ When sync is set to true the function waits until the call finishes and returns 
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-1 for successfully completed R\-P\-C when sync flag was set, otherwise 0. 
+1 for successfully completed R\+PC when sync flag was set, otherwise 0. 
 \end{DoxyReturn}
-\hypertarget{connection_8h_ace66aca5d1c46e97128a3e09dbce89d1}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-call\-\_\-free@{rpc\-\_\-call\-\_\-free}}
-\index{rpc\-\_\-call\-\_\-free@{rpc\-\_\-call\-\_\-free}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-call\-\_\-free}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\-\_\-call\-\_\-free (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+free@{rpc\+\_\+call\+\_\+free}}
+\index{rpc\+\_\+call\+\_\+free@{rpc\+\_\+call\+\_\+free}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+call\+\_\+free(rpc\+\_\+call\+\_\+t call)}{rpc_call_free(rpc_call_t call)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+call\+\_\+free (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-call\-\_\-t}}]{call}
+\item[{{\bf rpc\+\_\+call\+\_\+t}}]{call}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_ace66aca5d1c46e97128a3e09dbce89d1}
-Frees a rpc\-\_\-call\-\_\-t object.
+)}\hypertarget{connection_8h_ace66aca5d1c46e97128a3e09dbce89d1}{}\label{connection_8h_ace66aca5d1c46e97128a3e09dbce89d1}
+Frees a rpc\+\_\+call\+\_\+t object.
 
 
 \begin{DoxyParams}{Parameters}
 {\em call} & Call to free. \\
 \hline
 \end{DoxyParams}
-\hypertarget{connection_8h_a6af73450be622a40f3cbc2b9425ca5dd}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-call\-\_\-result@{rpc\-\_\-call\-\_\-result}}
-\index{rpc\-\_\-call\-\_\-result@{rpc\-\_\-call\-\_\-result}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-call\-\_\-result}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\-\_\-object\-\_\-t} rpc\-\_\-call\-\_\-result (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+result@{rpc\+\_\+call\+\_\+result}}
+\index{rpc\+\_\+call\+\_\+result@{rpc\+\_\+call\+\_\+result}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+call\+\_\+result(rpc\+\_\+call\+\_\+t call)}{rpc_call_result(rpc_call_t call)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+call\+\_\+result (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-call\-\_\-t}}]{call}
+\item[{{\bf rpc\+\_\+call\+\_\+t}}]{call}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a6af73450be622a40f3cbc2b9425ca5dd}
+)}\hypertarget{connection_8h_a6af73450be622a40f3cbc2b9425ca5dd}{}\label{connection_8h_a6af73450be622a40f3cbc2b9425ca5dd}
 Returns a call result (or a current fragment).
 
 
@@ -343,14 +338,14 @@ Returns a call result (or a current fragment).
 \begin{DoxyReturn}{Returns}
 Result. 
 \end{DoxyReturn}
-\hypertarget{connection_8h_a109ba3b143a1931263d8716f3ac51cb0}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-call\-\_\-status@{rpc\-\_\-call\-\_\-status}}
-\index{rpc\-\_\-call\-\_\-status@{rpc\-\_\-call\-\_\-status}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-call\-\_\-status}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf rpc\-\_\-call\-\_\-status} (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+status@{rpc\+\_\+call\+\_\+status}}
+\index{rpc\+\_\+call\+\_\+status@{rpc\+\_\+call\+\_\+status}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+call\+\_\+status(rpc\+\_\+call\+\_\+t call)}{rpc_call_status(rpc_call_t call)}}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf rpc\+\_\+call\+\_\+status} (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-call\-\_\-t}}]{call}
+\item[{{\bf rpc\+\_\+call\+\_\+t}}]{call}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a109ba3b143a1931263d8716f3ac51cb0}
-Returns a current status of a given call as an integer value castable to rpc\-\_\-call\-\_\-status\-\_\-t.
+)}\hypertarget{connection_8h_a109ba3b143a1931263d8716f3ac51cb0}{}\label{connection_8h_a109ba3b143a1931263d8716f3ac51cb0}
+Returns a current status of a given call as an integer value castable to rpc\+\_\+call\+\_\+status\+\_\+t.
 
 
 \begin{DoxyParams}{Parameters}
@@ -360,13 +355,13 @@ Returns a current status of a given call as an integer value castable to rpc\-\_
 \begin{DoxyReturn}{Returns}
 Call status. 
 \end{DoxyReturn}
-\hypertarget{connection_8h_a1a8f2d8cf42309295e425ca58bdfecbd}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-call\-\_\-success@{rpc\-\_\-call\-\_\-success}}
-\index{rpc\-\_\-call\-\_\-success@{rpc\-\_\-call\-\_\-success}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-call\-\_\-success}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-call\-\_\-success (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+success@{rpc\+\_\+call\+\_\+success}}
+\index{rpc\+\_\+call\+\_\+success@{rpc\+\_\+call\+\_\+success}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+call\+\_\+success(rpc\+\_\+call\+\_\+t call)}{rpc_call_success(rpc_call_t call)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+call\+\_\+success (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-call\-\_\-t}}]{call}
+\item[{{\bf rpc\+\_\+call\+\_\+t}}]{call}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a1a8f2d8cf42309295e425ca58bdfecbd}
+)}\hypertarget{connection_8h_a1a8f2d8cf42309295e425ca58bdfecbd}{}\label{connection_8h_a1a8f2d8cf42309295e425ca58bdfecbd}
 Checks whether a call has been completed successfully.
 
 
@@ -377,14 +372,14 @@ Checks whether a call has been completed successfully.
 \begin{DoxyReturn}{Returns}
 1 when call was successfully completed, otherwise 0. 
 \end{DoxyReturn}
-\hypertarget{connection_8h_a095af0b0676ae8ba03d5b9838e51f7fa}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-call\-\_\-timedwait@{rpc\-\_\-call\-\_\-timedwait}}
-\index{rpc\-\_\-call\-\_\-timedwait@{rpc\-\_\-call\-\_\-timedwait}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-call\-\_\-timedwait}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-call\-\_\-timedwait (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+timedwait@{rpc\+\_\+call\+\_\+timedwait}}
+\index{rpc\+\_\+call\+\_\+timedwait@{rpc\+\_\+call\+\_\+timedwait}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+call\+\_\+timedwait(rpc\+\_\+call\+\_\+t call, const struct timeval $\ast$ts)}{rpc_call_timedwait(rpc_call_t call, const struct timeval *ts)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+call\+\_\+timedwait (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-call\-\_\-t}}]{call, }
+\item[{{\bf rpc\+\_\+call\+\_\+t}}]{call, }
 \item[{const struct timeval $\ast$}]{ts}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a095af0b0676ae8ba03d5b9838e51f7fa}
+)}\hypertarget{connection_8h_a095af0b0676ae8ba03d5b9838e51f7fa}{}\label{connection_8h_a095af0b0676ae8ba03d5b9838e51f7fa}
 Waits for a call to change status.
 
 If a timeout specified by a ts argument occurs, before a call changes its status, function returns -\/1 value.
@@ -399,13 +394,13 @@ If a timeout specified by a ts argument occurs, before a call changes its status
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on failure or timeout. 
 \end{DoxyReturn}
-\hypertarget{connection_8h_ae600ee03958915ee116e90e3e7795ec7}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-call\-\_\-wait@{rpc\-\_\-call\-\_\-wait}}
-\index{rpc\-\_\-call\-\_\-wait@{rpc\-\_\-call\-\_\-wait}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-call\-\_\-wait}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-call\-\_\-wait (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+wait@{rpc\+\_\+call\+\_\+wait}}
+\index{rpc\+\_\+call\+\_\+wait@{rpc\+\_\+call\+\_\+wait}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+call\+\_\+wait(rpc\+\_\+call\+\_\+t call)}{rpc_call_wait(rpc_call_t call)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+call\+\_\+wait (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-call\-\_\-t}}]{call}
+\item[{{\bf rpc\+\_\+call\+\_\+t}}]{call}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_ae600ee03958915ee116e90e3e7795ec7}
+)}\hypertarget{connection_8h_ae600ee03958915ee116e90e3e7795ec7}{}\label{connection_8h_ae600ee03958915ee116e90e3e7795ec7}
 Waits for a call to change status.
 
 
@@ -416,21 +411,21 @@ Waits for a call to change status.
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on failure. 
 \end{DoxyReturn}
-\hypertarget{connection_8h_aee4f43c3790d07d116367646694cb1c0}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-call@{rpc\-\_\-connection\-\_\-call}}
-\index{rpc\-\_\-connection\-\_\-call@{rpc\-\_\-connection\-\_\-call}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-connection\-\_\-call}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\-\_\-call\-\_\-t} rpc\-\_\-connection\-\_\-call (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call@{rpc\+\_\+connection\+\_\+call}}
+\index{rpc\+\_\+connection\+\_\+call@{rpc\+\_\+connection\+\_\+call}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+call(rpc\+\_\+connection\+\_\+t conn, const char $\ast$name, rpc\+\_\+object\+\_\+t args, rpc\+\_\+callback\+\_\+t callback)}{rpc_connection_call(rpc_connection_t conn, const char *name, rpc_object_t args, rpc_callback_t callback)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+call\+\_\+t} rpc\+\_\+connection\+\_\+call (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-connection\-\_\-t}}]{conn, }
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
 \item[{const char $\ast$}]{name, }
-\item[{{\bf rpc\-\_\-object\-\_\-t}}]{args, }
-\item[{{\bf rpc\-\_\-callback\-\_\-t}}]{callback}
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{args, }
+\item[{{\bf rpc\+\_\+callback\+\_\+t}}]{callback}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_aee4f43c3790d07d116367646694cb1c0}
-Performs a R\-P\-C method call using a given connection.
+)}\hypertarget{connection_8h_aee4f43c3790d07d116367646694cb1c0}{}\label{connection_8h_aee4f43c3790d07d116367646694cb1c0}
+Performs a R\+PC method call using a given connection.
 
-Function returns immediately without waiting for a R\-P\-C completion and returns rpc\-\_\-call\-\_\-t object representing the ongoing call.
+Function returns immediately without waiting for a R\+PC completion and returns rpc\+\_\+call\+\_\+t object representing the ongoing call.
 
-Function supports a callback argument of rpc\-\_\-callback\-\_\-t type, which is a pointer to a function to be called on R\-P\-C completion. Can be set to N\-U\-L\-L when that functionality is not needed by the caller.
+Function supports a callback argument of rpc\+\_\+callback\+\_\+t type, which is a pointer to a function to be called on R\+PC completion. Can be set to N\+U\+LL when that functionality is not needed by the caller.
 
 
 \begin{DoxyParams}{Parameters}
@@ -438,26 +433,26 @@ Function supports a callback argument of rpc\-\_\-callback\-\_\-t type, which is
 \hline
 {\em name} & Name of a method to be called. \\
 \hline
-{\em args} & Variable length R\-P\-C method arguments list. \\
+{\em args} & Variable length R\+PC method arguments list. \\
 \hline
-{\em callback} & Callback function pointer to be called on R\-P\-C completion. \\
+{\em callback} & Callback function pointer to be called on R\+PC completion. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-R\-P\-C call object 
+R\+PC call object 
 \end{DoxyReturn}
-\hypertarget{connection_8h_aba014ae3408ed96b696ab70066076f13}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-call\-\_\-sync@{rpc\-\_\-connection\-\_\-call\-\_\-sync}}
-\index{rpc\-\_\-connection\-\_\-call\-\_\-sync@{rpc\-\_\-connection\-\_\-call\-\_\-sync}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-connection\-\_\-call\-\_\-sync}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\-\_\-object\-\_\-t} rpc\-\_\-connection\-\_\-call\-\_\-sync (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+sync@{rpc\+\_\+connection\+\_\+call\+\_\+sync}}
+\index{rpc\+\_\+connection\+\_\+call\+\_\+sync@{rpc\+\_\+connection\+\_\+call\+\_\+sync}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+call\+\_\+sync(rpc\+\_\+connection\+\_\+t conn, const char $\ast$method,...)}{rpc_connection_call_sync(rpc_connection_t conn, const char *method,...)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+sync (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-connection\-\_\-t}}]{conn, }
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
 \item[{const char $\ast$}]{method, }
 \item[{}]{...}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_aba014ae3408ed96b696ab70066076f13}
-Performs a synchronous R\-P\-C method call using a given connection.
+)}\hypertarget{connection_8h_aba014ae3408ed96b696ab70066076f13}{}\label{connection_8h_aba014ae3408ed96b696ab70066076f13}
+Performs a synchronous R\+PC method call using a given connection.
 
-Function blocks until a result is ready and returns it, or cancels and returns a N\-U\-L\-L pointer if a timeout has occurred.
+Function blocks until a result is ready and returns it, or cancels and returns a N\+U\+LL pointer if a timeout has occurred.
 
 
 \begin{DoxyParams}{Parameters}
@@ -471,20 +466,20 @@ Function blocks until a result is ready and returns it, or cancels and returns a
 \begin{DoxyReturn}{Returns}
 Result of the call. 
 \end{DoxyReturn}
-\hypertarget{connection_8h_a1dd48a58161cbf375719ecde4480c8a9}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-call\-\_\-syncv@{rpc\-\_\-connection\-\_\-call\-\_\-syncv}}
-\index{rpc\-\_\-connection\-\_\-call\-\_\-syncv@{rpc\-\_\-connection\-\_\-call\-\_\-syncv}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-connection\-\_\-call\-\_\-syncv}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\-\_\-object\-\_\-t} rpc\-\_\-connection\-\_\-call\-\_\-syncv (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+syncv@{rpc\+\_\+connection\+\_\+call\+\_\+syncv}}
+\index{rpc\+\_\+connection\+\_\+call\+\_\+syncv@{rpc\+\_\+connection\+\_\+call\+\_\+syncv}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+call\+\_\+syncv(rpc\+\_\+connection\+\_\+t conn, const char $\ast$method, va\+\_\+list ap)}{rpc_connection_call_syncv(rpc_connection_t conn, const char *method, va_list ap)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+syncv (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-connection\-\_\-t}}]{conn, }
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
 \item[{const char $\ast$}]{method, }
-\item[{va\-\_\-list}]{ap}
+\item[{va\+\_\+list}]{ap}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a1dd48a58161cbf375719ecde4480c8a9}
-Performs a synchronous R\-P\-C method call using a given connection.
+)}\hypertarget{connection_8h_a1dd48a58161cbf375719ecde4480c8a9}{}\label{connection_8h_a1dd48a58161cbf375719ecde4480c8a9}
+Performs a synchronous R\+PC method call using a given connection.
 
-Function blocks until a result is ready and returns it, or cancels and returns a N\-U\-L\-L pointer if a timeout has occurred.
+Function blocks until a result is ready and returns it, or cancels and returns a N\+U\+LL pointer if a timeout has occurred.
 
-Instead of variable arguments length in \hyperlink{connection_8h_aee4f43c3790d07d116367646694cb1c0}{rpc\-\_\-connection\-\_\-call()} example, this function takes previously assembled variable arguments list structure as its argument.
+Instead of variable arguments length in \hyperlink{connection_8h_aee4f43c3790d07d116367646694cb1c0}{rpc\+\_\+connection\+\_\+call()} example, this function takes previously assembled variable arguments list structure as its argument.
 
 
 \begin{DoxyParams}{Parameters}
@@ -498,22 +493,22 @@ Instead of variable arguments length in \hyperlink{connection_8h_aee4f43c3790d07
 \begin{DoxyReturn}{Returns}
 Result of the call. 
 \end{DoxyReturn}
-\hypertarget{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-ping@{rpc\-\_\-connection\-\_\-ping}}
-\index{rpc\-\_\-connection\-\_\-ping@{rpc\-\_\-connection\-\_\-ping}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-connection\-\_\-ping}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-connection\-\_\-ping (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+ping@{rpc\+\_\+connection\+\_\+ping}}
+\index{rpc\+\_\+connection\+\_\+ping@{rpc\+\_\+connection\+\_\+ping}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+ping(rpc\+\_\+connection\+\_\+t conn)}{rpc_connection_ping(rpc_connection_t conn)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+connection\+\_\+ping (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-connection\-\_\-t}}]{conn}
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}
-Ping the other end of a connection. \hypertarget{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler@{rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler}}
-\index{rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler@{rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ rpc\-\_\-connection\-\_\-register\-\_\-event\-\_\-handler (
+)}\hypertarget{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}{}\label{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}
+Ping the other end of a connection. \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler}}
+\index{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler(rpc\+\_\+connection\+\_\+t conn, const char $\ast$name, rpc\+\_\+handler\+\_\+t handler)}{rpc_connection_register_event_handler(rpc_connection_t conn, const char *name, rpc_handler_t handler)}}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-connection\-\_\-t}}]{conn, }
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
 \item[{const char $\ast$}]{name, }
-\item[{{\bf rpc\-\_\-handler\-\_\-t}}]{handler}
+\item[{{\bf rpc\+\_\+handler\+\_\+t}}]{handler}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}
+)}\hypertarget{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}{}\label{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}
 Registers an event handler block for an event of a given name.
 
 Each time an event occurs, a handler block is going to be called.
@@ -524,18 +519,18 @@ Each time an event occurs, a handler block is going to be called.
 \hline
 {\em name} & Name of an event to be handled. \\
 \hline
-{\em handler} & Event handler of rpc\-\_\-handler\-\_\-t type. \\
+{\em handler} & Event handler of rpc\+\_\+handler\+\_\+t type. \\
 \hline
 \end{DoxyParams}
-\hypertarget{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-send\-\_\-event@{rpc\-\_\-connection\-\_\-send\-\_\-event}}
-\index{rpc\-\_\-connection\-\_\-send\-\_\-event@{rpc\-\_\-connection\-\_\-send\-\_\-event}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-connection\-\_\-send\-\_\-event}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-connection\-\_\-send\-\_\-event (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+send\+\_\+event@{rpc\+\_\+connection\+\_\+send\+\_\+event}}
+\index{rpc\+\_\+connection\+\_\+send\+\_\+event@{rpc\+\_\+connection\+\_\+send\+\_\+event}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+send\+\_\+event(rpc\+\_\+connection\+\_\+t conn, const char $\ast$name, rpc\+\_\+object\+\_\+t args)}{rpc_connection_send_event(rpc_connection_t conn, const char *name, rpc_object_t args)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+connection\+\_\+send\+\_\+event (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-connection\-\_\-t}}]{conn, }
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
 \item[{const char $\ast$}]{name, }
-\item[{{\bf rpc\-\_\-object\-\_\-t}}]{args}
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{args}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}
+)}\hypertarget{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}{}\label{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}
 Sends an event.
 
 
@@ -544,20 +539,20 @@ Sends an event.
 \hline
 {\em name} & Event name. \\
 \hline
-{\em args} & Event arguments or N\-U\-L\-L. \\
+{\em args} & Event arguments or N\+U\+LL. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on failure. 
 \end{DoxyReturn}
-\hypertarget{connection_8h_a8f332abcc5d0a80c86f8317c7dcc79ec}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-set\-\_\-error\-\_\-handler@{rpc\-\_\-connection\-\_\-set\-\_\-error\-\_\-handler}}
-\index{rpc\-\_\-connection\-\_\-set\-\_\-error\-\_\-handler@{rpc\-\_\-connection\-\_\-set\-\_\-error\-\_\-handler}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-connection\-\_\-set\-\_\-error\-\_\-handler}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\-\_\-connection\-\_\-set\-\_\-error\-\_\-handler (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler@{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler}}
+\index{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler@{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler(rpc\+\_\+connection\+\_\+t conn, rpc\+\_\+error\+\_\+handler\+\_\+t handler)}{rpc_connection_set_error_handler(rpc_connection_t conn, rpc_error_handler_t handler)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-connection\-\_\-t}}]{conn, }
-\item[{{\bf rpc\-\_\-error\-\_\-handler\-\_\-t}}]{handler}
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
+\item[{{\bf rpc\+\_\+error\+\_\+handler\+\_\+t}}]{handler}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a8f332abcc5d0a80c86f8317c7dcc79ec}
+)}\hypertarget{connection_8h_a8f332abcc5d0a80c86f8317c7dcc79ec}{}\label{connection_8h_a8f332abcc5d0a80c86f8317c7dcc79ec}
 Sets global error handler for a connection.
 
 
@@ -567,14 +562,14 @@ Sets global error handler for a connection.
 {\em handler} & Error handler block. \\
 \hline
 \end{DoxyParams}
-\hypertarget{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler@{rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler}}
-\index{rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler@{rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\-\_\-connection\-\_\-set\-\_\-event\-\_\-handler (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler}}
+\index{rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler(rpc\+\_\+connection\+\_\+t conn, rpc\+\_\+handler\+\_\+t handler)}{rpc_connection_set_event_handler(rpc_connection_t conn, rpc_handler_t handler)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-connection\-\_\-t}}]{conn, }
-\item[{{\bf rpc\-\_\-handler\-\_\-t}}]{handler}
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
+\item[{{\bf rpc\+\_\+handler\+\_\+t}}]{handler}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}
+)}\hypertarget{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}{}\label{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}
 Sets global event handler for a connection.
 
 
@@ -584,19 +579,19 @@ Sets global event handler for a connection.
 {\em handler} & Handler block. \\
 \hline
 \end{DoxyParams}
-\hypertarget{connection_8h_a820acf081ad5784aafde954b5ec9270a}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-subscribe\-\_\-event@{rpc\-\_\-connection\-\_\-subscribe\-\_\-event}}
-\index{rpc\-\_\-connection\-\_\-subscribe\-\_\-event@{rpc\-\_\-connection\-\_\-subscribe\-\_\-event}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-connection\-\_\-subscribe\-\_\-event}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-connection\-\_\-subscribe\-\_\-event (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+subscribe\+\_\+event@{rpc\+\_\+connection\+\_\+subscribe\+\_\+event}}
+\index{rpc\+\_\+connection\+\_\+subscribe\+\_\+event@{rpc\+\_\+connection\+\_\+subscribe\+\_\+event}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+subscribe\+\_\+event(rpc\+\_\+connection\+\_\+t conn, const char $\ast$name)}{rpc_connection_subscribe_event(rpc_connection_t conn, const char *name)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+connection\+\_\+subscribe\+\_\+event (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-connection\-\_\-t}}]{conn, }
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
 \item[{const char $\ast$}]{name}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a820acf081ad5784aafde954b5ec9270a}
+)}\hypertarget{connection_8h_a820acf081ad5784aafde954b5ec9270a}{}\label{connection_8h_a820acf081ad5784aafde954b5ec9270a}
 Subscribes for an event.
 
 This function can be called multiple times on a single event name -\/ subsequent calls will not send a subscribe message to the server, but instead increment internal reference count for a subscription.
 
-Calls to \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\-\_\-connection\-\_\-subscribe\-\_\-event()} must be paired with \hyperlink{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event()}.
+Calls to \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\+\_\+connection\+\_\+subscribe\+\_\+event()} must be paired with \hyperlink{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event()}.
 
 
 \begin{DoxyParams}{Parameters}
@@ -608,15 +603,15 @@ Calls to \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\-\_\-co
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on failure. 
 \end{DoxyReturn}
-\hypertarget{connection_8h_a209856a794a9a10a53735787926f4b95}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-unregister\-\_\-event\-\_\-handler@{rpc\-\_\-connection\-\_\-unregister\-\_\-event\-\_\-handler}}
-\index{rpc\-\_\-connection\-\_\-unregister\-\_\-event\-\_\-handler@{rpc\-\_\-connection\-\_\-unregister\-\_\-event\-\_\-handler}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-connection\-\_\-unregister\-\_\-event\-\_\-handler}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\-\_\-connection\-\_\-unregister\-\_\-event\-\_\-handler (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler}}
+\index{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler(rpc\+\_\+connection\+\_\+t conn, const char $\ast$name, void $\ast$cookie)}{rpc_connection_unregister_event_handler(rpc_connection_t conn, const char *name, void *cookie)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-connection\-\_\-t}}]{conn, }
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
 \item[{const char $\ast$}]{name, }
 \item[{void $\ast$}]{cookie}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a209856a794a9a10a53735787926f4b95}
+)}\hypertarget{connection_8h_a209856a794a9a10a53735787926f4b95}{}\label{connection_8h_a209856a794a9a10a53735787926f4b95}
 Cancels further execution of a given event handler block for ongoing events of a given name.
 
 
@@ -628,17 +623,17 @@ Cancels further execution of a given event handler block for ongoing events of a
 {\em cookie} & Void pointer to event handler itself. \\
 \hline
 \end{DoxyParams}
-\hypertarget{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{\index{connection.\-h@{connection.\-h}!rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event@{rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event}}
-\index{rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event@{rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event}!connection.h@{connection.\-h}}
-\subsubsection[{rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\-\_\-connection\-\_\-unsubscribe\-\_\-event (
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event@{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event}}
+\index{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event@{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event(rpc\+\_\+connection\+\_\+t conn, const char $\ast$name)}{rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event (
 \begin{DoxyParamCaption}
-\item[{{\bf rpc\-\_\-connection\-\_\-t}}]{conn, }
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
 \item[{const char $\ast$}]{name}
 \end{DoxyParamCaption}
-)}}\label{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}
+)}\hypertarget{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{}\label{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}
 Undoes previous event subscription.
 
-This function may either\-:
+This function may either\+:
 \begin{DoxyItemize}
 \item decrement reference count of subscription for given event
 \item send unsubscribe message to the server (when subscription reference count reached value of 0)
