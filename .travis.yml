@@ -21,10 +21,11 @@ before_install:
 before_script:
   - ${EXEC} "DEBIAN_FRONTEND=noninteractive apt-get -yq update"
   - ${EXEC} "DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-recommends --no-install-suggests --force-yes install ${PACKAGES}"
+  - ${EXEC} "git config --global http.sslVerify "false"
 
 script:
   - ${EXEC} 'cd /code && mkdir build'
   - ${EXEC} 'cd /code/build && cmake .. -DBUILD_BUS=OFF -DBUILD_LIBUSB=ON -DPYTHON_VERSION=2'
   - ${EXEC} 'cd /code/build && make'
   - ${EXEC} 'cd /code && sh tools/deploy-docs.sh'
-
+  - ${EXEC} 'kill 1'
