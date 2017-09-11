@@ -21,7 +21,7 @@ before_install:
 before_script:
   - ${EXEC} "DEBIAN_FRONTEND=noninteractive apt-get -yq update"
   - ${EXEC} "DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-recommends --no-install-suggests --force-yes install ${PACKAGES}"
-  - ${EXEC} "git config --global http.sslVerify "false"
+  - ${EXEC} "git config --global http.sslVerify false"
 
 script:
   - ${EXEC} 'cd /code && mkdir build'
