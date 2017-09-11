@@ -16,7 +16,6 @@ env:
 before_install:
   - docker pull ${DOCKER_IMAGE}
   - docker run --name builder -d -v $(pwd):/code ${DOCKER_IMAGE} /bin/bash -c 'sleep infinity'
-  - docker exec builder /bin/bash -c 'lsb_release -a'
 
 before_script:
   - docker exec builder /bin/bash -c "DEBIAN_FRONTEND=noninteractive apt-get -yq update"
