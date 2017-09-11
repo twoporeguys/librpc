@@ -27,5 +27,5 @@ script:
   - ${EXEC} "cd /code && mkdir build"
   - ${EXEC} "cd /code/build && cmake .. -DBUILD_BUS=OFF -DBUILD_LIBUSB=ON -DPYTHON_VERSION=2"
   - ${EXEC} "cd /code/build && make"
-  - ${EXEC} "DOXYFILE_IN=${DOXYFILE_IN} TRAVIS_BUILD_DIR=/code TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER} TRAVIS_COMMIT=${TRAVIS_COMMIT} GH_REPO_TOKEN=${GH_REPO_TOKEN} cd /code && sh -x tools/deploy-docs.sh"
+  - ${EXEC} "cd /code && DOXYFILE_IN=${DOXYFILE_IN} TRAVIS_BUILD_DIR=/code TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER} TRAVIS_COMMIT=${TRAVIS_COMMIT} GH_REPO_TOKEN=${GH_REPO_TOKEN} sh -x tools/deploy-docs.sh"
   - ${EXEC} "kill 1"
