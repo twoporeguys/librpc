@@ -44,4 +44,10 @@ enum librpc_user_opcode
 	LIBRPC_USER_ACK
 };
 
+struct librpc_user_call
+{
+	uintptr_t cookie;
+	char data[];
+};
+
 #endif /* _LIBRPC_USER_H */
