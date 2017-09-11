@@ -35,7 +35,7 @@ execute_process(
 include(CPack)
 
 find_package (PkgConfig REQUIRED)
-pkg_check_modules (GLIB REQUIRED glib-2.0>=2.50)
+pkg_check_modules (GLIB REQUIRED glib-2.0>=2.40)
 
 pkg_check_modules(SOUP REQUIRED libsoup-2.4)
 pkg_check_modules(YAML REQUIRED yaml-0.1)
