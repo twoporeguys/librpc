@@ -24,7 +24,7 @@ addons:
       - cmake
       - clang
       - libglib2.0-dev
-      - libsoup-gnome2.4-dev
+      - libsoup2.4-dev
       - libyajl-dev
       - libyaml-dev
       - libblocksruntime-dev
