@@ -11,19 +11,20 @@ env:
   global:
     - DOXYFILE_IN: $TRAVIS_BUILD_DIR/Doxyfile.in
     - DOCKER_IMAGE: ubuntu:16.04
-    - PACKAGES: "'doxygen doxygen-doc doxygen-latex doxygen-gui graphviz build-essential git cmake clang libblocksruntime-dev libglib2.0-dev libsoup2.4-dev libyajl-dev libyaml-dev libyaml-dev libusb-1.0-0-dev'"
+    - PACKAGES: "'doxygen doxygen-doc doxygen-latex doxygen-gui graphviz build-essential git cmake clang cython3 libblocksruntime-dev libglib2.0-dev libsoup2.4-dev libyajl-dev libyaml-dev libyaml-dev libusb-1.0-0-dev'"
+    - EXEC: "'docker exec builder /bin/bash -c'"
 
 before_install:
   - docker pull ${DOCKER_IMAGE}
   - docker run --name builder -d -v $(pwd):/code ${DOCKER_IMAGE} /bin/bash -c 'sleep infinity'
 
 before_script:
-  - docker exec builder /bin/bash -c "DEBIAN_FRONTEND=noninteractive apt-get -yq update"
-  - docker exec builder /bin/bash -c "DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-recommends --no-install-suggests --force-yes install ${PACKAGES}"
+  - ${EXEC} "DEBIAN_FRONTEND=noninteractive apt-get -yq update"
+  - ${EXEC} "DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-recommends --no-install-suggests --force-yes install ${PACKAGES}"
 
 script:
-  - docker exec builder /bin/bash -c 'cd /code && mkdir build'
-  - docker exec builder /bin/bash -c 'cd /code/build && cmake .. -DBUILD_BUS=OFF -DBUILD_LIBUSB=ON -DPYTHON_VERSION=2'
-  - docker exec builder /bin/bash -c 'cd /code/build && make'
-  - docker exec builder /bin/bash -c 'cd /code && sh tools/deploy-docs.sh'
+  - ${EXEC} 'cd /code && mkdir build'
+  - ${EXEC} 'cd /code/build && cmake .. -DBUILD_BUS=OFF -DBUILD_LIBUSB=ON -DPYTHON_VERSION=2'
+  - ${EXEC} 'cd /code/build && make'
+  - ${EXEC} 'cd /code && sh tools/deploy-docs.sh'
 
