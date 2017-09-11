@@ -41,7 +41,7 @@ pkg_check_modules(SOUP REQUIRED libsoup-2.4)
 pkg_check_modules(YAML REQUIRED yaml-0.1)
 
 if(BUILD_JSON)
-    pkg_check_modules(YAJL REQUIRED yajl>=2.1.0)
+    pkg_check_modules(YAJL REQUIRED yajl>=2.0.0)
 endif()
 
 if(UNIX)
