@@ -18,7 +18,8 @@ env:
 
 before_install:
   - docker pull ${DOCKER_IMAGE}
-  - docker create --name builder -v $(pwd):/code ${DOCKER_IMAGE}
+  - docker run --name builder -v $(pwd):/code ${DOCKER_IMAGE} /bin/bash -c 'sleep infinity'
+  - docker exec builder /bin/bash -c 'uname -a'
 
 # Install dependencies
 before_script:
