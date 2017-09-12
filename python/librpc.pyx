@@ -886,6 +886,10 @@ cdef class Client(Connection):
         self.client = <rpc_client_t>NULL
         self.connection = <rpc_connection_t>NULL
 
+    def __dealloc__(self):
+        if self.client != <rpc_client_t>NULL:
+            rpc_client_close(self.client)
+
     def connect(self, uri, Object params=None):
         cdef char* c_uri
         cdef rpc_object_t rawparams

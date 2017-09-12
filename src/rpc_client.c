@@ -62,7 +62,7 @@ rpc_client_create(const char *uri, rpc_object_t params)
 	g_main_context_pop_thread_default(client->rci_g_context);
 
 	if (client->rci_connection == NULL) {
-		g_free(client);
+		rpc_client_close(client);
 		return (NULL);
 	}
 
@@ -81,11 +81,13 @@ rpc_client_get_connection(rpc_client_t client)
 void
 rpc_client_close(rpc_client_t client)
 {
+	if (client->rci_connection != NULL)
+		rpc_connection_close(client->rci_connection);
 
-	rpc_connection_close(client->rci_connection);
-	g_main_loop_quit(client->rci_g_loop);
+	g_main_context_invoke(client->rci_g_context, rpc_kill_main_loop,
+	    client->rci_g_loop);
+	g_thread_join(client->rci_thread);
 	g_main_loop_unref(client->rci_g_loop);
 	g_main_context_unref(client->rci_g_context);
-	g_thread_join(client->rci_thread);
 	g_free(client);
 }

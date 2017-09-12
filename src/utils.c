@@ -175,3 +175,10 @@ rpc_generate_v4_uuid(void)
 	    bytes[9], bytes[10], bytes[11], bytes[12], bytes[13],
 	    bytes[14], bytes[15]));
 }
+
+gboolean
+rpc_kill_main_loop(GMainLoop *loop)
+{
+	g_main_loop_quit(loop);
+	return (false);
+}
