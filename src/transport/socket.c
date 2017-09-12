@@ -200,7 +200,7 @@ socket_listen(struct rpc_server *srv, const char *uri,
 	server->ss_uri = strdup(uri);
 	server->ss_listener = g_socket_listener_new();
 
-	srv->rs_teardown = &socket_teardown;
+	srv->rs_teardown = socket_teardown;
 	srv->rs_arg = server;
 
 #ifndef _WIN32
