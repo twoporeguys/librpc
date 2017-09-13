@@ -220,6 +220,9 @@ cdef class Object(object):
     cdef Object init_from_ptr(rpc_object_t ptr):
         cdef Object ret
 
+        if ptr == <rpc_object_t>NULL:
+            return None
+
         ret = Object.__new__(Object)
         ret.obj = ptr
         rpc_retain(ret.obj)
