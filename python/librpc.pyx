@@ -235,6 +235,9 @@ cdef class Object(object):
         if self.type == ObjectType.ARRAY:
             return [i.unpack() for i in self.value]
 
+        if self.type == ObjectType.FD:
+            return self
+
         return self.value
 
     property value:
