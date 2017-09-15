@@ -29,7 +29,9 @@
 #include <glib.h>
 #include <stdlib.h>
 #include <errno.h>
+#ifndef _WIN32
 #include <fnmatch.h>
+#endif
 #include "internal.h"
 
 static bool eval_rule(rpc_object_t obj, rpc_object_t rule);
@@ -233,6 +235,7 @@ eval_field_operator(rpc_object_t obj, rpc_object_t rule)
 	if ((!g_strcmp0(op, "nin")) || (!g_strcmp0(op, "ncontains")))
 		return (!op_in(item, right));
 
+#ifndef _WIN32
 	if (!g_strcmp0(op, "match")) {
 		if (rpc_get_type(right) != RPC_TYPE_STRING)
 			return (false);
@@ -243,6 +246,7 @@ eval_field_operator(rpc_object_t obj, rpc_object_t rule)
 		return (fnmatch(rpc_string_get_string_ptr(right),
 		    rpc_string_get_string_ptr(item), 0) == 0);
 	}
+#endif
 
 	return (false);
 }

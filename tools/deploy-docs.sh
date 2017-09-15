@@ -1,3 +1,4 @@
+#!/bin/sh
 set -e
 mkdir docs-build && cd docs-build
 git clone -b gh-pages https://github.com/twoporeguys/librpc.git && cd librpc
@@ -10,8 +11,8 @@ doxygen Doxyfile
 
 if [ -d "html" ] && [ -f "html/index.html" ]; then
 	git add --all
-	git commit -m "Deploy code docs to GitHub Pages (build #${TRAVIS_BUILD_NUMBER})" -m "Commit: ${TRAVIS_COMMIT}"
-	git push --force https://${GH_REPO_TOKEN}@github.com/twoporeguys/librpc.git > /dev/null 2>&1
+	git commit -m "Deploy code docs to GitHub Pages (build #${TRAVIS_BUILD_NUMBER})" -m "Commit: ${TRAVIS_COMMIT}" || true
+	git push --force https://${GH_REPO_TOKEN}@github.com/twoporeguys/librpc.git > /dev/null 2>&1 || true
 else
 	echo '' >&2
 	echo 'Warning: No documentation (html) files have been found!' >&2

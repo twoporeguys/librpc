@@ -194,6 +194,24 @@ cdef class Object(object):
         byte_descr = rpc_copy_description(self.obj)
         return byte_descr.decode('utf-8')
 
+    def __str__(self):
+        return str(self.value)
+
+    def __bool__(self):
+        return bool(self.value)
+
+    def __int__(self):
+        if self.type in (ObjectType.BOOL, ObjectType.UINT64, ObjectType.INT64, ObjectType.FD, ObjectType.DOUBLE):
+            return int(self.value)
+
+        raise TypeError('int() argument must be a number, bool or fd')
+
+    def __float__(self):
+        if self.type in (ObjectType.BOOL, ObjectType.UINT64, ObjectType.INT64, ObjectType.DOUBLE):
+            return int(self.value)
+
+        raise TypeError('float() argument must be a number or bool')
+
     def __dealloc__(self):
         if self.obj != <rpc_object_t>NULL:
             rpc_release(self.obj)
@@ -202,10 +220,25 @@ cdef class Object(object):
     cdef Object init_from_ptr(rpc_object_t ptr):
         cdef Object ret
 
+        if ptr == <rpc_object_t>NULL:
+            return None
+
         ret = Object.__new__(Object)
         ret.obj = ptr
         rpc_retain(ret.obj)
         return ret
+
+    def unpack(self):
+        if self.type == ObjectType.DICTIONARY:
+            return {k: v.unpack() for k, v in self.value.items()}
+
+        if self.type == ObjectType.ARRAY:
+            return [i.unpack() for i in self.value]
+
+        if self.type == ObjectType.FD:
+            return self
+
+        return self.value
 
     property value:
         def __get__(self):
@@ -235,8 +268,7 @@ cdef class Object(object):
             if self.type == ObjectType.STRING:
                 c_string = rpc_string_get_string_ptr(self.obj)
                 c_len = rpc_string_get_length(self.obj)
-
-                return c_string[:c_len].decode('UTF-8')
+                return c_string[:c_len].decode('utf-8')
 
             if self.type == ObjectType.DOUBLE:
                 return rpc_double_get_value(self.obj)
@@ -247,7 +279,6 @@ cdef class Object(object):
             if self.type == ObjectType.BINARY:
                 c_bytes = <uint8_t *>rpc_data_get_bytes_ptr(self.obj)
                 c_len = rpc_data_get_length(self.obj)
-
                 return <bytes>c_bytes[:c_len]
 
             if self.type == ObjectType.ERROR:
@@ -420,6 +451,9 @@ cdef class Array(Object):
         idx = self.index(value)
         self.__delitem__(idx)
 
+    def __str__(self):
+        return repr(self)
+
     def __contains__(self, value):
         try:
             self.index(value)
@@ -574,6 +608,9 @@ cdef class Dictionary(Object):
 
         self.__applier(collect)
         return result
+
+    def __str__(self):
+        return repr(self)
 
     def __contains__(self, value):
         cdef Object v1
@@ -854,12 +891,18 @@ cdef class Client(Connection):
         self.client = <rpc_client_t>NULL
         self.connection = <rpc_connection_t>NULL
 
+    def __dealloc__(self):
+        if self.client != <rpc_client_t>NULL:
+            rpc_client_close(self.client)
+
     def connect(self, uri, Object params=None):
         cdef char* c_uri
+        cdef rpc_object_t rawparams
 
         self.uri = c_uri = uri.encode('utf-8')
+        rawparams = params.obj if params else <rpc_object_t>NULL
         with nogil:
-            self.client = rpc_client_create(c_uri, params.obj)
+            self.client = rpc_client_create(c_uri, rawparams)
 
         if self.client == <rpc_client_t>NULL:
             raise_internal_exc(rpc=False)
@@ -907,9 +950,14 @@ cdef class BusNode(object):
 
 cdef class Bus(object):
     def __init__(self):
+        cdef int ret
+
         PyEval_InitThreads()
         with nogil:
-            rpc_bus_open()
+            ret = rpc_bus_open()
+
+        if ret != 0:
+            raise_internal_exc()
 
     def __dealloc__(self):
         with nogil:
@@ -1021,6 +1069,7 @@ cdef class Serializer(object):
         return <bytes>(<char *>frame)[:len]
 
 
+<<<<<<< HEAD
 cdef class Typing(object):
     def __init__(self):
         with nogil:

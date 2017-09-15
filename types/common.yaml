@@ -25,10 +25,9 @@ type Dict<T>:
 
 union IPAddress:
   description: Can hold an IP address (either v4 or v6)
-  type:
-    one-of:
-      - type: IPv4Address
-      - type: IPv6Address
+  members:
+    - type: IPv4Address
+    - type: IPv6Address
 
 type IPv4Address:
   description: Can hold an IPv4 address

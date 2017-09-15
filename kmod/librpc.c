@@ -472,7 +472,7 @@ librpc_init(void)
 		goto done;
 	}
 
-	ret = cn_add_callback(&librpc_cb_id, "librpc", &librpc_cn_callback);
+	ret = cn_add_callback(&librpc_cb_id, "librpc", librpc_cn_callback);
 	if (ret != 0)
 		goto done;
 
@@ -481,7 +481,7 @@ done:
 	return (ret);
 }
 
-static void
+static void __exit
 librpc_exit(void)
 {
 	cn_del_callback(&librpc_cb_id);

@@ -5,12 +5,14 @@ if(UNIX AND NOT APPLE)
     set(LINUX TRUE)
 endif()
 
+set(PYTHON_VERSION 3 CACHE STRING "Target Python version for py-librpc (2 or 3)")
 option(RPC_DEBUG "Enable debug output")
-option(PYTHON_VERSION "Target Python version for py-librpc (2 or 3)" 3)
+option(BUNDLED_BLOCKS_RUNTIME "Use bundled BlocksRuntime")
 option(BUILD_DOC "Create and install HTML API documentation")
 option(BUILD_TESTS "Build and install tests")
 option(BUILD_EXAMPLES "Build and install example programs" ON)
 option(BUILD_PYTHON "Build and install Python extension" ON)
+option(BUILD_JSON "Build and install JSON serializer" ON)
 option(BUILD_LIBUSB "Build and install libusb transport")
 if(LINUX)
     option(BUILD_BUS "Build and install bus transport" ON)
@@ -22,19 +24,29 @@ set(CMAKE_CXX_COMPILER clang++)
 
 set(CPACK_PACKAGE_NAME librpc)
 set(CPACK_PACKAGE_VENDOR Two Pore Guys)
-set(CPACK_PACKAGE_VERSION_MAJOR 6)
 set(CPACK_PACKAGE_VERSION_MAJOR 0)
+set(CPACK_PACKAGE_VERSION_MINOR 1)
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER Jakub Klama <jakub.klama@twoporeguys.com>)
 set(CPACK_GENERATOR DEB)
-execute_process(COMMAND git rev-parse --short HEAD OUTPUT_VARIABLE CPACK_PACKAGE_VERSION_PATCH)
+execute_process(
+        COMMAND git rev-parse --short HEAD
+        OUTPUT_VARIABLE CPACK_PACKAGE_VERSION_PATCH
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
 include(CPack)
 
 find_package (PkgConfig REQUIRED)
-pkg_check_modules (GLIB REQUIRED glib-2.0>=2.52)
-pkg_check_modules (GIO REQUIRED gio-unix-2.0)
+pkg_check_modules (GLIB REQUIRED glib-2.0>=2.40)
+
 pkg_check_modules(SOUP REQUIRED libsoup-2.4)
-pkg_check_modules(YAJL REQUIRED yajl>=2.1.0)
 pkg_check_modules(YAML REQUIRED yaml-0.1)
+
+if(BUILD_JSON)
+    pkg_check_modules(YAJL REQUIRED yajl>=2.0.0)
+endif()
+
+if(UNIX)
+    pkg_check_modules(GIO REQUIRED gio-unix-2.0)
+endif()
 
 if(BUILD_LIBUSB)
     pkg_check_modules(LIBUSB REQUIRED libusb-1.0)
@@ -42,6 +54,10 @@ endif()
 
 if(BUILD_BUS AND LINUX)
     pkg_check_modules(UDEV REQUIRED libudev)
+endif()
+
+if(BUNDLED_BLOCKS_RUNTIME)
+    include_directories(contrib/BlocksRuntime)
 endif()
 
 set(CMAKE_C_STANDARD 11)
@@ -54,13 +70,16 @@ include_directories(${GIO_INCLUDE_DIRS})
 link_directories(${GIO_LIBRARY_DIRS})
 include_directories(${SOUP_INCLUDE_DIRS})
 link_directories(${SOUP_LIBRARY_DIRS})
-include_directories(${YAJL_INCLUDE_DIRS})
-link_directories(${YAJL_LIBRARY_DIRS})
 include_directories(${YAML_INCLUDE_DIRS})
 link_directories(${YAML_LIBRARY_DIRS})
 
 if(RPC_DEBUG)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DRPC_DEBUG")
+endif()
+
+if(BUILD_JSON)
+    include_directories(${YAJL_INCLUDE_DIRS})
+    link_directories(${YAJL_LIBRARY_DIRS})
 endif()
 
 if(BUILD_LIBUSB)
@@ -104,11 +123,22 @@ set(TRANSPORT_FILES
 set(SERIALIZER_FILES
         src/serializer/msgpack.c
         src/serializer/msgpack.h
-        src/serializer/json.c
-        src/serializer/json.h
         src/serializer/yaml.c
         src/serializer/yaml.h
         contrib/mpack/mpack.c)
+
+if(BUILD_JSON)
+    set(SERIALIZER_FILES
+            ${SERIALIZER_FILES}
+            src/serializer/json.c
+            src/serializer/json.h)
+endif()
+
+if(BUNDLED_BLOCKS_RUNTIME)
+    set(CORE_FILES ${CORE_FILES}
+            contrib/BlocksRuntime/data.c
+            contrib/BlocksRuntime/runtime.c)
+endif()
 
 if(BUILD_LIBUSB)
     set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/libusb.c)
@@ -144,7 +174,7 @@ if(NOT APPLE)
 endif()
 
 configure_file(librpc.pc.in ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc @ONLY)
-install(TARGETS librpc LIBRARY DESTINATION lib)
+install(TARGETS librpc DESTINATION lib)
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pkgconfig)
 
@@ -182,10 +212,12 @@ if(BUILD_EXAMPLES)
     add_subdirectory(examples/loopback)
     add_subdirectory(examples/pack-unpack)
     add_subdirectory(examples/server)
-    add_subdirectory(examples/fd-client)
-    add_subdirectory(examples/fd-server)
     add_subdirectory(examples/error-backtrace)
     add_subdirectory(examples/query)
+    if(UNIX)
+    add_subdirectory(examples/fd-client)
+    add_subdirectory(examples/fd-server)
+    endif()
     if(LINUX)
         add_subdirectory(examples/shm-client)
         add_subdirectory(examples/shm-server)

@@ -1,4 +1,4 @@
-find_program(PYTHON "python3")
+find_program(PYTHON "python${PYTHON_VERSION}")
 
 set(SETUP_PY ${CMAKE_SOURCE_DIR}/python/setup.py)
 set(DEPS ${CMAKE_SOURCE_DIR}/python/librpc.pyx ${CMAKE_SOURCE_DIR}/python/librpc.pxd)

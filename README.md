@@ -1,3 +1,5 @@
+![build status](https://travis-ci.org/twoporeguys/librpc.svg?branch=master)
+
 # librpc
 
 A general-purpose IPC/RPC library supporting asynchronous notifications,

@@ -6,3 +6,9 @@ meta:
 
 struct DiscoveryMethod:
   members:
+    name:
+      type: string
+    description:
+      type: string
+    arguments:
+      type: List<DiscoveryMethodArgument>
