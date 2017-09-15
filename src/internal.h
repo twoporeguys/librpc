@@ -343,6 +343,7 @@ struct rpct_typei
 {
 	bool			proxy;
 	struct rpct_type *	type;
+	char *			canonical_form;
 	GPtrArray *		specializations;
 	GHashTable *		constraints;
 };
@@ -412,4 +413,4 @@ void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 
 void rpct_typei_free(struct rpct_typei *inst);
 
-#endif //LIBRPC_INTERNAL_H
+#endif /* LIBRPC_INTERNAL_H */

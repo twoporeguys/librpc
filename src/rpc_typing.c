@@ -102,7 +102,7 @@ rpct_get_class(rpc_object_t instance)
 	return (instance->ro_typei->type->clazz);
 }
 
-rpct_type_t
+rpct_typei_t
 rpct_get_type(rpc_object_t instance)
 {
 
@@ -253,14 +253,17 @@ rpct_instantiate_type(const char *decl, const char *realm)
 		}
 	}
 
+	ret->canonical_form = rpct_canonical_type(ret);
 	goto done;
 
-error:	if (ret != NULL) {
+error:
+	if (ret != NULL) {
 		rpct_typei_free(ret);
 		ret = NULL;
 	}
 
-done:	g_regex_unref(regex);
+done:
+	g_regex_unref(regex);
 
 	if (err != NULL)
 		g_error_free(err);
@@ -888,6 +891,8 @@ rpct_typei_free(struct rpct_typei *inst)
 			    g_ptr_array_index(inst->specializations, i));
 		}
 	}
+
+	g_free(inst->canonical_form);
 	g_free(inst);
 }
 
@@ -945,11 +950,34 @@ rpct_type_get_parent(rpct_type_t type)
 	return (type->parent);
 }
 
-bool
-rpct_type_is_generic(rpct_type_t type)
+int
+rpct_type_get_generic_vars_count(rpct_type_t type)
+{
+	if (!type->generic)
+		return (0);
+
+	return (type->generic_vars->len);
+}
+
+rpct_type_t
+rpct_typei_get_type(rpct_typei_t typei)
 {
 
-	return (type->generic);
+	return (typei->type);
+}
+
+rpct_typei_t
+rpct_typei_get_generic_var(rpct_typei_t typei, int index)
+{
+
+	return (g_ptr_array_index(typei->specializations, index));
+}
+
+const char *
+rpct_typei_get_canonical_form(rpct_typei_t typei)
+{
+
+	return (typei->canonical_form);
 }
 
 const char *

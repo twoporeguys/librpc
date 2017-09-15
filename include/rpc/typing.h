@@ -35,6 +35,9 @@
 struct rpct_type;
 typedef struct rpct_type *rpct_type_t;
 
+struct rpct_typei;
+typedef struct rpct_typei *rpct_typei_t;
+
 struct rpct_member;
 typedef struct rpct_member *rpct_member_t;
 
@@ -75,7 +78,10 @@ const char *rpct_type_get_name(rpct_type_t type);
 const char *rpct_type_get_realm(rpct_type_t type);
 const char *rpct_type_get_description(rpct_type_t type);
 rpct_type_t rpct_type_get_parent(rpct_type_t type);
-bool rpct_type_is_generic(rpct_type_t type);
+int rpct_type_get_generic_vars_count(rpct_type_t type);
+rpct_type_t rpct_typei_get_tpye(rpct_typei_t typei);
+rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, int index);
+const char *rpct_typei_get_canonical_form(rpct_typei_t typei);
 
 const char *rpct_member_get_name(rpct_member_t member);
 const char *rpct_member_get_description(rpct_member_t member);
@@ -85,7 +91,7 @@ bool rpct_members_apply(rpct_type_t type, rpct_member_applier_t applier);
 
 rpc_object_t rpct_new(const char *decl, const char *realm, rpc_object_t object);
 
-rpct_type_t rpct_get_type(rpc_object_t instance);
+rpct_typei_t rpct_get_typei(rpc_object_t instance);
 rpc_object_t rpct_get_value(rpc_object_t instance);
 void rpct_set_value(rpc_object_t object, const char *value);
 
