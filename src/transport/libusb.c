@@ -573,10 +573,7 @@ usb_event_impl(void *arg)
 	if (ret < 0)
 		goto disconnected;
 
-	if (log->start == log->end || conn->uc_logfd < 0)
-		goto done;
-
-	if (conn->uc_logfile == NULL)
+	if (log->start == log->end || conn->uc_logfile == NULL)
 		goto done;
 
 	if (log->start < log->end)
