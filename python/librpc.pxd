@@ -267,6 +267,9 @@ cdef extern from "rpc/typing.h" nogil:
     const char *rpct_member_get_name(rpct_member_t member);
     const char *rpct_member_get_description(rpct_member_t member);
 
+    rpct_type_t rpct_get_type(rpc_object_t instance);
+    rpc_object_t rpct_get_value(rpc_object_t instance);
+
 
 cdef class Object(object):
     cdef rpc_object_t obj

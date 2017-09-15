@@ -598,7 +598,6 @@ cdef class Dictionary(Object):
         self.__applier(compare)
         return equal
 
-
     def __delitem__(self, key):
         bytes_key = key.encode('utf-8')
         rpc_dictionary_remove_key(self.obj, bytes_key)
@@ -1097,11 +1096,57 @@ cdef class Type(object):
 cdef class Member(object):
     cdef rpct_member_t rpcmem
 
+    property name:
+        def __get__(self):
+            return rpct_member_get_name(self.rpcmem)
+
     property description:
         def __get__(self):
             return rpct_member_get_description(self.rpcmem)
 
 
+cdef class BaseTypingObject(object):
+    cdef rpc_object_t obj
+
+    property type:
+        def __get__(self):
+            cdef Type type
+
+            type = Type.__new__(Type)
+            type.rpctype = rpct_get_type(self.struct)
+            return type
+
+
+cdef class BaseStruct(BaseTypingObject):
+    def __getattr__(self, item):
+        pass
+
+    def __setattr__(self, key, value):
+        pass
+
+    property type:
+        def __get__(self):
+            cdef Type ret
+
+            ret = Type.__new__(Type)
+            ret.rpctype = rpct_get_type(self.struct)
+            return ret
+
+
+cdef class BaseUnion(BaseTypingObject):
+    property branch:
+        def __get__(self):
+            pass
+
+    property value:
+        def __get__(self):
+            pass
+
+
+cdef class BaseEnum(BaseTypingObject):
+    property value:
+        def __get__(self):
+            pass
 
 
 cdef raise_internal_exc(rpc=False):
