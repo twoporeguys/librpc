@@ -1069,7 +1069,6 @@ cdef class Serializer(object):
         return <bytes>(<char *>frame)[:len]
 
 
-<<<<<<< HEAD
 cdef class Typing(object):
     def __init__(self):
         with nogil:
