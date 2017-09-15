@@ -24,8 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef LIBRPCT_H
-#define LIBRPCT_H
+#ifndef LIBRPC_TYPING_H
+#define LIBRPC_TYPING_H
 
 #include <rpc/object.h>
 
@@ -89,4 +89,4 @@ rpct_type_t rpct_get_type(rpc_object_t instance);
 rpc_object_t rpct_get_value(rpc_object_t instance);
 void rpct_set_value(rpc_object_t object, const char *value);
 
-#endif //LIBRPCT_H
+#endif /* LIBRPC_TYPING_H */
