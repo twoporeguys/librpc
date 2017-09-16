@@ -427,17 +427,21 @@ rpc_json_write_object_ext(yajl_gen gen, rpc_object_t object,
 		if (status != yajl_gen_status_ok)
 			return (status);
 
-		status = rpc_json_write_ext(gen,
-		    (const uint8_t *)JSON_EXTTYPE_ERROR_XTRA,
-		    rpc_error_get_extra(object));
-		if (status != yajl_gen_status_ok)
-			return (status);
+		if (rpc_error_get_extra(object) != NULL) {
+			status = rpc_json_write_ext(gen,
+			    (const uint8_t *) JSON_EXTTYPE_ERROR_XTRA,
+			    rpc_error_get_extra(object));
+			if (status != yajl_gen_status_ok)
+				return (status);
+		}
 
-		status = rpc_json_write_ext(gen,
-		    (const uint8_t *)JSON_EXTTYPE_ERROR_STCK,
-		    rpc_error_get_stack(object));
-		if (status != yajl_gen_status_ok)
-			return (status);
+		if (rpc_error_get_stack(object) != NULL) {
+			status = rpc_json_write_ext(gen,
+			    (const uint8_t *) JSON_EXTTYPE_ERROR_STCK,
+			    rpc_error_get_stack(object));
+			if (status != yajl_gen_status_ok)
+				return (status);
+		}
 
 		status = yajl_gen_map_close(gen);
 		break;

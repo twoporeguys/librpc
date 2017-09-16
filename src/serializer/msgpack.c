@@ -51,10 +51,14 @@ rpc_msgpack_write_error(mpack_writer_t *writer, rpc_object_t error)
 	mpack_write_i64(writer, rpc_error_get_code(error));
 	mpack_write_cstr(writer, MSGPACK_ERROR_MESSAGE);
 	mpack_write_cstr(writer, rpc_error_get_message(error));
-	mpack_write_cstr(writer, MSGPACK_ERROR_EXTRA);
-	rpc_msgpack_write_object(writer, rpc_error_get_extra(error));
-	mpack_write_cstr(writer, MSGPACK_ERROR_STACK);
-	rpc_msgpack_write_object(writer, rpc_error_get_stack(error));
+	if (rpc_error_get_extra(error) != NULL) {
+		mpack_write_cstr(writer, MSGPACK_ERROR_EXTRA);
+		rpc_msgpack_write_object(writer, rpc_error_get_extra(error));
+	}
+	if (rpc_error_get_stack(error) != NULL) {
+		mpack_write_cstr(writer, MSGPACK_ERROR_STACK);
+		rpc_msgpack_write_object(writer, rpc_error_get_stack(error));
+	}
 }
 
 static rpc_object_t
