@@ -79,7 +79,7 @@ const char *rpct_type_get_realm(rpct_type_t type);
 const char *rpct_type_get_description(rpct_type_t type);
 rpct_type_t rpct_type_get_parent(rpct_type_t type);
 int rpct_type_get_generic_vars_count(rpct_type_t type);
-rpct_type_t rpct_typei_get_tpye(rpct_typei_t typei);
+rpct_type_t rpct_typei_get_type(rpct_typei_t typei);
 rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, int index);
 const char *rpct_typei_get_canonical_form(rpct_typei_t typei);
 
