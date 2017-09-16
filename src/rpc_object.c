@@ -725,12 +725,12 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			break;
 
 		case 'b':
-			current = rpc_bool_create(va_arg(ap, bool));
+			current = rpc_bool_create(va_arg(ap, int));
 			break;
 
 		case 'B':
 			current = rpc_data_create(va_arg(ap, const void *),
-			    va_arg(ap, size_t), va_arg(ap, bool));
+			    va_arg(ap, size_t), va_arg(ap, int));
 			break;
 
 		case 'f':
