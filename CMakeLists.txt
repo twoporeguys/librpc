@@ -198,7 +198,8 @@ if(BUILD_TESTS)
             tests/transport/ws.cpp
             tests/internal.cpp
             tests/method_stress.cpp
-            tests/api/query.cpp)
+            tests/api/query.cpp
+            tests/serializer/yaml.cpp)
 
     add_executable(catch_tests ${TEST_SOURCES})
     target_link_libraries(catch_tests Catch)
