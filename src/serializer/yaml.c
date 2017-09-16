@@ -26,6 +26,7 @@
  */
 
 #include <string.h>
+#include <inttypes.h>
 #include <glib.h>
 #include <rpc/object.h>
 #include <yaml.h>
@@ -97,6 +98,7 @@ rpc_yaml_read_ext(yaml_parser_t *parser, const char *type)
 					break;
 				}
 
+#if defined(__linux__)
 				if (!g_strcmp0(key, YAML_SHMEM_ADDR)) {
 					shmem_addr = (off_t)intval;
 					break;
@@ -111,6 +113,7 @@ rpc_yaml_read_ext(yaml_parser_t *parser, const char *type)
 					shmem_fd = intval;
 					break;
 				}
+#endif
 
 			case YAML_MAPPING_END_EVENT:
 				goto done;
@@ -267,7 +270,7 @@ rpc_yaml_write_object(yaml_emitter_t *emitter, rpc_object_t object)
 		break;
 
 	case RPC_TYPE_INT64:
-		value = g_strdup_printf("%li", rpc_int64_get_value(object));
+		value = g_strdup_printf("%" PRId64, rpc_int64_get_value(object));
 		status = yaml_scalar_event_initialize(&event, NULL, NULL,
 		    (yaml_char_t *)value, (int)strlen(value), 1, 1,
 		    YAML_ANY_SCALAR_STYLE);
@@ -275,7 +278,7 @@ rpc_yaml_write_object(yaml_emitter_t *emitter, rpc_object_t object)
 		break;
 
 	case RPC_TYPE_UINT64:
-		value = g_strdup_printf("%lu", rpc_uint64_get_value(object));
+		value = g_strdup_printf("%" PRIu64, rpc_uint64_get_value(object));
 		tag = YAML_TAG_UINT64;
 		status = yaml_scalar_event_initialize(&event, NULL,
 		    (yaml_char_t *)tag, (yaml_char_t *)value,
@@ -301,7 +304,7 @@ rpc_yaml_write_object(yaml_emitter_t *emitter, rpc_object_t object)
 		break;
 
 	case RPC_TYPE_DATE:
-		value = g_strdup_printf("%li", rpc_date_get_value(object));
+		value = g_strdup_printf("%" PRIu64, rpc_date_get_value(object));
 		tag = YAML_TAG_DATE;
 		status = yaml_scalar_event_initialize(&event, NULL,
 		    (yaml_char_t *)tag, (yaml_char_t *)value,
