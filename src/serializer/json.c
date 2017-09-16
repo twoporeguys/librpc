@@ -181,7 +181,7 @@ rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 		dict_value = rpc_dictionary_get_value(leaf,
 		    JSON_EXTTYPE_DATE);
 		unpacked_value = rpc_date_create(
-		    (uint64_t)rpc_int64_get_value(dict_value));
+		    (int64_t)rpc_int64_get_value(dict_value));
 
 	} else if (rpc_dictionary_has_key(leaf, JSON_EXTTYPE_FD)) {
 		dict_value = rpc_dictionary_get_value(leaf,
@@ -266,7 +266,8 @@ static int
 rpc_json_parse_integer(void *ctx, long long value)
 {
 
-	return rpc_json_context_insert_value(ctx, rpc_int64_create(value));
+	return rpc_json_context_insert_value(ctx,
+	    rpc_int64_create((int64_t)value));
 }
 
 static int
@@ -388,7 +389,8 @@ rpc_json_write_object_ext(yajl_gen gen, rpc_object_t object,
 
 	switch (object->ro_type) {
 	case RPC_TYPE_UINT64:
-		status = yajl_gen_integer(gen, rpc_uint64_get_value(object));
+		status = yajl_gen_integer(gen,
+		    (long long)rpc_uint64_get_value(object));
 		break;
 
 	case RPC_TYPE_DATE:
