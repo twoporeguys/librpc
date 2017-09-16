@@ -1,7 +1,7 @@
 ---
 meta:
   version: 1
-  realm: *
+  realm: "*"
   description: Basic composite types library
 
 union Optional<T>:
