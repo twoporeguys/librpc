@@ -177,8 +177,10 @@ rpc_generate_v4_uuid(void)
 }
 
 gboolean
-rpc_kill_main_loop(GMainLoop *loop)
+rpc_kill_main_loop(void *arg)
 {
+	GMainLoop *loop = arg;
+
 	g_main_loop_quit(loop);
 	return (false);
 }
