@@ -950,6 +950,13 @@ rpct_type_get_parent(rpct_type_t type)
 	return (type->parent);
 }
 
+rpct_class_t
+rpct_type_get_class(rpct_type_t type)
+{
+
+	return (type->clazz);
+}
+
 int
 rpct_type_get_generic_vars_count(rpct_type_t type)
 {
