@@ -72,6 +72,13 @@ static void rpct_constraint_free(struct rpct_constraint *constraint);
 
 static struct rpct_context *context = NULL;
 
+rpct_typei_t
+rpct_new_typei(const char *decl)
+{
+
+	return (rpct_instantiate_type(decl, context->global_realm));
+}
+
 rpc_object_t
 rpct_new(const char *decl, const char *realm, rpc_object_t object)
 {
@@ -451,7 +458,9 @@ rpct_find_or_load(const char *realm, const char *decl, rpc_object_t obj)
 	char *declvars = NULL;
 	int ret = -1;
 
-	regex = g_regex_new(INSTANCE_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
+	debugf("looking for type \"%s\" in realm \"%s\"", decl, realm);
+
+	regex = g_regex_new(TYPE_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
 	if (err != NULL)
 		goto done;
 
@@ -461,12 +470,11 @@ rpct_find_or_load(const char *realm, const char *decl, rpc_object_t obj)
 	if (g_match_info_get_match_count(match) < 1)
 		goto done;
 
-	decltype = g_match_info_fetch(match, 1);
-
+	decltype = g_match_info_fetch(match, 2);
 	type = rpct_find_type(realm, decltype);
 
 	if (type == NULL) {
-		if (rpct_read_type(realm, decltype, obj) != 0)
+		if (rpct_read_type(realm, decl, obj) != 0)
 			goto done;
 
 		type = rpct_find_type(realm, decltype);
@@ -527,6 +535,7 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 	rpc_object_t decl_obj = NULL;
 	rpct_realm_t realm_obj;
 
+	debugf("reading type \"%s\" from realm \"%s\"", decl, realm);
 	decl_obj = rpc_dictionary_get_value(obj, decl);
 
 	rpc_object_unpack(decl_obj, "{ssv}",
@@ -590,8 +599,10 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 	else
 		g_assert_not_reached();
 
-	if (declvars)
+	if (declvars) {
+		type->generic = true;
 		rpct_parse_type(declvars, type->generic_vars);
+	}
 
 	/* Pull inherited members (if any) */
 	if (parent != NULL) {
@@ -718,12 +729,14 @@ rpct_read_func(const char *realm, const char *decl, rpc_object_t obj)
 	ret = 0;
 	goto done;
 
-error:	if (func != NULL) {
+error:
+	if (func != NULL) {
 		g_hash_table_unref(func->arguments);
 		g_free(func);
 	}
 
-done:	if (err != NULL)
+done:
+	if (err != NULL)
 		g_error_free(err);
 
 	if (regex != NULL)
@@ -785,10 +798,11 @@ rpct_read_file(const char *path)
 
 		if (rpct_find_or_load(file->realm, key, obj) != 0)
 			return ((bool)false);
+
 		return ((bool)true);
 	}))
-		ret = -1;
 
+	ret = -1;
 	rpc_release(obj);
 	return (ret);
 }
@@ -907,6 +921,13 @@ int
 rpct_load_types_stream(int fd)
 {
 
+}
+
+const char *
+rpct_get_realm(void)
+{
+
+	return (context->global_realm);
 }
 
 int

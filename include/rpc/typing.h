@@ -73,7 +73,9 @@ void rpct_free(void);
 int rpct_load_types(const char *path);
 int rpct_load_types_stream(int fd);
 
+const char *rpct_get_realm(void);
 int rpct_set_realm(const char *realm);
+
 const char *rpct_type_get_name(rpct_type_t type);
 const char *rpct_type_get_realm(rpct_type_t type);
 const char *rpct_type_get_description(rpct_type_t type);
@@ -90,7 +92,9 @@ const char *rpct_member_get_description(rpct_member_t member);
 bool rpct_types_apply(rpct_type_applier_t applier);
 bool rpct_members_apply(rpct_type_t type, rpct_member_applier_t applier);
 
+rpct_typei_t rpct_new_typei(const char *decl);
 rpc_object_t rpct_new(const char *decl, const char *realm, rpc_object_t object);
+rpc_object_t rpct_newi(rpct_typei_t typei, rpc_object_t object);
 
 rpct_typei_t rpct_get_typei(rpc_object_t instance);
 rpc_object_t rpct_get_value(rpc_object_t instance);
