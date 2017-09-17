@@ -228,8 +228,8 @@ cdef extern from "rpc/bus.h" nogil:
 
     void *RPC_BUS_EVENT_HANDLER(rpc_bus_event_handler_f fn, void *arg)
 
-    int rpc_bus_open();
-    int rpc_bus_close();
+    int rpc_bus_open()
+    int rpc_bus_close()
     int rpc_bus_ping(const char *name)
     int rpc_bus_enumerate(rpc_bus_node **result)
     int rpc_bus_free_result(rpc_bus_node *result)
@@ -246,8 +246,19 @@ cdef extern from "rpc/typing.h" nogil:
     ctypedef struct rpct_type_t:
         pass
 
+    ctypedef struct rpct_typei_t:
+        pass
+
     ctypedef struct rpct_member_t:
         pass
+
+    ctypedef enum rpct_class_t:
+        RPC_TYPING_STRUCT
+        RPC_TYPING_UNION
+        RPC_TYPING_ENUM
+        RPC_TYPING_TYPEDEF
+        RPC_TYPING_SPECIALIZATION
+        RPC_TYPING_BUILTIN
 
     void *RPCT_TYPE_APPLIER(rpct_type_applier_f fn, void *arg)
     void *RPCT_MEMBER_APPLIER(rpct_member_applier_f fn, void *arg)
@@ -255,20 +266,31 @@ cdef extern from "rpc/typing.h" nogil:
     void rpct_init()
     int rpct_load_types(const char *path)
 
-    void rpct_types_apply(void *applier);
-    void rpct_members_apply(rpct_type_t type, void *applier);
+    const char *rpct_get_realm()
+    void rpct_set_realm(const char *realm)
+
+    void rpct_types_apply(void *applier)
+    void rpct_members_apply(rpct_type_t type, void *applier)
 
     const char *rpct_type_get_name(rpct_type_t type)
     const char *rpct_type_get_realm(rpct_type_t type)
     const char *rpct_type_get_description(rpct_type_t type)
     rpct_type_t rpct_type_get_parent(rpct_type_t type)
-    bint rpct_type_is_generic(rpct_type_t type)
+    rpct_class_t rpct_type_get_class(rpct_type_t type)
+    int rpct_type_get_generic_vars_count(rpct_type_t type)
+    rpct_type_t rpct_typei_get_type(rpct_typei_t typei)
+    const char *rpct_typei_get_canonical_form(rpct_typei_t typei)
+    rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, int index)
 
-    const char *rpct_member_get_name(rpct_member_t member);
-    const char *rpct_member_get_description(rpct_member_t member);
+    const char *rpct_member_get_name(rpct_member_t member)
+    const char *rpct_member_get_description(rpct_member_t member)
 
-    rpct_type_t rpct_get_type(rpc_object_t instance);
-    rpc_object_t rpct_get_value(rpc_object_t instance);
+    rpct_type_t rpct_get_type(rpc_object_t instance)
+    rpc_object_t rpct_get_value(rpc_object_t instance)
+
+    rpct_typei_t rpct_new_typei(const char *decl)
+    rpc_object_t rpct_new(const char *decl, const char *realm, rpc_object_t object)
+    rpc_object_t rpct_newi(rpct_typei_t typei, rpc_object_t object);
 
 
 cdef class Object(object):

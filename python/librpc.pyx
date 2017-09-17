@@ -78,6 +78,15 @@ class BusEvent(enum.IntEnum):
     DETACHED = RPC_BUS_DETACHED
 
 
+class TypeClass(enum.IntEnum):
+    STRUCT = RPC_TYPING_STRUCT
+    UNION = RPC_TYPING_UNION
+    ENUM = RPC_TYPING_ENUM
+    TYPEDEF = RPC_TYPING_TYPEDEF
+    SPECIALIZATION = RPC_TYPING_SPECIALIZATION
+    BUILTIN = RPC_TYPING_BUILTIN
+
+
 class LibException(Exception):
     def __init__(self, code=None, message=None, extra=None, stacktrace=None, obj=None):
         if obj:
@@ -1085,6 +1094,18 @@ cdef class Typing(object):
         container.append(rpctype)
         return True
 
+    cdef BaseTypingObject build(self, TypeInstance typei):
+        typ = typei.type
+        clazz = typ.clazz
+
+        if clazz == RPC_TYPING_STRUCT:
+            return type(typei.canonical, (BaseStruct,), {
+                'typei': typei
+            })
+
+    def create(self, decl):
+        pass
+
     def load_type(self, decl, type):
         pass
 
@@ -1100,6 +1121,47 @@ cdef class Typing(object):
     property functions:
         def __get__(self):
             pass
+
+    property realm:
+        def __get__(self):
+            return rpct_get_realm().decode('utf-8')
+
+        def __set__(self, value):
+            rpct_set_realm(value.encode('utf-8'))
+
+
+cdef class TypeInstance(object):
+    cdef rpct_typei_t rpctypei
+
+    def __init__(self, decl):
+        self.rpctypei = rpct_new_typei(decl.encode('utf-8'))
+        if self.rpctypei == <rpct_typei_t>NULL:
+            raise ValueError('Invalid type specifier')
+
+    property type:
+        def __get__(self):
+            cdef Type typ
+
+            typ = Type.__new__(Type)
+            typ.rpctype = rpct_typei_get_type(self.rpctypei)
+            return typ
+
+    property canonical:
+        def __get__(self):
+            return rpct_typei_get_canonical_form(self.rpctypei)
+
+    property generic_variables:
+        def __get__(self):
+            cdef TypeInstance typei
+
+            result = []
+            count = rpct_type_get_generic_vars_count(rpct_typei_get_type(self.rpctypei))
+            for i in range(count):
+                typei = TypeInstance.__new__(TypeInstance)
+                typei.rpctypei = rpct_typei_get_generic_var(self.rpctypei, i)
+                result.append(typei)
+
+            return result
 
 
 cdef class Type(object):
@@ -1132,7 +1194,11 @@ cdef class Type(object):
 
     property generic:
         def __get__(self):
-            return rpct_type_is_generic(self.rpctype)
+            return rpct_type_get_generic_vars_count(self.rpctype) > 0
+
+    property clazz:
+        def __get__(self):
+            return TypeClass(rpct_type_get_class(self.rpctype))
 
     property members:
         def __get__(self):
@@ -1161,7 +1227,7 @@ cdef class BaseTypingObject(object):
             cdef Type type
 
             type = Type.__new__(Type)
-            type.rpctype = rpct_get_type(self.struct)
+            type.rpctype = rpct_get_type(self.obj)
             return type
 
 
@@ -1177,7 +1243,7 @@ cdef class BaseStruct(BaseTypingObject):
             cdef Type ret
 
             ret = Type.__new__(Type)
-            ret.rpctype = rpct_get_type(self.struct)
+            ret.rpctype = rpct_get_type(self.obj)
             return ret
 
 
