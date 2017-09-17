@@ -232,7 +232,6 @@ rpct_instantiate_type(const char *decl, const char *realm)
 		goto error;
 
 	decltype = g_match_info_fetch(match, 1);
-
 	type = rpct_find_type(realm, decltype);
 	if (type == NULL)
 		goto error;
@@ -248,8 +247,8 @@ rpct_instantiate_type(const char *decl, const char *realm)
 			goto error;
 
 		splitvars = g_ptr_array_new();
-
 		rpct_parse_type(declvars, splitvars);
+
 		if (splitvars->len != type->generic_vars->len)
 			goto error;
 
@@ -388,12 +387,13 @@ rpct_type_is_compatible(struct rpct_typei *decl, struct rpct_typei *type)
 static int
 rpct_parse_type(const char *decl, GPtrArray *variables)
 {
-	int istart = 0;
 	int nesting = 0;
 	int groups = 0;
 	size_t len = strlen(decl);
+	size_t i;
+	size_t istart = 0;
 
-	for (size_t i = 0; i < len; i++) {
+	for (i = 0; i < len; i++) {
 		switch (decl[i]) {
 		case '<':
 			nesting++;
@@ -408,6 +408,8 @@ rpct_parse_type(const char *decl, GPtrArray *variables)
 				groups++;
 				g_ptr_array_add(variables, g_strndup(
 			 	   &decl[istart], (gsize)(i - istart)));
+
+				istart = i;
 			}
 			break;
 
@@ -416,6 +418,8 @@ rpct_parse_type(const char *decl, GPtrArray *variables)
 		}
 	}
 
+	groups++;
+	g_ptr_array_add(variables, g_strndup(&decl[istart], (gsize)(i - istart)));
 	return (groups);
 }
 
@@ -438,7 +442,7 @@ rpct_canonical_type(struct rpct_typei *typei)
 		g_string_append(ret, substr);
 		g_free(substr);
 
-		if (i < typei->specializations->len)
+		if (i < typei->specializations->len - 1)
 			g_string_append(ret, ",");
 	}
 
@@ -571,7 +575,7 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 
 	decltype = g_match_info_fetch(match, 1);
 	declname = g_match_info_fetch(match, 2);
-	declvars = g_match_info_fetch(match, 3);
+	declvars = g_match_info_fetch(match, 4);
 
 	type = g_malloc0(sizeof(*type));
 	type->name = g_strdup(declname);
