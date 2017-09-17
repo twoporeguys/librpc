@@ -82,24 +82,26 @@ rpct_new_typei(const char *decl)
 rpc_object_t
 rpct_new(const char *decl, const char *realm, rpc_object_t object)
 {
-	rpc_object_t inst;
 	struct rpct_typei *typei;
-	const char *type_realm = realm;
 
-	if (type_realm == NULL)
-		type_realm = context->global_realm;
+	if (realm == NULL)
+		realm = context->global_realm;
 
-	typei = rpct_instantiate_type(decl, type_realm);
+	typei = rpct_instantiate_type(decl, realm);
 	if (typei == NULL)
 		return (NULL);
 
-	inst = object;
+	return (rpct_newi(typei, object));
+}
+
+rpc_object_t
+rpct_newi(rpct_typei_t typei, rpc_object_t object)
+{
 	if (object == NULL)
-		inst = rpc_dictionary_create();
+		object = rpc_dictionary_create();
 
-	inst->ro_typei = typei;
-
-	return (inst);
+	object->ro_typei = typei;
+	return (object);
 }
 
 rpct_class_t
