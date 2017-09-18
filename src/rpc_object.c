@@ -110,8 +110,13 @@ rpc_create_description(GString *description, rpc_object_t object,
 		return;
 	}
 
-	g_string_append_printf(description, "<%s> ",
-	    rpc_types[object->ro_type]);
+	if (object->ro_typei != NULL)
+		g_string_append_printf(description, "<%s (%s)> ",
+		    rpc_types[object->ro_type],
+		    object->ro_typei->canonical_form);
+	else
+		g_string_append_printf(description, "<%s> ",
+		    rpc_types[object->ro_type]);
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
