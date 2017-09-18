@@ -902,6 +902,24 @@ rpct_free(void)
 	g_free(context);
 }
 
+struct rpct_typei *rpct_copy_typei(struct rpct_typei *inst)
+{
+	struct rpct_typei *result;
+
+	if (inst == NULL)
+		return (NULL);
+
+	result = g_malloc(sizeof(*result));
+	result->proxy = inst->proxy;
+	result->type = inst->type;
+	result->constraints = inst->constraints;
+	result->canonical_form = g_strdup(inst->canonical_form);
+	result->specializations = inst->specializations;
+	g_ptr_array_ref(result->specializations);
+
+	return (result);
+}
+
 void
 rpct_typei_free(struct rpct_typei *inst)
 {
