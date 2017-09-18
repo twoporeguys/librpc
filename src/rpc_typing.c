@@ -378,13 +378,44 @@ rpct_type_is_fully_specialized(struct rpct_typei *inst)
 static inline bool
 rpct_type_is_compatible(struct rpct_typei *decl, struct rpct_typei *type)
 {
+	struct rpct_type *parent_type;
+	bool compatible = false;
 
-	/* Types from different realms are always incompatible */
-	/* XXX global realm */
 	if (g_strcmp0(decl->type->realm, type->type->realm) != 0)
 		return (false);
 
+	if (decl->specializations->len < type->specializations->len)
+		return (false);
 
+	if (g_strcmp0(decl->type->name, type->type->name) != 0) {
+		parent_type = type->type;
+		while (1) {
+			parent_type = parent_type->parent;
+			if (parent_type == NULL)
+				break;
+
+			if (g_strcmp0(
+			    parent_type->name, type->type->name) == 0) {
+				compatible = true;
+				break;
+			}
+		}
+	} else
+		compatible = true;
+
+	if (!compatible)
+		return (false);
+
+	for (guint i = 0; i < type->specializations->len; i++) {
+		compatible = rpct_type_is_compatible(
+		    g_ptr_array_index(decl->specializations, i),
+		    g_ptr_array_index(type->specializations, i));
+
+		if (!compatible)
+			break;
+	}
+
+	return (compatible);
 }
 
 static int
