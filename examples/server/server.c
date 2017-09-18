@@ -34,6 +34,7 @@
 static rpc_object_t
 hello(void *cookie, rpc_object_t args)
 {
+	(void)cookie;
 
 	return rpc_string_create_with_format("hello %s!",
 	    rpc_array_get_string(args, 0));
@@ -45,24 +46,36 @@ main(int argc, const char *argv[])
 	rpc_context_t ctx;
 	__block rpc_server_t srv;
 
+	(void)argc;
+	(void)argv;
+
 	ctx = rpc_context_create();
 	rpc_context_register_func(ctx, "hello", "Hello world function",
 	    NULL, hello);
 
 	rpc_context_register_block(ctx, "block", "Test function using blocks",
 	    NULL, ^(void *cookie, rpc_object_t args) {
+		(void)cookie;
+		(void)args;
+
 		return rpc_string_create("haha lol");
 	    });
 
 
 	rpc_context_register_block(ctx, "delay", "Sleeps for a long time",
 	    NULL, ^(void *cookie, rpc_object_t args) {
+		(void)cookie;
+		(void)args;
+
 		sleep(60);
 		return rpc_int64_create(42);
 	    });
 
 	rpc_context_register_block(ctx, "event", "Sends a bunch of events",
 	    NULL, ^(void *cookie, rpc_object_t args) {
+		(void)cookie;
+		(void)args;
+
 		rpc_server_broadcast_event(srv, "server.hello", rpc_string_create("world"));
 		rpc_server_broadcast_event(srv, "oh_noes", rpc_int64_create(-1));
 		return rpc_null_create();
