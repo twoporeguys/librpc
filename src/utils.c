@@ -184,3 +184,15 @@ rpc_kill_main_loop(void *arg)
 	g_main_loop_quit(loop);
 	return (false);
 }
+
+int
+rpc_ptr_array_string_index(GPtrArray *arr, const char *str)
+{
+
+	for (guint i = 0; i < arr->len; i++) {
+		if (g_strcmp0(g_ptr_array_index(arr, i), str) == 0)
+			return (i);
+	}
+
+	return (-1);
+}
