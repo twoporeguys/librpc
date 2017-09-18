@@ -240,7 +240,8 @@ rpct_instantiate_type(const char *decl, const char *realm)
 
 	ret = g_malloc0(sizeof(*ret));
 	ret->type = type;
-	ret->specializations = g_ptr_array_new();
+	ret->specializations = g_ptr_array_new_with_free_func(
+	    (GDestroyNotify)rpct_typei_free);
 	ret->constraints = type->constraints;
 
 	if (type->generic) {
@@ -905,13 +906,7 @@ void
 rpct_typei_free(struct rpct_typei *inst)
 {
 
-	if (inst->specializations != NULL) {
-		for (guint i = 0; i < inst->specializations->len; i++) {
-			rpct_typei_free(
-			    g_ptr_array_index(inst->specializations, i));
-		}
-	}
-
+	g_ptr_array_unref(inst->specializations);
 	g_free(inst->canonical_form);
 	g_free(inst);
 }
