@@ -1065,3 +1065,47 @@ rpct_members_apply(rpct_type_t type, rpct_member_applier_t applier)
 
 	return (flag);
 }
+
+rpc_object_t rpct_serialize(rpc_object_t object)
+{
+	rpc_object_t result;
+
+
+	if (object->ro_typei == NULL)
+		return (object);
+
+	result = rpc_object_pack("{ssv}",
+	    RPCT_REALM_FIELD, rpct_type_get_realm(object->ro_typei->type),
+	    RPCT_TYPE_FIELD, object->ro_typei->canonical_form,
+	    RPCT_VALUE_FIELD, object);
+
+	rpc_retain(object);
+
+	return (result);
+}
+
+rpc_object_t rpct_deserialize(rpc_object_t object)
+{
+	rpc_object_t result;
+
+	if (rpc_get_type(object) != RPC_TYPE_DICTIONARY)
+		return (NULL);
+
+	if (!rpc_dictionary_has_key(object, RPCT_REALM_FIELD))
+		return (NULL);
+
+	if (!rpc_dictionary_has_key(object, RPCT_TYPE_FIELD))
+		return (NULL);
+
+	if (!rpc_dictionary_has_key(object, RPCT_VALUE_FIELD))
+		return (NULL);
+
+	result = rpc_dictionary_get_value(object, RPCT_VALUE_FIELD);
+
+	result = rpct_new(rpc_dictionary_get_string(object,RPCT_TYPE_FIELD),
+	    rpc_dictionary_get_string(object, RPCT_REALM_FIELD), result);
+
+	rpc_retain(result);
+
+	return (result);
+}

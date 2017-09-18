@@ -29,6 +29,7 @@
 
 #include <rpc/object.h>
 
+#define	RPCT_REALM_FIELD	"%realm"
 #define	RPCT_TYPE_FIELD		"%type"
 #define	RPCT_VALUE_FIELD	"%value"
 
@@ -99,5 +100,8 @@ rpc_object_t rpct_newi(rpct_typei_t typei, rpc_object_t object);
 rpct_typei_t rpct_get_typei(rpc_object_t instance);
 rpc_object_t rpct_get_value(rpc_object_t instance);
 void rpct_set_value(rpc_object_t object, const char *value);
+
+rpc_object_t rpct_serialize(rpc_object_t object);
+rpc_object_t rpct_deserialize(rpc_object_t object);
 
 #endif /* LIBRPC_TYPING_H */
