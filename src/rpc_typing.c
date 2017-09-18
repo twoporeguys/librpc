@@ -1087,7 +1087,7 @@ rpc_object_t rpct_serialize(rpc_object_t object)
 	if (object->ro_typei == NULL)
 		return (object);
 
-	result = rpc_object_pack("{ssv}",
+	result = rpc_object_pack("{s,s,v}",
 	    RPCT_REALM_FIELD, rpct_type_get_realm(object->ro_typei->type),
 	    RPCT_TYPE_FIELD, object->ro_typei->canonical_form,
 	    RPCT_VALUE_FIELD, object);
