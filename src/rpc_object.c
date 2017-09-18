@@ -442,68 +442,81 @@ rpc_get_type(rpc_object_t object)
 inline rpc_object_t
 rpc_copy(rpc_object_t object)
 {
-	rpc_object_t tmp;
+	rpc_object_t result = NULL;
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
-		return (rpc_null_create());
+		result = rpc_null_create();
+		break;
 
 	case RPC_TYPE_BOOL:
-		return (rpc_bool_create(object->ro_value.rv_b));
+		result = rpc_bool_create(object->ro_value.rv_b);
+		break;
 
 	case RPC_TYPE_INT64:
-		return (rpc_int64_create(object->ro_value.rv_i));
+		result = rpc_int64_create(object->ro_value.rv_i);
+		break;
 
 	case RPC_TYPE_UINT64:
-		return (rpc_uint64_create(object->ro_value.rv_ui));
+		result = rpc_uint64_create(object->ro_value.rv_ui);
+		break;
 
 	case RPC_TYPE_DATE:
-		return (rpc_date_create(rpc_date_get_value(object)));
+		result = rpc_date_create(rpc_date_get_value(object));
+		break;
 
 	case RPC_TYPE_DOUBLE:
-		return (rpc_double_create(object->ro_value.rv_d));
+		result = rpc_double_create(object->ro_value.rv_d);
+		break;
 
 	case RPC_TYPE_FD:
-		return (rpc_fd_create(rpc_fd_dup(object)));
+		result = rpc_fd_create(rpc_fd_dup(object));
+		break;
 
 	case RPC_TYPE_STRING:
-		return (rpc_string_create(rpc_string_get_string_ptr(object)));
+		result = rpc_string_create(rpc_string_get_string_ptr(object));
+		break;
 
 	case RPC_TYPE_BINARY:
-		return rpc_data_create(rpc_data_get_bytes_ptr(object),
+		result = rpc_data_create(rpc_data_get_bytes_ptr(object),
 		    rpc_data_get_length(object), true);
+		break;
 
 #if defined(__linux__)
 	case RPC_TYPE_SHMEM:
-		return (rpc_shmem_recreate(
+		result = rpc_shmem_recreate(
 		    dup(object->ro_value.rv_shmem.rsb_fd),
 		    object->ro_value.rv_shmem.rsb_offset,
-		    object->ro_value.rv_shmem.rsb_size));
+		    object->ro_value.rv_shmem.rsb_size);
+		break;
 #endif
 
 	case RPC_TYPE_ERROR:
-		return (rpc_error_create(rpc_error_get_code(object),
+		result = rpc_error_create(rpc_error_get_code(object),
 		    rpc_error_get_message(object),
-		    rpc_copy(rpc_error_get_extra(object))));
+		    rpc_copy(rpc_error_get_extra(object)));
+		break;
 
 	case RPC_TYPE_DICTIONARY:
-		tmp = rpc_dictionary_create();
+		result = rpc_dictionary_create();
 		rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
-		    	rpc_dictionary_steal_value(tmp, k, rpc_copy(v));
+		    	rpc_dictionary_steal_value(result, k, rpc_copy(v));
 		    	return ((bool)true);
 		});
-		return (tmp);
+		break;
 
 	case RPC_TYPE_ARRAY:
-		tmp = rpc_array_create();
+		result = rpc_array_create();
 		rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
-			rpc_array_steal_value(tmp, idx, rpc_copy(v));
+			rpc_array_steal_value(result, idx, rpc_copy(v));
 		    	return ((bool)true);
 		});
-		return (tmp);
+		break;
 	}
 
-	return (NULL);
+	result->ro_typei = rpct_copy_typei(object->ro_typei);
+
+	return (result);
 }
 
 inline int
