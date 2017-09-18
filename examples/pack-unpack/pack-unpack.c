@@ -56,6 +56,8 @@ main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)
 		int cnt;
 		bool sure;
 
+		(void)cookie;
+
 		rpct_init();
 		cnt = rpc_object_unpack(args, "[sib{i}]", &str, &num, &sure,
 		    "key", &dict_num);
