@@ -5,7 +5,8 @@ case $OSTYPE in
         echo "I am a Mac.  Brew installing stuff."
         echo "Don't worry about warnings of things already installed."
         brew install --upgrade glib
-        brew install libsoup yajl libusb libyaml
+        brew install libsoup yajl libusb libyaml python3 pip3
+        pip3 install cython
         ;;
     *linux*)
         echo "I am some kind of Linux, hopefully Ubuntu."
