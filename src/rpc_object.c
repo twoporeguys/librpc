@@ -253,8 +253,15 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 	rpc_object_t array = NULL;
 	rpc_object_t dictionary = NULL;
 	rpc_object_t current = branch;
+	const char *search_ptr;
+	const char *comma_ptr;
+	const char *colon_ptr;
+	char *idx_end_ptr;
+	char *key;
+	char delim;
 	int i = 0;
 	char ch;
+	bool is_container = false;
 	size_t idx = 0;
 
 	if (branch == NULL)
@@ -262,15 +269,89 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 
 	for (i = fmt_cnt; fmt[i] != '\0'; i++) {
 		ch = fmt[i];
-		if ((array != NULL) && (ch != ']'))
-			current = rpc_array_get_value(array, idx++);
 
-		if ((dictionary != NULL) && (ch != '}'))
-			current = rpc_dictionary_get_value(dictionary,
-			    va_arg(ap, const char *));
+		is_container = (array != NULL) || (dictionary != NULL);
 
-		if (current == NULL)
-			return (-1);
+		if (array != NULL)
+			delim = ']';
+
+		if (dictionary != NULL)
+			delim = '}';
+
+		if (is_container && (ch != delim)) {
+			comma_ptr = NULL;
+			colon_ptr = NULL;
+			search_ptr = &fmt[i];
+			while (1) {
+				if (*search_ptr == ',') {
+					comma_ptr = search_ptr;
+					break;
+				}
+
+				if (*search_ptr == ':')
+					colon_ptr = search_ptr;
+
+				if (*search_ptr == '[')
+					break;
+
+				if (*search_ptr == ']')
+					break;
+
+				if (*search_ptr == '{')
+					break;
+
+				if (*search_ptr == '}')
+					break;
+
+				search_ptr++;
+			}
+
+			if (array != NULL) {
+				if (colon_ptr != NULL) {
+					idx = (size_t)strtol(&fmt[i],
+					    &idx_end_ptr, 10);
+
+					if (idx_end_ptr != colon_ptr)
+						return (-1);
+
+					current = rpc_array_get_value(array,
+					    idx);
+				} else {
+					current = rpc_array_get_value(array,
+					    idx++);
+				}
+			} else {
+				if (colon_ptr != NULL) 
+					key = g_strndup(&fmt[i], 
+					    (colon_ptr - &fmt[i]));
+				else
+					key = g_strdup(
+					    va_arg(ap, const char *));
+
+				current = rpc_dictionary_get_value(dictionary,
+				    key);
+				g_free(key);
+			}
+
+			if ((comma_ptr == NULL) &&
+			    (*search_ptr != delim)) {
+				i = i + (int)(search_ptr - &fmt[i]);
+				ch = *search_ptr;
+			} else if ((comma_ptr == NULL) &&
+				   (*search_ptr == delim)) {
+				ch = *(search_ptr - 1);
+				i = i + (int)(search_ptr - &fmt[i]) - 1;
+			} else {
+				ch = *(search_ptr - 1);
+				i = i + (int)(search_ptr - &fmt[i]);
+			}
+
+		}
+
+		if (current == NULL) {
+			va_arg(ap, void *);
+			continue;
+		}
 
 		switch (ch) {
 		case '*':

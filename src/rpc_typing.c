@@ -179,7 +179,7 @@ rpct_read_meta(struct rpct_file *file, rpc_object_t obj)
 {
 	int ret;
 
-	ret = rpc_object_unpack(obj, "{ssi}",
+	ret = rpc_object_unpack(obj, "{s,s,i}",
 	    "version", &file->version,
 	    "realm", &file->realm,
 	    "description", &file->description);
@@ -195,7 +195,7 @@ rpct_read_member(const char *decl, rpc_object_t obj,
 	const char *typedecl;
 	const char *description;
 
-	rpc_object_unpack(obj, "{ss}", obj,
+	rpc_object_unpack(obj, "{s,s}", obj,
 	    "type", &typedecl,
 	    "description", &description);
 
@@ -576,7 +576,7 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 	debugf("reading type \"%s\" from realm \"%s\"", decl, realm);
 	decl_obj = rpc_dictionary_get_value(obj, decl);
 
-	rpc_object_unpack(decl_obj, "{ssv}",
+	rpc_object_unpack(decl_obj, "{s,s,v}",
 	    "inherits", &inherits,
 	    "description", &description,
 	    "members", &members);
@@ -698,7 +698,7 @@ rpct_read_func(const char *realm, const char *decl, rpc_object_t obj)
 
 	decl_obj = rpc_dictionary_get_value(obj, decl);
 
-	rpc_object_unpack(decl_obj, "{ssvv}",
+	rpc_object_unpack(decl_obj, "{s,s,v,v}",
 	    "description", &description,
 	    "arguments", &args,
 	    "return", &returns);
