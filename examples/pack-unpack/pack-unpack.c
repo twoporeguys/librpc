@@ -55,12 +55,16 @@ main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)
 		int64_t dict_num;
 		int cnt;
 		bool sure;
+		rpc_object_t nonexistent_obj = NULL;
 
 		(void)cookie;
 
 		rpct_init();
-		cnt = rpc_object_unpack(args, "[s,i,b,{key:i}]", &str, &num, &sure,
-		    &dict_num);
+		cnt = rpc_object_unpack(args, "[s,i,b,{nonexistent:v,key:i}]",
+		    &str, &num, &sure, &nonexistent_obj, &dict_num);
+
+		if (nonexistent_obj != NULL)
+			printf("Nonexistent obj shouldn't be initialized");
 
 		printf("unpack cnt: %i\n", cnt);
 
