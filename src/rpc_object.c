@@ -261,7 +261,7 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 	char delim;
 	int i = 0;
 	char ch;
-	bool is_container = false;
+	bool is_container;
 	size_t idx = 0;
 
 	if (branch == NULL)
@@ -321,8 +321,8 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 					    idx++);
 				}
 			} else {
-				if (colon_ptr != NULL) 
-					key = g_strndup(&fmt[i], 
+				if (colon_ptr != NULL)
+					key = g_strndup(&fmt[i],
 					    (colon_ptr - &fmt[i]));
 				else
 					key = g_strdup(
