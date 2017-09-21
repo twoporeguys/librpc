@@ -7,18 +7,20 @@ meta:
 union Optional<T>:
   description: Can hold either a value of type T or null.
   members:
-    - type: T
-    - type: null
+    something:
+      type: T
+    nothing:
+      type: null
 
 type List<T>:
   description: A list of elements of the same type
-  type: list
+  type: array
   constraints:
     value-type: T
 
 type Dict<T>:
   description: A dictionary of elements of the same type
-  type: dict
+  type: dictionary
   constraints:
     key-type: string
     value-type: T
@@ -26,8 +28,10 @@ type Dict<T>:
 union IPAddress:
   description: Can hold an IP address (either v4 or v6)
   members:
-    - type: IPv4Address
-    - type: IPv6Address
+    ipv4:
+      type: IPv4Address
+    ipb6:
+      type: IPv6Address
 
 type IPv4Address:
   description: Can hold an IPv4 address
