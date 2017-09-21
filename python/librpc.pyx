@@ -83,7 +83,6 @@ class TypeClass(enum.IntEnum):
     UNION = RPC_TYPING_UNION
     ENUM = RPC_TYPING_ENUM
     TYPEDEF = RPC_TYPING_TYPEDEF
-    SPECIALIZATION = RPC_TYPING_SPECIALIZATION
     BUILTIN = RPC_TYPING_BUILTIN
 
 
@@ -1094,23 +1093,11 @@ cdef class Typing(object):
         container.append(rpctype)
         return True
 
-    cdef BaseTypingObject build(self, TypeInstance typei):
-        typ = typei.type
-        clazz = typ.clazz
-
-        if clazz == RPC_TYPING_STRUCT:
-            return type(typei.canonical, (BaseStruct,), {
-                'typei': typei
-            })
-
-    def create(self, decl):
-        pass
-
     def load_type(self, decl, type):
         pass
 
     def load_types(self, path):
-        rpct_load_types(path)
+        rpct_load_types(path.encode('utf-8'))
 
     property types:
         def __get__(self):
@@ -1138,6 +1125,26 @@ cdef class TypeInstance(object):
         if self.rpctypei == <rpct_typei_t>NULL:
             raise ValueError('Invalid type specifier')
 
+    def __str__(self):
+        return '<librpc.TypeInstance "{0}">'.format(self.canonical)
+
+    def __repr__(self):
+        return str(self)
+
+    @staticmethod
+    cdef TypeInstance init_from_ptr(rpct_typei_t typei):
+        cdef TypeInstance ret
+
+        ret = TypeInstance.__new__(TypeInstance)
+        ret.rpctypei = typei
+        return ret
+
+    property factory:
+        def __get__(self):
+            return type(self.canonical, (BaseTypingObject,), {
+                'typei': self
+            })
+
     property type:
         def __get__(self):
             cdef Type typ
@@ -1148,7 +1155,7 @@ cdef class TypeInstance(object):
 
     property canonical:
         def __get__(self):
-            return rpct_typei_get_canonical_form(self.rpctypei)
+            return rpct_typei_get_canonical_form(self.rpctypei).decode('utf-8')
 
     property generic_variables:
         def __get__(self):
@@ -1186,11 +1193,11 @@ cdef class Type(object):
 
     property name:
         def __get__(self):
-            return rpct_type_get_name(self.rpctype)
+            return rpct_type_get_name(self.rpctype).decode('utf-8')
 
     property description:
         def __get__(self):
-            return rpct_type_get_description(self.rpctype)
+            return rpct_type_get_description(self.rpctype).decode('utf-8')
 
     property generic:
         def __get__(self):
@@ -1206,9 +1213,20 @@ cdef class Type(object):
             rpct_members_apply(self.rpctype, RPCT_MEMBER_APPLIER(self.c_iter, <void *>ret))
             return ret
 
+    property definition:
+        def __get__(self):
+            return TypeInstance.init_from_ptr(rpct_type_get_definition(self.rpctype))
+
 
 cdef class Member(object):
     cdef rpct_member_t rpcmem
+
+    def specialize(self, TypeInstance typei):
+        cdef TypeInstance ret
+
+        ret = TypeInstance.__new__(TypeInstance)
+        ret.rpctypei = rpct_typei_get_member_type(typei.rpctypei, self.rpcmem)
+        return ret
 
     property name:
         def __get__(self):
@@ -1219,16 +1237,28 @@ cdef class Member(object):
             return rpct_member_get_description(self.rpcmem)
 
 
+
 cdef class BaseTypingObject(object):
+    typei = None
     cdef rpc_object_t obj
+
+    def __init__(self, Object value):
+        cdef TypeInstance typei
+
+        typei = <TypeInstance>self.__class__.typei
+        self.obj = rpct_newi(typei.rpctypei, value.obj)
 
     property type:
         def __get__(self):
-            cdef Type type
+            cdef TypeInstance typei
 
-            type = Type.__new__(Type)
-            type.rpctype = rpct_get_type(self.obj)
-            return type
+            typei = TypeInstance.__new__(TypeInstance)
+            typei.rpctypei = rpct_get_typei(self.obj)
+            return typei
+
+    property value:
+        def __get__(self):
+            return Object.init_from_ptr(self.obj)
 
 
 cdef class BaseStruct(BaseTypingObject):
@@ -1237,14 +1267,6 @@ cdef class BaseStruct(BaseTypingObject):
 
     def __setattr__(self, key, value):
         pass
-
-    property type:
-        def __get__(self):
-            cdef Type ret
-
-            ret = Type.__new__(Type)
-            ret.rpctype = rpct_get_type(self.obj)
-            return ret
 
 
 cdef class BaseUnion(BaseTypingObject):
