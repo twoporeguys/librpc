@@ -36,7 +36,7 @@ static GThread *rpc_g_main_thread = NULL;
 static void *rpc_bus_context = NULL;
 
 static void *
-rpc_bus_worker(void *arg)
+rpc_bus_worker(void *arg __unused)
 {
 	GMainLoop *loop;
 
