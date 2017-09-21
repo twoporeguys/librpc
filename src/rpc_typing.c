@@ -38,6 +38,7 @@ static struct rpct_type *rpct_find_type(const char *realm_name, const char *name
 static struct rpct_typei *rpct_instantiate_type(const char *decl,
     const char *realm, struct rpct_typei *parent, struct rpct_type *ptype);
 static inline bool rpct_type_is_fully_specialized(struct rpct_typei *inst);
+static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *typei);
 static char *rpct_canonical_type(struct rpct_typei *typei);
 static struct rpct_member *rpct_read_member(const char *decl,
     rpc_object_t obj, struct rpct_type *type);
@@ -495,6 +496,21 @@ rpct_type_is_fully_specialized(struct rpct_typei *inst)
 	    == inst->type->generic_vars->len);
 }
 
+static inline struct rpct_typei *
+rpct_unwind_typei(struct rpct_typei *typei)
+{
+	struct rpct_typei *current = typei;
+
+	while (current) {
+		if (current->type->clazz == RPC_TYPING_TYPEDEF) {
+			current->type->definition;
+			continue;
+		}
+
+		return (current);
+	}
+}
+
 static inline bool
 rpct_type_is_compatible(struct rpct_typei *decl, struct rpct_typei *type)
 {
@@ -514,8 +530,8 @@ rpct_type_is_compatible(struct rpct_typei *decl, struct rpct_typei *type)
 			if (parent_type == NULL)
 				break;
 
-			if (g_strcmp0(
-			    parent_type->name, type->type->name) == 0) {
+			if (g_strcmp0(parent_type->name,
+			    type->type->name) == 0) {
 				compatible = true;
 				break;
 			}
@@ -674,6 +690,7 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 
 	debugf("reading type \"%s\" from realm \"%s\"", decl, realm);
 
+	realm_obj = rpct_find_realm(realm);
 	rpc_object_unpack(obj, "{s,s,s,v}",
 	    "inherits", &inherits,
 	    "description", &description,
@@ -708,8 +725,8 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 	declvars = g_match_info_fetch(match, 4);
 
 	/* If type already exists in given realm, do nothing */
-	//if (rpct_find_type(realm, declname) != NULL)
-	//	return (0);
+	if (g_hash_table_contains(realm_obj->types, declname))
+		return (0);
 
 	type = g_malloc0(sizeof(*type));
 	type->name = g_strdup(declname);
@@ -749,7 +766,7 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 			g_hash_table_insert(type->members, key, value);
 	}
 
-	/* Read member list for non-enums */
+	/* Read member list */
 	if (members != NULL) {
 		if (rpc_dictionary_apply(members, ^(const char *key,
 		    rpc_object_t value) {
@@ -777,7 +794,6 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 
 	/* XXX Add constraints support */
 
-	realm_obj = rpct_find_realm(realm);
 	g_hash_table_insert(realm_obj->types, g_strdup(declname), type);
 	debugf("inserted type %s::%s", realm, declname);
 	return (0);
