@@ -374,6 +374,13 @@ struct rpct_function
 
 };
 
+struct rpct_class_handler
+{
+	rpct_class_t		id;
+	const char *		name;
+	struct rpct_member *(*member_fn)(const char *, rpc_object_t, struct rpct_type *);
+};
+
 struct rpct_constraint
 {
 	char * 			name;
