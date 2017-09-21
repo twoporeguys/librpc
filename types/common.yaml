@@ -25,6 +25,12 @@ type Dict<T>:
     key-type: string
     value-type: T
 
+type Iter<T>:
+  description: Same as list, but meant to denote a streaming response
+  type: array
+  constraints:
+    value-type: T
+
 union IPAddress:
   description: Can hold an IP address (either v4 or v6)
   members:
