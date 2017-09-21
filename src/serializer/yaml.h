@@ -47,7 +47,6 @@ extern "C" {
 
 #if defined(__linux__)
 #define	YAML_TAG_SHMEM		"!shmem"
-
 #define YAML_SHMEM_ADDR 	"addr"
 #define YAML_SHMEM_LEN		"len"
 #define YAML_SHMEM_FD		"fd"
