@@ -1221,12 +1221,6 @@ cdef class Type(object):
 cdef class Member(object):
     cdef rpct_member_t rpcmem
 
-    def specialize(self, TypeInstance typei):
-        cdef TypeInstance ret
-
-        ret = TypeInstance.__new__(TypeInstance)
-        ret.rpctypei = rpct_typei_get_member_type(typei.rpctypei, self.rpcmem)
-        return ret
 
     property name:
         def __get__(self):
@@ -1236,6 +1230,10 @@ cdef class Member(object):
         def __get__(self):
             return rpct_member_get_description(self.rpcmem)
 
+
+cdef class StructUnionMember(Member):
+    def specialize(self, TypeInstance typei):
+        return TypeInstance.init_from_ptr(rpct_typei_get_member_type(typei.rpctypei, self.rpcmem))
 
 
 cdef class BaseTypingObject(object):

@@ -31,6 +31,61 @@
 #include <rpc/typing.h>
 #include "internal.h"
 
+static int rpct_read_meta(struct rpct_file *file, rpc_object_t obj);
+static int rpct_lookup_type(const char *realm_name, const char *name,
+    const char **decl, rpc_object_t *result);
+static struct rpct_type *rpct_find_type(const char *realm_name, const char *name);
+static struct rpct_typei *rpct_instantiate_type(const char *decl,
+    const char *realm, struct rpct_typei *parent, struct rpct_type *ptype);
+static inline bool rpct_type_is_fully_specialized(struct rpct_typei *inst);
+static char *rpct_canonical_type(struct rpct_typei *typei);
+static struct rpct_member *rpct_read_member(const char *decl,
+    rpc_object_t obj, struct rpct_type *type);
+static struct rpct_member *rpct_read_enum_member(const char *decl,
+    rpc_object_t obj, struct rpct_type *type);
+static int rpct_read_type(const char *realm, const char *decl,
+    rpc_object_t obj);
+static int rpct_read_func(const char *realm, const char *decl,
+    rpc_object_t obj);
+static int rpct_read_file(const char *path);
+static inline bool rpct_realms_apply(rpct_realm_applier_t applier);
+static int rpct_validate_args(struct rpct_function *func, rpc_object_t args);
+static int rpct_validate_return(struct rpct_function *func,
+    rpc_object_t result);
+static int rpct_parse_type(const char *decl, GPtrArray *variables);
+static void rpct_constraint_free(struct rpct_constraint *constraint);
+
+
+static struct rpct_context *context = NULL;
+static struct rpct_class_handler class_handlers[] = {
+	{
+		.id = RPC_TYPING_STRUCT,
+		.name = "struct",
+		.member_fn = rpct_read_member,
+	},
+	{
+		.id = RPC_TYPING_UNION,
+		.name = "union",
+		.member_fn = rpct_read_member,
+	},
+	{
+		.id = RPC_TYPING_TYPEDEF,
+		.name = "typedef",
+		.member_fn = NULL,
+	},
+	{
+		.id = RPC_TYPING_ENUM,
+		.name = "enum",
+		.member_fn = rpct_read_enum_member,
+	},
+	{
+		.id = RPC_TYPING_BUILTIN,
+		.name = "builtin",
+		.member_fn = NULL,
+	},
+	{}
+};
+
 static const char *builtin_types[] = {
 	"null",
 	"bool",
@@ -49,28 +104,6 @@ static const char *builtin_types[] = {
 	NULL
 };
 
-static int rpct_read_meta(struct rpct_file *file, rpc_object_t obj);
-static int rpct_lookup_type(const char *realm_name, const char *name,
-    const char **decl, rpc_object_t *result);
-static struct rpct_member *rpct_read_member(const char *decl, rpc_object_t obj,
-    struct rpct_type *type);
-static struct rpct_typei *rpct_instantiate_type(const char *decl,
-    const char *realm, struct rpct_typei *parent, struct rpct_type *ptype);
-static inline bool rpct_type_is_fully_specialized(struct rpct_typei *inst);
-static char *rpct_canonical_type(struct rpct_typei *typei);
-static int rpct_read_type(const char *realm, const char *decl,
-    rpc_object_t obj);
-static int rpct_read_func(const char *realm, const char *decl,
-    rpc_object_t obj);
-static int rpct_read_file(const char *path);
-static inline bool rpct_realms_apply(rpct_realm_applier_t applier);
-static int rpct_validate_args(struct rpct_function *func, rpc_object_t args);
-static int rpct_validate_return(struct rpct_function *func,
-    rpc_object_t result);
-static int rpct_parse_type(const char *decl, GPtrArray *variables);
-static void rpct_constraint_free(struct rpct_constraint *constraint);
-
-static struct rpct_context *context = NULL;
 
 rpct_typei_t
 rpct_new_typei(const char *decl)
@@ -109,6 +142,12 @@ rpct_get_class(rpc_object_t instance)
 {
 
 	return (instance->ro_typei->type->clazz);
+}
+
+rpct_type_t rpct_get_type(const char *name)
+{
+
+	return rpct_find_type(context->global_realm, name);
 }
 
 rpct_typei_t
@@ -154,7 +193,7 @@ rpct_find_realm(const char *realm)
 	return (g_hash_table_lookup(context->realms, realm));
 }
 
-static rpct_type_t
+static struct rpct_type *
 rpct_find_type(const char *realm_name, const char *name)
 {
 	rpct_realm_t realm;
@@ -206,7 +245,6 @@ rpct_read_meta(struct rpct_file *file, rpc_object_t obj)
 static struct rpct_member *
 rpct_read_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
 {
-
 	struct rpct_member *member;
 	const char *typedecl = NULL;
 	const char *description = "";
@@ -226,6 +264,21 @@ rpct_read_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
 	return (member);
 }
 
+static struct rpct_member *
+rpct_read_enum_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
+{
+	struct rpct_member *member;
+	const char *description = "";
+
+	rpc_object_unpack(obj, "{s}", "description", &description);
+
+	member = g_malloc0(sizeof(*member));
+	member->name = g_strdup(decl);
+	member->description = g_strdup(description);
+	member->origin = type;
+	return (member);
+}
+
 static struct rpct_typei *
 rpct_instantiate_type(const char *decl, const char *realm,
     struct rpct_typei *parent, struct rpct_type *ptype)
@@ -239,7 +292,6 @@ rpct_instantiate_type(const char *decl, const char *realm,
 	struct rpct_typei *subtype;
 	char *decltype = NULL;
 	char *declvars = NULL;
-	const char *proxy_type;
 	int found_proxy_type = -1;
 
 	debugf("instantiating type %s in realm %s", decl, realm);
@@ -574,7 +626,8 @@ rpct_lookup_type(const char *realm_name, const char *name, const char **decl,
 	g_hash_table_iter_init(&iter, context->files);
 	regex = g_regex_new(TYPE_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, NULL);
 
-	while (g_hash_table_iter_next(&iter, &filename, &file)) {
+	while (g_hash_table_iter_next(&iter, (gpointer *)&filename,
+	    (gpointer *)&file)) {
 		if (g_strcmp0(file->realm, realm_name) != 0)
 			continue;
 
@@ -609,6 +662,7 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 {
 	struct rpct_type *type;
 	struct rpct_type *parent = NULL;
+	struct rpct_class_handler *handler;
 	const char *inherits = NULL;
 	const char *description = "";
 	const char *decltype, *declname, *declvars, *type_def = NULL;
@@ -616,7 +670,6 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 	GRegex *regex;
 	GMatchInfo *match;
 	rpc_object_t members = NULL;
-	rpc_object_t decl_obj = NULL;
 	rpct_realm_t realm_obj;
 
 	debugf("reading type \"%s\" from realm \"%s\"", decl, realm);
@@ -669,20 +722,16 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 	type->description = g_strdup(description);
 	type->generic_vars = g_ptr_array_new_with_free_func(g_free);
 
-	if (g_strcmp0(decltype, "struct") == 0)
-		type->clazz = RPC_TYPING_STRUCT;
+	for (handler = &class_handlers[0]; handler->name != NULL; handler++) {
+		if (g_strcmp0(handler->name, decltype) == 0) {
+			type->clazz = handler->id;
+			break;
+		}
+	}
 
-	else if (g_strcmp0(decltype, "union") == 0)
-		type->clazz = RPC_TYPING_UNION;
-
-	else if (g_strcmp0(decltype, "enum") == 0)
-		type->clazz = RPC_TYPING_ENUM;
-
-	else if (g_strcmp0(decltype, "type") == 0)
-		type->clazz = RPC_TYPING_TYPEDEF;
-
-	else
-		g_assert_not_reached();
+	if (handler == NULL) {
+		/* XXX error */
+	}
 
 	if (declvars) {
 		type->generic = true;
@@ -700,13 +749,13 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 			g_hash_table_insert(type->members, key, value);
 	}
 
-	/* Read member list */
+	/* Read member list for non-enums */
 	if (members != NULL) {
 		if (rpc_dictionary_apply(members, ^(const char *key,
 		    rpc_object_t value) {
 			struct rpct_member *m;
 
-			m = rpct_read_member(key, value, type);
+			m = handler->member_fn(key, value, type);
 			if (m == NULL)
 				return ((bool)false);
 
