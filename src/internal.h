@@ -316,6 +316,7 @@ struct rpct_file
 	char *			description;
 	int64_t			version;
 	GHashTable *		types;
+	rpc_object_t 		body;
 };
 
 /**
@@ -328,6 +329,7 @@ struct rpct_type
 	char *			name;
 	char *			description;
 	struct rpct_type *	parent;
+	struct rpct_typei *	definition;
 	bool			generic;
 	GPtrArray *		generic_vars;
 	GHashTable *		members;
@@ -342,9 +344,11 @@ struct rpct_type
 struct rpct_typei
 {
 	bool			proxy;
-	struct rpct_type *	type;
+	struct rpct_typei *	parent;
+	struct rpct_type *	type;		/**< Only if proxy == false */
+	const char *		variable;	/**< Only if proxy == true */
 	char *			canonical_form;
-	GPtrArray *		specializations;
+	GHashTable *		specializations;
 	GHashTable *		constraints;
 };
 
@@ -390,6 +394,7 @@ void rpc_trace(const char *msg, rpc_object_t frame);
 char *rpc_get_backtrace(void);
 char *rpc_generate_v4_uuid(void);
 gboolean rpc_kill_main_loop(void *arg);
+int rpc_ptr_array_string_index(GPtrArray *arr, const char *str);
 
 const struct rpc_transport *rpc_find_transport(const char *scheme);
 const struct rpc_serializer *rpc_find_serializer(const char *name);

@@ -39,7 +39,7 @@ static const char *builtin_types[] = {
 	"double",
 	"date",
 	"string",
-	"binray",
+	"binary",
 	"fd",
 	"dictionary",
 	"array",
@@ -50,10 +50,12 @@ static const char *builtin_types[] = {
 };
 
 static int rpct_read_meta(struct rpct_file *file, rpc_object_t obj);
+static int rpct_lookup_type(const char *realm_name, const char *name,
+    const char **decl, rpc_object_t *result);
 static struct rpct_member *rpct_read_member(const char *decl, rpc_object_t obj,
     struct rpct_type *type);
 static struct rpct_typei *rpct_instantiate_type(const char *decl,
-    const char *realm);
+    const char *realm, struct rpct_typei *parent, struct rpct_type *ptype);
 static inline bool rpct_type_is_fully_specialized(struct rpct_typei *inst);
 static char *rpct_canonical_type(struct rpct_typei *typei);
 static int rpct_read_type(const char *realm, const char *decl,
@@ -66,8 +68,6 @@ static int rpct_validate_args(struct rpct_function *func, rpc_object_t args);
 static int rpct_validate_return(struct rpct_function *func,
     rpc_object_t result);
 static int rpct_parse_type(const char *decl, GPtrArray *variables);
-static inline int rpct_find_or_load(const char *realm, const char *decl,
-    rpc_object_t obj);
 static void rpct_constraint_free(struct rpct_constraint *constraint);
 
 static struct rpct_context *context = NULL;
@@ -76,7 +76,7 @@ rpct_typei_t
 rpct_new_typei(const char *decl)
 {
 
-	return (rpct_instantiate_type(decl, context->global_realm));
+	return (rpct_instantiate_type(decl, context->global_realm, NULL, NULL));
 }
 
 rpc_object_t
@@ -87,7 +87,7 @@ rpct_new(const char *decl, const char *realm, rpc_object_t object)
 	if (realm == NULL)
 		realm = context->global_realm;
 
-	typei = rpct_instantiate_type(decl, realm);
+	typei = rpct_instantiate_type(decl, realm, NULL, NULL);
 	if (typei == NULL)
 		return (NULL);
 
@@ -112,7 +112,7 @@ rpct_get_class(rpc_object_t instance)
 }
 
 rpct_typei_t
-rpct_get_type(rpc_object_t instance)
+rpct_get_typei(rpc_object_t instance)
 {
 
 	if ((instance == NULL) || (instance->ro_typei == NULL))
@@ -161,13 +161,29 @@ rpct_find_type(const char *realm_name, const char *name)
 	rpct_type_t type = NULL;
 
 	realm = rpct_find_realm(realm_name);
-	if (realm == NULL)
-		realm = rpct_find_realm("*");
-
 	type = g_hash_table_lookup(realm->types, name);
+
 	if (type == NULL) {
 		realm = rpct_find_realm("*");
 		type = g_hash_table_lookup(realm->types, name);
+	}
+
+	if (type == NULL) {
+		const char *decl;
+		rpc_object_t obj;
+
+		debugf("type %s::%s not found, trying to look it up",
+		    realm_name, name);
+
+		if (rpct_lookup_type(realm_name, name, &decl, &obj) == 0)
+			rpct_read_type(realm_name, decl, obj);
+
+		debugf("hopefully %s::%s is loaded now", realm_name, name);
+
+		realm = rpct_find_realm(realm_name);
+		type = g_hash_table_lookup(realm->types, name);
+		if (type != NULL)
+			debugf("successfully chain-loaded %s::%s", realm_name, name);
 	}
 
 	return (type);
@@ -188,22 +204,22 @@ rpct_read_meta(struct rpct_file *file, rpc_object_t obj)
 }
 
 static struct rpct_member *
-rpct_read_member(const char *decl, rpc_object_t obj,
-    struct rpct_type *type)
+rpct_read_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
 {
-	struct rpct_member *member;
-	const char *typedecl;
-	const char *description;
 
-	rpc_object_unpack(obj, "{s,s}", obj,
+	struct rpct_member *member;
+	const char *typedecl = NULL;
+	const char *description = "";
+
+	rpc_object_unpack(obj, "{s,s}",
 	    "type", &typedecl,
 	    "description", &description);
 
 	member = g_malloc0(sizeof(*member));
 	member->name = g_strdup(decl);
-	member->description = g_strdup(description);
+	member->description = description != NULL ? g_strdup(description) : NULL;
 	member->origin = type;
-	member->type = rpct_instantiate_type(typedecl, type->realm);
+	member->type = rpct_instantiate_type(typedecl, type->realm, NULL, type);
 	member->constraints = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    g_free, (GDestroyNotify)rpct_constraint_free);
 
@@ -211,7 +227,8 @@ rpct_read_member(const char *decl, rpc_object_t obj,
 }
 
 static struct rpct_typei *
-rpct_instantiate_type(const char *decl, const char *realm)
+rpct_instantiate_type(const char *decl, const char *realm,
+    struct rpct_typei *parent, struct rpct_type *ptype)
 {
 	GError *err = NULL;
 	GRegex *regex;
@@ -222,6 +239,10 @@ rpct_instantiate_type(const char *decl, const char *realm)
 	struct rpct_typei *subtype;
 	char *decltype = NULL;
 	char *declvars = NULL;
+	const char *proxy_type;
+	int found_proxy_type = -1;
+
+	debugf("instantiating type %s in realm %s", decl, realm);
 
 	regex = g_regex_new(INSTANCE_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
 	if (err != NULL)
@@ -235,13 +256,47 @@ rpct_instantiate_type(const char *decl, const char *realm)
 
 	decltype = g_match_info_fetch(match, 1);
 	type = rpct_find_type(realm, decltype);
-	if (type == NULL)
+	if (type == NULL) {
+		struct rpct_typei *cur = parent;
+
+		debugf("type %s::%s not found, maybe it's a generic variable",
+		    realm, decltype);
+
+		while (cur != NULL) {
+			/* Maybe it's a type variable? */
+			if (cur->type->generic) {
+				subtype = g_hash_table_lookup(cur->specializations, decltype);
+				if (subtype)
+					return (subtype);
+			}
+
+			cur = cur->parent;
+		}
+
+		if (ptype != NULL) {
+			/* Maybe it's a type variable? */
+			if (ptype->generic) {
+				found_proxy_type = rpc_ptr_array_string_index(
+				    ptype->generic_vars, decltype);
+			}
+
+			if (found_proxy_type != -1) {
+				subtype = g_malloc0(sizeof(*subtype));
+				subtype->proxy = true;
+				subtype->variable = g_strdup(decltype);
+				subtype->canonical_form = g_strdup(decltype);
+				return (subtype);
+			}
+		}
+
 		goto error;
+	}
 
 	ret = g_malloc0(sizeof(*ret));
 	ret->type = type;
-	ret->specializations = g_ptr_array_new_with_free_func(
-	    (GDestroyNotify)rpct_typei_free);
+	ret->parent = parent;
+	ret->specializations = g_hash_table_new_full(g_str_hash, g_str_equal,
+	    g_free, (GDestroyNotify)rpct_typei_free);
 	ret->constraints = type->constraints;
 
 	if (type->generic) {
@@ -256,9 +311,16 @@ rpct_instantiate_type(const char *decl, const char *realm)
 			goto error;
 
 		for (guint i = 0; i < splitvars->len; i++) {
-			subtype = rpct_instantiate_type(
-			    g_ptr_array_index(splitvars, i), realm);
-			g_ptr_array_add(ret->specializations, subtype);
+			const char *var = g_ptr_array_index(type->generic_vars, i);
+			const char *vartype = g_ptr_array_index(splitvars, i);
+
+			subtype = rpct_instantiate_type(vartype, realm, ret, ptype);
+
+			if (subtype == NULL)
+				goto error;
+
+			g_hash_table_insert(ret->specializations, g_strdup(var),
+			    subtype);
 		}
 	}
 
@@ -288,6 +350,17 @@ done:
 
 	if (declvars != NULL)
 		g_free(declvars);
+
+	return (ret);
+}
+
+static struct rpct_typei *
+rpct_instantiate_member(struct rpct_member *member, struct rpct_typei *parent)
+{
+	struct rpct_typei *ret;
+
+	ret = rpct_instantiate_type(member->type->canonical_form,
+	    member->origin->realm, parent, parent->type);
 
 	return (ret);
 }
@@ -363,16 +436,11 @@ rpct_type_is_fully_specialized(struct rpct_typei *inst)
 {
 	struct rpct_typei *s;
 
-	if (inst->specializations == NULL)
+	if (!inst->type->generic)
 		return (true);
 
-	for (guint i = 0; i < inst->specializations->len; i++) {
-		s = g_ptr_array_index(inst->specializations, i);
-		if (s == NULL || s->proxy)
-			return (false);
-	}
-
-	return (true);
+	return (g_hash_table_size(inst->specializations)
+	    == inst->type->generic_vars->len);
 }
 
 static inline bool
@@ -384,7 +452,7 @@ rpct_type_is_compatible(struct rpct_typei *decl, struct rpct_typei *type)
 	if (g_strcmp0(decl->type->realm, type->type->realm) != 0)
 		return (false);
 
-	if (decl->specializations->len < type->specializations->len)
+	if (g_hash_table_size(decl->specializations) < g_hash_table_size(type->specializations))
 		return (false);
 
 	if (g_strcmp0(decl->type->name, type->type->name) != 0) {
@@ -406,14 +474,14 @@ rpct_type_is_compatible(struct rpct_typei *decl, struct rpct_typei *type)
 	if (!compatible)
 		return (false);
 
-	for (guint i = 0; i < type->specializations->len; i++) {
+	/*for (guint i = 0; i < type->specializations->len; i++) {
 		compatible = rpct_type_is_compatible(
 		    g_ptr_array_index(decl->specializations, i),
 		    g_ptr_array_index(type->specializations, i));
 
 		if (!compatible)
 			break;
-	}
+	}*/
 
 	return (compatible);
 }
@@ -443,7 +511,7 @@ rpct_parse_type(const char *decl, GPtrArray *variables)
 				g_ptr_array_add(variables, g_strndup(
 			 	   &decl[istart], (gsize)(i - istart)));
 
-				istart = i;
+				istart = i + 1;
 			}
 			break;
 
@@ -460,101 +528,79 @@ rpct_parse_type(const char *decl, GPtrArray *variables)
 static char *
 rpct_canonical_type(struct rpct_typei *typei)
 {
-	GString *ret = g_string_new(typei->type->name);
+	GString *ret;
+	GHashTableIter iter;
+	struct rpct_typei *value;
+	const char *key;
+	char *substr;
+	guint i = 0;
+
+	if (typei->proxy)
+		return (g_strdup(typei->variable));
+
+	ret = g_string_new(typei->type->name);
 
 	if (!typei->type->generic)
 		return (g_string_free(ret, false));
 
 	g_string_append(ret, "<");
+	g_hash_table_iter_init(&iter, typei->specializations);
 
-	for (guint i = 0; i < typei->specializations->len; i++) {
-		struct rpct_typei *subtype;
-		char *substr;
-
-		subtype = g_ptr_array_index(typei->specializations, i);
-		substr = rpct_canonical_type(subtype);
+	while (g_hash_table_iter_next(&iter, (gpointer *)&key, (gpointer *)&value)) {
+		substr = rpct_canonical_type(value);
 		g_string_append(ret, substr);
 		g_free(substr);
 
-		if (i < typei->specializations->len - 1)
+		if (i < g_hash_table_size(typei->specializations)- 1)
 			g_string_append(ret, ",");
+
+		i++;
 	}
 
 	g_string_append(ret, ">");
 	return (g_string_free(ret, false));
 }
 
-static inline int
-rpct_find_or_load(const char *realm, const char *decl, rpc_object_t obj)
+static int
+rpct_lookup_type(const char *realm_name, const char *name, const char **decl,
+    rpc_object_t *result)
 {
-	GError *err = NULL;
+	GHashTableIter iter;
 	GRegex *regex;
-	GMatchInfo *match = NULL;
-	GPtrArray *splitvars = NULL;
-	struct rpct_type *type;
-	char *decltype = NULL;
-	char *declvars = NULL;
-	int ret = -1;
+	const char *filename;
+	struct rpct_file *file;
+	__block int ret = -1;
 
-	debugf("looking for type \"%s\" in realm \"%s\"", decl, realm);
+	g_hash_table_iter_init(&iter, context->files);
+	regex = g_regex_new(TYPE_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, NULL);
 
-	regex = g_regex_new(TYPE_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
-	if (err != NULL)
-		goto done;
+	while (g_hash_table_iter_next(&iter, &filename, &file)) {
+		if (g_strcmp0(file->realm, realm_name) != 0)
+			continue;
 
-	if (!g_regex_match(regex, decl, 0, &match))
-		goto done;
+		debugf("looking for %s::%s in %s", realm_name, name, filename);
 
-	if (g_match_info_get_match_count(match) < 1)
-		goto done;
+		rpc_dictionary_apply(file->body,
+		    ^(const char *key, rpc_object_t value) {
+			GMatchInfo *m;
 
-	decltype = g_match_info_fetch(match, 2);
-	type = rpct_find_type(realm, decltype);
+			if (!g_regex_match(regex, key, 0, &m))
+				return ((bool)true);
 
-	if (type == NULL) {
-		if (rpct_read_type(realm, decl, obj) != 0)
-			goto done;
-
-		type = rpct_find_type(realm, decltype);
-	}
-
-	if (type->generic) {
-		declvars = g_match_info_fetch(match, 3);
-
-		if (!g_strcmp0(declvars, "")) {
-			splitvars = g_ptr_array_new();
-
-			rpct_parse_type(declvars, splitvars);
-			if (splitvars->len != type->generic_vars->len)
-				goto done;
-
-			for (guint i = 0; i < splitvars->len; i++) {
-				if (rpct_find_or_load(realm,
-				    g_ptr_array_index(splitvars, i), obj) != 0)
-					goto done;
+			if (g_strcmp0(g_match_info_fetch(m, 2), name) == 0) {
+				*decl = key;
+				*result = value;
+				ret = 0;
+				g_match_info_free(m);
+				return ((bool)false);
 			}
-		}
+
+			g_match_info_free(m);
+			return ((bool)true);
+		});
 	}
 
-	ret = 0;
-
-done:	g_regex_unref(regex);
-
-	if (err != NULL)
-		g_error_free(err);
-
-	if (match != NULL)
-		g_match_info_free(match);
-
-	if (splitvars != NULL)
-		g_ptr_array_free(splitvars, true);
-
-	if (decltype != NULL)
-		g_free(decltype);
-
-	if (declvars != NULL)
-		g_free(declvars);
-
+	g_regex_unref(regex);
 	return (ret);
 }
 
@@ -564,8 +610,8 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 	struct rpct_type *type;
 	struct rpct_type *parent = NULL;
 	const char *inherits = NULL;
-	const char *description = NULL;
-	const char *decltype, *declname, *declvars;
+	const char *description = "";
+	const char *decltype, *declname, *declvars, *type_def = NULL;
 	GError *err = NULL;
 	GRegex *regex;
 	GMatchInfo *match;
@@ -574,17 +620,14 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 	rpct_realm_t realm_obj;
 
 	debugf("reading type \"%s\" from realm \"%s\"", decl, realm);
-	decl_obj = rpc_dictionary_get_value(obj, decl);
 
-	rpc_object_unpack(decl_obj, "{s,s,v}",
+	rpc_object_unpack(obj, "{s,s,s,v}",
 	    "inherits", &inherits,
 	    "description", &description,
+	    "type", &type_def,
 	    "members", &members);
 
 	if (inherits != NULL) {
-		if (rpct_find_or_load(realm, inherits, obj) != 0)
-			return (-1);
-
 		parent = rpct_find_type(realm, inherits);
 		if (parent == NULL)
 			return (-1);
@@ -610,6 +653,10 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 	decltype = g_match_info_fetch(match, 1);
 	declname = g_match_info_fetch(match, 2);
 	declvars = g_match_info_fetch(match, 4);
+
+	/* If type already exists in given realm, do nothing */
+	//if (rpct_find_type(realm, declname) != NULL)
+	//	return (0);
 
 	type = g_malloc0(sizeof(*type));
 	type->name = g_strdup(declname);
@@ -660,23 +707,30 @@ rpct_read_type(const char *realm, const char *decl, rpc_object_t obj)
 			struct rpct_member *m;
 
 			m = rpct_read_member(key, value, type);
-			if (m != NULL) {
-				g_hash_table_insert(type->members,
-				    g_strdup(key), m);
-				return ((bool)true);
-			}
+			if (m == NULL)
+				return ((bool)false);
 
-			return ((bool)false);
+			g_hash_table_insert(type->members,
+			    g_strdup(key), m);
+			return ((bool)true);
 		})) {
 			rpct_type_free(type);
 			return (-1);
 		}
 	}
 
-	/*XXX Add constraints support */
+	if (type_def != NULL) {
+		type->definition = rpct_instantiate_type(type_def, realm, NULL,
+		    type);
+
+		g_assert_nonnull(type->definition);
+	}
+
+	/* XXX Add constraints support */
 
 	realm_obj = rpct_find_realm(realm);
 	g_hash_table_insert(realm_obj->types, g_strdup(declname), type);
+	debugf("inserted type %s::%s", realm, declname);
 	return (0);
 }
 
@@ -689,7 +743,7 @@ rpct_read_func(const char *realm, const char *decl, rpc_object_t obj)
 	GRegex *regex = NULL;
 	GMatchInfo *match = NULL;
 	const char *name;
-	const char *description;
+	const char *description = "";
 	const char *returns_type;
 	rpc_object_t decl_obj;
 	rpc_object_t args;
@@ -698,7 +752,7 @@ rpct_read_func(const char *realm, const char *decl, rpc_object_t obj)
 
 	decl_obj = rpc_dictionary_get_value(obj, decl);
 
-	rpc_object_unpack(decl_obj, "{s,s,v,v}",
+	rpc_object_unpack(decl_obj, "{s,s,v}",
 	    "description", &description,
 	    "arguments", &args,
 	    "return", &returns);
@@ -733,10 +787,8 @@ rpct_read_func(const char *realm, const char *decl, rpc_object_t obj)
 			if (arg_type == NULL)
 				return ((bool)false);
 
-			if (rpct_find_or_load(realm, arg_type, obj) != 0)
-				return ((bool)false);
-
-			arg_inst = rpct_instantiate_type(arg_type, realm);
+			arg_inst = rpct_instantiate_type(arg_type, realm,
+			    NULL, NULL);
 			if (arg_inst == NULL)
 				return ((bool)false);
 
@@ -750,10 +802,8 @@ rpct_read_func(const char *realm, const char *decl, rpc_object_t obj)
 
 	if (returns != NULL) {
 		returns_type = rpc_string_get_string_ptr(returns);
-		if (rpct_find_or_load(realm, returns_type, obj) != 0)
-			goto error;
-
-		func->result = rpct_instantiate_type(returns_type, realm);
+		func->result = rpct_instantiate_type(returns_type, realm,
+		     NULL, NULL);
 		if (func->result == NULL)
 			goto error;
 	}
@@ -797,6 +847,8 @@ rpct_read_file(const char *path)
 	GError *err = NULL;
 	int ret = 0;
 
+	debugf("trying to read %s", path);
+
 	if (!g_file_get_contents(path, &contents, &length, &err))
 		return (-1);
 
@@ -807,10 +859,15 @@ rpct_read_file(const char *path)
 		return (-1);
 
 	file = g_malloc0(sizeof(*file));
-	rpct_read_meta(file, rpc_dictionary_get_value(obj, "meta"));
+	file->body = obj;
 	file->path = g_strdup(path);
 	file->types = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 	    NULL);
+
+	if (rpct_read_meta(file, rpc_dictionary_get_value(obj, "meta")) < 0)
+		goto error;
+
+	g_hash_table_insert(context->files, g_strdup(path), file);
 
 	if (rpct_find_realm(file->realm) == NULL) {
 		realm = g_malloc0(sizeof(*realm));
@@ -824,25 +881,31 @@ rpct_read_file(const char *path)
 	}
 
 	if (rpc_dictionary_apply(obj, ^(const char *key,
-	    rpc_object_t v __unused) {
+	    rpc_object_t v) {
 		if (g_strcmp0(key, "meta") == 0)
 			return ((bool)true);
 
 		if (g_str_has_prefix(key, "function")) {
-			if (rpct_read_func(file->realm, key, obj) != 0)
+			if (rpct_read_func(file->realm, key, v) != 0)
 				return ((bool)false);
 			return ((bool)true);
 		}
 
-		if (rpct_find_or_load(file->realm, key, obj) != 0)
-			return ((bool)false);
-
+	    	rpct_read_type(file->realm, key, v);
 		return ((bool)true);
 	}))
 
 	ret = -1;
 	rpc_release(obj);
 	return (ret);
+
+error:
+	g_hash_table_destroy(file->types);
+	g_free(file->path);
+	g_free(file->description);
+	g_free(file->realm);
+	g_free(file);
+	return (-1);
 }
 
 static int
@@ -933,29 +996,11 @@ rpct_free(void)
 	g_free(context);
 }
 
-struct rpct_typei *rpct_copy_typei(struct rpct_typei *inst)
-{
-	struct rpct_typei *result;
-
-	if (inst == NULL)
-		return (NULL);
-
-	result = g_malloc(sizeof(*result));
-	result->proxy = inst->proxy;
-	result->type = inst->type;
-	result->constraints = inst->constraints;
-	result->canonical_form = g_strdup(inst->canonical_form);
-	result->specializations = inst->specializations;
-	g_ptr_array_ref(result->specializations);
-
-	return (result);
-}
-
 void
 rpct_typei_free(struct rpct_typei *inst)
 {
 
-	g_ptr_array_unref(inst->specializations);
+	g_hash_table_destroy(inst->specializations);
 	g_free(inst->canonical_form);
 	g_free(inst);
 }
@@ -1021,6 +1066,13 @@ rpct_type_get_parent(rpct_type_t type)
 	return (type->parent);
 }
 
+rpct_typei_t
+rpct_type_get_definition(rpct_type_t type)
+{
+
+	return (type->definition);
+}
+
 rpct_class_t
 rpct_type_get_class(rpct_type_t type)
 {
@@ -1045,10 +1097,10 @@ rpct_typei_get_type(rpct_typei_t typei)
 }
 
 rpct_typei_t
-rpct_typei_get_generic_var(rpct_typei_t typei, int index)
+rpct_typei_get_generic_var(rpct_typei_t typei, const char *name)
 {
 
-	return (g_ptr_array_index(typei->specializations, index));
+	return (g_hash_table_lookup(typei->specializations, name));
 }
 
 const char *
@@ -1056,6 +1108,20 @@ rpct_typei_get_canonical_form(rpct_typei_t typei)
 {
 
 	return (typei->canonical_form);
+}
+
+rpct_member_t
+rpct_type_get_member(rpct_type_t type, const char *name)
+{
+
+	return (g_hash_table_lookup(type->members, name));
+}
+
+rpct_typei_t
+rpct_typei_get_member_type(rpct_typei_t typei, rpct_member_t member)
+{
+
+	return (rpct_instantiate_member(member, typei));
 }
 
 const char *
@@ -1070,6 +1136,13 @@ rpct_member_get_description(rpct_member_t member)
 {
 
 	return (member->description);
+}
+
+rpct_typei_t
+rpct_member_get_typei(rpct_member_t member)
+{
+
+	return (member->type);
 }
 
 bool

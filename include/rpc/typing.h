@@ -34,21 +34,64 @@
 #define	RPCT_VALUE_FIELD	"%value"
 
 struct rpct_type;
+struct rpct_typei;
+struct rpct_member;
+
+/**
+ * Represents a type, as defined in the interface definition file.
+ *
+ * rpct_type_t represents a defined type, that is - an unspecialized
+ * type. Unspecialized means that if a type has any generic variables
+ * (eg. Type<A, B>), A and B are type placeholders.
+ *
+ * Examples of unspecialized types:
+ * - string
+ * - NonGenericStructOne
+ * - GenericStructTwo<T>
+ * - GenericTypedef<V>
+ * - HashMap<K, V>
+ */
 typedef struct rpct_type *rpct_type_t;
 
-struct rpct_typei;
+/**
+ * Represents a specialized type.
+ *
+ * rpct_typei_t represents a specialized type, that is - a possibly
+ * generic type with its generic variables specialized with actual types.
+ *
+ * One special case here is a partially specialized type. A partially
+ * specialized type may be present as a structure member, union branch
+ * or typedef body. "partially" means that some of the type variables
+ * might be specialized, but some others might not.
+ *
+ * Examples of specialized types:
+ * - string
+ * - NonGenericStructOne
+ * - GenericStructTwo<int64>
+ * - GenericTypedef<string>
+ * - HashMap<string, double>
+ *
+ * Examples of partially specialized types:
+ * - GenericStructTwo<T>
+ * - HashMap<K, V>
+ * - HashMap<K, double>
+ */
 typedef struct rpct_typei *rpct_typei_t;
 
-struct rpct_member;
+/**
+ * Represents a structure member or a union branch.
+ */
 typedef struct rpct_member *rpct_member_t;
 
+/**
+ * A type class.
+ */
 typedef enum {
-	RPC_TYPING_STRUCT,
-	RPC_TYPING_UNION,
-	RPC_TYPING_ENUM,
-	RPC_TYPING_TYPEDEF,
-	RPC_TYPING_SPECIALIZATION,
-	RPC_TYPING_BUILTIN
+	RPC_TYPING_STRUCT,		/**< A structure */
+	RPC_TYPING_UNION,		/**< A union */
+	RPC_TYPING_ENUM,		/**< An enum */
+	RPC_TYPING_TYPEDEF,		/**< A type alias */
+	RPC_TYPING_BUILTIN		/**< A builtin type */
 } rpct_class_t;
 
 typedef bool (^rpct_type_applier_t)(rpct_type_t);
@@ -74,21 +117,75 @@ void rpct_free(void);
 int rpct_load_types(const char *path);
 int rpct_load_types_stream(int fd);
 
+/**
+ * Returns the current realm name.
+ *
+ * @return Realm name or NULL if not set
+ */
 const char *rpct_get_realm(void);
+
+/**
+ * Sets the current realm name.
+ *
+ * Returns -1 and sets errno to ENOENT if given realm cannot be found.
+ *
+ * @param realm Realm name
+ * @return 0 on success, -1 on error
+ */
 int rpct_set_realm(const char *realm);
 
+/**
+ * Returns the type name.
+ *
+ * @param type Type handle
+ * @return Type name
+ */
 const char *rpct_type_get_name(rpct_type_t type);
+
+/**
+ * Returns the name of the realm type belongs to.
+ *
+ * @param type Type handle
+ * @return Realm name
+ */
 const char *rpct_type_get_realm(rpct_type_t type);
+
+/**
+ * Returns the type description, as read from interface definition file.
+ *
+ * @param type Type handle
+ * @return Description string (or empty string if not defined)
+ */
 const char *rpct_type_get_description(rpct_type_t type);
+
+/**
+ * Returns the type "parent" in the inheritance chain.
+ *
+ * @param type Type handle
+ * @return Base type or NULL
+ */
 rpct_type_t rpct_type_get_parent(rpct_type_t type);
+
+/**
+ * Returns the type class.
+ *
+ * @param type Type handle
+ * @return Type class
+ */
 rpct_class_t rpct_type_get_class(rpct_type_t type);
+
+rpct_typei_t rpct_type_get_definition(rpct_type_t type);
+
 int rpct_type_get_generic_vars_count(rpct_type_t type);
+rpct_member_t rpct_type_get_member(rpct_type_t, const char *name);
 rpct_type_t rpct_typei_get_type(rpct_typei_t typei);
-rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, int index);
+rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, const char *name);
 const char *rpct_typei_get_canonical_form(rpct_typei_t typei);
+rpct_typei_t rpct_typei_get_member_type(rpct_typei_t typei, rpct_member_t member);
 
 const char *rpct_member_get_name(rpct_member_t member);
 const char *rpct_member_get_description(rpct_member_t member);
+rpct_typei_t rpct_member_get_typei(rpct_member_t member);
 
 bool rpct_types_apply(rpct_type_applier_t applier);
 bool rpct_members_apply(rpct_type_t type, rpct_member_applier_t applier);
