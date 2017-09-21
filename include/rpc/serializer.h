@@ -31,6 +31,10 @@
 #include <rpc/object.h>
 
 /**
+ * @file serializer.h
+ */
+
+/**
  * Loads an RPC object from a serialized blob.
  *
  * @param serializer Serializer type (msgpack, json or yaml)

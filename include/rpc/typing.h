@@ -29,6 +29,10 @@
 
 #include <rpc/object.h>
 
+/**
+ * @file typing.h
+ */
+
 #define	RPCT_REALM_FIELD	"%realm"
 #define	RPCT_TYPE_FIELD		"%type"
 #define	RPCT_VALUE_FIELD	"%value"
@@ -194,6 +198,7 @@ rpct_typei_t rpct_new_typei(const char *decl);
 rpc_object_t rpct_new(const char *decl, const char *realm, rpc_object_t object);
 rpc_object_t rpct_newi(rpct_typei_t typei, rpc_object_t object);
 
+rpct_type_t rpct_get_type(const char *name);
 rpct_typei_t rpct_get_typei(rpc_object_t instance);
 rpc_object_t rpct_get_value(rpc_object_t instance);
 void rpct_set_value(rpc_object_t object, const char *value);
