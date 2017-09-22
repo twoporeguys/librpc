@@ -265,7 +265,7 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 
 	rpc_object_unpack(args, "f", &conn->uc_logfd);
 	if (conn->uc_logfd != -1)
-		conn->uc_logfile = fdopen(conn->uc_logfd, "a+");
+		conn->uc_logfile = fdopen(conn->uc_logfd, "a");
 
 	conn->uc_state.uts_libusb = conn->uc_libusb;
 	conn->uc_state.uts_exit = false;
@@ -576,10 +576,12 @@ usb_event_impl(void *arg)
 	if (log->start == log->end || conn->uc_logfile == NULL)
 		goto done;
 
-	if (log->start < log->end)
+	if (log->start < log->end) {
 		fprintf(conn->uc_logfile, "%*s",
 		    log->end - log->start,
 		    &log->buffer[log->start]);
+		fflush(conn->uc_logfile);
+	}
 
 done:
 	return (!conn->uc_state.uts_exit);
