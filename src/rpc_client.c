@@ -58,7 +58,7 @@ rpc_client_create(const char *uri, rpc_object_t params)
 		rpc_retain(params);
 	
 	g_main_context_push_thread_default(client->rci_g_context);
-	client->rci_connection = rpc_connection_create(client->rci_uri, params);
+	client->rci_connection = rpc_connection_create((void *)client, params);
 	g_main_context_pop_thread_default(client->rci_g_context);
 
 	if (client->rci_connection == NULL) {

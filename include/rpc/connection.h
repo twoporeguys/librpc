@@ -119,7 +119,7 @@ typedef bool (^rpc_callback_t)(rpc_object_t args, rpc_call_status_t status);
 		return ((bool)_fn(_arg, _args, _status));		\
 	}
 
-rpc_connection_t rpc_connection_create(const char *uri, rpc_object_t params);
+rpc_connection_t rpc_connection_create(void *cookie, rpc_object_t params);
 int rpc_connection_close(rpc_connection_t conn);
 
 /**

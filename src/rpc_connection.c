@@ -699,14 +699,15 @@ rpc_connection_alloc(rpc_server_t server)
 }
 
 rpc_connection_t
-rpc_connection_create(const char *uri, rpc_object_t params)
+rpc_connection_create(void *cookie, rpc_object_t params)
 {
 	GError *err = NULL;
 	const struct rpc_transport *transport;
 	struct rpc_connection *conn = NULL;
+	struct rpc_client *client = cookie;
 	char *scheme = NULL;
 
-	scheme = g_uri_parse_scheme(uri);
+	scheme = g_uri_parse_scheme(client->rci_uri);
 	transport = rpc_find_transport(scheme);
 
 	if (transport == NULL) {
@@ -719,7 +720,8 @@ rpc_connection_create(const char *uri, rpc_object_t params)
 	g_mutex_init(&conn->rco_subscription_mtx);
 	conn->rco_flags = transport->flags;
 	conn->rco_params = params;
-	conn->rco_uri = uri;
+	conn->rco_uri = client->rci_uri;
+	conn->rco_mainloop = client->rci_g_context;
 	conn->rco_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_inbound_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_subscriptions = g_hash_table_new(g_str_hash, g_str_equal);
@@ -733,7 +735,7 @@ rpc_connection_create(const char *uri, rpc_object_t params)
 
 	}
 
-	if (transport->connect(conn, uri, params) != 0)
+	if (transport->connect(conn, conn->rco_uri, params) != 0)
 		goto fail;
 
 	return (conn);
