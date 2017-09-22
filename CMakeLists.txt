@@ -222,6 +222,7 @@ if(BUILD_EXAMPLES)
     endif()
     if (BUILD_BUS)
         add_subdirectory(examples/bus)
+        add_subdirectory(examples/log-reader)
     endif()
 endif()
 
