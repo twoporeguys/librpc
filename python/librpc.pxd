@@ -146,7 +146,7 @@ cdef extern from "rpc/connection.h" nogil:
     void *RPC_ERROR_HANDLER(rpc_error_handler_f fn, void *arg)
     void *RPC_CALLBACK(rpc_callback_f fn, void *arg)
 
-    rpc_connection_t rpc_connection_create(const char *uri, rpc_object_t params)
+    rpc_connection_t rpc_connection_create(void *cookie, rpc_object_t params)
     int rpc_connection_close(rpc_connection_t conn)
     int rpc_connection_subscribe_event(rpc_connection_t conn, const char *name)
     int rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name)
