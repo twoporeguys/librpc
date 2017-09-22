@@ -126,6 +126,10 @@ set(SERIALIZER_FILES
         src/serializer/yaml.h
         contrib/mpack/mpack.c)
 
+set(VALIDATOR_FILES
+        src/validator/string_max_length.c
+        src/validator/string_min_length.c)
+
 if(BUILD_JSON)
     set(SERIALIZER_FILES
             ${SERIALIZER_FILES}
@@ -151,6 +155,7 @@ add_library(librpc SHARED
         ${HEADERS}
         ${TRANSPORT_FILES}
         ${SERIALIZER_FILES}
+        ${VALIDATOR_FILES}
         ${CORE_FILES})
 
 set_target_properties(librpc PROPERTIES PREFIX "")

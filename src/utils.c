@@ -35,6 +35,7 @@
 
 SET_DECLARE(tp_set, struct rpc_transport);
 SET_DECLARE(sr_set, struct rpc_serializer);
+SET_DECLARE(vr_set, struct rpct_validator);
 static GPrivate rpc_last_error = G_PRIVATE_INIT((GDestroyNotify)rpc_release_impl);
 
 const struct rpc_transport *
@@ -64,6 +65,21 @@ rpc_find_serializer(const char *name)
 
 	SET_FOREACH(s, sr_set) {
 		if (!g_strcmp0((*s)->name, name))
+			return (*s);
+	}
+
+	return (NULL);
+}
+
+const struct rpct_validator *
+rpc_find_validator(const char *type, const char *name)
+{
+	struct rpct_validator **s;
+
+	debugf("looking for validator %s", name);
+
+	SET_FOREACH(s, vr_set) {
+		if (!g_strcmp0((*s)->name, name) && !g_strcmp0((*s)->type, type))
 			return (*s);
 	}
 

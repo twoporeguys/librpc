@@ -46,6 +46,7 @@
 
 #define	DECLARE_TRANSPORT(_transport)	DATA_SET(tp_set, _transport)
 #define	DECLARE_SERIALIZER(_serializer)	DATA_SET(sr_set, _serializer)
+#define	DECLARE_VALIDATOR(_validator)	DATA_SET(vr_set, _validator)
 
 #define	RPC_TRANSPORT_NO_SERIALIZE		(1 << 0)
 #define	RPC_TRANSPORT_CREDENTIALS		(1 << 1)
@@ -300,6 +301,8 @@ struct rpct_context
 	char *			global_realm;
 	GHashTable *		files;
 	GHashTable *		realms;
+	rpc_function_t		pre_call_hook;
+	rpc_function_t 		post_call_hook;
 };
 
 struct rpct_realm
@@ -350,6 +353,7 @@ struct rpct_typei
 	char *			canonical_form;
 	GHashTable *		specializations;
 	GHashTable *		constraints;
+	int 			refcount;
 };
 
 /**
@@ -381,10 +385,20 @@ struct rpct_class_handler
 	struct rpct_member *(*member_fn)(const char *, rpc_object_t, struct rpct_type *);
 };
 
-struct rpct_constraint
+struct rpct_validation_result
 {
-	char * 			name;
+	bool 			valid;
+	const char *		error;
+	rpc_object_t 		extra;
 };
+
+struct rpct_validator
+{
+	const char *		type;
+	const char * 		name;
+	struct rpct_validation_result *(*validate)(rpc_object_t, rpc_object_t, struct rpct_typei *);
+};
+
 
 typedef struct rpct_realm *rpct_realm_t;
 typedef bool (^rpct_realm_applier_t)(rpct_realm_t);
@@ -405,6 +419,7 @@ int rpc_ptr_array_string_index(GPtrArray *arr, const char *str);
 
 const struct rpc_transport *rpc_find_transport(const char *scheme);
 const struct rpc_serializer *rpc_find_serializer(const char *name);
+const struct rpct_validator *rpc_find_validator(const char *type, const char *name);
 
 void rpc_set_last_error(int code, const char *msg, rpc_object_t extra);
 void rpc_set_last_gerror(GError *error);
@@ -423,7 +438,9 @@ void rpc_connection_close_inbound_call(struct rpc_inbound_call *);
 
 void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 
-struct rpct_typei *rpct_copy_typei(struct rpct_typei *inst);
+
+struct rpct_validation_result *rpct_validation_result_new(bool valid,
+    const char *format, ...);
 void rpct_typei_free(struct rpct_typei *inst);
 
 #endif /* LIBRPC_INTERNAL_H */
