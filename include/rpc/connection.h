@@ -181,8 +181,8 @@ void rpc_connection_unregister_event_handler(rpc_connection_t conn,
  * Function blocks until a result is ready and returns it, or cancels
  * and returns a NULL pointer if a timeout has occurred.
  *
- * Method call arguments need to be followed with a NULL, denoting end
- * of variable argument list.
+ * Method call arguments need to be rpc_object_t instances, followed with
+ * a NULL, denoting end of variable argument list.
  *
  * @param conn Connection to do a call on.
  * @param method Name of a method to be called.
