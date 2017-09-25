@@ -8,7 +8,6 @@ var searchData=
   ['rpc_5ferror_5fhandler',['RPC_ERROR_HANDLER',['../connection_8h.html#ac6630daf34229f9dd8a754b119e4a94d',1,'connection.h']]],
   ['rpc_5fhandler',['RPC_HANDLER',['../connection_8h.html#a4f7704822a76a6f293f6abbb59bf41f3',1,'connection.h']]],
   ['rpc_5fis_5ferror',['rpc_is_error',['../object_8h.html#aa125ec0a73c4c9953b07e5da1712573e',1,'object.h']]],
-  ['rpc_5fquery_5fcb',['RPC_QUERY_CB',['../query_8h.html#ac5142dc38666b2011833bab884b6af9d',1,'query.h']]],
   ['rpc_5frelease',['rpc_release',['../object_8h.html#aac19be935f72b35eeb2851bc509eabb2',1,'object.h']]],
   ['rpc_5fserver_5fhandler',['RPC_SERVER_HANDLER',['../server_8h.html#a34749fc2472ddb06c6d36006e2a948c3',1,'server.h']]]
 ];
