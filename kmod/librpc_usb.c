@@ -82,10 +82,8 @@ struct librpc_usb_identification
 struct librpc_usb_log
 {
     	uint8_t 	status;
-    	uint16_t 	start;
-    	uint16_t 	end;
     	char 		buffer[];
-} __attribute__((packed));
+};
 
 struct librpc_usb_device {
     	struct usb_device *		udev;
@@ -277,22 +275,10 @@ librpc_usb_read_log(struct librpc_usb_device *rpcusbdev)
 	    USB_TYPE_VENDOR | USB_DIR_IN, 0, 0,
 	    rpcusbdev->log, sizeof(*rpcusbdev->log) + LIBRPC_MAX_MSGSIZE, 500);
 
-	if (ret < 0)
+	if (ret < 1)
 		return;
 
-	if (log->start == log->end)
-		return;
-
-	if (log->end > log->start) {
-		/* All the log goes in one chunk */
-		librpc_device_log(&udev->dev, &log->buffer[log->start],
-		    log->end - log->start);
-	}
-
-	if (log->start > log->end) {
-		librpc_device_log(&udev->dev, &log->buffer[log->start],
-		    log->end - log->start);
-	}
+	librpc_device_log(&udev->dev, log->buffer, ret - 1);
 }
 
 static int
