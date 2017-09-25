@@ -98,10 +98,8 @@ struct librpc_usb_identification
 struct librpc_usb_log
 {
 	uint8_t 	status;
-	uint16_t 	start;
-	uint16_t 	end;
 	char 		buffer[];
-} __attribute__((packed));
+};
 
 struct usb_thread_state
 {
@@ -570,20 +568,12 @@ usb_event_impl(void *arg)
 	ret = usb_xfer(conn->uc_handle, LIBRPC_USB_READ_LOG, log,
 	    sizeof(*log) + conn->uc_logsize - 1024, 500);
 
-	if (ret < 0)
+	if (ret < 1)
 		goto disconnected;
 
-	if (log->start == log->end || conn->uc_logfile == NULL)
-		goto done;
+	fprintf(conn->uc_logfile, "%*s", ret - 1, log->buffer);
+	fflush(conn->uc_logfile);
 
-	if (log->start < log->end) {
-		fprintf(conn->uc_logfile, "%*s",
-		    log->end - log->start,
-		    &log->buffer[log->start]);
-		fflush(conn->uc_logfile);
-	}
-
-done:
 	return (!conn->uc_state.uts_exit);
 
 disconnected:
