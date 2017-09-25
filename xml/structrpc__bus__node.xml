@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="structrpc__bus__node" kind="struct" language="C++" prot="public">
+    <compoundname>rpc_bus_node</compoundname>
+    <includes refid="bus_8h" local="no">bus.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structrpc__bus__node_1a7fa4491eff39bb96c779b4208ca388ec" prot="public" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* rpc_bus_node::rbn_name</definition>
+        <argsstring></argsstring>
+        <name>rbn_name</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/bus.h" line="52" column="1" bodyfile="/code/include/rpc/bus.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__bus__node_1aa7eab44be63bee011e2b7589a092a3ab" prot="public" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* rpc_bus_node::rbn_description</definition>
+        <argsstring></argsstring>
+        <name>rbn_description</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/bus.h" line="53" column="1" bodyfile="/code/include/rpc/bus.h" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__bus__node_1a9f5b9214a64d9cd54cd4839f869ba7df" prot="public" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* rpc_bus_node::rbn_serial</definition>
+        <argsstring></argsstring>
+        <name>rbn_serial</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/bus.h" line="54" column="1" bodyfile="/code/include/rpc/bus.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__bus__node_1a624e2a0be665938924ab2f815afb669e" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rpc_bus_node::rbn_address</definition>
+        <argsstring></argsstring>
+        <name>rbn_address</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/bus.h" line="55" column="1" bodyfile="/code/include/rpc/bus.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Bus node descriptor. </para>    </detaileddescription>
+    <location file="/code/include/rpc/bus.h" line="51" column="1" bodyfile="/code/include/rpc/bus.h" bodystart="50" bodyend="56"/>
+    <listofallmembers>
+      <member refid="structrpc__bus__node_1a624e2a0be665938924ab2f815afb669e" prot="public" virt="non-virtual"><scope>rpc_bus_node</scope><name>rbn_address</name></member>
+      <member refid="structrpc__bus__node_1aa7eab44be63bee011e2b7589a092a3ab" prot="public" virt="non-virtual"><scope>rpc_bus_node</scope><name>rbn_description</name></member>
+      <member refid="structrpc__bus__node_1a7fa4491eff39bb96c779b4208ca388ec" prot="public" virt="non-virtual"><scope>rpc_bus_node</scope><name>rbn_name</name></member>
+      <member refid="structrpc__bus__node_1a9f5b9214a64d9cd54cd4839f869ba7df" prot="public" virt="non-virtual"><scope>rpc_bus_node</scope><name>rbn_serial</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
