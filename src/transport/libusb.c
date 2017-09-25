@@ -571,8 +571,10 @@ usb_event_impl(void *arg)
 	if (ret < 1)
 		goto disconnected;
 
-	fprintf(conn->uc_logfile, "%*s", ret - 1, log->buffer);
-	fflush(conn->uc_logfile);
+	if (conn->uc_logfile != NULL) {
+		fprintf(conn->uc_logfile, "%*s", ret - 1, log->buffer);
+		fflush(conn->uc_logfile);
+	}
 
 	return (!conn->uc_state.uts_exit);
 
