@@ -12,6 +12,7 @@ Welcome to librpc's documentation!
 
    guide
    protocol
+   debugging
    reference
 
 
@@ -19,5 +20,4 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`

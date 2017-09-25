@@ -1,4 +1,9 @@
 API reference
 =============
 
-.. doxygenindex::
+.. toctree::
+   :glob:
+   :maxdepth: 2
+   :caption: Contents:
+
+   reference/*
