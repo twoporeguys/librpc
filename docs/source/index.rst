@@ -11,6 +11,7 @@ Welcome to librpc's documentation!
    :caption: Contents:
 
    guide
+   advanced
    protocol
    debugging
    reference

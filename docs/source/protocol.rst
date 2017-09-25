@@ -19,6 +19,9 @@ Error response message
 Streaming response fragment message
 -----------------------------------
 
+Event message
+-------------
+
 Request ID generation
 ---------------------
 Request ID can be any string unique on the server for the duration of the

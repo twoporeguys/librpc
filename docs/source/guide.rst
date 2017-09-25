@@ -70,8 +70,19 @@ Endpoint address examples:
 - ``usb://Device#123`` (``Device#123`` part of the example is a USB device
   serial number)
 
+Object model
+------------
+
 Client operation
 ----------------
 
 Server operation
 ----------------
+
+Using Blocks
+------------
+librpc heavily relies on a C language feature called "Blocks". Blocks support
+is present by default in the clang compiler and patches adding same
+functionality exist for gcc. For more information, please refer to
+`Working with blocks <https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/WorkingwithBlocks/WorkingwithBlocks.html>`_
+article.
