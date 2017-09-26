@@ -19,7 +19,6 @@
 #
 import os
 
-
 build_dir = os.path.abspath(os.getenv('BUILD_DIR'))
 
 # -- General configuration ------------------------------------------------
@@ -160,7 +159,7 @@ texinfo_documents = [
 
 # -- Options for Breathe --------------------------------------------------
 breathe_projects = {
-    "librpc": os.path.join(build_dir, "doc/xml")
+    "librpc": os.path.join(build_dir, "doxygen/xml")
 }
 
 breathe_default_project = "librpc"

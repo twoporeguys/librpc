@@ -232,11 +232,14 @@ endif()
 
 if(BUILD_DOC)
     find_package(Doxygen)
-    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc)
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doxygen)
     configure_file(${CMAKE_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
     add_custom_target(doc ALL
             ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc)
+            COMMAND
+                env BUILD_DIR=${CMAKE_CURRENT_BINARY_DIR} sphinx-build
+                ${CMAKE_SOURCE_DIR}/docs/source ${CMAKE_CURRENT_BINARY_DIR}/docs
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doxygen)
 endif()
 
 if(BUILD_BUS AND BUILD_KMOD)
