@@ -37,7 +37,7 @@ var searchData=
   ['rpc_5fbus_5fenumerate',['rpc_bus_enumerate',['../bus_8h.html#a85cd042c0a2e2bddaea2a09ca10af76f',1,'bus.h']]],
   ['rpc_5fbus_5ffree_5fresult',['rpc_bus_free_result',['../bus_8h.html#a9e0894b8914690e83a155b33a2854d8c',1,'bus.h']]],
   ['rpc_5fbus_5fopen',['rpc_bus_open',['../bus_8h.html#a845c8c255ac97bb03ac9ad1418eb66f0',1,'bus.h']]],
-  ['rpc_5fbus_5fping',['rpc_bus_ping',['../bus_8h.html#a069e6d67eba0248bc2de6d185d91e9d9',1,'bus.h']]],
+  ['rpc_5fbus_5fping',['rpc_bus_ping',['../bus_8h.html#aa8ebea01297a21f28b1bc11f13c2d310',1,'bus.h']]],
   ['rpc_5fbus_5fregister_5fevent_5fhandler',['rpc_bus_register_event_handler',['../bus_8h.html#a1c9f3676441138dfb89655d3ad080d08',1,'bus.h']]],
   ['rpc_5fbus_5funregister_5fevent_5fhandler',['rpc_bus_unregister_event_handler',['../bus_8h.html#ae6437acd78bb490baac4517ddffb0792',1,'bus.h']]],
   ['rpc_5fcall_5fabort',['rpc_call_abort',['../connection_8h.html#a17059d810db4d08d911e45d24704dacc',1,'connection.h']]],

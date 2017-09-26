@@ -29,7 +29,7 @@
     <member refid="bus_8h_1ad73f1cbe9ff7bebd610a19f8afcf867a" kind="typedef"><name>rpc_bus_event_handler_t</name></member>
     <member refid="bus_8h_1a845c8c255ac97bb03ac9ad1418eb66f0" kind="function"><name>rpc_bus_open</name></member>
     <member refid="bus_8h_1a5fa0c254755deec118b2e3dcb4ec9bdf" kind="function"><name>rpc_bus_close</name></member>
-    <member refid="bus_8h_1a069e6d67eba0248bc2de6d185d91e9d9" kind="function"><name>rpc_bus_ping</name></member>
+    <member refid="bus_8h_1aa8ebea01297a21f28b1bc11f13c2d310" kind="function"><name>rpc_bus_ping</name></member>
     <member refid="bus_8h_1a85cd042c0a2e2bddaea2a09ca10af76f" kind="function"><name>rpc_bus_enumerate</name></member>
     <member refid="bus_8h_1a9e0894b8914690e83a155b33a2854d8c" kind="function"><name>rpc_bus_free_result</name></member>
     <member refid="bus_8h_1a1c9f3676441138dfb89655d3ad080d08" kind="function"><name>rpc_bus_register_event_handler</name></member>
