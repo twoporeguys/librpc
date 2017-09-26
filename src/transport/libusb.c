@@ -58,8 +58,8 @@ static int usb_enumerate_one(libusb_device *, struct rpc_bus_node *);
 static int usb_enumerate(void *, struct rpc_bus_node **, size_t *);
 static int usb_xfer(struct libusb_device_handle *, int, void *, size_t,
     unsigned int);
-static libusb_device_handle *usb_find_by_name(struct libusb_context *,
-    const char *);
+static libusb_device_handle *usb_find(struct libusb_context *, const char *,
+    int);
 static gboolean usb_send_msg_impl(void *);
 static gboolean usb_event_impl(void *);
 static void *usb_libusb_thread(void *);
@@ -162,7 +162,7 @@ static const struct rpc_transport libusb_transport = {
 static GMutex usb_request_mtx;
 
 static int
-usb_hotplug_callback(libusb_context *ctx, libusb_device *dev,
+usb_hotplug_callback(libusb_context *ctx __unused, libusb_device *dev,
     libusb_hotplug_event evt, void *arg)
 {
 	struct usb_context *context = arg;
@@ -173,7 +173,8 @@ usb_hotplug_callback(libusb_context *ctx, libusb_device *dev,
 	state->uss_dev = dev;
 	state->uss_event = evt;
 
-	g_main_context_invoke(context->uc_main_context, usb_hotplug_impl, state);
+	g_main_context_invoke(context->uc_main_context, usb_hotplug_impl,
+	    state);
 	return (0);
 }
 
@@ -270,21 +271,23 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	conn->uc_libusb_thread = g_thread_new("libusb worker",
 	    usb_libusb_thread, &conn->uc_state);
 
-	conn->uc_handle = usb_find_by_name(conn->uc_libusb, uri->host);
-	if (conn->uc_handle == NULL) {
-		return (-1);
-	}
+	if (uri->host != NULL)
+		conn->uc_handle = usb_find(conn->uc_libusb, uri->host, -1);
+
+	if (uri->port != 0)
+		conn->uc_handle = usb_find(conn->uc_libusb, NULL, uri->port);
+
+	if (conn->uc_handle == NULL)
+		goto error;
 
 	/* Read the log buffer size */
 	if (usb_xfer(conn->uc_handle, LIBRPC_USB_IDENTIFY, &ident,
-	    sizeof(ident), 500) < 0) {
-		libusb_close(conn->uc_handle);
-		g_free(conn);
-		return (-1);
-	}
+	    sizeof(ident), 500) < 0)
+		goto error;
 
 	conn->uc_event_source = g_timeout_source_new(500);
-	g_source_set_callback(conn->uc_event_source, usb_event_impl, conn, NULL);
+	g_source_set_callback(conn->uc_event_source, usb_event_impl, conn,
+	    NULL);
 	g_source_attach(conn->uc_event_source, rco->rco_mainloop);
 
 	conn->uc_logsize = ident.log_size;
@@ -295,6 +298,14 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	rco->rco_arg = conn;
 
 	return (0);
+
+error:
+	if (conn->uc_logfile != NULL)
+		fclose(conn->uc_logfile);
+
+	libusb_close(conn->uc_handle);
+	g_free(conn);
+	return (-1);
 }
 
 static int
@@ -308,7 +319,8 @@ usb_send_msg(void *arg, void *buf, size_t len, const int *fds __unused,
 	send->uss_buf = g_memdup(buf, (guint)len);
 	send->uss_len = len;
 	send->uss_conn = conn;
-	g_main_context_invoke(conn->uc_rco->rco_mainloop, usb_send_msg_impl, send);
+	g_main_context_invoke(conn->uc_rco->rco_mainloop, usb_send_msg_impl,
+	    send);
 	return (0);
 }
 
@@ -333,25 +345,25 @@ usb_get_fd(void *arg __unused)
 }
 
 static int
-usb_ping(void *arg, const char *name)
+usb_ping(void *arg, const char *serial)
 {
 	libusb_device_handle *handle;
 	struct usb_context *ctx = arg;
-	uint8_t status;
+	uint8_t st;
 
-	handle = usb_find_by_name(ctx->uc_libusb, name);
+	handle = usb_find(ctx->uc_libusb, serial, -1);
 	if (handle == NULL) {
 		errno = ENOENT;
 		return (-1);
 	}
 
-	if (usb_xfer(handle, LIBRPC_USB_PING, &status, sizeof(status), 500) < 0) {
+	if (usb_xfer(handle, LIBRPC_USB_PING, &st, sizeof(st), 500) < 0) {
 		libusb_close(handle);
 		return (-1);
 	}
 
 	libusb_close(handle);
-	return (status == LIBRPC_USB_OK);
+	return (st == LIBRPC_USB_OK);
 }
 
 static int
@@ -387,8 +399,9 @@ usb_enumerate_one(libusb_device *dev, struct rpc_bus_node *node)
 		goto done;
 	}
 
-	if (libusb_get_string_descriptor_ascii(handle, (uint8_t)ident.iDescription,
-	    (uint8_t *)descr, sizeof(descr)) < 0) {
+	if (libusb_get_string_descriptor_ascii(handle,
+	    (uint8_t)ident.iDescription, (uint8_t *)descr,
+	    sizeof(descr)) < 0) {
 		ret = -1;
 		goto done;
 	}
@@ -415,9 +428,7 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 	struct libusb_device_descriptor desc;
 	libusb_device **devices;
 	libusb_device *dev;
-	libusb_device_handle *handle;
 	struct rpc_bus_node node;
-	struct librpc_usb_identification ident;
 
 	*countp = 0;
 	*resultp = NULL;
@@ -434,7 +445,8 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 		if (usb_enumerate_one(dev, &node) < 0)
 			continue;
 
-		*resultp = g_realloc(*resultp, (*countp + 1) * sizeof(struct rpc_bus_node));
+		*resultp = g_realloc(*resultp,
+		    (*countp + 1) * sizeof(struct rpc_bus_node));
 		(*resultp)[*countp] = node;
 		(*countp)++;
 	}
@@ -459,41 +471,49 @@ usb_xfer(struct libusb_device_handle *handle, int opcode, void *buf, size_t len,
 }
 
 static libusb_device_handle *
-usb_find_by_name(struct libusb_context *libusb, const char *name)
+usb_find(struct libusb_context *libusb, const char *serial, int addr)
 {
 	struct libusb_device_descriptor desc;
 	libusb_device **devices;
 	libusb_device *dev;
 	libusb_device_handle *handle;
 	uint8_t str[NAME_MAX];
-	struct librpc_usb_identification ident;
+	int address;
 
 	libusb_get_device_list(libusb, &devices);
 
 	for (; *devices != NULL; devices++) {
 		dev = *devices;
+		address = libusb_get_device_address(dev);
 		libusb_get_device_descriptor(dev, &desc);
 
 		debugf("trying device %d (vid=0x%04x, pid=0x%04x)",
-		    libusb_get_device_address(dev), desc.idVendor,
-		    desc.idProduct);
+		    address, desc.idVendor, desc.idProduct);
 
 		if (desc.idVendor != LIBRPC_USB_VID ||
 		    desc.idProduct != LIBRPC_USB_PID)
 			continue;
 
-		if (libusb_open(dev, &handle) != 0)
-			continue;
+		if (addr != -1 && address == addr) {
+			if (libusb_open(dev, &handle) != 0)
+				continue;
 
-		if (usb_xfer(handle, LIBRPC_USB_IDENTIFY, &ident,
-		    sizeof(ident), 500) < 0)
-			continue;
-
-		libusb_get_string_descriptor_ascii(handle,
-		    (uint8_t)ident.iName, str, sizeof(str));
-
-		if (g_strcmp0((const char *)str, name) == 0)
 			return (handle);
+		}
+
+		if (serial != NULL) {
+			if (libusb_open(dev, &handle) != 0)
+				continue;
+
+			libusb_get_string_descriptor_ascii(handle,
+			    desc.iSerialNumber, str, sizeof(str));
+
+			if (g_strcmp0((const char *)str, serial) == 0)
+				return (handle);
+
+			libusb_close(handle);
+			continue;
+		}
 	}
 
 	return (NULL);

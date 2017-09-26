@@ -96,7 +96,7 @@ rpc_bus_close(void)
 }
 
 int
-rpc_bus_ping(const char *name)
+rpc_bus_ping(const char *serial)
 {
 	const struct rpc_transport *bus;
 
@@ -111,9 +111,8 @@ rpc_bus_ping(const char *name)
 		return (-1);
 	}
 
-	return (bus->bus_ops->ping(rpc_bus_context, name));
+	return (bus->bus_ops->ping(rpc_bus_context, serial));
 }
-
 
 int
 rpc_bus_enumerate(struct rpc_bus_node **resultp)

@@ -962,7 +962,7 @@ cdef class Bus(object):
 
     def __dealloc__(self):
         with nogil:
-            rpc_bus_close();
+            rpc_bus_close()
 
     def ping(self, name):
         cdef const char *c_name

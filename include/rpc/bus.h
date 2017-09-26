@@ -81,12 +81,12 @@ int rpc_bus_open(void);
 int rpc_bus_close(void);
 
 /**
- * Checks whether a node with specified name is reachable.
+ * Checks whether a node with specified serial is reachable.
  *
  * @param name
  * @return
  */
-int rpc_bus_ping(const char *name);
+int rpc_bus_ping(const char *serial);
 
 /**
  * Enumerates connected devices on the RPC bus.
