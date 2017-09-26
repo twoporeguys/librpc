@@ -12,7 +12,8 @@ pipeline {
 
         stage('Deploy docs') {
             steps {
-                sh
+                sh 'mkdir -p /var/www/docs/librpc'
+                sh 'cp -a build/docs/ /var/www/docs/librpc/'
             }
         }
     }
