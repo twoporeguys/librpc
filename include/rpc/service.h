@@ -142,6 +142,28 @@ int rpc_context_register_func(rpc_context_t context, const char *name,
 int rpc_context_unregister_method(rpc_context_t context, const char *name);
 
 /**
+ * Installs a hook for every RPC function called.
+ *
+ * The hook will be called before an actual implementation of RPC function
+ * gets called.
+ *
+ * @param context Target context
+ * @param fn Hook function
+ */
+void rpc_context_set_pre_call_hook(rpc_context_t context, rpc_function_t fn);
+
+/**
+ * Installs a hook for every RPC function called.
+ *
+ * The hook will be called after an actual implementation of RPC function
+ * is called.
+ *
+ * @param context Target context
+ * @param fn Hook function
+ */
+void rpc_context_set_post_call_hook(rpc_context_t context, rpc_function_t fn);
+
+/**
  *
  * @param context
  * @param name

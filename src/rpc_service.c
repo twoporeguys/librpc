@@ -40,8 +40,9 @@
 #include "internal.h"
 
 static void
-rpc_context_tp_handler(gpointer data, gpointer user_data __unused)
+rpc_context_tp_handler(gpointer data, gpointer user_data)
 {
+	struct rpc_context *context = user_data;
 	struct rpc_inbound_call *call = data;
 	struct rpc_method *method = call->ric_method;
 	rpc_connection_t conn = call->ric_conn;
@@ -56,10 +57,19 @@ rpc_context_tp_handler(gpointer data, gpointer user_data __unused)
 	call->ric_consumer_seqno = 1;
 
 	debugf("method=%p", method);
+
+	if (context->rcx_pre_call_hook != NULL) {
+
+	}
+
 	result = method->rm_block((void *)call, call->ric_args);
 
 	if (result == RPC_FUNCTION_STILL_RUNNING)
 		return;
+
+	if (context->rcx_pre_call_hook != NULL) {
+
+	}
 
 	if (!call->ric_streaming && !call->ric_responded)
 		rpc_connection_send_response(conn, call->ric_id, result);
@@ -237,6 +247,7 @@ int
 rpc_function_yield(void *cookie, rpc_object_t fragment)
 {
 	struct rpc_inbound_call *call = cookie;
+	struct rpc_context *context = call->ric_context;
 
 	g_mutex_lock(&call->ric_mtx);
 
@@ -246,6 +257,10 @@ rpc_function_yield(void *cookie, rpc_object_t fragment)
 	if (call->ric_aborted) {
 		g_mutex_unlock(&call->ric_mtx);
 		return (-1);
+	}
+
+	if (context->rcx_pre_call_hook != NULL) {
+
 	}
 
 	rpc_connection_send_fragment(call->ric_conn, call->ric_id,
