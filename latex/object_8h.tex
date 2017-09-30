@@ -87,6 +87,8 @@ char $\ast$ \hyperlink{object_8h_a8687bd8dcf67458dbb09549d2a9b6059}{rpc\+\_\+cop
 \item 
 \hyperlink{object_8h_a40ea3143863f0a2b47446ccaf655638e}{rpc\+\_\+type\+\_\+t} \hyperlink{object_8h_a842969702ab17ad4b7e1b0c2ed9a4aef}{rpc\+\_\+get\+\_\+type} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
 \item 
+const char $\ast$ \hyperlink{object_8h_af4605126ba11e2934cda5c18492d1d85}{rpc\+\_\+get\+\_\+type\+\_\+name} (\hyperlink{object_8h_a40ea3143863f0a2b47446ccaf655638e}{rpc\+\_\+type\+\_\+t} type)
+\item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_a3041a1bbc93de9f4753ed5191d6a8f29}{rpc\+\_\+get\+\_\+last\+\_\+error} (void)
 \item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_adde6020ca4c5be010850ca4295d1a4e5}{rpc\+\_\+object\+\_\+from\+\_\+json} (const void $\ast$frame, size\+\_\+t size)
@@ -355,7 +357,7 @@ Checks if an object is of type R\+P\+C\+\_\+\+T\+Y\+P\+E\+\_\+\+E\+R\+R\+OR.
 \end{DoxyParams}
 
 
-Definition at line 254 of file object.\+h.
+Definition at line 262 of file object.\+h.
 
 \index{object.\+h@{object.\+h}!rpc\+\_\+release@{rpc\+\_\+release}}
 \index{rpc\+\_\+release@{rpc\+\_\+release}!object.\+h@{object.\+h}}
@@ -382,7 +384,7 @@ Also sets it to N\+U\+LL if as a result of the operation reference count dropped
 \end{DoxyParams}
 
 
-Definition at line 264 of file object.\+h.
+Definition at line 272 of file object.\+h.
 
 
 
@@ -2260,6 +2262,23 @@ Returns the type of an object.
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 Object\textquotesingle{}s type. 
+\end{DoxyReturn}
+\index{object.\+h@{object.\+h}!rpc\+\_\+get\+\_\+type\+\_\+name@{rpc\+\_\+get\+\_\+type\+\_\+name}}
+\index{rpc\+\_\+get\+\_\+type\+\_\+name@{rpc\+\_\+get\+\_\+type\+\_\+name}!object.\+h@{object.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+get\+\_\+type\+\_\+name(rpc\+\_\+type\+\_\+t type)}{rpc_get_type_name(rpc_type_t type)}}]{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ rpc\+\_\+get\+\_\+type\+\_\+name (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+type\+\_\+t}}]{type}
+\end{DoxyParamCaption}
+)}\hypertarget{object_8h_af4605126ba11e2934cda5c18492d1d85}{}\label{object_8h_af4605126ba11e2934cda5c18492d1d85}
+Returns the string name of a type.
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & Type \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Type name 
 \end{DoxyReturn}
 \index{object.\+h@{object.\+h}!rpc\+\_\+hash@{rpc\+\_\+hash}}
 \index{rpc\+\_\+hash@{rpc\+\_\+hash}!object.\+h@{object.\+h}}

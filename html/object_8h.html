@@ -111,8 +111,9 @@ This graph shows which files directly or indirectly include this file:</div>
 <map name="_2code_2include_2rpc_2object_8hdep" id="_2code_2include_2rpc_2object_8hdep">
 <area shape="rect" id="node2" href="connection_8h.html" title="/code/include/rpc/connection.h" alt="" coords="108,80,307,107"/>
 <area shape="rect" id="node5" href="service_8h.html" title="/code/include/rpc/service.h" alt="" coords="250,155,429,181"/>
-<area shape="rect" id="node7" href="query_8h_source.html" title="/code/include/rpc/query.h" alt="" coords="381,80,549,107"/>
-<area shape="rect" id="node8" href="serializer_8h_source.html" title="/code/include/rpc/serializer.h" alt="" coords="573,80,761,107"/>
+<area shape="rect" id="node7" href="query_8h.html" title="/code/include/rpc/query.h" alt="" coords="381,80,549,107"/>
+<area shape="rect" id="node8" href="serializer_8h.html" title="/code/include/rpc/serializer.h" alt="" coords="573,80,761,107"/>
+<area shape="rect" id="node9" href="typing_8h.html" title="/code/include/rpc/typing.h" alt="" coords="786,80,957,107"/>
 <area shape="rect" id="node3" href="client_8h.html" title="/code/include/rpc/client.h" alt="" coords="5,155,172,181"/>
 <area shape="rect" id="node4" href="server_8h.html" title="/code/include/rpc/server.h" alt="" coords="124,229,296,256"/>
 <area shape="rect" id="node6" href="discovery_8h.html" title="/code/include/rpc/discovery.h" alt="" coords="321,229,513,256"/>
@@ -188,6 +189,8 @@ Functions</h2></td></tr>
 <tr class="separator:a8687bd8dcf67458dbb09549d2a9b6059"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a842969702ab17ad4b7e1b0c2ed9a4aef"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#a40ea3143863f0a2b47446ccaf655638e">rpc_type_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a842969702ab17ad4b7e1b0c2ed9a4aef">rpc_get_type</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:a842969702ab17ad4b7e1b0c2ed9a4aef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4605126ba11e2934cda5c18492d1d85"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#af4605126ba11e2934cda5c18492d1d85">rpc_get_type_name</a> (<a class="el" href="object_8h.html#a40ea3143863f0a2b47446ccaf655638e">rpc_type_t</a> type)</td></tr>
+<tr class="separator:af4605126ba11e2934cda5c18492d1d85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3041a1bbc93de9f4753ed5191d6a8f29"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a3041a1bbc93de9f4753ed5191d6a8f29">rpc_get_last_error</a> (void)</td></tr>
 <tr class="separator:a3041a1bbc93de9f4753ed5191d6a8f29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adde6020ca4c5be010850ca4295d1a4e5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#adde6020ca4c5be010850ca4295d1a4e5">rpc_object_from_json</a> (const void *frame, size_t size)</td></tr>
@@ -497,7 +500,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00254">254</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00262">262</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -524,7 +527,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00264">264</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00272">272</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -3638,6 +3641,30 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Object's type. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="af4605126ba11e2934cda5c18492d1d85"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* rpc_get_type_name </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="object_8h.html#a40ea3143863f0a2b47446ccaf655638e">rpc_type_t</a>&#160;</td>
+          <td class="paramname"><em>type</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the string name of a type.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">type</td><td>Type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Type name </dd></dl>
 
 </div>
 </div>

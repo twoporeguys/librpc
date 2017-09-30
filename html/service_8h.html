@@ -152,6 +152,10 @@ Functions</h2></td></tr>
 <tr class="separator:a6de78771a848fe3b2001e08a7cf0a88c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab71a7949b47080bceed777eab0cb4c67"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ab71a7949b47080bceed777eab0cb4c67">rpc_context_unregister_method</a> (<a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *name)</td></tr>
 <tr class="separator:ab71a7949b47080bceed777eab0cb4c67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1c0c9c7897adf4ad5e7ee9c40e545b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ad1c0c9c7897adf4ad5e7ee9c40e545b8">rpc_context_set_pre_call_hook</a> (<a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, <a class="el" href="service_8h.html#a02d3dbd723de9bd5140887c9935ff05a">rpc_function_t</a> fn)</td></tr>
+<tr class="separator:ad1c0c9c7897adf4ad5e7ee9c40e545b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36c5dae2cc75f5d4a740c5db25e25d7a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a36c5dae2cc75f5d4a740c5db25e25d7a">rpc_context_set_post_call_hook</a> (<a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, <a class="el" href="service_8h.html#a02d3dbd723de9bd5140887c9935ff05a">rpc_function_t</a> fn)</td></tr>
+<tr class="separator:a36c5dae2cc75f5d4a740c5db25e25d7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a206fab24804db208f9b4d44f4c303596"><td class="memItemLeft" align="right" valign="top"><a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a206fab24804db208f9b4d44f4c303596">rpc_context_dispatch_call</a> (<a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:a206fab24804db208f9b4d44f4c303596"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62e71e6c0208e7ed1e23e2f9f3cd78f2"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a62e71e6c0208e7ed1e23e2f9f3cd78f2">rpc_function_get_arg</a> (void *cookie)</td></tr>
@@ -482,6 +486,76 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Status. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a36c5dae2cc75f5d4a740c5db25e25d7a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rpc_context_set_post_call_hook </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a>&#160;</td>
+          <td class="paramname"><em>context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="service_8h.html#a02d3dbd723de9bd5140887c9935ff05a">rpc_function_t</a>&#160;</td>
+          <td class="paramname"><em>fn</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Installs a hook for every RPC function called.</p>
+<p>The hook will be called after an actual implementation of RPC function is called.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">context</td><td>Target context </td></tr>
+    <tr><td class="paramname">fn</td><td>Hook function </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ad1c0c9c7897adf4ad5e7ee9c40e545b8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rpc_context_set_pre_call_hook </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a>&#160;</td>
+          <td class="paramname"><em>context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="service_8h.html#a02d3dbd723de9bd5140887c9935ff05a">rpc_function_t</a>&#160;</td>
+          <td class="paramname"><em>fn</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Installs a hook for every RPC function called.</p>
+<p>The hook will be called before an actual implementation of RPC function gets called.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">context</td><td>Target context </td></tr>
+    <tr><td class="paramname">fn</td><td>Hook function </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
