@@ -50,11 +50,16 @@ static int rpct_read_func(const char *realm, const char *decl,
     rpc_object_t obj);
 static int rpct_read_file(const char *path);
 static inline bool rpct_realms_apply(rpct_realm_applier_t applier);
-static int rpct_validate_args(struct rpct_function *func, rpc_object_t args);
-static int rpct_validate_return(struct rpct_function *func,
+static bool rpct_validate_instance(rpc_object_t obj, struct rpct_error_context *ctx);
+static bool rpct_validate_args(struct rpct_function *func, rpc_object_t args);
+static bool rpct_validate_return(struct rpct_function *func,
     rpc_object_t result);
 static int rpct_parse_type(const char *decl, GPtrArray *variables);
 static void rpct_constraint_free(struct rpct_constraint *constraint);
+static void rpct_add_error(struct rpct_error_context *ctx, const char *fmt, ...);
+static void rpct_derive_error_context(struct rpct_error_context *newctx,
+    struct rpct_error_context *oldctx, const char *name);
+static void rpct_release_error_context(struct rpct_error_context *ctx);
 
 
 static struct rpct_context *context = NULL;
@@ -63,26 +68,31 @@ static struct rpct_class_handler class_handlers[] = {
 		.id = RPC_TYPING_STRUCT,
 		.name = "struct",
 		.member_fn = rpct_read_member,
+		.validate_fn = rpct_validate_struct
 	},
 	{
 		.id = RPC_TYPING_UNION,
 		.name = "union",
 		.member_fn = rpct_read_member,
+		.validate_fn = rpct_validate_union
 	},
 	{
 		.id = RPC_TYPING_TYPEDEF,
 		.name = "typedef",
 		.member_fn = NULL,
+		.validate_fn = NULL
 	},
 	{
 		.id = RPC_TYPING_ENUM,
 		.name = "enum",
 		.member_fn = rpct_read_enum_member,
+		.validate_fn = rpct_validate_enum
 	},
 	{
 		.id = RPC_TYPING_BUILTIN,
 		.name = "builtin",
 		.member_fn = NULL,
+		.validate_fn = rpct_validate_builtin
 	},
 	{}
 };
@@ -509,6 +519,8 @@ rpct_unwind_typei(struct rpct_typei *typei)
 
 		return (current);
 	}
+
+	return (NULL);
 }
 
 static inline bool
@@ -937,7 +949,7 @@ rpct_read_file(const char *path)
 	if (rpct_find_realm(file->realm) == NULL) {
 		realm = g_malloc0(sizeof(*realm));
 		realm->name = g_strdup(file->realm);
-		realm->types= g_hash_table_new_full(g_str_hash, g_str_equal,
+		realm->types = g_hash_table_new_full(g_str_hash, g_str_equal,
 		    g_free, (GDestroyNotify)rpct_type_free);
 		realm->functions= g_hash_table_new_full(g_str_hash, g_str_equal,
 		    g_free, (GDestroyNotify)rpct_function_free);
@@ -973,10 +985,116 @@ error:
 	return (-1);
 }
 
-static int
-rpct_validate_obj(struct rpct_typei *typei, rpc_object_t obj)
+static bool
+rpct_run_validators(struct rpct_typei *typei, rpc_object_t obj,
+    struct rpct_error_context *errctx)
+{
+	GHashTableIter iter;
+	const struct rpct_validator *v;
+	struct rpct_validation_result *result;
+	const char *typename = rpc_get_type_name(rpc_get_type(obj));
+	const char *key;
+	rpc_object_t value;
+	bool valid = true;
+
+	/* Run validators */
+	g_hash_table_iter_init(&iter, typei->constraints);
+	while (g_hash_table_iter_next(&iter, &key, &value)) {
+		v = rpc_find_validator(typename, key);
+		if (v == NULL) {
+			rpct_add_error(errctx, "Validator %s not found", key);
+			valid = false;
+			continue;
+		}
+
+		result = v->validate(obj, value, typei);
+		if (result == NULL) {
+			/* NULL means OK */
+			continue;
+		}
+
+		if (result->valid) {
+			/* Also OK */
+			continue;
+		}
+
+		valid = false;
+		rpct_add_error(errctx, "%s", result->error, result->extra);
+	}
+
+	return (valid);
+}
+
+static bool
+rpct_validate_struct(struct rpct_typei *typei, rpc_object_t obj,
+    struct rpct_error_context *errctx)
+{
+	__block bool valid;
+
+	rpct_members_apply(typei->type, ^(struct rpct_member *member) {
+		struct rpct_error_context newctx;
+		struct rpct_typei *mtypei;
+		rpc_object_t mvalue;
+
+		mtypei = rpct_instantiate_member(member, typei);
+		mvalue = rpc_dictionary_get_value(obj, member->name);
+
+		rpct_derive_error_context(&newctx, errctx, member->name);
+		rpct_validate_instance(mtypei, mvalue, &newctx);
+	    	rpct_release_error_context(&newctx);
+
+	    	return ((bool)true);
+	});
+
+	return (rpct_run_validators(typei, obj, errctx));
+}
+
+static bool
+rpct_validate_builtin(struct rpct_typei *typei, rpc_object_t obj,
+    struct rpct_error_context *errctx)
 {
 
+	switch (rpc_get_type(obj)) {
+	case RPC_TYPE_ARRAY:
+		break;
+
+	case RPC_TYPE_DICTIONARY:
+		break;
+	}
+
+	return (rpct_run_validators(typei, obj, errctx));
+}
+
+static bool
+rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
+    struct rpct_error_context *errctx)
+{
+	struct rpct_error_context newctx;
+	struct rpct_class_handler *handler;
+	bool valid;
+
+	/* Step 1: check type */
+	if (!rpct_type_is_compatible(typei, obj->ro_typei)) {
+		rpct_add_error(errctx,
+		    "Incompatible type %s, should be %s",
+		    obj->ro_typei->canonical_form,
+		    typei->canonical_form, NULL);
+
+		valid = false;
+		goto done;
+	}
+
+	/* Step 2: find class handler */
+	for (handler = &class_handlers[0]; handler->name != NULL; handler++) {
+		if (handler->id == typei->type->clazz)
+			break;
+	}
+
+	/* Step 3: run per-class validator */
+	valid = handler->validate_fn(typei, obj, errctx);
+
+done:
+	return (valid);
 }
 
 static int
@@ -1248,7 +1366,8 @@ rpct_members_apply(rpct_type_t type, rpct_member_applier_t applier)
 	return (flag);
 }
 
-rpc_object_t rpct_serialize(rpc_object_t object)
+rpc_object_t
+rpct_serialize(rpc_object_t object)
 {
 	rpc_object_t result;
 
@@ -1266,7 +1385,8 @@ rpc_object_t rpct_serialize(rpc_object_t object)
 	return (result);
 }
 
-rpc_object_t rpct_deserialize(rpc_object_t object)
+rpc_object_t
+rpct_deserialize(rpc_object_t object)
 {
 	rpc_object_t result;
 
@@ -1290,4 +1410,61 @@ rpc_object_t rpct_deserialize(rpc_object_t object)
 	rpc_retain(result);
 
 	return (result);
+}
+
+struct rpct_validation_result *
+rpct_validation_result_new(bool valid, const char *format, ...)
+{
+	struct rpct_validation_result *result;
+	va_list ap;
+
+	va_start(ap, format);
+	result = g_malloc0(sizeof(*result));
+	result->valid = valid;
+	result->error = g_strdup_vprintf(format, ap);
+	result->extra = va_arg(ap, rpc_object_t);
+	va_end(ap);
+
+	if (result->extra != NULL)
+		rpc_retain(result->extra);
+
+	return (result);
+}
+
+void
+rpct_validation_result_free(struct rpct_validation_result *result)
+{
+	if (result->error != NULL)
+		g_free(result->error);
+
+	if (result->extra != NULL)
+		rpc_release(result->extra);
+
+	g_free(result);
+}
+
+static void
+rpct_derive_error_context(struct rpct_error_context *newctx,
+    struct rpct_error_context *oldctx, const char *name)
+{
+
+	newctx->path = g_strdup_printf("%s.%s", oldctx->path, name);
+	newctx->errors = oldctx->errors;
+}
+
+static void
+rpct_release_error_context(struct rpct_error_context *ctx)
+{
+
+	g_free(ctx->path);
+}
+
+static void
+rpct_add_error(struct rpct_error_context *ctx, const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+
+	va_end(ap);
 }

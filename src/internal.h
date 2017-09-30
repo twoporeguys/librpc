@@ -75,6 +75,7 @@ typedef int gid_t;
 struct rpc_connection;
 struct rpc_credentials;
 struct rpc_server;
+struct rpct_validator;
 
 typedef int (*rpc_recv_msg_fn_t)(struct rpc_connection *, const void *, size_t,
     int *, size_t, struct rpc_credentials *);
@@ -177,6 +178,7 @@ enum rpc_inbound_state
 
 struct rpc_inbound_call
 {
+	rpc_context_t 		ric_context;
     	rpc_connection_t    	ric_conn;
 	rpc_object_t        	ric_id;
 	rpc_object_t        	ric_args;
@@ -383,12 +385,13 @@ struct rpct_class_handler
 	rpct_class_t		id;
 	const char *		name;
 	struct rpct_member *(*member_fn)(const char *, rpc_object_t, struct rpct_type *);
+	bool (*validate_fn)(struct rpct_typei *, rpc_object_t, struct rpct_error_context *);
 };
 
 struct rpct_validation_result
 {
 	bool 			valid;
-	const char *		error;
+	char *			error;
 	rpc_object_t 		extra;
 };
 
@@ -397,6 +400,12 @@ struct rpct_validator
 	const char *		type;
 	const char * 		name;
 	struct rpct_validation_result *(*validate)(rpc_object_t, rpc_object_t, struct rpct_typei *);
+};
+
+struct rpct_error_context
+{
+	char *			path;
+	GPtrArray *		errors;
 };
 
 
@@ -441,6 +450,7 @@ void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 
 struct rpct_validation_result *rpct_validation_result_new(bool valid,
     const char *format, ...);
+void rpct_validation_result_free(struct rpct_validation_result *result);
 void rpct_typei_free(struct rpct_typei *inst);
 
 #endif /* LIBRPC_INTERNAL_H */
