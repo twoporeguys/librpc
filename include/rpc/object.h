@@ -1183,6 +1183,16 @@ void rpc_dictionary_steal_value(rpc_object_t dictionary, const char *key,
 void rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key);
 
 /**
+ * Removes a key from dictionary and returns it.
+ *
+ * @param dictionary Input dictionary
+ * @param key Key to be detached
+ * @return Detached object
+ */
+rpc_object_t rpc_dictionary_detach_key(rpc_object_t dictionary,
+    const char *key);
+
+/**
  * Returns an object held by a provided dictionary at a given key.
  *
  * If a given key does not exist, then the function returns NULL.

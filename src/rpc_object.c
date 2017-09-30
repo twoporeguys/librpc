@@ -1807,6 +1807,21 @@ rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key)
 }
 
 inline rpc_object_t
+rpc_dictionary_detach_key(rpc_object_t dictionary, const char *key)
+{
+	rpc_object_t result;
+
+	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
+		abort();
+
+	result = rpc_dictionary_get_value(dictionary, key);
+	rpc_retain(result);
+	rpc_dictionary_remove_key(dictionary, key);
+
+	return (result);
+}
+
+inline rpc_object_t
 rpc_dictionary_get_value(rpc_object_t dictionary,
     const char *key)
 {
