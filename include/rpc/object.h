@@ -247,6 +247,14 @@ char *rpc_copy_description(rpc_object_t object);
 rpc_type_t rpc_get_type(rpc_object_t object);
 
 /**
+ * Returns the string name of a type.
+ *
+ * @param type Type
+ * @return Type name
+ */
+const char *rpc_get_type_name(rpc_type_t type);
+
+/**
  * Checks if an object is of type RPC_TYPE_ERROR.
  *
  * @param object Object to check.

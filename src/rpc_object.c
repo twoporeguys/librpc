@@ -269,7 +269,6 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 
 	for (i = fmt_cnt; fmt[i] != '\0'; i++) {
 		ch = fmt[i];
-
 		is_container = (array != NULL) || (dictionary != NULL);
 
 		if (array != NULL)
@@ -525,6 +524,16 @@ rpc_get_type(rpc_object_t object)
 	return (object->ro_type);
 }
 
+inline const char *
+rpc_get_type_name(rpc_type_t type)
+{
+
+	if (type > RPC_TYPE_ERROR)
+		return (NULL);
+
+	return (rpc_types[type]);
+}
+
 inline rpc_object_t
 rpc_copy(rpc_object_t object)
 {
@@ -600,7 +609,7 @@ rpc_copy(rpc_object_t object)
 		break;
 	}
 
-	result->ro_typei = rpct_copy_typei(object->ro_typei);
+	result->ro_typei = object->ro_typei;
 
 	return (result);
 }
