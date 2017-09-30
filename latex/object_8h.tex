@@ -239,6 +239,8 @@ void \hyperlink{object_8h_a486874b7177c98b8e82580d4aac9530c}{rpc\+\_\+dictionary
 \item 
 void \hyperlink{object_8h_a58b0d4747d853a75bdffd71a5235a9ba}{rpc\+\_\+dictionary\+\_\+remove\+\_\+key} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} dictionary, const char $\ast$key)
 \item 
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_a44da285d446d05bfc07f367caf22948f}{rpc\+\_\+dictionary\+\_\+detach\+\_\+key} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} dictionary, const char $\ast$key)
+\item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_ae2ffdb7864d2abc5313b33a1af1c19dd}{rpc\+\_\+dictionary\+\_\+get\+\_\+value} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} dictionary, const char $\ast$key)
 \item 
 size\+\_\+t \hyperlink{object_8h_ab280f7c274f2428f819c87d457e090c4}{rpc\+\_\+dictionary\+\_\+get\+\_\+count} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} dictionary)
@@ -1458,6 +1460,26 @@ Creates a new dictionary of objects, optionally populating it with data.
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 Newly created object. 
+\end{DoxyReturn}
+\index{object.\+h@{object.\+h}!rpc\+\_\+dictionary\+\_\+detach\+\_\+key@{rpc\+\_\+dictionary\+\_\+detach\+\_\+key}}
+\index{rpc\+\_\+dictionary\+\_\+detach\+\_\+key@{rpc\+\_\+dictionary\+\_\+detach\+\_\+key}!object.\+h@{object.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+dictionary\+\_\+detach\+\_\+key(rpc\+\_\+object\+\_\+t dictionary, const char $\ast$key)}{rpc_dictionary_detach_key(rpc_object_t dictionary, const char *key)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+dictionary\+\_\+detach\+\_\+key (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{dictionary, }
+\item[{const char $\ast$}]{key}
+\end{DoxyParamCaption}
+)}\hypertarget{object_8h_a44da285d446d05bfc07f367caf22948f}{}\label{object_8h_a44da285d446d05bfc07f367caf22948f}
+Removes a key from dictionary and returns it.
+
+
+\begin{DoxyParams}{Parameters}
+{\em dictionary} & Input dictionary \\
+\hline
+{\em key} & Key to be detached \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Detached object 
 \end{DoxyReturn}
 \index{object.\+h@{object.\+h}!rpc\+\_\+dictionary\+\_\+dup\+\_\+fd@{rpc\+\_\+dictionary\+\_\+dup\+\_\+fd}}
 \index{rpc\+\_\+dictionary\+\_\+dup\+\_\+fd@{rpc\+\_\+dictionary\+\_\+dup\+\_\+fd}!object.\+h@{object.\+h}}

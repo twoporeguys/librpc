@@ -106,6 +106,7 @@ var searchData=
   ['rpc_5fdictionary_5fapply',['rpc_dictionary_apply',['../object_8h.html#abc68776153fe2aee12d37c0623c5b94f',1,'object.h']]],
   ['rpc_5fdictionary_5fcreate',['rpc_dictionary_create',['../object_8h.html#a2d3b7789a013d7084663fc2f241b6d2c',1,'object.h']]],
   ['rpc_5fdictionary_5fcreate_5fex',['rpc_dictionary_create_ex',['../object_8h.html#a8428569b3059a2939c8c7121df0d3400',1,'object.h']]],
+  ['rpc_5fdictionary_5fdetach_5fkey',['rpc_dictionary_detach_key',['../object_8h.html#a44da285d446d05bfc07f367caf22948f',1,'object.h']]],
   ['rpc_5fdictionary_5fdup_5ffd',['rpc_dictionary_dup_fd',['../object_8h.html#a1ce8270c2a63ce9cde4305dcf8bc04ce',1,'object.h']]],
   ['rpc_5fdictionary_5fget_5fbool',['rpc_dictionary_get_bool',['../object_8h.html#a126bb730c66bb6f5041618863f664004',1,'object.h']]],
   ['rpc_5fdictionary_5fget_5fcount',['rpc_dictionary_get_count',['../object_8h.html#ab280f7c274f2428f819c87d457e090c4',1,'object.h']]],
