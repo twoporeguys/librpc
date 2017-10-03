@@ -129,12 +129,19 @@ Typedefs</h2></td></tr>
 <tr class="separator:a0d718518624626887a65ead4f5cde3b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a738ac0d076d329aece903bf1835bfcdd"><td class="memItemLeft" align="right" valign="top">typedef struct rpct_member *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a738ac0d076d329aece903bf1835bfcdd">rpct_member_t</a></td></tr>
 <tr class="separator:a738ac0d076d329aece903bf1835bfcdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb4e0d4277d29db7ff524786d2a895ba"><td class="memItemLeft" align="right" valign="top">typedef struct rpct_function *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a></td></tr>
+<tr class="separator:aeb4e0d4277d29db7ff524786d2a895ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a182f9a414fde2db9be9f83a78310f628"><td class="memItemLeft" align="right" valign="top">typedef struct rpct_argument *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a182f9a414fde2db9be9f83a78310f628">rpct_argument_t</a></td></tr>
+<tr class="separator:a182f9a414fde2db9be9f83a78310f628"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6babf38d00cc719a3531ee959b1e5478"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6babf38d00cc719a3531ee959b1e5478"></a>
 typedef bool(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_type_applier_t</b>) (<a class="el" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a>)</td></tr>
 <tr class="separator:a6babf38d00cc719a3531ee959b1e5478"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b34b1728df4e41085d0ec7ecf5e8b7d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1b34b1728df4e41085d0ec7ecf5e8b7d"></a>
 typedef bool(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_member_applier_t</b>) (<a class="el" href="typing_8h.html#a738ac0d076d329aece903bf1835bfcdd">rpct_member_t</a>)</td></tr>
 <tr class="separator:a1b34b1728df4e41085d0ec7ecf5e8b7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6b26e723a0d03145ce069d856c431d1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa6b26e723a0d03145ce069d856c431d1"></a>
+typedef bool(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_function_applier_t</b>) (<a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a>)</td></tr>
+<tr class="separator:aa6b26e723a0d03145ce069d856c431d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -182,14 +189,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_free</b> (void)<
 <tr class="separator:a6cee375ae342968abcbc33f0c66ca312"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5e41b9bdc0542b3b2ceeaea9616fcc3"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#ae5e41b9bdc0542b3b2ceeaea9616fcc3">rpct_type_get_generic_var</a> (<a class="el" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a> type, int index)</td></tr>
 <tr class="separator:ae5e41b9bdc0542b3b2ceeaea9616fcc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb3d720c62de941bed9060867b9d955d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afb3d720c62de941bed9060867b9d955d"></a>
-<a class="el" href="typing_8h.html#a738ac0d076d329aece903bf1835bfcdd">rpct_member_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_type_get_member</b> (<a class="el" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a>, const char *name)</td></tr>
-<tr class="separator:afb3d720c62de941bed9060867b9d955d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f327621ae6dbc69d3812723c53f3feb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6f327621ae6dbc69d3812723c53f3feb"></a>
-<a class="el" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_typei_get_type</b> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> typei)</td></tr>
+<tr class="memitem:a5b69519413246783b273583cfb3d09d4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#a738ac0d076d329aece903bf1835bfcdd">rpct_member_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a5b69519413246783b273583cfb3d09d4">rpct_type_get_member</a> (<a class="el" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a> type, const char *name)</td></tr>
+<tr class="separator:a5b69519413246783b273583cfb3d09d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f327621ae6dbc69d3812723c53f3feb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a6f327621ae6dbc69d3812723c53f3feb">rpct_typei_get_type</a> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> typei)</td></tr>
 <tr class="separator:a6f327621ae6dbc69d3812723c53f3feb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a940e59facf355b4f4195d9a23647c75f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a940e59facf355b4f4195d9a23647c75f"></a>
-<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_typei_get_generic_var</b> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> typei, const char *name)</td></tr>
+<tr class="memitem:a940e59facf355b4f4195d9a23647c75f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a940e59facf355b4f4195d9a23647c75f">rpct_typei_get_generic_var</a> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> typei, const char *name)</td></tr>
 <tr class="separator:a940e59facf355b4f4195d9a23647c75f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbb30599739b51d96d00454e0512eef1"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#afbb30599739b51d96d00454e0512eef1">rpct_typei_get_canonical_form</a> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> typei)</td></tr>
 <tr class="separator:afbb30599739b51d96d00454e0512eef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -201,10 +205,24 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_free</b> (void)<
 <tr class="separator:a5175bf9357d574e1002294ed68cc5a12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c4b5849fe131a6c22fed1984d5e0ffe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a4c4b5849fe131a6c22fed1984d5e0ffe">rpct_member_get_typei</a> (<a class="el" href="typing_8h.html#a738ac0d076d329aece903bf1835bfcdd">rpct_member_t</a> member)</td></tr>
 <tr class="separator:a4c4b5849fe131a6c22fed1984d5e0ffe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b100cc87c577459a1f20b7931993e9e"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a2b100cc87c577459a1f20b7931993e9e">rpct_function_get_name</a> (<a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a> func)</td></tr>
+<tr class="separator:a2b100cc87c577459a1f20b7931993e9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae84de71e11b0287a7c3c9bba103fecea"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#ae84de71e11b0287a7c3c9bba103fecea">rpct_function_get_description</a> (<a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a> func)</td></tr>
+<tr class="separator:ae84de71e11b0287a7c3c9bba103fecea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a701dc8f154c4ab25185d05e00379ac26"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a701dc8f154c4ab25185d05e00379ac26">rpct_function_get_return_type</a> (<a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a> func)</td></tr>
+<tr class="separator:a701dc8f154c4ab25185d05e00379ac26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fe5c9a73f38027d008d4d219c41fae6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0fe5c9a73f38027d008d4d219c41fae6"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_function_get_arguments_count</b> (<a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a> func)</td></tr>
+<tr class="separator:a0fe5c9a73f38027d008d4d219c41fae6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6d84fe41b6994acbe833b832fc69558"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af6d84fe41b6994acbe833b832fc69558"></a>
+<a class="el" href="typing_8h.html#a182f9a414fde2db9be9f83a78310f628">rpct_argument_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_function_get_argument</b> (<a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a> func, int index)</td></tr>
+<tr class="separator:af6d84fe41b6994acbe833b832fc69558"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b6d6a2e631f2eefd83ec54b5f307282"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a1b6d6a2e631f2eefd83ec54b5f307282">rpct_types_apply</a> (rpct_type_applier_t applier)</td></tr>
 <tr class="separator:a1b6d6a2e631f2eefd83ec54b5f307282"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6fc3d79df9153b9c6b10d929f041c3b0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a6fc3d79df9153b9c6b10d929f041c3b0">rpct_members_apply</a> (<a class="el" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a> type, rpct_member_applier_t applier)</td></tr>
 <tr class="separator:a6fc3d79df9153b9c6b10d929f041c3b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae81962b059bd8f93902da5951009c993"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#ae81962b059bd8f93902da5951009c993">rpct_functions_apply</a> (rpct_function_applier_t applier)</td></tr>
+<tr class="separator:ae81962b059bd8f93902da5951009c993"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a607ecfa5cfa13782fafd4d8da6fbd3d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a607ecfa5cfa13782fafd4d8da6fbd3d8">rpct_new_typei</a> (const char *decl)</td></tr>
 <tr class="separator:a607ecfa5cfa13782fafd4d8da6fbd3d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2074498f206a2d2bf9cf6e751d7b87b7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2074498f206a2d2bf9cf6e751d7b87b7"></a>
@@ -223,14 +241,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_free</b> (void)<
 <tr class="memitem:a5e40e2afc72e2eb1ab1bcf77cfb36cc9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5e40e2afc72e2eb1ab1bcf77cfb36cc9"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_set_value</b> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object, const char *value)</td></tr>
 <tr class="separator:a5e40e2afc72e2eb1ab1bcf77cfb36cc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab69f7ee39db3ab938d331c2877815d80"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab69f7ee39db3ab938d331c2877815d80"></a>
-<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_serialize</b> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
+<tr class="memitem:ab69f7ee39db3ab938d331c2877815d80"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#ab69f7ee39db3ab938d331c2877815d80">rpct_serialize</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:ab69f7ee39db3ab938d331c2877815d80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae36966ca7ca5448af0bb88d173036217"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae36966ca7ca5448af0bb88d173036217"></a>
-<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_deserialize</b> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
+<tr class="memitem:ae36966ca7ca5448af0bb88d173036217"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#ae36966ca7ca5448af0bb88d173036217">rpct_deserialize</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:ae36966ca7ca5448af0bb88d173036217"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f80e7ec74258ea0a5f739c61b5b623e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2f80e7ec74258ea0a5f739c61b5b623e"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_validate</b> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> typei, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> obj, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> *errors)</td></tr>
+<tr class="memitem:a2f80e7ec74258ea0a5f739c61b5b623e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a2f80e7ec74258ea0a5f739c61b5b623e">rpct_validate</a> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> typei, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> obj, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> *errors)</td></tr>
 <tr class="separator:a2f80e7ec74258ea0a5f739c61b5b623e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
@@ -257,9 +272,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_validate</b> (<a
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">^(<a class="code" href="typing_8h.html#a738ac0d076d329aece903bf1835bfcdd">rpct_member_t</a> _member) {                  \</div><div class="line">        return ((<span class="keywordtype">bool</span>)_fn(_arg, _member));          \</div><div class="line">    }</div><div class="ttc" id="typing_8h_html_a738ac0d076d329aece903bf1835bfcdd"><div class="ttname"><a href="typing_8h.html#a738ac0d076d329aece903bf1835bfcdd">rpct_member_t</a></div><div class="ttdeci">struct rpct_member * rpct_member_t</div><div class="ttdef"><b>Definition:</b> <a href="typing_8h_source.html#l00088">typing.h:88</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line">^(<a class="code" href="typing_8h.html#a738ac0d076d329aece903bf1835bfcdd">rpct_member_t</a> _member) {                  \</div><div class="line">        return ((<span class="keywordtype">bool</span>)_fn(_arg, _member));          \</div><div class="line">    }</div><div class="ttc" id="typing_8h_html_a738ac0d076d329aece903bf1835bfcdd"><div class="ttname"><a href="typing_8h.html#a738ac0d076d329aece903bf1835bfcdd">rpct_member_t</a></div><div class="ttdeci">struct rpct_member * rpct_member_t</div><div class="ttdef"><b>Definition:</b> <a href="typing_8h_source.html#l00090">typing.h:90</a></div></div>
 </div><!-- fragment -->
-<p>Definition at line <a class="el" href="typing_8h_source.html#l00109">109</a> of file <a class="el" href="typing_8h_source.html">typing.h</a>.</p>
+<p>Definition at line <a class="el" href="typing_8h_source.html#l00122">122</a> of file <a class="el" href="typing_8h_source.html">typing.h</a>.</p>
 
 </div>
 </div>
@@ -286,13 +301,43 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_validate</b> (<a
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">^(<a class="code" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a> _type) {                      \</div><div class="line">        return ((<span class="keywordtype">bool</span>)_fn(_arg, _type));            \</div><div class="line">    }</div><div class="ttc" id="typing_8h_html_ab85403e2a616bb3728cd489bd0619cbb"><div class="ttname"><a href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a></div><div class="ttdeci">struct rpct_type * rpct_type_t</div><div class="ttdef"><b>Definition:</b> <a href="typing_8h_source.html#l00058">typing.h:58</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line">^(<a class="code" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a> _type) {                      \</div><div class="line">        return ((<span class="keywordtype">bool</span>)_fn(_arg, _type));            \</div><div class="line">    }</div><div class="ttc" id="typing_8h_html_ab85403e2a616bb3728cd489bd0619cbb"><div class="ttname"><a href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a></div><div class="ttdeci">struct rpct_type * rpct_type_t</div><div class="ttdef"><b>Definition:</b> <a href="typing_8h_source.html#l00060">typing.h:60</a></div></div>
 </div><!-- fragment -->
-<p>Definition at line <a class="el" href="typing_8h_source.html#l00104">104</a> of file <a class="el" href="typing_8h_source.html">typing.h</a>.</p>
+<p>Definition at line <a class="el" href="typing_8h_source.html#l00117">117</a> of file <a class="el" href="typing_8h_source.html">typing.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Typedef Documentation</h2>
+<a class="anchor" id="a182f9a414fde2db9be9f83a78310f628"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct rpct_argument* <a class="el" href="typing_8h.html#a182f9a414fde2db9be9f83a78310f628">rpct_argument_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Represents a function argument. </p>
+
+<p>Definition at line <a class="el" href="typing_8h_source.html#l00100">100</a> of file <a class="el" href="typing_8h_source.html">typing.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aeb4e0d4277d29db7ff524786d2a895ba"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct rpct_function* <a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Represents a function. </p>
+
+<p>Definition at line <a class="el" href="typing_8h_source.html#l00095">95</a> of file <a class="el" href="typing_8h_source.html">typing.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a738ac0d076d329aece903bf1835bfcdd"></a>
 <div class="memitem">
 <div class="memproto">
@@ -304,7 +349,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_validate</b> (<a
 </div><div class="memdoc">
 <p>Represents a structure member or a union branch. </p>
 
-<p>Definition at line <a class="el" href="typing_8h_source.html#l00088">88</a> of file <a class="el" href="typing_8h_source.html">typing.h</a>.</p>
+<p>Definition at line <a class="el" href="typing_8h_source.html#l00090">90</a> of file <a class="el" href="typing_8h_source.html">typing.h</a>.</p>
 
 </div>
 </div>
@@ -327,7 +372,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_validate</b> (<a
 <li>HashMap&lt;K, V&gt; </li>
 </ul>
 
-<p>Definition at line <a class="el" href="typing_8h_source.html#l00058">58</a> of file <a class="el" href="typing_8h_source.html">typing.h</a>.</p>
+<p>Definition at line <a class="el" href="typing_8h_source.html#l00060">60</a> of file <a class="el" href="typing_8h_source.html">typing.h</a>.</p>
 
 </div>
 </div>
@@ -356,7 +401,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_validate</b> (<a
 <li>HashMap&lt;K, double&gt; </li>
 </ul>
 
-<p>Definition at line <a class="el" href="typing_8h_source.html#l00083">83</a> of file <a class="el" href="typing_8h_source.html">typing.h</a>.</p>
+<p>Definition at line <a class="el" href="typing_8h_source.html#l00085">85</a> of file <a class="el" href="typing_8h_source.html">typing.h</a>.</p>
 
 </div>
 </div>
@@ -389,11 +434,130 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_validate</b> (<a
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="typing_8h_source.html#l00093">93</a> of file <a class="el" href="typing_8h_source.html">typing.h</a>.</p>
+<p>Definition at line <a class="el" href="typing_8h_source.html#l00105">105</a> of file <a class="el" href="typing_8h_source.html">typing.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="ae36966ca7ca5448af0bb88d173036217"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> rpct_deserialize </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>object</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Deserializes object hierarchy previously serialized with <a class="el" href="typing_8h.html#ab69f7ee39db3ab938d331c2877815d80">rpct_serialize()</a></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">object</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ae84de71e11b0287a7c3c9bba103fecea"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* rpct_function_get_description </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a>&#160;</td>
+          <td class="paramname"><em>func</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the function description text.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">func</td><td>Function handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Function description or NULL </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a2b100cc87c577459a1f20b7931993e9e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* rpct_function_get_name </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a>&#160;</td>
+          <td class="paramname"><em>func</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the function name.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">func</td><td>Function handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Function name </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a701dc8f154c4ab25185d05e00379ac26"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> rpct_function_get_return_type </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a>&#160;</td>
+          <td class="paramname"><em>func</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">func</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ae81962b059bd8f93902da5951009c993"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rpct_functions_apply </td>
+          <td>(</td>
+          <td class="paramtype">rpct_function_applier_t&#160;</td>
+          <td class="paramname"><em>applier</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Iterates over the defined functions.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">applier</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a11c7b1d7e22ac92cc8ec164c2c1c0a76"></a>
 <div class="memitem">
 <div class="memproto">
@@ -658,6 +822,30 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_validate</b> (<a
 
 </div>
 </div>
+<a class="anchor" id="ab69f7ee39db3ab938d331c2877815d80"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> rpct_serialize </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>object</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Serializes object hierarchy preserving type information.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">object</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="adc77741fd4c89f3d4801a15418da725d"></a>
 <div class="memitem">
 <div class="memproto">
@@ -816,6 +1004,41 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_validate</b> (<a
 
 </div>
 </div>
+<a class="anchor" id="a5b69519413246783b273583cfb3d09d4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="typing_8h.html#a738ac0d076d329aece903bf1835bfcdd">rpct_member_t</a> rpct_type_get_member </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a>&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Looks up type member by name.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">type</td><td>Type handle </td></tr>
+    <tr><td class="paramname">name</td><td>Member name </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Member handle or NULL if not found </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a5317f289ac4dddca65130a597066ceeb"></a>
 <div class="memitem">
 <div class="memproto">
@@ -936,6 +1159,40 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_validate</b> (<a
 
 </div>
 </div>
+<a class="anchor" id="a940e59facf355b4f4195d9a23647c75f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> rpct_typei_get_generic_var </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td>
+          <td class="paramname"><em>typei</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">typei</td><td></td></tr>
+    <tr><td class="paramname">name</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ad197e18cc381248bd28c52d8854ea8ea"></a>
 <div class="memitem">
 <div class="memproto">
@@ -970,6 +1227,29 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_validate</b> (<a
 
 </div>
 </div>
+<a class="anchor" id="a6f327621ae6dbc69d3812723c53f3feb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a> rpct_typei_get_type </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td>
+          <td class="paramname"><em>typei</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">typei</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a1b6d6a2e631f2eefd83ec54b5f307282"></a>
 <div class="memitem">
 <div class="memproto">
@@ -987,6 +1267,48 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_validate</b> (<a
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">applier</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a2f80e7ec74258ea0a5f739c61b5b623e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rpct_validate </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td>
+          <td class="paramname"><em>typei</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>obj</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> *&#160;</td>
+          <td class="paramname"><em>errors</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Validates object against given type instance.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">typei</td><td></td></tr>
+    <tr><td class="paramname">obj</td><td></td></tr>
+    <tr><td class="paramname">errors</td><td></td></tr>
   </table>
   </dd>
 </dl>
