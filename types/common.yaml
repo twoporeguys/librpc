@@ -10,33 +10,27 @@ union Optional<T>:
     something:
       type: T
     nothing:
-      type: null
+      type: "null"
 
 type List<T>:
   description: A list of elements of the same type
   type: array
-  constraints:
-    value-type: T
 
 type Dict<T>:
   description: A dictionary of elements of the same type
   type: dictionary
-  constraints:
-    key-type: string
-    value-type: T
 
 type Iter<T>:
   description: Same as list, but meant to denote a streaming response
   type: array
-  constraints:
-    value-type: T
+  value-type: T
 
 union IPAddress:
   description: Can hold an IP address (either v4 or v6)
   members:
     ipv4:
       type: IPv4Address
-    ipb6:
+    ipv6:
       type: IPv6Address
 
 type IPv4Address:
