@@ -1099,6 +1099,18 @@ cdef class Typing(object):
     def load_types(self, path):
         rpct_load_types(path.encode('utf-8'))
 
+    def serialize(self, Object obj):
+        cdef rpc_object_t result
+
+        result = rpct_serialize(obj.obj)
+        return Object.init_from_ptr(result)
+
+    def deserialize(self, Object obj):
+        cdef rpc_object_t result
+
+        result = rpct_deserialize(obj.obj)
+        return Object.init_from_ptr(result)
+
     property types:
         def __get__(self):
             ret = []
@@ -1106,6 +1118,10 @@ cdef class Typing(object):
             return ret
 
     property functions:
+        def __get__(self):
+            pass
+
+    property files:
         def __get__(self):
             pass
 
@@ -1134,6 +1150,9 @@ cdef class TypeInstance(object):
     @staticmethod
     cdef TypeInstance init_from_ptr(rpct_typei_t typei):
         cdef TypeInstance ret
+
+        if typei == <rpct_typei_t>NULL:
+            return None
 
         ret = TypeInstance.__new__(TypeInstance)
         ret.rpctypei = typei
@@ -1170,6 +1189,13 @@ cdef class TypeInstance(object):
 
             return result
 
+    def validate(self, Object obj):
+        cdef rpc_object_t errors
+        cdef bint valid
+
+        valid = rpct_validate(self.rpctypei, obj.obj, &errors)
+        return valid, Object.init_from_ptr(errors)
+
 
 cdef class Type(object):
     cdef rpct_type_t rpctype
@@ -1195,6 +1221,10 @@ cdef class Type(object):
         def __get__(self):
             return rpct_type_get_name(self.rpctype).decode('utf-8')
 
+    property module:
+        def __get__(self):
+            return rpct_type_get_module(self.rpctype).decode('utf-8')
+
     property description:
         def __get__(self):
             return rpct_type_get_description(self.rpctype).decode('utf-8')
@@ -1202,6 +1232,16 @@ cdef class Type(object):
     property generic:
         def __get__(self):
             return rpct_type_get_generic_vars_count(self.rpctype) > 0
+
+    property generic_variables:
+        def __get__(self):
+            ret = []
+            count = rpct_type_get_generic_vars_count(self.rpctype)
+
+            for i in range(count):
+                ret.append(rpct_type_get_generic_var(self.rpctype, i).decode('utf-8'))
+
+            return ret
 
     property clazz:
         def __get__(self):
@@ -1217,18 +1257,41 @@ cdef class Type(object):
         def __get__(self):
             return TypeInstance.init_from_ptr(rpct_type_get_definition(self.rpctype))
 
+    property is_struct:
+        def __get__(self):
+            return self.clazz == TypeClass.STRUCT
+
+    property is_union:
+        def __get__(self):
+            return self.clazz == TypeClass.UNION
+
+    property is_enum:
+        def __get__(self):
+            return self.clazz == TypeClass.ENUM
+
+    property is_typedef:
+        def __get__(self):
+            return self.clazz == TypeClass.TYPEDEF
+
+    property is_builtin:
+        def __get__(self):
+            return self.clazz == TypeClass.BUILTIN
+
 
 cdef class Member(object):
     cdef rpct_member_t rpcmem
 
+    property type:
+        def __get__(self):
+            return TypeInstance.init_from_ptr(rpct_member_get_typei(self.rpcmem))
 
     property name:
         def __get__(self):
-            return rpct_member_get_name(self.rpcmem)
+            return rpct_member_get_name(self.rpcmem).decode('utf-8')
 
     property description:
         def __get__(self):
-            return rpct_member_get_description(self.rpcmem)
+            return rpct_member_get_description(self.rpcmem).decode('utf-8')
 
 
 cdef class StructUnionMember(Member):

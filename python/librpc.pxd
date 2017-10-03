@@ -273,12 +273,15 @@ cdef extern from "rpc/typing.h" nogil:
 
     const char *rpct_type_get_name(rpct_type_t type)
     const char *rpct_type_get_realm(rpct_type_t type)
+    const char *rpct_type_get_module(rpct_type_t type)
     const char *rpct_type_get_description(rpct_type_t type)
     rpct_type_t rpct_type_get_parent(rpct_type_t type)
     rpct_typei_t rpct_type_get_definition(rpct_type_t type)
 
     rpct_class_t rpct_type_get_class(rpct_type_t type)
     int rpct_type_get_generic_vars_count(rpct_type_t type)
+    const char *rpct_type_get_generic_var(rpct_type_t type, int index)
+
     rpct_type_t rpct_typei_get_type(rpct_typei_t typei)
     const char *rpct_typei_get_canonical_form(rpct_typei_t typei)
     rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, int index)
@@ -287,13 +290,18 @@ cdef extern from "rpc/typing.h" nogil:
 
     const char *rpct_member_get_name(rpct_member_t member)
     const char *rpct_member_get_description(rpct_member_t member)
+    rpct_typei_t rpct_member_get_typei(rpct_member_t member)
 
     rpct_typei_t rpct_get_typei(rpc_object_t instance)
     rpc_object_t rpct_get_value(rpc_object_t instance)
 
     rpct_typei_t rpct_new_typei(const char *decl)
     rpc_object_t rpct_new(const char *decl, const char *realm, rpc_object_t object)
-    rpc_object_t rpct_newi(rpct_typei_t typei, rpc_object_t object);
+    rpc_object_t rpct_newi(rpct_typei_t typei, rpc_object_t object)
+
+    rpc_object_t rpct_serialize(rpc_object_t object)
+    rpc_object_t rpct_deserialize(rpc_object_t object)
+    bint rpct_validate(rpct_typei_t typei, rpc_object_t obj, rpc_object_t *errors)
 
 
 cdef class Object(object):
