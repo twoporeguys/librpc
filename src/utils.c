@@ -36,6 +36,7 @@
 SET_DECLARE(tp_set, struct rpc_transport);
 SET_DECLARE(sr_set, struct rpc_serializer);
 SET_DECLARE(vr_set, struct rpct_validator);
+SET_DECLARE(cs_set, struct rpct_class_handler);
 static GPrivate rpc_last_error = G_PRIVATE_INIT((GDestroyNotify)rpc_release_impl);
 
 const struct rpc_transport *
@@ -80,6 +81,22 @@ rpc_find_validator(const char *type, const char *name)
 
 	SET_FOREACH(s, vr_set) {
 		if (!g_strcmp0((*s)->name, name) && !g_strcmp0((*s)->type, type))
+			return (*s);
+	}
+
+	return (NULL);
+}
+
+const struct rpct_class_handler *
+rpc_find_class_handler(const char *name, rpct_class_t cls)
+{
+	struct rpct_class_handler **s;
+
+	SET_FOREACH(s, cs_set) {
+		if (name != NULL && !g_strcmp0(name, (*s)->name))
+			return (*s);
+
+		if (name == NULL && cls == (*s)->id)
 			return (*s);
 	}
 

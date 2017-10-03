@@ -118,7 +118,24 @@ typedef bool (^rpct_member_applier_t)(rpct_member_t);
  */
 int rpct_init(void);
 void rpct_free(void);
+
+/**
+ * Loads type information from an interface definition file.
+ *
+ * @param path Path of the IDL file
+ * @return 0 on success, -1 on error
+ */
 int rpct_load_types(const char *path);
+
+/**
+ * Loads type information from an interface definition stream.
+ *
+ * File descriptor is closed once all definitions have been
+ * read from it or error happened.
+ *
+ * @param fd IDL stream file descriptor
+ * @return 0 on success, -1 on error
+ */
 int rpct_load_types_stream(int fd);
 
 /**
@@ -155,6 +172,14 @@ const char *rpct_type_get_name(rpct_type_t type);
 const char *rpct_type_get_realm(rpct_type_t type);
 
 /**
+ * Returns the module name type belongs to.
+ *
+ * @param type Type handle
+ * @return Module name
+ */
+const char *rpct_type_get_module(rpct_type_t type);
+
+/**
  * Returns the type description, as read from interface definition file.
  *
  * @param type Type handle
@@ -178,32 +203,128 @@ rpct_type_t rpct_type_get_parent(rpct_type_t type);
  */
 rpct_class_t rpct_type_get_class(rpct_type_t type);
 
+/**
+ * Returns the type definition (underlying type).
+ *
+ * This function returns the underlying type definition of a typedef.
+ * Returns NULL for other type classes.
+ *
+ * @param type Type handle
+ * @return Type definition handle or NULL.
+ */
 rpct_typei_t rpct_type_get_definition(rpct_type_t type);
 
+/**
+ * Returns a number of generic variables a type defines.
+ *
+ * @param type Type handle
+ * @return Number of generic variables (0 for non-generic types)
+ */
 int rpct_type_get_generic_vars_count(rpct_type_t type);
+
+/**
+ * Returns name of n-th generic variable.
+ *
+ * Returns NULL if index is out of the bounds.
+ *
+ * @param type Type handle
+ * @param index Generic variable index
+ * @return Generic variable name
+ */
+const char *rpct_type_get_generic_var(rpct_type_t type, int index);
+
 rpct_member_t rpct_type_get_member(rpct_type_t, const char *name);
 rpct_type_t rpct_typei_get_type(rpct_typei_t typei);
 rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, const char *name);
+
+/**
+ * Returns the type declaration string ("canonical form").
+ *
+ * @param typei Type instance handle
+ * @return Canonical type declaration string
+ */
 const char *rpct_typei_get_canonical_form(rpct_typei_t typei);
+
+/**
+ *
+ * @param typei
+ * @param member
+ * @return
+ */
 rpct_typei_t rpct_typei_get_member_type(rpct_typei_t typei, rpct_member_t member);
 
+/**
+ * Returns the name of a member.
+ *
+ * @param member Member handle
+ * @return Member name
+ */
 const char *rpct_member_get_name(rpct_member_t member);
+
+/**
+ * Returns the description of a member.
+ *
+ * @param member Member handle
+ * @return Description text or NULL.
+ */
 const char *rpct_member_get_description(rpct_member_t member);
+
+/**
+ * Returns the type of a member.
+ *
+ * This functions returns NULL for enum members, because they're untyped.
+ *
+ * @param member Member handle
+ * @return Type instance handle representing member type or NULL
+ */
 rpct_typei_t rpct_member_get_typei(rpct_member_t member);
 
+/**
+ * Iterates over the defined types.
+ *
+ * @param applier
+ * @return
+ */
 bool rpct_types_apply(rpct_type_applier_t applier);
+
+/**
+ * Iterates over the members of a given type.
+ * @param type
+ * @param applier
+ * @return
+ */
 bool rpct_members_apply(rpct_type_t type, rpct_member_applier_t applier);
 
+/**
+ * Creates a new type instance from provided declaration.
+ *
+ * @param decl Type declaration
+ * @return Type instance handle or NULL in case of error
+ */
 rpct_typei_t rpct_new_typei(const char *decl);
 rpc_object_t rpct_new(const char *decl, const char *realm, rpc_object_t object);
 rpc_object_t rpct_newi(rpct_typei_t typei, rpc_object_t object);
 
+/**
+ * Looks up type by name.
+ *
+ * @param name Type name
+ * @return Type handle or NULL if not found
+ */
 rpct_type_t rpct_get_type(const char *name);
+
+/**
+ * Returns type instance handle associated with an object.
+ *
+ * @param instance RPC object instance
+ * @return Type instance handle or NULL
+ */
 rpct_typei_t rpct_get_typei(rpc_object_t instance);
 rpc_object_t rpct_get_value(rpc_object_t instance);
 void rpct_set_value(rpc_object_t object, const char *value);
 
 rpc_object_t rpct_serialize(rpc_object_t object);
 rpc_object_t rpct_deserialize(rpc_object_t object);
+bool rpct_validate(rpct_typei_t typei, rpc_object_t obj, rpc_object_t *errors);
 
 #endif /* LIBRPC_TYPING_H */

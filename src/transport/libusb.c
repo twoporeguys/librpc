@@ -162,7 +162,7 @@ static const struct rpc_transport libusb_transport = {
 static GMutex usb_request_mtx;
 
 static int
-usb_hotplug_callback(libusb_context *ctx, libusb_device *dev,
+usb_hotplug_callback(libusb_context *ctx __unused, libusb_device *dev,
     libusb_hotplug_event evt, void *arg)
 {
 	struct usb_context *context = arg;

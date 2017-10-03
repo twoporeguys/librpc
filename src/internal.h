@@ -47,6 +47,7 @@
 #define	DECLARE_TRANSPORT(_transport)	DATA_SET(tp_set, _transport)
 #define	DECLARE_SERIALIZER(_serializer)	DATA_SET(sr_set, _serializer)
 #define	DECLARE_VALIDATOR(_validator)	DATA_SET(vr_set, _validator)
+#define	DECLARE_TYPE_CLASS(_class)	DATA_SET(cs_set, _class)
 
 #define	RPC_TRANSPORT_NO_SERIALIZE		(1 << 0)
 #define	RPC_TRANSPORT_CREDENTIALS		(1 << 1)
@@ -76,6 +77,7 @@ struct rpc_connection;
 struct rpc_credentials;
 struct rpc_server;
 struct rpct_validator;
+struct rpct_error_context;
 
 typedef int (*rpc_recv_msg_fn_t)(struct rpc_connection *, const void *, size_t,
     int *, size_t, struct rpc_credentials *);
@@ -85,6 +87,12 @@ typedef int (*rpc_get_fd_fn_t)(void *);
 typedef int (*rpc_close_fn_t)(struct rpc_connection *);
 typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
 typedef int (*rpc_teardown_fn_t)(struct rpc_server *);
+
+typedef struct rpct_member *(*rpct_member_fn_t)(const char *, rpc_object_t,
+    struct rpct_type *);
+typedef bool (*rpct_validate_fn_t)(struct rpct_typei *, rpc_object_t,
+    struct rpct_error_context *);
+typedef rpc_object_t (*rpct_serialize_fn_t)(rpc_object_t);
 
 struct rpc_query_iter
 {
@@ -333,6 +341,7 @@ struct rpct_type
 	char *			realm;
 	char *			name;
 	char *			description;
+	struct rpct_file *	file;
 	struct rpct_type *	parent;
 	struct rpct_typei *	definition;
 	bool			generic;
@@ -380,12 +389,19 @@ struct rpct_function
 
 };
 
+struct rpct_error_context
+{
+	char *			path;
+	GPtrArray *		errors;
+};
+
 struct rpct_class_handler
 {
 	rpct_class_t		id;
 	const char *		name;
-	struct rpct_member *(*member_fn)(const char *, rpc_object_t, struct rpct_type *);
-	bool (*validate_fn)(struct rpct_typei *, rpc_object_t, struct rpct_error_context *);
+    	rpct_member_fn_t 	member_fn;
+    	rpct_validate_fn_t 	validate_fn;
+    	rpct_serialize_fn_t 	serialize_fn;
 };
 
 struct rpct_validation_result
@@ -395,17 +411,19 @@ struct rpct_validation_result
 	rpc_object_t 		extra;
 };
 
+struct rpct_validation_error
+{
+	char *			path;
+	char *			message;
+	rpc_object_t 		obj;
+	rpc_object_t 		extra;
+};
+
 struct rpct_validator
 {
 	const char *		type;
 	const char * 		name;
 	struct rpct_validation_result *(*validate)(rpc_object_t, rpc_object_t, struct rpct_typei *);
-};
-
-struct rpct_error_context
-{
-	char *			path;
-	GPtrArray *		errors;
 };
 
 
@@ -428,7 +446,10 @@ int rpc_ptr_array_string_index(GPtrArray *arr, const char *str);
 
 const struct rpc_transport *rpc_find_transport(const char *scheme);
 const struct rpc_serializer *rpc_find_serializer(const char *name);
-const struct rpct_validator *rpc_find_validator(const char *type, const char *name);
+const struct rpct_validator *rpc_find_validator(const char *type,
+    const char *name);
+const struct rpct_class_handler *rpc_find_class_handler(const char *name,
+    rpct_class_t cls);
 
 void rpc_set_last_error(int code, const char *msg, rpc_object_t extra);
 void rpc_set_last_gerror(GError *error);
@@ -447,10 +468,19 @@ void rpc_connection_close_inbound_call(struct rpc_inbound_call *);
 
 void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 
-
 struct rpct_validation_result *rpct_validation_result_new(bool valid,
     const char *format, ...);
 void rpct_validation_result_free(struct rpct_validation_result *result);
 void rpct_typei_free(struct rpct_typei *inst);
+void rpct_add_error(struct rpct_error_context *ctx, const char *fmt, ...);
+void rpct_derive_error_context(struct rpct_error_context *newctx,
+    struct rpct_error_context *oldctx, const char *name);
+void rpct_release_error_context(struct rpct_error_context *ctx);
+bool rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
+    struct rpct_error_context *errctx);
+bool rpct_run_validators(struct rpct_typei *typei, rpc_object_t obj,
+    struct rpct_error_context *errctx);
+struct rpct_typei *rpct_instantiate_type(const char *decl,
+    const char *realm, struct rpct_typei *parent, struct rpct_type *ptype);
 
 #endif /* LIBRPC_INTERNAL_H */
