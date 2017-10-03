@@ -211,12 +211,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_free</b> (void)<
 <tr class="separator:ae84de71e11b0287a7c3c9bba103fecea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a701dc8f154c4ab25185d05e00379ac26"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a701dc8f154c4ab25185d05e00379ac26">rpct_function_get_return_type</a> (<a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a> func)</td></tr>
 <tr class="separator:a701dc8f154c4ab25185d05e00379ac26"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0fe5c9a73f38027d008d4d219c41fae6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0fe5c9a73f38027d008d4d219c41fae6"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_function_get_arguments_count</b> (<a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a> func)</td></tr>
+<tr class="memitem:a0fe5c9a73f38027d008d4d219c41fae6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a0fe5c9a73f38027d008d4d219c41fae6">rpct_function_get_arguments_count</a> (<a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a> func)</td></tr>
 <tr class="separator:a0fe5c9a73f38027d008d4d219c41fae6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6d84fe41b6994acbe833b832fc69558"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af6d84fe41b6994acbe833b832fc69558"></a>
-<a class="el" href="typing_8h.html#a182f9a414fde2db9be9f83a78310f628">rpct_argument_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_function_get_argument</b> (<a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a> func, int index)</td></tr>
+<tr class="memitem:af6d84fe41b6994acbe833b832fc69558"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#a182f9a414fde2db9be9f83a78310f628">rpct_argument_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#af6d84fe41b6994acbe833b832fc69558">rpct_function_get_argument</a> (<a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a> func, int index)</td></tr>
 <tr class="separator:af6d84fe41b6994acbe833b832fc69558"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d547889f674d2b89dbfcc455ba1c1df"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a0d547889f674d2b89dbfcc455ba1c1df">rpct_argument_get_description</a> (<a class="el" href="typing_8h.html#a182f9a414fde2db9be9f83a78310f628">rpct_argument_t</a> arg)</td></tr>
+<tr class="separator:a0d547889f674d2b89dbfcc455ba1c1df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabf561ff1e4a57cc7e7ad974f41b06d0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#aabf561ff1e4a57cc7e7ad974f41b06d0">rpct_argument_get_typei</a> (<a class="el" href="typing_8h.html#a182f9a414fde2db9be9f83a78310f628">rpct_argument_t</a> arg)</td></tr>
+<tr class="separator:aabf561ff1e4a57cc7e7ad974f41b06d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b6d6a2e631f2eefd83ec54b5f307282"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a1b6d6a2e631f2eefd83ec54b5f307282">rpct_types_apply</a> (rpct_type_applier_t applier)</td></tr>
 <tr class="separator:a1b6d6a2e631f2eefd83ec54b5f307282"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6fc3d79df9153b9c6b10d929f041c3b0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a6fc3d79df9153b9c6b10d929f041c3b0">rpct_members_apply</a> (<a class="el" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a> type, rpct_member_applier_t applier)</td></tr>
@@ -439,6 +441,53 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_set_value</b> (<
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="a0d547889f674d2b89dbfcc455ba1c1df"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* rpct_argument_get_description </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#a182f9a414fde2db9be9f83a78310f628">rpct_argument_t</a>&#160;</td>
+          <td class="paramname"><em>arg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns description string associated with the argument.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">arg</td><td>Argument handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Description string or NULL </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aabf561ff1e4a57cc7e7ad974f41b06d0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> rpct_argument_get_typei </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#a182f9a414fde2db9be9f83a78310f628">rpct_argument_t</a>&#160;</td>
+          <td class="paramname"><em>arg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">arg</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ae36966ca7ca5448af0bb88d173036217"></a>
 <div class="memitem">
 <div class="memproto">
@@ -460,6 +509,65 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_set_value</b> (<
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="af6d84fe41b6994acbe833b832fc69558"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="typing_8h.html#a182f9a414fde2db9be9f83a78310f628">rpct_argument_t</a> rpct_function_get_argument </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a>&#160;</td>
+          <td class="paramname"><em>func</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns argument handle for n-th argument of a function.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">func</td><td>Function handle </td></tr>
+    <tr><td class="paramname">index</td><td>Argument index </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Argument handle or NULL if index is out of bounds </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a0fe5c9a73f38027d008d4d219c41fae6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpct_function_get_arguments_count </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba">rpct_function_t</a>&#160;</td>
+          <td class="paramname"><em>func</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns number of arguments a function takes.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">func</td><td>Function handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of arguments </dd></dl>
 
 </div>
 </div>
@@ -524,13 +632,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>rpct_set_value</b> (<
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Returns the type instance handle representing return type of a function.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">func</td><td></td></tr>
+    <tr><td class="paramname">func</td><td>Function handle </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Return type instance handle </dd></dl>
 
 </div>
 </div>

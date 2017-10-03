@@ -115,11 +115,13 @@ const char $\ast$ \hyperlink{typing_8h_ae84de71e11b0287a7c3c9bba103fecea}{rpct\+
 \item 
 \hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} \hyperlink{typing_8h_a701dc8f154c4ab25185d05e00379ac26}{rpct\+\_\+function\+\_\+get\+\_\+return\+\_\+type} (\hyperlink{typing_8h_aeb4e0d4277d29db7ff524786d2a895ba}{rpct\+\_\+function\+\_\+t} func)
 \item 
-int {\bfseries rpct\+\_\+function\+\_\+get\+\_\+arguments\+\_\+count} (\hyperlink{typing_8h_aeb4e0d4277d29db7ff524786d2a895ba}{rpct\+\_\+function\+\_\+t} func)\hypertarget{typing_8h_a0fe5c9a73f38027d008d4d219c41fae6}{}\label{typing_8h_a0fe5c9a73f38027d008d4d219c41fae6}
-
+int \hyperlink{typing_8h_a0fe5c9a73f38027d008d4d219c41fae6}{rpct\+\_\+function\+\_\+get\+\_\+arguments\+\_\+count} (\hyperlink{typing_8h_aeb4e0d4277d29db7ff524786d2a895ba}{rpct\+\_\+function\+\_\+t} func)
 \item 
-\hyperlink{typing_8h_a182f9a414fde2db9be9f83a78310f628}{rpct\+\_\+argument\+\_\+t} {\bfseries rpct\+\_\+function\+\_\+get\+\_\+argument} (\hyperlink{typing_8h_aeb4e0d4277d29db7ff524786d2a895ba}{rpct\+\_\+function\+\_\+t} func, int index)\hypertarget{typing_8h_af6d84fe41b6994acbe833b832fc69558}{}\label{typing_8h_af6d84fe41b6994acbe833b832fc69558}
-
+\hyperlink{typing_8h_a182f9a414fde2db9be9f83a78310f628}{rpct\+\_\+argument\+\_\+t} \hyperlink{typing_8h_af6d84fe41b6994acbe833b832fc69558}{rpct\+\_\+function\+\_\+get\+\_\+argument} (\hyperlink{typing_8h_aeb4e0d4277d29db7ff524786d2a895ba}{rpct\+\_\+function\+\_\+t} func, int index)
+\item 
+const char $\ast$ \hyperlink{typing_8h_a0d547889f674d2b89dbfcc455ba1c1df}{rpct\+\_\+argument\+\_\+get\+\_\+description} (\hyperlink{typing_8h_a182f9a414fde2db9be9f83a78310f628}{rpct\+\_\+argument\+\_\+t} arg)
+\item 
+\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} \hyperlink{typing_8h_aabf561ff1e4a57cc7e7ad974f41b06d0}{rpct\+\_\+argument\+\_\+get\+\_\+typei} (\hyperlink{typing_8h_a182f9a414fde2db9be9f83a78310f628}{rpct\+\_\+argument\+\_\+t} arg)
 \item 
 bool \hyperlink{typing_8h_a1b6d6a2e631f2eefd83ec54b5f307282}{rpct\+\_\+types\+\_\+apply} (rpct\+\_\+type\+\_\+applier\+\_\+t applier)
 \item 
@@ -287,6 +289,38 @@ Definition at line 105 of file typing.\+h.
 
 
 \subsection{Function Documentation}
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+argument\+\_\+get\+\_\+description@{rpct\+\_\+argument\+\_\+get\+\_\+description}}
+\index{rpct\+\_\+argument\+\_\+get\+\_\+description@{rpct\+\_\+argument\+\_\+get\+\_\+description}!typing.\+h@{typing.\+h}}
+\subsubsection[{\texorpdfstring{rpct\+\_\+argument\+\_\+get\+\_\+description(rpct\+\_\+argument\+\_\+t arg)}{rpct_argument_get_description(rpct_argument_t arg)}}]{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ rpct\+\_\+argument\+\_\+get\+\_\+description (
+\begin{DoxyParamCaption}
+\item[{{\bf rpct\+\_\+argument\+\_\+t}}]{arg}
+\end{DoxyParamCaption}
+)}\hypertarget{typing_8h_a0d547889f674d2b89dbfcc455ba1c1df}{}\label{typing_8h_a0d547889f674d2b89dbfcc455ba1c1df}
+Returns description string associated with the argument.
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & Argument handle \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Description string or N\+U\+LL 
+\end{DoxyReturn}
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+argument\+\_\+get\+\_\+typei@{rpct\+\_\+argument\+\_\+get\+\_\+typei}}
+\index{rpct\+\_\+argument\+\_\+get\+\_\+typei@{rpct\+\_\+argument\+\_\+get\+\_\+typei}!typing.\+h@{typing.\+h}}
+\subsubsection[{\texorpdfstring{rpct\+\_\+argument\+\_\+get\+\_\+typei(rpct\+\_\+argument\+\_\+t arg)}{rpct_argument_get_typei(rpct_argument_t arg)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpct\+\_\+typei\+\_\+t} rpct\+\_\+argument\+\_\+get\+\_\+typei (
+\begin{DoxyParamCaption}
+\item[{{\bf rpct\+\_\+argument\+\_\+t}}]{arg}
+\end{DoxyParamCaption}
+)}\hypertarget{typing_8h_aabf561ff1e4a57cc7e7ad974f41b06d0}{}\label{typing_8h_aabf561ff1e4a57cc7e7ad974f41b06d0}
+
+\begin{DoxyParams}{Parameters}
+{\em arg} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+deserialize@{rpct\+\_\+deserialize}}
 \index{rpct\+\_\+deserialize@{rpct\+\_\+deserialize}!typing.\+h@{typing.\+h}}
 \subsubsection[{\texorpdfstring{rpct\+\_\+deserialize(rpc\+\_\+object\+\_\+t object)}{rpct_deserialize(rpc_object_t object)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpct\+\_\+deserialize (
@@ -303,6 +337,43 @@ Deserializes object hierarchy previously serialized with \hyperlink{typing_8h_ab
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 
+\end{DoxyReturn}
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+function\+\_\+get\+\_\+argument@{rpct\+\_\+function\+\_\+get\+\_\+argument}}
+\index{rpct\+\_\+function\+\_\+get\+\_\+argument@{rpct\+\_\+function\+\_\+get\+\_\+argument}!typing.\+h@{typing.\+h}}
+\subsubsection[{\texorpdfstring{rpct\+\_\+function\+\_\+get\+\_\+argument(rpct\+\_\+function\+\_\+t func, int index)}{rpct_function_get_argument(rpct_function_t func, int index)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpct\+\_\+argument\+\_\+t} rpct\+\_\+function\+\_\+get\+\_\+argument (
+\begin{DoxyParamCaption}
+\item[{{\bf rpct\+\_\+function\+\_\+t}}]{func, }
+\item[{int}]{index}
+\end{DoxyParamCaption}
+)}\hypertarget{typing_8h_af6d84fe41b6994acbe833b832fc69558}{}\label{typing_8h_af6d84fe41b6994acbe833b832fc69558}
+Returns argument handle for n-\/th argument of a function.
+
+
+\begin{DoxyParams}{Parameters}
+{\em func} & Function handle \\
+\hline
+{\em index} & Argument index \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Argument handle or N\+U\+LL if index is out of bounds 
+\end{DoxyReturn}
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+function\+\_\+get\+\_\+arguments\+\_\+count@{rpct\+\_\+function\+\_\+get\+\_\+arguments\+\_\+count}}
+\index{rpct\+\_\+function\+\_\+get\+\_\+arguments\+\_\+count@{rpct\+\_\+function\+\_\+get\+\_\+arguments\+\_\+count}!typing.\+h@{typing.\+h}}
+\subsubsection[{\texorpdfstring{rpct\+\_\+function\+\_\+get\+\_\+arguments\+\_\+count(rpct\+\_\+function\+\_\+t func)}{rpct_function_get_arguments_count(rpct_function_t func)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpct\+\_\+function\+\_\+get\+\_\+arguments\+\_\+count (
+\begin{DoxyParamCaption}
+\item[{{\bf rpct\+\_\+function\+\_\+t}}]{func}
+\end{DoxyParamCaption}
+)}\hypertarget{typing_8h_a0fe5c9a73f38027d008d4d219c41fae6}{}\label{typing_8h_a0fe5c9a73f38027d008d4d219c41fae6}
+Returns number of arguments a function takes.
+
+
+\begin{DoxyParams}{Parameters}
+{\em func} & Function handle \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Number of arguments 
 \end{DoxyReturn}
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+function\+\_\+get\+\_\+description@{rpct\+\_\+function\+\_\+get\+\_\+description}}
 \index{rpct\+\_\+function\+\_\+get\+\_\+description@{rpct\+\_\+function\+\_\+get\+\_\+description}!typing.\+h@{typing.\+h}}
@@ -345,13 +416,15 @@ Function name
 \item[{{\bf rpct\+\_\+function\+\_\+t}}]{func}
 \end{DoxyParamCaption}
 )}\hypertarget{typing_8h_a701dc8f154c4ab25185d05e00379ac26}{}\label{typing_8h_a701dc8f154c4ab25185d05e00379ac26}
+Returns the type instance handle representing return type of a function.
+
 
 \begin{DoxyParams}{Parameters}
-{\em func} & \\
+{\em func} & Function handle \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-
+Return type instance handle 
 \end{DoxyReturn}
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+functions\+\_\+apply@{rpct\+\_\+functions\+\_\+apply}}
 \index{rpct\+\_\+functions\+\_\+apply@{rpct\+\_\+functions\+\_\+apply}!typing.\+h@{typing.\+h}}
