@@ -24,30 +24,43 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <rpc/object.h>
-#include <rpc/typing.h>
+#include <inttypes.h>
 #include "../linker_set.h"
 #include "../internal.h"
 
-static struct rpct_validation_result *
-validate_dict_value_type(rpc_object_t obj, rpc_object_t params,
-    struct rpct_typei *typei)
+static bool
+validate_int64_range(rpc_object_t obj, rpc_object_t params,
+    struct rpct_typei *typei __unused, struct rpct_error_context *errctx)
 {
-	const char *decl = rpc_string_get_string_ptr(params);
-	struct rpct_typei *desired_type = rpct_new_typei(decl);
+	int64_t min = -1;
+	int64_t max = -1;
+	int64_t value;
+	bool valid = true;
 
-	rpct_dict(obj, ^(size_t idx, rpc_object_t value) {
+	rpc_object_unpack(params, "{i,i}", "min", &min, "max", &max);
+	value = rpc_int64_get_value(obj);
 
-	});
+	if (max != -1 && value > max) {
+		valid = false;
+		rpct_add_error(errctx,
+		    "Value %" PRId64 " is larger than the maximum allowed: %" PRId64,
+		    value, max, NULL);
+	}
 
-	/* NULL is a shorthand for "valid" */
-	return (NULL);
+	if (min != -1 && value < min) {
+		valid = false;
+		rpct_add_error(errctx,
+		    "Value %" PRId64 " is smaller than the minimum allowed: %" PRId64,
+		    value, max, NULL);
+	}
+
+	return (valid);
 }
 
-struct rpct_validator validator_dict_value_type = {
-	.type = "dict",
-	.name = "value-type",
-	.validate = validate_dict_value_type
+struct rpct_validator validator_int64_range = {
+	.type = "int64",
+	.name = "range",
+	.validate = validate_int64_range
 };
 
-DECLARE_VALIDATOR(validator_dict_value_type);
+DECLARE_VALIDATOR(validator_int64_range);

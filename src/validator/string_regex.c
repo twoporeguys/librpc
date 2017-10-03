@@ -24,15 +24,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <glib.h>
 #include "../linker_set.h"
 #include "../internal.h"
 
-static struct rpct_validation_result *
+static bool
 validate_string_regex(rpc_object_t obj, rpc_object_t params,
-    struct rpct_typei *typei __unused)
+    struct rpct_typei *typei __unused, struct rpct_error_context *errctx)
 {
-	/* NULL is a shorthand for "valid" */
-	return (NULL);
+	bool valid = true;
+
+	return (valid);
 }
 
 struct rpct_validator validator_string_regex = {

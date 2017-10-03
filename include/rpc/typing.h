@@ -330,18 +330,44 @@ const char *rpct_function_get_name(rpct_function_t func);
 const char *rpct_function_get_description(rpct_function_t func);
 
 /**
+ * Returns the type instance handle representing return type of a function.
  *
- * @param func
- * @return
+ * @param func Function handle
+ * @return Return type instance handle
  */
 rpct_typei_t rpct_function_get_return_type(rpct_function_t func);
 
+/**
+ * Returns number of arguments a function takes.
+ *
+ * @param func Function handle
+ * @return Number of arguments
+ */
 int rpct_function_get_arguments_count(rpct_function_t func);
 
+/**
+ * Returns argument handle for n-th argument of a function.
+ *
+ * @param func Function handle
+ * @param index Argument index
+ * @return Argument handle or NULL if index is out of bounds
+ */
 rpct_argument_t rpct_function_get_argument(rpct_function_t func, int index);
 
+/**
+ * Returns description string associated with the argument.
+ *
+ * @param arg Argument handle
+ * @return Description string or NULL
+ */
+const char *rpct_argument_get_description(rpct_argument_t arg);
 
-
+/**
+ *
+ * @param arg
+ * @return
+ */
+rpct_typei_t rpct_argument_get_typei(rpct_argument_t arg);
 
 /**
  * Iterates over the defined types.

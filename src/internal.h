@@ -384,7 +384,7 @@ struct rpct_function
 	char *			name;
 	char *			realm;
 	char *			description;
-	GHashTable *		arguments;
+	GPtrArray *		arguments;
 	struct rpct_typei *	result;
 
 };
@@ -410,13 +410,6 @@ struct rpct_class_handler
     	rpct_serialize_fn_t 	serialize_fn;
 };
 
-struct rpct_validation_result
-{
-	bool 			valid;
-	char *			error;
-	rpc_object_t 		extra;
-};
-
 struct rpct_validation_error
 {
 	char *			path;
@@ -429,7 +422,7 @@ struct rpct_validator
 {
 	const char *		type;
 	const char * 		name;
-	struct rpct_validation_result *(*validate)(rpc_object_t, rpc_object_t, struct rpct_typei *);
+	bool (*validate)(rpc_object_t, rpc_object_t, struct rpct_typei *, struct rpct_error_context *);
 };
 
 
@@ -474,9 +467,6 @@ void rpc_connection_close_inbound_call(struct rpc_inbound_call *);
 
 void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 
-struct rpct_validation_result *rpct_validation_result_new(bool valid,
-    const char *format, ...);
-void rpct_validation_result_free(struct rpct_validation_result *result);
 void rpct_typei_free(struct rpct_typei *inst);
 void rpct_add_error(struct rpct_error_context *ctx, const char *fmt, ...);
 void rpct_derive_error_context(struct rpct_error_context *newctx,

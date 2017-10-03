@@ -134,8 +134,9 @@ set(TYPE_CLASS_FILES
         src/class/builtin.c)
 
 set(VALIDATOR_FILES
-        src/validator/string_max_length.c
-        src/validator/string_min_length.c)
+        src/validator/string_length.c
+        src/validator/string_regex.c
+        src/validator/int64_range.c)
 
 if(BUILD_JSON)
     set(SERIALIZER_FILES

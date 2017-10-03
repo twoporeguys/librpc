@@ -44,7 +44,7 @@ CLASS_NAMES = {
     librpc.TypeClass.STRUCT: 'struct',
     librpc.TypeClass.UNION: 'union',
     librpc.TypeClass.ENUM: 'enum',
-    librpc.TypeClass.TYPEDEF: 'typedef',
+    librpc.TypeClass.TYPEDEF: 'type',
     librpc.TypeClass.BUILTIN: 'builtin'
 }
 

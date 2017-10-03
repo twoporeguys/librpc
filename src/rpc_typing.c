@@ -929,7 +929,6 @@ rpct_run_validators(struct rpct_typei *typei, rpc_object_t obj,
 {
 	GHashTableIter iter;
 	const struct rpct_validator *v;
-	struct rpct_validation_result *result;
 	const char *typename = rpc_get_type_name(rpc_get_type(obj));
 	const char *key;
 	rpc_object_t value;
@@ -946,19 +945,8 @@ rpct_run_validators(struct rpct_typei *typei, rpc_object_t obj,
 		}
 
 		debugf("Running validator %s on %s", key, typename);
-		result = v->validate(obj, value, typei);
-		if (result == NULL) {
-			/* NULL means OK */
-			continue;
-		}
-
-		if (result->valid) {
-			/* Also OK */
-			continue;
-		}
-
-		valid = false;
-		rpct_add_error(errctx, "%s", result->error, result->extra);
+		if (!v->validate(obj, value, typei, errctx))
+			valid = false;
 	}
 
 	return (valid);
@@ -1270,6 +1258,58 @@ rpct_member_get_typei(rpct_member_t member)
 	return (member->type);
 }
 
+const char *
+rpct_function_get_name(rpct_function_t func)
+{
+
+	return (func->name);
+}
+
+const char *
+rpct_function_get_description(rpct_function_t func)
+{
+
+	return (func->description);
+}
+
+rpct_typei_t
+rpct_function_get_return_type(rpct_function_t func)
+{
+
+	return (func->result);
+}
+
+int
+rpct_function_get_arguments_count(rpct_function_t func)
+{
+
+	return (func->arguments->len);
+}
+
+rpct_argument_t
+rpct_function_get_argument(rpct_function_t func, int index)
+{
+
+	if (index < 0 || index > func->arguments->len)
+		return (NULL);
+
+	return (g_ptr_array_index(func->arguments, index));
+}
+
+const char *
+rpct_argument_get_description(rpct_argument_t arg)
+{
+
+	return (arg->description);
+}
+
+rpct_typei_t
+rpct_argument_get_typei(rpct_argument_t arg)
+{
+
+	return (arg->type);
+}
+
 bool
 rpct_types_apply(rpct_type_applier_t applier)
 {
@@ -1367,37 +1407,6 @@ rpct_deserialize(rpc_object_t object)
 trivial:
 	typename = rpc_get_type_name(rpc_get_type(object));
 	return (rpct_new(typename, "*", object));
-}
-
-struct rpct_validation_result *
-rpct_validation_result_new(bool valid, const char *format, ...)
-{
-	struct rpct_validation_result *result;
-	va_list ap;
-
-	va_start(ap, format);
-	result = g_malloc0(sizeof(*result));
-	result->valid = valid;
-	result->error = g_strdup_vprintf(format, ap);
-	result->extra = va_arg(ap, rpc_object_t);
-	va_end(ap);
-
-	if (result->extra != NULL)
-		rpc_retain(result->extra);
-
-	return (result);
-}
-
-void
-rpct_validation_result_free(struct rpct_validation_result *result)
-{
-	if (result->error != NULL)
-		g_free(result->error);
-
-	if (result->extra != NULL)
-		rpc_release(result->extra);
-
-	g_free(result);
 }
 
 void

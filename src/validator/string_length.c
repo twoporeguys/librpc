@@ -27,28 +27,39 @@
 #include "../linker_set.h"
 #include "../internal.h"
 
-static struct rpct_validation_result *
-validate_string_min_length(rpc_object_t obj, rpc_object_t params,
-    struct rpct_typei *typei __unused)
+static bool
+validate_string_length(rpc_object_t obj, rpc_object_t params,
+    struct rpct_typei *typei __unused, struct rpct_error_context *errctx)
 {
-	size_t length = rpc_string_get_length(obj);
-	size_t min_length = (size_t)rpc_int64_get_value(params);
+	int64_t min = -1;
+	int64_t max = -1;
+	size_t length;
+	bool valid = true;
 
-	if (length < min_length) {
-		return (rpct_validation_result_new(false,
-		    "String length %d is smaller than minimum allowed: %d",
-		    length, min_length,
-		    NULL));
+	rpc_object_unpack(params, "{i,i}", "min", &min, "max", &max);
+	length = rpc_string_get_length(obj);
+
+	if (max != -1 && length > max) {
+		valid = false;
+		rpct_add_error(errctx,
+		    "String length %d is greater than the maximum allowed: %d",
+		    length, max, NULL);
 	}
 
-	/* NULL is a shorthand for "valid" */
-	return (NULL);
+	if (min != -1 && length < min) {
+		valid = false;
+		rpct_add_error(errctx,
+		    "String length %d is smaller than the minimum allowed: %d",
+		    length, min, NULL);
+	}
+
+	return (valid);
 }
 
-struct rpct_validator validator_string_min_length = {
+struct rpct_validator validator_string_length = {
 	.type = "string",
-	.name = "min-length",
-	.validate = validate_string_min_length
+	.name = "length",
+	.validate = validate_string_length
 };
 
-DECLARE_VALIDATOR(validator_string_min_length);
+DECLARE_VALIDATOR(validator_string_length);
