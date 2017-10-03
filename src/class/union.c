@@ -37,9 +37,9 @@ static struct rpct_member *union_read_member(const char *decl,
 	rpc_object_t constraints = NULL;
 
 	rpc_object_unpack(obj, "{s,s,v}",
-			  "type", &typedecl,
-			  "description", &description,
-			  "constraints", &constraints);
+	    "type", &typedecl,
+	    "description", &description,
+	    "constraints", &constraints);
 
 	member = g_malloc0(sizeof(*member));
 	member->name = g_strdup(decl);
@@ -47,7 +47,7 @@ static struct rpct_member *union_read_member(const char *decl,
 	member->origin = type;
 	member->type = rpct_instantiate_type(typedecl, type->realm, NULL, type);
 	member->constraints = g_hash_table_new_full(g_str_hash, g_str_equal,
-						    g_free, (GDestroyNotify)rpc_release_impl);
+	    g_free, (GDestroyNotify)rpc_release_impl);
 
 	if (constraints != NULL) {
 		rpc_dictionary_apply(constraints, ^(const char *key, rpc_object_t value) {
