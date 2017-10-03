@@ -126,6 +126,13 @@ set(SERIALIZER_FILES
         src/serializer/yaml.h
         contrib/mpack/mpack.c)
 
+set(TYPE_CLASS_FILES
+        src/class/struct.c
+        src/class/union.c
+        src/class/typedef.c
+        src/class/enum.c
+        src/class/builtin.c)
+
 set(VALIDATOR_FILES
         src/validator/string_max_length.c
         src/validator/string_min_length.c)
@@ -155,6 +162,7 @@ add_library(librpc SHARED
         ${HEADERS}
         ${TRANSPORT_FILES}
         ${SERIALIZER_FILES}
+        ${TYPE_CLASS_FILES}
         ${VALIDATOR_FILES}
         ${CORE_FILES})
 
