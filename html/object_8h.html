@@ -141,8 +141,14 @@ Typedefs</h2></td></tr>
 <tr class="separator:ab365f726b4975c0c8376b808d111d01b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac685a2916978204cdac2bc8c855f7b00"><td class="memItemLeft" align="right" valign="top">typedef bool(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#ac685a2916978204cdac2bc8c855f7b00">rpc_array_applier_t</a>) (size_t index, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
 <tr class="separator:ac685a2916978204cdac2bc8c855f7b00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32c161eb6dfc8ff9efbcbc988b483b6d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a32c161eb6dfc8ff9efbcbc988b483b6d"></a>
+typedef <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_array_mapper_t</b>) (size_t index, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
+<tr class="separator:a32c161eb6dfc8ff9efbcbc988b483b6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:affae185751cc133a978a305d97cd0c5a"><td class="memItemLeft" align="right" valign="top">typedef bool(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#affae185751cc133a978a305d97cd0c5a">rpc_dictionary_applier_t</a>) (const char *key, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
 <tr class="separator:affae185751cc133a978a305d97cd0c5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acba1dd35d6bd7ab701ce443c3c28aaf4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acba1dd35d6bd7ab701ce443c3c28aaf4"></a>
+typedef <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_dictionary_mapper_t</b>) (const char *key, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
+<tr class="separator:acba1dd35d6bd7ab701ce443c3c28aaf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37160a10fb9baee827063f3db977315d"><td class="memItemLeft" align="right" valign="top">typedef int(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a37160a10fb9baee827063f3db977315d">rpc_array_cmp_t</a>) (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> o1, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> o2)</td></tr>
 <tr class="separator:a37160a10fb9baee827063f3db977315d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -275,6 +281,8 @@ Functions</h2></td></tr>
 <tr class="separator:ac6d963cbeefa944666692696aebc663a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a6a6a91d7e5ccdadf4ae08d6aed1a2a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a8a6a6a91d7e5ccdadf4ae08d6aed1a2a">rpc_array_apply</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> array, <a class="el" href="object_8h.html#ac685a2916978204cdac2bc8c855f7b00">rpc_array_applier_t</a> applier)</td></tr>
 <tr class="separator:a8a6a6a91d7e5ccdadf4ae08d6aed1a2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab45e3b1cd2938d9ba037ed6557071423"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#ab45e3b1cd2938d9ba037ed6557071423">rpc_array_map</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> array, rpc_array_mapper_t mapper)</td></tr>
+<tr class="separator:ab45e3b1cd2938d9ba037ed6557071423"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37244ac71308e8f4e3d886727211c371"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a37244ac71308e8f4e3d886727211c371">rpc_array_contains</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> array, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
 <tr class="separator:a37244ac71308e8f4e3d886727211c371"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3abd89de4c7dc3d5d20ed624cf5f748"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aa3abd89de4c7dc3d5d20ed624cf5f748">rpc_array_reverse_apply</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> array, <a class="el" href="object_8h.html#ac685a2916978204cdac2bc8c855f7b00">rpc_array_applier_t</a> applier)</td></tr>
@@ -349,6 +357,8 @@ Functions</h2></td></tr>
 <tr class="separator:ab280f7c274f2428f819c87d457e090c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc68776153fe2aee12d37c0623c5b94f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#abc68776153fe2aee12d37c0623c5b94f">rpc_dictionary_apply</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> dictionary, <a class="el" href="object_8h.html#affae185751cc133a978a305d97cd0c5a">rpc_dictionary_applier_t</a> applier)</td></tr>
 <tr class="separator:abc68776153fe2aee12d37c0623c5b94f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6f681344bbd81b61cc59866b4b6201f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#ab6f681344bbd81b61cc59866b4b6201f">rpc_dictionary_map</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> dictionary, rpc_dictionary_mapper_t mapper)</td></tr>
+<tr class="separator:ab6f681344bbd81b61cc59866b4b6201f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4994f9aee8421b3b3e310e19af9746a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aa4994f9aee8421b3b3e310e19af9746a">rpc_dictionary_has_key</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> dictionary, const char *key)</td></tr>
 <tr class="separator:aa4994f9aee8421b3b3e310e19af9746a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f2906bc0e54bce4cba3bfe90285b582"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a2f2906bc0e54bce4cba3bfe90285b582">rpc_dictionary_set_bool</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> dictionary, const char *key, bool value)</td></tr>
@@ -417,7 +427,7 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">^(<span class="keywordtype">size_t</span> _index, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _value) {             \</div><div class="line">                return ((<span class="keywordtype">bool</span>)_fn(_arg, _index, _value));       \</div><div class="line">        }</div><div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00072">object.h:72</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to an rpc_array_applier_t block type. </p>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00118">118</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00129">129</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -447,7 +457,7 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">^(<a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _o1, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _o2) {             \</div><div class="line">                return ((<span class="keywordtype">int</span>)_fn(_arg, _o1, _o2));          \</div><div class="line">        }</div><div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00072">object.h:72</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to an rpc_array_cmp_t block type. </p>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00134">134</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00145">145</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -477,7 +487,7 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">^(<span class="keyword">const</span> <span class="keywordtype">char</span> *_key, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _value) {          \</div><div class="line">                return ((<span class="keywordtype">bool</span>)_fn(_arg, _key, _value));         \</div><div class="line">        }</div><div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00072">object.h:72</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to an rpc_dictionary_applier_t block type. </p>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00126">126</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00137">137</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -502,7 +512,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00262">262</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00273">273</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -529,7 +539,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00272">272</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00283">283</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -579,7 +589,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Negative value if a &lt; b ; zero if a = b ; positive value if a &gt; b. </dd></dl>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00113">113</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00124">124</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -603,7 +613,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Continue iteration signal. </dd></dl>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00097">97</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00102">102</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -768,12 +778,12 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Iterates over a given array. For each of elements executes an applier block, providing a current index and a current value as an applier block's arguments.</p>
+<p>Iterates over a given array. For each of elements executes an applier block, providing a current index and a current value an an applier block's arguments.</p>
 <p>If an applier returns false, iteration is terminated and the function returns true (terminated). Otherwise the function iterates to the end of an input array and returns false (finished).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">array</td><td>Input array. </td></tr>
-    <tr><td class="paramname">applier</td><td>Block of code to be executed for each of an array's elements. </td></tr>
+    <tr><td class="paramname">applier</td><td>Block of code to be executed for each array element. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1265,6 +1275,40 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Object at a given index. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ab45e3b1cd2938d9ba037ed6557071423"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rpc_array_map </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">rpc_array_mapper_t&#160;</td>
+          <td class="paramname"><em>mapper</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Iterates over a given array and replaces each element of said array with a result of mapper block.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">array</td><td>Input array </td></tr>
+    <tr><td class="paramname">mapper</td><td>Block of code to be executed for each array element </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -2750,6 +2794,39 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Boolean check result. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ab6f681344bbd81b61cc59866b4b6201f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rpc_dictionary_map </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>dictionary</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">rpc_dictionary_mapper_t&#160;</td>
+          <td class="paramname"><em>mapper</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dictionary</td><td></td></tr>
+    <tr><td class="paramname">mapper</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
