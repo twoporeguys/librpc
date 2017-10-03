@@ -451,6 +451,7 @@ rpc_release_impl(rpc_object_t object)
 		return (0);
 
 	assert(object->ro_refcnt > 0);
+
 	if (g_atomic_int_dec_and_test(&object->ro_refcnt)) {
 		switch (object->ro_type) {
 		case RPC_TYPE_BINARY:
@@ -1518,6 +1519,21 @@ rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier)
 	return (flag);
 }
 
+inline void
+rpc_array_map(rpc_object_t array, rpc_array_mapper_t mapper)
+{
+	rpc_object_t oldv, newv;
+	size_t i;
+
+	for (i = 0; i < array->ro_value.rv_list->len; i++) {
+		oldv = g_ptr_array_index(array->ro_value.rv_list, i);
+		newv = mapper(i, oldv);
+		g_ptr_array_index(array->ro_value.rv_list, i) = newv;
+		rpc_retain(newv);
+		rpc_release(oldv);
+	}
+}
+
 inline bool
 rpc_array_contains(rpc_object_t array, rpc_object_t value)
 {
@@ -1815,6 +1831,9 @@ rpc_dictionary_detach_key(rpc_object_t dictionary, const char *key)
 		abort();
 
 	result = rpc_dictionary_get_value(dictionary, key);
+	if (result == NULL)
+		return (NULL);
+
 	rpc_retain(result);
 	rpc_dictionary_remove_key(dictionary, key);
 
@@ -1854,6 +1873,25 @@ rpc_dictionary_apply(rpc_object_t dictionary, rpc_dictionary_applier_t applier)
 	}
 
 	return (flag);
+}
+
+inline void
+rpc_dictionary_map(rpc_object_t dictionary, rpc_dictionary_mapper_t mapper)
+{
+	GHashTableIter iter;
+	gpointer key, value;
+	rpc_object_t oldv, newv;
+	size_t i;
+
+	g_hash_table_iter_init(&iter, dictionary->ro_value.rv_dict);
+
+	while (g_hash_table_iter_next(&iter, &key, &value)) {
+		oldv = (rpc_object_t)value;
+		newv = mapper((const char *)key, oldv);
+		rpc_retain(newv);
+		g_hash_table_iter_replace(&iter, newv);
+		//rpc_release(oldv);
+	}
 }
 
 inline bool
