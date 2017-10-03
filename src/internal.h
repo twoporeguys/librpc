@@ -389,6 +389,12 @@ struct rpct_function
 
 };
 
+struct rpct_argument
+{
+	struct rpct_typei *	type;
+	const char *		description;
+};
+
 struct rpct_error_context
 {
 	char *			path;

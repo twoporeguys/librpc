@@ -40,6 +40,8 @@
 struct rpct_type;
 struct rpct_typei;
 struct rpct_member;
+struct rpct_function;
+struct rpct_argument;
 
 /**
  * Represents a type, as defined in the interface definition file.
@@ -88,6 +90,16 @@ typedef struct rpct_typei *rpct_typei_t;
 typedef struct rpct_member *rpct_member_t;
 
 /**
+ * Represents a function.
+ */
+typedef struct rpct_function *rpct_function_t;
+
+/**
+ * Represents a function argument.
+ */
+typedef struct rpct_argument *rpct_argument_t;
+
+/**
  * A type class.
  */
 typedef enum {
@@ -100,6 +112,7 @@ typedef enum {
 
 typedef bool (^rpct_type_applier_t)(rpct_type_t);
 typedef bool (^rpct_member_applier_t)(rpct_member_t);
+typedef bool (^rpct_function_applier_t)(rpct_function_t);
 
 #define	RPCT_TYPE_APPLIER(_fn, _arg)					\
 	^(rpct_type_t _type) {						\
@@ -233,8 +246,28 @@ int rpct_type_get_generic_vars_count(rpct_type_t type);
  */
 const char *rpct_type_get_generic_var(rpct_type_t type, int index);
 
-rpct_member_t rpct_type_get_member(rpct_type_t, const char *name);
+/**
+ * Looks up type member by name.
+ *
+ * @param type Type handle
+ * @param name Member name
+ * @return Member handle or NULL if not found
+ */
+rpct_member_t rpct_type_get_member(rpct_type_t type, const char *name);
+
+/**
+ *
+ * @param typei
+ * @return
+ */
 rpct_type_t rpct_typei_get_type(rpct_typei_t typei);
+
+/**
+ *
+ * @param typei
+ * @param name
+ * @return
+ */
 rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, const char *name);
 
 /**
@@ -251,7 +284,8 @@ const char *rpct_typei_get_canonical_form(rpct_typei_t typei);
  * @param member
  * @return
  */
-rpct_typei_t rpct_typei_get_member_type(rpct_typei_t typei, rpct_member_t member);
+rpct_typei_t rpct_typei_get_member_type(rpct_typei_t typei,
+    rpct_member_t member);
 
 /**
  * Returns the name of a member.
@@ -280,6 +314,36 @@ const char *rpct_member_get_description(rpct_member_t member);
 rpct_typei_t rpct_member_get_typei(rpct_member_t member);
 
 /**
+ * Returns the function name.
+ *
+ * @param func Function handle
+ * @return Function name
+ */
+const char *rpct_function_get_name(rpct_function_t func);
+
+/**
+ * Returns the function description text.
+ *
+ * @param func Function handle
+ * @return Function description or NULL
+ */
+const char *rpct_function_get_description(rpct_function_t func);
+
+/**
+ *
+ * @param func
+ * @return
+ */
+rpct_typei_t rpct_function_get_return_type(rpct_function_t func);
+
+int rpct_function_get_arguments_count(rpct_function_t func);
+
+rpct_argument_t rpct_function_get_argument(rpct_function_t func, int index);
+
+
+
+
+/**
  * Iterates over the defined types.
  *
  * @param applier
@@ -294,6 +358,14 @@ bool rpct_types_apply(rpct_type_applier_t applier);
  * @return
  */
 bool rpct_members_apply(rpct_type_t type, rpct_member_applier_t applier);
+
+/**
+ * Iterates over the defined functions.
+ *
+ * @param applier
+ * @return
+ */
+bool rpct_functions_apply(rpct_function_applier_t applier);
 
 /**
  * Creates a new type instance from provided declaration.
@@ -323,8 +395,30 @@ rpct_typei_t rpct_get_typei(rpc_object_t instance);
 rpc_object_t rpct_get_value(rpc_object_t instance);
 void rpct_set_value(rpc_object_t object, const char *value);
 
+/**
+ * Serializes object hierarchy preserving type information.
+ *
+ * @param object
+ * @return
+ */
 rpc_object_t rpct_serialize(rpc_object_t object);
+
+/**
+ * Deserializes object hierarchy previously serialized with rpct_serialize()
+ *
+ * @param object
+ * @return
+ */
 rpc_object_t rpct_deserialize(rpc_object_t object);
+
+/**
+ * Validates object against given type instance.
+ *
+ * @param typei
+ * @param obj
+ * @param errors
+ * @return
+ */
 bool rpct_validate(rpct_typei_t typei, rpc_object_t obj, rpc_object_t *errors);
 
 #endif /* LIBRPC_TYPING_H */
