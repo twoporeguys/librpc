@@ -60,66 +60,66 @@ rpc_yaml_read_ext(yaml_parser_t *parser, const char *type)
 			return (NULL);
 
 		switch (event.type) {
-			case YAML_SCALAR_EVENT:
-				value = (const char *)event.data.scalar.value;
-				length = event.data.scalar.length;
-				if (read_key) {
-					g_free(key);
-					key = g_strndup(value, length);
+		case YAML_SCALAR_EVENT:
+			value = (const char *)event.data.scalar.value;
+			length = event.data.scalar.length;
+			if (read_key) {
+				g_free(key);
+				key = g_strndup(value, length);
 
-					read_key = false;
-					break;
-				}
+				read_key = false;
+				break;
+			}
 
-				read_key = true;
+			read_key = true;
 
-				if (!g_strcmp0(key, YAML_ERROR_MSG)) {
-					err_msg = g_strndup(value, length);
-					break;
-				}
+			if (!g_strcmp0(key, YAML_ERROR_MSG)) {
+				err_msg = g_strndup(value, length);
+				break;
+			}
 
-				if (!g_strcmp0(key, YAML_ERROR_XTRA)) {
-					err_extra = rpc_yaml_deserialize(value,
-					    length);
-					break;
-				}
+			if (!g_strcmp0(key, YAML_ERROR_XTRA)) {
+				err_extra = rpc_yaml_deserialize(value,
+				    length);
+				break;
+			}
 
-				if (!g_strcmp0(key, YAML_ERROR_STCK)) {
-					err_stack = rpc_string_create_len(value,
-					    length);
-					break;
-				}
+			if (!g_strcmp0(key, YAML_ERROR_STCK)) {
+				err_stack = rpc_string_create_len(value,
+				    length);
+				break;
+			}
 
-				intval = (int)g_ascii_strtoll(value,
-				    &endptr, 10);
+			intval = (int)g_ascii_strtoll(value,
+			    &endptr, 10);
 
-				if (!g_strcmp0(key, YAML_ERROR_CODE)) {
-					err_code = intval;
-					break;
-				}
+			if (!g_strcmp0(key, YAML_ERROR_CODE)) {
+				err_code = intval;
+				break;
+			}
 
 #if defined(__linux__)
-				if (!g_strcmp0(key, YAML_SHMEM_ADDR)) {
-					shmem_addr = (off_t)intval;
-					break;
-				}
+			if (!g_strcmp0(key, YAML_SHMEM_ADDR)) {
+				shmem_addr = (off_t)intval;
+				break;
+			}
 
-				if (!g_strcmp0(key, YAML_SHMEM_LEN)) {
-					shmem_size = (size_t)intval;
-					break;
-				}
+			if (!g_strcmp0(key, YAML_SHMEM_LEN)) {
+				shmem_size = (size_t)intval;
+				break;
+			}
 
-				if (!g_strcmp0(key, YAML_SHMEM_FD)) {
-					shmem_fd = intval;
-					break;
-				}
+			if (!g_strcmp0(key, YAML_SHMEM_FD)) {
+				shmem_fd = intval;
+				break;
+			}
 #endif
 
-			case YAML_MAPPING_END_EVENT:
-				goto done;
+		case YAML_MAPPING_END_EVENT:
+			goto done;
 
-			default:
-				break;
+		default:
+			break;
 		}
 
 		yaml_event_delete(&event);
