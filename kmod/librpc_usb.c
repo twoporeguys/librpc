@@ -270,15 +270,22 @@ librpc_usb_read_log(struct librpc_usb_device *rpcusbdev)
 	struct librpc_usb_log *log = rpcusbdev->log;
 	int rpipe = usb_rcvctrlpipe(rpcusbdev->udev, 1);
 	int ret;
+	enum librpc_usb_status status;
 
-	ret = usb_control_msg(udev, rpipe, LIBRPC_USB_READ_LOG,
-	    USB_TYPE_VENDOR | USB_DIR_IN, 0, 0,
-	    rpcusbdev->log, sizeof(*rpcusbdev->log) + LIBRPC_MAX_MSGSIZE, 500);
+	while (1) {
+		ret = usb_control_msg(udev, rpipe, LIBRPC_USB_READ_LOG,
+		    USB_TYPE_VENDOR | USB_DIR_IN, 0, 0, rpcusbdev->log,
+		    sizeof(*rpcusbdev->log) + LIBRPC_MAX_MSGSIZE, 500);
 
-	if (ret < 1)
-		return;
+		if (ret < 1)
+			return;
 
-	librpc_device_log(&udev->dev, log->buffer, ret - 1);
+		status = rpcusbdev->log->status;
+		if (status == LIBRPC_USB_OK)
+			break;
+
+		librpc_device_log(&udev->dev, log->buffer, ret - 1);
+	}
 }
 
 static int
