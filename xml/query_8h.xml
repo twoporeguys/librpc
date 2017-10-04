@@ -1,0 +1,573 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="query_8h" kind="file" language="C++">
+    <compoundname>query.h</compoundname>
+    <includes refid="object_8h" local="yes">object.h</includes>
+    <incdepgraph>
+      <node id="123">
+        <label>/code/include/rpc/query.h</label>
+        <link refid="query.h"/>
+        <childnode refid="124" relation="include">
+        </childnode>
+      </node>
+      <node id="126">
+        <label>stdbool.h</label>
+      </node>
+      <node id="127">
+        <label>stdarg.h</label>
+      </node>
+      <node id="125">
+        <label>stdint.h</label>
+      </node>
+      <node id="128">
+        <label>sys/types.h</label>
+      </node>
+      <node id="124">
+        <label>object.h</label>
+        <link refid="object_8h"/>
+        <childnode refid="125" relation="include">
+        </childnode>
+        <childnode refid="126" relation="include">
+        </childnode>
+        <childnode refid="127" relation="include">
+        </childnode>
+        <childnode refid="128" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <innerclass refid="structrpc__query__params" prot="public">rpc_query_params</innerclass>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="query_8h_1ac5142dc38666b2011833bab884b6af9d" prot="public" static="no">
+        <name>RPC_QUERY_CB</name>
+        <param><defname>_fn</defname></param>
+        <param><defname>_arg</defname></param>
+        <initializer>^(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref> _object) {					\
+                return ((<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref>)_fn(_arg, _object));		\
+        }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Converts function pointer to an rpc_query_cb_t block type. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/query.h" line="63" column="9" bodyfile="/code/include/rpc/query.h" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" prot="public" static="no">
+        <type>struct rpc_query_iter *</type>
+        <definition>typedef struct rpc_query_iter* rpc_query_iter_t</definition>
+        <argsstring></argsstring>
+        <name>rpc_query_iter_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Definition of rpc_query_iter pointer type. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/query.h" line="43" column="1" bodyfile="/code/include/rpc/query.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="query_8h_1a3dd3753b86199ebdc48d1cb3ab4cf985" prot="public" static="no">
+        <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref>(^</type>
+        <definition>typedef rpc_object_t(^ rpc_query_cb_t) (rpc_object_t object)</definition>
+        <argsstring>)(rpc_object_t object)</argsstring>
+        <name>rpc_query_cb_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Definition of query callback block type.</para><para>Query functions are checking if that block is defined within <ref refid="structrpc__query__params" kindref="compound">rpc_query_params</ref> structure provided to the query function - if so, then body of the callback is being executed for each of the elements matching query, before yielding them as results. Output of the callback block becomes effectively the output of a query function.</para><para>Keep in mind that returning NULL from the callback block is considered as skipping currently processed chunk of the result - query function won&apos;t return NULL, but look for the next matching element instead. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/query.h" line="58" column="1" bodyfile="/code/include/rpc/query.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="query_8h_1a831694aa25fae9a6c3243911c3defb94" prot="public" static="no">
+        <type>struct <ref refid="structrpc__query__params" kindref="compound">rpc_query_params</ref> *</type>
+        <definition>typedef struct rpc_query_params* rpc_query_params_t</definition>
+        <argsstring></argsstring>
+        <name>rpc_query_params_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Definition of <ref refid="structrpc__query__params" kindref="compound">rpc_query_params</ref> pointer type. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/query.h" line="104" column="1" bodyfile="/code/include/rpc/query.h" bodystart="104" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="query_8h_1a01933536bbe1cf312e19e164d16c5c39" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+        <definition>rpc_object_t rpc_query_get</definition>
+        <argsstring>(rpc_object_t object, const char *path, rpc_object_t default_val)</argsstring>
+        <name>rpc_query_get</name>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>object</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>path</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>default_val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The function follows a given &quot;key1.key2.0.key3.1&quot; like path to find the last element in the path inside of the provided object and return it.</para><para>If the function cannot resolve the whole path (i.e. some of intermediate container objects does not have the required key specified), then a provided default value is returned.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Object to perform the lookup on. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Search path - &apos;.&apos; character is required between each key/idx pair. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>default_val</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Default value to be returned if desired object couldn&apos;t be found - nullable. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Found RPC object or the default value. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/query.h" line="121" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="query_8h_1a6d582b462dd592a3b22a2cf6748962eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rpc_query_set</definition>
+        <argsstring>(rpc_object_t object, const char *path, rpc_object_t value, bool steal)</argsstring>
+        <name>rpc_query_set</name>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>object</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>path</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>steal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The function follows a given &quot;key1.key2.0.key3.1&quot; like path to find the last element in the path inside of the provided object and set it to a given value.</para><para>If the provided path does not match a given object, then library error is set.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Object to perform the lookup on. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to the object to be set - &apos;.&apos; character is required between each key/idx pair. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value to be set. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>steal</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Boolean flag - if set, then the function does not increase refcount of a set value. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/query.h" line="139" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="query_8h_1a303496386da1e129bdd3b67275d043f7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rpc_query_delete</definition>
+        <argsstring>(rpc_object_t object, const char *path)</argsstring>
+        <name>rpc_query_delete</name>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>object</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The function follows a given &quot;key1.key2.0.key3.1&quot; like path to find the last element in the path inside of the provided object and delete it.</para><para>If the provided path does not match a given object, then library error is set.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Object to perform the lookup on. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to the object to be deleted - &apos;.&apos; character is required between each key/idx pair. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/query.h" line="153" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="query_8h_1aa2347f7c12f14c8290b0d9ab7efa7253" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool rpc_query_contains</definition>
+        <argsstring>(rpc_object_t object, const char *path)</argsstring>
+        <name>rpc_query_contains</name>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>object</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The function follows a given &quot;key1.key2.0.key3.1&quot; like path to check whether or not a given object does have an object under a given path set.</para><para>The function returns the boolean result of that check.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Object to perform the lookup on. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to the object to be found - &apos;.&apos; character is required between each key/idx pair. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Boolean result of the check. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/query.h" line="166" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="query_8h_1a1e8c03d1046fad3a029862adb64508f4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>rpc_query_iter_t</type>
+        <definition>rpc_query_iter_t rpc_query</definition>
+        <argsstring>(rpc_object_t object, rpc_query_params_t params, rpc_object_t rules)</argsstring>
+        <name>rpc_query</name>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>object</declname>
+        </param>
+        <param>
+          <type><ref refid="structrpc__query__params" kindref="compound">rpc_query_params_t</ref></type>
+          <declname>params</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>rules</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Performs a query operation on a given object. Source object has to be an RPC object of array type, but it can contain any sequence of internal data objects.</para><para>The function immediately returns iterator object without performing any initial operations on the input data. To get actual data, user has to use the rpc_query_next function, providing iterator as an argument.</para><para>Params arguments defines query runtime parameters - precise definition of possible options could be found in <ref refid="structrpc__query__params" kindref="compound">rpc_query_params</ref> documentation.</para><para>Each of the processed array&apos;s elements is checked against the rules. If it matches the rules, then it can be yielded from the query.</para><para>Rules are describes as 2 or 3 element arrays. 3 element arrays describe logic operators and 2 element arrays describe field operators.</para><para>First argument of logic operator describes a tested path within a processed object (i.e &quot;a.b.c.0&quot;), second argument is a string describing the logic operator itself and the last one is the value provided externally by the user as a second operand of a logic comparison.</para><para>There are following logic operators allowed (B - right operand, A - left operand):<itemizedlist>
+<listitem><para>= - equal - A = B</para></listitem><listitem><para>!= - not equal - A != B</para></listitem><listitem><para>&gt; - greater - A &gt; B</para></listitem><listitem><para>&lt; - smaller - A &lt; B</para></listitem><listitem><para>&gt;= - greater or equal - A &gt;= B</para></listitem><listitem><para>&lt;= - smaller or equal - A &lt;= B</para></listitem><listitem><para>~ - regular expression (PCRE) - A matches B rules</para></listitem><listitem><para>in - value in array - A in B (when B is an array) or B in A (when A is an array)</para></listitem><listitem><para>nin - value not in array - A not in B (when B is an array) or B not in A (when A is an array)</para></listitem><listitem><para>contains - the same as in</para></listitem><listitem><para>ncontains - the same as nin</para></listitem><listitem><para>match - fnmatch() (unix filename pattern matching) - fnmatch(B, A, 0) == 0</para></listitem></itemizedlist>
+</para><para>Field operators are used for chaining arrays of logic operators and defining logic relations between them: i.e. [&quot;and&quot;, [[&quot;A&quot;, &quot;&gt;&quot;, 0], [&quot;A&quot;, &quot;&lt;&quot;, 4]]] There are following field operators allowed:<itemizedlist>
+<listitem><para>and</para></listitem><listitem><para>or</para></listitem><listitem><para>nor</para></listitem></itemizedlist>
+</para><para>Example of a complex rule: [&quot;or&quot;, [[&quot;a.b.0.c&quot;, &quot;=&quot;, 1], [&quot;and&quot;, [[&quot;a.d&quot;, &quot;&gt;&quot;, 2], [&quot;a.d&quot;, &quot;&lt;&quot;, 4]]]]]</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Object to be queried. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>params</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Query parameters. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>rules</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Query rules. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Query iterator. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/query.h" line="223" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="query_8h_1aab26ee7cd5e504b2e066a74845738268" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>rpc_query_iter_t</type>
+        <definition>rpc_query_iter_t rpc_query_fmt</definition>
+        <argsstring>(rpc_object_t object, rpc_query_params_t params, const char *rules_fmt,...)</argsstring>
+        <name>rpc_query_fmt</name>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>object</declname>
+        </param>
+        <param>
+          <type><ref refid="structrpc__query__params" kindref="compound">rpc_query_params_t</ref></type>
+          <declname>params</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>rules_fmt</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Performs a query operation on a given object.</para><para>The function works exactly the same as the rpc_query function, but does not require the user to provide rules as an assembled RPC object. Instead it assembles query rules on the fly using the rpc_object_pack function syntax.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Object to be queried. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>params</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Query parameters. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>rules_fmt</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Rules rpc_object_pack like format string. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>...</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Variable length list of arguments to be assembled as query rules. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Query iterator. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/query.h" line="240" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="query_8h_1aea5aa716ae6ccb562ad7a27ccffb5087" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+        <definition>rpc_object_t rpc_query_apply</definition>
+        <argsstring>(rpc_object_t object, rpc_object_t rules)</argsstring>
+        <name>rpc_query_apply</name>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>object</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>rules</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Checks if a given RPC object does match a provided object representing query rules (the same format as in the rpc_query function case).</para><para>If so, then the function does return the object increasing its reference count, otherwise it returns NULL.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Object to be checked against a given set of rules. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>rules</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of query-like rules. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The object itself if is matches the rules, otherwise NULL. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/query.h" line="254" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="query_8h_1a170e0ae1387522fc419565c13f7a611c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool rpc_query_next</definition>
+        <argsstring>(rpc_query_iter_t iter, rpc_object_t *chunk)</argsstring>
+        <name>rpc_query_next</name>
+        <param>
+          <type>rpc_query_iter_t</type>
+          <declname>iter</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref> *</type>
+          <declname>chunk</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Yields the next RPC object matching params and rules stored within iterator structure.</para><para>If further iteration is still possible, returns true, otherwise false.</para><para>The function stores the current result in chunk argument. Chunk could be set to NULL only if there&apos;s internal error condition, there are no data matching given rules and params in the source object or when the user tries to iterate again over previously finished iterator structure.</para><para>Function automatically increases reference count of the returned RPC object.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator structure. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>chunk</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to be set to the next result. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>&quot;Continue iteration&quot; boolean flag. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/query.h" line="273" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="query_8h_1a004da45b366b82be1df7452e48103297" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rpc_query_iter_free</definition>
+        <argsstring>(rpc_query_iter_t iter)</argsstring>
+        <name>rpc_query_iter_free</name>
+        <param>
+          <type>rpc_query_iter_t</type>
+          <declname>iter</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Releases internal contents of rpc query iterator structure and then the structure itself.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Structure to be freed. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/query.h" line="281" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2015-2017<sp/>Two<sp/>Pore<sp/>Guys,<sp/>Inc.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*<sp/>All<sp/>rights<sp/>reserved</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>Redistribution<sp/>and<sp/>use<sp/>in<sp/>source<sp/>and<sp/>binary<sp/>forms,<sp/>with<sp/>or<sp/>without</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>modification,<sp/>are<sp/>permitted<sp/>providing<sp/>that<sp/>the<sp/>following<sp/>conditions</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/>are<sp/>met:</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>1.<sp/>Redistributions<sp/>of<sp/>source<sp/>code<sp/>must<sp/>retain<sp/>the<sp/>above<sp/>copyright</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/>notice,<sp/>this<sp/>list<sp/>of<sp/>conditions<sp/>and<sp/>the<sp/>following<sp/>disclaimer.</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>2.<sp/>Redistributions<sp/>in<sp/>binary<sp/>form<sp/>must<sp/>reproduce<sp/>the<sp/>above<sp/>copyright</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/>notice,<sp/>this<sp/>list<sp/>of<sp/>conditions<sp/>and<sp/>the<sp/>following<sp/>disclaimer<sp/>in<sp/>the</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/>documentation<sp/>and/or<sp/>other<sp/>materials<sp/>provided<sp/>with<sp/>the<sp/>distribution.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>THIS<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>BY<sp/>THE<sp/>AUTHOR<sp/>``AS<sp/>IS&apos;&apos;<sp/>AND<sp/>ANY<sp/>EXPRESS<sp/>OR</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*<sp/>IMPLIED<sp/>WARRANTIES,<sp/>INCLUDING,<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO,<sp/>THE<sp/>IMPLIED</highlight></codeline>
+<codeline lineno="16"><highlight class="comment"><sp/>*<sp/>WARRANTIES<sp/>OF<sp/>MERCHANTABILITY<sp/>AND<sp/>FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"><sp/>*<sp/>ARE<sp/>DISCLAIMED.<sp/><sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE<sp/>AUTHOR<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY</highlight></codeline>
+<codeline lineno="18"><highlight class="comment"><sp/>*<sp/>DIRECT,<sp/>INDIRECT,<sp/>INCIDENTAL,<sp/>SPECIAL,<sp/>EXEMPLARY,<sp/>OR<sp/>CONSEQUENTIAL</highlight></codeline>
+<codeline lineno="19"><highlight class="comment"><sp/>*<sp/>DAMAGES<sp/>(INCLUDING,<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO,<sp/>PROCUREMENT<sp/>OF<sp/>SUBSTITUTE<sp/>GOODS</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"><sp/>*<sp/>OR<sp/>SERVICES;<sp/>LOSS<sp/>OF<sp/>USE,<sp/>DATA,<sp/>OR<sp/>PROFITS;<sp/>OR<sp/>BUSINESS<sp/>INTERRUPTION)</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"><sp/>*<sp/>HOWEVER<sp/>CAUSED<sp/>AND<sp/>ON<sp/>ANY<sp/>THEORY<sp/>OF<sp/>LIABILITY,<sp/>WHETHER<sp/>IN<sp/>CONTRACT,</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"><sp/>*<sp/>STRICT<sp/>LIABILITY,<sp/>OR<sp/>TORT<sp/>(INCLUDING<sp/>NEGLIGENCE<sp/>OR<sp/>OTHERWISE)<sp/>ARISING</highlight></codeline>
+<codeline lineno="23"><highlight class="comment"><sp/>*<sp/>IN<sp/>ANY<sp/>WAY<sp/>OUT<sp/>OF<sp/>THE<sp/>USE<sp/>OF<sp/>THIS<sp/>SOFTWARE,<sp/>EVEN<sp/>IF<sp/>ADVISED<sp/>OF<sp/>THE</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"><sp/>*<sp/>POSSIBILITY<sp/>OF<sp/>SUCH<sp/>DAMAGE.</highlight></codeline>
+<codeline lineno="25"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>LIBRPC_QUERY_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>LIBRPC_QUERY_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="object_8h" kindref="compound">object.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="keyword">struct<sp/></highlight><highlight class="normal">rpc_query_iter;</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">rpc_query_iter<sp/>*rpc_query_iter_t;</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>(^rpc_query_cb_t)(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>object);</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="preprocessor">#define<sp/>RPC_QUERY_CB(_fn,<sp/>_arg)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="64"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>^(rpc_object_t<sp/>_object)<sp/>{<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="65"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>((rpc_object_t)_fn(_arg,<sp/>_object));<sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="66"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="91" refid="structrpc__query__params" refkind="compound"><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structrpc__query__params" kindref="compound">rpc_query_params</ref><sp/>{</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>single;</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>count;</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/>uint64_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>offset;</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/>uint64_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>limit;</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1a37160a10fb9baee827063f3db977315d" kindref="member">rpc_array_cmp_t</ref><sp/><sp/><sp/><sp/><sp/>sort;</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>reverse;</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/>rpc_query_cb_t<sp/><sp/><sp/><sp/><sp/><sp/>callback;</highlight></codeline>
+<codeline lineno="99"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight></codeline>
+<codeline lineno="104"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structrpc__query__params" kindref="compound">rpc_query_params</ref><sp/>*<ref refid="structrpc__query__params" kindref="compound">rpc_query_params_t</ref>;</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"></highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>rpc_query_get(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*path,</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>default_val);</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>rpc_query_set(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*path,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>value,</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>steal);</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"></highlight></codeline>
+<codeline lineno="153"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>rpc_query_delete(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*path);</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"></highlight></codeline>
+<codeline lineno="166"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>rpc_query_contains(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*path);</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"></highlight></codeline>
+<codeline lineno="223"><highlight class="normal">rpc_query_iter_t<sp/>rpc_query(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/>rpc_query_params_t<sp/>params,</highlight></codeline>
+<codeline lineno="224"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>rules);</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"></highlight></codeline>
+<codeline lineno="240"><highlight class="normal">rpc_query_iter_t<sp/>rpc_query_fmt(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/>rpc_query_params_t<sp/>params,</highlight></codeline>
+<codeline lineno="241"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*rules_fmt,<sp/>...);</highlight></codeline>
+<codeline lineno="242"><highlight class="normal"></highlight></codeline>
+<codeline lineno="254"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>rpc_query_apply(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>rules);</highlight></codeline>
+<codeline lineno="255"><highlight class="normal"></highlight></codeline>
+<codeline lineno="273"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>rpc_query_next(rpc_query_iter_t<sp/>iter,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>*chunk);</highlight></codeline>
+<codeline lineno="274"><highlight class="normal"></highlight></codeline>
+<codeline lineno="281"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>rpc_query_iter_free(rpc_query_iter_t<sp/>iter);</highlight></codeline>
+<codeline lineno="282"><highlight class="normal"></highlight></codeline>
+<codeline lineno="283"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//LIBRPC_QUERY_H</highlight></codeline>
+    </programlisting>
+    <location file="/code/include/rpc/query.h"/>
+  </compounddef>
+</doxygen>
