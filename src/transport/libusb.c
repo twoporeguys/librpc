@@ -244,8 +244,9 @@ usb_close(void *arg)
 	struct usb_context *ctx = arg;
 
 	ctx->uc_state.uts_exit = true;
-	libusb_exit(ctx->uc_libusb);
+	libusb_hotplug_deregister_callback(ctx->uc_libusb, ctx->uc_handle);
 	g_thread_join(ctx->uc_thread);
+	libusb_exit(ctx->uc_libusb);
 }
 
 static int
@@ -332,6 +333,7 @@ usb_abort(void *arg)
 	if (conn->uc_logfile != NULL)
 		fclose(conn->uc_logfile);
 
+	conn->uc_state.uts_exit = true;
 	libusb_close(conn->uc_handle);
 	g_thread_join(conn->uc_libusb_thread);
 	return (0);

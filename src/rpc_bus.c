@@ -32,16 +32,16 @@
 
 static rpc_bus_event_handler_t rpc_bus_event_handler = NULL;
 static GMainContext *rpc_g_main_context = NULL;
+static GMainLoop *rpc_g_main_loop = NULL;
 static GThread *rpc_g_main_thread = NULL;
 static void *rpc_bus_context = NULL;
 
 static void *
 rpc_bus_worker(void *arg)
 {
-	GMainLoop *loop;
 
-	loop = g_main_loop_new(rpc_g_main_context, false);
-	g_main_loop_run(loop);
+	rpc_g_main_loop = g_main_loop_new(rpc_g_main_context, false);
+	g_main_loop_run(rpc_g_main_loop);
 	return (NULL);
 }
 
@@ -90,6 +90,8 @@ rpc_bus_close(void)
 		return (0);
 
 	bus->bus_ops->close(rpc_bus_context);
+	g_main_loop_quit(rpc_g_main_loop);
+	g_main_loop_unref(rpc_g_main_loop);
 	g_main_context_unref(rpc_g_main_context);
 	g_thread_join(rpc_g_main_thread);
 	return (0);
