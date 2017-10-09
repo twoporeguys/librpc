@@ -31,8 +31,12 @@
 #include <rpc/server.h>
 #include <rpc/discovery.h>
 
+#ifndef __unused
+#define	__unused __attribute__((unused))
+#endif
+
 static rpc_object_t
-hello(void *cookie, rpc_object_t args)
+hello(void *cookie __unused, rpc_object_t args)
 {
 
 	return rpc_string_create_with_format("hello %s!",
@@ -53,19 +57,19 @@ main(int argc, const char *argv[])
 	    NULL, hello);
 
 	rpc_context_register_block(ctx, "block", "Test function using blocks",
-	    NULL, ^(void *cookie, rpc_object_t args) {
+	    NULL, ^(void *cookie __unused, rpc_object_t args __unused) {
 		return rpc_string_create("haha lol");
 	    });
 
 
 	rpc_context_register_block(ctx, "delay", "Sleeps for a long time",
-	    NULL, ^(void *cookie, rpc_object_t args) {
+	    NULL, ^(void *cookie __unused, rpc_object_t args __unused) {
 		sleep(60);
 		return rpc_int64_create(42);
 	    });
 
 	rpc_context_register_block(ctx, "event", "Sends a bunch of events",
-	    NULL, ^(void *cookie, rpc_object_t args) {
+	    NULL, ^(void *cookie __unused, rpc_object_t args __unused) {
 		rpc_server_broadcast_event(srv, "server.hello", rpc_string_create("world"));
 		rpc_server_broadcast_event(srv, "oh_noes", rpc_int64_create(-1));
 		return rpc_null_create();
