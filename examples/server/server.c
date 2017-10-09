@@ -45,6 +45,9 @@ main(int argc, const char *argv[])
 	rpc_context_t ctx;
 	__block rpc_server_t srv;
 
+	(void)argc;
+	(void)argv;
+
 	ctx = rpc_context_create();
 	rpc_context_register_func(ctx, "hello", "Hello world function",
 	    NULL, hello);

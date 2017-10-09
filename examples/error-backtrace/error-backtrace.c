@@ -53,6 +53,9 @@ main(int argc, const char *argv[])
 {
 	rpc_object_t err;
 
+	(void)argc;
+	(void)argv;
+
 	err = fun_c();
 	printf("%s\n", rpc_copy_description(err));
 	return (0);

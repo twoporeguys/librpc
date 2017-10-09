@@ -28,13 +28,14 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <inttypes.h>
 #include <rpc/object.h>
 #include <rpc/client.h>
 #include <rpc/server.h>
 #include <rpc/service.h>
 
 int
-main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)))
+main(int argc, const char *argv[])
 {
 	rpc_context_t ctx;
 	rpc_server_t server;
@@ -44,6 +45,8 @@ main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)
 	const char *keys[] = {"key"};
 	const rpc_object_t values[] = {rpc_int64_create(11234)};
 
+	(void)argc;
+	(void)argv;
 
 	ctx = rpc_context_create();
 
@@ -55,13 +58,16 @@ main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)
 		int cnt;
 		bool sure;
 
+		(void)cookie;
+
 		cnt = rpc_object_unpack(args, "[sib{i}]", &str, &num, &sure,
 		    "key", &dict_num);
 
 		printf("unpack cnt: %i\n", cnt);
 
-		printf("str = %s, num = %jd, dict_num = %jd, sure = %s\n", str,
-		    num, dict_num, sure ? "true" : "false");
+		printf("str = %s, num = %" PRId64 ", dict_num = %" PRId64
+		    ", sure = %s\n", str, num, dict_num,
+		    sure ? "true" : "false");
 
 	    	return rpc_object_pack("{siubn[iii{s}]}",
 		    "hello", "world",

@@ -29,7 +29,7 @@
 #include <string.h>
 #include <glib.h>
 #include <libsoup/soup.h>
-#include <libusb-1.0/libusb.h>
+#include <libusb.h>
 #include <rpc/object.h>
 #include "../internal.h"
 #include "../linker_set.h"
