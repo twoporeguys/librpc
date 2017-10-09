@@ -32,7 +32,7 @@
 #include <rpc/discovery.h>
 
 #ifndef __unused
-#define	__unused __attribute__((unused))
+#define __unused __attribute__((unused))
 #endif
 
 static rpc_object_t
