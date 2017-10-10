@@ -92,6 +92,7 @@ rpc_bus_close(void)
 
 	if (rpc_bus_refcnt > 0) {
 		g_assert_nonnull(rpc_bus_context);
+		rpc_bus_refcnt--;
 		goto done;
 	}
 
