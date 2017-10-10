@@ -247,6 +247,7 @@ usb_close(void *arg)
 	libusb_hotplug_deregister_callback(ctx->uc_libusb, ctx->uc_handle);
 	g_thread_join(ctx->uc_thread);
 	libusb_exit(ctx->uc_libusb);
+	g_free(ctx);
 }
 
 static int
