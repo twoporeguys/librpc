@@ -94,6 +94,7 @@ rpc_bus_close(void)
 	g_main_loop_unref(rpc_g_main_loop);
 	g_main_context_unref(rpc_g_main_context);
 	g_thread_join(rpc_g_main_thread);
+	rpc_bus_context = NULL;
 	return (0);
 }
 
