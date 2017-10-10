@@ -34,7 +34,9 @@ static rpc_bus_event_handler_t rpc_bus_event_handler = NULL;
 static GMainContext *rpc_g_main_context = NULL;
 static GMainLoop *rpc_g_main_loop = NULL;
 static GThread *rpc_g_main_thread = NULL;
+static GMutex rpc_bus_mtx = { 0 };
 static void *rpc_bus_context = NULL;
+static gint rpc_bus_refcnt = 0;
 
 static void *
 rpc_bus_worker(void *arg __unused)
@@ -50,23 +52,33 @@ rpc_bus_open(void)
 {
 	const struct rpc_transport *bus;
 
+	g_mutex_lock(&rpc_bus_mtx);
+
+	if (rpc_bus_refcnt > 0) {
+		g_assert_nonnull(rpc_bus_context);
+		goto done;
+	}
+
 	bus = rpc_find_transport("bus");
 	if (bus == NULL) {
 		errno = ENXIO;
-		return (-1);
+		rpc_bus_context = NULL;
+		goto done;
 	}
 
 	if (bus->bus_ops == NULL) {
 		errno = ENXIO;
-		return (-1);
+		rpc_bus_context = NULL;
+		goto done;
 	}
-
-	if (rpc_bus_context != NULL)
-		return (0);
 
 	rpc_g_main_context = g_main_context_new();
 	rpc_g_main_thread = g_thread_new("bus", rpc_bus_worker, NULL);
 	rpc_bus_context = bus->bus_ops->open(rpc_g_main_context);
+	rpc_bus_refcnt++;
+
+done:
+	g_mutex_unlock(&rpc_bus_mtx);
 	return (rpc_bus_context != NULL ? 0 : -1);
 }
 
@@ -74,20 +86,30 @@ int
 rpc_bus_close(void)
 {
 	const struct rpc_transport *bus;
+	int ret = 0;
+
+	g_mutex_lock(&rpc_bus_mtx);
+
+	if (rpc_bus_refcnt > 0) {
+		g_assert_nonnull(rpc_bus_context);
+		goto done;
+	}
 
 	bus = rpc_find_transport("bus");
 	if (bus == NULL) {
 		errno = ENXIO;
-		return (-1);
+		ret = -1;
+		goto done;
 	}
 
 	if (bus->bus_ops == NULL) {
 		errno = ENXIO;
-		return (-1);
+		ret = -1;
+		goto done;
 	}
 
 	if (rpc_bus_context == NULL)
-		return (0);
+		goto done;
 
 	bus->bus_ops->close(rpc_bus_context);
 	g_main_loop_quit(rpc_g_main_loop);
@@ -95,51 +117,73 @@ rpc_bus_close(void)
 	g_main_context_unref(rpc_g_main_context);
 	g_thread_join(rpc_g_main_thread);
 	rpc_bus_context = NULL;
-	return (0);
+	rpc_bus_refcnt--;
+
+done:
+	g_mutex_unlock(&rpc_bus_mtx);
+	return (ret);
 }
 
 int
 rpc_bus_ping(const char *serial)
 {
 	const struct rpc_transport *bus;
+	int ret = 0;
 
+	g_mutex_lock(&rpc_bus_mtx);
 	bus = rpc_find_transport("bus");
 	if (bus == NULL) {
 		errno = ENXIO;
-		return (-1);
+		ret = -1;
+		goto done;
 	}
 
 	if (bus->bus_ops == NULL) {
 		errno = ENXIO;
-		return (-1);
+		ret = -1;
+		goto done;
 	}
 
-	return (bus->bus_ops->ping(rpc_bus_context, serial));
+	ret = bus->bus_ops->ping(rpc_bus_context, serial);
+
+done:
+	g_mutex_unlock(&rpc_bus_mtx);
+	return (ret);
 }
 
 int
 rpc_bus_enumerate(struct rpc_bus_node **resultp)
 {
 	const struct rpc_transport *bus;
-	struct rpc_bus_node *result;
+	struct rpc_bus_node *result = NULL;
 	size_t count;
+	int ret = 0;
 
+	g_mutex_lock(&rpc_bus_mtx);
 	bus = rpc_find_transport("bus");
 	if (bus == NULL) {
 		errno = ENXIO;
-		return (-1);
+		ret = -1;
+		goto done;
 	}
 
 	if (bus->bus_ops == NULL) {
 		errno = ENXIO;
-		return (-1);
+		ret = -1;
+		goto done;
 	}
 
-	if (bus->bus_ops->enumerate(rpc_bus_context, &result, &count) != 0)
-		return (-1);
+	if (bus->bus_ops->enumerate(rpc_bus_context, &result, &count) != 0) {
+		ret = -1;
+		goto done;
+	}
 
 	*resultp = result;
-	return ((int)count);
+	ret = (int)count;
+
+done:
+	g_mutex_unlock(&rpc_bus_mtx);
+	return (ret);
 }
 
 void
