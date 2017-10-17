@@ -1881,7 +1881,6 @@ rpc_dictionary_map(rpc_object_t dictionary, rpc_dictionary_mapper_t mapper)
 	GHashTableIter iter;
 	gpointer key, value;
 	rpc_object_t oldv, newv;
-	size_t i;
 
 	g_hash_table_iter_init(&iter, dictionary->ro_value.rv_dict);
 

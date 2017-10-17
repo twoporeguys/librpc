@@ -1294,6 +1294,38 @@ cdef class Member(object):
             return rpct_member_get_description(self.rpcmem).decode('utf-8')
 
 
+cdef class Function(object):
+    cdef rpct_function_t c_func
+
+    property name:
+        def __get__(self):
+            return rpct_function_get_name(self.c_func).decode('utf-8')
+
+    property description:
+        def __get__(self):
+            return rpct_function_get_description(self.c_func).decode('utf-8')
+
+    property return_type:
+        def __get__(self):
+            pass
+
+    property arguments:
+        def __get__(self):
+            pass
+
+
+cdef class FunctionArgument(object):
+    cdef rpct_argument_t c_arg
+
+    property description:
+        def __get__(self):
+            pass
+
+    property type:
+        def __get__(self):
+            pass
+
+
 cdef class StructUnionMember(Member):
     def specialize(self, TypeInstance typei):
         return TypeInstance.init_from_ptr(rpct_typei_get_member_type(typei.rpctypei, self.rpcmem))

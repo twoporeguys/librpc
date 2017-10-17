@@ -452,7 +452,7 @@ rpct_unwind_typei(struct rpct_typei *typei)
 
 	while (current) {
 		if (current->type->clazz == RPC_TYPING_TYPEDEF) {
-			current->type->definition;
+			current = current->type->definition;
 			continue;
 		}
 
