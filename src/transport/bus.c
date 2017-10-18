@@ -121,7 +121,7 @@ bus_open(GMainContext *context __unused)
 		return (NULL);
 	}
 
-	return (0);
+	return (bn);
 }
 
 static void
