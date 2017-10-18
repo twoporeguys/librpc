@@ -586,7 +586,6 @@ usb_event_impl(void *arg)
 	struct usb_connection *conn = arg;
 	int ret;
 	struct librpc_usb_log *log;
-	enum librpc_usb_status status;
 
 	log = g_malloc(sizeof(*log) + conn->uc_logsize);
 
@@ -607,11 +606,6 @@ usb_event_impl(void *arg)
 		}
 	}
 
-	g_free(log);
-	if (ret < 1)
-		goto disconnected;
-
-	fprintf(conn->uc_logfile, "%*s", ret - 1, log->buffer);
 	return (!conn->uc_state.uts_exit);
 
 disconnected:
