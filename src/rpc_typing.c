@@ -229,7 +229,8 @@ rpct_read_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
 
 	if (constraints != NULL) {
 		rpc_dictionary_apply(constraints, ^(const char *key, rpc_object_t value) {
-			g_hash_table_insert(member->constraints, key, value);
+			g_hash_table_insert(member->constraints, g_strdup(key),
+			    value);
 			return ((bool)true);
 		});
 	}
@@ -416,7 +417,7 @@ rpct_function_free(struct rpct_function *function)
 	g_free(function->name);
 	g_free(function->realm);
 	g_free(function->description);
-	g_hash_table_unref(function->arguments);
+	g_ptr_array_free(function->arguments, true);
 	if (function->result != NULL)
 		rpct_typei_free(function->result);
 	g_free(function);
@@ -784,8 +785,7 @@ rpct_read_func(const char *realm, const char *decl, rpc_object_t obj)
 
 	name = g_match_info_fetch(match, 1);
 	func = g_malloc0(sizeof(*func));
-	func->arguments = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
-	    (GDestroyNotify)rpct_typei_free);
+	func->arguments = g_ptr_array_new();
 
 	if (args != NULL) {
 		if (rpc_array_apply(args, ^(size_t idx __unused,
@@ -807,9 +807,7 @@ rpct_read_func(const char *realm, const char *decl, rpc_object_t obj)
 			if (arg_inst == NULL)
 				return ((bool)false);
 
-			g_hash_table_insert(func->arguments, g_strdup(arg_name),
-			    arg_inst);
-
+			g_ptr_array_add(func->arguments, arg_inst);
 			return ((bool)true);
 		}))
 			goto error;
@@ -834,7 +832,7 @@ rpct_read_func(const char *realm, const char *decl, rpc_object_t obj)
 
 error:
 	if (func != NULL) {
-		g_hash_table_unref(func->arguments);
+		g_ptr_array_free(func->arguments, true);
 		g_free(func);
 	}
 
@@ -936,7 +934,7 @@ rpct_run_validators(struct rpct_typei *typei, rpc_object_t obj,
 
 	/* Run validators */
 	g_hash_table_iter_init(&iter, typei->constraints);
-	while (g_hash_table_iter_next(&iter, &key, &value)) {
+	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&value)) {
 		v = rpc_find_validator(typename, key);
 		if (v == NULL) {
 			rpct_add_error(errctx, "Validator %s not found", key);
@@ -1195,7 +1193,7 @@ rpct_type_get_generic_vars_count(rpct_type_t type)
 const char *
 rpct_type_get_generic_var(rpct_type_t type, int index)
 {
-	if (index < 0 || index > type->generic_vars->len)
+	if (index < 0 || index > (int)type->generic_vars->len)
 		return (NULL);
 
 	return (g_ptr_array_index(type->generic_vars, index));
@@ -1290,7 +1288,7 @@ rpct_argument_t
 rpct_function_get_argument(rpct_function_t func, int index)
 {
 
-	if (index < 0 || index > func->arguments->len)
+	if (index < 0 || index > (int)func->arguments->len)
 		return (NULL);
 
 	return (g_ptr_array_index(func->arguments, index));
