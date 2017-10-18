@@ -3,7 +3,7 @@
 all:
 	mkdir -p build && \
 	cd build && \
-	cmake .. -DBUILD_LIBUSB=ON && \
+	cmake .. -DBUILD_LIBUSB=ON ${ARGS} && \
 	make
 
 .PHONY: clean
