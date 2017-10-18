@@ -216,6 +216,7 @@ usb_open(GMainContext *main_context)
 	ret = libusb_init(&ctx->uc_libusb);
 
 	if (ret != 0) {
+		rpc_set_last_error(ENXIO, "Failed to initialize libusb", NULL);
 		g_free(ctx);
 		return (NULL);
 	}
@@ -229,6 +230,7 @@ usb_open(GMainContext *main_context)
 
 	if (ret != LIBUSB_SUCCESS) {
 		libusb_exit(ctx->uc_libusb);
+		rpc_set_last_error(ENXIO, "Failed to initialize libusb", NULL);
 		g_free(ctx);
 		return (NULL);
 	}
