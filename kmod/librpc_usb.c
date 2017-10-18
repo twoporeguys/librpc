@@ -199,8 +199,8 @@ librpc_usb_request(struct device *dev, void *cookie, const void *buf, size_t len
 {
 	struct usb_device *udev = to_usb_device(dev);
 	struct librpc_usb_response *resp;
-	int wpipe = usb_sndctrlpipe(udev, 1);
-	int rpipe = usb_rcvctrlpipe(udev, 1);
+	int wpipe = usb_sndctrlpipe(udev, 0);
+	int rpipe = usb_rcvctrlpipe(udev, 0);
 	int ret;
 
 	resp = kmalloc(sizeof(*resp) + LIBRPC_MAX_MSGSIZE, GFP_KERNEL);
@@ -234,7 +234,7 @@ static int
 librpc_usb_xfer(struct usb_device *udev, int opcode, void *buf, size_t len,
     int timeout)
 {
-        int rpipe = usb_rcvctrlpipe(udev, 1);
+        int rpipe = usb_rcvctrlpipe(udev, 0);
 
 	if (len > LIBRPC_MAX_MSGSIZE)
 		return (-E2BIG);
@@ -247,7 +247,7 @@ static void
 librpc_usb_read_events(struct librpc_usb_device *rpcusbdev)
 {
 	struct usb_device *udev = rpcusbdev->udev;
-	int rpipe = usb_rcvctrlpipe(udev, 1);
+	int rpipe = usb_rcvctrlpipe(udev, 0);
 	int ret;
 
 	for (;;) {
