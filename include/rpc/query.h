@@ -28,7 +28,13 @@
 #ifndef LIBRPC_QUERY_H
 #define LIBRPC_QUERY_H
 
-#include "object.h"
+#include <rpc/object.h>
+
+/**
+ * @file query.h
+ *
+ * Object query API
+ */
 
 /**
  * Definition of the query iterator structure holding data about the state

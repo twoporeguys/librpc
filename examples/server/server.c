@@ -38,6 +38,7 @@
 static rpc_object_t
 hello(void *cookie __unused, rpc_object_t args)
 {
+	(void)cookie;
 
 	return rpc_string_create_with_format("hello %s!",
 	    rpc_array_get_string(args, 0));

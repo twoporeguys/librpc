@@ -78,6 +78,14 @@ class BusEvent(enum.IntEnum):
     DETACHED = RPC_BUS_DETACHED
 
 
+class TypeClass(enum.IntEnum):
+    STRUCT = RPC_TYPING_STRUCT
+    UNION = RPC_TYPING_UNION
+    ENUM = RPC_TYPING_ENUM
+    TYPEDEF = RPC_TYPING_TYPEDEF
+    BUILTIN = RPC_TYPING_BUILTIN
+
+
 class LibException(Exception):
     def __init__(self, code=None, message=None, extra=None, stacktrace=None, obj=None):
         if obj:
@@ -635,7 +643,6 @@ cdef class Dictionary(Object):
         self.__applier(compare)
         return equal
 
-
     def __delitem__(self, key):
         bytes_key = key.encode('utf-8')
         rpc_dictionary_remove_key(self.obj, bytes_key)
@@ -1068,6 +1075,307 @@ cdef class Serializer(object):
             raise_internal_exc()
 
         return <bytes>(<char *>frame)[:len]
+
+
+cdef class Typing(object):
+    def __init__(self):
+        with nogil:
+            rpct_init()
+
+    @staticmethod
+    cdef bint c_iter(void *arg, rpct_type_t val):
+        cdef Type rpctype
+        cdef object container
+
+        container = <object>arg
+        rpctype = Type.__new__(Type)
+        rpctype.rpctype = val
+        container.append(rpctype)
+        return True
+
+    def load_type(self, decl, type):
+        pass
+
+    def load_types(self, path):
+        rpct_load_types(path.encode('utf-8'))
+
+    def serialize(self, Object obj):
+        cdef rpc_object_t result
+
+        result = rpct_serialize(obj.obj)
+        return Object.init_from_ptr(result)
+
+    def deserialize(self, Object obj):
+        cdef rpc_object_t result
+
+        result = rpct_deserialize(obj.obj)
+        return Object.init_from_ptr(result)
+
+    property types:
+        def __get__(self):
+            ret = []
+            rpct_types_apply(RPCT_TYPE_APPLIER(self.c_iter, <void *>ret))
+            return ret
+
+    property functions:
+        def __get__(self):
+            pass
+
+    property files:
+        def __get__(self):
+            pass
+
+    property realm:
+        def __get__(self):
+            return rpct_get_realm().decode('utf-8')
+
+        def __set__(self, value):
+            rpct_set_realm(value.encode('utf-8'))
+
+
+cdef class TypeInstance(object):
+    cdef rpct_typei_t rpctypei
+
+    def __init__(self, decl):
+        self.rpctypei = rpct_new_typei(decl.encode('utf-8'))
+        if self.rpctypei == <rpct_typei_t>NULL:
+            raise ValueError('Invalid type specifier')
+
+    def __str__(self):
+        return '<librpc.TypeInstance "{0}">'.format(self.canonical)
+
+    def __repr__(self):
+        return str(self)
+
+    @staticmethod
+    cdef TypeInstance init_from_ptr(rpct_typei_t typei):
+        cdef TypeInstance ret
+
+        if typei == <rpct_typei_t>NULL:
+            return None
+
+        ret = TypeInstance.__new__(TypeInstance)
+        ret.rpctypei = typei
+        return ret
+
+    property factory:
+        def __get__(self):
+            return type(self.canonical, (BaseTypingObject,), {
+                'typei': self
+            })
+
+    property type:
+        def __get__(self):
+            cdef Type typ
+
+            typ = Type.__new__(Type)
+            typ.rpctype = rpct_typei_get_type(self.rpctypei)
+            return typ
+
+    property canonical:
+        def __get__(self):
+            return rpct_typei_get_canonical_form(self.rpctypei).decode('utf-8')
+
+    property generic_variables:
+        def __get__(self):
+            cdef TypeInstance typei
+
+            result = []
+            count = rpct_type_get_generic_vars_count(rpct_typei_get_type(self.rpctypei))
+            for i in range(count):
+                typei = TypeInstance.__new__(TypeInstance)
+                typei.rpctypei = rpct_typei_get_generic_var(self.rpctypei, i)
+                result.append(typei)
+
+            return result
+
+    def validate(self, Object obj):
+        cdef rpc_object_t errors
+        cdef bint valid
+
+        valid = rpct_validate(self.rpctypei, obj.obj, &errors)
+        return valid, Object.init_from_ptr(errors)
+
+
+cdef class Type(object):
+    cdef rpct_type_t rpctype
+
+    @staticmethod
+    cdef bint c_iter(void *arg, rpct_member_t val):
+        cdef Member member
+        cdef object container
+
+        container = <object>arg
+        member = Member.__new__(Member)
+        member.rpcmem = val
+        container.append(member)
+        return True
+
+    def __str__(self):
+        return "<librpc.Type '{0}'>".format(self.name)
+
+    def __repr__(self):
+        return str(self)
+
+    property name:
+        def __get__(self):
+            return rpct_type_get_name(self.rpctype).decode('utf-8')
+
+    property module:
+        def __get__(self):
+            return rpct_type_get_module(self.rpctype).decode('utf-8')
+
+    property description:
+        def __get__(self):
+            return rpct_type_get_description(self.rpctype).decode('utf-8')
+
+    property generic:
+        def __get__(self):
+            return rpct_type_get_generic_vars_count(self.rpctype) > 0
+
+    property generic_variables:
+        def __get__(self):
+            ret = []
+            count = rpct_type_get_generic_vars_count(self.rpctype)
+
+            for i in range(count):
+                ret.append(rpct_type_get_generic_var(self.rpctype, i).decode('utf-8'))
+
+            return ret
+
+    property clazz:
+        def __get__(self):
+            return TypeClass(rpct_type_get_class(self.rpctype))
+
+    property members:
+        def __get__(self):
+            ret = []
+            rpct_members_apply(self.rpctype, RPCT_MEMBER_APPLIER(self.c_iter, <void *>ret))
+            return ret
+
+    property definition:
+        def __get__(self):
+            return TypeInstance.init_from_ptr(rpct_type_get_definition(self.rpctype))
+
+    property is_struct:
+        def __get__(self):
+            return self.clazz == TypeClass.STRUCT
+
+    property is_union:
+        def __get__(self):
+            return self.clazz == TypeClass.UNION
+
+    property is_enum:
+        def __get__(self):
+            return self.clazz == TypeClass.ENUM
+
+    property is_typedef:
+        def __get__(self):
+            return self.clazz == TypeClass.TYPEDEF
+
+    property is_builtin:
+        def __get__(self):
+            return self.clazz == TypeClass.BUILTIN
+
+
+cdef class Member(object):
+    cdef rpct_member_t rpcmem
+
+    property type:
+        def __get__(self):
+            return TypeInstance.init_from_ptr(rpct_member_get_typei(self.rpcmem))
+
+    property name:
+        def __get__(self):
+            return rpct_member_get_name(self.rpcmem).decode('utf-8')
+
+    property description:
+        def __get__(self):
+            return rpct_member_get_description(self.rpcmem).decode('utf-8')
+
+
+cdef class Function(object):
+    cdef rpct_function_t c_func
+
+    property name:
+        def __get__(self):
+            return rpct_function_get_name(self.c_func).decode('utf-8')
+
+    property description:
+        def __get__(self):
+            return rpct_function_get_description(self.c_func).decode('utf-8')
+
+    property return_type:
+        def __get__(self):
+            pass
+
+    property arguments:
+        def __get__(self):
+            pass
+
+
+cdef class FunctionArgument(object):
+    cdef rpct_argument_t c_arg
+
+    property description:
+        def __get__(self):
+            pass
+
+    property type:
+        def __get__(self):
+            pass
+
+
+cdef class StructUnionMember(Member):
+    def specialize(self, TypeInstance typei):
+        return TypeInstance.init_from_ptr(rpct_typei_get_member_type(typei.rpctypei, self.rpcmem))
+
+
+cdef class BaseTypingObject(object):
+    typei = None
+    cdef rpc_object_t obj
+
+    def __init__(self, Object value):
+        cdef TypeInstance typei
+
+        typei = <TypeInstance>self.__class__.typei
+        self.obj = rpct_newi(typei.rpctypei, value.obj)
+
+    property type:
+        def __get__(self):
+            cdef TypeInstance typei
+
+            typei = TypeInstance.__new__(TypeInstance)
+            typei.rpctypei = rpct_get_typei(self.obj)
+            return typei
+
+    property value:
+        def __get__(self):
+            return Object.init_from_ptr(self.obj)
+
+
+cdef class BaseStruct(BaseTypingObject):
+    def __getattr__(self, item):
+        pass
+
+    def __setattr__(self, key, value):
+        pass
+
+
+cdef class BaseUnion(BaseTypingObject):
+    property branch:
+        def __get__(self):
+            pass
+
+    property value:
+        def __get__(self):
+            pass
+
+
+cdef class BaseEnum(BaseTypingObject):
+    property value:
+        def __get__(self):
+            pass
 
 
 cdef raise_internal_exc(rpc=False):

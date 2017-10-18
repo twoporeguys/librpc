@@ -33,6 +33,9 @@ ctypedef void (*rpc_handler_f)(void *arg, const char *name, rpc_object_t args)
 ctypedef void (*rpc_error_handler_f)(void *arg, rpc_error_code_t code, rpc_object_t args)
 ctypedef bint (*rpc_callback_f)(void *arg, rpc_call_t call, rpc_call_status_t status)
 ctypedef void (*rpc_bus_event_handler_f)(void *arg, rpc_bus_event_t, rpc_bus_node *)
+ctypedef bint (*rpct_type_applier_f)(void *arg, rpct_type_t type)
+ctypedef bint (*rpct_member_applier_f)(void *arg, rpct_member_t member)
+ctypedef bint (*rpct_function_applier_f)(void *arg, rpct_function_t func)
 
 
 cdef extern from "rpc/object.h" nogil:
@@ -226,8 +229,8 @@ cdef extern from "rpc/bus.h" nogil:
 
     void *RPC_BUS_EVENT_HANDLER(rpc_bus_event_handler_f fn, void *arg)
 
-    int rpc_bus_open();
-    int rpc_bus_close();
+    int rpc_bus_open()
+    int rpc_bus_close()
     int rpc_bus_ping(const char *name)
     int rpc_bus_enumerate(rpc_bus_node **result)
     int rpc_bus_free_result(rpc_bus_node *result)
@@ -238,6 +241,84 @@ cdef extern from "rpc/bus.h" nogil:
 cdef extern from "rpc/serializer.h" nogil:
     rpc_object_t rpc_serializer_load(const char *serializer, const void *frame, size_t len)
     int rpc_serializer_dump(const char *serializer, rpc_object_t obj, void **framep, size_t *lenp)
+
+
+cdef extern from "rpc/typing.h" nogil:
+    ctypedef struct rpct_type_t:
+        pass
+
+    ctypedef struct rpct_typei_t:
+        pass
+
+    ctypedef struct rpct_member_t:
+        pass
+
+    ctypedef struct rpct_function_t:
+        pass
+
+    ctypedef struct rpct_argument_t:
+        pass
+
+    ctypedef enum rpct_class_t:
+        RPC_TYPING_STRUCT
+        RPC_TYPING_UNION
+        RPC_TYPING_ENUM
+        RPC_TYPING_TYPEDEF
+        RPC_TYPING_BUILTIN
+
+    void *RPCT_TYPE_APPLIER(rpct_type_applier_f fn, void *arg)
+    void *RPCT_MEMBER_APPLIER(rpct_member_applier_f fn, void *arg)
+    void *RPCT_FUNCTION_APPLIER(rpct_function_applier_f fn, void *args)
+
+    void rpct_init()
+    int rpct_load_types(const char *path)
+
+    const char *rpct_get_realm()
+    void rpct_set_realm(const char *realm)
+
+    void rpct_types_apply(void *applier)
+    void rpct_members_apply(rpct_type_t type, void *applier)
+
+    const char *rpct_type_get_name(rpct_type_t type)
+    const char *rpct_type_get_realm(rpct_type_t type)
+    const char *rpct_type_get_module(rpct_type_t type)
+    const char *rpct_type_get_description(rpct_type_t type)
+    rpct_type_t rpct_type_get_parent(rpct_type_t type)
+    rpct_typei_t rpct_type_get_definition(rpct_type_t type)
+
+    rpct_class_t rpct_type_get_class(rpct_type_t type)
+    int rpct_type_get_generic_vars_count(rpct_type_t type)
+    const char *rpct_type_get_generic_var(rpct_type_t type, int index)
+
+    rpct_type_t rpct_typei_get_type(rpct_typei_t typei)
+    const char *rpct_typei_get_canonical_form(rpct_typei_t typei)
+    rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, int index)
+
+    rpct_typei_t rpct_typei_get_member_type(rpct_typei_t typei, rpct_member_t member)
+
+    const char *rpct_member_get_name(rpct_member_t member)
+    const char *rpct_member_get_description(rpct_member_t member)
+    rpct_typei_t rpct_member_get_typei(rpct_member_t member)
+
+    const char *rpct_function_get_name(rpct_function_t func)
+    const char *rpct_function_get_description(rpct_function_t func)
+    rpct_typei_t rpct_function_get_return_type(rpct_function_t func)
+    int rpct_function_get_arguments_count(rpct_function_t func)
+    rpct_argument_t rpct_function_get_argument(rpct_function_t func, int index)
+
+    const char *rpct_argument_get_description(rpct_argument_t arg)
+    rpct_typei_t rpct_argument_get_type(rpct_argument_t arg)
+
+    rpct_typei_t rpct_get_typei(rpc_object_t instance)
+    rpc_object_t rpct_get_value(rpc_object_t instance)
+
+    rpct_typei_t rpct_new_typei(const char *decl)
+    rpc_object_t rpct_new(const char *decl, const char *realm, rpc_object_t object)
+    rpc_object_t rpct_newi(rpct_typei_t typei, rpc_object_t object)
+
+    rpc_object_t rpct_serialize(rpc_object_t object)
+    rpc_object_t rpct_deserialize(rpc_object_t object)
+    bint rpct_validate(rpct_typei_t typei, rpc_object_t obj, rpc_object_t *errors)
 
 
 cdef class Object(object):

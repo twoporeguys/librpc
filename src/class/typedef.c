@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Two Pore Guys, Inc.
+ * Copyright 2017 Two Pore Guys, Inc.
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,48 +15,31 @@
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DIRECT, INDIRECT\\, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
  * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
-#ifndef LIBRPC_YAML_H
-#define LIBRPC_YAML_H
+#include "../linker_set.h"
+#include "../internal.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+static rpc_object_t
+typedef_serialize(rpc_object_t obj)
+{
 
-#include <rpc/object.h>
-
-#define	YAML_TAG_UINT64		"!uint"
-#define	YAML_TAG_DATE		"!date"
-#define	YAML_TAG_BINARY		"!bin"
-#define	YAML_TAG_FD		"!fd"
-#define	YAML_TAG_ERROR		"!error"
-
-#define YAML_ERROR_CODE		"code"
-#define YAML_ERROR_MSG		"msg"
-#define YAML_ERROR_XTRA		"extra"
-#define YAML_ERROR_STCK		"stack"
-
-#if defined(__linux__)
-#define	YAML_TAG_SHMEM		"!shmem"
-#define YAML_SHMEM_ADDR 	"addr"
-#define YAML_SHMEM_LEN		"len"
-#define YAML_SHMEM_FD		"fd"
-#endif
-
-int rpc_yaml_serialize(rpc_object_t, void **, size_t *);
-rpc_object_t rpc_yaml_deserialize(const void *, size_t);
-
-#ifdef __cplusplus
+	return (obj);
 }
-#endif
 
-#endif //LIBRPC_YAML_H
+static struct rpct_class_handler typedef_class_handler = {
+	.id = RPC_TYPING_TYPEDEF,
+	.name = "type",
+	.member_fn = NULL,
+	.validate_fn = NULL,
+	.serialize_fn = typedef_serialize
+};
+
+DECLARE_TYPE_CLASS(typedef_class_handler);

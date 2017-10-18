@@ -84,6 +84,11 @@ typedef struct rpc_object *rpc_object_t;
 typedef bool (^rpc_array_applier_t)(size_t index, rpc_object_t value);
 
 /**
+ *
+ */
+typedef rpc_object_t (^rpc_array_mapper_t)(size_t index, rpc_object_t value);
+
+/**
  * Definition of dictionary applier block type.
  *
  * Body of block is being executed for each of the dictionary's elements, until
@@ -95,6 +100,12 @@ typedef bool (^rpc_array_applier_t)(size_t index, rpc_object_t value);
  * @return Continue iteration signal.
  */
 typedef bool (^rpc_dictionary_applier_t)(const char *key, rpc_object_t value);
+
+/**
+ *
+ */
+typedef rpc_object_t (^rpc_dictionary_mapper_t)(const char *key,
+    rpc_object_t value);
 
 /**
  * Definition of array compare block type.
@@ -245,6 +256,14 @@ char *rpc_copy_description(rpc_object_t object);
  * @return Object's type.
  */
 rpc_type_t rpc_get_type(rpc_object_t object);
+
+/**
+ * Returns the string name of a type.
+ *
+ * @param type Type
+ * @return Type name
+ */
+const char *rpc_get_type_name(rpc_type_t type);
 
 /**
  * Checks if an object is of type RPC_TYPE_ERROR.
@@ -714,18 +733,27 @@ size_t rpc_array_get_count(rpc_object_t array);
 
 /**
  * Iterates over a given array. For each of elements executes an applier block,
- * providing a current index and a current value as
- * an applier block's arguments.
+ * providing a current index and a current value an an applier block's
+ * arguments.
  *
- * If an applier returns false, iteration is terminated and the function returns
- * true (terminated). Otherwise the function iterates to the end of
+ * If an applier returns false, iteration is terminated and the function
+ * returns true (terminated). Otherwise the function iterates to the end of
  * an input array and returns false (finished).
  *
  * @param array Input array.
- * @param applier Block of code to be executed for each of an array's elements.
+ * @param applier Block of code to be executed for each array element.
  * @return Iteration terminated (true)/finished (false) boolean flag.
  */
 bool rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier);
+
+/**
+ * Iterates over a given array and replaces each element of said array with
+ * a result of mapper block.
+ *
+ * @param array Input array
+ * @param mapper Block of code to be executed for each array element
+ */
+void rpc_array_map(rpc_object_t array, rpc_array_mapper_t mapper);
 
 /**
  * Checks if an entry with the same value as provided
@@ -1175,6 +1203,16 @@ void rpc_dictionary_steal_value(rpc_object_t dictionary, const char *key,
 void rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key);
 
 /**
+ * Removes a key from dictionary and returns it.
+ *
+ * @param dictionary Input dictionary
+ * @param key Key to be detached
+ * @return Detached object
+ */
+rpc_object_t rpc_dictionary_detach_key(rpc_object_t dictionary,
+    const char *key);
+
+/**
  * Returns an object held by a provided dictionary at a given key.
  *
  * If a given key does not exist, then the function returns NULL.
@@ -1209,6 +1247,14 @@ size_t rpc_dictionary_get_count(rpc_object_t dictionary);
  */
 bool rpc_dictionary_apply(rpc_object_t dictionary,
     rpc_dictionary_applier_t applier);
+
+/**
+ *
+ * @param dictionary
+ * @param mapper
+ */
+void rpc_dictionary_map(rpc_object_t dictionary,
+    rpc_dictionary_mapper_t mapper);
 
 /**
  * Checks if an input dictionary does have a given key set.

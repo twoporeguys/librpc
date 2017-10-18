@@ -22,41 +22,25 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
-#ifndef LIBRPC_YAML_H
-#define LIBRPC_YAML_H
+#include <glib.h>
+#include "../linker_set.h"
+#include "../internal.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+static bool
+validate_string_regex(rpc_object_t obj, rpc_object_t params,
+    struct rpct_typei *typei __unused, struct rpct_error_context *errctx)
+{
+	bool valid = true;
 
-#include <rpc/object.h>
-
-#define	YAML_TAG_UINT64		"!uint"
-#define	YAML_TAG_DATE		"!date"
-#define	YAML_TAG_BINARY		"!bin"
-#define	YAML_TAG_FD		"!fd"
-#define	YAML_TAG_ERROR		"!error"
-
-#define YAML_ERROR_CODE		"code"
-#define YAML_ERROR_MSG		"msg"
-#define YAML_ERROR_XTRA		"extra"
-#define YAML_ERROR_STCK		"stack"
-
-#if defined(__linux__)
-#define	YAML_TAG_SHMEM		"!shmem"
-#define YAML_SHMEM_ADDR 	"addr"
-#define YAML_SHMEM_LEN		"len"
-#define YAML_SHMEM_FD		"fd"
-#endif
-
-int rpc_yaml_serialize(rpc_object_t, void **, size_t *);
-rpc_object_t rpc_yaml_deserialize(const void *, size_t);
-
-#ifdef __cplusplus
+	return (valid);
 }
-#endif
 
-#endif //LIBRPC_YAML_H
+struct rpct_validator validator_string_regex = {
+	.type = "string",
+	.name = "regex",
+	.validate = validate_string_regex
+};
+
+DECLARE_VALIDATOR(validator_string_regex);

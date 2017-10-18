@@ -36,7 +36,6 @@ include(CPack)
 
 find_package (PkgConfig REQUIRED)
 pkg_check_modules (GLIB REQUIRED glib-2.0>=2.40)
-
 pkg_check_modules(SOUP REQUIRED libsoup-2.4)
 pkg_check_modules(YAML REQUIRED yaml-0.1)
 
@@ -97,7 +96,8 @@ set(HEADERS
         include/rpc/discovery.h
         include/rpc/query.h
         include/rpc/bus.h
-        include/rpc/serializer.h)
+        include/rpc/serializer.h
+        include/rpc/typing.h)
 
 set(CORE_FILES
         src/rpc_connection.c
@@ -109,6 +109,7 @@ set(CORE_FILES
         src/rpc_query.c
         src/rpc_bus.c
         src/rpc_serializer.c
+        src/rpc_typing.c
         src/utils.c
         src/internal.h
         src/linker_set.h
@@ -125,6 +126,18 @@ set(SERIALIZER_FILES
         src/serializer/yaml.c
         src/serializer/yaml.h
         contrib/mpack/mpack.c)
+
+set(TYPE_CLASS_FILES
+        src/class/struct.c
+        src/class/union.c
+        src/class/typedef.c
+        src/class/enum.c
+        src/class/builtin.c)
+
+set(VALIDATOR_FILES
+        src/validator/string_length.c
+        src/validator/string_regex.c
+        src/validator/int64_range.c)
 
 if(BUILD_JSON)
     set(SERIALIZER_FILES
@@ -151,6 +164,8 @@ add_library(librpc SHARED
         ${HEADERS}
         ${TRANSPORT_FILES}
         ${SERIALIZER_FILES}
+        ${TYPE_CLASS_FILES}
+        ${VALIDATOR_FILES}
         ${CORE_FILES})
 
 set_target_properties(librpc PROPERTIES PREFIX "")
@@ -198,7 +213,8 @@ if(BUILD_TESTS)
             tests/transport/ws.cpp
             tests/internal.cpp
             tests/method_stress.cpp
-            tests/api/query.cpp)
+            tests/api/query.cpp
+            tests/serializer/yaml.cpp)
 
     add_executable(catch_tests ${TEST_SOURCES})
     target_link_libraries(catch_tests Catch)

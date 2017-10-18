@@ -41,7 +41,7 @@ main(int argc, const char *argv[])
 	(void)argc;
 	(void)argv;
 
-	start_object = rpc_object_pack("{siubn[iii{s}]}",
+	start_object = rpc_object_pack("{s,i,u,b,n,[i,i,i,{s}]}",
 	    "hello", "world",
 	    "int", -12345L,
 	    "uint", 0x80808080L,
@@ -77,7 +77,7 @@ main(int argc, const char *argv[])
 
 	rpc_release(start_object);
 
-	start_object = rpc_object_pack("[{u}{u}{u}{u}{u}]",
+	start_object = rpc_object_pack("[{u},{u},{u},{u},{u}]",
 	    "value", 1,
 	    "value", 2,
 	    "value", 3,

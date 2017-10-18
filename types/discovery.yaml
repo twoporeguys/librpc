@@ -1,10 +1,19 @@
 ---
 meta:
   version: 1
-  realm: *
+  realm: "*"
   description: Discovery interface definition
 
+struct DiscoveryMethodArgument:
+  description: Represents a single function argument
+  members:
+    name:
+      type: string
+    description:
+      type: string
+
 struct DiscoveryMethod:
+  description: Represents a single defined function
   members:
     name:
       type: string
@@ -12,3 +21,8 @@ struct DiscoveryMethod:
       type: string
     arguments:
       type: List<DiscoveryMethodArgument>
+      description: List of arguments the function takes
+
+function discovery.get_methods:
+  returns:
+    type: Iter<DiscoveryMethod>

@@ -35,6 +35,8 @@
 
 SET_DECLARE(tp_set, struct rpc_transport);
 SET_DECLARE(sr_set, struct rpc_serializer);
+SET_DECLARE(vr_set, struct rpct_validator);
+SET_DECLARE(cs_set, struct rpct_class_handler);
 static GPrivate rpc_last_error = G_PRIVATE_INIT((GDestroyNotify)rpc_release_impl);
 
 const struct rpc_transport *
@@ -64,6 +66,37 @@ rpc_find_serializer(const char *name)
 
 	SET_FOREACH(s, sr_set) {
 		if (!g_strcmp0((*s)->name, name))
+			return (*s);
+	}
+
+	return (NULL);
+}
+
+const struct rpct_validator *
+rpc_find_validator(const char *type, const char *name)
+{
+	struct rpct_validator **s;
+
+	debugf("looking for validator %s", name);
+
+	SET_FOREACH(s, vr_set) {
+		if (!g_strcmp0((*s)->name, name) && !g_strcmp0((*s)->type, type))
+			return (*s);
+	}
+
+	return (NULL);
+}
+
+const struct rpct_class_handler *
+rpc_find_class_handler(const char *name, rpct_class_t cls)
+{
+	struct rpct_class_handler **s;
+
+	SET_FOREACH(s, cs_set) {
+		if (name != NULL && !g_strcmp0(name, (*s)->name))
+			return (*s);
+
+		if (name == NULL && cls == (*s)->id)
 			return (*s);
 	}
 
@@ -177,8 +210,22 @@ rpc_generate_v4_uuid(void)
 }
 
 gboolean
-rpc_kill_main_loop(GMainLoop *loop)
+rpc_kill_main_loop(void *arg)
 {
+	GMainLoop *loop = arg;
+
 	g_main_loop_quit(loop);
 	return (false);
+}
+
+int
+rpc_ptr_array_string_index(GPtrArray *arr, const char *str)
+{
+
+	for (guint i = 0; i < arr->len; i++) {
+		if (g_strcmp0(g_ptr_array_index(arr, i), str) == 0)
+			return (i);
+	}
+
+	return (-1);
 }

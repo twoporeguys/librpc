@@ -34,6 +34,7 @@
 #include <rpc/service.h>
 #include <rpc/server.h>
 #include <rpc/bus.h>
+#include <rpc/typing.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include <glib.h>
@@ -45,6 +46,8 @@
 
 #define	DECLARE_TRANSPORT(_transport)	DATA_SET(tp_set, _transport)
 #define	DECLARE_SERIALIZER(_serializer)	DATA_SET(sr_set, _serializer)
+#define	DECLARE_VALIDATOR(_validator)	DATA_SET(vr_set, _validator)
+#define	DECLARE_TYPE_CLASS(_class)	DATA_SET(cs_set, _class)
 
 #define	RPC_TRANSPORT_NO_SERIALIZE		(1 << 0)
 #define	RPC_TRANSPORT_CREDENTIALS		(1 << 1)
@@ -61,6 +64,10 @@
 #define debugf(...)
 #endif
 
+#define	TYPE_REGEX	"(struct|union|type|enum) (\\w+)(<(.*)>)?"
+#define	INSTANCE_REGEX	"(\\w+)(<(.*)>)?"
+#define	FUNC_REGEX	"function (\\w+)"
+
 #ifdef _WIN32
 typedef int uid_t;
 typedef int gid_t;
@@ -69,6 +76,8 @@ typedef int gid_t;
 struct rpc_connection;
 struct rpc_credentials;
 struct rpc_server;
+struct rpct_validator;
+struct rpct_error_context;
 
 typedef int (*rpc_recv_msg_fn_t)(struct rpc_connection *, const void *, size_t,
     int *, size_t, struct rpc_credentials *);
@@ -78,6 +87,12 @@ typedef int (*rpc_get_fd_fn_t)(void *);
 typedef int (*rpc_close_fn_t)(struct rpc_connection *);
 typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
 typedef int (*rpc_teardown_fn_t)(struct rpc_server *);
+
+typedef struct rpct_member *(*rpct_member_fn_t)(const char *, rpc_object_t,
+    struct rpct_type *);
+typedef bool (*rpct_validate_fn_t)(struct rpct_typei *, rpc_object_t,
+    struct rpct_error_context *);
+typedef rpc_object_t (*rpct_serialize_fn_t)(rpc_object_t);
 
 struct rpc_query_iter
 {
@@ -137,6 +152,7 @@ struct rpc_object
 	size_t			ro_line;
 	size_t			ro_column;
 	union rpc_value		ro_value;
+	struct rpct_typei *	ro_typei;
 };
 
 struct rpc_call
@@ -170,6 +186,7 @@ enum rpc_inbound_state
 
 struct rpc_inbound_call
 {
+	rpc_context_t 		ric_context;
     	rpc_connection_t    	ric_conn;
 	rpc_object_t        	ric_id;
 	rpc_object_t        	ric_args;
@@ -289,6 +306,129 @@ struct rpc_serializer
 	const char *name;
 };
 
+struct rpct_context
+{
+	char *			global_realm;
+	GHashTable *		files;
+	GHashTable *		realms;
+	rpc_function_t		pre_call_hook;
+	rpc_function_t 		post_call_hook;
+};
+
+struct rpct_realm
+{
+	char *			name;
+	GHashTable *		types;
+	GHashTable *		functions;
+};
+
+struct rpct_file
+{
+	char *			path;
+	char *			realm;
+	char *			description;
+	int64_t			version;
+	GHashTable *		types;
+	rpc_object_t 		body;
+};
+
+/**
+ * An RPC type.
+ */
+struct rpct_type
+{
+	rpct_class_t		clazz;
+	char *			realm;
+	char *			name;
+	char *			description;
+	struct rpct_file *	file;
+	struct rpct_type *	parent;
+	struct rpct_typei *	definition;
+	bool			generic;
+	GPtrArray *		generic_vars;
+	GHashTable *		members;
+	GHashTable *		constraints;
+};
+
+/**
+ * This structure has two uses. It can hold either:
+ * a) An instantiated (specialized or partially specialized) type
+ * b) A "proxy" type that refers to parent's type generic variable
+ */
+struct rpct_typei
+{
+	bool			proxy;
+	struct rpct_typei *	parent;
+	struct rpct_type *	type;		/**< Only if proxy == false */
+	const char *		variable;	/**< Only if proxy == true */
+	char *			canonical_form;
+	GHashTable *		specializations;
+	GHashTable *		constraints;
+	int 			refcount;
+};
+
+/**
+ *
+ */
+struct rpct_member
+{
+	char *			name;
+	char *			description;
+	struct rpct_typei *	type;
+	struct rpct_type *	origin;
+	GHashTable *		constraints;
+};
+
+struct rpct_function
+{
+	char *			name;
+	char *			realm;
+	char *			description;
+	GPtrArray *		arguments;
+	struct rpct_typei *	result;
+
+};
+
+struct rpct_argument
+{
+	struct rpct_typei *	type;
+	const char *		description;
+};
+
+struct rpct_error_context
+{
+	char *			path;
+	GPtrArray *		errors;
+};
+
+struct rpct_class_handler
+{
+	rpct_class_t		id;
+	const char *		name;
+    	rpct_member_fn_t 	member_fn;
+    	rpct_validate_fn_t 	validate_fn;
+    	rpct_serialize_fn_t 	serialize_fn;
+};
+
+struct rpct_validation_error
+{
+	char *			path;
+	char *			message;
+	rpc_object_t 		obj;
+	rpc_object_t 		extra;
+};
+
+struct rpct_validator
+{
+	const char *		type;
+	const char * 		name;
+	bool (*validate)(rpc_object_t, rpc_object_t, struct rpct_typei *, struct rpct_error_context *);
+};
+
+
+typedef struct rpct_realm *rpct_realm_t;
+typedef bool (^rpct_realm_applier_t)(rpct_realm_t);
+
 rpc_object_t rpc_prim_create(rpc_type_t type, union rpc_value val);
 
 #if defined(__linux__)
@@ -300,10 +440,15 @@ off_t rpc_shmem_get_offset(rpc_object_t shmem);
 void rpc_trace(const char *msg, rpc_object_t frame);
 char *rpc_get_backtrace(void);
 char *rpc_generate_v4_uuid(void);
-gboolean rpc_kill_main_loop(GMainLoop *loop);
+gboolean rpc_kill_main_loop(void *arg);
+int rpc_ptr_array_string_index(GPtrArray *arr, const char *str);
 
 const struct rpc_transport *rpc_find_transport(const char *scheme);
 const struct rpc_serializer *rpc_find_serializer(const char *name);
+const struct rpct_validator *rpc_find_validator(const char *type,
+    const char *name);
+const struct rpct_class_handler *rpc_find_class_handler(const char *name,
+    rpct_class_t cls);
 
 void rpc_set_last_error(int code, const char *msg, rpc_object_t extra);
 void rpc_set_last_gerror(GError *error);
@@ -322,4 +467,16 @@ void rpc_connection_close_inbound_call(struct rpc_inbound_call *);
 
 void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 
-#endif //LIBRPC_INTERNAL_H
+void rpct_typei_free(struct rpct_typei *inst);
+void rpct_add_error(struct rpct_error_context *ctx, const char *fmt, ...);
+void rpct_derive_error_context(struct rpct_error_context *newctx,
+    struct rpct_error_context *oldctx, const char *name);
+void rpct_release_error_context(struct rpct_error_context *ctx);
+bool rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
+    struct rpct_error_context *errctx);
+bool rpct_run_validators(struct rpct_typei *typei, rpc_object_t obj,
+    struct rpct_error_context *errctx);
+struct rpct_typei *rpct_instantiate_type(const char *decl,
+    const char *realm, struct rpct_typei *parent, struct rpct_type *ptype);
+
+#endif /* LIBRPC_INTERNAL_H */

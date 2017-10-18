@@ -32,6 +32,7 @@
 #include <rpc/object.h>
 #include <rpc/client.h>
 #include <rpc/server.h>
+#include <rpc/typing.h>
 #include <rpc/service.h>
 
 int
@@ -57,11 +58,16 @@ main(int argc, const char *argv[])
 		int64_t dict_num;
 		int cnt;
 		bool sure;
+		rpc_object_t nonexistent_obj = NULL;
 
 		(void)cookie;
 
-		cnt = rpc_object_unpack(args, "[sib{i}]", &str, &num, &sure,
-		    "key", &dict_num);
+		rpct_init();
+		cnt = rpc_object_unpack(args, "[s,i,b,{nonexistent:v,key:i}]",
+		    &str, &num, &sure, &nonexistent_obj, &dict_num);
+
+		if (nonexistent_obj != NULL)
+			printf("Nonexistent obj shouldn't be initialized");
 
 		printf("unpack cnt: %i\n", cnt);
 
@@ -69,13 +75,12 @@ main(int argc, const char *argv[])
 		    ", sure = %s\n", str, num, dict_num,
 		    sure ? "true" : "false");
 
-	    	return rpc_object_pack("{siubn[iii{s}]}",
+	    	return rpc_object_pack("{s,i,uint:u,b,n,array:[i,5:i,<int64>i,{s}]}",
 		    "hello", "world",
 		    "int", -12345L,
-		    "uint", 0x80808080L,
+		    0x80808080L,
 		    "true_or_false", true,
 		    "nothing",
-		    "array",
 		    1L, 2L, 3L, "!", "?");
 	});
 

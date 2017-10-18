@@ -606,6 +606,10 @@ usb_event_impl(void *arg)
 	}
 
 	g_free(log);
+	if (ret < 1)
+		goto disconnected;
+
+	fprintf(conn->uc_logfile, "%*s", ret - 1, log->buffer);
 	return (!conn->uc_state.uts_exit);
 
 disconnected:

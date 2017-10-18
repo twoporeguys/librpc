@@ -70,7 +70,7 @@ rpc_prim_create(rpc_type_t type, union rpc_value val)
 {
 	struct rpc_object *ro;
 
-	ro = (rpc_object_t)g_malloc(sizeof(*ro));
+	ro = (rpc_object_t)g_malloc0(sizeof(*ro));
 	if (ro == NULL)
 		abort();
 
@@ -110,8 +110,13 @@ rpc_create_description(GString *description, rpc_object_t object,
 		return;
 	}
 
-	g_string_append_printf(description, "<%s> ",
-	    rpc_types[object->ro_type]);
+	if (object->ro_typei != NULL)
+		g_string_append_printf(description, "<%s (%s)> ",
+		    rpc_types[object->ro_type],
+		    object->ro_typei->canonical_form);
+	else
+		g_string_append_printf(description, "<%s> ",
+		    rpc_types[object->ro_type]);
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
@@ -248,8 +253,15 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 	rpc_object_t array = NULL;
 	rpc_object_t dictionary = NULL;
 	rpc_object_t current = branch;
+	const char *search_ptr;
+	const char *comma_ptr;
+	const char *colon_ptr;
+	char *idx_end_ptr;
+	char *key;
+	char delim;
 	int i = 0;
 	char ch;
+	bool is_container;
 	size_t idx = 0;
 
 	if (branch == NULL)
@@ -257,15 +269,88 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 
 	for (i = fmt_cnt; fmt[i] != '\0'; i++) {
 		ch = fmt[i];
-		if ((array != NULL) && (ch != ']'))
-			current = rpc_array_get_value(array, idx++);
+		is_container = (array != NULL) || (dictionary != NULL);
 
-		if ((dictionary != NULL) && (ch != '}'))
-			current = rpc_dictionary_get_value(dictionary,
-			    va_arg(ap, const char *));
+		if (array != NULL)
+			delim = ']';
 
-		if (current == NULL)
-			return (-1);
+		if (dictionary != NULL)
+			delim = '}';
+
+		if (is_container && (ch != delim)) {
+			comma_ptr = NULL;
+			colon_ptr = NULL;
+			search_ptr = &fmt[i];
+			while (1) {
+				if (*search_ptr == ',') {
+					comma_ptr = search_ptr;
+					break;
+				}
+
+				if (*search_ptr == ':')
+					colon_ptr = search_ptr;
+
+				if (*search_ptr == '[')
+					break;
+
+				if (*search_ptr == ']')
+					break;
+
+				if (*search_ptr == '{')
+					break;
+
+				if (*search_ptr == '}')
+					break;
+
+				search_ptr++;
+			}
+
+			if (array != NULL) {
+				if (colon_ptr != NULL) {
+					idx = (size_t)strtol(&fmt[i],
+					    &idx_end_ptr, 10);
+
+					if (idx_end_ptr != colon_ptr)
+						return (-1);
+
+					current = rpc_array_get_value(array,
+					    idx);
+				} else {
+					current = rpc_array_get_value(array,
+					    idx++);
+				}
+			} else {
+				if (colon_ptr != NULL)
+					key = g_strndup(&fmt[i],
+					    (colon_ptr - &fmt[i]));
+				else
+					key = g_strdup(
+					    va_arg(ap, const char *));
+
+				current = rpc_dictionary_get_value(dictionary,
+				    key);
+				g_free(key);
+			}
+
+			if ((comma_ptr == NULL) &&
+			    (*search_ptr != delim)) {
+				i = i + (int)(search_ptr - &fmt[i]);
+				ch = *search_ptr;
+			} else if ((comma_ptr == NULL) &&
+				   (*search_ptr == delim)) {
+				ch = *(search_ptr - 1);
+				i = i + (int)(search_ptr - &fmt[i]) - 1;
+			} else {
+				ch = *(search_ptr - 1);
+				i = i + (int)(search_ptr - &fmt[i]);
+			}
+
+		}
+
+		if (current == NULL) {
+			va_arg(ap, void *);
+			continue;
+		}
 
 		switch (ch) {
 		case '*':
@@ -366,6 +451,7 @@ rpc_release_impl(rpc_object_t object)
 		return (0);
 
 	assert(object->ro_refcnt > 0);
+
 	if (g_atomic_int_dec_and_test(&object->ro_refcnt)) {
 		switch (object->ro_type) {
 		case RPC_TYPE_BINARY:
@@ -404,6 +490,10 @@ rpc_release_impl(rpc_object_t object)
 		default:
 			break;
 		}
+
+		if (object->ro_typei != NULL)
+			rpct_typei_free(object->ro_typei);
+
 		g_free(object);
 		return (0);
 	}
@@ -435,71 +525,94 @@ rpc_get_type(rpc_object_t object)
 	return (object->ro_type);
 }
 
+inline const char *
+rpc_get_type_name(rpc_type_t type)
+{
+
+	if (type > RPC_TYPE_ERROR)
+		return (NULL);
+
+	return (rpc_types[type]);
+}
+
 inline rpc_object_t
 rpc_copy(rpc_object_t object)
 {
-	rpc_object_t tmp;
+	rpc_object_t result = NULL;
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
-		return (rpc_null_create());
+		result = rpc_null_create();
+		break;
 
 	case RPC_TYPE_BOOL:
-		return (rpc_bool_create(object->ro_value.rv_b));
+		result = rpc_bool_create(object->ro_value.rv_b);
+		break;
 
 	case RPC_TYPE_INT64:
-		return (rpc_int64_create(object->ro_value.rv_i));
+		result = rpc_int64_create(object->ro_value.rv_i);
+		break;
 
 	case RPC_TYPE_UINT64:
-		return (rpc_uint64_create(object->ro_value.rv_ui));
+		result = rpc_uint64_create(object->ro_value.rv_ui);
+		break;
 
 	case RPC_TYPE_DATE:
-		return (rpc_date_create(rpc_date_get_value(object)));
+		result = rpc_date_create(rpc_date_get_value(object));
+		break;
 
 	case RPC_TYPE_DOUBLE:
-		return (rpc_double_create(object->ro_value.rv_d));
+		result = rpc_double_create(object->ro_value.rv_d);
+		break;
 
 	case RPC_TYPE_FD:
-		return (rpc_fd_create(rpc_fd_dup(object)));
+		result = rpc_fd_create(rpc_fd_dup(object));
+		break;
 
 	case RPC_TYPE_STRING:
-		return (rpc_string_create(rpc_string_get_string_ptr(object)));
+		result = rpc_string_create(rpc_string_get_string_ptr(object));
+		break;
 
 	case RPC_TYPE_BINARY:
-		return rpc_data_create(rpc_data_get_bytes_ptr(object),
+		result = rpc_data_create(rpc_data_get_bytes_ptr(object),
 		    rpc_data_get_length(object), true);
+		break;
 
 #if defined(__linux__)
 	case RPC_TYPE_SHMEM:
-		return (rpc_shmem_recreate(
+		result = rpc_shmem_recreate(
 		    dup(object->ro_value.rv_shmem.rsb_fd),
 		    object->ro_value.rv_shmem.rsb_offset,
-		    object->ro_value.rv_shmem.rsb_size));
+		    object->ro_value.rv_shmem.rsb_size);
+		break;
 #endif
 
 	case RPC_TYPE_ERROR:
-		return (rpc_error_create(rpc_error_get_code(object),
+		result = rpc_error_create(rpc_error_get_code(object),
 		    rpc_error_get_message(object),
-		    rpc_copy(rpc_error_get_extra(object))));
+		    rpc_copy(rpc_error_get_extra(object)));
+		break;
 
 	case RPC_TYPE_DICTIONARY:
-		tmp = rpc_dictionary_create();
+		result = rpc_dictionary_create();
 		rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
-		    	rpc_dictionary_steal_value(tmp, k, rpc_copy(v));
+		    	rpc_dictionary_steal_value(result, k, rpc_copy(v));
 		    	return ((bool)true);
 		});
-		return (tmp);
+		break;
 
 	case RPC_TYPE_ARRAY:
-		tmp = rpc_array_create();
+		result = rpc_array_create();
 		rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
-			rpc_array_steal_value(tmp, idx, rpc_copy(v));
+			rpc_array_steal_value(result, idx, rpc_copy(v));
 		    	return ((bool)true);
 		});
-		return (tmp);
+		break;
 	}
 
-	return (NULL);
+	result->ro_typei = object->ro_typei;
+
+	return (result);
 }
 
 inline int
@@ -617,13 +730,98 @@ rpc_object_vpack(const char *fmt, va_list ap)
 	GQueue *keys = g_queue_new();
 	rpc_object_t current = NULL;
 	rpc_object_t container = NULL;
-	const char *key;
+	const char *ptr;
+	const char *search_ptr;
+	const char *comma_ptr;
+	const char *colon_ptr;
+	const char *type_start;
+	char *idx_end_ptr;
+	char *key;
+	char *type = NULL;
 	char ch;
+	char delim;
+	size_t idx = 0;
+	uint32_t nesting;
 
-	while ((ch = *fmt++) != '\0') {
-		if (rpc_get_type(container) == RPC_TYPE_DICTIONARY && ch != '}') {
-			key = va_arg(ap, const char *);
-			g_queue_push_tail(keys, (gpointer)key);
+	for (ptr = fmt; *ptr != '\0'; ptr++) {
+
+		ch = *ptr;
+		if (container != NULL) {
+			if (rpc_get_type(container) == RPC_TYPE_ARRAY)
+				delim = ']';
+			else
+				delim = '}';
+		}
+
+		if ((container != NULL) && (ch != delim)) {
+			comma_ptr = NULL;
+			colon_ptr = NULL;
+			search_ptr = ptr;
+			while (1) {
+				if (*search_ptr == ',') {
+					comma_ptr = search_ptr;
+					break;
+				}
+
+				if (*search_ptr == ':')
+					colon_ptr = search_ptr;
+
+				if (*search_ptr == '<')
+					break;
+
+				if (*search_ptr == '[')
+					break;
+
+				if (*search_ptr == ']')
+					break;
+
+				if (*search_ptr == '{')
+					break;
+
+				if (*search_ptr == '}')
+					break;
+
+				search_ptr++;
+			}
+
+			if (rpc_get_type(container) == RPC_TYPE_ARRAY) {
+				if (colon_ptr != NULL) {
+					idx = (size_t)strtol(ptr,
+					    &idx_end_ptr, 10);
+
+					if (idx_end_ptr != colon_ptr)
+						goto error;
+				} else {
+					idx = rpc_array_get_count(
+					    container);
+				}
+			} else {
+				if (colon_ptr != NULL) {
+					g_queue_push_tail(keys,
+					    g_strndup(ptr,
+					    (colon_ptr - ptr)));
+
+				} else {
+					key = g_strdup(
+					    va_arg(ap, const char *));
+					g_queue_push_tail(keys,
+					    (gpointer)key);
+				}
+			}
+
+			if ((comma_ptr == NULL) &&
+			    (*search_ptr != delim)) {
+				ptr = search_ptr;
+				ch = *search_ptr;
+			} else if ((comma_ptr == NULL) &&
+			    (*search_ptr == delim)) {
+				ch = *(search_ptr - 1);
+				ptr = search_ptr - 1;
+			} else {
+				ch = *(search_ptr - 1);
+				ptr = search_ptr;
+			}
+
 		}
 
 		switch (ch) {
@@ -664,6 +862,21 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			current = rpc_string_create(va_arg(ap, const char *));
 			break;
 
+		case '<':
+			type_start = ptr + 1;
+			nesting = 1;
+			while (nesting != 0) {
+				ptr++;
+
+				if (*(ptr) == '<')
+					nesting++;
+
+				if (*(ptr) == '>')
+					nesting--;
+			}
+			type = g_strndup(type_start, (ptr - type_start));
+			continue;
+
 		case '{':
 			container = rpc_dictionary_create();
 			g_queue_push_tail(stack, container);
@@ -681,9 +894,16 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			break;
 
 		default:
-			rpc_release(current);
-			errno = EINVAL;
-			return (NULL);
+			goto error;
+		}
+
+		if (type != NULL) {
+			current = rpct_new(type, NULL, current);
+			if (current == NULL)
+				goto error;
+
+			g_free(type);
+			type = NULL;
 		}
 
 		if (container != NULL) {
@@ -694,15 +914,23 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			}
 
 			if (rpc_get_type(container) == RPC_TYPE_ARRAY) {
-				rpc_array_append_stolen_value(container,
-				    current);
+				rpc_array_steal_value(container, idx, current);
 			}
 
 			continue;
 		}
 
+		g_queue_free(stack);
+		g_queue_free_full(keys, g_free);
+
 		return (current);
 	}
+
+error:	rpc_release(current);
+
+	g_queue_free(stack);
+	g_queue_free_full(keys, g_free);
+	errno = EINVAL;
 
 	return (NULL);
 }
@@ -1291,6 +1519,21 @@ rpc_array_apply(rpc_object_t array, rpc_array_applier_t applier)
 	return (flag);
 }
 
+inline void
+rpc_array_map(rpc_object_t array, rpc_array_mapper_t mapper)
+{
+	rpc_object_t oldv, newv;
+	size_t i;
+
+	for (i = 0; i < array->ro_value.rv_list->len; i++) {
+		oldv = g_ptr_array_index(array->ro_value.rv_list, i);
+		newv = mapper(i, oldv);
+		g_ptr_array_index(array->ro_value.rv_list, i) = newv;
+		rpc_retain(newv);
+		rpc_release(oldv);
+	}
+}
+
 inline bool
 rpc_array_contains(rpc_object_t array, rpc_object_t value)
 {
@@ -1580,6 +1823,24 @@ rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key)
 }
 
 inline rpc_object_t
+rpc_dictionary_detach_key(rpc_object_t dictionary, const char *key)
+{
+	rpc_object_t result;
+
+	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
+		abort();
+
+	result = rpc_dictionary_get_value(dictionary, key);
+	if (result == NULL)
+		return (NULL);
+
+	rpc_retain(result);
+	rpc_dictionary_remove_key(dictionary, key);
+
+	return (result);
+}
+
+inline rpc_object_t
 rpc_dictionary_get_value(rpc_object_t dictionary,
     const char *key)
 {
@@ -1600,15 +1861,36 @@ rpc_dictionary_apply(rpc_object_t dictionary, rpc_dictionary_applier_t applier)
 {
 	GHashTableIter iter;
 	gpointer key, value;
+	bool flag = false;
 
 	g_hash_table_iter_init(&iter, dictionary->ro_value.rv_dict);
 
 	while (g_hash_table_iter_next(&iter, &key, &value)) {
-		if (!applier((const char *)key, (rpc_object_t)value))
+		if (!applier((const char *)key, (rpc_object_t)value)) {
+			flag = true;
 			break;
+		}
 	}
 
-	return (true);
+	return (flag);
+}
+
+inline void
+rpc_dictionary_map(rpc_object_t dictionary, rpc_dictionary_mapper_t mapper)
+{
+	GHashTableIter iter;
+	gpointer key, value;
+	rpc_object_t oldv, newv;
+
+	g_hash_table_iter_init(&iter, dictionary->ro_value.rv_dict);
+
+	while (g_hash_table_iter_next(&iter, &key, &value)) {
+		oldv = (rpc_object_t)value;
+		newv = mapper((const char *)key, oldv);
+		rpc_retain(newv);
+		g_hash_table_iter_replace(&iter, newv);
+		//rpc_release(oldv);
+	}
 }
 
 inline bool

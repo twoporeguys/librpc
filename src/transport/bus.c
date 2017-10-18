@@ -50,7 +50,7 @@ struct bus_connection;
 typedef void (*bus_netlink_cb_t)(void *, struct librpc_message *, void *,
     size_t);
 
-static void *bus_open(void);
+static void *bus_open(GMainContext *);
 static void bus_close(void *);
 static int bus_connect(struct rpc_connection *, const char *, rpc_object_t);
 static int bus_send_msg(void *, void *, size_t, const int *, size_t);
@@ -110,7 +110,7 @@ struct bus_connection
 };
 
 static void *
-bus_open(void)
+bus_open(GMainContext *context __unused)
 {
 	struct bus_netlink *bn;
 
@@ -166,6 +166,10 @@ static int
 bus_abort(void *arg)
 {
 	struct bus_connection *conn = arg;
+
+	bus_netlink_close(&conn->bc_bn);
+	g_free(conn);
+	return (0);
 }
 
 static int
