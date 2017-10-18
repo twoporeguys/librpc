@@ -226,13 +226,15 @@ bus_enumerate(void *arg __unused, struct rpc_bus_node **resultp, size_t *countp)
 		if (g_strcmp0(udev_device_get_sysname(dev), "librpc") == 0)
 			continue;
 
-		result = g_realloc(result, count + 1);
+		result = g_realloc(result, (count + 1) * sizeof(*result));
 		result[count].rbn_address = (uint32_t)strtol(
 		    udev_device_get_sysattr_value(dev, "address"), NULL, 10);
 		result[count].rbn_name = g_strdup(
 		    udev_device_get_sysattr_value(dev, "name"));
 		result[count].rbn_description = g_strdup(
 		    udev_device_get_sysattr_value(dev, "description"));
+		result[count].rbn_serial = g_strdup(
+		    udev_device_get_sysattr_value(dev, "serial"));
 		count++;
 	}
 
