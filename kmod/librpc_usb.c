@@ -268,7 +268,7 @@ librpc_usb_read_log(struct librpc_usb_device *rpcusbdev)
 {
 	struct usb_device *udev = rpcusbdev->udev;
 	struct librpc_usb_log *log = rpcusbdev->log;
-	int rpipe = usb_rcvctrlpipe(rpcusbdev->udev, 1);
+	int rpipe = usb_rcvctrlpipe(rpcusbdev->udev, 0);
 	int ret;
 	enum librpc_usb_status status;
 
