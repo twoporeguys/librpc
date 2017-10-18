@@ -61,12 +61,14 @@ rpc_bus_open(void)
 	if (bus == NULL) {
 		errno = ENXIO;
 		rpc_bus_context = NULL;
+		rpc_set_last_error(ENXIO, "Bus transport not compiled in", NULL);
 		goto done;
 	}
 
 	if (bus->bus_ops == NULL) {
 		errno = ENXIO;
 		rpc_bus_context = NULL;
+		rpc_set_last_error(ENXIO, "Bus transport not compiled in", NULL);
 		goto done;
 	}
 
