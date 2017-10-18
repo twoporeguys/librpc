@@ -54,6 +54,7 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	}
 
 	call->ric_arg = method->rm_arg;
+	call->ric_context = context;
 	call->ric_consumer_seqno = 1;
 
 	debugf("method=%p", method);
