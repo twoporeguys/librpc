@@ -586,18 +586,20 @@ usb_event_impl(void *arg)
 	struct usb_connection *conn = arg;
 	int ret;
 	struct librpc_usb_log *log;
-	enum librpc_usb_status status = LIBRPC_USB_OK;
+	enum librpc_usb_status status;
 
 	log = g_malloc(sizeof(*log) + conn->uc_logsize);
-	while (status == LIBRPC_USB_OK) {
-		memset(log, '\0', sizeof(*log) + conn->uc_logsize);
+
+	for (;;) {
+		memset(log, 0, sizeof(*log) + conn->uc_logsize);
 		ret = usb_xfer(conn->uc_handle, LIBRPC_USB_READ_LOG, log,
-		    sizeof(*log) + conn->uc_logsize, 500);
+			       sizeof(*log) + conn->uc_logsize, 500);
 
 		if (ret < 1)
 			goto disconnected;
 
-		status = log->status;
+		if (log->status != LIBRPC_USB_OK)
+			break;
 
 		if (conn->uc_logfile != NULL) {
 			fprintf(conn->uc_logfile, "%*s", ret - 1, log->buffer);
