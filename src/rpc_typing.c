@@ -437,7 +437,6 @@ rpct_member_free(struct rpct_member *member)
 static inline bool
 rpct_type_is_fully_specialized(struct rpct_typei *inst)
 {
-	struct rpct_typei *s;
 
 	if (!inst->type->generic)
 		return (true);
