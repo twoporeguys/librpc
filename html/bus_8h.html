@@ -134,8 +134,8 @@ Functions</h2></td></tr>
 <tr class="separator:a845c8c255ac97bb03ac9ad1418eb66f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5fa0c254755deec118b2e3dcb4ec9bdf"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#a5fa0c254755deec118b2e3dcb4ec9bdf">rpc_bus_close</a> (void)</td></tr>
 <tr class="separator:a5fa0c254755deec118b2e3dcb4ec9bdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a069e6d67eba0248bc2de6d185d91e9d9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#a069e6d67eba0248bc2de6d185d91e9d9">rpc_bus_ping</a> (const char *name)</td></tr>
-<tr class="separator:a069e6d67eba0248bc2de6d185d91e9d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8ebea01297a21f28b1bc11f13c2d310"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#aa8ebea01297a21f28b1bc11f13c2d310">rpc_bus_ping</a> (const char *serial)</td></tr>
+<tr class="separator:aa8ebea01297a21f28b1bc11f13c2d310"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85cd042c0a2e2bddaea2a09ca10af76f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#a85cd042c0a2e2bddaea2a09ca10af76f">rpc_bus_enumerate</a> (struct <a class="el" href="structrpc__bus__node.html">rpc_bus_node</a> **result)</td></tr>
 <tr class="separator:a85cd042c0a2e2bddaea2a09ca10af76f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e0894b8914690e83a155b33a2854d8c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#a9e0894b8914690e83a155b33a2854d8c">rpc_bus_free_result</a> (struct <a class="el" href="structrpc__bus__node.html">rpc_bus_node</a> *result)</td></tr>
@@ -263,7 +263,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a069e6d67eba0248bc2de6d185d91e9d9"></a>
+<a class="anchor" id="aa8ebea01297a21f28b1bc11f13c2d310"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -271,12 +271,12 @@ Functions</h2></td></tr>
           <td class="memname">int rpc_bus_ping </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>name</em></td><td>)</td>
+          <td class="paramname"><em>serial</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Checks whether a node with specified name is reachable.</p>
+<p>Checks whether a node with specified serial is reachable.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">name</td><td></td></tr>

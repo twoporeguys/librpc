@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="dir_26df6c18271b4ec683b70d44ac22bed0" kind="dir">
+    <compoundname>/code/include/rpc</compoundname>
+    <innerfile refid="bus_8h">bus.h</innerfile>
+    <innerfile refid="client_8h">client.h</innerfile>
+    <innerfile refid="connection_8h">connection.h</innerfile>
+    <innerfile refid="discovery_8h">discovery.h</innerfile>
+    <innerfile refid="object_8h">object.h</innerfile>
+    <innerfile refid="query_8h">query.h</innerfile>
+    <innerfile refid="serializer_8h">serializer.h</innerfile>
+    <innerfile refid="server_8h">server.h</innerfile>
+    <innerfile refid="service_8h">service.h</innerfile>
+    <innerfile refid="typing_8h">typing.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/code/include/rpc/"/>
+  </compounddef>
+</doxygen>

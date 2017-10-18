@@ -1,0 +1,1202 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="connection_8h" kind="file" language="C++">
+    <compoundname>connection.h</compoundname>
+    <includes local="no">Block.h</includes>
+    <includes local="no">sys/time.h</includes>
+    <includes refid="object_8h" local="no">rpc/object.h</includes>
+    <includedby refid="client_8h" local="no">/code/include/rpc/client.h</includedby>
+    <includedby refid="server_8h" local="no">/code/include/rpc/server.h</includedby>
+    <includedby refid="service_8h" local="no">/code/include/rpc/service.h</includedby>
+    <incdepgraph>
+      <node id="113">
+        <label>stdbool.h</label>
+      </node>
+      <node id="114">
+        <label>stdarg.h</label>
+      </node>
+      <node id="112">
+        <label>stdint.h</label>
+      </node>
+      <node id="108">
+        <label>/code/include/rpc/connection.h</label>
+        <link refid="connection.h"/>
+        <childnode refid="109" relation="include">
+        </childnode>
+        <childnode refid="110" relation="include">
+        </childnode>
+        <childnode refid="111" relation="include">
+        </childnode>
+      </node>
+      <node id="115">
+        <label>sys/types.h</label>
+      </node>
+      <node id="111">
+        <label>rpc/object.h</label>
+        <link refid="object_8h"/>
+        <childnode refid="112" relation="include">
+        </childnode>
+        <childnode refid="113" relation="include">
+        </childnode>
+        <childnode refid="114" relation="include">
+        </childnode>
+        <childnode refid="115" relation="include">
+        </childnode>
+      </node>
+      <node id="109">
+        <label>Block.h</label>
+      </node>
+      <node id="110">
+        <label>sys/time.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="117">
+        <label>/code/include/rpc/client.h</label>
+        <link refid="client_8h"/>
+      </node>
+      <node id="120">
+        <label>/code/include/rpc/discovery.h</label>
+        <link refid="discovery_8h"/>
+      </node>
+      <node id="116">
+        <label>/code/include/rpc/connection.h</label>
+        <link refid="connection.h"/>
+        <childnode refid="117" relation="include">
+        </childnode>
+        <childnode refid="118" relation="include">
+        </childnode>
+        <childnode refid="119" relation="include">
+        </childnode>
+      </node>
+      <node id="118">
+        <label>/code/include/rpc/server.h</label>
+        <link refid="server_8h"/>
+      </node>
+      <node id="119">
+        <label>/code/include/rpc/service.h</label>
+        <link refid="service_8h"/>
+        <childnode refid="120" relation="include">
+        </childnode>
+        <childnode refid="118" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="connection_8h_1a4f7704822a76a6f293f6abbb59bf41f3" prot="public" static="no">
+        <name>RPC_HANDLER</name>
+        <param><defname>_fn</defname></param>
+        <param><defname>_arg</defname></param>
+        <initializer>^(const char *_name, <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref> _args) {			\
+		_fn(_arg, _name, _args);				\
+	}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Converts function pointer to a <ref refid="connection_8h_1a65fe4b58831bfa2c2aa2210a48c52af2" kindref="member">rpc_handler_t</ref> block type. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="101" column="9" bodyfile="/code/include/rpc/connection.h" bodystart="101" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="connection_8h_1ac6630daf34229f9dd8a754b119e4a94d" prot="public" static="no">
+        <name>RPC_ERROR_HANDLER</name>
+        <param><defname>_fn</defname></param>
+        <param><defname>_arg</defname></param>
+        <initializer>^(<ref refid="connection_8h_1a043170f29cb25827a88be4dab2313a91" kindref="member">rpc_error_code_t</ref> _code, <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref> _args) {			\
+		_fn(_arg, _code, _args);				\
+	}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Converts function pointer to a <ref refid="connection_8h_1a4dfba30ff97d4c5c56a6787ecd1bb79a" kindref="member">rpc_error_handler_t</ref> block type. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="109" column="9" bodyfile="/code/include/rpc/connection.h" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="connection_8h_1a7512dc753949d75650bbec7527f9d0a6" prot="public" static="no">
+        <name>RPC_CALLBACK</name>
+        <param><defname>_fn</defname></param>
+        <param><defname>_arg</defname></param>
+        <initializer>^(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref> _args, <ref refid="connection_8h_1a5e44285dc90be1f6bc541504a3f6d929" kindref="member">rpc_call_status_t</ref> _status) {		\
+		return ((bool)_fn(_arg, _args, _status));		\
+	}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Converts function pointer to a <ref refid="connection_8h_1a659dfc386fa0add62a07c17662a29641" kindref="member">rpc_callback_t</ref> block type. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="117" column="9" bodyfile="/code/include/rpc/connection.h" bodystart="117" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccd" prot="public" static="no">
+        <name>rpc_error_code</name>
+        <enumvalue id="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7" prot="public">
+          <name>RPC_INVALID_RESPONSE</name>
+          <initializer>= 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Received unreadable response </para>          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55" prot="public">
+          <name>RPC_CONNECTION_TIMEOUT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Connection timed out </para>          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0" prot="public">
+          <name>RPC_CONNECTION_CLOSED</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Disconnect received </para>          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70" prot="public">
+          <name>RPC_CALL_TIMEOUT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Request timed out </para>          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d" prot="public">
+          <name>RPC_SPURIOUS_RESPONSE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Response to unknown request </para>          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b" prot="public">
+          <name>RPC_LOGOUT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Logged out by server </para>          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1" prot="public">
+          <name>RPC_OTHER</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Other or unknown reason </para>          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Enumerates possible RPC error codes. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="52" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="51" bodyend="60"/>
+      </memberdef>
+      <memberdef kind="enum" id="connection_8h_1a22306445a7503bab94835382d07e0410" prot="public" static="no">
+        <name>rpc_call_status</name>
+        <enumvalue id="connection_8h_1a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1" prot="public">
+          <name>RPC_CALL_IN_PROGRESS</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Call in progress </para>          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="connection_8h_1a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f" prot="public">
+          <name>RPC_CALL_MORE_AVAILABLE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Streaming response, more data available </para>          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="connection_8h_1a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d" prot="public">
+          <name>RPC_CALL_DONE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Call finished, response received </para>          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="connection_8h_1a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856" prot="public">
+          <name>RPC_CALL_ERROR</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Call finished, error received </para>          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Enumerates possible remote procedure call status values. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="66" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="65" bodyend="71"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="connection_8h_1a043170f29cb25827a88be4dab2313a91" prot="public" static="no">
+        <type>enum <ref refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccd" kindref="member">rpc_error_code</ref></type>
+        <definition>typedef enum rpc_error_code  rpc_error_code_t</definition>
+        <argsstring></argsstring>
+        <name>rpc_error_code_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Enumerates possible RPC error codes. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="60" column="1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="connection_8h_1a5e44285dc90be1f6bc541504a3f6d929" prot="public" static="no">
+        <type>enum <ref refid="connection_8h_1a22306445a7503bab94835382d07e0410" kindref="member">rpc_call_status</ref></type>
+        <definition>typedef enum rpc_call_status  rpc_call_status_t</definition>
+        <argsstring></argsstring>
+        <name>rpc_call_status_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Enumerates possible remote procedure call status values. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="71" column="1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="connection_8h_1a70838cb106c3464db299522c5fe2782d" prot="public" static="no">
+        <type>struct rpc_connection *</type>
+        <definition>typedef struct rpc_connection* rpc_connection_t</definition>
+        <argsstring></argsstring>
+        <name>rpc_connection_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Definition of RPC connection pointer. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="76" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="76" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="connection_8h_1aeb6f25e395cc04930537960ef6b50106" prot="public" static="no">
+        <type>struct rpc_call *</type>
+        <definition>typedef struct rpc_call* rpc_call_t</definition>
+        <argsstring></argsstring>
+        <name>rpc_call_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Definition of RPC call pointer. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="81" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="connection_8h_1a65fe4b58831bfa2c2aa2210a48c52af2" prot="public" static="no">
+        <type>void(^</type>
+        <definition>typedef void(^ rpc_handler_t) (const char *name, rpc_object_t args)</definition>
+        <argsstring>)(const char *name, rpc_object_t args)</argsstring>
+        <name>rpc_handler_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Definition of RPC event handler block type. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="86" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="connection_8h_1a4dfba30ff97d4c5c56a6787ecd1bb79a" prot="public" static="no">
+        <type>void(^</type>
+        <definition>typedef void(^ rpc_error_handler_t) (rpc_error_code_t code, rpc_object_t args)</definition>
+        <argsstring>)(rpc_error_code_t code, rpc_object_t args)</argsstring>
+        <name>rpc_error_handler_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Definition of RPC error handler block type. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="91" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="connection_8h_1a659dfc386fa0add62a07c17662a29641" prot="public" static="no">
+        <type>bool(^</type>
+        <definition>typedef bool(^ rpc_callback_t) (rpc_object_t args, rpc_call_status_t status)</definition>
+        <argsstring>)(rpc_object_t args, rpc_call_status_t status)</argsstring>
+        <name>rpc_callback_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Definition of RPC callback block type. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="96" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="connection_8h_1a0382631023d9cf812d978e80d5814bc8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref></type>
+        <definition>rpc_connection_t rpc_connection_create</definition>
+        <argsstring>(void *cookie, rpc_object_t params)</argsstring>
+        <name>rpc_connection_create</name>
+        <param>
+          <type>void *</type>
+          <declname>cookie</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>params</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="122" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1a6d4de49f4d9121c4077e62b73064b99d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int rpc_connection_close</definition>
+        <argsstring>(rpc_connection_t conn)</argsstring>
+        <name>rpc_connection_close</name>
+        <param>
+          <type><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref></type>
+          <declname>conn</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="123" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1a820acf081ad5784aafde954b5ec9270a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int rpc_connection_subscribe_event</definition>
+        <argsstring>(rpc_connection_t conn, const char *name)</argsstring>
+        <name>rpc_connection_subscribe_event</name>
+        <param>
+          <type><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref></type>
+          <declname>conn</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Subscribes for an event.</para><para>This function can be called multiple times on a single event name - subsequent calls will not send a subscribe message to the server, but instead increment internal reference count for a subscription.</para><para>Calls to <ref refid="connection_8h_1a820acf081ad5784aafde954b5ec9270a" kindref="member">rpc_connection_subscribe_event()</ref> must be paired with <ref refid="connection_8h_1a60ace791b01ad3aee0fc20d266c9673f" kindref="member">rpc_connection_unsubscribe_event()</ref>.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>conn</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Connection to subscribe on. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Event name. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 on success, -1 on failure. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="139" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1a60ace791b01ad3aee0fc20d266c9673f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int rpc_connection_unsubscribe_event</definition>
+        <argsstring>(rpc_connection_t conn, const char *name)</argsstring>
+        <name>rpc_connection_unsubscribe_event</name>
+        <param>
+          <type><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref></type>
+          <declname>conn</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Undoes previous event subscription.</para><para>This function may either:<itemizedlist>
+<listitem><para>decrement reference count of subscription for given event</para></listitem><listitem><para>send unsubscribe message to the server (when subscription reference count reached value of 0)</para></listitem></itemizedlist>
+</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>conn</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Connection to undo the subscription on. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Event name. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 on success, -1 on failure. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="153" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1a82d9bf3dc3219c41e89739acd0b314d5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>void* rpc_connection_register_event_handler</definition>
+        <argsstring>(rpc_connection_t conn, const char *name, rpc_handler_t handler)</argsstring>
+        <name>rpc_connection_register_event_handler</name>
+        <param>
+          <type><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref></type>
+          <declname>conn</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type><ref refid="connection_8h_1a65fe4b58831bfa2c2aa2210a48c52af2" kindref="member">rpc_handler_t</ref></type>
+          <declname>handler</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Registers an event handler block for an event of a given name.</para><para>Each time an event occurs, a handler block is going to be called.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>conn</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Connection to register an event handler for. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name of an event to be handled. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>handler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Event handler of rpc_handler_t type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="164" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1a209856a794a9a10a53735787926f4b95" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rpc_connection_unregister_event_handler</definition>
+        <argsstring>(rpc_connection_t conn, const char *name, void *cookie)</argsstring>
+        <name>rpc_connection_unregister_event_handler</name>
+        <param>
+          <type><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref></type>
+          <declname>conn</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>cookie</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Cancels further execution of a given event handler block for ongoing events of a given name.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>conn</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Connection to remove event handler from. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name of an event related to event handler. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>cookie</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Void pointer to event handler itself. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="175" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1aba014ae3408ed96b696ab70066076f13" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+        <definition>rpc_object_t rpc_connection_call_sync</definition>
+        <argsstring>(rpc_connection_t conn, const char *method,...)</argsstring>
+        <name>rpc_connection_call_sync</name>
+        <param>
+          <type><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref></type>
+          <declname>conn</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>method</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Performs a synchronous RPC method call using a given connection.</para><para>Function blocks until a result is ready and returns it, or cancels and returns a NULL pointer if a timeout has occurred.</para><para>Method call arguments need to be rpc_object_t instances, followed with a NULL, denoting end of variable argument list.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>conn</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Connection to do a call on. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>method</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name of a method to be called. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>...</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Called method arguments. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Result of the call. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="192" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1a1dd48a58161cbf375719ecde4480c8a9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+        <definition>rpc_object_t rpc_connection_call_syncv</definition>
+        <argsstring>(rpc_connection_t conn, const char *method, va_list ap)</argsstring>
+        <name>rpc_connection_call_syncv</name>
+        <param>
+          <type><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref></type>
+          <declname>conn</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>method</declname>
+        </param>
+        <param>
+          <type>va_list</type>
+          <declname>ap</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Performs a synchronous RPC method call using a given connection.</para><para>Function blocks until a result is ready and returns it, or cancels and returns a NULL pointer if a timeout has occurred.</para><para>Instead of variable arguments length in <ref refid="connection_8h_1aee4f43c3790d07d116367646694cb1c0" kindref="member">rpc_connection_call()</ref> example, this function takes previously assembled variable arguments list structure as its argument.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>conn</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Connection to do a call on. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>method</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name of a method to be called. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ap</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Variable arguments list structure describing a method arguments. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Result of the call. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="210" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1aee4f43c3790d07d116367646694cb1c0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" kindref="member">rpc_call_t</ref></type>
+        <definition>rpc_call_t rpc_connection_call</definition>
+        <argsstring>(rpc_connection_t conn, const char *name, rpc_object_t args, rpc_callback_t callback)</argsstring>
+        <name>rpc_connection_call</name>
+        <param>
+          <type><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref></type>
+          <declname>conn</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>args</declname>
+        </param>
+        <param>
+          <type><ref refid="connection_8h_1a659dfc386fa0add62a07c17662a29641" kindref="member">rpc_callback_t</ref></type>
+          <declname>callback</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Performs a RPC method call using a given connection.</para><para>Function returns immediately without waiting for a RPC completion and returns rpc_call_t object representing the ongoing call.</para><para>Function supports a callback argument of rpc_callback_t type, which is a pointer to a function to be called on RPC completion. Can be set to NULL when that functionality is not needed by the caller.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>conn</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Connection to do a call on. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name of a method to be called. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Variable length RPC method arguments list. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>callback</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Callback function pointer to be called on RPC completion. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>RPC call object </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="229" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1a1bc22789ecc5ca9cbe8637c8f173ee4d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int rpc_connection_send_event</definition>
+        <argsstring>(rpc_connection_t conn, const char *name, rpc_object_t args)</argsstring>
+        <name>rpc_connection_send_event</name>
+        <param>
+          <type><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref></type>
+          <declname>conn</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Sends an event.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>conn</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Connection to send event across. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Event name. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Event arguments or NULL. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 on success, -1 on failure. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="240" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1a2d9343c2c38625f9659358e0710ed0c7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int rpc_connection_ping</definition>
+        <argsstring>(rpc_connection_t conn)</argsstring>
+        <name>rpc_connection_ping</name>
+        <param>
+          <type><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref></type>
+          <declname>conn</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Ping the other end of a connection. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="246" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1ae843166183a4bd6dbf5a58133b3fcaf3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rpc_connection_set_event_handler</definition>
+        <argsstring>(rpc_connection_t conn, rpc_handler_t handler)</argsstring>
+        <name>rpc_connection_set_event_handler</name>
+        <param>
+          <type><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref></type>
+          <declname>conn</declname>
+        </param>
+        <param>
+          <type><ref refid="connection_8h_1a65fe4b58831bfa2c2aa2210a48c52af2" kindref="member">rpc_handler_t</ref></type>
+          <declname>handler</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Sets global event handler for a connection.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>conn</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Connection to set event handler for. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>handler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Handler block. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="254" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1a8f332abcc5d0a80c86f8317c7dcc79ec" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rpc_connection_set_error_handler</definition>
+        <argsstring>(rpc_connection_t conn, rpc_error_handler_t handler)</argsstring>
+        <name>rpc_connection_set_error_handler</name>
+        <param>
+          <type><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref></type>
+          <declname>conn</declname>
+        </param>
+        <param>
+          <type><ref refid="connection_8h_1a4dfba30ff97d4c5c56a6787ecd1bb79a" kindref="member">rpc_error_handler_t</ref></type>
+          <declname>handler</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Sets global error handler for a connection.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>conn</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Connection to set error handler for. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>handler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Error handler block. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="263" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1ae600ee03958915ee116e90e3e7795ec7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int rpc_call_wait</definition>
+        <argsstring>(rpc_call_t call)</argsstring>
+        <name>rpc_call_wait</name>
+        <param>
+          <type><ref refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" kindref="member">rpc_call_t</ref></type>
+          <declname>call</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Waits for a call to change status.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>call</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Call to wait on. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 on success, -1 on failure. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="272" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1a844f7384a38ef32d4d4b9d6994aed613" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int rpc_call_continue</definition>
+        <argsstring>(rpc_call_t call, bool sync)</argsstring>
+        <name>rpc_call_continue</name>
+        <param>
+          <type><ref refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" kindref="member">rpc_call_t</ref></type>
+          <declname>call</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>sync</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Requests a next chunk of a result from a call.</para><para>When sync is set to true the function waits until the call finishes and returns 1 if it has completed successfully - otherwise the function returns 0.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>call</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Call to be continued. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>sync</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Synchronous continue flag. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>1 for successfully completed RPC when sync flag was set, otherwise 0. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="285" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1a17059d810db4d08d911e45d24704dacc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int rpc_call_abort</definition>
+        <argsstring>(rpc_call_t call)</argsstring>
+        <name>rpc_call_abort</name>
+        <param>
+          <type><ref refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" kindref="member">rpc_call_t</ref></type>
+          <declname>call</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Aborts a pending call.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>call</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Call to be aborted. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Function status - success is being reported as 0. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="293" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1a095af0b0676ae8ba03d5b9838e51f7fa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int rpc_call_timedwait</definition>
+        <argsstring>(rpc_call_t call, const struct timeval *ts)</argsstring>
+        <name>rpc_call_timedwait</name>
+        <param>
+          <type><ref refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" kindref="member">rpc_call_t</ref></type>
+          <declname>call</declname>
+        </param>
+        <param>
+          <type>const struct timeval *</type>
+          <declname>ts</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Waits for a call to change status.</para><para>If a timeout specified by a ts argument occurs, before a call changes its status, function returns -1 value.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>call</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Call to wait on. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ts</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Timeout value. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 on success, -1 on failure or timeout. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="305" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1a1a8f2d8cf42309295e425ca58bdfecbd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int rpc_call_success</definition>
+        <argsstring>(rpc_call_t call)</argsstring>
+        <name>rpc_call_success</name>
+        <param>
+          <type><ref refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" kindref="member">rpc_call_t</ref></type>
+          <declname>call</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Checks whether a call has been completed successfully.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>call</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Call to be checked. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>1 when call was successfully completed, otherwise 0. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="313" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1a109ba3b143a1931263d8716f3ac51cb0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int rpc_call_status</definition>
+        <argsstring>(rpc_call_t call)</argsstring>
+        <name>rpc_call_status</name>
+        <param>
+          <type><ref refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" kindref="member">rpc_call_t</ref></type>
+          <declname>call</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns a current status of a given call as an integer value castable to rpc_call_status_t.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>call</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Call to be checked. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Call status. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="322" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1a6af73450be622a40f3cbc2b9425ca5dd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+        <definition>rpc_object_t rpc_call_result</definition>
+        <argsstring>(rpc_call_t call)</argsstring>
+        <name>rpc_call_result</name>
+        <param>
+          <type><ref refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" kindref="member">rpc_call_t</ref></type>
+          <declname>call</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns a call result (or a current fragment).</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>call</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Call to get result from. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Result. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="330" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="connection_8h_1ace66aca5d1c46e97128a3e09dbce89d1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rpc_call_free</definition>
+        <argsstring>(rpc_call_t call)</argsstring>
+        <name>rpc_call_free</name>
+        <param>
+          <type><ref refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" kindref="member">rpc_call_t</ref></type>
+          <declname>call</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Frees a rpc_call_t object.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>call</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Call to free. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="337" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>RPC connection API. </para>    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2015-2017<sp/>Two<sp/>Pore<sp/>Guys,<sp/>Inc.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*<sp/>All<sp/>rights<sp/>reserved</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>Redistribution<sp/>and<sp/>use<sp/>in<sp/>source<sp/>and<sp/>binary<sp/>forms,<sp/>with<sp/>or<sp/>without</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>modification,<sp/>are<sp/>permitted<sp/>providing<sp/>that<sp/>the<sp/>following<sp/>conditions</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/>are<sp/>met:</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>1.<sp/>Redistributions<sp/>of<sp/>source<sp/>code<sp/>must<sp/>retain<sp/>the<sp/>above<sp/>copyright</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/>notice,<sp/>this<sp/>list<sp/>of<sp/>conditions<sp/>and<sp/>the<sp/>following<sp/>disclaimer.</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>2.<sp/>Redistributions<sp/>in<sp/>binary<sp/>form<sp/>must<sp/>reproduce<sp/>the<sp/>above<sp/>copyright</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/>notice,<sp/>this<sp/>list<sp/>of<sp/>conditions<sp/>and<sp/>the<sp/>following<sp/>disclaimer<sp/>in<sp/>the</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/>documentation<sp/>and/or<sp/>other<sp/>materials<sp/>provided<sp/>with<sp/>the<sp/>distribution.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>THIS<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>BY<sp/>THE<sp/>AUTHOR<sp/>``AS<sp/>IS&apos;&apos;<sp/>AND<sp/>ANY<sp/>EXPRESS<sp/>OR</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*<sp/>IMPLIED<sp/>WARRANTIES,<sp/>INCLUDING,<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO,<sp/>THE<sp/>IMPLIED</highlight></codeline>
+<codeline lineno="16"><highlight class="comment"><sp/>*<sp/>WARRANTIES<sp/>OF<sp/>MERCHANTABILITY<sp/>AND<sp/>FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"><sp/>*<sp/>ARE<sp/>DISCLAIMED.<sp/><sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE<sp/>AUTHOR<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY</highlight></codeline>
+<codeline lineno="18"><highlight class="comment"><sp/>*<sp/>DIRECT,<sp/>INDIRECT,<sp/>INCIDENTAL,<sp/>SPECIAL,<sp/>EXEMPLARY,<sp/>OR<sp/>CONSEQUENTIAL</highlight></codeline>
+<codeline lineno="19"><highlight class="comment"><sp/>*<sp/>DAMAGES<sp/>(INCLUDING,<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO,<sp/>PROCUREMENT<sp/>OF<sp/>SUBSTITUTE<sp/>GOODS</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"><sp/>*<sp/>OR<sp/>SERVICES;<sp/>LOSS<sp/>OF<sp/>USE,<sp/>DATA,<sp/>OR<sp/>PROFITS;<sp/>OR<sp/>BUSINESS<sp/>INTERRUPTION)</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"><sp/>*<sp/>HOWEVER<sp/>CAUSED<sp/>AND<sp/>ON<sp/>ANY<sp/>THEORY<sp/>OF<sp/>LIABILITY,<sp/>WHETHER<sp/>IN<sp/>CONTRACT,</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"><sp/>*<sp/>STRICT<sp/>LIABILITY,<sp/>OR<sp/>TORT<sp/>(INCLUDING<sp/>NEGLIGENCE<sp/>OR<sp/>OTHERWISE)<sp/>ARISING</highlight></codeline>
+<codeline lineno="23"><highlight class="comment"><sp/>*<sp/>IN<sp/>ANY<sp/>WAY<sp/>OUT<sp/>OF<sp/>THE<sp/>USE<sp/>OF<sp/>THIS<sp/>SOFTWARE,<sp/>EVEN<sp/>IF<sp/>ADVISED<sp/>OF<sp/>THE</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"><sp/>*<sp/>POSSIBILITY<sp/>OF<sp/>SUCH<sp/>DAMAGE.</highlight></codeline>
+<codeline lineno="25"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>LIBRPC_CONNECTION_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>LIBRPC_CONNECTION_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;Block.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;sys/time.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="object_8h" kindref="compound">rpc/object.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">rpc_connection;</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">rpc_call;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51" refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccd" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccd" kindref="member">rpc_error_code</ref></highlight></codeline>
+<codeline lineno="52"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="53" refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda675a64c636ef92f53c398f7cf1e7b4f7" kindref="member">RPC_INVALID_RESPONSE</ref><sp/>=<sp/>1,<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="54" refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55" kindref="member">RPC_CONNECTION_TIMEOUT</ref>,<sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="55" refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0" kindref="member">RPC_CONNECTION_CLOSED</ref>,<sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="56" refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70" kindref="member">RPC_CALL_TIMEOUT</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="57" refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d" kindref="member">RPC_SPURIOUS_RESPONSE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="58" refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b" kindref="member">RPC_LOGOUT</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="59" refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1" kindref="member">RPC_OTHER</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="60"><highlight class="normal">}<sp/><ref refid="connection_8h_1a043170f29cb25827a88be4dab2313a91" kindref="member">rpc_error_code_t</ref>;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="65" refid="connection_8h_1a22306445a7503bab94835382d07e0410" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a22306445a7503bab94835382d07e0410" kindref="member">rpc_call_status</ref></highlight></codeline>
+<codeline lineno="66"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="67" refid="connection_8h_1a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="connection_8h_1a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1" kindref="member">RPC_CALL_IN_PROGRESS</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="68" refid="connection_8h_1a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="connection_8h_1a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f" kindref="member">RPC_CALL_MORE_AVAILABLE</ref>,<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="69" refid="connection_8h_1a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="connection_8h_1a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d" kindref="member">RPC_CALL_DONE</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="70" refid="connection_8h_1a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="connection_8h_1a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856" kindref="member">RPC_CALL_ERROR</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="71"><highlight class="normal">}<sp/><ref refid="connection_8h_1a5e44285dc90be1f6bc541504a3f6d929" kindref="member">rpc_call_status_t</ref>;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76" refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">rpc_connection<sp/>*<ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref>;</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81" refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">rpc_call<sp/>*<ref refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" kindref="member">rpc_call_t</ref>;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight></codeline>
+<codeline lineno="86" refid="connection_8h_1a65fe4b58831bfa2c2aa2210a48c52af2" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void<sp/>(^<ref refid="connection_8h_1a65fe4b58831bfa2c2aa2210a48c52af2" kindref="member">rpc_handler_t</ref>)(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="91" refid="connection_8h_1a4dfba30ff97d4c5c56a6787ecd1bb79a" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void<sp/>(^<ref refid="connection_8h_1a4dfba30ff97d4c5c56a6787ecd1bb79a" kindref="member">rpc_error_handler_t</ref>)(rpc_error_code_t<sp/>code,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight></codeline>
+<codeline lineno="96" refid="connection_8h_1a659dfc386fa0add62a07c17662a29641" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>bool<sp/>(^<ref refid="connection_8h_1a659dfc386fa0add62a07c17662a29641" kindref="member">rpc_callback_t</ref>)(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args,<sp/>rpc_call_status_t<sp/>status);</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"></highlight></codeline>
+<codeline lineno="101" refid="connection_8h_1a4f7704822a76a6f293f6abbb59bf41f3" refkind="member"><highlight class="preprocessor">#define<sp/>RPC_HANDLER(_fn,<sp/>_arg)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="102"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>^(const<sp/>char<sp/>*_name,<sp/>rpc_object_t<sp/>_args)<sp/>{<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="103"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>_fn(_arg,<sp/>_name,<sp/>_args);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="104"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="105"><highlight class="normal"></highlight></codeline>
+<codeline lineno="109" refid="connection_8h_1ac6630daf34229f9dd8a754b119e4a94d" refkind="member"><highlight class="preprocessor">#define<sp/>RPC_ERROR_HANDLER(_fn,<sp/>_arg)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="110"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>^(rpc_error_code_t<sp/>_code,<sp/>rpc_object_t<sp/>_args)<sp/>{<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="111"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>_fn(_arg,<sp/>_code,<sp/>_args);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="112"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight></codeline>
+<codeline lineno="117" refid="connection_8h_1a7512dc753949d75650bbec7527f9d0a6" refkind="member"><highlight class="preprocessor">#define<sp/>RPC_CALLBACK(_fn,<sp/>_arg)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="118"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>^(rpc_object_t<sp/>_args,<sp/>rpc_call_status_t<sp/>_status)<sp/>{<sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="119"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>((bool)_fn(_arg,<sp/>_args,<sp/>_status));<sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="120"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="121"><highlight class="normal"></highlight></codeline>
+<codeline lineno="122"><highlight class="normal">rpc_connection_t<sp/>rpc_connection_create(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*cookie,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>params);</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>rpc_connection_close(rpc_connection_t<sp/>conn);</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a820acf081ad5784aafde954b5ec9270a" kindref="member">rpc_connection_subscribe_event</ref>(rpc_connection_t<sp/>conn,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name);</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"></highlight></codeline>
+<codeline lineno="153"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a60ace791b01ad3aee0fc20d266c9673f" kindref="member">rpc_connection_unsubscribe_event</ref>(rpc_connection_t<sp/>conn,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name);</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"></highlight></codeline>
+<codeline lineno="164"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<ref refid="connection_8h_1a82d9bf3dc3219c41e89739acd0b314d5" kindref="member">rpc_connection_register_event_handler</ref>(rpc_connection_t<sp/>conn,</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name,<sp/><ref refid="connection_8h_1a65fe4b58831bfa2c2aa2210a48c52af2" kindref="member">rpc_handler_t</ref><sp/>handler);</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"></highlight></codeline>
+<codeline lineno="175"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a209856a794a9a10a53735787926f4b95" kindref="member">rpc_connection_unregister_event_handler</ref>(rpc_connection_t<sp/>conn,</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name,<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*cookie);</highlight></codeline>
+<codeline lineno="177"><highlight class="normal"></highlight></codeline>
+<codeline lineno="192"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="connection_8h_1aba014ae3408ed96b696ab70066076f13" kindref="member">rpc_connection_call_sync</ref>(rpc_connection_t<sp/>conn,</highlight></codeline>
+<codeline lineno="193"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*method,<sp/>...);</highlight></codeline>
+<codeline lineno="194"><highlight class="normal"></highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="connection_8h_1a1dd48a58161cbf375719ecde4480c8a9" kindref="member">rpc_connection_call_syncv</ref>(rpc_connection_t<sp/>conn,</highlight></codeline>
+<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*method,<sp/>va_list<sp/>ap);</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"></highlight></codeline>
+<codeline lineno="229"><highlight class="normal">rpc_call_t<sp/><ref refid="connection_8h_1aee4f43c3790d07d116367646694cb1c0" kindref="member">rpc_connection_call</ref>(rpc_connection_t<sp/>conn,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name,</highlight></codeline>
+<codeline lineno="230"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args,<sp/><ref refid="connection_8h_1a659dfc386fa0add62a07c17662a29641" kindref="member">rpc_callback_t</ref><sp/>callback);</highlight></codeline>
+<codeline lineno="231"><highlight class="normal"></highlight></codeline>
+<codeline lineno="240"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a1bc22789ecc5ca9cbe8637c8f173ee4d" kindref="member">rpc_connection_send_event</ref>(rpc_connection_t<sp/>conn,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name,</highlight></codeline>
+<codeline lineno="241"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
+<codeline lineno="242"><highlight class="normal"></highlight></codeline>
+<codeline lineno="246"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a2d9343c2c38625f9659358e0710ed0c7" kindref="member">rpc_connection_ping</ref>(rpc_connection_t<sp/>conn);</highlight></codeline>
+<codeline lineno="247"><highlight class="normal"></highlight></codeline>
+<codeline lineno="254"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1ae843166183a4bd6dbf5a58133b3fcaf3" kindref="member">rpc_connection_set_event_handler</ref>(rpc_connection_t<sp/>conn,</highlight></codeline>
+<codeline lineno="255"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="connection_8h_1a65fe4b58831bfa2c2aa2210a48c52af2" kindref="member">rpc_handler_t</ref><sp/>handler);</highlight></codeline>
+<codeline lineno="256"><highlight class="normal"></highlight></codeline>
+<codeline lineno="263"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a8f332abcc5d0a80c86f8317c7dcc79ec" kindref="member">rpc_connection_set_error_handler</ref>(rpc_connection_t<sp/>conn,</highlight></codeline>
+<codeline lineno="264"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="connection_8h_1a4dfba30ff97d4c5c56a6787ecd1bb79a" kindref="member">rpc_error_handler_t</ref><sp/>handler);</highlight></codeline>
+<codeline lineno="265"><highlight class="normal"></highlight></codeline>
+<codeline lineno="272"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1ae600ee03958915ee116e90e3e7795ec7" kindref="member">rpc_call_wait</ref>(rpc_call_t<sp/>call);</highlight></codeline>
+<codeline lineno="273"><highlight class="normal"></highlight></codeline>
+<codeline lineno="285"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a844f7384a38ef32d4d4b9d6994aed613" kindref="member">rpc_call_continue</ref>(rpc_call_t<sp/>call,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>sync);</highlight></codeline>
+<codeline lineno="286"><highlight class="normal"></highlight></codeline>
+<codeline lineno="293"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a17059d810db4d08d911e45d24704dacc" kindref="member">rpc_call_abort</ref>(rpc_call_t<sp/>call);</highlight></codeline>
+<codeline lineno="294"><highlight class="normal"></highlight></codeline>
+<codeline lineno="305"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a095af0b0676ae8ba03d5b9838e51f7fa" kindref="member">rpc_call_timedwait</ref>(rpc_call_t<sp/>call,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>timeval<sp/>*ts);</highlight></codeline>
+<codeline lineno="306"><highlight class="normal"></highlight></codeline>
+<codeline lineno="313"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a1a8f2d8cf42309295e425ca58bdfecbd" kindref="member">rpc_call_success</ref>(rpc_call_t<sp/>call);</highlight></codeline>
+<codeline lineno="314"><highlight class="normal"></highlight></codeline>
+<codeline lineno="322"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a22306445a7503bab94835382d07e0410" kindref="member">rpc_call_status</ref>(rpc_call_t<sp/>call);</highlight></codeline>
+<codeline lineno="323"><highlight class="normal"></highlight></codeline>
+<codeline lineno="330"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="connection_8h_1a6af73450be622a40f3cbc2b9425ca5dd" kindref="member">rpc_call_result</ref>(rpc_call_t<sp/>call);</highlight></codeline>
+<codeline lineno="331"><highlight class="normal"></highlight></codeline>
+<codeline lineno="337"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1ace66aca5d1c46e97128a3e09dbce89d1" kindref="member">rpc_call_free</ref>(rpc_call_t<sp/>call);</highlight></codeline>
+<codeline lineno="338"><highlight class="normal"></highlight></codeline>
+<codeline lineno="339"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="340"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="341"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="342"><highlight class="normal"></highlight></codeline>
+<codeline lineno="343"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//LIBRPC_CONNECTION_H</highlight></codeline>
+    </programlisting>
+    <location file="/code/include/rpc/connection.h"/>
+  </compounddef>
+</doxygen>
