@@ -54,10 +54,8 @@ rpc_bus_open(void)
 
 	g_mutex_lock(&rpc_bus_mtx);
 
-	if (rpc_bus_refcnt > 0) {
+	if (rpc_bus_refcnt > 0)
 		g_assert_nonnull(rpc_bus_context);
-		goto done;
-	}
 
 	bus = rpc_find_transport("bus");
 	if (bus == NULL) {
@@ -75,7 +73,8 @@ rpc_bus_open(void)
 	rpc_g_main_context = g_main_context_new();
 	rpc_g_main_thread = g_thread_new("bus", rpc_bus_worker, NULL);
 	rpc_bus_context = bus->bus_ops->open(rpc_g_main_context);
-	rpc_bus_refcnt++;
+	if (rpc_bus_context != NULL)
+		rpc_bus_refcnt++;
 
 done:
 	g_mutex_unlock(&rpc_bus_mtx);

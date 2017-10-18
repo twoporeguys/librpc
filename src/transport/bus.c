@@ -299,8 +299,10 @@ bus_netlink_open(struct bus_netlink *bn)
 
 	bn->bn_seq = 0;
 	bn->bn_sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_CONNECTOR);
-	if (bn->bn_sock < 0)
+	if (bn->bn_sock < 0) {
+		rpc_set_last_error(errno, strerror(errno), NULL);
 		return (-1);
+	}
 
 	g_mutex_init(&bn->bn_mtx);
 	bn->bn_ack = g_hash_table_new(NULL, NULL);
@@ -308,8 +310,10 @@ bus_netlink_open(struct bus_netlink *bn)
 	sa.nl_family = AF_NETLINK;
 	sa.nl_groups = (uint32_t)-1;
 	sa.nl_pid = 0;
-	if (bind(bn->bn_sock, (struct sockaddr *)&sa, sizeof(sa)) != 0)
+	if (bind(bn->bn_sock, (struct sockaddr *)&sa, sizeof(sa)) != 0) {
+		rpc_set_last_error(errno, strerror(errno), NULL);
 		return (-1);
+	}
 
 	setsockopt(bn->bn_sock, SOL_NETLINK, NETLINK_ADD_MEMBERSHIP, &group,
 	    sizeof(group));
