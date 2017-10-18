@@ -90,11 +90,8 @@ rpc_bus_close(void)
 
 	g_mutex_lock(&rpc_bus_mtx);
 
-	if (rpc_bus_refcnt > 0) {
+	if (rpc_bus_refcnt > 0)
 		g_assert_nonnull(rpc_bus_context);
-		rpc_bus_refcnt--;
-		goto done;
-	}
 
 	bus = rpc_find_transport("bus");
 	if (bus == NULL) {
@@ -112,13 +109,14 @@ rpc_bus_close(void)
 	if (rpc_bus_context == NULL)
 		goto done;
 
-	bus->bus_ops->close(rpc_bus_context);
-	g_main_loop_quit(rpc_g_main_loop);
-	g_main_loop_unref(rpc_g_main_loop);
-	g_main_context_unref(rpc_g_main_context);
-	g_thread_join(rpc_g_main_thread);
-	rpc_bus_context = NULL;
-	rpc_bus_refcnt--;
+	if (--rpc_bus_refcnt == 0) {
+		bus->bus_ops->close(rpc_bus_context);
+		g_main_loop_quit(rpc_g_main_loop);
+		g_main_loop_unref(rpc_g_main_loop);
+		g_main_context_unref(rpc_g_main_context);
+		g_thread_join(rpc_g_main_thread);
+		rpc_bus_context = NULL;
+	}
 
 done:
 	g_mutex_unlock(&rpc_bus_mtx);
