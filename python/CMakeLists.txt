@@ -14,4 +14,4 @@ add_custom_command(OUTPUT ${OUTPUT}
 
 add_custom_target(py-librpc ALL DEPENDS ${OUTPUT})
 
-install(CODE "execute_process(COMMAND ${PYTHON} ${SETUP_PY} install --root=${CMAKE_INSTALL_PREFIX} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})")
+install(CODE "execute_process(COMMAND ${PYTHON} ${SETUP_PY} install --root=${DESTDIR} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})")
