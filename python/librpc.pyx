@@ -922,6 +922,7 @@ cdef class Client(Connection):
             raise RuntimeError("Not connected")
 
         rpc_client_close(self.client)
+        self.client = <rpc_client_t>NULL
 
 
 cdef class Server(object):
