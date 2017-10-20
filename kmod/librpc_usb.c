@@ -143,7 +143,8 @@ librpc_usb_disconnect(struct usb_interface *intf)
 {
         struct librpc_usb_device *rpcusbdev = usb_get_intfdata(intf);
 
-        librpc_device_unregister(rpcusbdev->rpcdev);
+	kthread_stop(rpcusbdev->thread);
+	librpc_device_unregister(rpcusbdev->rpcdev);
 }
 
 static int
@@ -270,7 +271,6 @@ librpc_usb_read_log(struct librpc_usb_device *rpcusbdev)
 	struct librpc_usb_log *log = rpcusbdev->log;
 	int rpipe = usb_rcvctrlpipe(rpcusbdev->udev, 0);
 	int ret;
-	enum librpc_usb_status status;
 
 	while (1) {
 		ret = usb_control_msg(udev, rpipe, LIBRPC_USB_READ_LOG,
@@ -280,8 +280,7 @@ librpc_usb_read_log(struct librpc_usb_device *rpcusbdev)
 		if (ret < 1)
 			return;
 
-		status = rpcusbdev->log->status;
-		if (status == LIBRPC_USB_OK)
+		if (rpcusbdev->log->status != LIBRPC_USB_OK)
 			break;
 
 		librpc_device_log(&udev->dev, log->buffer, ret - 1);
@@ -297,16 +296,16 @@ librpc_usb_thread(void *arg)
 		if (kthread_should_stop())
 			break;
 
-		librpc_usb_read_events(rpcusbdev);
+		//librpc_usb_read_events(rpcusbdev);
 		librpc_usb_read_log(rpcusbdev);
-		msleep(1000);
+		msleep(500);
 	}
 
 	return (0);
 }
 
 static struct usb_device_id librpc_usb_id_table[] = {
-        { USB_DEVICE(0xbeef, 0xfeed) },
+        { USB_DEVICE_INTERFACE_NUMBER(0xbeef, 0xfeed, 0x00) },
         { }
 };
 
@@ -321,3 +320,4 @@ MODULE_AUTHOR("Jakub Klama");
 MODULE_LICENSE("Dual BSD/GPL");
 
 module_usb_driver(librpc_usb_driver);
+

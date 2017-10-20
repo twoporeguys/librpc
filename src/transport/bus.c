@@ -244,7 +244,7 @@ bus_enumerate(void *arg __unused, struct rpc_bus_node **resultp, size_t *countp)
 }
 
 static int
-bus_lookup_address(const char *name, uint32_t *address)
+bus_lookup_address(const char *serial, uint32_t *address)
 {
 	struct udev *udev;
 	struct udev_enumerate *iter;
@@ -256,19 +256,19 @@ bus_lookup_address(const char *name, uint32_t *address)
 	iter = udev_enumerate_new(udev);
 
 	udev_enumerate_add_match_subsystem(iter, "librpc");
-	udev_enumerate_add_match_sysattr(iter, "name", name);
+	udev_enumerate_add_match_sysattr(iter, "serial", serial);
 	udev_enumerate_scan_devices(iter);
 
 	list = udev_enumerate_get_list_entry(iter);
 
 	udev_list_entry_foreach(entry, list) {
-		const char *ename;
+		const char *eserial;
 		const char *path = udev_list_entry_get_name(entry);
 
 		dev = udev_device_new_from_syspath(udev, path);
-		ename = udev_device_get_property_value(dev, "name");
+		eserial = udev_device_get_property_value(dev, "serial");
 
-		if (g_strcmp0(name, ename) == 0)
+		if (g_strcmp0(serial, eserial) == 0)
 			break;
 	}
 
