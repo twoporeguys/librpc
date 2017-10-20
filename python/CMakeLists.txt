@@ -1,6 +1,7 @@
 find_program(PYTHON "${PYTHON_VERSION}")
 
 set(SETUP_PY ${CMAKE_SOURCE_DIR}/python/setup.py)
+set(CONVERT_SCRIPT ${CMAKE_SOURCE_DIR}/python/utils/convert_manifest.py)
 set(DEPS ${CMAKE_SOURCE_DIR}/python/librpc.pyx ${CMAKE_SOURCE_DIR}/python/librpc.pxd)
 set(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/timestamp)
 
@@ -14,4 +15,5 @@ add_custom_command(OUTPUT ${OUTPUT}
 
 add_custom_target(py-librpc ALL DEPENDS ${OUTPUT})
 
-install(CODE "execute_process(COMMAND ${PYTHON} ${SETUP_PY} install --prefix=${CMAKE_INSTALL_PREFIX} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})")
+install(CODE "execute_process(COMMAND ${PYTHON} ${SETUP_PY} install --record python_manifest.txt --prefix=${CMAKE_INSTALL_PREFIX} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})"
+        CODE "execute_process(COMMAND ${PYTHON} ${CONVERT_SCRIPT} ${CMAKE_CURRENT_BINARY_DIR})")
