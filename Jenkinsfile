@@ -1,3 +1,5 @@
+DOCS_PATH = '/mnt/builds/docs'
+
 pipeline {
     agent any
 
@@ -12,9 +14,9 @@ pipeline {
 
         stage('Deploy docs') {
             steps {
-                sh 'mkdir -p /var/www/docs/librpc'
-                sh 'rm -rf /var/www/docs/librpc/*'
-                sh 'cp -a build/docs/* /var/www/docs/librpc/'
+                sh "mkdir -p ${DOCS_PATH}/librpc"
+                sh "rm -rf ${DOCS_PATH}/librpc/*"
+                sh "cp -a build/docs/* ${DOCS_PATH}/librpc/"
             }
         }
     }
