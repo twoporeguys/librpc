@@ -9,7 +9,7 @@ case $OSTYPE in
         ;;
     *linux*)
         echo "I am some kind of Linux, hopefully Ubuntu."
-        apt-get install \
+        apt-get -y install \
             cmake clang libglib2.0-dev libsoup-gnome2.4-dev \
             libyajl-dev libblocksruntime-dev libyaml-dev libudev-dev
         ;;
