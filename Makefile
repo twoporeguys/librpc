@@ -1,8 +1,9 @@
-.PHONY: all
+.PHONY: all clean bootstrap install uninstall
 
 BUILD_PYTHON := ON
-PYTHON_VERSION := "python3"
-INSTALL_PREFIX := "/usr/local"
+PYTHON_VERSION := python3
+INSTALL_PREFIX := /usr/local
+PREFIX := /usr/local
 
 all:
 	mkdir -p build && \
@@ -13,16 +14,15 @@ all:
 	-DBUILD_PYTHON=${BUILD_PYTHON} && \
 	make
 
-.PHONY: clean
+bootstrap:
+	sh requirements.sh
+
 clean:
 	rm -rf *~ build
 
-PREFIX = /usr/local
 
-.PHONY: install
 install:
 	make -C build install
 
-.PHONY: uninstall
 uninstall:
 	make -C build uninstall
