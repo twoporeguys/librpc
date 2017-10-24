@@ -207,17 +207,20 @@ librpc_usb_request(struct device *dev, void *cookie, const void *buf, size_t len
 	resp = kmalloc(sizeof(*resp) + LIBRPC_MAX_MSGSIZE, GFP_KERNEL);
 	ret = usb_control_msg(udev, wpipe, LIBRPC_USB_SEND_REQ, USB_TYPE_VENDOR,
 	    0, 0, (void *)buf, len, 500);
-
-	if (ret < 0)
+	if (ret < 0) {
+		dev_err(dev, "Submitting request URB failed: %d\n", ret);
 		return (ret);
+	}
 
 	for (;;) {
 		ret = usb_control_msg(udev, rpipe, LIBRPC_USB_READ_RESP,
 		    USB_TYPE_VENDOR | USB_DIR_IN, 0, 0,
 		    resp, sizeof(*resp) + LIBRPC_MAX_MSGSIZE, 500);
 
-		if (ret < 0)
+		if (ret < 0) {
+			dev_err(dev, "Reading response failed: %d\n", ret);
 			return (ret);
+		}
 
 		if (resp->status == LIBRPC_USB_NOT_READY) {
 			msleep(10);
