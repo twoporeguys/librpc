@@ -45,7 +45,7 @@ static void librpc_usb_read_events(struct librpc_usb_device *);
 static void librpc_usb_read_log(struct librpc_usb_device *);
 static int librpc_usb_thread(void *);
 
-#define	LIBRPC_MAX_MSGSIZE	4096
+#define	LIBRPC_MAX_MSGSIZE	4095
 
 enum librpc_usb_opcode
 {
