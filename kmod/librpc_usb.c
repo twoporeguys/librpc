@@ -209,6 +209,7 @@ librpc_usb_request(struct device *dev, void *cookie, const void *buf, size_t len
 	    0, 0, (void *)buf, len, 500);
 	if (ret < 0) {
 		dev_err(dev, "Submitting request URB failed: %d\n", ret);
+		kfree(resp);
 		return (ret);
 	}
 
@@ -219,6 +220,7 @@ librpc_usb_request(struct device *dev, void *cookie, const void *buf, size_t len
 
 		if (ret < 0) {
 			dev_err(dev, "Reading response failed: %d\n", ret);
+			kfree(resp);
 			return (ret);
 		}
 
@@ -231,6 +233,7 @@ librpc_usb_request(struct device *dev, void *cookie, const void *buf, size_t len
 		break;
 	}
 
+	kfree(resp);
 	return (resp->status);
 }
 
