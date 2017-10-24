@@ -472,7 +472,7 @@ on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args,
 
 static int
 rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
-    int *fds, size_t nfds, struct rpc_credentials *creds __attribute__((unused)))
+    int *fds, size_t nfds, struct rpc_credentials *creds __unused)
 {
 	rpc_object_t msg = (rpc_object_t)frame;
 
@@ -1113,6 +1113,5 @@ rpc_call_free(rpc_call_t call)
 	    (gpointer)rpc_string_get_string_ptr(call->rc_id));
 	rpc_release(call->rc_id);
 	rpc_release(call->rc_args);
-	rpc_release(call->rc_result);
 	g_free(call);
 }
