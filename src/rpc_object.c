@@ -385,6 +385,12 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 			    current);
 			goto inc;
 
+		case 'B':
+			*va_arg(ap, const void **) = rpc_data_get_bytes_ptr(
+			    current);
+			*va_arg(ap, size_t *) = rpc_data_get_length(current);
+			goto inc;
+
 		case 'R':
 			if (array == NULL) {
 				errno = EINVAL;
