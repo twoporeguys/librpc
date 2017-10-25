@@ -1395,3 +1395,11 @@ cdef raise_internal_exc(rpc=False):
             free(<void *>error)
 
     raise exc(errno.EFAULT, "Unknown error")
+
+
+def uint(value):
+    return Object(value, force_type=ObjectType.UINT64)
+
+
+def fd(value):
+    return Object(value, force_type=ObjectType.FD)
