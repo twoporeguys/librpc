@@ -70,6 +70,7 @@ var searchData=
   ['rpc_5fcmp',['rpc_cmp',['../object_8h.html#a1fd38947da5673eb2db4910878bebb36',1,'object.h']]],
   ['rpc_5fconnection_5fcall',['rpc_connection_call',['../connection_8h.html#aee4f43c3790d07d116367646694cb1c0',1,'connection.h']]],
   ['rpc_5fconnection_5fcall_5fsync',['rpc_connection_call_sync',['../connection_8h.html#aba014ae3408ed96b696ab70066076f13',1,'connection.h']]],
+  ['rpc_5fconnection_5fcall_5fsyncp',['rpc_connection_call_syncp',['../connection_8h.html#a96c837f40d9808ec7d493ddd98e3e61a',1,'connection.h']]],
   ['rpc_5fconnection_5fcall_5fsyncv',['rpc_connection_call_syncv',['../connection_8h.html#a1dd48a58161cbf375719ecde4480c8a9',1,'connection.h']]],
   ['rpc_5fconnection_5fclosed',['RPC_CONNECTION_CLOSED',['../connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0',1,'connection.h']]],
   ['rpc_5fconnection_5fping',['rpc_connection_ping',['../connection_8h.html#a2d9343c2c38625f9659358e0710ed0c7',1,'connection.h']]],

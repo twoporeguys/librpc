@@ -84,6 +84,8 @@ void \hyperlink{connection_8h_a209856a794a9a10a53735787926f4b95}{rpc\+\_\+connec
 \item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_aba014ae3408ed96b696ab70066076f13}{rpc\+\_\+connection\+\_\+call\+\_\+sync} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$method,...)
 \item 
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a96c837f40d9808ec7d493ddd98e3e61a}{rpc\+\_\+connection\+\_\+call\+\_\+syncp} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$method, const char $\ast$fmt,...)
+\item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a1dd48a58161cbf375719ecde4480c8a9}{rpc\+\_\+connection\+\_\+call\+\_\+syncv} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$method, va\+\_\+list ap)
 \item 
 \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} \hyperlink{connection_8h_aee4f43c3790d07d116367646694cb1c0}{rpc\+\_\+connection\+\_\+call} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args, \hyperlink{connection_8h_a659dfc386fa0add62a07c17662a29641}{rpc\+\_\+callback\+\_\+t} callback)
@@ -461,6 +463,34 @@ Method call arguments need to be rpc\+\_\+object\+\_\+t instances, followed with
 {\em conn} & Connection to do a call on. \\
 \hline
 {\em method} & Name of a method to be called. \\
+\hline
+{\em ...} & Called method arguments. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result of the call. 
+\end{DoxyReturn}
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+syncp@{rpc\+\_\+connection\+\_\+call\+\_\+syncp}}
+\index{rpc\+\_\+connection\+\_\+call\+\_\+syncp@{rpc\+\_\+connection\+\_\+call\+\_\+syncp}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+call\+\_\+syncp(rpc\+\_\+connection\+\_\+t conn, const char $\ast$method, const char $\ast$fmt,...)}{rpc_connection_call_syncp(rpc_connection_t conn, const char *method, const char *fmt,...)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+syncp (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
+\item[{const char $\ast$}]{method, }
+\item[{const char $\ast$}]{fmt, }
+\item[{}]{...}
+\end{DoxyParamCaption}
+)}\hypertarget{connection_8h_a96c837f40d9808ec7d493ddd98e3e61a}{}\label{connection_8h_a96c837f40d9808ec7d493ddd98e3e61a}
+Performs a synchronous R\+PC method call using a given connection.
+
+This function is similar to \hyperlink{connection_8h_aba014ae3408ed96b696ab70066076f13}{rpc\+\_\+connection\+\_\+call\+\_\+sync()}, but instead of taking rpc\+\_\+object\+\_\+t arguments, it accepts a format string and a list of values to pack, in format used by the \hyperlink{object_8h_a87da19ea6b0ec7daf50ce660162e26be}{rpc\+\_\+object\+\_\+pack()} function.
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & Connection to do a call on. \\
+\hline
+{\em method} & Name of a method to be called. \\
+\hline
+{\em fmt} & Format string \\
 \hline
 {\em ...} & Called method arguments. \\
 \hline

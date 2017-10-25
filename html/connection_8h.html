@@ -183,6 +183,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <tr class="separator:a209856a794a9a10a53735787926f4b95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba014ae3408ed96b696ab70066076f13"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aba014ae3408ed96b696ab70066076f13">rpc_connection_call_sync</a> (<a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *method,...)</td></tr>
 <tr class="separator:aba014ae3408ed96b696ab70066076f13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96c837f40d9808ec7d493ddd98e3e61a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a96c837f40d9808ec7d493ddd98e3e61a">rpc_connection_call_syncp</a> (<a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *method, const char *fmt,...)</td></tr>
+<tr class="separator:a96c837f40d9808ec7d493ddd98e3e61a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1dd48a58161cbf375719ecde4480c8a9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a1dd48a58161cbf375719ecde4480c8a9">rpc_connection_call_syncv</a> (<a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *method, va_list ap)</td></tr>
 <tr class="separator:a1dd48a58161cbf375719ecde4480c8a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee4f43c3790d07d116367646694cb1c0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aee4f43c3790d07d116367646694cb1c0">rpc_connection_call</a> (<a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args, <a class="el" href="connection_8h.html#a659dfc386fa0add62a07c17662a29641">rpc_callback_t</a> callback)</td></tr>
@@ -782,6 +784,56 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
   <table class="params">
     <tr><td class="paramname">conn</td><td>Connection to do a call on. </td></tr>
     <tr><td class="paramname">method</td><td>Name of a method to be called. </td></tr>
+    <tr><td class="paramname">...</td><td>Called method arguments. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Result of the call. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a96c837f40d9808ec7d493ddd98e3e61a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> rpc_connection_call_syncp </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>method</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Performs a synchronous RPC method call using a given connection.</p>
+<p>This function is similar to <a class="el" href="connection_8h.html#aba014ae3408ed96b696ab70066076f13">rpc_connection_call_sync()</a>, but instead of taking rpc_object_t arguments, it accepts a format string and a list of values to pack, in format used by the <a class="el" href="object_8h.html#a87da19ea6b0ec7daf50ce660162e26be">rpc_object_pack()</a> function.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td>Connection to do a call on. </td></tr>
+    <tr><td class="paramname">method</td><td>Name of a method to be called. </td></tr>
+    <tr><td class="paramname">fmt</td><td>Format string </td></tr>
     <tr><td class="paramname">...</td><td>Called method arguments. </td></tr>
   </table>
   </dd>
