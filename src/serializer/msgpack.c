@@ -135,11 +135,11 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 		break;
 
 	case RPC_TYPE_INT64:
-		mpack_write_int(writer, object->ro_value.rv_i);
+		mpack_write_i64(writer, object->ro_value.rv_i);
 		break;
 
 	case RPC_TYPE_UINT64:
-		mpack_write_uint(writer, object->ro_value.rv_ui);
+		mpack_write_u64(writer, object->ro_value.rv_ui);
 		break;
 
 	case RPC_TYPE_DATE:
