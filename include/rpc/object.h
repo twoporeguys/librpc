@@ -31,6 +31,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdarg.h>
+#include <sys/uio.h>
 #include <sys/types.h>
 
 /**
@@ -524,6 +525,15 @@ int64_t rpc_date_get_value(rpc_object_t xdate);
  * @return Newly created object.
  */
 rpc_object_t rpc_data_create(const void *bytes, size_t length, bool copy);
+
+/**
+ * The same as rpc_data_create, but takes iovec list as an argument
+ * and copies it into a new contiguous data buffer.
+ * @param iov List of iovec to be copied.
+ * @param niov Number of iovec in the iovec list.
+ * @return Newly created object.
+ */
+rpc_object_t rpc_data_create_iov(struct iovec *iov, size_t niov);
 
 /**
  * Returns the length of internal binary data buffer of a provided object.

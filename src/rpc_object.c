@@ -41,6 +41,7 @@
 #include <glib/gprintf.h>
 #include <rpc/object.h>
 #include <sys/stat.h>
+#include <sys/uio.h>
 #include "serializer/json.h"
 #include "internal.h"
 #if defined(__linux__)
@@ -848,6 +849,11 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			    va_arg(ap, size_t), va_arg(ap, int));
 			break;
 
+		case 'V':
+			current = rpc_data_create_iov(
+			    va_arg(ap, struct iovec *), va_arg(ap, size_t));
+			break;
+
 		case 'f':
 			current = rpc_fd_create(va_arg(ap, int));
 			break;
@@ -1091,6 +1097,38 @@ rpc_data_create(const void *bytes, size_t length, bool copy)
 	value.rv_bin.rbv_length = length;
 
 	return (rpc_prim_create(RPC_TYPE_BINARY, value));
+}
+
+inline rpc_object_t
+rpc_data_create_iov(struct iovec *iov, size_t niov)
+{
+	rpc_object_t object;
+	void *data_buf;
+	size_t data_size = 0;
+	size_t data_ptr = 0;
+	size_t i;
+
+	if (iov == NULL)
+		return (NULL);
+
+	for (i = 0; i < niov; i++)
+		data_size += iov[i].iov_len;
+
+	if (data_size == 0)
+		return (NULL);
+
+	data_buf = g_malloc(data_size);
+	for (i = 0; i < niov; i++) {
+		memcpy(data_buf + data_ptr, iov[i].iov_base, iov[i].iov_len);
+		data_ptr += iov[i].iov_len;
+	}
+
+	object = rpc_data_create(data_buf, data_size, false);
+
+	if (object != NULL)
+		object->ro_value.rv_bin.rbv_copy = true;
+
+	return (object);
 }
 
 inline size_t
