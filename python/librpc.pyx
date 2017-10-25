@@ -138,16 +138,16 @@ cdef class Object(object):
             self.obj = rpc_bool_create(value)
             return
 
+        if isinstance(value, int) or force_type == ObjectType.INT64:
+            self.obj = rpc_int64_create(value)
+            return
+
         if isinstance(value, int) and force_type == ObjectType.UINT64:
             self.obj = rpc_uint64_create(value)
             return
 
         if isinstance(value, int) and force_type == ObjectType.FD:
             self.obj = rpc_fd_create(value)
-            return
-
-        if isinstance(value, int) or force_type == ObjectType.INT64:
-            self.obj = rpc_int64_create(value)
             return
 
         if isinstance(value, str) or force_type == ObjectType.STRING:
