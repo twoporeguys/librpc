@@ -4,13 +4,13 @@
     <compoundname>bus.h</compoundname>
     <includes local="no">stdint.h</includes>
     <incdepgraph>
-      <node id="96">
+      <node id="105">
         <label>stdint.h</label>
       </node>
-      <node id="95">
+      <node id="104">
         <label>/code/include/rpc/bus.h</label>
         <link refid="bus.h"/>
-        <childnode refid="96" relation="include">
+        <childnode refid="105" relation="include">
         </childnode>
       </node>
     </incdepgraph>

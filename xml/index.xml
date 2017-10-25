@@ -147,6 +147,7 @@
     <member refid="object_8h_1a3f7fe1bd56938b077470b8dc811a001a" kind="function"><name>rpc_date_create_from_current</name></member>
     <member refid="object_8h_1a1d4007edcf66361777f074b8a79e8e12" kind="function"><name>rpc_date_get_value</name></member>
     <member refid="object_8h_1af82b4d55631d1b9c59bd10b6939fac52" kind="function"><name>rpc_data_create</name></member>
+    <member refid="object_8h_1a78262ca3dea42ec4757c1ec2a3db9eb1" kind="function"><name>rpc_data_create_iov</name></member>
     <member refid="object_8h_1a17b4b5077bb28dad2b678e64001c6824" kind="function"><name>rpc_data_get_length</name></member>
     <member refid="object_8h_1a626c045e08849189e2d75f191ce6c903" kind="function"><name>rpc_data_get_bytes_ptr</name></member>
     <member refid="object_8h_1a0453cb25c7fbeffd9151bfd8960c1656" kind="function"><name>rpc_data_get_bytes</name></member>

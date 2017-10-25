@@ -3,6 +3,7 @@
 {\ttfamily \#include $<$stdint.\+h$>$}\\*
 {\ttfamily \#include $<$stdbool.\+h$>$}\\*
 {\ttfamily \#include $<$stdarg.\+h$>$}\\*
+{\ttfamily \#include $<$sys/uio.\+h$>$}\\*
 {\ttfamily \#include $<$sys/types.\+h$>$}\\*
 Include dependency graph for object.\+h\+:
 \nopagebreak
@@ -134,6 +135,8 @@ double \hyperlink{object_8h_a44be10360860fa14d66037e92b19c600}{rpc\+\_\+double\+
 int64\+\_\+t \hyperlink{object_8h_a1d4007edcf66361777f074b8a79e8e12}{rpc\+\_\+date\+\_\+get\+\_\+value} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} xdate)
 \item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_af82b4d55631d1b9c59bd10b6939fac52}{rpc\+\_\+data\+\_\+create} (const void $\ast$bytes, size\+\_\+t length, bool copy)
+\item 
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_a78262ca3dea42ec4757c1ec2a3db9eb1}{rpc\+\_\+data\+\_\+create\+\_\+iov} (struct iovec $\ast$iov, size\+\_\+t niov)
 \item 
 size\+\_\+t \hyperlink{object_8h_a17b4b5077bb28dad2b678e64001c6824}{rpc\+\_\+data\+\_\+get\+\_\+length} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} xdata)
 \item 
@@ -315,7 +318,7 @@ Object model (boxed types) A\+PI.
 \end{DoxyCode}
 Converts function pointer to an rpc\+\_\+array\+\_\+applier\+\_\+t block type. 
 
-Definition at line 129 of file object.\+h.
+Definition at line 130 of file object.\+h.
 
 \index{object.\+h@{object.\+h}!R\+P\+C\+\_\+\+A\+R\+R\+A\+Y\+\_\+\+C\+MP@{R\+P\+C\+\_\+\+A\+R\+R\+A\+Y\+\_\+\+C\+MP}}
 \index{R\+P\+C\+\_\+\+A\+R\+R\+A\+Y\+\_\+\+C\+MP@{R\+P\+C\+\_\+\+A\+R\+R\+A\+Y\+\_\+\+C\+MP}!object.\+h@{object.\+h}}
@@ -333,7 +336,7 @@ Definition at line 129 of file object.\+h.
 \end{DoxyCode}
 Converts function pointer to an rpc\+\_\+array\+\_\+cmp\+\_\+t block type. 
 
-Definition at line 145 of file object.\+h.
+Definition at line 146 of file object.\+h.
 
 \index{object.\+h@{object.\+h}!R\+P\+C\+\_\+\+D\+I\+C\+T\+I\+O\+N\+A\+R\+Y\+\_\+\+A\+P\+P\+L\+I\+ER@{R\+P\+C\+\_\+\+D\+I\+C\+T\+I\+O\+N\+A\+R\+Y\+\_\+\+A\+P\+P\+L\+I\+ER}}
 \index{R\+P\+C\+\_\+\+D\+I\+C\+T\+I\+O\+N\+A\+R\+Y\+\_\+\+A\+P\+P\+L\+I\+ER@{R\+P\+C\+\_\+\+D\+I\+C\+T\+I\+O\+N\+A\+R\+Y\+\_\+\+A\+P\+P\+L\+I\+ER}!object.\+h@{object.\+h}}
@@ -351,7 +354,7 @@ Definition at line 145 of file object.\+h.
 \end{DoxyCode}
 Converts function pointer to an rpc\+\_\+dictionary\+\_\+applier\+\_\+t block type. 
 
-Definition at line 137 of file object.\+h.
+Definition at line 138 of file object.\+h.
 
 \index{object.\+h@{object.\+h}!rpc\+\_\+is\+\_\+error@{rpc\+\_\+is\+\_\+error}}
 \index{rpc\+\_\+is\+\_\+error@{rpc\+\_\+is\+\_\+error}!object.\+h@{object.\+h}}
@@ -369,7 +372,7 @@ Checks if an object is of type R\+P\+C\+\_\+\+T\+Y\+P\+E\+\_\+\+E\+R\+R\+OR.
 \end{DoxyParams}
 
 
-Definition at line 273 of file object.\+h.
+Definition at line 274 of file object.\+h.
 
 \index{object.\+h@{object.\+h}!rpc\+\_\+release@{rpc\+\_\+release}}
 \index{rpc\+\_\+release@{rpc\+\_\+release}!object.\+h@{object.\+h}}
@@ -396,7 +399,7 @@ Also sets it to N\+U\+LL if as a result of the operation reference count dropped
 \end{DoxyParams}
 
 
-Definition at line 283 of file object.\+h.
+Definition at line 284 of file object.\+h.
 
 
 
@@ -420,7 +423,7 @@ Continue iteration signal.
 \end{DoxyReturn}
 
 
-Definition at line 84 of file object.\+h.
+Definition at line 85 of file object.\+h.
 
 \index{object.\+h@{object.\+h}!rpc\+\_\+array\+\_\+cmp\+\_\+t@{rpc\+\_\+array\+\_\+cmp\+\_\+t}}
 \index{rpc\+\_\+array\+\_\+cmp\+\_\+t@{rpc\+\_\+array\+\_\+cmp\+\_\+t}!object.\+h@{object.\+h}}
@@ -443,7 +446,7 @@ Negative value if a $<$ b ; zero if a = b ; positive value if a $>$ b.
 \end{DoxyReturn}
 
 
-Definition at line 124 of file object.\+h.
+Definition at line 125 of file object.\+h.
 
 \index{object.\+h@{object.\+h}!rpc\+\_\+dictionary\+\_\+applier\+\_\+t@{rpc\+\_\+dictionary\+\_\+applier\+\_\+t}}
 \index{rpc\+\_\+dictionary\+\_\+applier\+\_\+t@{rpc\+\_\+dictionary\+\_\+applier\+\_\+t}!object.\+h@{object.\+h}}
@@ -464,14 +467,14 @@ Continue iteration signal.
 \end{DoxyReturn}
 
 
-Definition at line 102 of file object.\+h.
+Definition at line 103 of file object.\+h.
 
 \index{object.\+h@{object.\+h}!rpc\+\_\+object\+\_\+t@{rpc\+\_\+object\+\_\+t}}
 \index{rpc\+\_\+object\+\_\+t@{rpc\+\_\+object\+\_\+t}!object.\+h@{object.\+h}}
 \subsubsection[{\texorpdfstring{rpc\+\_\+object\+\_\+t}{rpc_object_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct rpc\+\_\+object$\ast$ {\bf rpc\+\_\+object\+\_\+t}}\hypertarget{object_8h_ab365f726b4975c0c8376b808d111d01b}{}\label{object_8h_ab365f726b4975c0c8376b808d111d01b}
 Definition of data object pointer. 
 
-Definition at line 72 of file object.\+h.
+Definition at line 73 of file object.\+h.
 
 
 
@@ -510,7 +513,7 @@ R\+P\+C\+\_\+\+T\+Y\+P\+E\+\_\+\+E\+R\+R\+OR\hypertarget{object_8h_a40ea3143863f
 \end{Desc}
 
 
-Definition at line 51 of file object.\+h.
+Definition at line 52 of file object.\+h.
 
 
 
@@ -1315,6 +1318,24 @@ Creates an R\+PC object holding a binary data.
 {\em length} & Length of the data buffer. \\
 \hline
 {\em copy} & Copy vs. reference an input data buffer. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Newly created object. 
+\end{DoxyReturn}
+\index{object.\+h@{object.\+h}!rpc\+\_\+data\+\_\+create\+\_\+iov@{rpc\+\_\+data\+\_\+create\+\_\+iov}}
+\index{rpc\+\_\+data\+\_\+create\+\_\+iov@{rpc\+\_\+data\+\_\+create\+\_\+iov}!object.\+h@{object.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+data\+\_\+create\+\_\+iov(struct iovec $\ast$iov, size\+\_\+t niov)}{rpc_data_create_iov(struct iovec *iov, size_t niov)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+data\+\_\+create\+\_\+iov (
+\begin{DoxyParamCaption}
+\item[{struct iovec $\ast$}]{iov, }
+\item[{size\+\_\+t}]{niov}
+\end{DoxyParamCaption}
+)}\hypertarget{object_8h_a78262ca3dea42ec4757c1ec2a3db9eb1}{}\label{object_8h_a78262ca3dea42ec4757c1ec2a3db9eb1}
+The same as rpc\+\_\+data\+\_\+create, but takes iovec list as an argument and copies it into a new contiguous data buffer. 
+\begin{DoxyParams}{Parameters}
+{\em iov} & List of iovec to be copied. \\
+\hline
+{\em niov} & Number of iovec in the iovec list. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
