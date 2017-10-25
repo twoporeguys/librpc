@@ -933,6 +933,29 @@ rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...)
 	return (result);
 }
 
+rpc_object_t
+rpc_connection_call_syncp(rpc_connection_t conn, const char *method,
+    const char *fmt, ...)
+{
+	rpc_call_t call;
+	rpc_object_t args;
+	rpc_object_t result;
+	va_list ap;
+
+	va_start(ap, fmt);
+	args = rpc_object_vpack(fmt, ap);
+	va_end(ap);
+
+	if ((call = rpc_connection_call(conn, method, args, NULL)) == NULL)
+		return (NULL);
+
+	rpc_call_wait(call);
+	result = rpc_call_result(call);
+	rpc_retain(result);
+	rpc_call_free(call);
+	return (result);
+}
+
 rpc_call_t
 rpc_connection_call(rpc_connection_t conn, const char *name, rpc_object_t args,
     rpc_callback_t callback)

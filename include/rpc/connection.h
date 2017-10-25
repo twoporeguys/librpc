@@ -195,6 +195,23 @@ rpc_object_t rpc_connection_call_sync(rpc_connection_t conn,
 /**
  * Performs a synchronous RPC method call using a given connection.
  *
+ * This function is similar to rpc_connection_call_sync(), but
+ * instead of taking rpc_object_t arguments, it accepts a format
+ * string and a list of values to pack, in format used by the
+ * rpc_object_pack() function.
+ *
+ * @param conn Connection to do a call on.
+ * @param method Name of a method to be called.
+ * @param fmt Format string
+ * @param ... Called method arguments.
+ * @return Result of the call.
+ */
+rpc_object_t rpc_connection_call_syncp(rpc_connection_t conn,
+    const char *method, const char *fmt, ...);
+
+/**
+ * Performs a synchronous RPC method call using a given connection.
+ *
  * Function blocks until a result is ready and returns it, or cancels
  * and returns a NULL pointer if a timeout has occurred.
  *
