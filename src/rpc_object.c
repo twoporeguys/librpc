@@ -834,6 +834,8 @@ rpc_object_vpack(const char *fmt, va_list ap)
 		switch (ch) {
 		case 'v':
 			current = va_arg(ap, rpc_object_t);
+			if (current == NULL)
+				current = rpc_null_create();
 			break;
 
 		case 'n':
