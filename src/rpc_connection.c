@@ -296,6 +296,11 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	seqno = rpc_dictionary_get_uint64(args, "seqno");
 	payload = rpc_dictionary_get_value(args, "fragment");
 
+	if (payload == NULL) {
+		debugf("Fragment with no payload received on %p", conn);
+		return;
+	}
+
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_status = RPC_CALL_MORE_AVAILABLE;
 	call->rc_result = payload;
@@ -307,7 +312,6 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 
 		}
 	}
-
 
 	rpc_retain(call->rc_result);
 	g_cond_broadcast(&call->rc_cv);
