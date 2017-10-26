@@ -68,7 +68,7 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	if (result == RPC_FUNCTION_STILL_RUNNING)
 		return;
 
-	if (context->rcx_pre_call_hook != NULL) {
+	if (context->rcx_post_call_hook != NULL) {
 
 	}
 

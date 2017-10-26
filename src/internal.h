@@ -178,12 +178,6 @@ struct rpc_subscription
     	GPtrArray *		rsu_handlers;
 };
 
-enum rpc_inbound_state
-{
-    	RPC_INBOUND_WAITING,
-    	RPC_INBOUND_FRAGMENT_REQUESTED
-};
-
 struct rpc_inbound_call
 {
 	rpc_context_t 		ric_context;
