@@ -510,17 +510,31 @@ rpc_close(rpc_connection_t conn)
 {
 	GHashTableIter iter;
 	char *key;
-	struct rpc_inbound_call *call;
+	struct rpc_inbound_call *icall;
+	struct rpc_call *call;
 
 	if (conn->rco_error_handler)
 		conn->rco_error_handler(RPC_CONNECTION_CLOSED, NULL);
 
+	/* Tear down all the running inbound calls */
 	g_hash_table_iter_init(&iter, conn->rco_inbound_calls);
+	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&icall)) {
+		g_mutex_lock(&icall->ric_mtx);
+		icall->ric_aborted = true;
+		g_cond_broadcast(&icall->ric_cv);
+		g_mutex_unlock(&icall->ric_mtx);
+	}
+
+	/* And the same for outbound calls */
+	g_hash_table_iter_init(&iter, conn->rco_calls);
 	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&call)) {
-		g_mutex_lock(&call->ric_mtx);
-		call->ric_aborted = true;
-		g_cond_broadcast(&call->ric_cv);
-		g_mutex_unlock(&call->ric_mtx);
+		g_mutex_lock(&call->rc_mtx);
+		call->rc_status = RPC_CALL_ERROR;
+		call->rc_result = rpc_error_create(ECONNABORTED,
+		    "Connection closed", NULL);
+		rpc_retain(call->rc_result);
+		g_cond_broadcast(&call->rc_cv);
+		g_mutex_unlock(&call->rc_mtx);
 	}
 
 	return (0);
