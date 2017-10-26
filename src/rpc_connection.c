@@ -508,9 +508,20 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 static int
 rpc_close(rpc_connection_t conn)
 {
+	GHashTableIter iter;
+	char *key;
+	struct rpc_inbound_call *call;
 
 	if (conn->rco_error_handler)
 		conn->rco_error_handler(RPC_CONNECTION_CLOSED, NULL);
+
+	g_hash_table_iter_init(&iter, conn->rco_inbound_calls);
+	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&call)) {
+		g_mutex_lock(&call->ric_mtx);
+		call->ric_aborted = true;
+		g_cond_broadcast(&call->ric_cv);
+		g_mutex_unlock(&call->ric_mtx);
+	}
 
 	return (0);
 }
