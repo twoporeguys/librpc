@@ -169,11 +169,11 @@ rpc_restore_fds(rpc_object_t obj, int *fds, size_t nfds)
 static void
 rpc_callback_worker(void *arg, void *data)
 {
-	struct work_item *item = data;
+	struct work_item *item = arg;
 	struct rpc_subscription *sub;
 	const char *name;
 	rpc_call_t call;
-	rpc_connection_t conn = arg;
+	rpc_connection_t conn = data;
 	bool ret;
 
 	if (item->call) {
@@ -401,12 +401,17 @@ on_rpc_error(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 }
 
 static void
-on_events_event(rpc_connection_t conn, rpc_object_t args __unused,
+on_events_event(rpc_connection_t conn, rpc_object_t args,
     rpc_object_t id __unused)
 {
 	struct work_item *item;
 
+	if (args == NULL)
+		return;
+
+	rpc_retain(args);
 	item = g_malloc0(sizeof(*item));
+	item->event = args;
 	g_thread_pool_push(conn->rco_callback_pool, item, NULL);
 }
 
