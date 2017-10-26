@@ -247,6 +247,7 @@ ws_close(SoupWebsocketConnection *ws, gpointer user_data)
 {
 	struct ws_connection *conn = user_data;
 
+	debugf("closed: conn=%p", conn);
 	conn->wc_parent->rco_close(conn->wc_parent);
 	g_object_unref(ws);
 }
