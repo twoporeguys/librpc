@@ -34,6 +34,7 @@
 #include "../linker_set.h"
 #include "../internal.h"
 
+static gboolean ws_do_connect(gpointer user_data);
 static int ws_connect(struct rpc_connection *, const char *, rpc_object_t);
 static void ws_connect_done(GObject *, GAsyncResult *, gpointer);
 static int ws_listen(struct rpc_server *, const char *, rpc_object_t);
@@ -63,6 +64,7 @@ struct ws_connection
 	GSocketClient *			wc_client;
 	GSocketConnection *		wc_conn;
     	SoupSession *			wc_session;
+	SoupURI *			wc_uri;
 	SoupWebsocketConnection *	wc_ws;
 	struct rpc_connection *		wc_parent;
 };
@@ -74,30 +76,37 @@ struct ws_server
     	const char *			ws_path;
 };
 
+static gboolean
+ws_do_connect(gpointer user_data)
+{
+	SoupLogger *logger;
+	SoupMessage *msg;
+	struct ws_connection *conn = user_data;
+
+	logger = soup_logger_new (SOUP_LOGGER_LOG_BODY, -1);
+	conn->wc_session = soup_session_new_with_options(
+	    SOUP_SESSION_USE_THREAD_CONTEXT, TRUE, NULL);
+	soup_session_add_feature(conn->wc_session, SOUP_SESSION_FEATURE(logger));
+	msg = soup_message_new_from_uri(SOUP_METHOD_GET, conn->wc_uri);
+	soup_session_websocket_connect_async(conn->wc_session, msg, NULL, NULL,
+	    NULL, &ws_connect_done, conn);
+
+	return (false);
+}
+
 static int
 ws_connect(struct rpc_connection *rco, const char *uri_string,
     rpc_object_t args __unused)
 {
-	SoupURI *uri;
-	SoupMessage *msg;
-	SoupLogger *logger;
 	struct ws_connection *conn = NULL;
-
-	uri = soup_uri_new(uri_string);
-	logger = soup_logger_new (SOUP_LOGGER_LOG_BODY, -1);
 
 	conn = g_malloc0(sizeof(*conn));
 	g_mutex_init(&conn->wc_mtx);
 	g_cond_init(&conn->wc_cv);
+	conn->wc_uri = soup_uri_new(uri_string);
 	conn->wc_parent = rco;
-	conn->wc_session = soup_session_new_with_options(
-	    SOUP_SESSION_USE_THREAD_CONTEXT, TRUE, NULL);
 
-	soup_session_add_feature(conn->wc_session, SOUP_SESSION_FEATURE(logger));
-	msg = soup_message_new_from_uri(SOUP_METHOD_GET, uri);
-	soup_session_websocket_connect_async(conn->wc_session, msg, NULL, NULL,
-	    NULL, &ws_connect_done, conn);
-
+	g_main_context_invoke(rco->rco_mainloop, ws_do_connect, conn);
 	g_mutex_lock(&conn->wc_mtx);
 	while (conn->wc_connect_err == NULL && conn->wc_ws == NULL)
 		g_cond_wait(&conn->wc_cv, &conn->wc_mtx);
@@ -108,7 +117,7 @@ ws_connect(struct rpc_connection *rco, const char *uri_string,
 
 	return (0);
 err:
-	g_object_unref(conn->wc_client);
+	g_object_unref(conn->wc_session);
 	g_free(conn);
 	return (-1);
 }
@@ -136,13 +145,12 @@ ws_connect_done(GObject *obj, GAsyncResult *res, gpointer user_data)
 	rco->rco_get_fd = ws_get_fd;
 	rco->rco_arg = conn;
 
+	g_mutex_lock(&conn->wc_mtx);
+	conn->wc_ws = ws;
 	g_signal_connect(conn->wc_ws, "closed", G_CALLBACK(ws_close), conn);
 	g_signal_connect(conn->wc_ws, "message", G_CALLBACK(ws_receive_message),
 	    conn);
-
-	g_mutex_lock(&conn->wc_mtx);
-	conn->wc_ws = ws;
-	g_cond_signal(&conn->wc_cv);
+	g_cond_broadcast(&conn->wc_cv);
 	g_mutex_unlock(&conn->wc_mtx);
 }
 
