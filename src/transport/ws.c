@@ -166,8 +166,8 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 
 	soup_server_add_handler(server->ws_soupserver, "/", ws_process_banner,
 	    server, NULL);
-	soup_server_add_websocket_handler(server->ws_soupserver, server->ws_path,
-	    NULL, NULL, ws_process_connection, server, NULL);
+	soup_server_add_websocket_handler(server->ws_soupserver,
+	    server->ws_path, NULL, NULL, ws_process_connection, server, NULL);
 
 	addr = g_inet_socket_address_new_from_string(uri->host, uri->port);
 	soup_server_listen(server->ws_soupserver, addr, 0, &err);
