@@ -317,11 +317,58 @@ int rpc_object_to_json(rpc_object_t object, void **frame, size_t *size);
  * Packs provided values accordingly to a specified format string an into object
  * compatible with library's data model.
  *
- * Each character of the format string represents a single creation step of
- * an output object and may require from 0 to n arguments.
- * Example: [sss] represents an array containing three strings and require
+ * Each set of characters of the format string represents a single creation step
+ * of an output object and may require from 0 to n arguments.
+ * Character sets are separated with ',' character.
+ *
+ * Example: [s,s,s] represents an array containing three strings and require
  *     three char * arguments to be passed to the function
  *     after the format string.
+ * Example: {i,i,i} represents a dictionary containing three integers
+ *     and require three pairs of (char *, int) arguments to be passed
+ *     to the function after the format string.
+ *     First of each two is representing a dictionary key,
+ *     which is always a char * and second an actual integer value to be packed.
+ *
+ * The syntax above allows easy pack of dictionaries containing
+ * dynamically generated keys and continuous arrays.
+ * There is also second format string syntax, especially handy when packing
+ * dictionaries with statically known keys and noncontinuous arrays.
+ * That syntax allows specifying array indexes and name of dictionary keys
+ * directly in the format string and separating them
+ * from the value type character with ':' character.
+ *
+ * Example: [0:s,1:s,20:s] represents an array containing three strings
+ *     and require three char * arguments to be passed to the function
+ *     after the format string. Gap between index 1 and 20 is going to be filled
+ *     with NULL RPC objects.
+ * Example: {example_key:i,other_key:i,yet_another_key:i} represents
+ *     a dictionary containing three integers and require three int arguments
+ *     to be passed to the function after the format string.
+ *
+ * Both syntaxes are allowed to be mixed together in a single format string
+ * creating complex data structures representations.
+ * Each explicitly specified array index is resetting an internal state
+ * of the pack function, so mixing explicit and implicit indexing syntax within
+ * a single array is going to result in a following behavior:
+ * - Implicit indexing always starts from the index 0
+ * - Next implicit index is always created by incrementing an index
+ * used in previous value (either implicit or explicit).
+ * - Explicit indexing can either create a padding with NULL RPC objects within
+ * the array if the index is bigger than the current array length,
+ * or overwrite already packed values if index is smaller than the current
+ * array length.
+ * - Explicit array indexing does not have to be represented in a growing order,
+ * or any sorted order
+ *
+ * Example: {[i,s,i],[10:b,s,1:d,u],{key:v,f,u}}
+ * Array in the middle of the example below is going to be created
+ * in the following order: indexes 0-9 are going to be padded
+ * with the NULL RPC objects, index 10 is going to contain BOOL RPC object,
+ * index 11 is going to contain a STRING RPC object, function jumps back to
+ * the index 1 and replaces NULL RPC object with the DOUBLE RPC object,
+ * function increments last index, that results in the index 2 and replaces
+ * the NULL RPC object below that index with UNSIGNED INT RPC object.
  *
  * Format string syntax:
  * - v - Librpc object - args: rpc_object_t object
@@ -362,11 +409,47 @@ rpc_object_t rpc_object_vpack(const char *fmt, va_list ap);
  * Unpacks provided values accordingly to a specified format string from an
  * object.
  *
- * Each character of the format string represents a single unpack step
+ * Each character set of the format string represents a single unpack step
  * and may require from 0 to n arguments.
- * Example: [sss] represents an array containing three strings and require
+ * Character sets are separated with ',' character.
+ *
+ * Example: [s,s,s] represents an array containing three strings and require
  *     three char ** arguments to be passed to the function
  *     after the format string.
+ * Example: {i,i,i} represents a dictionary containing three integers
+ *     and require three pairs of (char *, int *) arguments to be passed
+ *     to the function after the format string.
+ *     First of each two is representing a dictionary key,
+ *     which is always a char * and second an actual integer value
+ *     to be unpacked.
+ *
+ * The syntax above allows easy unpack of dictionaries containing
+ * dynamically generated keys and continuous arrays.
+ * There is also second format string syntax, especially handy when unpacking
+ * dictionaries with statically known keys and noncontinuous reads from arrays.
+ * That syntax allows specifying array indexes and name of dictionary keys
+ * directly in the format string and separating them
+ * from the value type character with ':' character.
+ *
+ * Example: [0:s,1:s,20:s] represents an array containing three strings
+ *     and require three char ** arguments to be passed to the function
+ *     after the format string.
+ * Example: {example_key:i,other_key:i,yet_another_key:i} represents
+ *     a dictionary containing three integers and require three int * arguments
+ *     to be passed to the function after the format string.
+ *
+ * Both syntaxes are allowed to be mixed together in a single format string
+ * creating complex data structures representations.
+ * Each explicitly specified array index is resetting an internal state
+ * of the unpack function, so mixing explicit and implicit indexing syntax
+ * within a single array is going to result in a following behavior:
+ * - Implicit indexing always starts from the index 0
+ * - Next implicit index is always created by incrementing an index
+ * used in previous value (either implicit or explicit).
+ * - Explicit array indexing does not have to be represented in a growing order,
+ * or any sorted order
+ *
+ * Example: {[i,s,i],[10:b,s,1:d,u],{key:v,f,u}}
  *
  * The function returns the number of successfully processed format characters
  * (excluding '{', '[', ']', '}'), or an error as a negative value.
@@ -390,7 +473,7 @@ rpc_object_t rpc_object_vpack(const char *fmt, va_list ap);
  *
  * @param fmt Format string.
  * @param ... Variable length list of values to be unpacked.
- * @return Unpacking status. Errors are reported as negative values.
+ * @return The number of successfully unpacked objects or -1 on error.
  */
 int rpc_object_unpack(rpc_object_t, const char *fmt, ...);
 
@@ -528,7 +611,7 @@ rpc_object_t rpc_data_create(const void *bytes, size_t length, bool copy);
 
 /**
  * The same as rpc_data_create, but takes iovec list as an argument
- * and copies it into a new contiguous data buffer.
+ * and copies it into a new continuous data buffer.
  * @param iov List of iovec to be copied.
  * @param niov Number of iovec in the iovec list.
  * @return Newly created object.
