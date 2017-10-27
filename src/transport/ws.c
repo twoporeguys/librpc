@@ -79,14 +79,11 @@ struct ws_server
 static gboolean
 ws_do_connect(gpointer user_data)
 {
-	SoupLogger *logger;
 	SoupMessage *msg;
 	struct ws_connection *conn = user_data;
 
-	logger = soup_logger_new (SOUP_LOGGER_LOG_BODY, -1);
 	conn->wc_session = soup_session_new_with_options(
 	    SOUP_SESSION_USE_THREAD_CONTEXT, TRUE, NULL);
-	soup_session_add_feature(conn->wc_session, SOUP_SESSION_FEATURE(logger));
 	msg = soup_message_new_from_uri(SOUP_METHOD_GET, conn->wc_uri);
 	soup_session_websocket_connect_async(conn->wc_session, msg, NULL, NULL,
 	    NULL, &ws_connect_done, conn);
