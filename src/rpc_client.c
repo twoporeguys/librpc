@@ -35,9 +35,8 @@ rpc_client_worker(void *arg)
 {
 	rpc_client_t client = arg;
 
-	g_main_context_acquire(client->rci_g_context);
+	g_main_context_push_thread_default(client->rci_g_context);
 	g_main_loop_run(client->rci_g_loop);
-	g_main_context_release(client->rci_g_context);
 	return (NULL);
 }
 
@@ -56,11 +55,8 @@ rpc_client_create(const char *uri, rpc_object_t params)
 
 	if (params)
 		rpc_retain(params);
-	
-	g_main_context_push_thread_default(client->rci_g_context);
-	client->rci_connection = rpc_connection_create((void *)client, params);
-	g_main_context_pop_thread_default(client->rci_g_context);
 
+	client->rci_connection = rpc_connection_create((void *)client, params);
 	if (client->rci_connection == NULL) {
 		rpc_client_close(client);
 		return (NULL);
