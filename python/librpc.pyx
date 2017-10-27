@@ -757,7 +757,7 @@ cdef class Connection(object):
         PyEval_InitThreads()
         self.error_handler = None
         self.event_handler = None
-        self.ev_handlers = {}
+        self.ev_handlers = []
 
     property error_handler:
         def __get__(self):
@@ -879,7 +879,7 @@ cdef class Connection(object):
             raise RuntimeError("Not connected")
 
         byte_name = name.encode('utf-8')
-        self.ev_handlers[name] = fn
+        self.ev_handlers.append(fn)
         rpc_connection_register_event_handler(
             self.connection,
             byte_name,
