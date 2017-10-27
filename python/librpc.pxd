@@ -349,7 +349,7 @@ cdef class Connection(object):
     @staticmethod
     cdef Connection init_from_ptr(rpc_connection_t ptr)
     @staticmethod
-    cdef void c_ev_handler(const char *name, rpc_object_t args, void *arg) with gil
+    cdef void c_ev_handler(void *arg, const char *name, rpc_object_t args) with gil
     @staticmethod
     cdef void c_error_handler(void *arg, rpc_error_code_t code, rpc_object_t args) with gil
 

@@ -792,7 +792,7 @@ cdef class Connection(object):
         return ret
 
     @staticmethod
-    cdef void c_ev_handler(const char *name, rpc_object_t args, void *arg) with gil:
+    cdef void c_ev_handler(void *arg, const char *name, rpc_object_t args) with gil:
         cdef Object event_args
         cdef object handler = <object>arg
 
