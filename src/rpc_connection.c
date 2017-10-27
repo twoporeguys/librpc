@@ -765,9 +765,8 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	conn->rco_callback_pool = g_thread_pool_new(&rpc_callback_worker, conn,
 	    g_get_num_processors(), false, &err);
 
-	if (err != NULL) {
-
-	}
+	if (err != NULL)
+		goto fail;
 
 	if (transport->connect(conn, conn->rco_uri, params) != 0)
 		goto fail;
