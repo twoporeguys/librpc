@@ -340,6 +340,7 @@ cdef class Context(object):
 
 
 cdef class Connection(object):
+    cdef public bint unpack
     cdef rpc_connection_t connection
     cdef object error_handler
     cdef object event_handler

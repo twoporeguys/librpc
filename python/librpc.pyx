@@ -757,6 +757,7 @@ cdef class Connection(object):
         PyEval_InitThreads()
         self.error_handler = None
         self.event_handler = None
+        self.unpack = False
         self.ev_handlers = []
 
     property error_handler:
@@ -845,7 +846,7 @@ cdef class Connection(object):
 
             rpc_value = Object.__new__(Object)
             rpc_value.obj = rpc_result
-            return rpc_value
+            return self.do_unpack(rpc_value)
 
         def iter_chunk():
             nonlocal call_status
@@ -867,6 +868,9 @@ cdef class Connection(object):
             return iter_chunk()
 
         raise AssertionError('Impossible call status {0}'.format(call_status))
+
+    def do_unpack(self, value):
+        return value.unpack() if self.unpack else value
 
     def call_async(self, method, callback, *args):
         pass
@@ -931,6 +935,9 @@ cdef class Server(object):
     cdef object uri
 
     def __init__(self, uri, context):
+        if not uri:
+            raise RuntimeError('URI cannot be empty')
+
         self.uri = uri.encode('utf-8')
         self.context = context
         self.server = rpc_server_create(self.uri, self.context.context)
