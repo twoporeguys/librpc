@@ -42,8 +42,8 @@ extern "C" {
 
 #define YAML_ERROR_CODE		"code"
 #define YAML_ERROR_MSG		"msg"
-#define YAML_ERROR_XTRA		"extra"
-#define YAML_ERROR_STCK		"stack"
+#define YAML_ERROR_EXTRA	"extra"
+#define YAML_ERROR_STACK	"stack"
 
 #if defined(__linux__)
 #define	YAML_TAG_SHMEM		"!shmem"

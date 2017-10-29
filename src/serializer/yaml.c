@@ -78,13 +78,13 @@ rpc_yaml_read_ext(yaml_parser_t *parser, const char *type)
 				break;
 			}
 
-			if (!g_strcmp0(key, YAML_ERROR_XTRA)) {
+			if (!g_strcmp0(key, YAML_ERROR_EXTRA)) {
 				err_extra = rpc_yaml_deserialize(value,
 				    length);
 				break;
 			}
 
-			if (!g_strcmp0(key, YAML_ERROR_STCK)) {
+			if (!g_strcmp0(key, YAML_ERROR_STACK)) {
 				err_stack = rpc_string_create_len(value,
 				    length);
 				break;
@@ -353,7 +353,7 @@ rpc_yaml_write_object(yaml_emitter_t *emitter, rpc_object_t object)
 			break;
 
 		if (rpc_error_get_stack(object) != NULL) {
-			key = YAML_ERROR_STCK;
+			key = YAML_ERROR_STACK;
 			status = rpc_yaml_write_kv(emitter, key,
 			    rpc_string_get_string_ptr(
 			    rpc_error_get_stack(object)));
@@ -362,7 +362,7 @@ rpc_yaml_write_object(yaml_emitter_t *emitter, rpc_object_t object)
 		}
 
 		if (rpc_error_get_extra(object) != NULL) {
-			key = YAML_ERROR_XTRA;
+			key = YAML_ERROR_EXTRA;
 			status = yaml_scalar_event_initialize(&event, NULL,
 			    NULL, (yaml_char_t *) key, (int)strlen(key), 1, 1,
 			    YAML_ANY_SCALAR_STYLE);
