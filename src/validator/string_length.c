@@ -33,7 +33,7 @@ validate_string_length(rpc_object_t obj, rpc_object_t params,
 {
 	int64_t min = -1;
 	int64_t max = -1;
-	size_t length;
+	ssize_t length;
 	bool valid = true;
 
 	rpc_object_unpack(params, "{i,i}", "min", &min, "max", &max);
