@@ -1108,7 +1108,8 @@ cdef class Typing(object):
         pass
 
     def load_types(self, path):
-        rpct_load_types(path.encode('utf-8'))
+        if rpct_load_types(path.encode('utf-8')) != 0:
+            raise_internal_exc()
 
     def serialize(self, Object obj):
         cdef rpc_object_t result

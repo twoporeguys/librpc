@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <errno.h>
 #include <assert.h>
 #include "../linker_set.h"
 #include "../internal.h"
@@ -40,6 +41,11 @@ static struct rpct_member *union_read_member(const char *decl,
 	    "type", &typedecl,
 	    "description", &description,
 	    "constraints", &constraints);
+
+	if (typedecl == NULL) {
+		rpc_set_last_error(EINVAL, "type key not provided or invalid", NULL);
+		return (NULL);
+	}
 
 	member = g_malloc0(sizeof(*member));
 	member->name = g_strdup(decl);

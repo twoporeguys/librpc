@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <errno.h>
 #include <glib.h>
 #include <yaml.h>
 #include <rpc/object.h>
@@ -197,6 +198,11 @@ static int
 rpct_read_meta(struct rpct_file *file, rpc_object_t obj)
 {
 	int ret;
+
+	if (obj == NULL) {
+		rpc_set_last_error(EINVAL, "meta section corrupted", NULL);
+		return (-1);
+	}
 
 	ret = rpc_object_unpack(obj, "{s,s,i}",
 	    "version", &file->version,
@@ -384,8 +390,8 @@ rpct_type_free(rpct_type_t type)
 	g_free(type->name);
 	g_free(type->description);
 	g_ptr_array_free(type->generic_vars, true);
-	g_hash_table_unref(type->members);
-	g_hash_table_unref(type->constraints);
+	g_hash_table_destroy(type->members);
+	g_hash_table_destroy(type->constraints);
 	g_free(type);
 }
 
@@ -396,7 +402,7 @@ rpct_file_free(struct rpct_file *file)
 	g_free(file->path);
 	g_free(file->realm);
 	g_free(file->description);
-	g_hash_table_unref(file->types);
+	g_hash_table_destroy(file->types);
 	g_free(file);
 }
 
@@ -405,8 +411,8 @@ rpct_realm_free(rpct_realm_t realm)
 {
 
 	g_free(realm->name);
-	g_hash_table_unref(realm->types);
-	g_hash_table_unref(realm->functions);
+	g_hash_table_destroy(realm->types);
+	g_hash_table_destroy(realm->functions);
 	g_free(realm);
 }
 
@@ -861,8 +867,10 @@ rpct_read_file(const char *path)
 
 	debugf("trying to read %s", path);
 
-	if (!g_file_get_contents(path, &contents, &length, &err))
+	if (!g_file_get_contents(path, &contents, &length, &err)) {
+		rpc_set_last_gerror(err);
 		return (-1);
+	}
 
 	obj = rpc_serializer_load("yaml", contents, length);
 	g_free(contents);
