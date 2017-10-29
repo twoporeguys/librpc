@@ -1051,6 +1051,9 @@ cdef class Serializer(object):
     cdef const char *type
 
     def __init__(self, type):
+        if not rpc_serializer_exists(type.encode('ascii')):
+            raise LibException(errno.ENOENT, 'Unknown serializer')
+
         self.type = strdup(type.encode('ascii'))
 
     def __dealloc__(self):

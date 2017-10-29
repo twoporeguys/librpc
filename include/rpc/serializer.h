@@ -35,6 +35,14 @@
  */
 
 /**
+ * Checks whether specified serializer is available.
+ *
+ * @param serializer Serializer name
+ * @return true if specified serializer exists, otherwise false
+ */
+bool rpc_serializer_exists(const char *serializer);
+
+/**
  * Loads an RPC object from a serialized blob.
  *
  * @param serializer Serializer type (msgpack, json or yaml)

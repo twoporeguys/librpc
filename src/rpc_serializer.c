@@ -29,6 +29,13 @@
 #include <rpc/serializer.h>
 #include "internal.h"
 
+bool
+rpc_serializer_exists(const char *serializer)
+{
+
+	return (rpc_find_serializer(serializer) != NULL ? true : false);
+}
+
 rpc_object_t
 rpc_serializer_load(const char *serializer, const void *frame,
     size_t len)
