@@ -1891,6 +1891,9 @@ rpc_dictionary_get_value(rpc_object_t dictionary,
     const char *key)
 {
 
+	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
+		return (NULL);
+
 	return ((rpc_object_t)g_hash_table_lookup(
 	    dictionary->ro_value.rv_dict, key));
 }
