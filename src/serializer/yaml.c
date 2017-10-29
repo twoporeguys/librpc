@@ -27,6 +27,7 @@
 
 #include <string.h>
 #include <inttypes.h>
+#include <errno.h>
 #include <glib.h>
 #include <rpc/object.h>
 #include <yaml.h>
@@ -56,8 +57,10 @@ rpc_yaml_read_ext(yaml_parser_t *parser, const char *type)
 #endif
 
 	for (;;) {
-		if (!yaml_parser_parse(parser, &event))
+		if (!yaml_parser_parse(parser, &event)) {
+			rpc_set_last_error(EINVAL, parser->problem, NULL);
 			return (NULL);
+		}
 
 		switch (event.type) {
 		case YAML_SCALAR_EVENT:
@@ -559,8 +562,10 @@ rpc_yaml_deserialize(const void *frame, size_t size)
 	yaml_parser_set_input_string(&parser, frame, size);
 
 	while (!done) {
-		if (!yaml_parser_parse(&parser, &event))
+		if (!yaml_parser_parse(&parser, &event)) {
+			rpc_set_last_error(EINVAL, parser.problem, NULL);
 			goto out;
+		}
 
 		switch (event.type) {
 			case YAML_MAPPING_START_EVENT:
