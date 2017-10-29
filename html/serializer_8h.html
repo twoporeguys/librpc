@@ -104,6 +104,8 @@ Include dependency graph for serializer.h:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:aec43c3467d5931ec29b407aa6f010b61"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#aec43c3467d5931ec29b407aa6f010b61">rpc_serializer_exists</a> (const char *serializer)</td></tr>
+<tr class="separator:aec43c3467d5931ec29b407aa6f010b61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41c887139710f0043a9109faa74c7ae7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#a41c887139710f0043a9109faa74c7ae7">rpc_serializer_load</a> (const char *serializer, const void *frame, size_t len)</td></tr>
 <tr class="separator:a41c887139710f0043a9109faa74c7ae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8d18b07cd3202e3c763e3a6c3afcc2e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#ae8d18b07cd3202e3c763e3a6c3afcc2e">rpc_serializer_dump</a> (const char *serializer, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> obj, void **framep, size_t *lenp)</td></tr>
@@ -154,6 +156,30 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aec43c3467d5931ec29b407aa6f010b61"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rpc_serializer_exists </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>serializer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Checks whether specified serializer is available.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">serializer</td><td>Serializer name </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if specified serializer exists, otherwise false </dd></dl>
 
 </div>
 </div>

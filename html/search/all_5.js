@@ -204,6 +204,7 @@ var searchData=
   ['rpc_5frelease_5fimpl',['rpc_release_impl',['../object_8h.html#a2d85324f75b20628a5d32e8117277e18',1,'object.h']]],
   ['rpc_5fretain',['rpc_retain',['../object_8h.html#a9f5c8073f6c079852f39f409be1f777b',1,'object.h']]],
   ['rpc_5fserializer_5fdump',['rpc_serializer_dump',['../serializer_8h.html#ae8d18b07cd3202e3c763e3a6c3afcc2e',1,'serializer.h']]],
+  ['rpc_5fserializer_5fexists',['rpc_serializer_exists',['../serializer_8h.html#aec43c3467d5931ec29b407aa6f010b61',1,'serializer.h']]],
   ['rpc_5fserializer_5fload',['rpc_serializer_load',['../serializer_8h.html#a41c887139710f0043a9109faa74c7ae7',1,'serializer.h']]],
   ['rpc_5fserver_5fbroadcast_5fevent',['rpc_server_broadcast_event',['../server_8h.html#a321bec95886308344cd511782afd08dd',1,'server.h']]],
   ['rpc_5fserver_5fclose',['rpc_server_close',['../server_8h.html#aecd13196295690cff8a48b90b9467c1d',1,'server.h']]],

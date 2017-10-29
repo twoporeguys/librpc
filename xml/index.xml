@@ -245,6 +245,7 @@
     <member refid="query_8h_1a004da45b366b82be1df7452e48103297" kind="function"><name>rpc_query_iter_free</name></member>
   </compound>
   <compound refid="serializer_8h" kind="file"><name>serializer.h</name>
+    <member refid="serializer_8h_1aec43c3467d5931ec29b407aa6f010b61" kind="function"><name>rpc_serializer_exists</name></member>
     <member refid="serializer_8h_1a41c887139710f0043a9109faa74c7ae7" kind="function"><name>rpc_serializer_load</name></member>
     <member refid="serializer_8h_1ae8d18b07cd3202e3c763e3a6c3afcc2e" kind="function"><name>rpc_serializer_dump</name></member>
   </compound>

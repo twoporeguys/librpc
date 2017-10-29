@@ -12,6 +12,8 @@ Include dependency graph for serializer.\+h\+:
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
+bool \hyperlink{serializer_8h_aec43c3467d5931ec29b407aa6f010b61}{rpc\+\_\+serializer\+\_\+exists} (const char $\ast$serializer)
+\item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{serializer_8h_a41c887139710f0043a9109faa74c7ae7}{rpc\+\_\+serializer\+\_\+load} (const char $\ast$serializer, const void $\ast$frame, size\+\_\+t len)
 \item 
 int \hyperlink{serializer_8h_ae8d18b07cd3202e3c763e3a6c3afcc2e}{rpc\+\_\+serializer\+\_\+dump} (const char $\ast$serializer, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} obj, void $\ast$$\ast$framep, size\+\_\+t $\ast$lenp)
@@ -40,6 +42,23 @@ Dumps an R\+PC object into a serialized blob form.
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on error 
+\end{DoxyReturn}
+\index{serializer.\+h@{serializer.\+h}!rpc\+\_\+serializer\+\_\+exists@{rpc\+\_\+serializer\+\_\+exists}}
+\index{rpc\+\_\+serializer\+\_\+exists@{rpc\+\_\+serializer\+\_\+exists}!serializer.\+h@{serializer.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+serializer\+\_\+exists(const char $\ast$serializer)}{rpc_serializer_exists(const char *serializer)}}]{\setlength{\rightskip}{0pt plus 5cm}bool rpc\+\_\+serializer\+\_\+exists (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{serializer}
+\end{DoxyParamCaption}
+)}\hypertarget{serializer_8h_aec43c3467d5931ec29b407aa6f010b61}{}\label{serializer_8h_aec43c3467d5931ec29b407aa6f010b61}
+Checks whether specified serializer is available.
+
+
+\begin{DoxyParams}{Parameters}
+{\em serializer} & Serializer name \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if specified serializer exists, otherwise false 
 \end{DoxyReturn}
 \index{serializer.\+h@{serializer.\+h}!rpc\+\_\+serializer\+\_\+load@{rpc\+\_\+serializer\+\_\+load}}
 \index{rpc\+\_\+serializer\+\_\+load@{rpc\+\_\+serializer\+\_\+load}!serializer.\+h@{serializer.\+h}}
