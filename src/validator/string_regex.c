@@ -39,7 +39,7 @@ validate_string_regex(rpc_object_t obj, rpc_object_t params,
 	rpc_object_unpack(params, "{s}", "pattern", &pattern);
 	str = rpc_string_get_string_ptr(obj);
 
-	if (!g_regex_match_simple(str, str, 0, 0)) {
+	if (!g_regex_match_simple(pattern, str, 0, 0)) {
 		valid = false;
 		rpct_add_error(errctx, "String doesn't match", NULL);
 	}
