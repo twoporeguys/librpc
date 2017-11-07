@@ -33,6 +33,16 @@ validate_string_regex(rpc_object_t obj, rpc_object_t params,
     struct rpct_typei *typei __unused, struct rpct_error_context *errctx)
 {
 	bool valid = true;
+	const char *pattern;
+	const char *str;
+
+	rpc_object_unpack(params, "{s}", "pattern", &pattern);
+	str = rpc_string_get_string_ptr(obj);
+
+	if (!g_regex_match_simple(str, str, 0, 0)) {
+		valid = false;
+		rpct_add_error(errctx, "String doesn't match", NULL);
+	}
 
 	return (valid);
 }
