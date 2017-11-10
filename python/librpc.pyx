@@ -163,7 +163,7 @@ cdef class Object(object):
             self.obj = rpc_date_create(int(value.timestamp()))
             return
 
-        if isinstance(value, bytearray) or force_type == ObjectType.BINARY:
+        if isinstance(value, (bytearray, bytes)) or force_type == ObjectType.BINARY:
             self.obj = rpc_data_create(<void *>value, <size_t>len(value), True)
             return
 
