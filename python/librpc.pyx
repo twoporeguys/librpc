@@ -164,7 +164,7 @@ cdef class Object(object):
             return
 
         if isinstance(value, (bytearray, bytes)) or force_type == ObjectType.BINARY:
-            self.obj = rpc_data_create(<void *>value, <size_t>len(value), True)
+            self.obj = rpc_data_create(<char *>value, <size_t>len(value), True)
             return
 
         if isinstance(value, (RpcException, LibException)):
@@ -509,6 +509,10 @@ cdef class Array(Object):
 
         rpc_retain(rpc_value.obj)
 
+    def __bool__(self):
+        return len(self) > 0
+
+
 
 cdef class Dictionary(Object):
     def __init__(self, value, force_type=None):
@@ -679,6 +683,9 @@ cdef class Dictionary(Object):
         rpc_dictionary_set_value(self.obj, byte_key, rpc_value.obj)
 
         rpc_retain(rpc_value.obj)
+
+    def __bool__(self):
+        return len(self) > 0
 
 
 cdef class Context(object):
