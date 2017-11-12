@@ -874,6 +874,8 @@ cdef class Connection(object):
                     with nogil:
                         rpc_call_abort(call)
 
+                    break
+
         if call_status == CallStatus.ERROR:
             rpc_value = get_chunk()
             rpc_retain(rpc_value.obj)
