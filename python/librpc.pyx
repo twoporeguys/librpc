@@ -829,13 +829,18 @@ cdef class Connection(object):
         cdef rpc_call_t call
         cdef Object rpc_value
         cdef rpc_call_status_t call_status
+        cdef const char *c_method
 
         if self.connection == <rpc_connection_t>NULL:
             raise RuntimeError("Not connected")
 
         rpc_args = Array(list(args))
+        b_method = method.encode('utf-8')
+        c_method = b_method
 
-        call = rpc_connection_call(self.connection, method.encode('utf-8'), rpc_args.obj, NULL)
+        with nogil:
+            call = rpc_connection_call(self.connection, c_method, rpc_args.obj, NULL)
+
         if call == <rpc_call_t>NULL:
             raise_internal_exc(rpc=True)
 
@@ -859,9 +864,15 @@ cdef class Connection(object):
             nonlocal call_status
 
             while call_status == CallStatus.MORE_AVAILABLE:
-                yield get_chunk()
-                rpc_call_continue(call, True)
-                call_status = <rpc_call_status_t>rpc_call_status(call)
+                try:
+                    yield get_chunk()
+                    with nogil:
+                        rpc_call_continue(call, True)
+
+                    call_status = <rpc_call_status_t>rpc_call_status(call)
+                except:
+                    with nogil:
+                        rpc_call_abort(call)
 
         if call_status == CallStatus.ERROR:
             rpc_value = get_chunk()
