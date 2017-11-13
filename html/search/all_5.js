@@ -48,6 +48,7 @@ var searchData=
   ['rpc_5fbus_5fregister_5fevent_5fhandler',['rpc_bus_register_event_handler',['../bus_8h.html#a1c9f3676441138dfb89655d3ad080d08',1,'bus.h']]],
   ['rpc_5fbus_5funregister_5fevent_5fhandler',['rpc_bus_unregister_event_handler',['../bus_8h.html#ae6437acd78bb490baac4517ddffb0792',1,'bus.h']]],
   ['rpc_5fcall_5fabort',['rpc_call_abort',['../connection_8h.html#a17059d810db4d08d911e45d24704dacc',1,'connection.h']]],
+  ['rpc_5fcall_5faborted',['RPC_CALL_ABORTED',['../connection_8h.html#a22306445a7503bab94835382d07e0410a6c33a14b8aa6d0797cb614b890e9c741',1,'connection.h']]],
   ['rpc_5fcall_5fcontinue',['rpc_call_continue',['../connection_8h.html#a844f7384a38ef32d4d4b9d6994aed613',1,'connection.h']]],
   ['rpc_5fcall_5fdone',['RPC_CALL_DONE',['../connection_8h.html#a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d',1,'connection.h']]],
   ['rpc_5fcall_5ferror',['RPC_CALL_ERROR',['../connection_8h.html#a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856',1,'connection.h']]],

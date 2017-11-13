@@ -158,10 +158,14 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:a88bd06a910a4ce0b9046b9beb4af5ccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22306445a7503bab94835382d07e0410"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a22306445a7503bab94835382d07e0410">rpc_call_status</a> { <a class="el" href="connection_8h.html#a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1">RPC_CALL_IN_PROGRESS</a>, 
+<tr class="memitem:a22306445a7503bab94835382d07e0410"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a22306445a7503bab94835382d07e0410">rpc_call_status</a> { <br />
+&#160;&#160;<a class="el" href="connection_8h.html#a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1">RPC_CALL_IN_PROGRESS</a>, 
 <a class="el" href="connection_8h.html#a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f">RPC_CALL_MORE_AVAILABLE</a>, 
 <a class="el" href="connection_8h.html#a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d">RPC_CALL_DONE</a>, 
-<a class="el" href="connection_8h.html#a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856">RPC_CALL_ERROR</a>
+<a class="el" href="connection_8h.html#a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856">RPC_CALL_ERROR</a>, 
+<br />
+&#160;&#160;<a class="el" href="connection_8h.html#a22306445a7503bab94835382d07e0410a6c33a14b8aa6d0797cb614b890e9c741">RPC_CALL_ABORTED</a>
+<br />
  }</td></tr>
 <tr class="separator:a22306445a7503bab94835382d07e0410"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -246,7 +250,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00073">object.h:73</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#a659dfc386fa0add62a07c17662a29641">rpc_callback_t</a> block type. </p>
 
-<p>Definition at line <a class="el" href="connection_8h_source.html#l00117">117</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p>Definition at line <a class="el" href="connection_8h_source.html#l00118">118</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -277,7 +281,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <div class="ttc" id="connection_8h_html_a043170f29cb25827a88be4dab2313a91"><div class="ttname"><a href="connection_8h.html#a043170f29cb25827a88be4dab2313a91">rpc_error_code_t</a></div><div class="ttdeci">enum rpc_error_code rpc_error_code_t</div></div>
 </div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#a4dfba30ff97d4c5c56a6787ecd1bb79a">rpc_error_handler_t</a> block type. </p>
 
-<p>Definition at line <a class="el" href="connection_8h_source.html#l00109">109</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p>Definition at line <a class="el" href="connection_8h_source.html#l00110">110</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -307,7 +311,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <b>Value:</b><div class="fragment"><div class="line">^(<span class="keyword">const</span> <span class="keywordtype">char</span> *_name, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _args) {          \</div><div class="line">        _fn(_arg, _name, _args);                \</div><div class="line">    }</div><div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00073">object.h:73</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#a65fe4b58831bfa2c2aa2210a48c52af2">rpc_handler_t</a> block type. </p>
 
-<p>Definition at line <a class="el" href="connection_8h_source.html#l00101">101</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p>Definition at line <a class="el" href="connection_8h_source.html#l00102">102</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -336,7 +340,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 </div><div class="memdoc">
 <p>Definition of RPC call pointer. </p>
 
-<p>Definition at line <a class="el" href="connection_8h_source.html#l00081">81</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p>Definition at line <a class="el" href="connection_8h_source.html#l00082">82</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -351,7 +355,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 </div><div class="memdoc">
 <p>Definition of RPC callback block type. </p>
 
-<p>Definition at line <a class="el" href="connection_8h_source.html#l00096">96</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p>Definition at line <a class="el" href="connection_8h_source.html#l00097">97</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -366,7 +370,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 </div><div class="memdoc">
 <p>Definition of RPC connection pointer. </p>
 
-<p>Definition at line <a class="el" href="connection_8h_source.html#l00076">76</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p>Definition at line <a class="el" href="connection_8h_source.html#l00077">77</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -394,7 +398,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 </div><div class="memdoc">
 <p>Definition of RPC error handler block type. </p>
 
-<p>Definition at line <a class="el" href="connection_8h_source.html#l00091">91</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p>Definition at line <a class="el" href="connection_8h_source.html#l00092">92</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -409,7 +413,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 </div><div class="memdoc">
 <p>Definition of RPC event handler block type. </p>
 
-<p>Definition at line <a class="el" href="connection_8h_source.html#l00086">86</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p>Definition at line <a class="el" href="connection_8h_source.html#l00087">87</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -436,6 +440,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856"></a>RPC_CALL_ERROR&#160;</td><td class="fielddoc">
 <p>Call finished, error received </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a22306445a7503bab94835382d07e0410a6c33a14b8aa6d0797cb614b890e9c741"></a>RPC_CALL_ABORTED&#160;</td><td class="fielddoc">
+<p>Call was aborted by the user </p>
 </td></tr>
 </table>
 
