@@ -775,6 +775,9 @@ cdef class Call(object):
 
     property result:
         def __get__(self):
+            with nogil:
+                rpc_call_wait(self.call)
+
             return Object.init_from_ptr(rpc_call_result(self.call))
 
     def __dealloc__(self):
