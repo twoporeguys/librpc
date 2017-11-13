@@ -777,6 +777,24 @@ cdef class Call(object):
         def __get__(self):
             return Object.init_from_ptr(rpc_call_result(self.call))
 
+    def __dealloc__(self):
+        rpc_call_free(self.call)
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        result = self.result
+
+        if result is None:
+            raise StopIteration()
+
+        if result.type == ObjectType.ERROR:
+            raise result.value
+
+        self.resume()
+        return result
+
     def abort(self):
         with nogil:
             rpc_call_abort(self.call)
