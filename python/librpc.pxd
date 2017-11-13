@@ -161,7 +161,7 @@ cdef extern from "rpc/connection.h" nogil:
         rpc_object_t args)
     void rpc_connection_set_event_handler(rpc_connection_t conn, void *handler)
     void rpc_connection_set_error_handler(rpc_connection_t conn, void *handler)
-    int rpc_call_status(rpc_call_t call)
+    rpc_call_status_t rpc_call_status(rpc_call_t call)
     int rpc_call_wait(rpc_call_t call)
     int rpc_call_continue(rpc_call_t call, bint sync)
     int rpc_call_abort(rpc_call_t call)
@@ -339,6 +339,14 @@ cdef class Context(object):
     cdef Context init_from_ptr(rpc_context_t ptr)
     @staticmethod
     cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil
+
+
+cdef class Call(object):
+    cdef readonly Connection connection
+    cdef rpc_call_t call
+
+    @staticmethod
+    cdef Call init_from_ptr(rpc_call_t ptr)
 
 
 cdef class Connection(object):

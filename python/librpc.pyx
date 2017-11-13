@@ -760,6 +760,32 @@ cdef class Context(object):
             rpc_context_free(self.context)
 
 
+cdef class Call(object):
+    @staticmethod
+    cdef Call init_from_ptr(rpc_call_t ptr):
+        cdef Call result
+
+        result = Call.__new__(Call)
+        result.call = ptr
+        return result
+
+    property status:
+        def __get__(self):
+            return CallStatus(rpc_call_status(self.call))
+
+    property result:
+        def __get__(self):
+            return Object.init_from_ptr(rpc_call_result(self.call))
+
+    def abort(self):
+        with nogil:
+            rpc_call_abort(self.call)
+
+    def resume(self):
+        with nogil:
+            rpc_call_continue(self.call, True)
+
+
 cdef class Connection(object):
     def __init__(self):
         PyEval_InitThreads()
@@ -823,12 +849,30 @@ cdef class Connection(object):
 
         handler(ErrorCode(error), error_args)
 
+    def call(self, method, *args):
+        cdef Array rpc_args
+        cdef const char *c_method
+
+        if self.connection == <rpc_connection_t>NULL:
+            raise RuntimeError("Not connected")
+
+        rpc_args = Array(list(args))
+        b_method = method.encode('utf-8')
+        c_method = b_method
+
+        with nogil:
+            call = rpc_connection_call(self.connection, c_method, rpc_args.obj, NULL)
+
+        if call == <rpc_call_t>NULL:
+            raise_internal_exc(rpc=True)
+
+        return Call.init_from_ptr(call)
+
     def call_sync(self, method, *args):
         cdef rpc_object_t rpc_result
         cdef Array rpc_args
         cdef Dictionary error
         cdef rpc_call_t call
-        cdef Object rpc_value
         cdef rpc_call_status_t call_status
         cdef const char *c_method
 
@@ -848,18 +892,15 @@ cdef class Connection(object):
         with nogil:
             rpc_call_wait(call)
 
-        call_status = <rpc_call_status_t>rpc_call_status(call)
+        call_status = rpc_call_status(call)
 
         def get_chunk():
             nonlocal rpc_result
-            nonlocal rpc_value
 
             rpc_result = rpc_call_result(call)
             rpc_retain(rpc_result)
 
-            rpc_value = Object.__new__(Object)
-            rpc_value.obj = rpc_result
-            return self.do_unpack(rpc_value)
+            return self.do_unpack(Object.init_from_ptr(rpc_result))
 
         def iter_chunk():
             nonlocal call_status
@@ -870,7 +911,7 @@ cdef class Connection(object):
                     with nogil:
                         rpc_call_continue(call, True)
 
-                    call_status = <rpc_call_status_t>rpc_call_status(call)
+                    call_status = rpc_call_status(call)
                 except:
                     with nogil:
                         rpc_call_abort(call)
@@ -878,9 +919,7 @@ cdef class Connection(object):
                     break
 
         if call_status == CallStatus.ERROR:
-            rpc_value = get_chunk()
-            rpc_retain(rpc_value.obj)
-            raise rpc_value.value
+            raise get_chunk().value
 
         if call_status == CallStatus.DONE:
             return get_chunk()
