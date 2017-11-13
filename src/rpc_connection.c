@@ -1002,11 +1002,11 @@ rpc_connection_call(rpc_connection_t conn, const char *name, rpc_object_t args,
 	call->rc_id = id;
 	call->rc_type = "call";
 	call->rc_method = name;
-	call->rc_args = args;
+	call->rc_args = args != NULL ? args : rpc_array_create();
 	call->rc_callback = callback;
 
 	rpc_dictionary_set_string(payload, "method", name);
-	rpc_dictionary_set_value(payload, "args", args != NULL ? args : rpc_array_create());
+	rpc_dictionary_set_value(payload, "args", args);
 	frame = rpc_pack_frame("rpc", "call", call->rc_id,  payload);
 
 	g_mutex_lock(&call->rc_mtx);
