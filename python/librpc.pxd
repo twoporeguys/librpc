@@ -138,6 +138,7 @@ cdef extern from "rpc/connection.h" nogil:
         RPC_CALL_MORE_AVAILABLE,
         RPC_CALL_DONE,
         RPC_CALL_ERROR
+        RPC_CALL_ABORTED
 
     ctypedef struct rpc_connection_t:
         pass

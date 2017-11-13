@@ -1110,11 +1110,14 @@ rpc_call_abort(rpc_call_t call)
 {
 	rpc_object_t frame;
 
+	g_mutex_lock(&call->rc_mtx);
 	frame = rpc_pack_frame("rpc", "abort", call->rc_id, rpc_null_create());
 	if (rpc_send_frame(call->rc_conn, frame) != 0) {
 
 	}
 
+	call->rc_status = RPC_CALL_ABORTED;
+	g_mutex_unlock(&call->rc_mtx);
 	return (0);
 }
 
@@ -1136,7 +1139,6 @@ rpc_call_timedwait(rpc_call_t call, const struct timeval *ts)
 		}
 
 	g_mutex_unlock(&call->rc_mtx);
-
 	return (ret);
 }
 

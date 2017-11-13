@@ -71,6 +71,7 @@ class CallStatus(enum.IntEnum):
     MORE_AVAILABLE = RPC_CALL_MORE_AVAILABLE,
     DONE = RPC_CALL_DONE,
     ERROR = RPC_CALL_ERROR
+    ABORTED = RPC_CALL_ABORTED
 
 
 class BusEvent(enum.IntEnum):
