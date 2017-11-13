@@ -1072,6 +1072,14 @@ rpc_call_wait(rpc_call_t call)
 	int ret;
 
 	g_mutex_lock(&call->rc_mtx);
+
+	if (call->rc_status != RPC_CALL_IN_PROGRESS &&
+	    call->rc_status != RPC_CALL_MORE_AVAILABLE) {
+		errno = EINVAL;
+		g_mutex_unlock(&call->rc_mtx);
+		return (-1);
+	}
+
 	ret = rpc_call_wait_locked(call);
 	g_mutex_unlock(&call->rc_mtx);
 
@@ -1085,6 +1093,14 @@ rpc_call_continue(rpc_call_t call, bool sync)
 	uint64_t seqno;
 
 	g_mutex_lock(&call->rc_mtx);
+
+	if (call->rc_status != RPC_CALL_IN_PROGRESS &&
+	    call->rc_status != RPC_CALL_MORE_AVAILABLE) {
+		errno = EINVAL;
+		g_mutex_unlock(&call->rc_mtx);
+		return (-1);
+	}
+
 	seqno = call->rc_seqno + 1;
 	frame = rpc_pack_frame("rpc", "continue", call->rc_id,
 	    rpc_uint64_create(seqno));
@@ -1111,6 +1127,14 @@ rpc_call_abort(rpc_call_t call)
 	rpc_object_t frame;
 
 	g_mutex_lock(&call->rc_mtx);
+
+	if (call->rc_status != RPC_CALL_IN_PROGRESS &&
+	    call->rc_status != RPC_CALL_MORE_AVAILABLE) {
+		errno = EINVAL;
+		g_mutex_unlock(&call->rc_mtx);
+		return (-1);
+	}
+
 	frame = rpc_pack_frame("rpc", "abort", call->rc_id, rpc_null_create());
 	if (rpc_send_frame(call->rc_conn, frame) != 0) {
 
