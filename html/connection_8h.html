@@ -174,8 +174,7 @@ Functions</h2></td></tr>
 <tr class="memitem:a0382631023d9cf812d978e80d5814bc8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0382631023d9cf812d978e80d5814bc8"></a>
 <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_create</b> (void *cookie, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> params)</td></tr>
 <tr class="separator:a0382631023d9cf812d978e80d5814bc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d4de49f4d9121c4077e62b73064b99d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6d4de49f4d9121c4077e62b73064b99d"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</b> (<a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="memitem:a6d4de49f4d9121c4077e62b73064b99d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a6d4de49f4d9121c4077e62b73064b99d">rpc_connection_close</a> (<a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
 <tr class="separator:a6d4de49f4d9121c4077e62b73064b99d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a820acf081ad5784aafde954b5ec9270a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a820acf081ad5784aafde954b5ec9270a">rpc_connection_subscribe_event</a> (<a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *name)</td></tr>
 <tr class="separator:a820acf081ad5784aafde954b5ec9270a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -201,6 +200,17 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <tr class="separator:ae843166183a4bd6dbf5a58133b3fcaf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f332abcc5d0a80c86f8317c7dcc79ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a8f332abcc5d0a80c86f8317c7dcc79ec">rpc_connection_set_error_handler</a> (<a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, <a class="el" href="connection_8h.html#a4dfba30ff97d4c5c56a6787ecd1bb79a">rpc_error_handler_t</a> handler)</td></tr>
 <tr class="separator:a8f332abcc5d0a80c86f8317c7dcc79ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8da8ac07f9e61dec2f9159032c4edf3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af8da8ac07f9e61dec2f9159032c4edf3"></a>
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_get_remote_address</b> (<a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="separator:af8da8ac07f9e61dec2f9159032c4edf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a581a8e0a711f89b5d41982fbd920561f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a581a8e0a711f89b5d41982fbd920561f">rpc_connection_has_credentials</a> (<a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="separator:a581a8e0a711f89b5d41982fbd920561f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8f47e2cabfdf027ae39d5e83ff0a52e"><td class="memItemLeft" align="right" valign="top">uid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ac8f47e2cabfdf027ae39d5e83ff0a52e">rpc_connection_get_remote_uid</a> (<a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="separator:ac8f47e2cabfdf027ae39d5e83ff0a52e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7e0dd50a2a28e6210b18bab731a1b52"><td class="memItemLeft" align="right" valign="top">gid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ac7e0dd50a2a28e6210b18bab731a1b52">rpc_connection_get_remote_gid</a> (<a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="separator:ac7e0dd50a2a28e6210b18bab731a1b52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9ececb9832fd40165451efc71e6d3d8"><td class="memItemLeft" align="right" valign="top">pid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aa9ececb9832fd40165451efc71e6d3d8">rpc_connection_get_remote_pid</a> (<a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="separator:aa9ececb9832fd40165451efc71e6d3d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae600ee03958915ee116e90e3e7795ec7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ae600ee03958915ee116e90e3e7795ec7">rpc_call_wait</a> (<a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
 <tr class="separator:ae600ee03958915ee116e90e3e7795ec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a844f7384a38ef32d4d4b9d6994aed613"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a844f7384a38ef32d4d4b9d6994aed613">rpc_call_continue</a> (<a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call, bool sync)</td></tr>
@@ -505,11 +515,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>Aborts a pending call.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">call</td><td>Call to be aborted. </td></tr>
+    <tr><td class="paramname">call</td><td>Call to be aborted </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Function status - success is being reported as 0. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Function status - success is being reported as 0 </dd></dl>
 
 </div>
 </div>
@@ -540,12 +550,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>When sync is set to true the function waits until the call finishes and returns 1 if it has completed successfully - otherwise the function returns 0.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">call</td><td>Call to be continued. </td></tr>
-    <tr><td class="paramname">sync</td><td>Synchronous continue flag. </td></tr>
+    <tr><td class="paramname">call</td><td>Call to be continued </td></tr>
+    <tr><td class="paramname">sync</td><td>Synchronous continue flag </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>1 for successfully completed RPC when sync flag was set, otherwise 0. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>1 for successfully completed RPC when sync flag was set, otherwise 0 </dd></dl>
 
 </div>
 </div>
@@ -565,7 +575,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>Frees a rpc_call_t object.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">call</td><td>Call to free. </td></tr>
+    <tr><td class="paramname">call</td><td>Call to free </td></tr>
   </table>
   </dd>
 </dl>
@@ -588,11 +598,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>Returns a call result (or a current fragment).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">call</td><td>Call to get result from. </td></tr>
+    <tr><td class="paramname">call</td><td>Call to get result from </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Result. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Result </dd></dl>
 
 </div>
 </div>
@@ -612,11 +622,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>Returns a current status of a given call as an integer value castable to rpc_call_status_t.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">call</td><td>Call to be checked. </td></tr>
+    <tr><td class="paramname">call</td><td>Call to be checked </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Call status. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Call status </dd></dl>
 
 </div>
 </div>
@@ -636,11 +646,11 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>Checks whether a call has been completed successfully.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">call</td><td>Call to be checked. </td></tr>
+    <tr><td class="paramname">call</td><td>Call to be checked </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>1 when call was successfully completed, otherwise 0. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>1 when call was successfully completed, otherwise 0 </dd></dl>
 
 </div>
 </div>
@@ -671,12 +681,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>If a timeout specified by a ts argument occurs, before a call changes its status, function returns -1 value.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">call</td><td>Call to wait on. </td></tr>
-    <tr><td class="paramname">ts</td><td>Timeout value. </td></tr>
+    <tr><td class="paramname">call</td><td>Call to wait on </td></tr>
+    <tr><td class="paramname">ts</td><td>Timeout value </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure or timeout. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure or timeout </dd></dl>
 
 </div>
 </div>
@@ -744,10 +754,10 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>Function supports a callback argument of rpc_callback_t type, which is a pointer to a function to be called on RPC completion. Can be set to NULL when that functionality is not needed by the caller.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td>Connection to do a call on. </td></tr>
-    <tr><td class="paramname">name</td><td>Name of a method to be called. </td></tr>
-    <tr><td class="paramname">args</td><td>Variable length RPC method arguments list. </td></tr>
-    <tr><td class="paramname">callback</td><td>Callback function pointer to be called on RPC completion. </td></tr>
+    <tr><td class="paramname">conn</td><td>Connection to do a call on </td></tr>
+    <tr><td class="paramname">name</td><td>Name of a method to be called </td></tr>
+    <tr><td class="paramname">args</td><td>Variable length RPC method arguments list </td></tr>
+    <tr><td class="paramname">callback</td><td>Callback function pointer to be called on RPC completion </td></tr>
   </table>
   </dd>
 </dl>
@@ -789,13 +799,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>Method call arguments need to be rpc_object_t instances, followed with a NULL, denoting end of variable argument list.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td>Connection to do a call on. </td></tr>
-    <tr><td class="paramname">method</td><td>Name of a method to be called. </td></tr>
-    <tr><td class="paramname">...</td><td>Called method arguments. </td></tr>
+    <tr><td class="paramname">conn</td><td>Connection to do a call on </td></tr>
+    <tr><td class="paramname">method</td><td>Name of a method to be called </td></tr>
+    <tr><td class="paramname">...</td><td>Called method arguments </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Result of the call. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Result of the call </dd></dl>
 
 </div>
 </div>
@@ -838,14 +848,14 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>This function is similar to <a class="el" href="connection_8h.html#aba014ae3408ed96b696ab70066076f13">rpc_connection_call_sync()</a>, but instead of taking rpc_object_t arguments, it accepts a format string and a list of values to pack, in format used by the <a class="el" href="object_8h.html#a87da19ea6b0ec7daf50ce660162e26be">rpc_object_pack()</a> function.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td>Connection to do a call on. </td></tr>
-    <tr><td class="paramname">method</td><td>Name of a method to be called. </td></tr>
-    <tr><td class="paramname">fmt</td><td>Format string </td></tr>
-    <tr><td class="paramname">...</td><td>Called method arguments. </td></tr>
+    <tr><td class="paramname">conn</td><td>Connection to do a call on </td></tr>
+    <tr><td class="paramname">method</td><td>Name of a method to be called </td></tr>
+    <tr><td class="paramname">fmt</td><td>Format strin </td></tr>
+    <tr><td class="paramname">...</td><td>Called method arguments </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Result of the call. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Result of the call </dd></dl>
 
 </div>
 </div>
@@ -883,13 +893,130 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>Instead of variable arguments length in <a class="el" href="connection_8h.html#aee4f43c3790d07d116367646694cb1c0">rpc_connection_call()</a> example, this function takes previously assembled variable arguments list structure as its argument.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td>Connection to do a call on. </td></tr>
-    <tr><td class="paramname">method</td><td>Name of a method to be called. </td></tr>
-    <tr><td class="paramname">ap</td><td>Variable arguments list structure describing a method arguments. </td></tr>
+    <tr><td class="paramname">conn</td><td>Connection to do a call on </td></tr>
+    <tr><td class="paramname">method</td><td>Name of a method to be called </td></tr>
+    <tr><td class="paramname">ap</td><td>Variable arguments list structure describing a method arguments </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Result of the call. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Result of the call </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a6d4de49f4d9121c4077e62b73064b99d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_connection_close </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Closes the connection and frees all resources associated with it.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td>Connection to close </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ac7e0dd50a2a28e6210b18bab731a1b52"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">gid_t rpc_connection_get_remote_gid </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aa9ececb9832fd40165451efc71e6d3d8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">pid_t rpc_connection_get_remote_pid </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ac8f47e2cabfdf027ae39d5e83ff0a52e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uid_t rpc_connection_get_remote_uid </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a581a8e0a711f89b5d41982fbd920561f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rpc_connection_has_credentials </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns true if a connection has associated remote credentials information.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if credentials information is available, otherwise false </dd></dl>
 
 </div>
 </div>
@@ -943,9 +1070,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>Each time an event occurs, a handler block is going to be called.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td>Connection to register an event handler for. </td></tr>
-    <tr><td class="paramname">name</td><td>Name of an event to be handled. </td></tr>
-    <tr><td class="paramname">handler</td><td>Event handler of rpc_handler_t type. </td></tr>
+    <tr><td class="paramname">conn</td><td>Connection to register an event handler for </td></tr>
+    <tr><td class="paramname">name</td><td>Name of an event to be handled </td></tr>
+    <tr><td class="paramname">handler</td><td>Event handler of rpc_handler_t type </td></tr>
   </table>
   </dd>
 </dl>
@@ -984,13 +1111,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>Sends an event.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td>Connection to send event across. </td></tr>
-    <tr><td class="paramname">name</td><td>Event name. </td></tr>
-    <tr><td class="paramname">args</td><td>Event arguments or NULL. </td></tr>
+    <tr><td class="paramname">conn</td><td>Connection to send event across </td></tr>
+    <tr><td class="paramname">name</td><td>Event name </td></tr>
+    <tr><td class="paramname">args</td><td>Event arguments or NULL </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure </dd></dl>
 
 </div>
 </div>
@@ -1020,8 +1147,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>Sets global error handler for a connection.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td>Connection to set error handler for. </td></tr>
-    <tr><td class="paramname">handler</td><td>Error handler block. </td></tr>
+    <tr><td class="paramname">conn</td><td>Connection to set error handler for </td></tr>
+    <tr><td class="paramname">handler</td><td>Error handler block </td></tr>
   </table>
   </dd>
 </dl>
@@ -1054,8 +1181,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>Sets global event handler for a connection.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td>Connection to set event handler for. </td></tr>
-    <tr><td class="paramname">handler</td><td>Handler block. </td></tr>
+    <tr><td class="paramname">conn</td><td>Connection to set event handler for </td></tr>
+    <tr><td class="paramname">handler</td><td>Handler block </td></tr>
   </table>
   </dd>
 </dl>
@@ -1090,12 +1217,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>Calls to <a class="el" href="connection_8h.html#a820acf081ad5784aafde954b5ec9270a">rpc_connection_subscribe_event()</a> must be paired with <a class="el" href="connection_8h.html#a60ace791b01ad3aee0fc20d266c9673f">rpc_connection_unsubscribe_event()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td>Connection to subscribe on. </td></tr>
-    <tr><td class="paramname">name</td><td>Event name. </td></tr>
+    <tr><td class="paramname">conn</td><td>Connection to subscribe on </td></tr>
+    <tr><td class="paramname">name</td><td>Event name </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure </dd></dl>
 
 </div>
 </div>
@@ -1131,9 +1258,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 <p>Cancels further execution of a given event handler block for ongoing events of a given name.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td>Connection to remove event handler from. </td></tr>
-    <tr><td class="paramname">name</td><td>Name of an event related to event handler. </td></tr>
-    <tr><td class="paramname">cookie</td><td>Void pointer to event handler itself. </td></tr>
+    <tr><td class="paramname">conn</td><td>Connection to remove event handler from </td></tr>
+    <tr><td class="paramname">name</td><td>Name of an event related to event handler </td></tr>
+    <tr><td class="paramname">cookie</td><td>Void pointer to event handler itself </td></tr>
   </table>
   </dd>
 </dl>
@@ -1170,12 +1297,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_close</
 </ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td>Connection to undo the subscription on. </td></tr>
-    <tr><td class="paramname">name</td><td>Event name. </td></tr>
+    <tr><td class="paramname">conn</td><td>Connection to undo the subscription on </td></tr>
+    <tr><td class="paramname">name</td><td>Event name </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure </dd></dl>
 
 </div>
 </div>

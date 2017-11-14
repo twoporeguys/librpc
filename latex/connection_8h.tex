@@ -74,8 +74,7 @@ enum \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\+\_\+call\+
 \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} {\bfseries rpc\+\_\+connection\+\_\+create} (void $\ast$cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} params)\hypertarget{connection_8h_a0382631023d9cf812d978e80d5814bc8}{}\label{connection_8h_a0382631023d9cf812d978e80d5814bc8}
 
 \item 
-int {\bfseries rpc\+\_\+connection\+\_\+close} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)\hypertarget{connection_8h_a6d4de49f4d9121c4077e62b73064b99d}{}\label{connection_8h_a6d4de49f4d9121c4077e62b73064b99d}
-
+int \hyperlink{connection_8h_a6d4de49f4d9121c4077e62b73064b99d}{rpc\+\_\+connection\+\_\+close} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
 int \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\+\_\+connection\+\_\+subscribe\+\_\+event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name)
 \item 
@@ -100,6 +99,17 @@ int \hyperlink{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}{rpc\+\_\+connect
 void \hyperlink{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}{rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, \hyperlink{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{rpc\+\_\+handler\+\_\+t} handler)
 \item 
 void \hyperlink{connection_8h_a8f332abcc5d0a80c86f8317c7dcc79ec}{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, \hyperlink{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}{rpc\+\_\+error\+\_\+handler\+\_\+t} handler)
+\item 
+const char $\ast$ {\bfseries rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)\hypertarget{connection_8h_af8da8ac07f9e61dec2f9159032c4edf3}{}\label{connection_8h_af8da8ac07f9e61dec2f9159032c4edf3}
+
+\item 
+bool \hyperlink{connection_8h_a581a8e0a711f89b5d41982fbd920561f}{rpc\+\_\+connection\+\_\+has\+\_\+credentials} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
+\item 
+uid\+\_\+t \hyperlink{connection_8h_ac8f47e2cabfdf027ae39d5e83ff0a52e}{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
+\item 
+gid\+\_\+t \hyperlink{connection_8h_ac7e0dd50a2a28e6210b18bab731a1b52}{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
+\item 
+pid\+\_\+t \hyperlink{connection_8h_aa9ececb9832fd40165451efc71e6d3d8}{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+pid} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
 int \hyperlink{connection_8h_ae600ee03958915ee116e90e3e7795ec7}{rpc\+\_\+call\+\_\+wait} (\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
 \item 
@@ -286,11 +296,11 @@ Aborts a pending call.
 
 
 \begin{DoxyParams}{Parameters}
-{\em call} & Call to be aborted. \\
+{\em call} & Call to be aborted \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Function status -\/ success is being reported as 0. 
+Function status -\/ success is being reported as 0 
 \end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+continue@{rpc\+\_\+call\+\_\+continue}}
 \index{rpc\+\_\+call\+\_\+continue@{rpc\+\_\+call\+\_\+continue}!connection.\+h@{connection.\+h}}
@@ -306,13 +316,13 @@ When sync is set to true the function waits until the call finishes and returns 
 
 
 \begin{DoxyParams}{Parameters}
-{\em call} & Call to be continued. \\
+{\em call} & Call to be continued \\
 \hline
-{\em sync} & Synchronous continue flag. \\
+{\em sync} & Synchronous continue flag \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-1 for successfully completed R\+PC when sync flag was set, otherwise 0. 
+1 for successfully completed R\+PC when sync flag was set, otherwise 0 
 \end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+free@{rpc\+\_\+call\+\_\+free}}
 \index{rpc\+\_\+call\+\_\+free@{rpc\+\_\+call\+\_\+free}!connection.\+h@{connection.\+h}}
@@ -325,7 +335,7 @@ Frees a rpc\+\_\+call\+\_\+t object.
 
 
 \begin{DoxyParams}{Parameters}
-{\em call} & Call to free. \\
+{\em call} & Call to free \\
 \hline
 \end{DoxyParams}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+result@{rpc\+\_\+call\+\_\+result}}
@@ -339,11 +349,11 @@ Returns a call result (or a current fragment).
 
 
 \begin{DoxyParams}{Parameters}
-{\em call} & Call to get result from. \\
+{\em call} & Call to get result from \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Result. 
+Result 
 \end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+status@{rpc\+\_\+call\+\_\+status}}
 \index{rpc\+\_\+call\+\_\+status@{rpc\+\_\+call\+\_\+status}!connection.\+h@{connection.\+h}}
@@ -356,11 +366,11 @@ Returns a current status of a given call as an integer value castable to rpc\+\_
 
 
 \begin{DoxyParams}{Parameters}
-{\em call} & Call to be checked. \\
+{\em call} & Call to be checked \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Call status. 
+Call status 
 \end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+success@{rpc\+\_\+call\+\_\+success}}
 \index{rpc\+\_\+call\+\_\+success@{rpc\+\_\+call\+\_\+success}!connection.\+h@{connection.\+h}}
@@ -373,11 +383,11 @@ Checks whether a call has been completed successfully.
 
 
 \begin{DoxyParams}{Parameters}
-{\em call} & Call to be checked. \\
+{\em call} & Call to be checked \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-1 when call was successfully completed, otherwise 0. 
+1 when call was successfully completed, otherwise 0 
 \end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+timedwait@{rpc\+\_\+call\+\_\+timedwait}}
 \index{rpc\+\_\+call\+\_\+timedwait@{rpc\+\_\+call\+\_\+timedwait}!connection.\+h@{connection.\+h}}
@@ -393,13 +403,13 @@ If a timeout specified by a ts argument occurs, before a call changes its status
 
 
 \begin{DoxyParams}{Parameters}
-{\em call} & Call to wait on. \\
+{\em call} & Call to wait on \\
 \hline
-{\em ts} & Timeout value. \\
+{\em ts} & Timeout value \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-0 on success, -\/1 on failure or timeout. 
+0 on success, -\/1 on failure or timeout 
 \end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+wait@{rpc\+\_\+call\+\_\+wait}}
 \index{rpc\+\_\+call\+\_\+wait@{rpc\+\_\+call\+\_\+wait}!connection.\+h@{connection.\+h}}
@@ -436,13 +446,13 @@ Function supports a callback argument of rpc\+\_\+callback\+\_\+t type, which is
 
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & Connection to do a call on. \\
+{\em conn} & Connection to do a call on \\
 \hline
-{\em name} & Name of a method to be called. \\
+{\em name} & Name of a method to be called \\
 \hline
-{\em args} & Variable length R\+PC method arguments list. \\
+{\em args} & Variable length R\+PC method arguments list \\
 \hline
-{\em callback} & Callback function pointer to be called on R\+PC completion. \\
+{\em callback} & Callback function pointer to be called on R\+PC completion \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
@@ -465,15 +475,15 @@ Method call arguments need to be rpc\+\_\+object\+\_\+t instances, followed with
 
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & Connection to do a call on. \\
+{\em conn} & Connection to do a call on \\
 \hline
-{\em method} & Name of a method to be called. \\
+{\em method} & Name of a method to be called \\
 \hline
-{\em ...} & Called method arguments. \\
+{\em ...} & Called method arguments \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Result of the call. 
+Result of the call 
 \end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+syncp@{rpc\+\_\+connection\+\_\+call\+\_\+syncp}}
 \index{rpc\+\_\+connection\+\_\+call\+\_\+syncp@{rpc\+\_\+connection\+\_\+call\+\_\+syncp}!connection.\+h@{connection.\+h}}
@@ -491,17 +501,17 @@ This function is similar to \hyperlink{connection_8h_aba014ae3408ed96b696ab70066
 
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & Connection to do a call on. \\
+{\em conn} & Connection to do a call on \\
 \hline
-{\em method} & Name of a method to be called. \\
+{\em method} & Name of a method to be called \\
 \hline
-{\em fmt} & Format string \\
+{\em fmt} & Format strin \\
 \hline
-{\em ...} & Called method arguments. \\
+{\em ...} & Called method arguments \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Result of the call. 
+Result of the call 
 \end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+syncv@{rpc\+\_\+connection\+\_\+call\+\_\+syncv}}
 \index{rpc\+\_\+connection\+\_\+call\+\_\+syncv@{rpc\+\_\+connection\+\_\+call\+\_\+syncv}!connection.\+h@{connection.\+h}}
@@ -520,15 +530,94 @@ Instead of variable arguments length in \hyperlink{connection_8h_aee4f43c3790d07
 
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & Connection to do a call on. \\
+{\em conn} & Connection to do a call on \\
 \hline
-{\em method} & Name of a method to be called. \\
+{\em method} & Name of a method to be called \\
 \hline
-{\em ap} & Variable arguments list structure describing a method arguments. \\
+{\em ap} & Variable arguments list structure describing a method arguments \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Result of the call. 
+Result of the call 
+\end{DoxyReturn}
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+close@{rpc\+\_\+connection\+\_\+close}}
+\index{rpc\+\_\+connection\+\_\+close@{rpc\+\_\+connection\+\_\+close}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+close(rpc\+\_\+connection\+\_\+t conn)}{rpc_connection_close(rpc_connection_t conn)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+connection\+\_\+close (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn}
+\end{DoxyParamCaption}
+)}\hypertarget{connection_8h_a6d4de49f4d9121c4077e62b73064b99d}{}\label{connection_8h_a6d4de49f4d9121c4077e62b73064b99d}
+Closes the connection and frees all resources associated with it.
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & Connection to close \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on failure 
+\end{DoxyReturn}
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid}}
+\index{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid(rpc\+\_\+connection\+\_\+t conn)}{rpc_connection_get_remote_gid(rpc_connection_t conn)}}]{\setlength{\rightskip}{0pt plus 5cm}gid\+\_\+t rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn}
+\end{DoxyParamCaption}
+)}\hypertarget{connection_8h_ac7e0dd50a2a28e6210b18bab731a1b52}{}\label{connection_8h_ac7e0dd50a2a28e6210b18bab731a1b52}
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+pid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+pid}}
+\index{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+pid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+pid}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+pid(rpc\+\_\+connection\+\_\+t conn)}{rpc_connection_get_remote_pid(rpc_connection_t conn)}}]{\setlength{\rightskip}{0pt plus 5cm}pid\+\_\+t rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+pid (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn}
+\end{DoxyParamCaption}
+)}\hypertarget{connection_8h_aa9ececb9832fd40165451efc71e6d3d8}{}\label{connection_8h_aa9ececb9832fd40165451efc71e6d3d8}
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid}}
+\index{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid(rpc\+\_\+connection\+\_\+t conn)}{rpc_connection_get_remote_uid(rpc_connection_t conn)}}]{\setlength{\rightskip}{0pt plus 5cm}uid\+\_\+t rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn}
+\end{DoxyParamCaption}
+)}\hypertarget{connection_8h_ac8f47e2cabfdf027ae39d5e83ff0a52e}{}\label{connection_8h_ac8f47e2cabfdf027ae39d5e83ff0a52e}
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+has\+\_\+credentials@{rpc\+\_\+connection\+\_\+has\+\_\+credentials}}
+\index{rpc\+\_\+connection\+\_\+has\+\_\+credentials@{rpc\+\_\+connection\+\_\+has\+\_\+credentials}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+has\+\_\+credentials(rpc\+\_\+connection\+\_\+t conn)}{rpc_connection_has_credentials(rpc_connection_t conn)}}]{\setlength{\rightskip}{0pt plus 5cm}bool rpc\+\_\+connection\+\_\+has\+\_\+credentials (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn}
+\end{DoxyParamCaption}
+)}\hypertarget{connection_8h_a581a8e0a711f89b5d41982fbd920561f}{}\label{connection_8h_a581a8e0a711f89b5d41982fbd920561f}
+Returns true if a connection has associated remote credentials information.
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & Connection handle \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if credentials information is available, otherwise false 
 \end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+ping@{rpc\+\_\+connection\+\_\+ping}}
 \index{rpc\+\_\+connection\+\_\+ping@{rpc\+\_\+connection\+\_\+ping}!connection.\+h@{connection.\+h}}
@@ -552,11 +641,11 @@ Each time an event occurs, a handler block is going to be called.
 
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & Connection to register an event handler for. \\
+{\em conn} & Connection to register an event handler for \\
 \hline
-{\em name} & Name of an event to be handled. \\
+{\em name} & Name of an event to be handled \\
 \hline
-{\em handler} & Event handler of rpc\+\_\+handler\+\_\+t type. \\
+{\em handler} & Event handler of rpc\+\_\+handler\+\_\+t type \\
 \hline
 \end{DoxyParams}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+send\+\_\+event@{rpc\+\_\+connection\+\_\+send\+\_\+event}}
@@ -572,15 +661,15 @@ Sends an event.
 
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & Connection to send event across. \\
+{\em conn} & Connection to send event across \\
 \hline
-{\em name} & Event name. \\
+{\em name} & Event name \\
 \hline
-{\em args} & Event arguments or N\+U\+LL. \\
+{\em args} & Event arguments or N\+U\+LL \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-0 on success, -\/1 on failure. 
+0 on success, -\/1 on failure 
 \end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler@{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler}}
 \index{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler@{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler}!connection.\+h@{connection.\+h}}
@@ -594,9 +683,9 @@ Sets global error handler for a connection.
 
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & Connection to set error handler for. \\
+{\em conn} & Connection to set error handler for \\
 \hline
-{\em handler} & Error handler block. \\
+{\em handler} & Error handler block \\
 \hline
 \end{DoxyParams}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler}}
@@ -611,9 +700,9 @@ Sets global event handler for a connection.
 
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & Connection to set event handler for. \\
+{\em conn} & Connection to set event handler for \\
 \hline
-{\em handler} & Handler block. \\
+{\em handler} & Handler block \\
 \hline
 \end{DoxyParams}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+subscribe\+\_\+event@{rpc\+\_\+connection\+\_\+subscribe\+\_\+event}}
@@ -632,13 +721,13 @@ Calls to \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\+\_\+co
 
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & Connection to subscribe on. \\
+{\em conn} & Connection to subscribe on \\
 \hline
-{\em name} & Event name. \\
+{\em name} & Event name \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-0 on success, -\/1 on failure. 
+0 on success, -\/1 on failure 
 \end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler}}
 \index{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler}!connection.\+h@{connection.\+h}}
@@ -653,11 +742,11 @@ Cancels further execution of a given event handler block for ongoing events of a
 
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & Connection to remove event handler from. \\
+{\em conn} & Connection to remove event handler from \\
 \hline
-{\em name} & Name of an event related to event handler. \\
+{\em name} & Name of an event related to event handler \\
 \hline
-{\em cookie} & Void pointer to event handler itself. \\
+{\em cookie} & Void pointer to event handler itself \\
 \hline
 \end{DoxyParams}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event@{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event}}
@@ -678,11 +767,11 @@ This function may either\+:
 
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & Connection to undo the subscription on. \\
+{\em conn} & Connection to undo the subscription on \\
 \hline
-{\em name} & Event name. \\
+{\em name} & Event name \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-0 on success, -\/1 on failure. 
+0 on success, -\/1 on failure 
 \end{DoxyReturn}
