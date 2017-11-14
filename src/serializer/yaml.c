@@ -204,7 +204,8 @@ rpc_yaml_read_scalar(yaml_event_t *event)
 
 	if (!g_strcmp0(tag, YAML_TAG_BINARY)) {
 		data_buf = g_base64_decode(value, &data_len);
-		ret = rpc_data_create(data_buf, data_len, false);
+		ret = rpc_data_create(data_buf, data_len,
+		    RPC_BINARY_DESTRUCTOR(g_free));
 		goto done;
 	}
 

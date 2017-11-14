@@ -243,6 +243,7 @@ static rpc_object_t
 rpc_msgpack_read_object(mpack_node_t node)
 {
 	int *fd;
+	void *buffer;
 	int64_t *date;
 	mpack_tree_t subtree;
 	__block size_t i;
@@ -270,8 +271,9 @@ rpc_msgpack_read_object(mpack_node_t node)
 		return (result);
 
 	case mpack_type_bin:
-		return (rpc_data_create(mpack_node_data(node),
-		    mpack_node_data_len(node), false));
+		buffer = g_memdup(mpack_node_data(node), mpack_node_data_len(node));
+		return (rpc_data_create(buffer, mpack_node_data_len(node),
+		    RPC_BINARY_DESTRUCTOR(g_free)));
 
 	case mpack_type_array:
 		result = rpc_array_create();

@@ -175,7 +175,8 @@ rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 		    JSON_EXTTYPE_BINARY);
 		base64_data = rpc_string_get_string_ptr(dict_value);
 		data_buf = g_base64_decode(base64_data, &data_len);
-		unpacked_value = rpc_data_create(data_buf, data_len, false);
+		unpacked_value = rpc_data_create(data_buf, data_len,
+		    RPC_BINARY_DESTRUCTOR(g_free));
 
 	} else if (rpc_dictionary_has_key(leaf, JSON_EXTTYPE_DATE)) {
 		dict_value = rpc_dictionary_get_value(leaf,
