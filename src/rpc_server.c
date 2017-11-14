@@ -60,7 +60,7 @@ rpc_server_listen(void *arg)
 
 	g_mutex_lock(&server->rs_mtx);
 
-	scheme = g_uri_parse_scheme(server->rs_uri))
+	scheme = g_uri_parse_scheme(server->rs_uri);
 	transport = rpc_find_transport(scheme);
 	g_free(scheme);
 
