@@ -110,7 +110,7 @@ struct rpc_binary_value
 {
 	uintptr_t 		rbv_ptr;
 	size_t 			rbv_length;
-	bool 			rbv_copy;
+	rpc_binary_destructor_t rbv_destructor;
 };
 
 struct rpc_shmem_block

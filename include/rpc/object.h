@@ -125,6 +125,15 @@ typedef rpc_object_t (^rpc_dictionary_mapper_t)(const char *key,
 typedef int (^rpc_array_cmp_t)(rpc_object_t o1, rpc_object_t o2);
 
 /**
+ * Definition of binary block destructor type.
+ *
+ * This block is called every time an rpc_object_t of type BINARY
+ * is about to be freed. It must free the data buffer associated
+ * with the object.
+ */
+typedef void (^rpc_binary_destructor_t)(void *);
+
+/**
  * Converts function pointer to an rpc_array_applier_t block type.
  */
 #define	RPC_ARRAY_APPLIER(_fn, _arg)					\
@@ -147,6 +156,14 @@ typedef int (^rpc_array_cmp_t)(rpc_object_t o1, rpc_object_t o2);
 	^(rpc_object_t _o1, rpc_object_t _o2) {				\
                 return ((int)_fn(_arg, _o1, _o2));			\
         }
+
+/**
+ * Converts function poitner to an rpc_binary_destructor_t block type.
+ */
+#define	RPC_BINARY_DESTRUCTOR(_fn)					\
+	^(void *block) {						\
+		_fn(block);						\
+	}
 
 /**
  * Increments reference count of an object.
@@ -604,14 +621,16 @@ int64_t rpc_date_get_value(rpc_object_t xdate);
  *
  * @param bytes Pointer to data buffer (void pointer).
  * @param length Length of the data buffer.
- * @param copy Copy vs. reference an input data buffer.
+ * @param destructor Block to call once reference count drops to 0 (or NULL)
  * @return Newly created object.
  */
-rpc_object_t rpc_data_create(const void *bytes, size_t length, bool copy);
+rpc_object_t rpc_data_create(const void *bytes, size_t length,
+    rpc_binary_destructor_t destructor);
 
 /**
  * The same as rpc_data_create, but takes iovec list as an argument
  * and copies it into a new continuous data buffer.
+ *
  * @param iov List of iovec to be copied.
  * @param niov Number of iovec in the iovec list.
  * @return Newly created object.

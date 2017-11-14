@@ -467,9 +467,10 @@ rpc_release_impl(rpc_object_t object)
 	if (g_atomic_int_dec_and_test(&object->ro_refcnt)) {
 		switch (object->ro_type) {
 		case RPC_TYPE_BINARY:
-			if (object->ro_value.rv_bin.rbv_copy == true)
-				g_free((void *)object->ro_value.rv_bin.rbv_ptr);
-
+			if (object->ro_value.rv_bin.rbv_destructor != NULL) {
+				object->ro_value.rv_bin.rbv_destructor(
+				    (void *)object->ro_value.rv_bin.rbv_ptr);
+			}
 			break;
 
 		case RPC_TYPE_STRING:
@@ -551,6 +552,7 @@ inline rpc_object_t
 rpc_copy(rpc_object_t object)
 {
 	rpc_object_t result = NULL;
+	void *buffer;
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
@@ -586,8 +588,10 @@ rpc_copy(rpc_object_t object)
 		break;
 
 	case RPC_TYPE_BINARY:
-		result = rpc_data_create(rpc_data_get_bytes_ptr(object),
-		    rpc_data_get_length(object), true);
+		buffer = g_memdup(rpc_data_get_bytes_ptr(object),
+		    (guint)rpc_data_get_length(object));
+		result = rpc_data_create(buffer, rpc_data_get_length(object),
+		    RPC_BINARY_DESTRUCTOR(g_free));
 		break;
 
 #if defined(__linux__)
@@ -853,7 +857,8 @@ rpc_object_vpack(const char *fmt, va_list ap)
 
 		case 'B':
 			current = rpc_data_create(va_arg(ap, const void *),
-			    va_arg(ap, size_t), va_arg(ap, int));
+			    va_arg(ap, size_t),
+			    va_arg(ap, rpc_binary_destructor_t));
 			break;
 
 		case 'V':
@@ -1090,17 +1095,13 @@ rpc_date_get_value(rpc_object_t xdate)
 }
 
 inline rpc_object_t
-rpc_data_create(const void *bytes, size_t length, bool copy)
+rpc_data_create(const void *bytes, size_t length,
+    rpc_binary_destructor_t destructor)
 {
 	union rpc_value value;
 
-	if (copy) {
-		value.rv_bin.rbv_ptr = (uintptr_t)malloc(length);
-		memcpy((void *)value.rv_bin.rbv_ptr, bytes, length);
-	} else
-		value.rv_bin.rbv_ptr = (uintptr_t)bytes;
-
-	value.rv_bin.rbv_copy = copy;
+	value.rv_bin.rbv_ptr = (uintptr_t)bytes;
+	value.rv_bin.rbv_destructor = destructor;
 	value.rv_bin.rbv_length = length;
 
 	return (rpc_prim_create(RPC_TYPE_BINARY, value));
@@ -1109,7 +1110,6 @@ rpc_data_create(const void *bytes, size_t length, bool copy)
 inline rpc_object_t
 rpc_data_create_iov(struct iovec *iov, size_t niov)
 {
-	rpc_object_t object;
 	void *data_buf;
 	size_t data_size = 0;
 	size_t data_ptr = 0;
@@ -1125,17 +1125,14 @@ rpc_data_create_iov(struct iovec *iov, size_t niov)
 		return (NULL);
 
 	data_buf = g_malloc(data_size);
+
 	for (i = 0; i < niov; i++) {
 		memcpy(data_buf + data_ptr, iov[i].iov_base, iov[i].iov_len);
 		data_ptr += iov[i].iov_len;
 	}
 
-	object = rpc_data_create(data_buf, data_size, false);
-
-	if (object != NULL)
-		object->ro_value.rv_bin.rbv_copy = true;
-
-	return (object);
+	return (rpc_data_create(data_buf, data_size,
+	    RPC_BINARY_DESTRUCTOR(g_free)));
 }
 
 inline size_t
