@@ -629,8 +629,9 @@ rpc_yaml_deserialize(const void *frame, size_t size)
 			break;
 
 		case RPC_TYPE_DICTIONARY:
-			rpc_dictionary_set_value(container,
-			    g_queue_pop_head(keys), current);
+			key = g_queue_pop_head(keys);
+			rpc_dictionary_set_value(container, key, current);
+			g_free(key);
 			read_key = true;
 			break;
 
