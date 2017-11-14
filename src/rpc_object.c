@@ -120,7 +120,9 @@ rpc_create_description(GString *description, rpc_object_t object,
 		    rpc_types[object->ro_type]);
 	}
 
-	g_string_append_printf(description, "(refcnt %d)", object->ro_refcnt);
+#ifdef LIBRPC_DEBUG_REFCOUNTS
+	g_string_append_printf(description, "(refcnt %d) ", object->ro_refcnt);
+#endif
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
