@@ -961,8 +961,14 @@ cdef class Connection(object):
     def call_async(self, method, callback, *args):
         pass
 
-    def emit_event(self, name, data):
-        pass
+    def emit_event(self, name, Object data):
+        cdef const char *c_name
+
+        b_name = name.encode('utf-8')
+        c_name = b_name
+
+        with nogil:
+            rpc_connection_send_event(self.connection, c_name, data.obj)
 
     def register_event_handler(self, name, fn):
         if self.connection == <rpc_connection_t>NULL:

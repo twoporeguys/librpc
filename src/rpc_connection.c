@@ -646,9 +646,7 @@ rpc_connection_send_errx(rpc_connection_t conn, rpc_object_t id __unused,
 	rpc_object_t frame;
 
 	frame = rpc_pack_frame("rpc", "error", id, err);
-	if (rpc_send_frame(conn, frame) != 0) {
-
-	}
+	rpc_send_frame(conn, frame);
 }
 
 void
@@ -1106,7 +1104,8 @@ rpc_call_continue(rpc_call_t call, bool sync)
 	    rpc_uint64_create(seqno));
 
 	if (rpc_send_frame(call->rc_conn, frame) != 0) {
-
+		g_mutex_unlock(&call->rc_mtx);
+		return (-1);
 	}
 
 	call->rc_status = RPC_CALL_IN_PROGRESS;
@@ -1137,7 +1136,8 @@ rpc_call_abort(rpc_call_t call)
 
 	frame = rpc_pack_frame("rpc", "abort", call->rc_id, rpc_null_create());
 	if (rpc_send_frame(call->rc_conn, frame) != 0) {
-
+		g_mutex_unlock(&call->rc_mtx);
+		return (-1);
 	}
 
 	call->rc_status = RPC_CALL_ABORTED;
