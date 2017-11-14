@@ -45,6 +45,7 @@ static int socket_send_msg(void *, void *, size_t, const int *, size_t);
 static int socket_teardown(struct rpc_server *);
 static int socket_abort(void *);
 static int socket_get_fd(void *);
+static void socket_release(void *);
 static void *socket_reader(void *);
 
 struct rpc_transport socket_transport = {
@@ -63,7 +64,7 @@ struct socket_server
 
 struct socket_connection
 {
-	const char *			sc_uri;
+	char *				sc_uri;
 	GSocketConnection *		sc_conn;
 	GSocketClient *			sc_client;
 	GInputStream * 			sc_istream;
@@ -123,8 +124,8 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 
 	rco = rpc_connection_alloc(srv);
 	rco->rco_send_msg = &socket_send_msg;
-	rco->rco_abort = &socket_abort;
-	rco->rco_get_fd = &socket_get_fd;
+	rco->rco_abort = socket_abort;
+	rco->rco_get_fd = socket_get_fd;
 	rco->rco_arg = conn;
 	conn->sc_parent = rco;
 	srv->rs_accept(srv, rco);
@@ -170,9 +171,10 @@ socket_connect(struct rpc_connection *rco, const char *uri,
 	    G_IO_STREAM(conn->sc_conn));
 	conn->sc_ostream = g_io_stream_get_output_stream(
 	    G_IO_STREAM(conn->sc_conn));
-	rco->rco_send_msg = &socket_send_msg;
-	rco->rco_abort = &socket_abort;
-	rco->rco_get_fd = &socket_get_fd;
+	rco->rco_send_msg = socket_send_msg;
+	rco->rco_abort = socket_abort;
+	rco->rco_get_fd = socket_get_fd;
+	rco->rco_release = socket_release;
 	rco->rco_arg = conn;
 	conn->sc_reader_thread = g_thread_new("socket reader thread",
 	    socket_reader, (gpointer)conn);
@@ -320,7 +322,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 		return (-1);
 
 	length = header[1];
-	*frame = malloc(length);
+	*frame = g_malloc(length);
 	*size = length;
 
 #ifndef _WIN32
@@ -382,8 +384,21 @@ socket_get_fd(void *arg)
 	return (g_socket_get_fd(sock));
 }
 
+
+static void
+socket_release(void *arg)
+{
+	struct socket_connection *conn = arg;
+
+	g_object_unref(conn->sc_conn);
+	g_object_unref(conn->sc_client);
+	g_free(conn->sc_uri);
+	g_free(conn);
+}
+
+
 static int
-socket_teardown(struct rpc_server *srv __unused)
+socket_teardown(struct rpc_server *srv)
 {
 	struct socket_server *socket_srv = srv->rs_arg;
 
@@ -405,8 +420,12 @@ socket_reader(void *arg)
 			break;
 
 		if (conn->sc_parent->rco_recv_msg(conn->sc_parent, frame, len,
-		    fds, nfds, &creds) != 0)
+		    fds, nfds, &creds) != 0) {
+			g_free(frame);
 			break;
+		}
+
+		g_free(frame);
 	}
 
 	conn->sc_parent->rco_close(conn->sc_parent);

@@ -84,6 +84,7 @@ typedef int (*rpc_recv_msg_fn_t)(struct rpc_connection *, const void *, size_t,
 typedef int (*rpc_send_msg_fn_t)(void *, void *, size_t, const int *, size_t);
 typedef int (*rpc_abort_fn_t)(void *);
 typedef int (*rpc_get_fd_fn_t)(void *);
+typedef void (*rpc_release_fn_t)(void *);
 typedef int (*rpc_close_fn_t)(struct rpc_connection *);
 typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
 typedef int (*rpc_teardown_fn_t)(struct rpc_server *);
@@ -231,6 +232,7 @@ struct rpc_connection
 	rpc_abort_fn_t 		rco_abort;
 	rpc_close_fn_t		rco_close;
     	rpc_get_fd_fn_t 	rco_get_fd;
+	rpc_release_fn_t	rco_release;
 	void *			rco_arg;
 };
 

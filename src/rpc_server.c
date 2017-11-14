@@ -56,10 +56,14 @@ rpc_server_listen(void *arg)
 {
 	rpc_server_t server = arg;
 	const struct rpc_transport *transport;
+	char *scheme;
 
 	g_mutex_lock(&server->rs_mtx);
 
-	transport = rpc_find_transport(g_uri_parse_scheme(server->rs_uri));
+	scheme = g_uri_parse_scheme(server->rs_uri))
+	transport = rpc_find_transport(scheme);
+	g_free(scheme);
+
 	if (transport == NULL) {
 		errno = ENXIO;
 		goto done;

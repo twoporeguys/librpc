@@ -276,7 +276,7 @@ rpc_msgpack_read_object(mpack_node_t node)
 	case mpack_type_array:
 		result = rpc_array_create();
 		for (i = 0; i < mpack_node_array_length(node); i++) {
-			rpc_array_append_value(result, rpc_msgpack_read_object(
+			rpc_array_append_stolen_value(result, rpc_msgpack_read_object(
 			    mpack_node_array_at(node, (uint32_t)i)));
 		}
 		return (result);
@@ -286,9 +286,10 @@ rpc_msgpack_read_object(mpack_node_t node)
 		for (i = 0; i < mpack_node_map_count(node); i++) {
 			tmp = mpack_node_map_key_at(node, (uint32_t)i);
 			cstr = g_strndup(mpack_node_str(tmp), mpack_node_strlen(tmp));
-			rpc_dictionary_set_value(result, cstr,
+			rpc_dictionary_steal_value(result, cstr,
 			    rpc_msgpack_read_object(mpack_node_map_value_at(
 				node, (uint32_t)i)));
+			g_free(cstr);
 		}
 		return (result);
 

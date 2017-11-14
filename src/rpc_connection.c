@@ -249,6 +249,7 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	g_hash_table_insert(conn->rco_inbound_calls,
 	    (gpointer)rpc_string_get_string_ptr(id), call);
 
+	rpc_retain(call->ric_id);
 	rpc_retain(call->ric_args);
 	rpc_server_dispatch(conn->rco_server, call);
 }
@@ -741,6 +742,7 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 
 	scheme = g_uri_parse_scheme(client->rci_uri);
 	transport = rpc_find_transport(scheme);
+	g_free(scheme);
 
 	if (transport == NULL) {
 		errno = ENXIO;
@@ -772,7 +774,6 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	return (conn);
 fail:
 	g_free(conn);
-	g_free(scheme);
 	return (NULL);
 }
 
@@ -784,6 +785,8 @@ rpc_connection_close(rpc_connection_t conn)
 
 	conn->rco_closed = true;
 	conn->rco_abort(conn->rco_arg);
+	conn->rco_release(conn->rco_arg);
+	g_thread_pool_free(conn->rco_callback_pool, true, true);
 	g_hash_table_destroy(conn->rco_calls);
 	g_hash_table_destroy(conn->rco_inbound_calls);
 	g_hash_table_destroy(conn->rco_subscriptions);
@@ -946,7 +949,6 @@ rpc_connection_call_syncv(rpc_connection_t conn, const char *method, va_list ap)
 
 	rpc_call_wait(call);
 	result = rpc_call_result(call);
-	rpc_retain(result);
 	rpc_call_free(call);
 	return (result);
 }
@@ -982,7 +984,6 @@ rpc_connection_call_syncp(rpc_connection_t conn, const char *method,
 
 	rpc_call_wait(call);
 	result = rpc_call_result(call);
-	rpc_retain(result);
 	rpc_call_free(call);
 	return (result);
 }
@@ -992,12 +993,10 @@ rpc_connection_call(rpc_connection_t conn, const char *name, rpc_object_t args,
     rpc_callback_t callback)
 {
 	struct rpc_call *call;
-	rpc_object_t id = rpc_new_id();
 	rpc_object_t payload = rpc_dictionary_create();
 	rpc_object_t frame;
 
 	call = rpc_call_alloc(conn, NULL);
-	call->rc_id = id;
 	call->rc_type = "call";
 	call->rc_method = name;
 	call->rc_args = args != NULL ? args : rpc_array_create();
@@ -1009,7 +1008,7 @@ rpc_connection_call(rpc_connection_t conn, const char *name, rpc_object_t args,
 
 	g_mutex_lock(&call->rc_mtx);
 	g_hash_table_insert(conn->rco_calls,
-	    (gpointer)rpc_string_get_string_ptr(id), call);
+	    (gpointer)rpc_string_get_string_ptr(call->rc_id), call);
 
 	if (rpc_send_frame(conn, frame) != 0) {
 		g_mutex_unlock(&call->rc_mtx);
@@ -1193,6 +1192,7 @@ rpc_call_free(rpc_call_t call)
 
 	g_hash_table_remove(call->rc_conn->rco_calls,
 	    (gpointer)rpc_string_get_string_ptr(call->rc_id));
+	g_source_unref(call->rc_timeout);
 	rpc_release(call->rc_id);
 	rpc_release(call->rc_args);
 	g_free(call);
