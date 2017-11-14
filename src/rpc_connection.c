@@ -672,7 +672,7 @@ rpc_connection_send_fragment(rpc_connection_t conn, rpc_object_t id,
 
 	args = rpc_dictionary_create();
 	rpc_dictionary_set_int64(args, "seqno", seqno);
-	rpc_dictionary_set_value(args, "fragment", fragment);
+	rpc_dictionary_steal_value(args, "fragment", fragment);
 	frame = rpc_pack_frame("rpc", "fragment", id, args);
 	rpc_send_frame(conn, frame);
 }

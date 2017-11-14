@@ -260,6 +260,7 @@ rpc_function_yield(void *cookie, rpc_object_t fragment)
 
 	if (call->ric_aborted) {
 		g_mutex_unlock(&call->ric_mtx);
+		rpc_release(fragment);
 		return (-1);
 	}
 
@@ -273,7 +274,7 @@ rpc_function_yield(void *cookie, rpc_object_t fragment)
 	call->ric_producer_seqno++;
 	call->ric_streaming = true;
 	g_mutex_unlock(&call->ric_mtx);
-
+	rpc_release(fragment);
 	return (0);
 }
 
