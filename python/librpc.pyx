@@ -165,7 +165,8 @@ cdef class Object(object):
             return
 
         if isinstance(value, (bytearray, bytes)) or force_type == ObjectType.BINARY:
-            self.obj = rpc_data_create(<char *>value, <size_t>len(value), True)
+            self.ref = value
+            self.obj = rpc_data_create(<char *>value, <size_t>len(value), NULL)
             return
 
         if isinstance(value, (RpcException, LibException)):

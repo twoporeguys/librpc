@@ -29,6 +29,7 @@ from libc.stdint cimport *
 
 ctypedef bint (*rpc_dictionary_applier_f)(void *arg, const char *key, rpc_object_t value)
 ctypedef bint (*rpc_array_applier_f)(void *arg, size_t index, rpc_object_t value)
+ctypedef void (*rpc_binary_destructor_f)(void *buffer)
 ctypedef void (*rpc_handler_f)(void *arg, const char *name, rpc_object_t args)
 ctypedef void (*rpc_error_handler_f)(void *arg, rpc_error_code_t code, rpc_object_t args)
 ctypedef bint (*rpc_callback_f)(void *arg, rpc_call_t call, rpc_call_status_t status)
@@ -91,7 +92,7 @@ cdef extern from "rpc/object.h" nogil:
     rpc_object_t rpc_date_create(int64_t interval)
     rpc_object_t rpc_date_create_from_current()
     int64_t rpc_date_get_value(rpc_object_t xdate)
-    rpc_object_t rpc_data_create(const void *bytes, size_t length, bint copy)
+    rpc_object_t rpc_data_create(const void *bytes, size_t length, void *destructor)
     size_t rpc_data_get_length(rpc_object_t xdata)
     const void *rpc_data_get_bytes_ptr(rpc_object_t xdata)
     size_t rpc_data_get_bytes(rpc_object_t xdata, void *buffer, size_t off,
@@ -325,6 +326,7 @@ cdef extern from "rpc/typing.h" nogil:
 
 cdef class Object(object):
     cdef rpc_object_t obj
+    cdef object ref
 
     @staticmethod
     cdef Object init_from_ptr(rpc_object_t ptr)
