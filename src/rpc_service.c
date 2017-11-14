@@ -72,8 +72,10 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 
 	}
 
-	if (!call->ric_streaming && !call->ric_responded)
+	if (!call->ric_streaming && !call->ric_responded) {
 		rpc_connection_send_response(conn, call->ric_id, result);
+		rpc_release(result);
+	}
 
 	if (call->ric_streaming && !call->ric_ended)
 		rpc_function_end(data);
@@ -218,6 +220,7 @@ rpc_function_respond(void *cookie, rpc_object_t object)
 
 	rpc_connection_send_response(call->ric_conn, call->ric_id, object);
 	rpc_connection_close_inbound_call(call);
+	rpc_release(object);
 }
 
 void
