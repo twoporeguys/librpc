@@ -2,6 +2,7 @@ var searchData=
 [
   ['rpc_5farray_5fapplier_5ft',['rpc_array_applier_t',['../object_8h.html#ac685a2916978204cdac2bc8c855f7b00',1,'object.h']]],
   ['rpc_5farray_5fcmp_5ft',['rpc_array_cmp_t',['../object_8h.html#a37160a10fb9baee827063f3db977315d',1,'object.h']]],
+  ['rpc_5fbinary_5fdestructor_5ft',['rpc_binary_destructor_t',['../object_8h.html#a490b073d5f540379333d89d94e140b72',1,'object.h']]],
   ['rpc_5fcall_5fstatus_5ft',['rpc_call_status_t',['../connection_8h.html#a5e44285dc90be1f6bc541504a3f6d929',1,'connection.h']]],
   ['rpc_5fcall_5ft',['rpc_call_t',['../connection_8h.html#aeb6f25e395cc04930537960ef6b50106',1,'connection.h']]],
   ['rpc_5fcallback_5ft',['rpc_callback_t',['../connection_8h.html#a659dfc386fa0add62a07c17662a29641',1,'connection.h']]],
