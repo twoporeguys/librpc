@@ -63,6 +63,7 @@ static libusb_device_handle *usb_find(struct libusb_context *, const char *,
 static gboolean usb_send_msg_impl(void *);
 static gboolean usb_event_impl(void *);
 static void *usb_libusb_thread(void *);
+static void usb_release(void *);
 
 enum librpc_usb_opcode
 {
@@ -300,6 +301,7 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	rco->rco_abort = usb_abort;
 	rco->rco_get_fd = usb_get_fd;
 	rco->rco_arg = conn;
+	rco->rco_release = usb_release;
 
 	return (0);
 
@@ -614,6 +616,12 @@ disconnected:
 	g_free(log);
 	conn->uc_rco->rco_close(conn->uc_rco);
 	return (false);
+}
+
+static void
+usb_release(void *arg)
+{
+
 }
 
 static void *

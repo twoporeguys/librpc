@@ -67,6 +67,7 @@ static int bus_netlink_recv(struct bus_netlink *);
 static int bus_lookup_address(const char *, uint32_t *);
 static void bus_process_message(void *, struct librpc_message *, void *, size_t);
 static void *bus_reader(void *);
+static void bus_release(void *);
 
 static const struct rpc_bus_transport bus_transport_ops = {
 	.open = bus_open,
@@ -159,6 +160,7 @@ bus_connect(struct rpc_connection *rco, const char *uri_string,
 	rco->rco_abort = &bus_abort;
 	rco->rco_get_fd = &bus_get_fd;
 	rco->rco_arg = conn;
+	rco->rco_release = bus_release;
 	return (0);
 }
 
@@ -458,6 +460,12 @@ bus_netlink_recv(struct bus_netlink *bn)
 
 
 	return (0);
+}
+
+static void
+bus_release(void *arg)
+{
+
 }
 
 static void

@@ -48,6 +48,7 @@ static void ws_process_connection(SoupServer *, SoupWebsocketConnection *,
 static void ws_close(SoupWebsocketConnection *, gpointer);
 static int ws_abort(void *);
 static int ws_get_fd(void *);
+static void ws_release(void *);
 
 struct rpc_transport ws_transport = {
 	.name = "websocket",
@@ -141,6 +142,7 @@ ws_connect_done(GObject *obj, GAsyncResult *res, gpointer user_data)
 	rco->rco_abort = ws_abort;
 	rco->rco_get_fd = ws_get_fd;
 	rco->rco_arg = conn;
+	rco->rco_release = ws_release;
 
 	g_mutex_lock(&conn->wc_mtx);
 	conn->wc_ws = ws;
@@ -274,6 +276,12 @@ ws_abort(void *arg)
 
 	soup_websocket_connection_close(conn->wc_ws, 1000, "Going away");
 	return (0);
+}
+
+static void
+ws_release(void *arg)
+{
+
 }
 
 static int
