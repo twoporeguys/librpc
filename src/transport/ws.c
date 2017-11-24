@@ -281,7 +281,12 @@ ws_abort(void *arg)
 static void
 ws_release(void *arg)
 {
+	struct ws_connection *conn = arg;
 
+	soup_uri_free(conn->wc_uri);
+	g_object_unref(conn->wc_ws);
+	g_object_unref(conn->wc_session);
+	g_free(conn);
 }
 
 static int

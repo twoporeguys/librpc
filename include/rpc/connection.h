@@ -198,24 +198,7 @@ void rpc_connection_unregister_event_handler(rpc_connection_t conn,
  * @return Result of the call
  */
 rpc_object_t rpc_connection_call_sync(rpc_connection_t conn,
-    const char *method, ...);
-
-/**
- * Performs a synchronous RPC method call using a given connection.
- *
- * This function is similar to rpc_connection_call_sync(), but
- * instead of taking rpc_object_t arguments, it accepts a format
- * string and a list of values to pack, in format used by the
- * rpc_object_pack() function.
- *
- * @param conn Connection to do a call on
- * @param method Name of a method to be called
- * @param fmt Format strin
- * @param ... Called method arguments
- * @return Result of the call
- */
-rpc_object_t rpc_connection_call_syncp(rpc_connection_t conn,
-    const char *method, const char *fmt, ...);
+    const char *path, const char *interface, const char *method, ...);
 
 /**
  * Performs a synchronous RPC method call using a given connection.
@@ -233,7 +216,57 @@ rpc_object_t rpc_connection_call_syncp(rpc_connection_t conn,
  * @return Result of the call
  */
 rpc_object_t rpc_connection_call_syncv(rpc_connection_t conn,
-    const char *method, va_list ap);
+    const char *path, const char *interface, const char *method, va_list ap);
+
+/**
+ * Performs a synchronous RPC method call using a given connection.
+ *
+ * This function is similar to rpc_connection_call_sync(), but
+ * instead of taking rpc_object_t arguments, it accepts a format
+ * string and a list of values to pack, in format used by the
+ * rpc_object_pack() function.
+ *
+ * @param conn Connection to do a call on
+ * @param method Name of a method to be called
+ * @param fmt Format strin
+ * @param ... Called method arguments
+ * @return Result of the call
+ */
+rpc_object_t rpc_connection_call_syncp(rpc_connection_t conn,
+    const char *path, const char *interface, const char *method,
+    const char *fmt, ...);
+
+/**
+ *
+ * @param conn
+ * @param path
+ * @param interface
+ * @param method
+ * @param fmt
+ * @param ap
+ * @return
+ */
+rpc_object_t rpc_connection_call_syncpv(rpc_connection_t conn,
+    const char *path, const char *interface, const char *method,
+    const char *fmt, va_list ap);
+
+/**
+ * Performs a synchronous RPC function call using a given connection.
+ *
+ * Function blocks until a result is ready and returns it, or cancels
+ * and returns a NULL pointer if a timeout has occurred.
+ *
+ * This function can be only used to call pure functions (not operating
+ * on objects, that is, like rpc_connection_call_syncp() but with path
+ * and interface parameters set to NULL).
+ *
+ * @param name
+ * @param fmt
+ * @param ...
+ * @return
+ */
+rpc_object_t rpc_connection_call_simple(rpc_connection_t conn, const char *name,
+    const char *fmt, ...);
 
 /**
  * Performs a RPC method call using a given connection.
@@ -251,8 +284,9 @@ rpc_object_t rpc_connection_call_syncv(rpc_connection_t conn,
  * @param callback Callback function pointer to be called on RPC completion
  * @return RPC call object
  */
-rpc_call_t rpc_connection_call(rpc_connection_t conn, const char *name,
-    rpc_object_t args, rpc_callback_t callback);
+rpc_call_t rpc_connection_call(rpc_connection_t conn, const char *path,
+    const char *interface, const char *name, rpc_object_t args,
+    rpc_callback_t callback);
 
 /**
  * Sends an event.

@@ -244,6 +244,8 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	call->ric_id = id;
 	call->ric_args = rpc_dictionary_get_value(args, "args");
 	call->ric_name = rpc_dictionary_get_string(args, "method");
+	call->ric_interface = rpc_dictionary_get_string(args, "interface");
+	call->ric_path = rpc_dictionary_get_string(args, "path");
 	g_mutex_init(&call->ric_mtx);
 	g_cond_init(&call->ric_cv);
 	g_hash_table_insert(conn->rco_inbound_calls,
@@ -482,7 +484,7 @@ on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args,
 
 static int
 rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
-    int *fds, size_t nfds, struct rpc_credentials *creds __unused)
+    int *fds, size_t nfds, struct rpc_credentials *creds)
 {
 	rpc_object_t msg = (rpc_object_t)frame;
 
@@ -505,6 +507,9 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 		rpc_release(msg);
 		return (-1);
 	}
+
+	if (creds != NULL)
+		conn->rco_creds = *creds;
 
 	rpc_restore_fds(msg, fds, nfds);
 	rpc_connection_dispatch(conn, msg);
@@ -967,19 +972,31 @@ rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...)
 }
 
 rpc_object_t
-rpc_connection_call_syncp(rpc_connection_t conn, const char *method,
-    const char *fmt, ...)
+rpc_connection_call_syncp(rpc_connection_t conn, const char *path,
+    const char *interface, const char *method, const char *fmt, ...)
 {
-	rpc_call_t call;
-	rpc_object_t args;
 	rpc_object_t result;
 	va_list ap;
 
 	va_start(ap, fmt);
-	args = rpc_object_vpack(fmt, ap);
+	result = rpc_connection_call_syncpv(conn, path, interface, method, fmt, ap);
 	va_end(ap);
 
-	if ((call = rpc_connection_call(conn, method, args, NULL)) == NULL)
+	return (result);
+}
+
+rpc_object_t rpc_connection_call_syncpv(rpc_connection_t conn,
+    const char *path, const char *interface, const char *method,
+    const char *fmt, va_list ap)
+{
+	rpc_call_t call;
+	rpc_object_t args;
+	rpc_object_t result;
+
+	args = rpc_object_vpack(fmt, ap);
+	call = rpc_connection_call(conn, path, interface, method, args, NULL);
+
+	if (call == NULL)
 		return (NULL);
 
 	rpc_call_wait(call);
@@ -988,8 +1005,23 @@ rpc_connection_call_syncp(rpc_connection_t conn, const char *method,
 	return (result);
 }
 
+rpc_object_t
+rpc_connection_call_simple(rpc_connection_t conn, const char *name,
+    const char *fmt, ...)
+{
+	va_list ap;
+	rpc_object_t result;
+
+	va_start(ap, fmt);
+	result = rpc_connection_call_syncpv(conn, NULL, NULL, name, fmt, ap);
+	va_end(ap);
+
+	return (result);
+}
+
 rpc_call_t
-rpc_connection_call(rpc_connection_t conn, const char *name, rpc_object_t args,
+rpc_connection_call(rpc_connection_t conn, const char *path,
+    const char *interface, const char *name, rpc_object_t args,
     rpc_callback_t callback)
 {
 	struct rpc_call *call;
@@ -998,6 +1030,8 @@ rpc_connection_call(rpc_connection_t conn, const char *name, rpc_object_t args,
 
 	call = rpc_call_alloc(conn, NULL);
 	call->rc_type = "call";
+	call->rc_path = path;
+	call->rc_interface = interface;
 	call->rc_method = name;
 	call->rc_args = args != NULL ? args : rpc_array_create();
 	call->rc_callback = callback;
@@ -1061,6 +1095,36 @@ rpc_connection_set_error_handler(rpc_connection_t conn, rpc_error_handler_t h)
 {
 
 	conn->rco_error_handler = Block_copy(h);
+}
+
+bool
+rpc_connection_has_credentials(rpc_connection_t conn)
+{
+
+	return (conn->rco_creds.rcc_uid != -1);
+}
+
+
+uid_t
+rpc_connection_get_remote_uid(rpc_connection_t conn)
+{
+
+	return (conn->rco_creds.rcc_uid);
+}
+
+
+gid_t
+rpc_connection_get_remote_gid(rpc_connection_t conn)
+{
+
+	return (conn->rco_creds.rcc_gid);
+}
+
+pid_t
+rpc_connection_get_remote_pid(rpc_connection_t conn)
+{
+
+	return (conn->rco_creds.rcc_pid);
 }
 
 int

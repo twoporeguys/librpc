@@ -160,6 +160,8 @@ struct rpc_call
 {
 	rpc_connection_t    	rc_conn;
 	const char *        	rc_type;
+	const char *		rc_path;
+	const char *		rc_interface;
 	const char *        	rc_method;
 	rpc_object_t        	rc_id;
 	rpc_object_t        	rc_args;
@@ -186,6 +188,8 @@ struct rpc_inbound_call
 	rpc_object_t        	ric_id;
 	rpc_object_t        	ric_args;
 	const char *        	ric_name;
+	const char *		ric_interface;
+	const char *		ric_path;
     	struct rpc_method *	ric_method;
     	GMutex			ric_mtx;
     	GCond			ric_cv;
@@ -275,6 +279,13 @@ struct rpc_context
 	/* Hooks */
 	rpc_function_f		rcx_pre_call_hook;
 	rpc_function_f		rcx_post_call_hook;
+};
+
+struct rpc_instance
+{
+	const char *		ri_path;
+	void *			ri_arg;
+	GHashTable *		ri_methods;
 };
 
 struct rpc_bus_transport

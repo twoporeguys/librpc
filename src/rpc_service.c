@@ -205,12 +205,28 @@ rpc_function_get_arg(void *cookie)
 	return (call->ric_arg);
 }
 
-inline const char *
+const char *
 rpc_function_get_name(void *cookie)
 {
 	struct rpc_inbound_call *call = cookie;
 
 	return (call->ric_name);
+}
+
+const char *
+rpc_function_get_path(void *cookie)
+{
+	struct rpc_inbound_call *call = cookie;
+
+	return (call->ric_path);
+}
+
+const char *
+rpc_function_get_interface(void *cookie)
+{
+	struct rpc_inbound_call *call = cookie;
+
+	return (call->ric_interface);
 }
 
 void

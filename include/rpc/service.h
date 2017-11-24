@@ -188,6 +188,20 @@ void *rpc_function_get_arg(void *cookie);
 const char *rpc_function_get_name(void *cookie);
 
 /**
+ * Returns the path method was called on or NULL.
+ *
+ * @param cookie Running call identifier.
+ */
+const char *rpc_function_get_path(void *cookie);
+
+/**
+ * Returns the called interface name or NULL.
+ *
+ * @param cookie Running call identifier.
+ */
+const char *rpc_function_get_interface(void *cookie);
+
+/**
  * Sends a response to a call.
  *
  * This function may be called only once during the lifetime of a single
