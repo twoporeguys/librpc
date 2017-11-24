@@ -110,7 +110,8 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="center"><img src="service_8h__dep__incl.png" border="0" usemap="#_2code_2include_2rpc_2service_8hdep" alt=""/></div>
 <map name="_2code_2include_2rpc_2service_8hdep" id="_2code_2include_2rpc_2service_8hdep">
 <area shape="rect" id="node2" href="discovery_8h.html" title="/code/include/rpc/discovery.h" alt="" coords="5,80,197,107"/>
-<area shape="rect" id="node3" href="server_8h.html" title="/code/include/rpc/server.h" alt="" coords="222,80,394,107"/>
+<area shape="rect" id="node3" href="interface_8h_source.html" title="/code/include/rpc/interface.h" alt="" coords="221,80,408,107"/>
+<area shape="rect" id="node4" href="server_8h.html" title="/code/include/rpc/server.h" alt="" coords="433,80,605,107"/>
 </map>
 </div>
 </div>
@@ -162,6 +163,10 @@ Functions</h2></td></tr>
 <tr class="separator:a62e71e6c0208e7ed1e23e2f9f3cd78f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d57a21163cd2d8bd06add360270809c"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a0d57a21163cd2d8bd06add360270809c">rpc_function_get_name</a> (void *cookie)</td></tr>
 <tr class="separator:a0d57a21163cd2d8bd06add360270809c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6617fa9bcafd942255e9ec3bd9ecbf1e"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a6617fa9bcafd942255e9ec3bd9ecbf1e">rpc_function_get_path</a> (void *cookie)</td></tr>
+<tr class="separator:a6617fa9bcafd942255e9ec3bd9ecbf1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51e6cad2e4f70b1a073e54a323064420"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a51e6cad2e4f70b1a073e54a323064420">rpc_function_get_interface</a> (void *cookie)</td></tr>
+<tr class="separator:a51e6cad2e4f70b1a073e54a323064420"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b73c8714198994d5055bf5cfe3012a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a1b73c8714198994d5055bf5cfe3012a4">rpc_function_respond</a> (void *cookie, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:a1b73c8714198994d5055bf5cfe3012a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7d639f2063a65279f159175a473b881"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ad7d639f2063a65279f159175a473b881">rpc_function_error</a> (void *cookie, int code, const char *message,...)</td></tr>
@@ -725,6 +730,29 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a51e6cad2e4f70b1a073e54a323064420"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* rpc_function_get_interface </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>cookie</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the called interface name or NULL.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cookie</td><td>Running call identifier. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="a0d57a21163cd2d8bd06add360270809c"></a>
 <div class="memitem">
 <div class="memproto">
@@ -739,6 +767,29 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns the called method name.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cookie</td><td>Running call identifier. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a6617fa9bcafd942255e9ec3bd9ecbf1e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* rpc_function_get_path </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>cookie</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the path method was called on or NULL.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">cookie</td><td>Running call identifier. </td></tr>

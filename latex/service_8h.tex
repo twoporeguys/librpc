@@ -65,6 +65,10 @@ void $\ast$ \hyperlink{service_8h_a62e71e6c0208e7ed1e23e2f9f3cd78f2}{rpc\+\_\+fu
 \item 
 const char $\ast$ \hyperlink{service_8h_a0d57a21163cd2d8bd06add360270809c}{rpc\+\_\+function\+\_\+get\+\_\+name} (void $\ast$cookie)
 \item 
+const char $\ast$ \hyperlink{service_8h_a6617fa9bcafd942255e9ec3bd9ecbf1e}{rpc\+\_\+function\+\_\+get\+\_\+path} (void $\ast$cookie)
+\item 
+const char $\ast$ \hyperlink{service_8h_a51e6cad2e4f70b1a073e54a323064420}{rpc\+\_\+function\+\_\+get\+\_\+interface} (void $\ast$cookie)
+\item 
 void \hyperlink{service_8h_a1b73c8714198994d5055bf5cfe3012a4}{rpc\+\_\+function\+\_\+respond} (void $\ast$cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
 \item 
 void \hyperlink{service_8h_ad7d639f2063a65279f159175a473b881}{rpc\+\_\+function\+\_\+error} (void $\ast$cookie, int code, const char $\ast$message,...)
@@ -382,6 +386,20 @@ Returns the argument associated with method.
 {\em cookie} & Running call identifier. \\
 \hline
 \end{DoxyParams}
+\index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+get\+\_\+interface@{rpc\+\_\+function\+\_\+get\+\_\+interface}}
+\index{rpc\+\_\+function\+\_\+get\+\_\+interface@{rpc\+\_\+function\+\_\+get\+\_\+interface}!service.\+h@{service.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+function\+\_\+get\+\_\+interface(void $\ast$cookie)}{rpc_function_get_interface(void *cookie)}}]{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ rpc\+\_\+function\+\_\+get\+\_\+interface (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{cookie}
+\end{DoxyParamCaption}
+)}\hypertarget{service_8h_a51e6cad2e4f70b1a073e54a323064420}{}\label{service_8h_a51e6cad2e4f70b1a073e54a323064420}
+Returns the called interface name or N\+U\+LL.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cookie} & Running call identifier. \\
+\hline
+\end{DoxyParams}
 \index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+get\+\_\+name@{rpc\+\_\+function\+\_\+get\+\_\+name}}
 \index{rpc\+\_\+function\+\_\+get\+\_\+name@{rpc\+\_\+function\+\_\+get\+\_\+name}!service.\+h@{service.\+h}}
 \subsubsection[{\texorpdfstring{rpc\+\_\+function\+\_\+get\+\_\+name(void $\ast$cookie)}{rpc_function_get_name(void *cookie)}}]{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ rpc\+\_\+function\+\_\+get\+\_\+name (
@@ -390,6 +408,20 @@ Returns the argument associated with method.
 \end{DoxyParamCaption}
 )}\hypertarget{service_8h_a0d57a21163cd2d8bd06add360270809c}{}\label{service_8h_a0d57a21163cd2d8bd06add360270809c}
 Returns the called method name.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cookie} & Running call identifier. \\
+\hline
+\end{DoxyParams}
+\index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+get\+\_\+path@{rpc\+\_\+function\+\_\+get\+\_\+path}}
+\index{rpc\+\_\+function\+\_\+get\+\_\+path@{rpc\+\_\+function\+\_\+get\+\_\+path}!service.\+h@{service.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+function\+\_\+get\+\_\+path(void $\ast$cookie)}{rpc_function_get_path(void *cookie)}}]{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ rpc\+\_\+function\+\_\+get\+\_\+path (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{cookie}
+\end{DoxyParamCaption}
+)}\hypertarget{service_8h_a6617fa9bcafd942255e9ec3bd9ecbf1e}{}\label{service_8h_a6617fa9bcafd942255e9ec3bd9ecbf1e}
+Returns the path method was called on or N\+U\+LL.
 
 
 \begin{DoxyParams}{Parameters}
