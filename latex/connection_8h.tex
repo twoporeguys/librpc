@@ -39,7 +39,7 @@ typedef struct rpc\+\_\+connection $\ast$ \hyperlink{connection_8h_a70838cb106c3
 \item 
 typedef struct rpc\+\_\+call $\ast$ \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}
 \item 
-typedef void($^\wedge$ \hyperlink{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{rpc\+\_\+handler\+\_\+t}) (const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
+typedef void($^\wedge$ \hyperlink{connection_8h_ae18f6c0163bc8460cee1b6332c83fe07}{rpc\+\_\+handler\+\_\+t}) (const char $\ast$path, const char $\ast$interface, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
 typedef void($^\wedge$ \hyperlink{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}{rpc\+\_\+error\+\_\+handler\+\_\+t}) (\hyperlink{connection_8h_a043170f29cb25827a88be4dab2313a91}{rpc\+\_\+error\+\_\+code\+\_\+t} code, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
@@ -80,7 +80,7 @@ int \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\+\_\+connect
 \item 
 int \hyperlink{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name)
 \item 
-void $\ast$ \hyperlink{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, \hyperlink{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{rpc\+\_\+handler\+\_\+t} handler)
+void $\ast$ \hyperlink{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, \hyperlink{connection_8h_ae18f6c0163bc8460cee1b6332c83fe07}{rpc\+\_\+handler\+\_\+t} handler)
 \item 
 void \hyperlink{connection_8h_a209856a794a9a10a53735787926f4b95}{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, void $\ast$cookie)
 \item 
@@ -100,7 +100,7 @@ int \hyperlink{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}{rpc\+\_\+connect
 \item 
 int \hyperlink{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}{rpc\+\_\+connection\+\_\+ping} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
-void \hyperlink{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}{rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, \hyperlink{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{rpc\+\_\+handler\+\_\+t} handler)
+void \hyperlink{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}{rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, \hyperlink{connection_8h_ae18f6c0163bc8460cee1b6332c83fe07}{rpc\+\_\+handler\+\_\+t} handler)
 \item 
 void \hyperlink{connection_8h_a8f332abcc5d0a80c86f8317c7dcc79ec}{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, \hyperlink{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}{rpc\+\_\+error\+\_\+handler\+\_\+t} handler)
 \item 
@@ -153,7 +153,7 @@ R\+PC connection A\+PI.
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_a659dfc386fa0add62a07c17662a29641}{rpc\+\_\+callback\+\_\+t} block type. 
 
-Definition at line 118 of file connection.\+h.
+Definition at line 119 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER}}
 \index{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER}!connection.\+h@{connection.\+h}}
@@ -171,7 +171,7 @@ Definition at line 118 of file connection.\+h.
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}{rpc\+\_\+error\+\_\+handler\+\_\+t} block type. 
 
-Definition at line 110 of file connection.\+h.
+Definition at line 111 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER}}
 \index{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER}!connection.\+h@{connection.\+h}}
@@ -187,9 +187,9 @@ Definition at line 110 of file connection.\+h.
         \_fn(\_arg, \_name, \_args);                \(\backslash\)
     \}
 \end{DoxyCode}
-Converts function pointer to a \hyperlink{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{rpc\+\_\+handler\+\_\+t} block type. 
+Converts function pointer to a \hyperlink{connection_8h_ae18f6c0163bc8460cee1b6332c83fe07}{rpc\+\_\+handler\+\_\+t} block type. 
 
-Definition at line 102 of file connection.\+h.
+Definition at line 103 of file connection.\+h.
 
 
 
@@ -209,7 +209,7 @@ Definition at line 82 of file connection.\+h.
 \subsubsection[{\texorpdfstring{rpc\+\_\+callback\+\_\+t}{rpc_callback_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef bool($^\wedge$ rpc\+\_\+callback\+\_\+t) ({\bf rpc\+\_\+object\+\_\+t} args, {\bf rpc\+\_\+call\+\_\+status\+\_\+t} status)}\hypertarget{connection_8h_a659dfc386fa0add62a07c17662a29641}{}\label{connection_8h_a659dfc386fa0add62a07c17662a29641}
 Definition of R\+PC callback block type. 
 
-Definition at line 97 of file connection.\+h.
+Definition at line 98 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+t@{rpc\+\_\+connection\+\_\+t}}
 \index{rpc\+\_\+connection\+\_\+t@{rpc\+\_\+connection\+\_\+t}!connection.\+h@{connection.\+h}}
@@ -226,11 +226,11 @@ Enumerates possible R\+PC error codes. \index{connection.\+h@{connection.\+h}!rp
 \subsubsection[{\texorpdfstring{rpc\+\_\+error\+\_\+handler\+\_\+t}{rpc_error_handler_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\+\_\+error\+\_\+handler\+\_\+t) ({\bf rpc\+\_\+error\+\_\+code\+\_\+t} code, {\bf rpc\+\_\+object\+\_\+t} args)}\hypertarget{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}{}\label{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}
 Definition of R\+PC error handler block type. 
 
-Definition at line 92 of file connection.\+h.
+Definition at line 93 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+handler\+\_\+t@{rpc\+\_\+handler\+\_\+t}}
 \index{rpc\+\_\+handler\+\_\+t@{rpc\+\_\+handler\+\_\+t}!connection.\+h@{connection.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+handler\+\_\+t}{rpc_handler_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\+\_\+handler\+\_\+t) (const char $\ast$name, {\bf rpc\+\_\+object\+\_\+t} args)}\hypertarget{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{}\label{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}
+\subsubsection[{\texorpdfstring{rpc\+\_\+handler\+\_\+t}{rpc_handler_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\+\_\+handler\+\_\+t) (const char $\ast$path, const char $\ast$interface, const char $\ast$name, {\bf rpc\+\_\+object\+\_\+t} args)}\hypertarget{connection_8h_ae18f6c0163bc8460cee1b6332c83fe07}{}\label{connection_8h_ae18f6c0163bc8460cee1b6332c83fe07}
 Definition of R\+PC event handler block type. 
 
 Definition at line 87 of file connection.\+h.

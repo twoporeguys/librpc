@@ -6,7 +6,6 @@
     <innerfile refid="client_8h">client.h</innerfile>
     <innerfile refid="connection_8h">connection.h</innerfile>
     <innerfile refid="discovery_8h">discovery.h</innerfile>
-    <innerfile refid="interface_8h">interface.h</innerfile>
     <innerfile refid="object_8h">object.h</innerfile>
     <innerfile refid="query_8h">query.h</innerfile>
     <innerfile refid="serializer_8h">serializer.h</innerfile>

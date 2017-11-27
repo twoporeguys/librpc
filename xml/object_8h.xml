@@ -13,97 +13,91 @@
     <includedby refid="service_8h" local="no">/code/include/rpc/service.h</includedby>
     <includedby refid="typing_8h" local="no">/code/include/rpc/typing.h</includedby>
     <incdepgraph>
-      <node id="162">
+      <node id="146">
         <label>stdbool.h</label>
       </node>
-      <node id="163">
+      <node id="147">
         <label>stdarg.h</label>
       </node>
-      <node id="161">
+      <node id="145">
         <label>stdint.h</label>
       </node>
-      <node id="165">
+      <node id="149">
         <label>sys/types.h</label>
       </node>
-      <node id="160">
+      <node id="144">
         <label>/code/include/rpc/object.h</label>
         <link refid="object.h"/>
-        <childnode refid="161" relation="include">
+        <childnode refid="145" relation="include">
         </childnode>
-        <childnode refid="162" relation="include">
+        <childnode refid="146" relation="include">
         </childnode>
-        <childnode refid="163" relation="include">
+        <childnode refid="147" relation="include">
         </childnode>
-        <childnode refid="164" relation="include">
+        <childnode refid="148" relation="include">
         </childnode>
-        <childnode refid="165" relation="include">
+        <childnode refid="149" relation="include">
         </childnode>
       </node>
-      <node id="164">
+      <node id="148">
         <label>sys/uio.h</label>
       </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="173">
+      <node id="156">
         <label>/code/include/rpc/query.h</label>
         <link refid="query_8h"/>
       </node>
-      <node id="168">
+      <node id="152">
         <label>/code/include/rpc/client.h</label>
         <link refid="client_8h"/>
       </node>
-      <node id="175">
+      <node id="158">
         <label>/code/include/rpc/typing.h</label>
         <link refid="typing_8h"/>
       </node>
-      <node id="172">
-        <label>/code/include/rpc/interface.h</label>
-        <link refid="interface_8h_source"/>
-      </node>
-      <node id="171">
+      <node id="155">
         <label>/code/include/rpc/discovery.h</label>
         <link refid="discovery_8h"/>
       </node>
-      <node id="174">
+      <node id="157">
         <label>/code/include/rpc/serializer.h</label>
         <link refid="serializer_8h"/>
       </node>
-      <node id="167">
+      <node id="151">
         <label>/code/include/rpc/connection.h</label>
         <link refid="connection_8h"/>
-        <childnode refid="168" relation="include">
+        <childnode refid="152" relation="include">
         </childnode>
-        <childnode refid="169" relation="include">
+        <childnode refid="153" relation="include">
         </childnode>
-        <childnode refid="170" relation="include">
+        <childnode refid="154" relation="include">
         </childnode>
       </node>
-      <node id="169">
+      <node id="153">
         <label>/code/include/rpc/server.h</label>
         <link refid="server_8h"/>
       </node>
-      <node id="166">
+      <node id="150">
         <label>/code/include/rpc/object.h</label>
         <link refid="object.h"/>
-        <childnode refid="167" relation="include">
+        <childnode refid="151" relation="include">
         </childnode>
-        <childnode refid="173" relation="include">
+        <childnode refid="156" relation="include">
         </childnode>
-        <childnode refid="174" relation="include">
+        <childnode refid="157" relation="include">
         </childnode>
-        <childnode refid="170" relation="include">
+        <childnode refid="154" relation="include">
         </childnode>
-        <childnode refid="175" relation="include">
+        <childnode refid="158" relation="include">
         </childnode>
       </node>
-      <node id="170">
+      <node id="154">
         <label>/code/include/rpc/service.h</label>
         <link refid="service_8h"/>
-        <childnode refid="171" relation="include">
+        <childnode refid="155" relation="include">
         </childnode>
-        <childnode refid="172" relation="include">
-        </childnode>
-        <childnode refid="169" relation="include">
+        <childnode refid="153" relation="include">
         </childnode>
       </node>
     </invincdepgraph>

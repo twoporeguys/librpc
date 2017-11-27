@@ -380,17 +380,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>rpc_context_dispatch_call()
 : <a class="el" href="service_8h.html#a206fab24804db208f9b4d44f4c303596">service.h</a>
 </li>
-<li>rpc_context_find_method()
-: <a class="el" href="service_8h.html#a58869381d832749fab98830cb5a75e46">service.h</a>
+<li>rpc_context_find_instance()
+: <a class="el" href="service_8h.html#a20f26ce7e4fd8d1a81f8bb616939dec7">service.h</a>
 </li>
 <li>rpc_context_free()
 : <a class="el" href="service_8h.html#ae62c27a53aea99a9c87e5b12b3d3cbbc">service.h</a>
+</li>
+<li>rpc_context_get_root()
+: <a class="el" href="service_8h.html#a9b55b5c3cd7c1f3de1755f8b287ee6db">service.h</a>
 </li>
 <li>rpc_context_register_block()
 : <a class="el" href="service_8h.html#af83b298b11aec4f97c0db5d4391b0be7">service.h</a>
 </li>
 <li>rpc_context_register_func()
 : <a class="el" href="service_8h.html#a6de78771a848fe3b2001e08a7cf0a88c">service.h</a>
+</li>
+<li>rpc_context_register_instance()
+: <a class="el" href="service_8h.html#a8357a5f08304aadf30fbc05fd625ea86">service.h</a>
 </li>
 <li>rpc_context_register_method()
 : <a class="el" href="service_8h.html#abd3ce744fe6091cf188b1f44b31548da">service.h</a>
@@ -405,7 +411,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">service.h</a>
 </li>
 <li>rpc_context_unregister_method()
-: <a class="el" href="service_8h.html#ab71a7949b47080bceed777eab0cb4c67">service.h</a>
+: <a class="el" href="service_8h.html#a8c96adc49c6ecf3c0ad7ae1ad7c82411">service.h</a>
 </li>
 <li>rpc_copy()
 : <a class="el" href="object_8h.html#aa5de9854b486016a16ac230ae0ba1d3a">object.h</a>
@@ -599,6 +605,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>rpc_function_get_arg()
 : <a class="el" href="service_8h.html#a62e71e6c0208e7ed1e23e2f9f3cd78f2">service.h</a>
 </li>
+<li>rpc_function_get_context()
+: <a class="el" href="service_8h.html#a51694182976cc6191bdd45205f027ca1">service.h</a>
+</li>
 <li>rpc_function_get_interface()
 : <a class="el" href="service_8h.html#a51e6cad2e4f70b1a073e54a323064420">service.h</a>
 </li>
@@ -639,10 +648,46 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="connection_8h.html#a4f7704822a76a6f293f6abbb59bf41f3">connection.h</a>
 </li>
 <li>rpc_handler_t
-: <a class="el" href="connection_8h.html#a65fe4b58831bfa2c2aa2210a48c52af2">connection.h</a>
+: <a class="el" href="connection_8h.html#ae18f6c0163bc8460cee1b6332c83fe07">connection.h</a>
 </li>
 <li>rpc_hash()
 : <a class="el" href="object_8h.html#ab84acb5ad97a61ccc08548a3e5d85bc1">object.h</a>
+</li>
+<li>rpc_instance_emit_event()
+: <a class="el" href="service_8h.html#ae95d9adc6b892e610116469623589727">service.h</a>
+</li>
+<li>rpc_instance_find_method()
+: <a class="el" href="service_8h.html#a73d9c76529ba51d29880464c415db845">service.h</a>
+</li>
+<li>rpc_instance_free()
+: <a class="el" href="service_8h.html#a5ff30bf1b1536f88fe0946c5df4359bd">service.h</a>
+</li>
+<li>rpc_instance_get_arg()
+: <a class="el" href="service_8h.html#a6f4eb6df2553bf05ce15f74950f6415e">service.h</a>
+</li>
+<li>rpc_instance_get_path()
+: <a class="el" href="service_8h.html#a68b61823da7220e591aa5b815fe5cc5e">service.h</a>
+</li>
+<li>rpc_instance_new()
+: <a class="el" href="service_8h.html#a3ec7513dc05be23e71fe2fbdf134b478">service.h</a>
+</li>
+<li>rpc_instance_register()
+: <a class="el" href="service_8h.html#a2d3e19a87010024c5c49a6620cf280bf">service.h</a>
+</li>
+<li>rpc_instance_register_block()
+: <a class="el" href="service_8h.html#afa0f59ae87c130966ba378bc6c2ee12b">service.h</a>
+</li>
+<li>rpc_instance_register_func()
+: <a class="el" href="service_8h.html#ad5db3e98c350f755011b6d470ba21373">service.h</a>
+</li>
+<li>rpc_instance_register_method()
+: <a class="el" href="service_8h.html#a1903baa0815e6ed639178888cd81b2b3">service.h</a>
+</li>
+<li>rpc_instance_unregister()
+: <a class="el" href="service_8h.html#a3dbca2ed6c2f7479b286b62677cfa9d1">service.h</a>
+</li>
+<li>rpc_instance_unregister_method()
+: <a class="el" href="service_8h.html#a76cbc7eebe61d4fedf608d4f411cacba">service.h</a>
 </li>
 <li>rpc_int64_create()
 : <a class="el" href="object_8h.html#ad1ce3319d7b452bc5400518ff727a87f">object.h</a>

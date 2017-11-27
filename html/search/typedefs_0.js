@@ -13,7 +13,7 @@ var searchData=
   ['rpc_5ferror_5fhandler_5ft',['rpc_error_handler_t',['../connection_8h.html#a4dfba30ff97d4c5c56a6787ecd1bb79a',1,'connection.h']]],
   ['rpc_5ffunction_5ff',['rpc_function_f',['../service_8h.html#a1f67d69a108ffc8087346616d82eacf7',1,'service.h']]],
   ['rpc_5ffunction_5ft',['rpc_function_t',['../service_8h.html#a02d3dbd723de9bd5140887c9935ff05a',1,'service.h']]],
-  ['rpc_5fhandler_5ft',['rpc_handler_t',['../connection_8h.html#a65fe4b58831bfa2c2aa2210a48c52af2',1,'connection.h']]],
+  ['rpc_5fhandler_5ft',['rpc_handler_t',['../connection_8h.html#ae18f6c0163bc8460cee1b6332c83fe07',1,'connection.h']]],
   ['rpc_5fobject_5ft',['rpc_object_t',['../object_8h.html#ab365f726b4975c0c8376b808d111d01b',1,'object.h']]],
   ['rpc_5fquery_5fcb_5ft',['rpc_query_cb_t',['../query_8h.html#a3dd3753b86199ebdc48d1cb3ab4cf985',1,'query.h']]],
   ['rpc_5fquery_5fiter_5ft',['rpc_query_iter_t',['../query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd',1,'query.h']]],
