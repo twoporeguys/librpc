@@ -4,39 +4,39 @@
     <compoundname>typing.h</compoundname>
     <includes refid="object_8h" local="no">rpc/object.h</includes>
     <incdepgraph>
-      <node id="203">
+      <node id="173">
         <label>stdbool.h</label>
       </node>
-      <node id="204">
+      <node id="174">
         <label>stdarg.h</label>
       </node>
-      <node id="202">
+      <node id="172">
         <label>stdint.h</label>
       </node>
-      <node id="200">
+      <node id="170">
         <label>/code/include/rpc/typing.h</label>
         <link refid="typing.h"/>
-        <childnode refid="201" relation="include">
+        <childnode refid="171" relation="include">
         </childnode>
       </node>
-      <node id="206">
+      <node id="176">
         <label>sys/types.h</label>
       </node>
-      <node id="201">
+      <node id="171">
         <label>rpc/object.h</label>
         <link refid="object_8h"/>
-        <childnode refid="202" relation="include">
+        <childnode refid="172" relation="include">
         </childnode>
-        <childnode refid="203" relation="include">
+        <childnode refid="173" relation="include">
         </childnode>
-        <childnode refid="204" relation="include">
+        <childnode refid="174" relation="include">
         </childnode>
-        <childnode refid="205" relation="include">
+        <childnode refid="175" relation="include">
         </childnode>
-        <childnode refid="206" relation="include">
+        <childnode refid="176" relation="include">
         </childnode>
       </node>
-      <node id="205">
+      <node id="175">
         <label>sys/uio.h</label>
       </node>
     </incdepgraph>

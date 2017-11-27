@@ -153,7 +153,7 @@ R\+PC connection A\+PI.
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_a659dfc386fa0add62a07c17662a29641}{rpc\+\_\+callback\+\_\+t} block type. 
 
-Definition at line 119 of file connection.\+h.
+Definition at line 120 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER}}
 \index{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER}!connection.\+h@{connection.\+h}}
@@ -171,7 +171,7 @@ Definition at line 119 of file connection.\+h.
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}{rpc\+\_\+error\+\_\+handler\+\_\+t} block type. 
 
-Definition at line 111 of file connection.\+h.
+Definition at line 112 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER}}
 \index{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER}!connection.\+h@{connection.\+h}}
@@ -183,8 +183,9 @@ Definition at line 111 of file connection.\+h.
 )}\hypertarget{connection_8h_a4f7704822a76a6f293f6abbb59bf41f3}{}\label{connection_8h_a4f7704822a76a6f293f6abbb59bf41f3}
 {\bfseries Value\+:}
 \begin{DoxyCode}
-^(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} \_args) \{          \(\backslash\)
-        \_fn(\_arg, \_name, \_args);                \(\backslash\)
+^(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_path, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_iface, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_name,     \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{\(\backslash\)}
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{        rpc\_object\_t} \_args) \{                  \(\backslash\)
+        \_fn(\_arg, \_path, \_iface, \_name, \_args);         \(\backslash\)
     \}
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_ae18f6c0163bc8460cee1b6332c83fe07}{rpc\+\_\+handler\+\_\+t} block type. 

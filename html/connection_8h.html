@@ -110,9 +110,8 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="center"><img src="connection_8h__dep__incl.png" border="0" usemap="#_2code_2include_2rpc_2connection_8hdep" alt=""/></div>
 <map name="_2code_2include_2rpc_2connection_8hdep" id="_2code_2include_2rpc_2connection_8hdep">
 <area shape="rect" id="node2" href="client_8h.html" title="/code/include/rpc/client.h" alt="" coords="5,80,172,107"/>
-<area shape="rect" id="node3" href="server_8h.html" title="/code/include/rpc/server.h" alt="" coords="124,155,296,181"/>
+<area shape="rect" id="node3" href="server_8h.html" title="/code/include/rpc/server.h" alt="" coords="187,155,359,181"/>
 <area shape="rect" id="node4" href="service_8h.html" title="/code/include/rpc/service.h" alt="" coords="247,80,426,107"/>
-<area shape="rect" id="node5" href="discovery_8h.html" title="/code/include/rpc/discovery.h" alt="" coords="321,155,513,181"/>
 </map>
 </div>
 </div>
@@ -264,7 +263,7 @@ const char *&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connectio
 <div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00073">object.h:73</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#a659dfc386fa0add62a07c17662a29641">rpc_callback_t</a> block type. </p>
 
-<p>Definition at line <a class="el" href="connection_8h_source.html#l00119">119</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p>Definition at line <a class="el" href="connection_8h_source.html#l00120">120</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -295,7 +294,7 @@ const char *&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connectio
 <div class="ttc" id="connection_8h_html_a043170f29cb25827a88be4dab2313a91"><div class="ttname"><a href="connection_8h.html#a043170f29cb25827a88be4dab2313a91">rpc_error_code_t</a></div><div class="ttdeci">enum rpc_error_code rpc_error_code_t</div></div>
 </div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#a4dfba30ff97d4c5c56a6787ecd1bb79a">rpc_error_handler_t</a> block type. </p>
 
-<p>Definition at line <a class="el" href="connection_8h_source.html#l00111">111</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p>Definition at line <a class="el" href="connection_8h_source.html#l00112">112</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -322,7 +321,7 @@ const char *&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connectio
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">^(<span class="keyword">const</span> <span class="keywordtype">char</span> *_name, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _args) {          \</div><div class="line">        _fn(_arg, _name, _args);                \</div><div class="line">    }</div><div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00073">object.h:73</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line">^(<span class="keyword">const</span> <span class="keywordtype">char</span> *_path, <span class="keyword">const</span> <span class="keywordtype">char</span> *_iface, <span class="keyword">const</span> <span class="keywordtype">char</span> *_name,     <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">\</a></div><div class="line"><a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">	    rpc_object_t</a> _args) {                  \</div><div class="line">        _fn(_arg, _path, _iface, _name, _args);         \</div><div class="line">    }</div><div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00073">object.h:73</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#ae18f6c0163bc8460cee1b6332c83fe07">rpc_handler_t</a> block type. </p>
 
 <p>Definition at line <a class="el" href="connection_8h_source.html#l00103">103</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>

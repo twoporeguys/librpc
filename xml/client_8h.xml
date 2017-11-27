@@ -5,57 +5,57 @@
     <includes local="no">stdbool.h</includes>
     <includes refid="connection_8h" local="no">rpc/connection.h</includes>
     <incdepgraph>
-      <node id="108">
+      <node id="93">
         <label>stdbool.h</label>
       </node>
-      <node id="114">
+      <node id="99">
         <label>stdarg.h</label>
       </node>
-      <node id="107">
+      <node id="92">
         <label>/code/include/rpc/client.h</label>
         <link refid="client.h"/>
-        <childnode refid="108" relation="include">
+        <childnode refid="93" relation="include">
         </childnode>
-        <childnode refid="109" relation="include">
+        <childnode refid="94" relation="include">
         </childnode>
       </node>
-      <node id="113">
+      <node id="98">
         <label>stdint.h</label>
       </node>
-      <node id="109">
+      <node id="94">
         <label>rpc/connection.h</label>
         <link refid="connection_8h"/>
-        <childnode refid="110" relation="include">
+        <childnode refid="95" relation="include">
         </childnode>
-        <childnode refid="111" relation="include">
+        <childnode refid="96" relation="include">
         </childnode>
-        <childnode refid="112" relation="include">
+        <childnode refid="97" relation="include">
         </childnode>
       </node>
-      <node id="116">
+      <node id="101">
         <label>sys/types.h</label>
       </node>
-      <node id="112">
+      <node id="97">
         <label>rpc/object.h</label>
         <link refid="object_8h"/>
-        <childnode refid="113" relation="include">
+        <childnode refid="98" relation="include">
         </childnode>
-        <childnode refid="108" relation="include">
+        <childnode refid="93" relation="include">
         </childnode>
-        <childnode refid="114" relation="include">
+        <childnode refid="99" relation="include">
         </childnode>
-        <childnode refid="115" relation="include">
+        <childnode refid="100" relation="include">
         </childnode>
-        <childnode refid="116" relation="include">
+        <childnode refid="101" relation="include">
         </childnode>
       </node>
-      <node id="115">
+      <node id="100">
         <label>sys/uio.h</label>
       </node>
-      <node id="110">
+      <node id="95">
         <label>Block.h</label>
       </node>
-      <node id="111">
+      <node id="96">
         <label>sys/time.h</label>
       </node>
     </incdepgraph>
