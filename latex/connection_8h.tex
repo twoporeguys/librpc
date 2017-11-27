@@ -39,7 +39,7 @@ typedef struct rpc\+\_\+connection $\ast$ \hyperlink{connection_8h_a70838cb106c3
 \item 
 typedef struct rpc\+\_\+call $\ast$ \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}
 \item 
-typedef void($^\wedge$ \hyperlink{connection_8h_ae18f6c0163bc8460cee1b6332c83fe07}{rpc\+\_\+handler\+\_\+t}) (const char $\ast$path, const char $\ast$interface, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
+typedef void($^\wedge$ \hyperlink{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{rpc\+\_\+handler\+\_\+t}) (const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
 typedef void($^\wedge$ \hyperlink{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}{rpc\+\_\+error\+\_\+handler\+\_\+t}) (\hyperlink{connection_8h_a043170f29cb25827a88be4dab2313a91}{rpc\+\_\+error\+\_\+code\+\_\+t} code, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
@@ -80,27 +80,23 @@ int \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\+\_\+connect
 \item 
 int \hyperlink{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name)
 \item 
-void $\ast$ \hyperlink{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, \hyperlink{connection_8h_ae18f6c0163bc8460cee1b6332c83fe07}{rpc\+\_\+handler\+\_\+t} handler)
+void $\ast$ \hyperlink{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, \hyperlink{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{rpc\+\_\+handler\+\_\+t} handler)
 \item 
 void \hyperlink{connection_8h_a209856a794a9a10a53735787926f4b95}{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, void $\ast$cookie)
 \item 
-\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a4bb388f7cc19ce3d01577993fcf7dd63}{rpc\+\_\+connection\+\_\+call\+\_\+sync} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$method,...)
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_aba014ae3408ed96b696ab70066076f13}{rpc\+\_\+connection\+\_\+call\+\_\+sync} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$method,...)
 \item 
-\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a62df11aec4a738cc80defd3408354721}{rpc\+\_\+connection\+\_\+call\+\_\+syncv} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$method, va\+\_\+list ap)
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a96c837f40d9808ec7d493ddd98e3e61a}{rpc\+\_\+connection\+\_\+call\+\_\+syncp} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$method, const char $\ast$fmt,...)
 \item 
-\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a0bbf25b18122ee854bc8f0016bc84eeb}{rpc\+\_\+connection\+\_\+call\+\_\+syncp} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$method, const char $\ast$fmt,...)
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a1dd48a58161cbf375719ecde4480c8a9}{rpc\+\_\+connection\+\_\+call\+\_\+syncv} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$method, va\+\_\+list ap)
 \item 
-\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a0528a5ec56934aa35e9c51423b54c880}{rpc\+\_\+connection\+\_\+call\+\_\+syncpv} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$method, const char $\ast$fmt, va\+\_\+list ap)
-\item 
-\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a308c17c19fccdd57ae46739b860aea19}{rpc\+\_\+connection\+\_\+call\+\_\+simple} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, const char $\ast$fmt,...)
-\item 
-\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} \hyperlink{connection_8h_a2d2059a4a18c0bfb8d8482af47d34072}{rpc\+\_\+connection\+\_\+call} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args, \hyperlink{connection_8h_a659dfc386fa0add62a07c17662a29641}{rpc\+\_\+callback\+\_\+t} callback)
+\hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} \hyperlink{connection_8h_aee4f43c3790d07d116367646694cb1c0}{rpc\+\_\+connection\+\_\+call} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args, \hyperlink{connection_8h_a659dfc386fa0add62a07c17662a29641}{rpc\+\_\+callback\+\_\+t} callback)
 \item 
 int \hyperlink{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}{rpc\+\_\+connection\+\_\+send\+\_\+event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
 int \hyperlink{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}{rpc\+\_\+connection\+\_\+ping} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
-void \hyperlink{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}{rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, \hyperlink{connection_8h_ae18f6c0163bc8460cee1b6332c83fe07}{rpc\+\_\+handler\+\_\+t} handler)
+void \hyperlink{connection_8h_ae843166183a4bd6dbf5a58133b3fcaf3}{rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, \hyperlink{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{rpc\+\_\+handler\+\_\+t} handler)
 \item 
 void \hyperlink{connection_8h_a8f332abcc5d0a80c86f8317c7dcc79ec}{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, \hyperlink{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}{rpc\+\_\+error\+\_\+handler\+\_\+t} handler)
 \item 
@@ -153,7 +149,7 @@ R\+PC connection A\+PI.
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_a659dfc386fa0add62a07c17662a29641}{rpc\+\_\+callback\+\_\+t} block type. 
 
-Definition at line 120 of file connection.\+h.
+Definition at line 118 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER}}
 \index{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER}!connection.\+h@{connection.\+h}}
@@ -171,7 +167,7 @@ Definition at line 120 of file connection.\+h.
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}{rpc\+\_\+error\+\_\+handler\+\_\+t} block type. 
 
-Definition at line 112 of file connection.\+h.
+Definition at line 110 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER}}
 \index{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER}!connection.\+h@{connection.\+h}}
@@ -183,14 +179,13 @@ Definition at line 112 of file connection.\+h.
 )}\hypertarget{connection_8h_a4f7704822a76a6f293f6abbb59bf41f3}{}\label{connection_8h_a4f7704822a76a6f293f6abbb59bf41f3}
 {\bfseries Value\+:}
 \begin{DoxyCode}
-^(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_path, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_iface, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_name,     \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{\(\backslash\)}
-\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{        rpc\_object\_t} \_args) \{                  \(\backslash\)
-        \_fn(\_arg, \_path, \_iface, \_name, \_args);         \(\backslash\)
+^(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} \_args) \{          \(\backslash\)
+        \_fn(\_arg, \_name, \_args);                \(\backslash\)
     \}
 \end{DoxyCode}
-Converts function pointer to a \hyperlink{connection_8h_ae18f6c0163bc8460cee1b6332c83fe07}{rpc\+\_\+handler\+\_\+t} block type. 
+Converts function pointer to a \hyperlink{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{rpc\+\_\+handler\+\_\+t} block type. 
 
-Definition at line 103 of file connection.\+h.
+Definition at line 102 of file connection.\+h.
 
 
 
@@ -210,7 +205,7 @@ Definition at line 82 of file connection.\+h.
 \subsubsection[{\texorpdfstring{rpc\+\_\+callback\+\_\+t}{rpc_callback_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef bool($^\wedge$ rpc\+\_\+callback\+\_\+t) ({\bf rpc\+\_\+object\+\_\+t} args, {\bf rpc\+\_\+call\+\_\+status\+\_\+t} status)}\hypertarget{connection_8h_a659dfc386fa0add62a07c17662a29641}{}\label{connection_8h_a659dfc386fa0add62a07c17662a29641}
 Definition of R\+PC callback block type. 
 
-Definition at line 98 of file connection.\+h.
+Definition at line 97 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+t@{rpc\+\_\+connection\+\_\+t}}
 \index{rpc\+\_\+connection\+\_\+t@{rpc\+\_\+connection\+\_\+t}!connection.\+h@{connection.\+h}}
@@ -227,11 +222,11 @@ Enumerates possible R\+PC error codes. \index{connection.\+h@{connection.\+h}!rp
 \subsubsection[{\texorpdfstring{rpc\+\_\+error\+\_\+handler\+\_\+t}{rpc_error_handler_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\+\_\+error\+\_\+handler\+\_\+t) ({\bf rpc\+\_\+error\+\_\+code\+\_\+t} code, {\bf rpc\+\_\+object\+\_\+t} args)}\hypertarget{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}{}\label{connection_8h_a4dfba30ff97d4c5c56a6787ecd1bb79a}
 Definition of R\+PC error handler block type. 
 
-Definition at line 93 of file connection.\+h.
+Definition at line 92 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+handler\+\_\+t@{rpc\+\_\+handler\+\_\+t}}
 \index{rpc\+\_\+handler\+\_\+t@{rpc\+\_\+handler\+\_\+t}!connection.\+h@{connection.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+handler\+\_\+t}{rpc_handler_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\+\_\+handler\+\_\+t) (const char $\ast$path, const char $\ast$interface, const char $\ast$name, {\bf rpc\+\_\+object\+\_\+t} args)}\hypertarget{connection_8h_ae18f6c0163bc8460cee1b6332c83fe07}{}\label{connection_8h_ae18f6c0163bc8460cee1b6332c83fe07}
+\subsubsection[{\texorpdfstring{rpc\+\_\+handler\+\_\+t}{rpc_handler_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\+\_\+handler\+\_\+t) (const char $\ast$name, {\bf rpc\+\_\+object\+\_\+t} args)}\hypertarget{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}{}\label{connection_8h_a65fe4b58831bfa2c2aa2210a48c52af2}
 Definition of R\+PC event handler block type. 
 
 Definition at line 87 of file connection.\+h.
@@ -435,16 +430,14 @@ Waits for a call to change status.
 \end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call@{rpc\+\_\+connection\+\_\+call}}
 \index{rpc\+\_\+connection\+\_\+call@{rpc\+\_\+connection\+\_\+call}!connection.\+h@{connection.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+call(rpc\+\_\+connection\+\_\+t conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name, rpc\+\_\+object\+\_\+t args, rpc\+\_\+callback\+\_\+t callback)}{rpc_connection_call(rpc_connection_t conn, const char *path, const char *interface, const char *name, rpc_object_t args, rpc_callback_t callback)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+call\+\_\+t} rpc\+\_\+connection\+\_\+call (
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+call(rpc\+\_\+connection\+\_\+t conn, const char $\ast$name, rpc\+\_\+object\+\_\+t args, rpc\+\_\+callback\+\_\+t callback)}{rpc_connection_call(rpc_connection_t conn, const char *name, rpc_object_t args, rpc_callback_t callback)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+call\+\_\+t} rpc\+\_\+connection\+\_\+call (
 \begin{DoxyParamCaption}
 \item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
-\item[{const char $\ast$}]{path, }
-\item[{const char $\ast$}]{interface, }
 \item[{const char $\ast$}]{name, }
 \item[{{\bf rpc\+\_\+object\+\_\+t}}]{args, }
 \item[{{\bf rpc\+\_\+callback\+\_\+t}}]{callback}
 \end{DoxyParamCaption}
-)}\hypertarget{connection_8h_a2d2059a4a18c0bfb8d8482af47d34072}{}\label{connection_8h_a2d2059a4a18c0bfb8d8482af47d34072}
+)}\hypertarget{connection_8h_aee4f43c3790d07d116367646694cb1c0}{}\label{connection_8h_aee4f43c3790d07d116367646694cb1c0}
 Performs a R\+PC method call using a given connection.
 
 Function returns immediately without waiting for a R\+PC completion and returns rpc\+\_\+call\+\_\+t object representing the ongoing call.
@@ -465,45 +458,15 @@ Function supports a callback argument of rpc\+\_\+callback\+\_\+t type, which is
 \begin{DoxyReturn}{Returns}
 R\+PC call object 
 \end{DoxyReturn}
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+simple@{rpc\+\_\+connection\+\_\+call\+\_\+simple}}
-\index{rpc\+\_\+connection\+\_\+call\+\_\+simple@{rpc\+\_\+connection\+\_\+call\+\_\+simple}!connection.\+h@{connection.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+call\+\_\+simple(rpc\+\_\+connection\+\_\+t conn, const char $\ast$name, const char $\ast$fmt,...)}{rpc_connection_call_simple(rpc_connection_t conn, const char *name, const char *fmt,...)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+simple (
-\begin{DoxyParamCaption}
-\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
-\item[{const char $\ast$}]{name, }
-\item[{const char $\ast$}]{fmt, }
-\item[{}]{...}
-\end{DoxyParamCaption}
-)}\hypertarget{connection_8h_a308c17c19fccdd57ae46739b860aea19}{}\label{connection_8h_a308c17c19fccdd57ae46739b860aea19}
-Performs a synchronous R\+PC function call using a given connection.
-
-Function blocks until a result is ready and returns it, or cancels and returns a N\+U\+LL pointer if a timeout has occurred.
-
-This function can be only used to call pure functions (not operating on objects, that is, like \hyperlink{connection_8h_a0bbf25b18122ee854bc8f0016bc84eeb}{rpc\+\_\+connection\+\_\+call\+\_\+syncp()} but with path and interface parameters set to N\+U\+LL).
-
-
-\begin{DoxyParams}{Parameters}
-{\em name} & \\
-\hline
-{\em fmt} & \\
-\hline
-{\em ...} & \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-
-\end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+sync@{rpc\+\_\+connection\+\_\+call\+\_\+sync}}
 \index{rpc\+\_\+connection\+\_\+call\+\_\+sync@{rpc\+\_\+connection\+\_\+call\+\_\+sync}!connection.\+h@{connection.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+call\+\_\+sync(rpc\+\_\+connection\+\_\+t conn, const char $\ast$path, const char $\ast$interface, const char $\ast$method,...)}{rpc_connection_call_sync(rpc_connection_t conn, const char *path, const char *interface, const char *method,...)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+sync (
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+call\+\_\+sync(rpc\+\_\+connection\+\_\+t conn, const char $\ast$method,...)}{rpc_connection_call_sync(rpc_connection_t conn, const char *method,...)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+sync (
 \begin{DoxyParamCaption}
 \item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
-\item[{const char $\ast$}]{path, }
-\item[{const char $\ast$}]{interface, }
 \item[{const char $\ast$}]{method, }
 \item[{}]{...}
 \end{DoxyParamCaption}
-)}\hypertarget{connection_8h_a4bb388f7cc19ce3d01577993fcf7dd63}{}\label{connection_8h_a4bb388f7cc19ce3d01577993fcf7dd63}
+)}\hypertarget{connection_8h_aba014ae3408ed96b696ab70066076f13}{}\label{connection_8h_aba014ae3408ed96b696ab70066076f13}
 Performs a synchronous R\+PC method call using a given connection.
 
 Function blocks until a result is ready and returns it, or cancels and returns a N\+U\+LL pointer if a timeout has occurred.
@@ -524,19 +487,17 @@ Result of the call
 \end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+syncp@{rpc\+\_\+connection\+\_\+call\+\_\+syncp}}
 \index{rpc\+\_\+connection\+\_\+call\+\_\+syncp@{rpc\+\_\+connection\+\_\+call\+\_\+syncp}!connection.\+h@{connection.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+call\+\_\+syncp(rpc\+\_\+connection\+\_\+t conn, const char $\ast$path, const char $\ast$interface, const char $\ast$method, const char $\ast$fmt,...)}{rpc_connection_call_syncp(rpc_connection_t conn, const char *path, const char *interface, const char *method, const char *fmt,...)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+syncp (
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+call\+\_\+syncp(rpc\+\_\+connection\+\_\+t conn, const char $\ast$method, const char $\ast$fmt,...)}{rpc_connection_call_syncp(rpc_connection_t conn, const char *method, const char *fmt,...)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+syncp (
 \begin{DoxyParamCaption}
 \item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
-\item[{const char $\ast$}]{path, }
-\item[{const char $\ast$}]{interface, }
 \item[{const char $\ast$}]{method, }
 \item[{const char $\ast$}]{fmt, }
 \item[{}]{...}
 \end{DoxyParamCaption}
-)}\hypertarget{connection_8h_a0bbf25b18122ee854bc8f0016bc84eeb}{}\label{connection_8h_a0bbf25b18122ee854bc8f0016bc84eeb}
+)}\hypertarget{connection_8h_a96c837f40d9808ec7d493ddd98e3e61a}{}\label{connection_8h_a96c837f40d9808ec7d493ddd98e3e61a}
 Performs a synchronous R\+PC method call using a given connection.
 
-This function is similar to \hyperlink{connection_8h_a4bb388f7cc19ce3d01577993fcf7dd63}{rpc\+\_\+connection\+\_\+call\+\_\+sync()}, but instead of taking rpc\+\_\+object\+\_\+t arguments, it accepts a format string and a list of values to pack, in format used by the \hyperlink{object_8h_a87da19ea6b0ec7daf50ce660162e26be}{rpc\+\_\+object\+\_\+pack()} function.
+This function is similar to \hyperlink{connection_8h_aba014ae3408ed96b696ab70066076f13}{rpc\+\_\+connection\+\_\+call\+\_\+sync()}, but instead of taking rpc\+\_\+object\+\_\+t arguments, it accepts a format string and a list of values to pack, in format used by the \hyperlink{object_8h_a87da19ea6b0ec7daf50ce660162e26be}{rpc\+\_\+object\+\_\+pack()} function.
 
 
 \begin{DoxyParams}{Parameters}
@@ -552,52 +513,20 @@ This function is similar to \hyperlink{connection_8h_a4bb388f7cc19ce3d01577993fc
 \begin{DoxyReturn}{Returns}
 Result of the call 
 \end{DoxyReturn}
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+syncpv@{rpc\+\_\+connection\+\_\+call\+\_\+syncpv}}
-\index{rpc\+\_\+connection\+\_\+call\+\_\+syncpv@{rpc\+\_\+connection\+\_\+call\+\_\+syncpv}!connection.\+h@{connection.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+call\+\_\+syncpv(rpc\+\_\+connection\+\_\+t conn, const char $\ast$path, const char $\ast$interface, const char $\ast$method, const char $\ast$fmt, va\+\_\+list ap)}{rpc_connection_call_syncpv(rpc_connection_t conn, const char *path, const char *interface, const char *method, const char *fmt, va_list ap)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+syncpv (
-\begin{DoxyParamCaption}
-\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
-\item[{const char $\ast$}]{path, }
-\item[{const char $\ast$}]{interface, }
-\item[{const char $\ast$}]{method, }
-\item[{const char $\ast$}]{fmt, }
-\item[{va\+\_\+list}]{ap}
-\end{DoxyParamCaption}
-)}\hypertarget{connection_8h_a0528a5ec56934aa35e9c51423b54c880}{}\label{connection_8h_a0528a5ec56934aa35e9c51423b54c880}
-
-\begin{DoxyParams}{Parameters}
-{\em conn} & \\
-\hline
-{\em path} & \\
-\hline
-{\em interface} & \\
-\hline
-{\em method} & \\
-\hline
-{\em fmt} & \\
-\hline
-{\em ap} & \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-
-\end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+syncv@{rpc\+\_\+connection\+\_\+call\+\_\+syncv}}
 \index{rpc\+\_\+connection\+\_\+call\+\_\+syncv@{rpc\+\_\+connection\+\_\+call\+\_\+syncv}!connection.\+h@{connection.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+call\+\_\+syncv(rpc\+\_\+connection\+\_\+t conn, const char $\ast$path, const char $\ast$interface, const char $\ast$method, va\+\_\+list ap)}{rpc_connection_call_syncv(rpc_connection_t conn, const char *path, const char *interface, const char *method, va_list ap)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+syncv (
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+call\+\_\+syncv(rpc\+\_\+connection\+\_\+t conn, const char $\ast$method, va\+\_\+list ap)}{rpc_connection_call_syncv(rpc_connection_t conn, const char *method, va_list ap)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+syncv (
 \begin{DoxyParamCaption}
 \item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
-\item[{const char $\ast$}]{path, }
-\item[{const char $\ast$}]{interface, }
 \item[{const char $\ast$}]{method, }
 \item[{va\+\_\+list}]{ap}
 \end{DoxyParamCaption}
-)}\hypertarget{connection_8h_a62df11aec4a738cc80defd3408354721}{}\label{connection_8h_a62df11aec4a738cc80defd3408354721}
+)}\hypertarget{connection_8h_a1dd48a58161cbf375719ecde4480c8a9}{}\label{connection_8h_a1dd48a58161cbf375719ecde4480c8a9}
 Performs a synchronous R\+PC method call using a given connection.
 
 Function blocks until a result is ready and returns it, or cancels and returns a N\+U\+LL pointer if a timeout has occurred.
 
-Instead of variable arguments length in \hyperlink{connection_8h_a2d2059a4a18c0bfb8d8482af47d34072}{rpc\+\_\+connection\+\_\+call()} example, this function takes previously assembled variable arguments list structure as its argument.
+Instead of variable arguments length in \hyperlink{connection_8h_aee4f43c3790d07d116367646694cb1c0}{rpc\+\_\+connection\+\_\+call()} example, this function takes previously assembled variable arguments list structure as its argument.
 
 
 \begin{DoxyParams}{Parameters}

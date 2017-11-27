@@ -1,5 +1,6 @@
 <map id="/code/include/rpc/connection.h" name="/code/include/rpc/connection.h">
 <area shape="rect" id="node2" href="$client_8h.html" title="/code/include/rpc/client.h" alt="" coords="5,80,172,107"/>
-<area shape="rect" id="node3" href="$server_8h.html" title="/code/include/rpc/server.h" alt="" coords="187,155,359,181"/>
+<area shape="rect" id="node3" href="$server_8h.html" title="/code/include/rpc/server.h" alt="" coords="124,155,296,181"/>
 <area shape="rect" id="node4" href="$service_8h.html" title="/code/include/rpc/service.h" alt="" coords="247,80,426,107"/>
+<area shape="rect" id="node5" href="$discovery_8h.html" title="/code/include/rpc/discovery.h" alt="" coords="321,155,513,181"/>
 </map>

@@ -1,0 +1,58 @@
+\hypertarget{discovery_8h}{}\section{/code/include/rpc/discovery.h File Reference}
+\label{discovery_8h}\index{/code/include/rpc/discovery.\+h@{/code/include/rpc/discovery.\+h}}
+{\ttfamily \#include $<$rpc/service.\+h$>$}\\*
+Include dependency graph for discovery.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{discovery_8h__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{discovery_8h_a282ce669d70603a2a80f99c3dc926d8f}{rpc\+\_\+discovery\+\_\+register} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
+\item 
+int \hyperlink{discovery_8h_aef4a5ebeff7f32031a8ef8be116205bc}{rpc\+\_\+discovery\+\_\+destroy} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Helpers for creating auto-\/discoverable services. 
+
+\subsection{Function Documentation}
+\index{discovery.\+h@{discovery.\+h}!rpc\+\_\+discovery\+\_\+destroy@{rpc\+\_\+discovery\+\_\+destroy}}
+\index{rpc\+\_\+discovery\+\_\+destroy@{rpc\+\_\+discovery\+\_\+destroy}!discovery.\+h@{discovery.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+discovery\+\_\+destroy(rpc\+\_\+context\+\_\+t context)}{rpc_discovery_destroy(rpc_context_t context)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+discovery\+\_\+destroy (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+context\+\_\+t}}]{context}
+\end{DoxyParamCaption}
+)}\hypertarget{discovery_8h_aef4a5ebeff7f32031a8ef8be116205bc}{}\label{discovery_8h_aef4a5ebeff7f32031a8ef8be116205bc}
+Uninstalls previously installed discovery service.
+
+
+\begin{DoxyParams}{Parameters}
+{\em context} & R\+PC context to uninstall discovery service from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on failure 
+\end{DoxyReturn}
+\index{discovery.\+h@{discovery.\+h}!rpc\+\_\+discovery\+\_\+register@{rpc\+\_\+discovery\+\_\+register}}
+\index{rpc\+\_\+discovery\+\_\+register@{rpc\+\_\+discovery\+\_\+register}!discovery.\+h@{discovery.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+discovery\+\_\+register(rpc\+\_\+context\+\_\+t context)}{rpc_discovery_register(rpc_context_t context)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+discovery\+\_\+register (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+context\+\_\+t}}]{context}
+\end{DoxyParamCaption}
+)}\hypertarget{discovery_8h_a282ce669d70603a2a80f99c3dc926d8f}{}\label{discovery_8h_a282ce669d70603a2a80f99c3dc926d8f}
+Installs discovery service on an R\+PC context.
+
+
+\begin{DoxyParams}{Parameters}
+{\em context} & R\+PC context to install on \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on failure 
+\end{DoxyReturn}
