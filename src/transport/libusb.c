@@ -339,8 +339,9 @@ usb_abort(void *arg)
 		fclose(conn->uc_logfile);
 
 	conn->uc_state.uts_exit = true;
-	libusb_close(conn->uc_handle);
 	g_thread_join(conn->uc_libusb_thread);
+	libusb_close(conn->uc_handle);
+	libusb_exit(conn->uc_libusb);
 	return (0);
 }
 
