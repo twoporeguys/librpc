@@ -88,10 +88,12 @@ rpc_context_create(void)
 	rpc_context_t result;
 
 	result = g_malloc0(sizeof(*result));
-	result->rcx_root = rpc_instance_new("/", NULL);
+	result->rcx_root = rpc_instance_new("/", "Root object", NULL);
+	result->rcx_instances = g_hash_table_new(g_str_hash, g_str_equal);
 	result->rcx_threadpool = g_thread_pool_new(rpc_context_tp_handler,
 	    result, g_get_num_processors() * 4, true, &err);
 
+	rpc_context_register_instance(result, result->rcx_root);
 	return (result);
 }
 
@@ -119,16 +121,23 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 		instance = rpc_context_find_instance(context, call->ric_path);
 
 	if (instance == NULL) {
-		/* XXX: error */
+		rpc_function_error(call, ENOENT, "Instance not found");
 		return (-1);
 	}
 
 	call->ric_method = rpc_instance_find_method(instance,
 	    call->ric_interface, call->ric_name);
 
-	g_thread_pool_push(context->rcx_threadpool, call, &err);
-	if (err != NULL)
+	if (call->ric_method == NULL) {
+		rpc_function_error(call, ENOENT, "Method not found");
 		return (-1);
+	}
+
+	g_thread_pool_push(context->rcx_threadpool, call, &err);
+	if (err != NULL) {
+		rpc_function_error(call, EFAULT, "Cannot submit call");
+		return (-1);
+	}
 
 	return (0);
 }
@@ -148,6 +157,15 @@ rpc_context_find_method(rpc_context_t context, const char *interface,
 	return (rpc_instance_find_method(context->rcx_root, interface,
 	    name));
 }
+
+int
+rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
+{
+
+	g_hash_table_insert(context->rcx_instances, instance->ri_path, instance);
+	return (0);
+}
+
 
 int
 rpc_context_register_method(rpc_context_t context, struct rpc_method *m)
@@ -312,13 +330,15 @@ rpc_function_should_abort(void *cookie)
 	return (call->ric_aborted);
 }
 
-rpc_instance_t rpc_instance_new(const char *path, void *arg)
+rpc_instance_t
+rpc_instance_new(const char *path, const char *descr, void *arg)
 {
 	rpc_instance_t result;
 
-	result = g_malloc0(sizeof(result));
+	result = g_malloc0(sizeof(*result));
 	g_mutex_init(&result->ri_mtx);
 	result->ri_path = g_strdup(path);
+	result->ri_descr = g_strdup(descr);
 	result->ri_subscriptions = g_hash_table_new(g_str_hash, g_str_equal);
 	result->ri_interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 	result->ri_arg = arg;
@@ -378,7 +398,7 @@ rpc_instance_register_method(rpc_instance_t instance, struct rpc_method *m)
 	if (methods == NULL) {
 		methods = g_hash_table_new(g_str_hash, g_str_equal);
 		g_hash_table_insert(instance->ri_interfaces,
-		    (gpointer)interface, method);
+		    (gpointer)interface, methods);
 	}
 
 	g_hash_table_insert(methods, (gpointer)m->rm_name, method);
@@ -432,4 +452,49 @@ rpc_instance_unregister_method(rpc_instance_t instance, const char *interface,
 	Block_release(method->rm_block);
 	g_hash_table_remove(methods, name);
 	return (0);
+}
+
+static rpc_object_t
+rpc_get_objects(void *cookie, rpc_object_t args __unused)
+{
+	rpc_context_t context = rpc_function_get_context(cookie);
+	GHashTableIter iter;
+	const char *k;
+	rpc_instance_t v;
+	rpc_object_t fragment;
+
+	g_hash_table_iter_init(&iter, context->rcx_instances);
+
+	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
+		fragment = rpc_object_pack("{s,s}",
+		    "path", v->ri_path,
+		    "description", v->ri_descr);
+
+		if (rpc_function_yield(cookie, fragment) != 0)
+			goto done;
+	}
+
+	done:
+	return ((rpc_object_t)NULL);
+}
+
+static rpc_object_t
+rpc_get_interfaces(void *cookie, rpc_object_t args __unused)
+{
+	GHashTableIter iter;
+	const char *k;
+	void *v;
+	rpc_object_t fragment;
+	rpc_instance_t instance = rpc_function_get_instance(cookie);
+
+	g_hash_table_iter_init(&iter, instance->ri_interfaces);
+
+	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
+		fragment = rpc_string_create(k);
+		if (rpc_function_yield(cookie, fragment) != 0)
+			goto done;
+	}
+
+	done:
+	return ((rpc_object_t)NULL);
 }

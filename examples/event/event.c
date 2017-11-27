@@ -43,7 +43,7 @@ main(int argc, const char *argv[])
 	conn = rpc_client_get_connection(client);
 
 	rpc_connection_register_event_handler(conn, "server.hello",
-	    ^(const char *name, rpc_object_t args) {
+	    ^(const char *path, const char *interface, const char *name, rpc_object_t args) {
 		printf("received event %s with args: %s\n", name,
 		    rpc_copy_description(args));
 	    });

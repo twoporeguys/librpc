@@ -29,7 +29,6 @@
 #include <rpc/object.h>
 #include <rpc/service.h>
 #include <rpc/server.h>
-#include <rpc/discovery.h>
 
 #ifndef __unused
 #define __unused __attribute__((unused))
@@ -62,7 +61,6 @@ main(int argc, const char *argv[])
 		return (rpc_string_create("haha lol"));
 	    });
 
-
 	rpc_context_register_block(ctx, "delay", "Sleeps for a long time",
 	    NULL, ^(void *cookie __unused, rpc_object_t args __unused) {
 		sleep(60);
@@ -76,7 +74,6 @@ main(int argc, const char *argv[])
 		return (rpc_null_create());
 	    });
 
-	rpc_discovery_register(ctx);
 	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
 #ifdef _WIN32
 	for (;;)

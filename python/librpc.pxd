@@ -30,7 +30,7 @@ from libc.stdint cimport *
 ctypedef bint (*rpc_dictionary_applier_f)(void *arg, const char *key, rpc_object_t value)
 ctypedef bint (*rpc_array_applier_f)(void *arg, size_t index, rpc_object_t value)
 ctypedef void (*rpc_binary_destructor_f)(void *buffer)
-ctypedef void (*rpc_handler_f)(void *arg, const char *name, rpc_object_t args)
+ctypedef void (*rpc_handler_f)(void *arg, const char *path, const char *interface, const char *name, rpc_object_t args)
 ctypedef void (*rpc_error_handler_f)(void *arg, rpc_error_code_t code, rpc_object_t args)
 ctypedef bint (*rpc_callback_f)(void *arg, rpc_call_t call, rpc_call_status_t status)
 ctypedef void (*rpc_bus_event_handler_f)(void *arg, rpc_bus_event_t, rpc_bus_node *)
@@ -184,9 +184,10 @@ cdef extern from "rpc/service.h" nogil:
 
     rpc_context_t rpc_context_create()
     void rpc_context_free(rpc_context_t context)
-    int rpc_context_register_func(rpc_context_t context, const char *name,
-        const char *descr, void *arg, rpc_function_f func)
-    int rpc_context_unregister_method(rpc_context_t context, const char *name)
+    int rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
+    int rpc_context_register_func(rpc_context_t context, const char *interface,
+        const char *name, void *arg, rpc_function_f func)
+    int rpc_context_unregister_method(rpc_context_t context, const char *interface, const char *name)
 
     void *rpc_function_get_arg(void *cookie)
     void rpc_function_respond(void *cookie, rpc_object_t object)
@@ -196,11 +197,13 @@ cdef extern from "rpc/service.h" nogil:
     void rpc_function_produce(void *cookie, rpc_object_t fragment)
     void rpc_function_end(void *cookie)
 
-    rpc_instance_t rpc_instance_new(const char *path, void *arg)
+    rpc_instance_t rpc_instance_new(const char *path, const char *descr, void *arg)
     void *rpc_instance_get_arg(rpc_instance_t instance)
     const char *rpc_instance_get_path(rpc_instance_t instance)
     void rpc_instance_register_method(rpc_instance_t instance, const char *interface,
-        const char *name, void *fn)
+        const char *name, void *arg, void *fn)
+    void rpc_instance_register_func(rpc_instance_t instance, const char *interface,
+        const char *name, void *arg, rpc_function_f fn)
     void rpc_instance_free(rpc_instance_t instance)
 
     int rpc_instance_register(rpc_context_t context, rpc_instance_t instance)
@@ -348,17 +351,17 @@ cdef class Context(object):
     cdef rpc_context_t context
     cdef bint borrowed
     cdef object methods
+    cdef object instances
 
     @staticmethod
     cdef Context init_from_ptr(rpc_context_t ptr)
-    @staticmethod
-    cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil
 
 
 cdef class Instance(object):
     cdef readonly Context context
     cdef rpc_instance_t instance
     cdef public arg
+    cdef object methods
 
     @staticmethod
     cdef Instance init_from_ptr(rpc_instance_t ptr)
@@ -383,7 +386,7 @@ cdef class Connection(object):
     @staticmethod
     cdef Connection init_from_ptr(rpc_connection_t ptr)
     @staticmethod
-    cdef void c_ev_handler(void *arg, const char *name, rpc_object_t args) with gil
+    cdef void c_ev_handler(void *arg, const char *path, const char *inteface, const char *name, rpc_object_t args) with gil
     @staticmethod
     cdef void c_error_handler(void *arg, rpc_error_code_t code, rpc_object_t args) with gil
 

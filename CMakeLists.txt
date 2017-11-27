@@ -93,7 +93,6 @@ set(HEADERS
         include/rpc/server.h
         include/rpc/client.h
         include/rpc/service.h
-        include/rpc/discovery.h
         include/rpc/query.h
         include/rpc/bus.h
         include/rpc/serializer.h
@@ -105,7 +104,6 @@ set(CORE_FILES
         src/rpc_server.c
         src/rpc_service.c
         src/rpc_client.c
-        src/rpc_discovery.c
         src/rpc_query.c
         src/rpc_bus.c
         src/rpc_serializer.c

@@ -272,6 +272,7 @@ struct rpc_client
 struct rpc_instance
 {
 	char *			ri_path;
+	char *			ri_descr;
 	void *			ri_arg;
 	GHashTable *		ri_interfaces;
 	GHashTable *		ri_children;

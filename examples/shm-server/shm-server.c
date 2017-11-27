@@ -32,7 +32,6 @@
 #include <rpc/object.h>
 #include <rpc/service.h>
 #include <rpc/server.h>
-#include <rpc/discovery.h>
 #include "../../src/internal.h"
 
 static rpc_object_t
@@ -70,7 +69,6 @@ main(int argc, const char *argv[])
 	rpc_context_register_func(ctx, "exchange_blob", "Exchanges binary blob",
 	    NULL, &exchange_blob);
 
-	rpc_discovery_register(ctx);
 	srv = rpc_server_create("unix:///tmp/server.sock", ctx);
 	pause();
 }

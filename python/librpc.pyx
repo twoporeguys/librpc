@@ -694,6 +694,7 @@ cdef class Context(object):
     def __init__(self):
         PyEval_InitThreads()
         self.methods = {}
+        self.instances = {}
         self.context = rpc_context_create()
 
     @staticmethod
@@ -702,59 +703,30 @@ cdef class Context(object):
 
         ret = Context.__new__(Context)
         ret.methods = {}
+        ret.instances = {}
         ret.borrowed = True
         ret.context = ptr
         return ret
 
-    @staticmethod
-    cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil:
-        cdef Array args_array
-        cdef Object rpc_obj
-        cdef object cb = <object>rpc_function_get_arg(cookie)
-        cdef int ret
+    def register_instance(self, Instance instance):
+        self.instances[instance.path] = instance
+        if rpc_context_register_instance(self.context, instance.instance) != 0:
+            raise_internal_exc()
 
-        args_array = Array.__new__(Array)
-        args_array.obj = args
-
-        try:
-            output = cb(*[a for a in args_array])
-            if isinstance(output, types.GeneratorType):
-                for chunk in output:
-                    rpc_obj = Object(chunk)
-                    rpc_retain(rpc_obj.obj)
-
-                    with nogil:
-                        ret = rpc_function_yield(cookie, rpc_obj.obj)
-
-                    if ret:
-                        break
-
-                return <rpc_object_t>NULL
-        except Exception as e:
-            if not isinstance(e, RpcException):
-                e = RpcException(errno.EFAULT, str(e))
-
-            rpc_obj = Object(e)
-            rpc_function_error_ex(cookie, rpc_obj.obj)
-            return <rpc_object_t>NULL
-
-        rpc_obj = Object(output)
-        rpc_retain(rpc_obj.obj)
-        return rpc_obj.obj
-
-    def register_method(self, name, description, fn):
+    def register_method(self, name, fn, interface=''):
         self.methods[name] = fn
-        rpc_context_register_func(
+        if rpc_context_register_func(
             self.context,
+            interface.encode('utf-8'),
             name.encode('utf-8'),
-            description.encode('utf-8'),
             <void *>fn,
-            <rpc_function_f>Context.c_cb_function
-        )
+            <rpc_function_f>c_cb_function
+        ) != 0:
+            raise_internal_exc()
 
-    def unregister_method(self, name):
+    def unregister_method(self, name, interface=''):
         del self.methods[name]
-        rpc_context_unregister_method(self.context, name)
+        rpc_context_unregister_method(self.context, interface, name)
 
     def __dealloc__(self):
         if not self.borrowed:
@@ -766,9 +738,27 @@ cdef class Instance(object):
     cdef Instance init_from_ptr(rpc_instance_t ptr):
         pass
 
-    def add_method(self, interface, name, fn):
-        pass
+    property path:
+        def __get__(self):
+            return rpc_instance_get_path(self.instance).decode('utf-8')
 
+    def __init__(self, path, description='Generic instance'):
+        self.methods = {}
+        self.instance = rpc_instance_new(
+            path.encode('utf-8'),
+            description.encode('utf-8'),
+            <void *>self
+        )
+
+    def register_method(self, name, fn, interface=''):
+        self.methods[name] = fn
+        rpc_instance_register_func(
+            self.instance,
+            interface.encode('utf-8'),
+            name.encode('utf-8'),
+            <void *>fn,
+            <rpc_function_f>c_cb_function
+        )
 
 
 cdef class Call(object):
@@ -859,7 +849,7 @@ cdef class Connection(object):
         return ret
 
     @staticmethod
-    cdef void c_ev_handler(void *arg, const char *name, rpc_object_t args) with gil:
+    cdef void c_ev_handler(void *arg, const char *path, const char *interface, const char *name, rpc_object_t args) with gil:
         cdef Object event_args
         cdef object handler = <object>arg
 
@@ -1484,6 +1474,42 @@ cdef class BaseEnum(BaseTypingObject):
     property value:
         def __get__(self):
             pass
+
+
+cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil:
+    cdef Array args_array
+    cdef Object rpc_obj
+    cdef object cb = <object>rpc_function_get_arg(cookie)
+    cdef int ret
+
+    args_array = Array.__new__(Array)
+    args_array.obj = args
+
+    try:
+        output = cb(*[a for a in args_array])
+        if isinstance(output, types.GeneratorType):
+            for chunk in output:
+                rpc_obj = Object(chunk)
+                rpc_retain(rpc_obj.obj)
+
+                with nogil:
+                    ret = rpc_function_yield(cookie, rpc_obj.obj)
+
+                if ret:
+                    break
+
+            return <rpc_object_t>NULL
+    except Exception as e:
+        if not isinstance(e, RpcException):
+            e = RpcException(errno.EFAULT, str(e))
+
+        rpc_obj = Object(e)
+        rpc_function_error_ex(cookie, rpc_obj.obj)
+        return <rpc_object_t>NULL
+
+    rpc_obj = Object(output)
+    rpc_retain(rpc_obj.obj)
+    return rpc_obj.obj
 
 
 cdef raise_internal_exc(rpc=False):

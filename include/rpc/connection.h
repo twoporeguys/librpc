@@ -101,8 +101,9 @@ typedef bool (^rpc_callback_t)(rpc_object_t args, rpc_call_status_t status);
  * Converts function pointer to a ::rpc_handler_t block type.
  */
 #define	RPC_HANDLER(_fn, _arg) 						\
-	^(const char *_name, rpc_object_t _args) {			\
-		_fn(_arg, _name, _args);				\
+	^(const char *_path, const char *_iface, const char *_name, 	\
+	    rpc_object_t _args) {					\
+		_fn(_arg, _path, _iface, _name, _args);			\
 	}
 
 /**

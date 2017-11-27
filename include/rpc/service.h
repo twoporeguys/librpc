@@ -116,8 +116,7 @@ rpc_instance_t rpc_context_get_root(rpc_context_t context);
  * @param instance
  * @return
  */
-int rpc_context_register_instance(rpc_context_t context, const char *path,
-    rpc_instance_t instance);
+int rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance);
 
 /**
  * Registers a given rpc_method structure as an RPC method in a given context.
@@ -211,6 +210,13 @@ void *rpc_function_get_arg(void *cookie);
 rpc_context_t rpc_function_get_context(void *cookie);
 
 /**
+ *
+ * @param cookie
+ * @return
+ */
+rpc_instance_t rpc_function_get_instance(void *cookie);
+
+/**
  * Returns the called method name.
  *
  * @param cookie Running call identifier.
@@ -302,7 +308,7 @@ bool rpc_function_should_abort(void *cookie);
  * @param arg
  * @return
  */
-rpc_instance_t rpc_instance_new(const char *path, void *arg);
+rpc_instance_t rpc_instance_new(const char *path, const char *descr, void *arg);
 
 /**
  *
@@ -383,21 +389,6 @@ void rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
  * @param instance
  */
 void rpc_instance_free(rpc_instance_t instance);
-
-/**
- *
- * @param context
- * @param instance
- * @return
- */
-int rpc_instance_register(rpc_context_t context, rpc_instance_t instance);
-
-/**
- *
- * @param path
- * @return
- */
-int rpc_instance_unregister(const char *path);
 
 #ifdef __cplusplus
 }

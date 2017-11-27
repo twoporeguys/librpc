@@ -1065,6 +1065,12 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	call->rc_args = args != NULL ? args : rpc_array_create();
 	call->rc_callback = callback;
 
+	if (path)
+		rpc_dictionary_set_string(payload, "path", path);
+
+	if (interface)
+		rpc_dictionary_set_string(payload, "interface", interface);
+
 	rpc_dictionary_set_string(payload, "method", name);
 	rpc_dictionary_set_value(payload, "args", args);
 	frame = rpc_pack_frame("rpc", "call", call->rc_id,  payload);

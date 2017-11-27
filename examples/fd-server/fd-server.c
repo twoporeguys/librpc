@@ -31,7 +31,6 @@
 #include <rpc/object.h>
 #include <rpc/service.h>
 #include <rpc/server.h>
-#include <rpc/discovery.h>
 
 static rpc_object_t
 write_to_pipe(void *cookie, rpc_object_t args)
@@ -68,7 +67,6 @@ main(int argc, const char *argv[])
 	rpc_context_register_func(ctx, "write_to_pipe", "Writes to a pipe",
 	    NULL, &write_to_pipe);
 
-	rpc_discovery_register(ctx);
 	srv = rpc_server_create("unix:///tmp/server.sock", ctx);
 	pause();
 }
