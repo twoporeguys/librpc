@@ -761,6 +761,22 @@ cdef class Instance(object):
         )
 
 
+cdef class RemoteInterface(object):
+    def __init__(self, client, path, interface=None):
+        self.client = client
+        self.path = path
+        self.interface = interface
+
+    def call_sync(self, name, *args):
+        return self.client.call_sync(name, *args, path=self.path, interface=self.interface)
+
+    def __getattr__(self, item):
+        def fn(*args):
+            return self.call_sync(item, *args)
+
+        return fn
+
+
 cdef class Call(object):
     @staticmethod
     cdef Call init_from_ptr(rpc_call_t ptr):
@@ -891,20 +907,31 @@ cdef class Connection(object):
         result.connection = self
         return result
 
-    def call_sync(self, const char *path, const char *interface, const char *method, *args):
+    def call_sync(self, method, *args, path='/', interface=None):
         cdef rpc_object_t rpc_result
         cdef Array rpc_args
         cdef Dictionary error
         cdef rpc_call_t call
         cdef rpc_call_status_t call_status
+        cdef const char *c_path
+        cdef const char *c_interface = NULL
+        cdef const char *c_method
 
         if self.connection == <rpc_connection_t>NULL:
             raise RuntimeError("Not connected")
 
         rpc_args = Array(list(args))
+        b_path = path.encode('utf-8')
+        c_path = b_path
+        b_method = method.encode('utf-8')
+        c_method = b_method
+
+        if interface:
+            b_interface = interface.encode('utf-8')
+            c_interface = b_interface
 
         with nogil:
-            call = rpc_connection_call(self.connection, path, interface, method, rpc_args.obj, NULL)
+            call = rpc_connection_call(self.connection, c_path, c_interface, c_method, rpc_args.obj, NULL)
 
         if call == <rpc_call_t>NULL:
             raise_internal_exc(rpc=True)

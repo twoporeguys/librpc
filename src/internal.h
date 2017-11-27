@@ -185,6 +185,7 @@ struct rpc_inbound_call
 {
 	rpc_context_t 		ric_context;
     	rpc_connection_t    	ric_conn;
+	rpc_instance_t 		ric_instance;
 	rpc_object_t        	ric_id;
 	rpc_object_t        	ric_args;
 	const char *        	ric_name;

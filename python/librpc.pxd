@@ -367,6 +367,12 @@ cdef class Instance(object):
     cdef Instance init_from_ptr(rpc_instance_t ptr)
 
 
+cdef class RemoteInterface(object):
+    cdef readonly client
+    cdef readonly path
+    cdef readonly interface
+
+
 cdef class Call(object):
     cdef readonly Connection connection
     cdef rpc_call_t call

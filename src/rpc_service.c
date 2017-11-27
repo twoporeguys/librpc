@@ -28,9 +28,6 @@
 #include <Block.h>
 #include <errno.h>
 #include <stdlib.h>
-#ifndef _WIN32
-#include <fnmatch.h>
-#endif
 #include <string.h>
 #include <rpc/object.h>
 #include <rpc/connection.h>
@@ -38,6 +35,10 @@
 #include <glib.h>
 #include <glib/gprintf.h>
 #include "internal.h"
+
+static rpc_object_t rpc_get_objects(void *cookie, rpc_object_t args);
+static rpc_object_t rpc_get_interfaces(void *cookie, rpc_object_t args);
+static rpc_object_t rpc_get_methods(void *cookie, rpc_object_t args);
 
 static void
 rpc_context_tp_handler(gpointer data, gpointer user_data)
@@ -93,6 +94,9 @@ rpc_context_create(void)
 	result->rcx_threadpool = g_thread_pool_new(rpc_context_tp_handler,
 	    result, g_get_num_processors() * 4, true, &err);
 
+	rpc_instance_register_func(result->rcx_root, "librpc.Discoverable",
+	    "get_instances", NULL, rpc_get_objects);
+
 	rpc_context_register_instance(result, result->rcx_root);
 	return (result);
 }
@@ -125,6 +129,7 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 		return (-1);
 	}
 
+	call->ric_instance = instance;
 	call->ric_method = rpc_instance_find_method(instance,
 	    call->ric_interface, call->ric_name);
 
@@ -209,6 +214,22 @@ rpc_function_get_arg(void *cookie)
 	struct rpc_inbound_call *call = cookie;
 
 	return (call->ric_arg);
+}
+
+inline rpc_context_t
+rpc_function_get_context(void *cookie)
+{
+	struct rpc_inbound_call *call = cookie;
+
+	return (call->ric_context);
+}
+
+inline rpc_instance_t
+rpc_function_get_instance(void *cookie)
+{
+	struct rpc_inbound_call *call = cookie;
+
+	return (call->ric_instance);
 }
 
 const char *
@@ -343,6 +364,11 @@ rpc_instance_new(const char *path, const char *descr, void *arg)
 	result->ri_interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 	result->ri_arg = arg;
 
+	rpc_instance_register_func(result, "librpc.Introspectable",
+	    "get_interfaces", NULL, rpc_get_interfaces);
+	rpc_instance_register_func(result, "librpc.Introspectable",
+	    "get_methods", NULL, rpc_get_methods);
+
 	return (result);
 }
 
@@ -377,7 +403,8 @@ rpc_instance_find_method(rpc_instance_t instance, const char *interface,
 {
 	GHashTable *methods;
 
-	methods = g_hash_table_lookup(instance->ri_interfaces, interface);
+	methods = g_hash_table_lookup(instance->ri_interfaces,
+	    interface != NULL ? interface : "");
 	if (methods == NULL)
 		return (NULL);
 
@@ -474,7 +501,7 @@ rpc_get_objects(void *cookie, rpc_object_t args __unused)
 			goto done;
 	}
 
-	done:
+done:
 	return ((rpc_object_t)NULL);
 }
 
@@ -495,6 +522,39 @@ rpc_get_interfaces(void *cookie, rpc_object_t args __unused)
 			goto done;
 	}
 
-	done:
+done:
+	return ((rpc_object_t)NULL);
+}
+
+static rpc_object_t
+rpc_get_methods(void *cookie, rpc_object_t args)
+{
+	GHashTable *methods;
+	GHashTableIter iter;
+	const char *interface;
+	const char *k;
+	void *v;
+	rpc_object_t fragment;
+	rpc_instance_t instance = rpc_function_get_instance(cookie);
+
+	if (rpc_object_unpack(args, "[s]", &interface) < 1) {
+		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
+		return (NULL);
+	}
+
+	methods = g_hash_table_lookup(instance->ri_interfaces, interface);
+	if (methods == NULL) {
+		rpc_function_error(cookie, ENOENT, "Interface not found");
+		return (NULL);
+	}
+
+	g_hash_table_iter_init(&iter, methods);
+	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
+		fragment = rpc_string_create(k);
+		if (rpc_function_yield(cookie, fragment) != 0)
+			goto done;
+	}
+
+done:
 	return ((rpc_object_t)NULL);
 }
