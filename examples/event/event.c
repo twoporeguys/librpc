@@ -30,11 +30,14 @@
 #include <rpc/client.h>
 
 int
-main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)))
+main(int argc, const char *argv[])
 {
 	rpc_client_t client;
 	rpc_connection_t conn;
 	rpc_object_t result;
+
+	(void)argc;
+	(void)argv;
 
 	client = rpc_client_create("tcp://127.0.0.1:5000", 0);
 	conn = rpc_client_get_connection(client);
@@ -45,7 +48,7 @@ main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)
 		    rpc_copy_description(args));
 	    });
 
-	result = rpc_connection_call_sync(conn, "event", NULL);
+	result = rpc_connection_call_simple(conn, "event", NULL);
 
 	printf("result = %s\n", rpc_string_get_string_ptr(result));
 	rpc_client_close(client);

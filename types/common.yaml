@@ -10,7 +10,7 @@ union Optional<T>:
     something:
       type: T
     nothing:
-      type: "null"
+      type: "\"null\""
 
 type List<T>:
   description: A list of elements of the same type

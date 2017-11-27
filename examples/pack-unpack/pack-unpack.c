@@ -97,10 +97,9 @@ main(int argc, const char *argv[])
 	}
 
 	conn = rpc_client_get_connection(client);
-	result = rpc_connection_call_sync(conn, "hello",
-	    rpc_string_create("world"), rpc_int64_create(123),
-	    rpc_bool_create(true),
-	    rpc_dictionary_create_ex(keys, values, 1, true), NULL);
+	result = rpc_connection_call_simple(conn, "hello", "[sibv]",
+	    "world", 123, true,
+	    rpc_dictionary_create_ex(keys, values, 1, true));
 
 	printf("result = %s\n", rpc_copy_description(result));
 

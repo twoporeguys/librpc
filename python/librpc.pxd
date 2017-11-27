@@ -155,9 +155,10 @@ cdef extern from "rpc/connection.h" nogil:
     int rpc_connection_close(rpc_connection_t conn)
     int rpc_connection_subscribe_event(rpc_connection_t conn, const char *name)
     int rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name)
-    rpc_object_t rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...)
-    rpc_call_t rpc_connection_call(rpc_connection_t conn, const char *name,
-        rpc_object_t args, void *callback)
+    rpc_object_t rpc_connection_call_sync(rpc_connection_t conn,
+        const char *path, const char *interface, const char *method, ...)
+    rpc_call_t rpc_connection_call(rpc_connection_t conn, const char *path,
+        const char *interface, const char *name, rpc_object_t args, void *callback)
     int rpc_connection_send_event(rpc_connection_t conn, const char *name,
         rpc_object_t args)
     void rpc_connection_set_event_handler(rpc_connection_t conn, void *handler)
@@ -175,10 +176,11 @@ cdef extern from "rpc/connection.h" nogil:
 
 cdef extern from "rpc/service.h" nogil:
     ctypedef rpc_object_t (*rpc_function_f)(void *cookie, rpc_object_t args);
-    ctypedef struct rpc_context:
+    ctypedef struct rpc_context_t:
         pass
 
-    ctypedef rpc_context *rpc_context_t
+    ctypedef struct rpc_instance_t:
+        pass
 
     rpc_context_t rpc_context_create()
     void rpc_context_free(rpc_context_t context)
@@ -193,6 +195,16 @@ cdef extern from "rpc/service.h" nogil:
     int rpc_function_yield(void *cookie, rpc_object_t fragment)
     void rpc_function_produce(void *cookie, rpc_object_t fragment)
     void rpc_function_end(void *cookie)
+
+    rpc_instance_t rpc_instance_new(const char *path, void *arg)
+    void *rpc_instance_get_arg(rpc_instance_t instance)
+    const char *rpc_instance_get_path(rpc_instance_t instance)
+    void rpc_instance_register_method(rpc_instance_t instance, const char *interface,
+        const char *name, void *fn)
+    void rpc_instance_free(rpc_instance_t instance)
+
+    int rpc_instance_register(rpc_context_t context, rpc_instance_t instance)
+    int rpc_instance_unregister(const char *path)
 
 
 cdef extern from "rpc/client.h" nogil:
@@ -341,6 +353,15 @@ cdef class Context(object):
     cdef Context init_from_ptr(rpc_context_t ptr)
     @staticmethod
     cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil
+
+
+cdef class Instance(object):
+    cdef readonly Context context
+    cdef rpc_instance_t instance
+    cdef public arg
+
+    @staticmethod
+    cdef Instance init_from_ptr(rpc_instance_t ptr)
 
 
 cdef class Call(object):

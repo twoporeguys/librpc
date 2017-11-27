@@ -171,6 +171,8 @@ rpc_callback_worker(void *arg, void *data)
 {
 	struct work_item *item = arg;
 	struct rpc_subscription *sub;
+	const char *path;
+	const char *interface;
 	const char *name;
 	rpc_call_t call;
 	rpc_connection_t conn = data;
@@ -194,6 +196,8 @@ rpc_callback_worker(void *arg, void *data)
 	}
 
 	if (item->event) {
+		path = rpc_dictionary_get_string(item->event, "path");
+		interface = rpc_dictionary_get_string(item->event, "interface");
 		name = rpc_dictionary_get_string(item->event, "name");
 		data = rpc_dictionary_get_value(item->event, "args");
 		sub = g_hash_table_lookup(conn->rco_subscriptions, name);
@@ -203,12 +207,12 @@ rpc_callback_worker(void *arg, void *data)
 				rpc_handler_t handler = g_ptr_array_index(
 				    sub->rsu_handlers, i);
 
-				handler(name, data);
+				handler(path, interface, name, data);
 			}
 		}
 
 		if (conn->rco_event_handler != NULL)
-			conn->rco_event_handler(name, data);
+			conn->rco_event_handler(path, interface, name, data);
 	}
 
 done:
@@ -437,15 +441,27 @@ static void
 on_events_subscribe(rpc_connection_t conn, rpc_object_t args,
     rpc_object_t id __unused)
 {
-	rpc_server_t server = conn->rco_server;
-
-	g_mutex_lock(&server->rs_subscription_mtx);
-
 	rpc_array_apply(args, ^(size_t index __unused, rpc_object_t value) {
-		const char *name = rpc_string_get_string_ptr(value);
+		rpc_instance_t instance;
+		const char *path = NULL;
+		const char *interface = NULL;
+		const char *name = NULL;
 		int *refcount;
 
-		refcount = g_hash_table_lookup(server->rs_subscriptions, name);
+		if (rpc_object_unpack(value, "{s,s,s}",
+		    "name", &name,
+		    "interface", &interface,
+		    "path", &path) <1)
+	    		return ((bool)true);
+
+	    	instance = rpc_context_find_instance(
+		    conn->rco_server->rs_context, path);
+
+		if (instance == NULL)
+			return ((bool)true);
+
+		g_mutex_lock(&instance->ri_mtx);
+		refcount = g_hash_table_lookup(instance->ri_subscriptions, name);
 		if (refcount == NULL) {
 			refcount = g_malloc0(sizeof(int));
 			g_hash_table_insert(conn->rco_subscriptions,
@@ -453,33 +469,44 @@ on_events_subscribe(rpc_connection_t conn, rpc_object_t args,
 		}
 
 		(*refcount)++;
+		g_mutex_unlock(&instance->ri_mtx);
 		return ((bool)true);
 	});
-
-	g_mutex_unlock(&server->rs_subscription_mtx);
 }
 
 static void
 on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args,
     rpc_object_t id __unused)
 {
-	rpc_server_t server = conn->rco_server;
-
-	g_mutex_lock(&server->rs_subscription_mtx);
-
 	rpc_array_apply(args, ^(size_t index __unused, rpc_object_t value) {
-	    const char *name = rpc_string_get_string_ptr(value);
-	    int *refcount;
+		rpc_instance_t instance;
+		const char *path = NULL;
+		const char *interface = NULL;
+		const char *name = NULL;
+		int *refcount;
 
-	    refcount = g_hash_table_lookup(server->rs_subscriptions, name);
-	    if (refcount == NULL)
-		    return ((bool)true);
+		if (rpc_object_unpack(value, "{s,s,s}",
+		    "name", &name,
+		    "interface", &interface,
+		    "path", &path) <1)
+			return ((bool)true);
 
-	    (*refcount)--;
-	    return ((bool)true);
+		instance = rpc_context_find_instance(
+		    conn->rco_server->rs_context, path);
+
+		if (instance == NULL)
+			return ((bool)true);
+
+		g_mutex_lock(&instance->ri_mtx);
+		refcount = g_hash_table_lookup(instance->ri_subscriptions, name);
+		if (refcount == NULL)
+			return ((bool)true);
+
+		(*refcount)--;
+		g_mutex_unlock(&instance->ri_mtx);
+		return ((bool)true);
 	});
 
-	g_mutex_unlock(&server->rs_subscription_mtx);
 }
 
 static int
@@ -932,7 +959,8 @@ rpc_connection_unregister_event_handler(rpc_connection_t conn, const char *name,
 }
 
 rpc_object_t
-rpc_connection_call_syncv(rpc_connection_t conn, const char *method, va_list ap)
+rpc_connection_call_syncv(rpc_connection_t conn, const char *path,
+    const char *interface, const char *method, va_list ap)
 {
 	rpc_call_t call;
 	rpc_object_t args;
@@ -949,7 +977,7 @@ rpc_connection_call_syncv(rpc_connection_t conn, const char *method, va_list ap)
 		rpc_array_append_stolen_value(args, i);
 	}
 
-	if ((call = rpc_connection_call(conn, method, args, NULL)) == NULL)
+	if ((call = rpc_connection_call(conn, path, interface, method, args, NULL)) == NULL)
 		return (NULL);
 
 	rpc_call_wait(call);
@@ -959,13 +987,14 @@ rpc_connection_call_syncv(rpc_connection_t conn, const char *method, va_list ap)
 }
 
 rpc_object_t
-rpc_connection_call_sync(rpc_connection_t conn, const char *method, ...)
+rpc_connection_call_sync(rpc_connection_t conn, const char *path,
+    const char *interface, const char *method, ...)
 {
 	rpc_object_t result;
 	va_list ap;
 
 	va_start(ap, method);
-	result = rpc_connection_call_syncv(conn, method, ap);
+	result = rpc_connection_call_syncv(conn, path, interface, method, ap);
 	va_end(ap);
 
 	return (result);

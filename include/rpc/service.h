@@ -54,6 +54,9 @@ struct rpc_context;
  */
 typedef struct rpc_context *rpc_context_t;
 
+struct rpc_instance;
+typedef struct rpc_instance *rpc_instance_t;
+
 /**
  * Definition of RPC method block type.
  */
@@ -70,7 +73,7 @@ typedef rpc_object_t (*rpc_function_f)(void *cookie, rpc_object_t args);
 struct rpc_method
 {
 	const char *		rm_name;
-	const char *		rm_description;
+	const char *		rm_interface;
 	rpc_function_t  	rm_block;
 	void *			rm_arg;
 };
@@ -90,12 +93,31 @@ rpc_context_t rpc_context_create(void);
 void rpc_context_free(rpc_context_t context);
 
 /**
- * Finds and returns a registered RPC method of a given name.
  *
- * @param name Method name.
- * @return RPC method.
+ * @param context
+ * @param path
+ * @return
  */
-struct rpc_method *rpc_context_find_method(rpc_context_t, const char *name);
+rpc_instance_t rpc_context_find_instance(rpc_context_t context,
+    const char *path);
+
+/**
+ *
+ * @param context
+ * @return
+ */
+rpc_instance_t rpc_context_get_root(rpc_context_t context);
+
+/**
+ * Registers a new object under context's object tree.
+ *
+ * @param context
+ * @param path
+ * @param instance
+ * @return
+ */
+int rpc_context_register_instance(rpc_context_t context, const char *path,
+    rpc_instance_t instance);
 
 /**
  * Registers a given rpc_method structure as an RPC method in a given context.
@@ -139,7 +161,8 @@ int rpc_context_register_func(rpc_context_t context, const char *name,
  * @param name Method name.
  * @return Status.
  */
-int rpc_context_unregister_method(rpc_context_t context, const char *name);
+int rpc_context_unregister_method(rpc_context_t context, const char *interface,
+    const char *name);
 
 /**
  * Installs a hook for every RPC function called.
@@ -179,6 +202,13 @@ rpc_call_t rpc_context_dispatch_call(rpc_context_t context, const char *name,
  * @param cookie Running call identifier.
  */
 void *rpc_function_get_arg(void *cookie);
+
+/**
+ *
+ * @param cookie
+ * @return
+ */
+rpc_context_t rpc_function_get_context(void *cookie);
 
 /**
  * Returns the called method name.
@@ -265,6 +295,109 @@ void rpc_function_end(void *cookie);
  * @return Whether or not function should abort.
  */
 bool rpc_function_should_abort(void *cookie);
+
+/**
+ *
+ * @param path
+ * @param arg
+ * @return
+ */
+rpc_instance_t rpc_instance_new(const char *path, void *arg);
+
+/**
+ *
+ * @param instance
+ * @return
+ */
+void *rpc_instance_get_arg(rpc_instance_t instance);
+
+/**
+ *
+ * @param instance
+ * @return
+ */
+const char *rpc_instance_get_path(rpc_instance_t instance);
+
+/**
+ *
+ * @param instance
+ * @param interface
+ * @param name
+ * @param fn
+ */
+int rpc_instance_register_method(rpc_instance_t instance, struct rpc_method *m);
+
+/**
+ *
+ * @param instance
+ * @param interface
+ * @param name
+ * @param arg
+ * @param fn
+ */
+int rpc_instance_register_block(rpc_instance_t instance, const char *interface,
+    const char *name, void *arg, rpc_function_t fn);
+
+/**
+ *
+ * @param instance
+ * @param interface
+ * @param name
+ * @param fn
+ */
+int rpc_instance_register_func(rpc_instance_t instance, const char *interface,
+    const char *name, void *arg, rpc_function_f fn);
+
+/**
+ *
+ * @param instance
+ * @param interface
+ * @param name
+ * @return
+ */
+int rpc_instance_unregister_method(rpc_instance_t instance,
+    const char *interface, const char *name);
+
+/**
+ * Finds a given method belonging to a given interface in instance.
+ *
+ * @param instance
+ * @param interface
+ * @param name
+ * @return
+ */
+struct rpc_method *rpc_instance_find_method(rpc_instance_t instance,
+    const char *interface, const char *name);
+
+/**
+ *
+ * @param instance
+ * @param interface
+ * @param name
+ */
+void rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
+    const char *name);
+
+/**
+ *
+ * @param instance
+ */
+void rpc_instance_free(rpc_instance_t instance);
+
+/**
+ *
+ * @param context
+ * @param instance
+ * @return
+ */
+int rpc_instance_register(rpc_context_t context, rpc_instance_t instance);
+
+/**
+ *
+ * @param path
+ * @return
+ */
+int rpc_instance_unregister(const char *path);
 
 #ifdef __cplusplus
 }

@@ -761,6 +761,16 @@ cdef class Context(object):
             rpc_context_free(self.context)
 
 
+cdef class Instance(object):
+    @staticmethod
+    cdef Instance init_from_ptr(rpc_instance_t ptr):
+        pass
+
+    def add_method(self, interface, name, fn):
+        pass
+
+
+
 cdef class Call(object):
     @staticmethod
     cdef Call init_from_ptr(rpc_call_t ptr):
@@ -871,22 +881,18 @@ cdef class Connection(object):
 
         handler(ErrorCode(error), error_args)
 
-    def call(self, method, *args):
+    def call(self, const char *path, const char *interface, const char *method, *args):
         cdef Array rpc_args
         cdef Call result
-        cdef const char *c_method
 
         if self.connection == <rpc_connection_t>NULL:
             raise RuntimeError("Not connected")
 
         rpc_args = Array(list(args))
-        b_method = method.encode('utf-8')
-        c_method = b_method
-
         rpc_retain(rpc_args.obj)
 
         with nogil:
-            call = rpc_connection_call(self.connection, c_method, rpc_args.obj, NULL)
+            call = rpc_connection_call(self.connection, path, interface, method, rpc_args.obj, NULL)
 
         if call == <rpc_call_t>NULL:
             raise_internal_exc(rpc=True)
@@ -895,23 +901,20 @@ cdef class Connection(object):
         result.connection = self
         return result
 
-    def call_sync(self, method, *args):
+    def call_sync(self, const char *path, const char *interface, const char *method, *args):
         cdef rpc_object_t rpc_result
         cdef Array rpc_args
         cdef Dictionary error
         cdef rpc_call_t call
         cdef rpc_call_status_t call_status
-        cdef const char *c_method
 
         if self.connection == <rpc_connection_t>NULL:
             raise RuntimeError("Not connected")
 
         rpc_args = Array(list(args))
-        b_method = method.encode('utf-8')
-        c_method = b_method
 
         with nogil:
-            call = rpc_connection_call(self.connection, c_method, rpc_args.obj, NULL)
+            call = rpc_connection_call(self.connection, path, interface, method, rpc_args.obj, NULL)
 
         if call == <rpc_call_t>NULL:
             raise_internal_exc(rpc=True)

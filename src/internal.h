@@ -246,8 +246,6 @@ struct rpc_server
     	GMainLoop *		rs_g_loop;
     	GThread *		rs_thread;
     	GList *			rs_connections;
-    	GHashTable *		rs_subscriptions;
-    	GMutex			rs_subscription_mtx;
     	GMutex			rs_mtx;
     	GCond			rs_cv;
 	struct rpc_context *	rs_context;
@@ -271,21 +269,25 @@ struct rpc_client
 	rpc_object_t 		rci_params;
 };
 
+struct rpc_instance
+{
+	char *			ri_path;
+	void *			ri_arg;
+	GHashTable *		ri_interfaces;
+	GHashTable *		ri_children;
+	GHashTable *		ri_subscriptions;
+	GMutex			ri_mtx;
+};
+
 struct rpc_context
 {
-    	GHashTable *		rcx_methods;
     	GThreadPool *		rcx_threadpool;
+	GHashTable *		rcx_instances;
+	rpc_instance_t 		rcx_root;
 
 	/* Hooks */
 	rpc_function_f		rcx_pre_call_hook;
 	rpc_function_f		rcx_post_call_hook;
-};
-
-struct rpc_instance
-{
-	const char *		ri_path;
-	void *			ri_arg;
-	GHashTable *		ri_methods;
 };
 
 struct rpc_bus_transport

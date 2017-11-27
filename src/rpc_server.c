@@ -92,14 +92,12 @@ rpc_server_create(const char *uri, rpc_context_t context)
 	server->rs_uri = uri;
 	server->rs_context = context;
 	server->rs_accept = &rpc_server_accept;
-	server->rs_subscriptions = g_hash_table_new(g_str_hash, g_str_equal);
 	server->rs_g_context = g_main_context_new();
 	server->rs_g_loop = g_main_loop_new(server->rs_g_context, false);
 	server->rs_thread = g_thread_new("librpc server", rpc_server_worker,
 	    server);
 	g_cond_init(&server->rs_cv);
 	g_mutex_init(&server->rs_mtx);
-	g_mutex_init(&server->rs_subscription_mtx);
 
 	g_mutex_lock(&server->rs_mtx);
 	g_main_context_invoke(server->rs_g_context, rpc_server_listen, server);

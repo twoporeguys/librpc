@@ -31,6 +31,29 @@
 #include "internal.h"
 
 static rpc_object_t
+rpc_get_objects(void *cookie, rpc_object_t args __unused)
+{
+	rpc_context_t context = rpc_function_get_context(cookie);
+	GHashTableIter iter;
+	const char *k;
+	rpc_instance_t v;
+	rpc_object_t fragment;
+
+	g_hash_table_iter_init(&iter, context->rcx_instances);
+
+	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
+		fragment = rpc_object_pack("{s}",
+		    "path", v->ri_path);
+
+		if (rpc_function_yield(cookie, fragment) != 0)
+			goto done;
+	}
+
+done:
+	return ((rpc_object_t)NULL);
+}
+
+static rpc_object_t
 rpc_get_methods(void *cookie, rpc_object_t args __unused)
 {
 	GHashTableIter iter;

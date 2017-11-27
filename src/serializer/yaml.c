@@ -35,7 +35,7 @@
 #include "../internal.h"
 #include "yaml.h"
 
-static inline rpc_object
+static inline rpc_object_t
 rpc_yaml_read_ext(yaml_parser_t *parser, const char *type)
 {
 	rpc_object_t ret = NULL;

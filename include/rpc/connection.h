@@ -84,7 +84,8 @@ typedef struct rpc_call *rpc_call_t;
 /**
  * Definition of RPC event handler block type.
  */
-typedef void (^rpc_handler_t)(const char *name, rpc_object_t args);
+typedef void (^rpc_handler_t)(const char *path, const char *interface,
+    const char *name, rpc_object_t args);
 
 /**
  * Definition of RPC error handler block type.

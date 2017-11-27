@@ -88,11 +88,11 @@ if(BUILD_LIBUSB)
 endif()
 
 set(HEADERS
-        include/rpc/service.h
         include/rpc/object.h
         include/rpc/connection.h
         include/rpc/server.h
         include/rpc/client.h
+        include/rpc/service.h
         include/rpc/discovery.h
         include/rpc/query.h
         include/rpc/bus.h

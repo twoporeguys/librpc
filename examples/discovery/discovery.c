@@ -30,17 +30,20 @@
 #include <rpc/client.h>
 
 int
-main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)))
+main(int argc, const char *argv[])
 {
 	rpc_client_t client;
 	rpc_connection_t conn;
 	rpc_object_t result;
 	rpc_call_t call;
 
+	(void)argc;
+	(void)argv;
+
 	client = rpc_client_create("tcp://127.0.0.1:5000", 0);
 	conn = rpc_client_get_connection(client);
 
-	call = rpc_connection_call(conn, "discovery.get_methods", NULL, NULL);
+	call = rpc_connection_call(conn, NULL, NULL, "discovery.get_methods", NULL, NULL);
 	rpc_call_wait(call);
 
 	while (rpc_call_status(call) == RPC_CALL_MORE_AVAILABLE) {
