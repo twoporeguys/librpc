@@ -628,9 +628,11 @@ static void *
 usb_libusb_thread(void *arg)
 {
 	struct usb_thread_state *uts = arg;
+	struct timeval tv = {0 ,0};
 
 	while (!uts->uts_exit)
-		libusb_handle_events(uts->uts_libusb);
+		libusb_handle_events_timeout_completed(uts->uts_libusb, &tv,
+		    NULL);
 
 	return (NULL);
 }
