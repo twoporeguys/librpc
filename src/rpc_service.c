@@ -36,9 +36,11 @@
 #include <glib/gprintf.h>
 #include "internal.h"
 
+static bool rpc_context_path_is_valid(const char *path);
 static rpc_object_t rpc_get_objects(void *cookie, rpc_object_t args);
 static rpc_object_t rpc_get_interfaces(void *cookie, rpc_object_t args);
 static rpc_object_t rpc_get_methods(void *cookie, rpc_object_t args);
+static rpc_object_t rpc_interface_exists(void *cookie, rpc_object_t args);
 
 static void
 rpc_context_tp_handler(gpointer data, gpointer user_data)
@@ -356,6 +358,11 @@ rpc_instance_new(const char *path, const char *descr, void *arg)
 {
 	rpc_instance_t result;
 
+	if (!rpc_context_path_is_valid(path)) {
+		rpc_set_last_error(EINVAL, "Invalid path", NULL);
+		return (NULL);
+	}
+
 	result = g_malloc0(sizeof(*result));
 	g_mutex_init(&result->ri_mtx);
 	result->ri_path = g_strdup(path);
@@ -368,6 +375,8 @@ rpc_instance_new(const char *path, const char *descr, void *arg)
 	    "get_interfaces", NULL, rpc_get_interfaces);
 	rpc_instance_register_func(result, "librpc.Introspectable",
 	    "get_methods", NULL, rpc_get_methods);
+	rpc_instance_register_func(result, "librpc.Introspectable",
+	    "interface_exists", NULL, rpc_interface_exists);
 
 	return (result);
 }
@@ -557,4 +566,35 @@ rpc_get_methods(void *cookie, rpc_object_t args)
 
 done:
 	return ((rpc_object_t)NULL);
+}
+
+static rpc_object_t
+rpc_interface_exists(void *cookie, rpc_object_t args)
+{
+	rpc_instance_t instance = rpc_function_get_instance(cookie);
+	const char *interface;
+
+	if (rpc_object_unpack(args, "[s]", &interface) < 1) {
+		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
+		return (NULL);
+	}
+
+	return (rpc_bool_create((bool)g_hash_table_contains(
+	    instance->ri_interfaces, interface)));
+}
+
+static bool
+rpc_context_path_is_valid(const char *path)
+{
+	size_t length;
+
+	length = strlen(path);
+
+	if (path[0] != '/')
+		return (false);
+
+	if (path[length - 1] == '/')
+		return (false);
+
+	return (true);
 }
