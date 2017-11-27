@@ -762,13 +762,33 @@ cdef class Instance(object):
 
 
 cdef class RemoteInterface(object):
-    def __init__(self, client, path, interface=None):
+    def __init__(self, client, path, interface):
         self.client = client
         self.path = path
         self.interface = interface
 
+        try:
+            if not self.client.call_sync(
+                'interface_exists',
+                interface,
+                path=path,
+                interface='librpc.Introspectable'
+            ):
+                raise ValueError('Interface not found')
+        except:
+            raise
+
     def call_sync(self, name, *args):
         return self.client.call_sync(name, *args, path=self.path, interface=self.interface)
+
+    def __str__(self):
+        return "<librpc.RemoteInterface '{0}' at '{1}'>".format(
+            self.interface,
+            self.path
+        )
+
+    def __repr__(self):
+        return str(self)
 
     def __getattr__(self, item):
         def fn(*args):

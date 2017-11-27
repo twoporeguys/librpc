@@ -1136,7 +1136,7 @@ bool
 rpc_connection_has_credentials(rpc_connection_t conn)
 {
 
-	return (conn->rco_creds.rcc_uid != -1);
+	return (conn->rco_has_creds);
 }
 
 

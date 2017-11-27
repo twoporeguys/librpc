@@ -62,7 +62,7 @@ main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)
 	}
 
 	conn = rpc_client_get_connection(client);
-	result = rpc_connection_call_sync(conn, "hello", rpc_string_create("world"), NULL);
+	result = rpc_connection_call_simple(conn, "hello", "[s]", "world");
 	printf("result = %s\n", rpc_string_get_string_ptr(result));
 
 	rpc_client_close(client);
