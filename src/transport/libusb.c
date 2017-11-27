@@ -309,6 +309,9 @@ error:
 	if (conn->uc_logfile != NULL)
 		fclose(conn->uc_logfile);
 
+	conn->uc_state.uts_exit = true;
+	g_thread_join(conn->uc_libusb_thread);
+
 	libusb_close(conn->uc_handle);
 	g_free(conn);
 	return (-1);
