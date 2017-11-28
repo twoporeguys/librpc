@@ -742,6 +742,39 @@ rpc_interface_exists(void *cookie, rpc_object_t args)
 	    instance->ri_interfaces, interface)));
 }
 
+static rpc_object_t
+rpc_observable_property_get(void *cookie, rpc_object_t args)
+{
+	const char *name;
+
+	if (rpc_object_unpack(args, "[s]", &name) < 1) {
+		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
+		return (NULL);
+	}
+
+
+}
+
+static rpc_object_t
+rpc_observable_property_set(void *cookie, rpc_object_t args)
+{
+	const char *name;
+	rpc_object_t value;
+
+	if (rpc_object_unpack(args, "[s,v]", &name, &value) < 2) {
+		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
+		return (NULL);
+	}
+
+
+}
+
+static rpc_object_t
+rpc_observable_property_get_all(void *cookie, rpc_object_t args __unused)
+{
+
+}
+
 static bool
 rpc_context_path_is_valid(const char *path)
 {
