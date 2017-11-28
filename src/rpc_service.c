@@ -165,14 +165,173 @@ rpc_context_find_method(rpc_context_t context, const char *interface,
 	    name));
 }
 
+void
+rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
+    const char *name, rpc_object_t args)
+{
+	g_mutex_lock(&instance->ri_mtx);
+
+	if (instance->ri_context && instance->ri_context->rcx_server) {
+		rpc_server_broadcast_event(instance->ri_context->rcx_server,
+		    instance->ri_path, interface, name, args);
+	}
+
+	g_mutex_unlock(&instance->ri_mtx);
+}
+
+int
+rpc_instance_register_property(rpc_instance_t instance, const char *name,
+    rpc_object_t value, int rights)
+{
+	struct rpc_instance_property *prop;
+
+	prop = g_malloc0(sizeof(*prop));
+	g_mutex_init(&prop->rip_mtx);
+	prop->rip_name = g_strdup(name);
+	prop->rip_rights = rights;
+	prop->rip_value = rpc_retain(value);
+	prop->rip_watchers = g_ptr_array_new();
+
+	g_hash_table_insert(instance->ri_properties, prop->rip_name, prop);
+	rpc_instance_emit_event(instance, "librpc.Observable",
+	    "property_added", rpc_object_pack("{s,v,b,b}",
+	        "name", name,
+	        "value", value,
+	        "readable", rights & RPC_PROPERTY_READ,
+	        "writable", rights & RPC_PROPERTY_WRITE));
+
+	return (0);
+}
+
+void
+rpc_instance_unregister_property(rpc_instance_t instance, const char *name)
+{
+
+	g_hash_table_remove(instance->ri_properties, name);
+	rpc_instance_emit_event(instance, "librpc.Observable",
+	    "property_removed", rpc_object_pack("{s}", "name", name));
+}
+
+rpc_object_t
+rpc_instance_get_property(rpc_instance_t instance, const char *name)
+{
+	struct rpc_instance_property *prop;
+
+	prop = g_hash_table_lookup(instance->ri_properties, name);
+	if (prop == NULL) {
+		rpc_set_last_error(ENOENT, "Property not found", NULL);
+		return (NULL);
+	}
+
+	return (prop->rip_value);
+}
+
+void
+rpc_instance_set_property(rpc_instance_t instance, const char *name,
+    rpc_object_t value)
+{
+	struct rpc_instance_property *prop;
+	rpc_property_watcher_t cb;
+	int i;
+
+	prop = g_hash_table_lookup(instance->ri_properties, name);
+	if (prop == NULL)
+		return;
+
+	g_mutex_lock(&prop->rip_mtx);
+	rpc_release(prop->rip_value);
+	prop->rip_value = rpc_retain(prop->rip_value);
+
+	for (i = 0; i < prop->rip_watchers->len; i++) {
+		cb = g_ptr_array_index(prop->rip_watchers, i);
+		cb(name, value);
+	}
+
+	rpc_instance_emit_event(instance, "librpc.Observable",
+	    "property_changed", rpc_object_pack("{s,v}",
+	        "name", name,
+	        "value", value));
+
+	g_mutex_unlock(&prop->rip_mtx);
+}
+
+void *
+rpc_instance_watch_property(rpc_instance_t instance, const char *name,
+    rpc_property_watcher_t fn)
+{
+	struct rpc_instance_property *prop;
+	rpc_property_watcher_t realcb;
+
+	prop = g_hash_table_lookup(instance->ri_properties, name);
+	if (prop == NULL) {
+		rpc_set_last_error(ENOENT, "Property not found", NULL);
+		return (NULL);
+	}
+
+	g_mutex_lock(&prop->rip_mtx);
+	realcb = Block_copy(fn);
+	g_ptr_array_add(prop->rip_watchers, realcb);
+	g_mutex_unlock(&prop->rip_mtx);
+
+	return (realcb);
+}
+
+void
+rpc_instance_unwatch_property(rpc_instance_t instance, const char *name,
+    void *cookie)
+{
+	struct rpc_instance_property *prop;
+	rpc_property_watcher_t realcb;
+
+	prop = g_hash_table_lookup(instance->ri_properties, name);
+	if (prop == NULL)
+		return;
+
+	g_mutex_lock(&prop->rip_mtx);
+	g_ptr_array_remove(prop->rip_watchers, cookie);
+	g_mutex_unlock(&prop->rip_mtx);
+}
+
+
 int
 rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
 {
 
+	g_mutex_lock(&context->rcx_mtx);
+
+	if (g_hash_table_contains(context->rcx_instances, instance->ri_path)) {
+		rpc_set_last_error(EEXIST, "Instance already exists", NULL);
+		g_mutex_unlock(&context->rcx_mtx);
+		return (-1);
+	}
+
+	if (context->rcx_server != NULL) {
+		rpc_server_broadcast_event(context->rcx_server, "/",
+		    "librpc.Discoverable", "object_added",
+		    rpc_string_create(instance->ri_path));
+	}
+
 	g_hash_table_insert(context->rcx_instances, instance->ri_path, instance);
+	g_mutex_unlock(&context->rcx_mtx);
 	return (0);
 }
 
+void
+rpc_context_unregister_instance(rpc_context_t context, const char *path)
+{
+
+	g_mutex_lock(&context->rcx_mtx);
+
+	if (g_hash_table_remove(context->rcx_instances, path)) {
+		if (context->rcx_server != NULL) {
+			rpc_server_broadcast_event(context->rcx_server, "/",
+			    "librpc.Discoverable", "object_removed",
+			    rpc_string_create(path));
+		}
+	}
+
+	g_mutex_unlock(&context->rcx_mtx);
+}
 
 int
 rpc_context_register_method(rpc_context_t context, struct rpc_method *m)

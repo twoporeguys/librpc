@@ -67,6 +67,8 @@ typedef rpc_object_t (^rpc_function_t)(void *cookie, rpc_object_t args);
  */
 typedef rpc_object_t (*rpc_function_f)(void *cookie, rpc_object_t args);
 
+typedef void (^rpc_property_watcher_t)(const char *name, rpc_object_t value);
+
 /**
  * RPC method descriptor.
  */
@@ -76,6 +78,12 @@ struct rpc_method
 	const char *		rm_interface;
 	rpc_function_t  	rm_block;
 	void *			rm_arg;
+};
+
+enum rpc_property_rights
+{
+	RPC_PROPERTY_READ = (1 << 0),
+	RPC_PROPERTY_WRITE = (1 << 1),
 };
 
 /**
@@ -117,6 +125,13 @@ rpc_instance_t rpc_context_get_root(rpc_context_t context);
  * @return
  */
 int rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance);
+
+/**
+ *
+ * @param context
+ * @param path
+ */
+void rpc_context_unregister_instance(rpc_context_t context, const char *path);
 
 /**
  * Registers a given rpc_method structure as an RPC method in a given context.
@@ -382,7 +397,60 @@ struct rpc_method *rpc_instance_find_method(rpc_instance_t instance,
  * @param name
  */
 void rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
+    const char *name, rpc_object_t args);
+
+/**
+ *
+ * @param instance
+ * @param name
+ * @param value
+ * @return
+ */
+int rpc_instance_register_property(rpc_instance_t instance, const char *name,
+    rpc_object_t value, int rights);
+
+/**
+ *
+ * @param instance
+ * @param name
+ */
+void rpc_instance_unregister_property(rpc_instance_t instance,
     const char *name);
+
+/**
+ *
+ * @param instance
+ * @param name
+ * @return
+ */
+rpc_object_t rpc_instance_get_property(rpc_instance_t instance,
+    const char *name);
+
+/**
+ *
+ * @param instance
+ * @param name
+ * @param value
+ */
+void rpc_instance_set_property(rpc_instance_t instance, const char *name,
+    rpc_object_t value);
+
+/**
+ *
+ * @param instance
+ * @param name
+ * @return
+ */
+void *rpc_instance_watch_property(rpc_instance_t instance, const char *name,
+    rpc_property_watcher_t fn);
+
+/**
+ *
+ * @param instance
+ * @param cookie
+ */
+void rpc_instance_unwatch_property(rpc_instance_t instance, const char *name,
+    void *cookie);
 
 /**
  *

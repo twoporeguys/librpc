@@ -69,8 +69,10 @@ main(int argc, const char *argv[])
 
 	rpc_context_register_block(ctx, "event", "Sends a bunch of events",
 	    NULL, ^(void *cookie __unused, rpc_object_t args __unused) {
-		rpc_server_broadcast_event(srv, "server.hello", rpc_string_create("world"));
-		rpc_server_broadcast_event(srv, "oh_noes", rpc_int64_create(-1));
+		rpc_server_broadcast_event(srv, NULL, NULL, "server.hello",
+		    rpc_string_create("world"));
+		rpc_server_broadcast_event(srv, NULL, NULL, "oh_noes",
+		    rpc_int64_create(-1));
 		return (rpc_null_create());
 	    });
 

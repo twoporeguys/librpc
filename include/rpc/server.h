@@ -82,8 +82,8 @@ rpc_server_t rpc_server_create(const char *uri, rpc_context_t context);
  * @param name Name of an event to be broadcasted.
  * @param args Event arguments.
  */
-void rpc_server_broadcast_event(rpc_server_t server, const char *name,
-    rpc_object_t args);
+void rpc_server_broadcast_event(rpc_server_t server, const char *path,
+    const char *interface, const char *name, rpc_object_t args);
 
 /**
  * Creates an event handler internal to a server for an event of a given name.

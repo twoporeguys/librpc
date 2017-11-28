@@ -276,16 +276,29 @@ struct rpc_instance
 	char *			ri_path;
 	char *			ri_descr;
 	void *			ri_arg;
+	rpc_context_t 		ri_context;
 	GHashTable *		ri_interfaces;
 	GHashTable *		ri_children;
 	GHashTable *		ri_subscriptions;
+	GHashTable *		ri_properties;
 	GMutex			ri_mtx;
+};
+
+struct rpc_instance_property
+{
+	char *			rip_name;
+	int 			rip_rights;
+	rpc_object_t 		rip_value;
+	GPtrArray *		rip_watchers;
+	GMutex			rip_mtx;
 };
 
 struct rpc_context
 {
+	GMutex			rcx_mtx;
     	GThreadPool *		rcx_threadpool;
 	GHashTable *		rcx_instances;
+	rpc_server_t 		rcx_server;
 	rpc_instance_t 		rcx_root;
 
 	/* Hooks */
