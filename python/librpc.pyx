@@ -762,7 +762,7 @@ cdef class Instance(object):
 
 
 cdef class RemoteInterface(object):
-    def __init__(self, client, path, interface):
+    def __init__(self, client, path, interface=''):
         self.client = client
         self.path = path
         self.interface = interface

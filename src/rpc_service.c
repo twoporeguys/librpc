@@ -590,6 +590,9 @@ rpc_context_path_is_valid(const char *path)
 
 	length = strlen(path);
 
+	if (length < 1)
+		return (false);
+
 	if (path[0] != '/')
 		return (false);
 
