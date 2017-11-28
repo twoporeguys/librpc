@@ -309,6 +309,9 @@ error:
 	if (conn->uc_logfile != NULL)
 		fclose(conn->uc_logfile);
 
+	conn->uc_state.uts_exit = true;
+	g_thread_join(conn->uc_libusb_thread);
+
 	libusb_close(conn->uc_handle);
 	g_free(conn);
 	return (-1);
@@ -339,8 +342,9 @@ usb_abort(void *arg)
 		fclose(conn->uc_logfile);
 
 	conn->uc_state.uts_exit = true;
-	libusb_close(conn->uc_handle);
 	g_thread_join(conn->uc_libusb_thread);
+	libusb_close(conn->uc_handle);
+	libusb_exit(conn->uc_libusb);
 	return (0);
 }
 
@@ -628,9 +632,11 @@ static void *
 usb_libusb_thread(void *arg)
 {
 	struct usb_thread_state *uts = arg;
+	struct timeval tv = {0 ,0};
 
 	while (!uts->uts_exit)
-		libusb_handle_events(uts->uts_libusb);
+		libusb_handle_events_timeout_completed(uts->uts_libusb, &tv,
+		    NULL);
 
 	return (NULL);
 }
