@@ -8,7 +8,7 @@
   </compound>
   <compound refid="structrpc__method" kind="struct"><name>rpc_method</name>
     <member refid="structrpc__method_1abeff7db58d8903e9e6827d4acac7a8a0" kind="variable"><name>rm_name</name></member>
-    <member refid="structrpc__method_1ab384c866584326d2e06c04ce1972a65a" kind="variable"><name>rm_description</name></member>
+    <member refid="structrpc__method_1ad16d04d88d239e7412260ba948d88f7e" kind="variable"><name>rm_interface</name></member>
     <member refid="structrpc__method_1ad6f2db7ebb8d4747730d4cb25b0c6824" kind="variable"><name>rm_block</name></member>
     <member refid="structrpc__method_1afc4708084618f0879e54efda3292cf8c" kind="variable"><name>rm_arg</name></member>
   </compound>
@@ -63,7 +63,7 @@
     <member refid="connection_8h_1a5e44285dc90be1f6bc541504a3f6d929" kind="typedef"><name>rpc_call_status_t</name></member>
     <member refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kind="typedef"><name>rpc_connection_t</name></member>
     <member refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" kind="typedef"><name>rpc_call_t</name></member>
-    <member refid="connection_8h_1a65fe4b58831bfa2c2aa2210a48c52af2" kind="typedef"><name>rpc_handler_t</name></member>
+    <member refid="connection_8h_1ae18f6c0163bc8460cee1b6332c83fe07" kind="typedef"><name>rpc_handler_t</name></member>
     <member refid="connection_8h_1a4dfba30ff97d4c5c56a6787ecd1bb79a" kind="typedef"><name>rpc_error_handler_t</name></member>
     <member refid="connection_8h_1a659dfc386fa0add62a07c17662a29641" kind="typedef"><name>rpc_callback_t</name></member>
     <member refid="connection_8h_1a0382631023d9cf812d978e80d5814bc8" kind="function"><name>rpc_connection_create</name></member>
@@ -72,10 +72,12 @@
     <member refid="connection_8h_1a60ace791b01ad3aee0fc20d266c9673f" kind="function"><name>rpc_connection_unsubscribe_event</name></member>
     <member refid="connection_8h_1a82d9bf3dc3219c41e89739acd0b314d5" kind="function"><name>rpc_connection_register_event_handler</name></member>
     <member refid="connection_8h_1a209856a794a9a10a53735787926f4b95" kind="function"><name>rpc_connection_unregister_event_handler</name></member>
-    <member refid="connection_8h_1aba014ae3408ed96b696ab70066076f13" kind="function"><name>rpc_connection_call_sync</name></member>
-    <member refid="connection_8h_1a96c837f40d9808ec7d493ddd98e3e61a" kind="function"><name>rpc_connection_call_syncp</name></member>
-    <member refid="connection_8h_1a1dd48a58161cbf375719ecde4480c8a9" kind="function"><name>rpc_connection_call_syncv</name></member>
-    <member refid="connection_8h_1aee4f43c3790d07d116367646694cb1c0" kind="function"><name>rpc_connection_call</name></member>
+    <member refid="connection_8h_1a4bb388f7cc19ce3d01577993fcf7dd63" kind="function"><name>rpc_connection_call_sync</name></member>
+    <member refid="connection_8h_1a62df11aec4a738cc80defd3408354721" kind="function"><name>rpc_connection_call_syncv</name></member>
+    <member refid="connection_8h_1a0bbf25b18122ee854bc8f0016bc84eeb" kind="function"><name>rpc_connection_call_syncp</name></member>
+    <member refid="connection_8h_1a0528a5ec56934aa35e9c51423b54c880" kind="function"><name>rpc_connection_call_syncpv</name></member>
+    <member refid="connection_8h_1a308c17c19fccdd57ae46739b860aea19" kind="function"><name>rpc_connection_call_simple</name></member>
+    <member refid="connection_8h_1a2d2059a4a18c0bfb8d8482af47d34072" kind="function"><name>rpc_connection_call</name></member>
     <member refid="connection_8h_1a1bc22789ecc5ca9cbe8637c8f173ee4d" kind="function"><name>rpc_connection_send_event</name></member>
     <member refid="connection_8h_1a2d9343c2c38625f9659358e0710ed0c7" kind="function"><name>rpc_connection_ping</name></member>
     <member refid="connection_8h_1ae843166183a4bd6dbf5a58133b3fcaf3" kind="function"><name>rpc_connection_set_event_handler</name></member>
@@ -93,10 +95,6 @@
     <member refid="connection_8h_1a109ba3b143a1931263d8716f3ac51cb0" kind="function"><name>rpc_call_status</name></member>
     <member refid="connection_8h_1a6af73450be622a40f3cbc2b9425ca5dd" kind="function"><name>rpc_call_result</name></member>
     <member refid="connection_8h_1ace66aca5d1c46e97128a3e09dbce89d1" kind="function"><name>rpc_call_free</name></member>
-  </compound>
-  <compound refid="discovery_8h" kind="file"><name>discovery.h</name>
-    <member refid="discovery_8h_1a282ce669d70603a2a80f99c3dc926d8f" kind="function"><name>rpc_discovery_register</name></member>
-    <member refid="discovery_8h_1aef4a5ebeff7f32031a8ef8be116205bc" kind="function"><name>rpc_discovery_destroy</name></member>
   </compound>
   <compound refid="object_8h" kind="file"><name>object.h</name>
     <member refid="object_8h_1a33c2b5ad21d20059d031e6a390021822" kind="define"><name>RPC_ARRAY_APPLIER</name></member>
@@ -269,26 +267,43 @@
   <compound refid="service_8h" kind="file"><name>service.h</name>
     <member refid="service_8h_1a4c7094875a0bd8cc87e7c1d24a4481a6" kind="define"><name>RPC_FUNCTION_STILL_RUNNING</name></member>
     <member refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kind="typedef"><name>rpc_context_t</name></member>
+    <member refid="service_8h_1afd1294bd7ea02592ecc002e1576ef290" kind="typedef"><name>rpc_instance_t</name></member>
     <member refid="service_8h_1a02d3dbd723de9bd5140887c9935ff05a" kind="typedef"><name>rpc_function_t</name></member>
     <member refid="service_8h_1a1f67d69a108ffc8087346616d82eacf7" kind="typedef"><name>rpc_function_f</name></member>
     <member refid="service_8h_1a2f099d270db1d46696878337c20d1bdd" kind="function"><name>rpc_context_create</name></member>
     <member refid="service_8h_1ae62c27a53aea99a9c87e5b12b3d3cbbc" kind="function"><name>rpc_context_free</name></member>
-    <member refid="service_8h_1a58869381d832749fab98830cb5a75e46" kind="function"><name>rpc_context_find_method</name></member>
+    <member refid="service_8h_1a20f26ce7e4fd8d1a81f8bb616939dec7" kind="function"><name>rpc_context_find_instance</name></member>
+    <member refid="service_8h_1a9b55b5c3cd7c1f3de1755f8b287ee6db" kind="function"><name>rpc_context_get_root</name></member>
+    <member refid="service_8h_1a2cb77d1cf1cc6cc22ce7f620f434c1d3" kind="function"><name>rpc_context_register_instance</name></member>
     <member refid="service_8h_1abd3ce744fe6091cf188b1f44b31548da" kind="function"><name>rpc_context_register_method</name></member>
     <member refid="service_8h_1af83b298b11aec4f97c0db5d4391b0be7" kind="function"><name>rpc_context_register_block</name></member>
     <member refid="service_8h_1a6de78771a848fe3b2001e08a7cf0a88c" kind="function"><name>rpc_context_register_func</name></member>
-    <member refid="service_8h_1ab71a7949b47080bceed777eab0cb4c67" kind="function"><name>rpc_context_unregister_method</name></member>
+    <member refid="service_8h_1a8c96adc49c6ecf3c0ad7ae1ad7c82411" kind="function"><name>rpc_context_unregister_method</name></member>
     <member refid="service_8h_1ad1c0c9c7897adf4ad5e7ee9c40e545b8" kind="function"><name>rpc_context_set_pre_call_hook</name></member>
     <member refid="service_8h_1a36c5dae2cc75f5d4a740c5db25e25d7a" kind="function"><name>rpc_context_set_post_call_hook</name></member>
     <member refid="service_8h_1a206fab24804db208f9b4d44f4c303596" kind="function"><name>rpc_context_dispatch_call</name></member>
     <member refid="service_8h_1a62e71e6c0208e7ed1e23e2f9f3cd78f2" kind="function"><name>rpc_function_get_arg</name></member>
+    <member refid="service_8h_1a51694182976cc6191bdd45205f027ca1" kind="function"><name>rpc_function_get_context</name></member>
+    <member refid="service_8h_1a0fc5bd434edb8eec1fa75367e2bead26" kind="function"><name>rpc_function_get_instance</name></member>
     <member refid="service_8h_1a0d57a21163cd2d8bd06add360270809c" kind="function"><name>rpc_function_get_name</name></member>
+    <member refid="service_8h_1a6617fa9bcafd942255e9ec3bd9ecbf1e" kind="function"><name>rpc_function_get_path</name></member>
+    <member refid="service_8h_1a51e6cad2e4f70b1a073e54a323064420" kind="function"><name>rpc_function_get_interface</name></member>
     <member refid="service_8h_1a1b73c8714198994d5055bf5cfe3012a4" kind="function"><name>rpc_function_respond</name></member>
     <member refid="service_8h_1ad7d639f2063a65279f159175a473b881" kind="function"><name>rpc_function_error</name></member>
     <member refid="service_8h_1acfe4732dbbfa89a8b2972e80b6d65de1" kind="function"><name>rpc_function_error_ex</name></member>
     <member refid="service_8h_1a36b4ff5a09f3a8139f1d5b59ab930139" kind="function"><name>rpc_function_yield</name></member>
     <member refid="service_8h_1a7e912e42af9c3899e74e1ef539ca7e50" kind="function"><name>rpc_function_end</name></member>
     <member refid="service_8h_1a23fb9149cf7ad5bfdec4bc24fd805617" kind="function"><name>rpc_function_should_abort</name></member>
+    <member refid="service_8h_1a3e37008b3939ab52f95f17ae68318e75" kind="function"><name>rpc_instance_new</name></member>
+    <member refid="service_8h_1a6f4eb6df2553bf05ce15f74950f6415e" kind="function"><name>rpc_instance_get_arg</name></member>
+    <member refid="service_8h_1a68b61823da7220e591aa5b815fe5cc5e" kind="function"><name>rpc_instance_get_path</name></member>
+    <member refid="service_8h_1a1903baa0815e6ed639178888cd81b2b3" kind="function"><name>rpc_instance_register_method</name></member>
+    <member refid="service_8h_1afa0f59ae87c130966ba378bc6c2ee12b" kind="function"><name>rpc_instance_register_block</name></member>
+    <member refid="service_8h_1ad5db3e98c350f755011b6d470ba21373" kind="function"><name>rpc_instance_register_func</name></member>
+    <member refid="service_8h_1a76cbc7eebe61d4fedf608d4f411cacba" kind="function"><name>rpc_instance_unregister_method</name></member>
+    <member refid="service_8h_1a73d9c76529ba51d29880464c415db845" kind="function"><name>rpc_instance_find_method</name></member>
+    <member refid="service_8h_1ae95d9adc6b892e610116469623589727" kind="function"><name>rpc_instance_emit_event</name></member>
+    <member refid="service_8h_1a5ff30bf1b1536f88fe0946c5df4359bd" kind="function"><name>rpc_instance_free</name></member>
   </compound>
   <compound refid="typing_8h" kind="file"><name>typing.h</name>
     <member refid="typing_8h_1aa8222d58f186295461f3dfb1beb256b9" kind="define"><name>RPCT_REALM_FIELD</name></member>
