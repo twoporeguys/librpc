@@ -69,6 +69,19 @@ typedef rpc_object_t (*rpc_function_f)(void *cookie, rpc_object_t args);
 
 typedef void (^rpc_property_watcher_t)(const char *name, rpc_object_t value);
 
+#define	RPC_FUNCTION(_fn)						\
+	^(void *_cookie, rpc_object_t _args) {				\
+		return (_fn(_cookie, _args));				\
+	}
+
+#define	RPC_METHOD(_interface, _name, _fn, _arg)			\
+	{								\
+		.rm_name = (_name),					\
+		.rm_interface = (_interface),				\
+		.rm_block = RPC_FUNCTION(_fn),				\
+		.rm_arg = (_arg)					\
+	}
+
 /**
  * RPC method descriptor.
  */
@@ -78,6 +91,27 @@ struct rpc_method
 	const char *		rm_interface;
 	rpc_function_t  	rm_block;
 	void *			rm_arg;
+};
+
+struct rpc_property
+{
+	const char *		rp_name;
+	const char *		rp_interface;
+	int			rp_rights;
+};
+
+struct rpc_event
+{
+	const char *		re_name;
+	const char *		re_interface;
+};
+
+struct rpc_interface
+{
+	const char *		ri_name;
+	struct {
+		enum rpc_mem
+	};
 };
 
 enum rpc_property_rights
@@ -346,7 +380,7 @@ const char *rpc_instance_get_path(rpc_instance_t instance);
  * @param name
  * @param fn
  */
-int rpc_instance_register_method(rpc_instance_t instance, struct rpc_method *m);
+int rpc_instance_register_methods(rpc_instance_t instance, struct rpc_method *m, size_t n);
 
 /**
  *
@@ -389,6 +423,13 @@ int rpc_instance_unregister_method(rpc_instance_t instance,
  */
 struct rpc_method *rpc_instance_find_method(rpc_instance_t instance,
     const char *interface, const char *name);
+
+/**
+ *
+ * @param interface
+ * @return
+ */
+bool rpc_instance_has_interface(rpc_instance_t instance, const char *interface);
 
 /**
  *
@@ -451,6 +492,14 @@ void *rpc_instance_watch_property(rpc_instance_t instance, const char *name,
  */
 void rpc_instance_unwatch_property(rpc_instance_t instance, const char *name,
     void *cookie);
+
+/**
+ *
+ * @param instance
+ * @param name
+ * @return
+ */
+int rpc_instance_get_property_rights(rpc_instance_t instance, const char *name);
 
 /**
  *

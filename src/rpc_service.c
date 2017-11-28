@@ -41,6 +41,23 @@ static rpc_object_t rpc_get_objects(void *cookie, rpc_object_t args);
 static rpc_object_t rpc_get_interfaces(void *cookie, rpc_object_t args);
 static rpc_object_t rpc_get_methods(void *cookie, rpc_object_t args);
 static rpc_object_t rpc_interface_exists(void *cookie, rpc_object_t args);
+static rpc_object_t rpc_observable_property_get(void *cookie, rpc_object_t args);
+static rpc_object_t rpc_observable_property_get_all(void *cookie, rpc_object_t args);
+static rpc_object_t rpc_observable_property_set(void *cookie, rpc_object_t args);
+
+struct rpc_method rpc_discoverable_methods[] = {
+
+};
+
+struct rpc_method rpc_introspectable_methods[] = {
+
+};
+
+struct rpc_method rpc_observable_methods[] = {
+	RPC_METHOD("librpc.Observable", "get", rpc_observable_property_get, NULL),
+	RPC_METHOD("librpc.Observable", "get_all", rpc_observable_property_get_all, NULL),
+	RPC_METHOD("librpc.Observable", "set", rpc_observable_property_set, NULL),
+};
 
 static void
 rpc_context_tp_handler(gpointer data, gpointer user_data)
@@ -193,6 +210,18 @@ rpc_instance_register_property(rpc_instance_t instance, const char *name,
 	prop->rip_watchers = g_ptr_array_new();
 
 	g_hash_table_insert(instance->ri_properties, prop->rip_name, prop);
+
+	/* Install Observable interface methods */
+	if (!rpc_instance_has_interface(instance, "librpc.Obervable")) {
+		rpc_instance_register_func(instance, "librpc.Observable",
+		    "get", NULL, rpc_observable_property_get);
+		rpc_instance_register_func(instance, "librpc.Observable",
+		    "get_all", NULL, rpc_observable_property_get_all);
+		rpc_instance_register_func(instance, "librpc.Observable",
+		    "set", NULL, rpc_observable_property_set);
+	}
+
+	/* Emit property added event */
 	rpc_instance_emit_event(instance, "librpc.Observable",
 	    "property_added", rpc_object_pack("{s,v,b,b}",
 	        "name", name,
@@ -579,6 +608,13 @@ rpc_instance_find_method(rpc_instance_t instance, const char *interface,
 	return (g_hash_table_lookup(methods, name));
 }
 
+bool
+rpc_instance_has_interface(rpc_instance_t instance, const char *interface)
+{
+
+	return ((bool)g_hash_table_contains(instance->ri_interfaces, interface));
+}
+
 int
 rpc_instance_register_method(rpc_instance_t instance, struct rpc_method *m)
 {
@@ -745,6 +781,7 @@ rpc_interface_exists(void *cookie, rpc_object_t args)
 static rpc_object_t
 rpc_observable_property_get(void *cookie, rpc_object_t args)
 {
+	rpc_instance_t inst = rpc_function_get_instance(cookie);
 	const char *name;
 
 	if (rpc_object_unpack(args, "[s]", &name) < 1) {
@@ -752,12 +789,16 @@ rpc_observable_property_get(void *cookie, rpc_object_t args)
 		return (NULL);
 	}
 
+	if (rpc_instance_get_property_rights(inst, name) & RPC_PROPERTY_READ)
+		return (rpc_instance_get_property(inst, name));
 
+	return (NULL);
 }
 
 static rpc_object_t
 rpc_observable_property_set(void *cookie, rpc_object_t args)
 {
+	rpc_instance_t inst = rpc_function_get_instance(cookie);
 	const char *name;
 	rpc_object_t value;
 
@@ -766,13 +807,39 @@ rpc_observable_property_set(void *cookie, rpc_object_t args)
 		return (NULL);
 	}
 
+	if (rpc_instance_get_property_rights(inst, name) & RPC_PROPERTY_WRITE) {
+		rpc_instance_set_property(inst, name, value);
+		return (NULL);
+	}
 
+	rpc_function_error(cookie, EPERM, "Property write not allowed");
+	return (NULL);
 }
 
 static rpc_object_t
 rpc_observable_property_get_all(void *cookie, rpc_object_t args __unused)
 {
+	rpc_instance_t inst = rpc_function_get_instance(cookie);
+	GHashTableIter iter;
+	const char *k;
+	struct rpc_instance_property *v;
+	rpc_object_t fragment;
 
+	g_hash_table_iter_init(&iter, inst->ri_properties);
+
+	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
+		fragment = rpc_object_pack("{s,v,b,b}",
+		    "name", v->rip_name,
+		    "value", v->rip_value,
+		    "readable", v->rip_rights & RPC_PROPERTY_READ,
+		    "writable", v->rip_rights & RPC_PROPERTY_WRITE);
+
+		if (rpc_function_yield(cookie, fragment) != 0)
+			goto done;
+	}
+
+done:
+	return (NULL);
 }
 
 static bool

@@ -778,6 +778,9 @@ cdef class RemoteInterface(object):
         except:
             raise
 
+        if self.client.call_sync(
+            'interface_exists', interface,)
+
     def call_sync(self, name, *args):
         return self.client.call_sync(name, *args, path=self.path, interface=self.interface)
 
