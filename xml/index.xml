@@ -6,11 +6,24 @@
     <member refid="structrpc__bus__node_1a9f5b9214a64d9cd54cd4839f869ba7df" kind="variable"><name>rbn_serial</name></member>
     <member refid="structrpc__bus__node_1a624e2a0be665938924ab2f815afb669e" kind="variable"><name>rbn_address</name></member>
   </compound>
+  <compound refid="structrpc__event" kind="struct"><name>rpc_event</name>
+    <member refid="structrpc__event_1a13978e6f988e0857bee708b70103536c" kind="variable"><name>re_name</name></member>
+    <member refid="structrpc__event_1a4a33676ef6d6b61fe00db6bcc499a281" kind="variable"><name>re_interface</name></member>
+  </compound>
+  <compound refid="structrpc__interface" kind="struct"><name>rpc_interface</name>
+    <member refid="structrpc__interface_1a7e1b33ccc8a32e6daaf69ec6daec7bc1" kind="variable"><name>ri_name</name></member>
+    <member refid="structrpc__interface_1ab1864d6d78f12d027532bd9cd8e79702" kind="variable"><name>@1</name></member>
+  </compound>
   <compound refid="structrpc__method" kind="struct"><name>rpc_method</name>
     <member refid="structrpc__method_1abeff7db58d8903e9e6827d4acac7a8a0" kind="variable"><name>rm_name</name></member>
     <member refid="structrpc__method_1ad16d04d88d239e7412260ba948d88f7e" kind="variable"><name>rm_interface</name></member>
     <member refid="structrpc__method_1ad6f2db7ebb8d4747730d4cb25b0c6824" kind="variable"><name>rm_block</name></member>
     <member refid="structrpc__method_1afc4708084618f0879e54efda3292cf8c" kind="variable"><name>rm_arg</name></member>
+  </compound>
+  <compound refid="structrpc__property" kind="struct"><name>rpc_property</name>
+    <member refid="structrpc__property_1adeaa00c1da97190f208087c7fa93e88e" kind="variable"><name>rp_name</name></member>
+    <member refid="structrpc__property_1a1c36f5b8d28b5a36a9dc6a647244b0fc" kind="variable"><name>rp_interface</name></member>
+    <member refid="structrpc__property_1a0c815b5a9960a0824544228d51be90cb" kind="variable"><name>rp_rights</name></member>
   </compound>
   <compound refid="structrpc__query__params" kind="struct"><name>rpc_query_params</name>
     <member refid="structrpc__query__params_1a6e4eafac062b7f7490a4983d56296385" kind="variable"><name>single</name></member>
@@ -266,6 +279,8 @@
   </compound>
   <compound refid="service_8h" kind="file"><name>service.h</name>
     <member refid="service_8h_1a4c7094875a0bd8cc87e7c1d24a4481a6" kind="define"><name>RPC_FUNCTION_STILL_RUNNING</name></member>
+    <member refid="service_8h_1a5484afe5b3f646a7989ad91e011cc5b1" kind="define"><name>RPC_FUNCTION</name></member>
+    <member refid="service_8h_1a3557413d07aac53bfd9f87912a2e46ba" kind="define"><name>RPC_METHOD</name></member>
     <member refid="service_8h_1ae93cefa938d7efd2095f73e9dcdf8926" kind="enum"><name>rpc_property_rights</name></member>
     <member refid="service_8h_1ae93cefa938d7efd2095f73e9dcdf8926a2573aa57a92525ca22dad5ff517bc9d0" kind="enumvalue"><name>RPC_PROPERTY_READ</name></member>
     <member refid="service_8h_1ae93cefa938d7efd2095f73e9dcdf8926aea82a0471278ee17a5ea4b53afb43aee" kind="enumvalue"><name>RPC_PROPERTY_WRITE</name></member>
@@ -302,11 +317,12 @@
     <member refid="service_8h_1a3e37008b3939ab52f95f17ae68318e75" kind="function"><name>rpc_instance_new</name></member>
     <member refid="service_8h_1a6f4eb6df2553bf05ce15f74950f6415e" kind="function"><name>rpc_instance_get_arg</name></member>
     <member refid="service_8h_1a68b61823da7220e591aa5b815fe5cc5e" kind="function"><name>rpc_instance_get_path</name></member>
-    <member refid="service_8h_1a1903baa0815e6ed639178888cd81b2b3" kind="function"><name>rpc_instance_register_method</name></member>
+    <member refid="service_8h_1ad6da52725df42459aac2dd13cb3649b3" kind="function"><name>rpc_instance_register_methods</name></member>
     <member refid="service_8h_1afa0f59ae87c130966ba378bc6c2ee12b" kind="function"><name>rpc_instance_register_block</name></member>
     <member refid="service_8h_1ad5db3e98c350f755011b6d470ba21373" kind="function"><name>rpc_instance_register_func</name></member>
     <member refid="service_8h_1a76cbc7eebe61d4fedf608d4f411cacba" kind="function"><name>rpc_instance_unregister_method</name></member>
     <member refid="service_8h_1a73d9c76529ba51d29880464c415db845" kind="function"><name>rpc_instance_find_method</name></member>
+    <member refid="service_8h_1a67fe6cd8eae36f36546a4f971c6fc34f" kind="function"><name>rpc_instance_has_interface</name></member>
     <member refid="service_8h_1a2e027c8f7bdaee75f54d9957c33a0895" kind="function"><name>rpc_instance_emit_event</name></member>
     <member refid="service_8h_1a562d4505034a53caa544c4e244ede5e8" kind="function"><name>rpc_instance_register_property</name></member>
     <member refid="service_8h_1a762310385214a2370a790ad23d72522d" kind="function"><name>rpc_instance_unregister_property</name></member>
@@ -314,6 +330,7 @@
     <member refid="service_8h_1a7b9b22db3ce4f4361e8caf3515d5341c" kind="function"><name>rpc_instance_set_property</name></member>
     <member refid="service_8h_1abc8d9f6d1c339ddefa6f539d1b66043f" kind="function"><name>rpc_instance_watch_property</name></member>
     <member refid="service_8h_1a0ca890889f873f677d2e9f5cc1ed8c4c" kind="function"><name>rpc_instance_unwatch_property</name></member>
+    <member refid="service_8h_1a0f62c682dbbe0b91a15a4a19c176cb76" kind="function"><name>rpc_instance_get_property_rights</name></member>
     <member refid="service_8h_1a5ff30bf1b1536f88fe0946c5df4359bd" kind="function"><name>rpc_instance_free</name></member>
   </compound>
   <compound refid="typing_8h" kind="file"><name>typing.h</name>

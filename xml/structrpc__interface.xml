@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="structrpc__interface" kind="struct" language="C++" prot="public">
+    <compoundname>rpc_interface</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structrpc__interface_1a7e1b33ccc8a32e6daaf69ec6daec7bc1" prot="public" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* rpc_interface::ri_name</definition>
+        <argsstring></argsstring>
+        <name>ri_name</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/service.h" line="111" column="1" bodyfile="/code/include/rpc/service.h" bodystart="111" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__interface_1ab1864d6d78f12d027532bd9cd8e79702" prot="public" static="no" mutable="no">
+        <type>struct rpc_interface::@0</type>
+        <definition>struct rpc_interface::@0 rpc_interface::@1</definition>
+        <argsstring></argsstring>
+        <name>@1</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/service.h" line="114" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/code/include/rpc/service.h" line="110" column="1" bodyfile="/code/include/rpc/service.h" bodystart="109" bodyend="115"/>
+    <listofallmembers>
+      <member refid="structrpc__interface_1a7e1b33ccc8a32e6daaf69ec6daec7bc1" prot="public" virt="non-virtual"><scope>rpc_interface</scope><name>ri_name</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -120,12 +120,22 @@ This graph shows which files directly or indirectly include this file:</div>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrpc__method.html">rpc_method</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrpc__property.html">rpc_property</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrpc__event.html">rpc_event</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrpc__interface.html">rpc_interface</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a4c7094875a0bd8cc87e7c1d24a4481a6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4c7094875a0bd8cc87e7c1d24a4481a6"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>RPC_FUNCTION_STILL_RUNNING</b>&#160;&#160;&#160;((<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>)1)</td></tr>
 <tr class="separator:a4c7094875a0bd8cc87e7c1d24a4481a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5484afe5b3f646a7989ad91e011cc5b1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>RPC_FUNCTION</b>(_fn)</td></tr>
+<tr class="separator:a5484afe5b3f646a7989ad91e011cc5b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3557413d07aac53bfd9f87912a2e46ba"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>RPC_METHOD</b>(_interface,  _name,  _fn,  _arg)</td></tr>
+<tr class="separator:a3557413d07aac53bfd9f87912a2e46ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -207,8 +217,8 @@ Functions</h2></td></tr>
 <tr class="separator:a6f4eb6df2553bf05ce15f74950f6415e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68b61823da7220e591aa5b815fe5cc5e"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a68b61823da7220e591aa5b815fe5cc5e">rpc_instance_get_path</a> (rpc_instance_t instance)</td></tr>
 <tr class="separator:a68b61823da7220e591aa5b815fe5cc5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1903baa0815e6ed639178888cd81b2b3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a1903baa0815e6ed639178888cd81b2b3">rpc_instance_register_method</a> (rpc_instance_t instance, struct <a class="el" href="structrpc__method.html">rpc_method</a> *m)</td></tr>
-<tr class="separator:a1903baa0815e6ed639178888cd81b2b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6da52725df42459aac2dd13cb3649b3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ad6da52725df42459aac2dd13cb3649b3">rpc_instance_register_methods</a> (rpc_instance_t instance, struct <a class="el" href="structrpc__method.html">rpc_method</a> *m, size_t n)</td></tr>
+<tr class="separator:ad6da52725df42459aac2dd13cb3649b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa0f59ae87c130966ba378bc6c2ee12b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#afa0f59ae87c130966ba378bc6c2ee12b">rpc_instance_register_block</a> (rpc_instance_t instance, const char *interface, const char *name, void *arg, <a class="el" href="service_8h.html#a02d3dbd723de9bd5140887c9935ff05a">rpc_function_t</a> fn)</td></tr>
 <tr class="separator:afa0f59ae87c130966ba378bc6c2ee12b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5db3e98c350f755011b6d470ba21373"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ad5db3e98c350f755011b6d470ba21373">rpc_instance_register_func</a> (rpc_instance_t instance, const char *interface, const char *name, void *arg, <a class="el" href="service_8h.html#a1f67d69a108ffc8087346616d82eacf7">rpc_function_f</a> fn)</td></tr>
@@ -217,6 +227,8 @@ Functions</h2></td></tr>
 <tr class="separator:a76cbc7eebe61d4fedf608d4f411cacba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73d9c76529ba51d29880464c415db845"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structrpc__method.html">rpc_method</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a73d9c76529ba51d29880464c415db845">rpc_instance_find_method</a> (rpc_instance_t instance, const char *interface, const char *name)</td></tr>
 <tr class="separator:a73d9c76529ba51d29880464c415db845"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67fe6cd8eae36f36546a4f971c6fc34f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a67fe6cd8eae36f36546a4f971c6fc34f">rpc_instance_has_interface</a> (rpc_instance_t instance, const char *interface)</td></tr>
+<tr class="separator:a67fe6cd8eae36f36546a4f971c6fc34f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e027c8f7bdaee75f54d9957c33a0895"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a2e027c8f7bdaee75f54d9957c33a0895">rpc_instance_emit_event</a> (rpc_instance_t instance, const char *interface, const char *name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:a2e027c8f7bdaee75f54d9957c33a0895"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a562d4505034a53caa544c4e244ede5e8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a562d4505034a53caa544c4e244ede5e8">rpc_instance_register_property</a> (rpc_instance_t instance, const char *name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value, int rights)</td></tr>
@@ -231,6 +243,8 @@ Functions</h2></td></tr>
 <tr class="separator:abc8d9f6d1c339ddefa6f539d1b66043f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ca890889f873f677d2e9f5cc1ed8c4c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a0ca890889f873f677d2e9f5cc1ed8c4c">rpc_instance_unwatch_property</a> (rpc_instance_t instance, const char *name, void *cookie)</td></tr>
 <tr class="separator:a0ca890889f873f677d2e9f5cc1ed8c4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f62c682dbbe0b91a15a4a19c176cb76"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a0f62c682dbbe0b91a15a4a19c176cb76">rpc_instance_get_property_rights</a> (rpc_instance_t instance, const char *name)</td></tr>
+<tr class="separator:a0f62c682dbbe0b91a15a4a19c176cb76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ff30bf1b1536f88fe0946c5df4359bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a5ff30bf1b1536f88fe0946c5df4359bd">rpc_instance_free</a> (rpc_instance_t instance)</td></tr>
 <tr class="separator:a5ff30bf1b1536f88fe0946c5df4359bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -238,7 +252,67 @@ Functions</h2></td></tr>
 <div class="textblock"><p>RPC service API. </p>
 
 <p>Definition in file <a class="el" href="service_8h_source.html">service.h</a>.</p>
-</div><h2 class="groupheader">Typedef Documentation</h2>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="a5484afe5b3f646a7989ad91e011cc5b1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define RPC_FUNCTION</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_fn</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">^(<span class="keywordtype">void</span> *_cookie, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _args) {              \</div><div class="line">        return (_fn(_cookie, _args));               \</div><div class="line">    }</div><div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00073">object.h:73</a></div></div>
+</div><!-- fragment -->
+<p>Definition at line <a class="el" href="service_8h_source.html#l00072">72</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3557413d07aac53bfd9f87912a2e46ba"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define RPC_METHOD</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_interface, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_fn, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_arg&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rm_name = (_name),                 \</div><div class="line">        .rm_interface = (_interface),               \</div><div class="line">        .rm_block = RPC_FUNCTION(_fn),              \</div><div class="line">        .rm_arg = (_arg)                    \</div><div class="line">    }</div></div><!-- fragment -->
+<p>Definition at line <a class="el" href="service_8h_source.html#l00077">77</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Typedef Documentation</h2>
 <a class="anchor" id="a55087f28cb63ff45b6c798a5dabaedd7"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1281,6 +1355,73 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a0f62c682dbbe0b91a15a4a19c176cb76"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_instance_get_property_rights </td>
+          <td>(</td>
+          <td class="paramtype">rpc_instance_t&#160;</td>
+          <td class="paramname"><em>instance</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">instance</td><td></td></tr>
+    <tr><td class="paramname">name</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a67fe6cd8eae36f36546a4f971c6fc34f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rpc_instance_has_interface </td>
+          <td>(</td>
+          <td class="paramtype">rpc_instance_t&#160;</td>
+          <td class="paramname"><em>instance</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>interface</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">interface</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a3e37008b3939ab52f95f17ae68318e75"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1428,12 +1569,12 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a1903baa0815e6ed639178888cd81b2b3"></a>
+<a class="anchor" id="ad6da52725df42459aac2dd13cb3649b3"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int rpc_instance_register_method </td>
+          <td class="memname">int rpc_instance_register_methods </td>
           <td>(</td>
           <td class="paramtype">rpc_instance_t&#160;</td>
           <td class="paramname"><em>instance</em>, </td>
@@ -1442,7 +1583,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">struct <a class="el" href="structrpc__method.html">rpc_method</a> *&#160;</td>
-          <td class="paramname"><em>m</em>&#160;</td>
+          <td class="paramname"><em>m</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>n</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

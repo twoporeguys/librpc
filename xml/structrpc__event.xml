@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="structrpc__event" kind="struct" language="C++" prot="public">
+    <compoundname>rpc_event</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structrpc__event_1a13978e6f988e0857bee708b70103536c" prot="public" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* rpc_event::re_name</definition>
+        <argsstring></argsstring>
+        <name>re_name</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/service.h" line="105" column="1" bodyfile="/code/include/rpc/service.h" bodystart="105" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__event_1a4a33676ef6d6b61fe00db6bcc499a281" prot="public" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* rpc_event::re_interface</definition>
+        <argsstring></argsstring>
+        <name>re_interface</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/service.h" line="106" column="1" bodyfile="/code/include/rpc/service.h" bodystart="106" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/code/include/rpc/service.h" line="104" column="1" bodyfile="/code/include/rpc/service.h" bodystart="103" bodyend="107"/>
+    <listofallmembers>
+      <member refid="structrpc__event_1a4a33676ef6d6b61fe00db6bcc499a281" prot="public" virt="non-virtual"><scope>rpc_event</scope><name>re_interface</name></member>
+      <member refid="structrpc__event_1a13978e6f988e0857bee708b70103536c" prot="public" virt="non-virtual"><scope>rpc_event</scope><name>re_name</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

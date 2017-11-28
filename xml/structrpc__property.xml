@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="structrpc__property" kind="struct" language="C++" prot="public">
+    <compoundname>rpc_property</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structrpc__property_1adeaa00c1da97190f208087c7fa93e88e" prot="public" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* rpc_property::rp_name</definition>
+        <argsstring></argsstring>
+        <name>rp_name</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/service.h" line="98" column="1" bodyfile="/code/include/rpc/service.h" bodystart="98" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__property_1a1c36f5b8d28b5a36a9dc6a647244b0fc" prot="public" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* rpc_property::rp_interface</definition>
+        <argsstring></argsstring>
+        <name>rp_interface</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/service.h" line="99" column="1" bodyfile="/code/include/rpc/service.h" bodystart="99" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__property_1a0c815b5a9960a0824544228d51be90cb" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int rpc_property::rp_rights</definition>
+        <argsstring></argsstring>
+        <name>rp_rights</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/service.h" line="100" column="1" bodyfile="/code/include/rpc/service.h" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/code/include/rpc/service.h" line="97" column="1" bodyfile="/code/include/rpc/service.h" bodystart="96" bodyend="101"/>
+    <listofallmembers>
+      <member refid="structrpc__property_1a1c36f5b8d28b5a36a9dc6a647244b0fc" prot="public" virt="non-virtual"><scope>rpc_property</scope><name>rp_interface</name></member>
+      <member refid="structrpc__property_1adeaa00c1da97190f208087c7fa93e88e" prot="public" virt="non-virtual"><scope>rpc_property</scope><name>rp_name</name></member>
+      <member refid="structrpc__property_1a0c815b5a9960a0824544228d51be90cb" prot="public" virt="non-virtual"><scope>rpc_property</scope><name>rp_rights</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
