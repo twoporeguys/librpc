@@ -28,7 +28,7 @@ typedef void($^\wedge$ \hyperlink{server_8h_af1a4a4bd63cb415ee40b34cec2df2a80}{r
 \item 
 \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} \hyperlink{server_8h_ae2bd5e162ef71bc3290aac40f35503a6}{rpc\+\_\+server\+\_\+create} (const char $\ast$uri, \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
 \item 
-void \hyperlink{server_8h_a321bec95886308344cd511782afd08dd}{rpc\+\_\+server\+\_\+broadcast\+\_\+event} (\hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} server, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
+void \hyperlink{server_8h_a0e814a8f197e512de11c7d9cde131a84}{rpc\+\_\+server\+\_\+broadcast\+\_\+event} (\hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} server, const char $\ast$path, const char $\ast$interface, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
 void \hyperlink{server_8h_a35bdfe6cc50c1e83a569fb05a85a7082}{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler} (\hyperlink{server_8h_af1a4a4bd63cb415ee40b34cec2df2a80}{rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t} handler)
 \item 
@@ -80,13 +80,15 @@ Definition at line 53 of file server.\+h.
 \subsection{Function Documentation}
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+broadcast\+\_\+event@{rpc\+\_\+server\+\_\+broadcast\+\_\+event}}
 \index{rpc\+\_\+server\+\_\+broadcast\+\_\+event@{rpc\+\_\+server\+\_\+broadcast\+\_\+event}!server.\+h@{server.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+server\+\_\+broadcast\+\_\+event(rpc\+\_\+server\+\_\+t server, const char $\ast$name, rpc\+\_\+object\+\_\+t args)}{rpc_server_broadcast_event(rpc_server_t server, const char *name, rpc_object_t args)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+server\+\_\+broadcast\+\_\+event (
+\subsubsection[{\texorpdfstring{rpc\+\_\+server\+\_\+broadcast\+\_\+event(rpc\+\_\+server\+\_\+t server, const char $\ast$path, const char $\ast$interface, const char $\ast$name, rpc\+\_\+object\+\_\+t args)}{rpc_server_broadcast_event(rpc_server_t server, const char *path, const char *interface, const char *name, rpc_object_t args)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+server\+\_\+broadcast\+\_\+event (
 \begin{DoxyParamCaption}
 \item[{{\bf rpc\+\_\+server\+\_\+t}}]{server, }
+\item[{const char $\ast$}]{path, }
+\item[{const char $\ast$}]{interface, }
 \item[{const char $\ast$}]{name, }
 \item[{{\bf rpc\+\_\+object\+\_\+t}}]{args}
 \end{DoxyParamCaption}
-)}\hypertarget{server_8h_a321bec95886308344cd511782afd08dd}{}\label{server_8h_a321bec95886308344cd511782afd08dd}
+)}\hypertarget{server_8h_a0e814a8f197e512de11c7d9cde131a84}{}\label{server_8h_a0e814a8f197e512de11c7d9cde131a84}
 Broadcasts an event of a given name among its subscribers.
 
 

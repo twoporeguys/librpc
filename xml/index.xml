@@ -260,21 +260,26 @@
     <member refid="server_8h_1a46fd27cbcf75a54103df9d51d90a7fca" kind="typedef"><name>rpc_server_t</name></member>
     <member refid="server_8h_1af1a4a4bd63cb415ee40b34cec2df2a80" kind="typedef"><name>rpc_server_event_handler_t</name></member>
     <member refid="server_8h_1ae2bd5e162ef71bc3290aac40f35503a6" kind="function"><name>rpc_server_create</name></member>
-    <member refid="server_8h_1a321bec95886308344cd511782afd08dd" kind="function"><name>rpc_server_broadcast_event</name></member>
+    <member refid="server_8h_1a0e814a8f197e512de11c7d9cde131a84" kind="function"><name>rpc_server_broadcast_event</name></member>
     <member refid="server_8h_1a35bdfe6cc50c1e83a569fb05a85a7082" kind="function"><name>rpc_server_set_event_handler</name></member>
     <member refid="server_8h_1aecd13196295690cff8a48b90b9467c1d" kind="function"><name>rpc_server_close</name></member>
   </compound>
   <compound refid="service_8h" kind="file"><name>service.h</name>
     <member refid="service_8h_1a4c7094875a0bd8cc87e7c1d24a4481a6" kind="define"><name>RPC_FUNCTION_STILL_RUNNING</name></member>
+    <member refid="service_8h_1ae93cefa938d7efd2095f73e9dcdf8926" kind="enum"><name>rpc_property_rights</name></member>
+    <member refid="service_8h_1ae93cefa938d7efd2095f73e9dcdf8926a2573aa57a92525ca22dad5ff517bc9d0" kind="enumvalue"><name>RPC_PROPERTY_READ</name></member>
+    <member refid="service_8h_1ae93cefa938d7efd2095f73e9dcdf8926aea82a0471278ee17a5ea4b53afb43aee" kind="enumvalue"><name>RPC_PROPERTY_WRITE</name></member>
     <member refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kind="typedef"><name>rpc_context_t</name></member>
     <member refid="service_8h_1afd1294bd7ea02592ecc002e1576ef290" kind="typedef"><name>rpc_instance_t</name></member>
     <member refid="service_8h_1a02d3dbd723de9bd5140887c9935ff05a" kind="typedef"><name>rpc_function_t</name></member>
     <member refid="service_8h_1a1f67d69a108ffc8087346616d82eacf7" kind="typedef"><name>rpc_function_f</name></member>
+    <member refid="service_8h_1ae31bddefcc5addfb1b3ee7a1b7f4a876" kind="typedef"><name>rpc_property_watcher_t</name></member>
     <member refid="service_8h_1a2f099d270db1d46696878337c20d1bdd" kind="function"><name>rpc_context_create</name></member>
     <member refid="service_8h_1ae62c27a53aea99a9c87e5b12b3d3cbbc" kind="function"><name>rpc_context_free</name></member>
     <member refid="service_8h_1a20f26ce7e4fd8d1a81f8bb616939dec7" kind="function"><name>rpc_context_find_instance</name></member>
     <member refid="service_8h_1a9b55b5c3cd7c1f3de1755f8b287ee6db" kind="function"><name>rpc_context_get_root</name></member>
     <member refid="service_8h_1a2cb77d1cf1cc6cc22ce7f620f434c1d3" kind="function"><name>rpc_context_register_instance</name></member>
+    <member refid="service_8h_1ab99b0f2ed56026d6eff48b05fea7f95e" kind="function"><name>rpc_context_unregister_instance</name></member>
     <member refid="service_8h_1abd3ce744fe6091cf188b1f44b31548da" kind="function"><name>rpc_context_register_method</name></member>
     <member refid="service_8h_1af83b298b11aec4f97c0db5d4391b0be7" kind="function"><name>rpc_context_register_block</name></member>
     <member refid="service_8h_1a6de78771a848fe3b2001e08a7cf0a88c" kind="function"><name>rpc_context_register_func</name></member>
@@ -302,7 +307,13 @@
     <member refid="service_8h_1ad5db3e98c350f755011b6d470ba21373" kind="function"><name>rpc_instance_register_func</name></member>
     <member refid="service_8h_1a76cbc7eebe61d4fedf608d4f411cacba" kind="function"><name>rpc_instance_unregister_method</name></member>
     <member refid="service_8h_1a73d9c76529ba51d29880464c415db845" kind="function"><name>rpc_instance_find_method</name></member>
-    <member refid="service_8h_1ae95d9adc6b892e610116469623589727" kind="function"><name>rpc_instance_emit_event</name></member>
+    <member refid="service_8h_1a2e027c8f7bdaee75f54d9957c33a0895" kind="function"><name>rpc_instance_emit_event</name></member>
+    <member refid="service_8h_1a562d4505034a53caa544c4e244ede5e8" kind="function"><name>rpc_instance_register_property</name></member>
+    <member refid="service_8h_1a762310385214a2370a790ad23d72522d" kind="function"><name>rpc_instance_unregister_property</name></member>
+    <member refid="service_8h_1a814bd08fb65bb22ade287e92a7821b00" kind="function"><name>rpc_instance_get_property</name></member>
+    <member refid="service_8h_1a7b9b22db3ce4f4361e8caf3515d5341c" kind="function"><name>rpc_instance_set_property</name></member>
+    <member refid="service_8h_1abc8d9f6d1c339ddefa6f539d1b66043f" kind="function"><name>rpc_instance_watch_property</name></member>
+    <member refid="service_8h_1a0ca890889f873f677d2e9f5cc1ed8c4c" kind="function"><name>rpc_instance_unwatch_property</name></member>
     <member refid="service_8h_1a5ff30bf1b1536f88fe0946c5df4359bd" kind="function"><name>rpc_instance_free</name></member>
   </compound>
   <compound refid="typing_8h" kind="file"><name>typing.h</name>

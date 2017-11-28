@@ -153,14 +153,22 @@
         </inbodydescription>
         <location file="/code/include/rpc/server.h" line="76" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="server_8h_1a321bec95886308344cd511782afd08dd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="server_8h_1a0e814a8f197e512de11c7d9cde131a84" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void rpc_server_broadcast_event</definition>
-        <argsstring>(rpc_server_t server, const char *name, rpc_object_t args)</argsstring>
+        <argsstring>(rpc_server_t server, const char *path, const char *interface, const char *name, rpc_object_t args)</argsstring>
         <name>rpc_server_broadcast_event</name>
         <param>
           <type><ref refid="server_8h_1a46fd27cbcf75a54103df9d51d90a7fca" kindref="member">rpc_server_t</ref></type>
           <declname>server</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>path</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>interface</declname>
         </param>
         <param>
           <type>const char *</type>
@@ -309,8 +317,8 @@
 <codeline lineno="68"><highlight class="normal"></highlight></codeline>
 <codeline lineno="76"><highlight class="normal">rpc_server_t<sp/><ref refid="server_8h_1ae2bd5e162ef71bc3290aac40f35503a6" kindref="member">rpc_server_create</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*uri,<sp/><ref refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kindref="member">rpc_context_t</ref><sp/>context);</highlight></codeline>
 <codeline lineno="77"><highlight class="normal"></highlight></codeline>
-<codeline lineno="85"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="server_8h_1a321bec95886308344cd511782afd08dd" kindref="member">rpc_server_broadcast_event</ref>(rpc_server_t<sp/>server,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name,</highlight></codeline>
-<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
+<codeline lineno="85"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="server_8h_1a0e814a8f197e512de11c7d9cde131a84" kindref="member">rpc_server_broadcast_event</ref>(rpc_server_t<sp/>server,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*path,</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
 <codeline lineno="87"><highlight class="normal"></highlight></codeline>
 <codeline lineno="93"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="server_8h_1a35bdfe6cc50c1e83a569fb05a85a7082" kindref="member">rpc_server_set_event_handler</ref>(<ref refid="server_8h_1af1a4a4bd63cb415ee40b34cec2df2a80" kindref="member">rpc_server_event_handler_t</ref><sp/>handler);</highlight></codeline>
 <codeline lineno="94"><highlight class="normal"></highlight></codeline>

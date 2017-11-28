@@ -124,8 +124,8 @@ Typedefs</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:ae2bd5e162ef71bc3290aac40f35503a6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#ae2bd5e162ef71bc3290aac40f35503a6">rpc_server_create</a> (const char *uri, <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context)</td></tr>
 <tr class="separator:ae2bd5e162ef71bc3290aac40f35503a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a321bec95886308344cd511782afd08dd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a321bec95886308344cd511782afd08dd">rpc_server_broadcast_event</a> (<a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a> server, const char *name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
-<tr class="separator:a321bec95886308344cd511782afd08dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e814a8f197e512de11c7d9cde131a84"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a0e814a8f197e512de11c7d9cde131a84">rpc_server_broadcast_event</a> (<a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a> server, const char *path, const char *interface, const char *name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
+<tr class="separator:a0e814a8f197e512de11c7d9cde131a84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35bdfe6cc50c1e83a569fb05a85a7082"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a35bdfe6cc50c1e83a569fb05a85a7082">rpc_server_set_event_handler</a> (<a class="el" href="server_8h.html#af1a4a4bd63cb415ee40b34cec2df2a80">rpc_server_event_handler_t</a> handler)</td></tr>
 <tr class="separator:a35bdfe6cc50c1e83a569fb05a85a7082"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aecd13196295690cff8a48b90b9467c1d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#aecd13196295690cff8a48b90b9467c1d">rpc_server_close</a> (<a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a> server)</td></tr>
@@ -199,7 +199,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="a321bec95886308344cd511782afd08dd"></a>
+<a class="anchor" id="a0e814a8f197e512de11c7d9cde131a84"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -208,6 +208,18 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a>&#160;</td>
           <td class="paramname"><em>server</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>interface</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

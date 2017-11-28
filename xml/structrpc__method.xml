@@ -15,7 +15,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="75" column="1" bodyfile="/code/include/rpc/service.h" bodystart="75" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="77" column="1" bodyfile="/code/include/rpc/service.h" bodystart="77" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__method_1ad16d04d88d239e7412260ba948d88f7e" prot="public" static="no" mutable="no">
         <type>const char *</type>
@@ -28,7 +28,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="76" column="1" bodyfile="/code/include/rpc/service.h" bodystart="76" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="78" column="1" bodyfile="/code/include/rpc/service.h" bodystart="78" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__method_1ad6f2db7ebb8d4747730d4cb25b0c6824" prot="public" static="no" mutable="no">
         <type><ref refid="service_8h_1a02d3dbd723de9bd5140887c9935ff05a" kindref="member">rpc_function_t</ref></type>
@@ -41,7 +41,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="77" column="1" bodyfile="/code/include/rpc/service.h" bodystart="77" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="79" column="1" bodyfile="/code/include/rpc/service.h" bodystart="79" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__method_1afc4708084618f0879e54efda3292cf8c" prot="public" static="no" mutable="no">
         <type>void *</type>
@@ -54,14 +54,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="78" column="1" bodyfile="/code/include/rpc/service.h" bodystart="78" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="80" column="1" bodyfile="/code/include/rpc/service.h" bodystart="80" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>RPC method descriptor. </para>    </detaileddescription>
-    <location file="/code/include/rpc/service.h" line="74" column="1" bodyfile="/code/include/rpc/service.h" bodystart="73" bodyend="79"/>
+    <location file="/code/include/rpc/service.h" line="76" column="1" bodyfile="/code/include/rpc/service.h" bodystart="75" bodyend="81"/>
     <listofallmembers>
       <member refid="structrpc__method_1afc4708084618f0879e54efda3292cf8c" prot="public" virt="non-virtual"><scope>rpc_method</scope><name>rm_arg</name></member>
       <member refid="structrpc__method_1ad6f2db7ebb8d4747730d4cb25b0c6824" prot="public" virt="non-virtual"><scope>rpc_method</scope><name>rm_block</name></member>
