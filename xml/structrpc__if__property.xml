@@ -14,58 +14,44 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="131" column="1" bodyfile="/code/include/rpc/service.h" bodystart="131" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="177" column="1" bodyfile="/code/include/rpc/service.h" bodystart="177" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structrpc__if__property_1a0dd3d4d8df815f4ea8572d50597a42d6" prot="public" static="no" mutable="no">
-        <type>int</type>
-        <definition>int rpc_if_property::rp_rights</definition>
+      <memberdef kind="variable" id="structrpc__if__property_1a6b88200bb991311dae3c05e92dc16fdc" prot="public" static="no" mutable="no">
+        <type>rpc_property_getter_t</type>
+        <definition>rpc_property_getter_t rpc_if_property::rp_getter</definition>
         <argsstring></argsstring>
-        <name>rp_rights</name>
+        <name>rp_getter</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="132" column="1" bodyfile="/code/include/rpc/service.h" bodystart="132" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="178" column="1" bodyfile="/code/include/rpc/service.h" bodystart="178" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structrpc__if__property_1ad4d7d13c041e10d49a211d12199402a0" prot="public" static="no" mutable="no">
-        <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref> *</type>
-        <definition>rpc_object_t* rpc_if_property::rp_value</definition>
+      <memberdef kind="variable" id="structrpc__if__property_1ab095fba7efd97b90f3440c2db5369f1e" prot="public" static="no" mutable="no">
+        <type>rpc_property_setter_t</type>
+        <definition>rpc_property_setter_t rpc_if_property::rp_setter</definition>
         <argsstring></argsstring>
-        <name>rp_value</name>
+        <name>rp_setter</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="133" column="1" bodyfile="/code/include/rpc/service.h" bodystart="133" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="structrpc__if__property_1aaa2ec96dc971abaabb7a8f67944d8584" prot="public" static="no" mutable="no">
-        <type>rpc_property_callback_t</type>
-        <definition>rpc_property_callback_t rpc_if_property::rp_callback</definition>
-        <argsstring></argsstring>
-        <name>rp_callback</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="134" column="1" bodyfile="/code/include/rpc/service.h" bodystart="134" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="179" column="1" bodyfile="/code/include/rpc/service.h" bodystart="179" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/code/include/rpc/service.h" line="130" column="1" bodyfile="/code/include/rpc/service.h" bodystart="129" bodyend="135"/>
+    <location file="/code/include/rpc/service.h" line="176" column="1" bodyfile="/code/include/rpc/service.h" bodystart="175" bodyend="180"/>
     <listofallmembers>
-      <member refid="structrpc__if__property_1aaa2ec96dc971abaabb7a8f67944d8584" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_callback</name></member>
+      <member refid="structrpc__if__property_1a6b88200bb991311dae3c05e92dc16fdc" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_getter</name></member>
       <member refid="structrpc__if__property_1a5482e72e7b9df03cba9e3b86a4aa162c" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_name</name></member>
-      <member refid="structrpc__if__property_1a0dd3d4d8df815f4ea8572d50597a42d6" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_rights</name></member>
-      <member refid="structrpc__if__property_1ad4d7d13c041e10d49a211d12199402a0" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_value</name></member>
+      <member refid="structrpc__if__property_1ab095fba7efd97b90f3440c2db5369f1e" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_setter</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>
