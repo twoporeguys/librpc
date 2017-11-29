@@ -21,8 +21,8 @@ def interface(name, iface):
 
     print('    Properties:')
     if iface.properties:
-        for i in iface.properties:
-            print('        - {0}'.format(i))
+        for i, a in iface.properties.items():
+            print('        - {0} (= {1})'.format(i, repr(a())))
     else:
         print('        <none>')
 
