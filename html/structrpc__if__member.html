@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>librpc: Member List</title>
+<title>librpc: rpc_if_member Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -80,18 +80,49 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="structrpc__if__member-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">rpc_method Member List</div>  </div>
+<div class="title">rpc_if_member Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>This is the complete list of members for <a class="el" href="structrpc__method.html">rpc_method</a>, including all inherited members.</p>
-<table class="directory">
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>rm_arg</b> (defined in <a class="el" href="structrpc__method.html">rpc_method</a>)</td><td class="entry"><a class="el" href="structrpc__method.html">rpc_method</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>rm_block</b> (defined in <a class="el" href="structrpc__method.html">rpc_method</a>)</td><td class="entry"><a class="el" href="structrpc__method.html">rpc_method</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>rm_interface</b> (defined in <a class="el" href="structrpc__method.html">rpc_method</a>)</td><td class="entry"><a class="el" href="structrpc__method.html">rpc_method</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>rm_name</b> (defined in <a class="el" href="structrpc__method.html">rpc_method</a>)</td><td class="entry"><a class="el" href="structrpc__method.html">rpc_method</a></td><td class="entry"></td></tr>
-</table></div><!-- contents -->
+<div class="dynheader">
+Collaboration diagram for rpc_if_member:</div>
+<div class="dyncontent">
+<div class="center"><img src="structrpc__if__member__coll__graph.png" border="0" usemap="#rpc__if__member_coll__map" alt="Collaboration graph"/></div>
+<map name="rpc__if__member_coll__map" id="rpc__if__member_coll__map">
+<area shape="rect" id="node2" href="structrpc__if__property.html" title="rpc_if_property" alt="" coords="5,5,113,32"/>
+<area shape="rect" id="node3" href="structrpc__if__method.html" title="rpc_if_method" alt="" coords="138,5,242,32"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:ad98804e4fe5438a8c5823c7623c6dab4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad98804e4fe5438a8c5823c7623c6dab4"></a>
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>rim_name</b></td></tr>
+<tr class="separator:ad98804e4fe5438a8c5823c7623c6dab4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ffdb5e81a707932149376d01c716b10"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0ffdb5e81a707932149376d01c716b10"></a>
+enum rpc_if_member_type&#160;</td><td class="memItemRight" valign="bottom"><b>rim_type</b></td></tr>
+<tr class="separator:a0ffdb5e81a707932149376d01c716b10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c950b405b6852b3038ae847d0b7e2e0"><td class="memItemLeft" ><a class="anchor" id="a7c950b405b6852b3038ae847d0b7e2e0"></a>
+union {</td></tr>
+<tr class="memitem:a113d0998acc248df1868e44cc15a5e16"><td class="memItemLeft" >
+&#160;&#160;&#160;struct <a class="el" href="structrpc__if__method.html">rpc_if_method</a>&#160;&#160;&#160;<b>rim_method</b></td></tr>
+<tr class="separator:a113d0998acc248df1868e44cc15a5e16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a283bde6b4dd4e1c5b31b9821a88820de"><td class="memItemLeft" >
+&#160;&#160;&#160;struct <a class="el" href="structrpc__if__property.html">rpc_if_property</a>&#160;&#160;&#160;<b>rim_property</b></td></tr>
+<tr class="separator:a283bde6b4dd4e1c5b31b9821a88820de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c950b405b6852b3038ae847d0b7e2e0"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:a7c950b405b6852b3038ae847d0b7e2e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock">
+<p>Definition at line <a class="el" href="service_8h_source.html#l00137">137</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<li>/code/include/rpc/<a class="el" href="service_8h_source.html">service.h</a></li>
+</ul>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

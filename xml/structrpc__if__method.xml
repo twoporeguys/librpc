@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="structrpc__if__method" kind="struct" language="C++" prot="public">
+    <compoundname>rpc_if_method</compoundname>
+    <includes refid="service_8h" local="no">service.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structrpc__if__method_1a207409b75ef6c2cee361fb2ba4421c97" prot="public" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* rpc_if_method::rm_name</definition>
+        <argsstring></argsstring>
+        <name>rm_name</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/service.h" line="124" column="1" bodyfile="/code/include/rpc/service.h" bodystart="124" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__if__method_1ad02bcfe0adc134947ab369c927e307a0" prot="public" static="no" mutable="no">
+        <type><ref refid="service_8h_1a02d3dbd723de9bd5140887c9935ff05a" kindref="member">rpc_function_t</ref></type>
+        <definition>rpc_function_t rpc_if_method::rm_block</definition>
+        <argsstring></argsstring>
+        <name>rm_block</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/service.h" line="125" column="1" bodyfile="/code/include/rpc/service.h" bodystart="125" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__if__method_1a30f477ae1a1636164e2cc5051deb4fa1" prot="public" static="no" mutable="no">
+        <type>void *</type>
+        <definition>void* rpc_if_method::rm_arg</definition>
+        <argsstring></argsstring>
+        <name>rm_arg</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/service.h" line="126" column="1" bodyfile="/code/include/rpc/service.h" bodystart="126" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>RPC method descriptor. </para>    </detaileddescription>
+    <location file="/code/include/rpc/service.h" line="123" column="1" bodyfile="/code/include/rpc/service.h" bodystart="122" bodyend="127"/>
+    <listofallmembers>
+      <member refid="structrpc__if__method_1a30f477ae1a1636164e2cc5051deb4fa1" prot="public" virt="non-virtual"><scope>rpc_if_method</scope><name>rm_arg</name></member>
+      <member refid="structrpc__if__method_1ad02bcfe0adc134947ab369c927e307a0" prot="public" virt="non-virtual"><scope>rpc_if_method</scope><name>rm_block</name></member>
+      <member refid="structrpc__if__method_1a207409b75ef6c2cee361fb2ba4421c97" prot="public" virt="non-virtual"><scope>rpc_if_method</scope><name>rm_name</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
