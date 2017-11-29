@@ -803,10 +803,11 @@ cdef class RemoteObject(object):
             ifaces = self.client.call_sync(
                 'get_interfaces',
                 path=self.path,
-                interface='com.twoporeguys.librpc.Introspectable'
+                interface='com.twoporeguys.librpc.Introspectable',
+                unpack=True
             )
 
-            return [RemoteInterface(self.client, self.path, i.value) for i in ifaces]
+            return {i: RemoteInterface(self.client, self.path, i) for i in ifaces}
 
     def __str__(self):
         return "<librpc.RemoteObject at '{0}'>".format(self.path)
@@ -815,12 +816,13 @@ cdef class RemoteObject(object):
         return str(self)
 
 
-
 cdef class RemoteInterface(object):
     def __init__(self, client, path, interface=''):
         self.client = client
         self.path = path
         self.interface = interface
+        self.methods = {}
+        self.properties = {}
 
         try:
             if not self.client.call_sync(
@@ -833,11 +835,58 @@ cdef class RemoteInterface(object):
         except:
             raise
 
-        #if self.client.call_sync(
-        #    'interface_exists', interface,)
+        self.__collect_methods()
+        self.__collect_properties()
 
     def call_sync(self, name, *args):
         return self.client.call_sync(name, *args, path=self.path, interface=self.interface)
+
+    def __collect_methods(self):
+        try:
+            for method in self.client.call_sync(
+                'get_methods',
+                self.interface,
+                path=self.path,
+                interface='com.twoporeguys.librpc.Introspectable',
+                unpack=True
+            ):
+                def fn(*args):
+                    return self.client.call_sync(
+                        method,
+                        *args,
+                        path=self.path,
+                        interface=self.interface
+                    )
+
+                self.methods[method] = fn
+                setattr(self, method, fn)
+        except:
+            pass
+
+    def __collect_properties(self):
+        try:
+            for prop in self.client.call_sync(
+                'get_all',
+                self.interface,
+                path=self.path,
+                interface='com.twoporeguys.librpc.Observable',
+                unpack=True
+            ):
+                def fn(name=prop['name']):
+                    return self.client.call_sync(
+                        'get',
+                        self.interface,
+                        name,
+                        path=self.path,
+                        interface='com.twoporeguys.librpc.Observable'
+                    )
+
+                self.properties[prop['name']] = fn
+        except:
+            pass
+
+    def __getattr__(self, item):
+        return self.properties[item]()
 
     def __str__(self):
         return "<librpc.RemoteInterface '{0}' at '{1}'>".format(
@@ -847,12 +896,6 @@ cdef class RemoteInterface(object):
 
     def __repr__(self):
         return str(self)
-
-    def __getattr__(self, item):
-        def fn(*args):
-            return self.call_sync(item, *args)
-
-        return fn
 
 
 cdef class Call(object):
@@ -985,7 +1028,7 @@ cdef class Connection(object):
         result.connection = self
         return result
 
-    def call_sync(self, method, *args, path='/', interface=None):
+    def call_sync(self, method, *args, path='/', interface=None, unpack=None):
         cdef rpc_object_t rpc_result
         cdef Array rpc_args
         cdef Dictionary error
@@ -1025,7 +1068,7 @@ cdef class Connection(object):
             rpc_result = rpc_call_result(call)
             rpc_retain(rpc_result)
 
-            return self.do_unpack(Object.init_from_ptr(rpc_result))
+            return self.do_unpack(Object.init_from_ptr(rpc_result), unpack)
 
         def iter_chunk():
             nonlocal call_status
@@ -1054,8 +1097,9 @@ cdef class Connection(object):
 
         raise AssertionError('Impossible call status {0}'.format(call_status))
 
-    def do_unpack(self, value):
-        return value.unpack() if self.unpack else value
+    def do_unpack(self, value, unpack=None):
+        unpack = self.unpack if unpack is None else unpack
+        return value.unpack() if unpack else value
 
     def call_async(self, method, callback, *args):
         pass
@@ -1126,6 +1170,11 @@ cdef class Client(Connection):
 
         rpc_client_close(self.client)
         self.client = <rpc_client_t>NULL
+
+    property instances:
+        def __get__(self):
+            objects = self.call_sync('get_instances', interface='com.twoporeguys.librpc.Discoverable', path='/', unpack=True)
+            return {o['path']: RemoteObject(self, o['path']) for o in objects}
 
 
 cdef class Server(object):

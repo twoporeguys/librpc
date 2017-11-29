@@ -371,6 +371,9 @@ cdef class RemoteInterface(object):
     cdef readonly client
     cdef readonly path
     cdef readonly interface
+    cdef readonly methods
+    cdef readonly properties
+    cdef dict __dict__
 
 
 cdef class Call(object):
