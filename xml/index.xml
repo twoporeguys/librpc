@@ -22,6 +22,7 @@
     <member refid="structrpc__if__property_1a5482e72e7b9df03cba9e3b86a4aa162c" kind="variable"><name>rp_name</name></member>
     <member refid="structrpc__if__property_1a6b88200bb991311dae3c05e92dc16fdc" kind="variable"><name>rp_getter</name></member>
     <member refid="structrpc__if__property_1ab095fba7efd97b90f3440c2db5369f1e" kind="variable"><name>rp_setter</name></member>
+    <member refid="structrpc__if__property_1a0171db6c0ee6ad206634d42de210ae52" kind="variable"><name>rp_arg</name></member>
   </compound>
   <compound refid="structrpc__interface" kind="struct"><name>rpc_interface</name>
     <member refid="structrpc__interface_1a7e1b33ccc8a32e6daaf69ec6daec7bc1" kind="variable"><name>ri_name</name></member>
@@ -333,7 +334,7 @@
     <member refid="service_8h_1aee57eb01576d11b3eba2cc357667db4a" kind="function"><name>rpc_instance_new</name></member>
     <member refid="service_8h_1a6f4eb6df2553bf05ce15f74950f6415e" kind="function"><name>rpc_instance_get_arg</name></member>
     <member refid="service_8h_1a68b61823da7220e591aa5b815fe5cc5e" kind="function"><name>rpc_instance_get_path</name></member>
-    <member refid="service_8h_1a4973f580a3e94e911c1d0cd5b45d86aa" kind="function"><name>rpc_instance_register_interface</name></member>
+    <member refid="service_8h_1a78f4a464af39a3711a3c8c9970f4f501" kind="function"><name>rpc_instance_register_interface</name></member>
     <member refid="service_8h_1a92a30352b433de4d418106ebb1f55333" kind="function"><name>rpc_instance_register_member</name></member>
     <member refid="service_8h_1a4e994c6ca543fac956c12c2523d2b27d" kind="function"><name>rpc_instance_unregister_member</name></member>
     <member refid="service_8h_1afa0f59ae87c130966ba378bc6c2ee12b" kind="function"><name>rpc_instance_register_block</name></member>

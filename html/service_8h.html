@@ -242,8 +242,8 @@ Functions</h2></td></tr>
 <tr class="separator:a6f4eb6df2553bf05ce15f74950f6415e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68b61823da7220e591aa5b815fe5cc5e"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a68b61823da7220e591aa5b815fe5cc5e">rpc_instance_get_path</a> (rpc_instance_t instance)</td></tr>
 <tr class="separator:a68b61823da7220e591aa5b815fe5cc5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4973f580a3e94e911c1d0cd5b45d86aa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a4973f580a3e94e911c1d0cd5b45d86aa">rpc_instance_register_interface</a> (rpc_instance_t instance, const struct <a class="el" href="structrpc__interface.html">rpc_interface</a> *iface)</td></tr>
-<tr class="separator:a4973f580a3e94e911c1d0cd5b45d86aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78f4a464af39a3711a3c8c9970f4f501"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a78f4a464af39a3711a3c8c9970f4f501">rpc_instance_register_interface</a> (rpc_instance_t instance, const struct <a class="el" href="structrpc__interface.html">rpc_interface</a> *iface, void *arg)</td></tr>
+<tr class="separator:a78f4a464af39a3711a3c8c9970f4f501"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92a30352b433de4d418106ebb1f55333"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a92a30352b433de4d418106ebb1f55333">rpc_instance_register_member</a> (rpc_instance_t instance, const char *interface, const struct <a class="el" href="structrpc__if__member.html">rpc_if_member</a> *member)</td></tr>
 <tr class="separator:a92a30352b433de4d418106ebb1f55333"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e994c6ca543fac956c12c2523d2b27d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a4e994c6ca543fac956c12c2523d2b27d">rpc_instance_unregister_member</a> (rpc_instance_t instance, const char *interface, const char *name)</td></tr>
@@ -339,8 +339,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_instance_register_
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = RPC_MEMBER_METHOD,              \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_method = {                     \</div><div class="line">                        .rm_block = RPC_FUNCTION(_fn),          \</div><div class="line">                }                           \</div><div class="line">    }</div></div><!-- fragment -->
-<p>Definition at line <a class="el" href="service_8h_source.html#l00131">131</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
+<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = RPC_MEMBER_METHOD,              \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_method = {                     \</div><div class="line">                        .rm_block = RPC_FUNCTION(_fn),          \</div><div class="line">            .rm_arg = NULL                  \</div><div class="line">                }                           \</div><div class="line">    }</div></div><!-- fragment -->
+<p>Definition at line <a class="el" href="service_8h_source.html#l00134">134</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
 </div>
 </div>
@@ -368,7 +368,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_instance_register_
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = RPC_MEMBER_METHOD,              \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_method = {                     \</div><div class="line">                        .rm_block = (_block),               \</div><div class="line">                }                           \</div><div class="line">    }</div></div><!-- fragment -->
-<p>Definition at line <a class="el" href="service_8h_source.html#l00140">140</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
+<p>Definition at line <a class="el" href="service_8h_source.html#l00144">144</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
 </div>
 </div>
@@ -414,7 +414,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_instance_register_
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = RPC_MEMBER_PROPERTY,            \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_property = {                   \</div><div class="line">                        .rp_getter = RPC_PROPERTY_GETTER(_getter),  \</div><div class="line">            .rp_setter = NULL               \</div><div class="line">                }                           \</div><div class="line">    }</div></div><!-- fragment -->
+<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = RPC_MEMBER_PROPERTY,            \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_property = {                   \</div><div class="line">                        .rp_getter = RPC_PROPERTY_GETTER(_getter),  \</div><div class="line">            .rp_setter = NULL,              \</div><div class="line">            .rp_arg = NULL                  \</div><div class="line">                }                           \</div><div class="line">    }</div></div><!-- fragment -->
 <p>Definition at line <a class="el" href="service_8h_source.html#l00101">101</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
 </div>
@@ -448,8 +448,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_instance_register_
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = RPC_MEMBER_PROPERTY,            \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_property = {                   \</div><div class="line">                        .rp_getter = RPC_PROPERTY_GETTER(_getter),  \</div><div class="line">            .rp_setter = RPC_PROPERTY_SETTER(_setter),  \</div><div class="line">                }                           \</div><div class="line">    }</div></div><!-- fragment -->
-<p>Definition at line <a class="el" href="service_8h_source.html#l00121">121</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
+<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = RPC_MEMBER_PROPERTY,            \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_property = {                   \</div><div class="line">                        .rp_getter = RPC_PROPERTY_GETTER(_getter),  \</div><div class="line">            .rp_setter = RPC_PROPERTY_SETTER(_setter),  \</div><div class="line">            .rp_arg = NULL                  \</div><div class="line">                }                           \</div><div class="line">    }</div></div><!-- fragment -->
+<p>Definition at line <a class="el" href="service_8h_source.html#l00123">123</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
 </div>
 </div>
@@ -495,8 +495,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_instance_register_
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = RPC_MEMBER_PROPERTY,            \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_property = {                   \</div><div class="line">                        .rp_getter = NULL,              \</div><div class="line">            .rp_setter = RPC_PROPERTY_SETTER(_setter),  \</div><div class="line">                }                           \</div><div class="line">    }</div></div><!-- fragment -->
-<p>Definition at line <a class="el" href="service_8h_source.html#l00111">111</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
+<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = RPC_MEMBER_PROPERTY,            \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_property = {                   \</div><div class="line">                        .rp_getter = NULL,              \</div><div class="line">            .rp_setter = RPC_PROPERTY_SETTER(_setter),  \</div><div class="line">            .rp_arg = NULL                  \</div><div class="line">                }                           \</div><div class="line">    }</div></div><!-- fragment -->
+<p>Definition at line <a class="el" href="service_8h_source.html#l00112">112</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
 </div>
 </div>
@@ -1723,7 +1723,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_instance_register_
 
 </div>
 </div>
-<a class="anchor" id="a4973f580a3e94e911c1d0cd5b45d86aa"></a>
+<a class="anchor" id="a78f4a464af39a3711a3c8c9970f4f501"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1737,7 +1737,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_instance_register_
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const struct <a class="el" href="structrpc__interface.html">rpc_interface</a> *&#160;</td>
-          <td class="paramname"><em>iface</em>&#160;</td>
+          <td class="paramname"><em>iface</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>arg</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
