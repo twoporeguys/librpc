@@ -298,8 +298,8 @@ rpc_call_t rpc_connection_call(rpc_connection_t conn, const char *path,
  * @param args Event arguments or NULL
  * @return 0 on success, -1 on failure
  */
-int rpc_connection_send_event(rpc_connection_t conn, const char *name,
-    rpc_object_t args);
+int rpc_connection_send_event(rpc_connection_t conn, const char *path,
+    const char *interface, const char *name, rpc_object_t args);
 
 /**
  * Ping the other end of a connection.

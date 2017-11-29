@@ -479,9 +479,19 @@ rpc_function_should_abort(void *cookie)
 }
 
 rpc_instance_t
-rpc_instance_new(const char *path, const char *descr, void *arg)
+rpc_instance_new(const char *fmt, ...)
 {
+	va_list ap;
 	rpc_instance_t result;
+	char *path;
+	const char *descr;
+	void *arg;
+
+	va_start(ap, fmt);
+	path = g_strdup_vprintf(fmt, ap);
+	descr = va_arg(ap, const char *);
+	arg = va_arg(ap, void *);
+	va_end(ap);
 
 	if (!rpc_context_path_is_valid(path)) {
 		rpc_set_last_error(EINVAL, "Invalid path", NULL);

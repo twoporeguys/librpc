@@ -63,8 +63,8 @@ main(int argc, const char *argv[])
 
 	printf("memory before :%.*s\n", 16, addr);
 
-	result = rpc_connection_call_sync(conn, "exchange_blob",
-	    shmem, NULL);
+	result = rpc_connection_call_simple(conn, "exchange_blob", "[v]",
+	    shmem);
 
 	printf("result = %s\n", rpc_copy_description(result));
 

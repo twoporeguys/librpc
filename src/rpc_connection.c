@@ -1098,18 +1098,18 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 }
 
 int
-rpc_connection_send_event(rpc_connection_t conn, const char *name,
-    rpc_object_t args)
+rpc_connection_send_event(rpc_connection_t conn, const char *path,
+    const char *interface, const char *name, rpc_object_t args)
 {
 	rpc_object_t frame;
 	rpc_object_t event;
-	const char *names[] = {"name", "args"};
-	const rpc_object_t values[] = {
-	    rpc_string_create(name),
-	    args
-	};
 
-	event = rpc_dictionary_create_ex(names, values, 2, true);
+	event = rpc_object_pack("{s,s,s,v}",
+	    "path", path,
+	    "interface", interface,
+	    "name", name,
+	    "args", args);
+
 	frame = rpc_pack_frame("events", "event", NULL, event);
 
 	if (rpc_send_frame(conn, frame) != 0)

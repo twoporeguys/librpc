@@ -1005,14 +1005,22 @@ cdef class Connection(object):
     def call_async(self, method, callback, *args):
         pass
 
-    def emit_event(self, name, Object data):
+    def emit_event(self, name, Object data, path='/', interface=None):
+        cdef const char *c_path
         cdef const char *c_name
+        cdef const char *c_interface = NULL
 
+        b_path = path.encode('utf-8')
+        c_path = b_path
         b_name = name.encode('utf-8')
         c_name = b_name
 
+        if interface:
+            b_interface = interface.encode('utf-8')
+            c_interface = b_interface
+
         with nogil:
-            rpc_connection_send_event(self.connection, c_name, data.obj)
+            rpc_connection_send_event(self.connection, c_path, c_interface, c_name, data.obj)
 
     def register_event_handler(self, name, fn):
         if self.connection == <rpc_connection_t>NULL:

@@ -159,8 +159,8 @@ cdef extern from "rpc/connection.h" nogil:
         const char *path, const char *interface, const char *method, ...)
     rpc_call_t rpc_connection_call(rpc_connection_t conn, const char *path,
         const char *interface, const char *name, rpc_object_t args, void *callback)
-    int rpc_connection_send_event(rpc_connection_t conn, const char *name,
-        rpc_object_t args)
+    int rpc_connection_send_event(rpc_connection_t conn, const char *path,
+        const char *interface, const char *name, rpc_object_t args)
     void rpc_connection_set_event_handler(rpc_connection_t conn, void *handler)
     void rpc_connection_set_error_handler(rpc_connection_t conn, void *handler)
     rpc_call_status_t rpc_call_status(rpc_call_t call)
