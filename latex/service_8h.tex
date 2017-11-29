@@ -109,7 +109,7 @@ int \hyperlink{service_8h_af83b298b11aec4f97c0db5d4391b0be7}{rpc\+\_\+context\+\
 \item 
 int \hyperlink{service_8h_a6de78771a848fe3b2001e08a7cf0a88c}{rpc\+\_\+context\+\_\+register\+\_\+func} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$name, const char $\ast$descr, void $\ast$arg, \hyperlink{service_8h_a1f67d69a108ffc8087346616d82eacf7}{rpc\+\_\+function\+\_\+f} func)
 \item 
-int \hyperlink{service_8h_a8c96adc49c6ecf3c0ad7ae1ad7c82411}{rpc\+\_\+context\+\_\+unregister\+\_\+method} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$interface, const char $\ast$name)
+int \hyperlink{service_8h_a26f714ff6f48eebc62cb0b6eef611e90}{rpc\+\_\+context\+\_\+unregister\+\_\+member} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$interface, const char $\ast$name)
 \item 
 void \hyperlink{service_8h_ad1c0c9c7897adf4ad5e7ee9c40e545b8}{rpc\+\_\+context\+\_\+set\+\_\+pre\+\_\+call\+\_\+hook} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, \hyperlink{service_8h_a02d3dbd723de9bd5140887c9935ff05a}{rpc\+\_\+function\+\_\+t} fn)
 \item 
@@ -627,15 +627,15 @@ The hook will be called before an actual implementation of R\+PC function gets c
 {\em path} & \\
 \hline
 \end{DoxyParams}
-\index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+unregister\+\_\+method@{rpc\+\_\+context\+\_\+unregister\+\_\+method}}
-\index{rpc\+\_\+context\+\_\+unregister\+\_\+method@{rpc\+\_\+context\+\_\+unregister\+\_\+method}!service.\+h@{service.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+context\+\_\+unregister\+\_\+method(rpc\+\_\+context\+\_\+t context, const char $\ast$interface, const char $\ast$name)}{rpc_context_unregister_method(rpc_context_t context, const char *interface, const char *name)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+context\+\_\+unregister\+\_\+method (
+\index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+unregister\+\_\+member@{rpc\+\_\+context\+\_\+unregister\+\_\+member}}
+\index{rpc\+\_\+context\+\_\+unregister\+\_\+member@{rpc\+\_\+context\+\_\+unregister\+\_\+member}!service.\+h@{service.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+context\+\_\+unregister\+\_\+member(rpc\+\_\+context\+\_\+t context, const char $\ast$interface, const char $\ast$name)}{rpc_context_unregister_member(rpc_context_t context, const char *interface, const char *name)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+context\+\_\+unregister\+\_\+member (
 \begin{DoxyParamCaption}
 \item[{{\bf rpc\+\_\+context\+\_\+t}}]{context, }
 \item[{const char $\ast$}]{interface, }
 \item[{const char $\ast$}]{name}
 \end{DoxyParamCaption}
-)}\hypertarget{service_8h_a8c96adc49c6ecf3c0ad7ae1ad7c82411}{}\label{service_8h_a8c96adc49c6ecf3c0ad7ae1ad7c82411}
+)}\hypertarget{service_8h_a26f714ff6f48eebc62cb0b6eef611e90}{}\label{service_8h_a26f714ff6f48eebc62cb0b6eef611e90}
 Unregisters a given R\+PC method.
 
 

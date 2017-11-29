@@ -314,7 +314,7 @@
     <member refid="service_8h_1a64166c1ba658b15d9764008a7a6f9c49" kind="function"><name>rpc_context_register_member</name></member>
     <member refid="service_8h_1af83b298b11aec4f97c0db5d4391b0be7" kind="function"><name>rpc_context_register_block</name></member>
     <member refid="service_8h_1a6de78771a848fe3b2001e08a7cf0a88c" kind="function"><name>rpc_context_register_func</name></member>
-    <member refid="service_8h_1a8c96adc49c6ecf3c0ad7ae1ad7c82411" kind="function"><name>rpc_context_unregister_method</name></member>
+    <member refid="service_8h_1a26f714ff6f48eebc62cb0b6eef611e90" kind="function"><name>rpc_context_unregister_member</name></member>
     <member refid="service_8h_1ad1c0c9c7897adf4ad5e7ee9c40e545b8" kind="function"><name>rpc_context_set_pre_call_hook</name></member>
     <member refid="service_8h_1a36c5dae2cc75f5d4a740c5db25e25d7a" kind="function"><name>rpc_context_set_post_call_hook</name></member>
     <member refid="service_8h_1a206fab24804db208f9b4d44f4c303596" kind="function"><name>rpc_context_dispatch_call</name></member>

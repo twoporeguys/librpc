@@ -758,11 +758,11 @@
         </inbodydescription>
         <location file="/code/include/rpc/service.h" line="277" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="service_8h_1a8c96adc49c6ecf3c0ad7ae1ad7c82411" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="service_8h_1a26f714ff6f48eebc62cb0b6eef611e90" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
-        <definition>int rpc_context_unregister_method</definition>
+        <definition>int rpc_context_unregister_member</definition>
         <argsstring>(rpc_context_t context, const char *interface, const char *name)</argsstring>
-        <name>rpc_context_unregister_method</name>
+        <name>rpc_context_unregister_member</name>
         <param>
           <type><ref refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kindref="member">rpc_context_t</ref></type>
           <declname>context</declname>
@@ -2233,7 +2233,7 @@
 <codeline lineno="277"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a6de78771a848fe3b2001e08a7cf0a88c" kindref="member">rpc_context_register_func</ref>(rpc_context_t<sp/>context,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name,</highlight></codeline>
 <codeline lineno="278"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*descr,<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*arg,<sp/><ref refid="service_8h_1a1f67d69a108ffc8087346616d82eacf7" kindref="member">rpc_function_f</ref><sp/>func);</highlight></codeline>
 <codeline lineno="279"><highlight class="normal"></highlight></codeline>
-<codeline lineno="287"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a8c96adc49c6ecf3c0ad7ae1ad7c82411" kindref="member">rpc_context_unregister_method</ref>(rpc_context_t<sp/>context,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*interface,</highlight></codeline>
+<codeline lineno="287"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a26f714ff6f48eebc62cb0b6eef611e90" kindref="member">rpc_context_unregister_member</ref>(rpc_context_t<sp/>context,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*interface,</highlight></codeline>
 <codeline lineno="288"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name);</highlight></codeline>
 <codeline lineno="289"><highlight class="normal"></highlight></codeline>
 <codeline lineno="299"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1ad1c0c9c7897adf4ad5e7ee9c40e545b8" kindref="member">rpc_context_set_pre_call_hook</ref>(rpc_context_t<sp/>context,<sp/><ref refid="service_8h_1a02d3dbd723de9bd5140887c9935ff05a" kindref="member">rpc_function_t</ref><sp/>fn);</highlight></codeline>

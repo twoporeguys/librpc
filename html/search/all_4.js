@@ -106,7 +106,7 @@ var searchData=
   ['rpc_5fcontext_5fset_5fpre_5fcall_5fhook',['rpc_context_set_pre_call_hook',['../service_8h.html#ad1c0c9c7897adf4ad5e7ee9c40e545b8',1,'service.h']]],
   ['rpc_5fcontext_5ft',['rpc_context_t',['../service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7',1,'service.h']]],
   ['rpc_5fcontext_5funregister_5finstance',['rpc_context_unregister_instance',['../service_8h.html#ab99b0f2ed56026d6eff48b05fea7f95e',1,'service.h']]],
-  ['rpc_5fcontext_5funregister_5fmethod',['rpc_context_unregister_method',['../service_8h.html#a8c96adc49c6ecf3c0ad7ae1ad7c82411',1,'service.h']]],
+  ['rpc_5fcontext_5funregister_5fmember',['rpc_context_unregister_member',['../service_8h.html#a26f714ff6f48eebc62cb0b6eef611e90',1,'service.h']]],
   ['rpc_5fcopy',['rpc_copy',['../object_8h.html#aa5de9854b486016a16ac230ae0ba1d3a',1,'object.h']]],
   ['rpc_5fcopy_5fdescription',['rpc_copy_description',['../object_8h.html#a8687bd8dcf67458dbb09549d2a9b6059',1,'object.h']]],
   ['rpc_5fdata_5fcreate',['rpc_data_create',['../object_8h.html#a7ea4b27c094778d16149e2aef65f25b9',1,'object.h']]],
