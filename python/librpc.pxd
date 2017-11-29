@@ -187,7 +187,7 @@ cdef extern from "rpc/service.h" nogil:
     int rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
     int rpc_context_register_func(rpc_context_t context, const char *interface,
         const char *name, void *arg, rpc_function_f func)
-    int rpc_context_unregister_method(rpc_context_t context, const char *interface, const char *name)
+    int rpc_context_unregister_member(rpc_context_t context, const char *interface, const char *name)
 
     void *rpc_function_get_arg(void *cookie)
     void rpc_function_respond(void *cookie, rpc_object_t object)

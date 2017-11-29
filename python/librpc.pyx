@@ -724,9 +724,9 @@ cdef class Context(object):
         ) != 0:
             raise_internal_exc()
 
-    def unregister_method(self, name, interface=''):
+    def unregister_member(self, name, interface=None):
         del self.methods[name]
-        rpc_context_unregister_method(self.context, interface, name)
+        rpc_context_unregister_member(self.context, interface, name)
 
     def __materialized_paths_to_tree(self, lst, separator='.'):
         result = {'children': {}, 'path': []}
@@ -800,11 +800,20 @@ cdef class RemoteObject(object):
 
     property interfaces:
         def __get__(self):
-            return list(self.client.call_sync(
+            ifaces = self.client.call_sync(
                 'get_interfaces',
                 path=self.path,
                 interface='com.twoporeguys.librpc.Introspectable'
-            ))
+            )
+
+            return [RemoteInterface(self.client, self.path, i.value) for i in ifaces]
+
+    def __str__(self):
+        return "<librpc.RemoteObject at '{0}'>".format(self.path)
+
+    def __repr__(self):
+        return str(self)
+
 
 
 cdef class RemoteInterface(object):
@@ -818,7 +827,7 @@ cdef class RemoteInterface(object):
                 'interface_exists',
                 interface,
                 path=path,
-                interface='librpc.Introspectable'
+                interface='com.twoporeguys.librpc.Introspectable'
             ):
                 raise ValueError('Interface not found')
         except:

@@ -284,7 +284,7 @@ int rpc_context_register_func(rpc_context_t context, const char *name,
  * @param name Method name.
  * @return Status.
  */
-int rpc_context_unregister_method(rpc_context_t context, const char *interface,
+int rpc_context_unregister_member(rpc_context_t context, const char *interface,
     const char *name);
 
 /**
