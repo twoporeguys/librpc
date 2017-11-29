@@ -778,8 +778,8 @@ cdef class RemoteInterface(object):
         except:
             raise
 
-        if self.client.call_sync(
-            'interface_exists', interface,)
+        #if self.client.call_sync(
+        #    'interface_exists', interface,)
 
     def call_sync(self, name, *args):
         return self.client.call_sync(name, *args, path=self.path, interface=self.interface)
@@ -1078,16 +1078,29 @@ cdef class Server(object):
         self.context = context
         self.server = rpc_server_create(self.uri, self.context.context)
 
-    def broadcast_event(self, name, args):
+    def broadcast_event(self, name, args, path='/', interface=None):
         cdef Object rpc_args
-        byte_name = name.encode('utf-8')
+        cdef const char *c_name
+        cdef const char *c_path
+        cdef const char *c_interface = NULL
+
+        b_name = name.encode('utf-8')
+        c_name = b_name
+        b_path = path.encode('utf-8')
+        c_path = b_path
+
+        if interface:
+            b_interface = interface.encode('utf-8')
+            c_interface = b_interface
+
         if isinstance(args, Object):
             rpc_args = args
         else:
             rpc_args = Object(args)
             rpc_retain(rpc_args.obj)
 
-        rpc_server_broadcast_event(self.server, byte_name, rpc_args.obj)
+        with nogil:
+            rpc_server_broadcast_event(self.server, c_path, c_interface, c_name, rpc_args.obj)
 
     def close(self):
         rpc_server_close(self.server)

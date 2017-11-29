@@ -191,7 +191,7 @@ struct rpc_inbound_call
 	const char *        	ric_name;
 	const char *		ric_interface;
 	const char *		ric_path;
-    	struct rpc_method *	ric_method;
+	struct rpc_if_method *	ric_method;
     	GMutex			ric_mtx;
     	GCond			ric_cv;
     	volatile int64_t	ric_producer_seqno;
@@ -284,12 +284,11 @@ struct rpc_instance
 	GMutex			ri_mtx;
 };
 
-struct rpc_instance_property
+struct rpc_interface_priv
 {
 	char *			rip_name;
-	int 			rip_rights;
-	rpc_object_t 		rip_value;
-	GPtrArray *		rip_watchers;
+	char *			rip_description;
+	GHashTable *		rip_members;
 	GMutex			rip_mtx;
 };
 

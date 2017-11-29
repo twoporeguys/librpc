@@ -45,18 +45,36 @@ static rpc_object_t rpc_observable_property_get(void *cookie, rpc_object_t args)
 static rpc_object_t rpc_observable_property_get_all(void *cookie, rpc_object_t args);
 static rpc_object_t rpc_observable_property_set(void *cookie, rpc_object_t args);
 
-struct rpc_method rpc_discoverable_methods[] = {
-
+struct rpc_interface rpc_discoverable_if = {
+	.ri_name = "librpc.Discoverable",
+	.ri_members = {
+		RPC_EVENT("instance_added"),
+		RPC_EVENT("instance_removed"),
+		RPC_METHOD("get_instances", rpc_get_objects, NULL),
+		RPC_MEMBER_END
+	}
 };
 
-struct rpc_method rpc_introspectable_methods[] = {
-
+struct rpc_interface rpc_introspectable_if = {
+	.ri_name = "librpc.Introspectable",
+	.ri_members = {
+		RPC_PROPERTY("description", RPC_PROPERTY_READ, NULL),
+		RPC_METHOD("get_interfaces", rpc_get_interfaces, NULL),
+		RPC_METHOD("get_methods", rpc_get_methods, NULL),
+		RPC_METHOD("interface_exists", rpc_interface_exists, NULL),
+		RPC_MEMBER_END
+	}
 };
 
-struct rpc_method rpc_observable_methods[] = {
-	RPC_METHOD("librpc.Observable", "get", rpc_observable_property_get, NULL),
-	RPC_METHOD("librpc.Observable", "get_all", rpc_observable_property_get_all, NULL),
-	RPC_METHOD("librpc.Observable", "set", rpc_observable_property_set, NULL),
+struct rpc_interface rpc_observable_if = {
+	.ri_name = "librpc.Observable",
+	.ri_members = {
+		RPC_EVENT("changed"),
+		RPC_METHOD("get", rpc_observable_property_get, NULL),
+		RPC_METHOD("get_all", rpc_observable_property_get_all, NULL),
+		RPC_METHOD("set", rpc_observable_property_set, NULL),
+		RPC_MEMBER_END
+	}
 };
 
 static void
@@ -64,7 +82,7 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 {
 	struct rpc_context *context = user_data;
 	struct rpc_inbound_call *call = data;
-	struct rpc_method *method = call->ric_method;
+	struct rpc_if_method *method = call->ric_method;
 	rpc_connection_t conn = call->ric_conn;
 	rpc_object_t result;
 
@@ -113,9 +131,7 @@ rpc_context_create(void)
 	result->rcx_threadpool = g_thread_pool_new(rpc_context_tp_handler,
 	    result, g_get_num_processors() * 4, true, &err);
 
-	rpc_instance_register_func(result->rcx_root, "librpc.Discoverable",
-	    "get_instances", NULL, rpc_get_objects);
-
+	rpc_instance_register_interface(result->rcx_root, &rpc_discoverable_if);
 	rpc_context_register_instance(result, result->rcx_root);
 	return (result);
 }
@@ -132,6 +148,7 @@ rpc_context_free(rpc_context_t context)
 int
 rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 {
+	struct rpc_if_member *member;
 	GError *err = NULL;
 	rpc_instance_t instance = NULL;
 
@@ -149,14 +166,15 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 	}
 
 	call->ric_instance = instance;
-	call->ric_method = rpc_instance_find_method(instance,
+	member = rpc_instance_find_member(instance,
 	    call->ric_interface, call->ric_name);
 
-	if (call->ric_method == NULL) {
-		rpc_function_error(call, ENOENT, "Method not found");
+	if (member == NULL || member->rim_type != RPC_MEMBER_METHOD) {
+		rpc_function_error(call, ENOENT, "Member not found");
 		return (-1);
 	}
 
+	call->ric_method = &member->rim_method;
 	g_thread_pool_push(context->rcx_threadpool, call, &err);
 	if (err != NULL) {
 		rpc_function_error(call, EFAULT, "Cannot submit call");
@@ -171,15 +189,6 @@ rpc_context_find_instance(rpc_context_t context, const char *path)
 {
 
 	return (g_hash_table_lookup(context->rcx_instances, path));
-}
-
-struct rpc_method *
-rpc_context_find_method(rpc_context_t context, const char *interface,
-    const char *name)
-{
-
-	return (rpc_instance_find_method(context->rcx_root, interface,
-	    name));
 }
 
 void
@@ -197,130 +206,58 @@ rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
 }
 
 int
-rpc_instance_register_property(rpc_instance_t instance, const char *name,
-    rpc_object_t value, int rights)
+rpc_instance_register_property(rpc_instance_t instance, const char *interface,
+    const char *name, rpc_object_t *value, int rights,
+    rpc_property_callback_t callback)
 {
-	struct rpc_instance_property *prop;
+	struct rpc_if_member member;
 
-	prop = g_malloc0(sizeof(*prop));
-	g_mutex_init(&prop->rip_mtx);
-	prop->rip_name = g_strdup(name);
-	prop->rip_rights = rights;
-	prop->rip_value = rpc_retain(value);
-	prop->rip_watchers = g_ptr_array_new();
+	member.rim_name = name;
+	member.rim_type = RPC_MEMBER_PROPERTY;
+	member.rim_property.rp_name = name;
+	member.rim_property.rp_rights = rights;
+	member.rim_property.rp_callback = callback;
+	member.rim_property.rp_value = value;
 
-	g_hash_table_insert(instance->ri_properties, prop->rip_name, prop);
-
-	/* Install Observable interface methods */
-	if (!rpc_instance_has_interface(instance, "librpc.Obervable")) {
-		rpc_instance_register_func(instance, "librpc.Observable",
-		    "get", NULL, rpc_observable_property_get);
-		rpc_instance_register_func(instance, "librpc.Observable",
-		    "get_all", NULL, rpc_observable_property_get_all);
-		rpc_instance_register_func(instance, "librpc.Observable",
-		    "set", NULL, rpc_observable_property_set);
-	}
-
-	/* Emit property added event */
-	rpc_instance_emit_event(instance, "librpc.Observable",
-	    "property_added", rpc_object_pack("{s,v,b,b}",
-	        "name", name,
-	        "value", value,
-	        "readable", rights & RPC_PROPERTY_READ,
-	        "writable", rights & RPC_PROPERTY_WRITE));
-
-	return (0);
-}
-
-void
-rpc_instance_unregister_property(rpc_instance_t instance, const char *name)
-{
-
-	g_hash_table_remove(instance->ri_properties, name);
-	rpc_instance_emit_event(instance, "librpc.Observable",
-	    "property_removed", rpc_object_pack("{s}", "name", name));
+	return (rpc_instance_register_member(instance, interface, &member));
 }
 
 rpc_object_t
-rpc_instance_get_property(rpc_instance_t instance, const char *name)
+rpc_instance_get_property(rpc_instance_t instance, const char *interface,
+    const char *name)
 {
-	struct rpc_instance_property *prop;
+	struct rpc_if_member *member;
 
-	prop = g_hash_table_lookup(instance->ri_properties, name);
-	if (prop == NULL) {
+	member = rpc_instance_find_member(instance, interface, name);
+	if (member == NULL || member->rim_type != RPC_MEMBER_PROPERTY) {
 		rpc_set_last_error(ENOENT, "Property not found", NULL);
 		return (NULL);
 	}
 
-	return (prop->rip_value);
+	return (*member->rim_property.rp_value);
 }
 
 void
-rpc_instance_set_property(rpc_instance_t instance, const char *name,
-    rpc_object_t value)
+rpc_instance_set_property(rpc_instance_t instance, const char *interface,
+    const char *name, rpc_object_t value)
 {
-	struct rpc_instance_property *prop;
-	rpc_property_watcher_t cb;
-	int i;
+	struct rpc_if_member *member;
 
-	prop = g_hash_table_lookup(instance->ri_properties, name);
-	if (prop == NULL)
+	member = rpc_instance_find_member(instance, interface, name);
+	if (member == NULL || member->rim_type != RPC_MEMBER_PROPERTY)
 		return;
 
-	g_mutex_lock(&prop->rip_mtx);
-	rpc_release(prop->rip_value);
-	prop->rip_value = rpc_retain(prop->rip_value);
+	rpc_release(*member->rim_property.rp_value);
+	*member->rim_property.rp_value = rpc_retain(value);
 
-	for (i = 0; i < prop->rip_watchers->len; i++) {
-		cb = g_ptr_array_index(prop->rip_watchers, i);
-		cb(name, value);
-	}
+	if (member->rim_property.rp_callback)
+		member->rim_property.rp_callback(name, value);
 
 	rpc_instance_emit_event(instance, "librpc.Observable",
 	    "property_changed", rpc_object_pack("{s,v}",
 	        "name", name,
 	        "value", value));
-
-	g_mutex_unlock(&prop->rip_mtx);
 }
-
-void *
-rpc_instance_watch_property(rpc_instance_t instance, const char *name,
-    rpc_property_watcher_t fn)
-{
-	struct rpc_instance_property *prop;
-	rpc_property_watcher_t realcb;
-
-	prop = g_hash_table_lookup(instance->ri_properties, name);
-	if (prop == NULL) {
-		rpc_set_last_error(ENOENT, "Property not found", NULL);
-		return (NULL);
-	}
-
-	g_mutex_lock(&prop->rip_mtx);
-	realcb = Block_copy(fn);
-	g_ptr_array_add(prop->rip_watchers, realcb);
-	g_mutex_unlock(&prop->rip_mtx);
-
-	return (realcb);
-}
-
-void
-rpc_instance_unwatch_property(rpc_instance_t instance, const char *name,
-    void *cookie)
-{
-	struct rpc_instance_property *prop;
-	rpc_property_watcher_t realcb;
-
-	prop = g_hash_table_lookup(instance->ri_properties, name);
-	if (prop == NULL)
-		return;
-
-	g_mutex_lock(&prop->rip_mtx);
-	g_ptr_array_remove(prop->rip_watchers, cookie);
-	g_mutex_unlock(&prop->rip_mtx);
-}
-
 
 int
 rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
@@ -363,10 +300,10 @@ rpc_context_unregister_instance(rpc_context_t context, const char *path)
 }
 
 int
-rpc_context_register_method(rpc_context_t context, struct rpc_method *m)
+rpc_context_register_member(rpc_context_t context, struct rpc_if_member *m)
 {
 
-	return (rpc_instance_register_method(context->rcx_root, m));
+	return (rpc_instance_register_member(context->rcx_root, "", m));
 }
 
 int
@@ -390,11 +327,11 @@ rpc_context_register_func(rpc_context_t context, const char *name,
 }
 
 int
-rpc_context_unregister_method(rpc_context_t context, const char *interface,
+rpc_context_unregister_member(rpc_context_t context, const char *interface,
     const char *name)
 {
 
-	return (rpc_instance_unregister_method(context->rcx_root, interface,
+	return (rpc_instance_unregister_member(context->rcx_root, interface,
 	    name));
 }
 
@@ -559,13 +496,7 @@ rpc_instance_new(const char *path, const char *descr, void *arg)
 	result->ri_interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 	result->ri_arg = arg;
 
-	rpc_instance_register_func(result, "librpc.Introspectable",
-	    "get_interfaces", NULL, rpc_get_interfaces);
-	rpc_instance_register_func(result, "librpc.Introspectable",
-	    "get_methods", NULL, rpc_get_methods);
-	rpc_instance_register_func(result, "librpc.Introspectable",
-	    "interface_exists", NULL, rpc_interface_exists);
-
+	rpc_instance_register_interface(result, &rpc_introspectable_if);
 	return (result);
 }
 
@@ -594,18 +525,18 @@ void rpc_instance_free(rpc_instance_t instance)
 	g_free(instance);
 }
 
-struct rpc_method *
-rpc_instance_find_method(rpc_instance_t instance, const char *interface,
+struct rpc_if_member *
+rpc_instance_find_member(rpc_instance_t instance, const char *interface,
     const char *name)
 {
-	GHashTable *methods;
+	struct rpc_interface_priv *iface;
 
-	methods = g_hash_table_lookup(instance->ri_interfaces,
+	iface = g_hash_table_lookup(instance->ri_interfaces,
 	    interface != NULL ? interface : "");
-	if (methods == NULL)
+	if (iface == NULL)
 		return (NULL);
 
-	return (g_hash_table_lookup(methods, name));
+	return (g_hash_table_lookup(iface->rip_members, name));
 }
 
 bool
@@ -616,23 +547,69 @@ rpc_instance_has_interface(rpc_instance_t instance, const char *interface)
 }
 
 int
-rpc_instance_register_method(rpc_instance_t instance, struct rpc_method *m)
+rpc_instance_register_interface(rpc_instance_t instance,
+    struct rpc_interface *iface)
 {
-	struct rpc_method *method;
-	const char *interface;
-	GHashTable *methods;
+	struct rpc_interface_priv *priv;
+	struct rpc_if_member *member;
 
-	interface = m->rm_interface != NULL ? m->rm_interface : "";
-	method = g_memdup(m, sizeof(*m));
-	methods = g_hash_table_lookup(instance->ri_interfaces, interface);
+	priv = g_malloc0(sizeof(*priv));
+	g_mutex_init(&priv->rip_mtx);
+	priv->rip_members = g_hash_table_new(g_str_hash, g_str_equal);
+	priv->rip_name = g_strdup(iface->ri_name != NULL ? iface->ri_name : "");
+	priv->rip_description = g_strdup(iface->ri_description);
+	g_hash_table_insert(instance->ri_interfaces, g_strdup(iface->ri_name), priv);
 
-	if (methods == NULL) {
-		methods = g_hash_table_new(g_str_hash, g_str_equal);
-		g_hash_table_insert(instance->ri_interfaces,
-		    (gpointer)interface, methods);
+	for (member = &iface->ri_members[0]; member->rim_name != NULL; member++)
+		rpc_instance_register_member(instance, iface->ri_name, member);
+
+	return (0);
+}
+
+int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
+    struct rpc_if_member *member)
+{
+	struct rpc_interface_priv *priv;
+	struct rpc_if_member *copy;
+
+	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
+	if (priv == NULL) {
+		rpc_set_last_error(ENOENT, "Interface not found", NULL);
+		return (-1);
 	}
 
-	g_hash_table_insert(methods, (gpointer)m->rm_name, method);
+	if (member->rim_type == RPC_MEMBER_METHOD) {
+		member->rim_method.rm_block = Block_copy(
+		    member->rim_method.rm_block);
+	}
+
+	if (member->rim_type == RPC_MEMBER_PROPERTY) {
+		if (member->rim_property.rp_callback != NULL) {
+			member->rim_property.rp_callback = Block_copy(
+			    member->rim_property.rp_callback);
+		}
+
+		if (member->rim_property.rp_value == NULL) {
+			member->rim_property.rp_value = g_malloc0(
+			    sizeof(rpc_object_t *));
+		}
+
+		/* Install Observable interface if needed */
+		if (!rpc_instance_has_interface(instance, "librpc.Observable"))
+			rpc_instance_register_interface(instance, &rpc_observable_if);
+
+		/* Emit property added event */
+		rpc_instance_emit_event(instance, "librpc.Observable",
+		    "property_added", rpc_object_pack("{s,v,b,b}",
+		        "name", member->rim_name,
+		        "value", *member->rim_property.rp_value,
+		        "readable", member->rim_property.rp_rights & RPC_PROPERTY_READ,
+		        "writable", member->rim_property.rp_rights & RPC_PROPERTY_WRITE));
+
+	}
+
+	copy = g_memdup(member, sizeof(*member));
+	g_hash_table_insert(priv->rip_members, g_strdup(member->rim_name), copy);
 	return (0);
 }
 
@@ -640,49 +617,67 @@ int
 rpc_instance_register_block(rpc_instance_t instance, const char *interface,
     const char *name, void *arg, rpc_function_t func)
 {
-	struct rpc_method method;
+	struct rpc_if_member member;
 
-	method.rm_name = g_strdup(name);
-	method.rm_interface = g_strdup(interface);
-	method.rm_block = Block_copy(func);
-	method.rm_arg = arg;
+	member.rim_name = name;
+	member.rim_type = RPC_MEMBER_METHOD;
+	member.rim_method.rm_block = func;
+	member.rim_method.rm_arg = arg;
 
-	return (rpc_instance_register_method(instance, &method));
+	return (rpc_instance_register_member(instance, interface, &member));
 }
 
 int
 rpc_instance_register_func(rpc_instance_t instance, const char *interface,
     const char *name, void *arg, rpc_function_f func)
 {
-	rpc_function_t fn = ^(void *cookie, rpc_object_t args) {
-		return (func(cookie, args));
-	};
-
-	return (rpc_instance_register_block(instance, interface, name, arg, fn));
+	return (rpc_instance_register_block(instance, interface, name, arg,
+	    RPC_FUNCTION(func)));
 }
 
 int
-rpc_instance_unregister_method(rpc_instance_t instance, const char *interface,
+rpc_instance_unregister_member(rpc_instance_t instance, const char *interface,
     const char *name)
 {
-	GHashTable *methods;
-	struct rpc_method *method;
+	struct rpc_interface_priv *priv;
+	struct rpc_if_member *member;
 
-	methods = g_hash_table_lookup(instance->ri_interfaces, interface);
-	if (methods == NULL) {
-		errno = ENOENT;
+	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
+	if (priv == NULL) {
+		rpc_set_last_error(ENOENT, "Interface not found", NULL);
 		return (-1);
 	}
 
-	method = g_hash_table_lookup(methods, name);
-	if (method == NULL) {
-		errno = ENOENT;
+	g_mutex_lock(&priv->rip_mtx);
+	member = g_hash_table_lookup(priv->rip_members, name);
+	if (member == NULL) {
+		rpc_set_last_error(ENOENT, "Member not found", NULL);
 		return (-1);
 	}
 
-	Block_release(method->rm_block);
-	g_hash_table_remove(methods, name);
+	if (member->rim_type == RPC_MEMBER_PROPERTY) {
+		rpc_instance_emit_event(instance, "librpc.Observable",
+		    "property_removed", rpc_object_pack("{s}", "name", name));
+	}
+
+	g_hash_table_remove(priv->rip_members, name);
+	g_mutex_unlock(&priv->rip_mtx);
 	return (0);
+}
+
+int
+rpc_instance_get_property_rights(rpc_instance_t instance, const char *interface,
+    const char *name)
+{
+	struct rpc_if_member *member;
+
+	member = rpc_instance_find_member(instance, interface, name);
+	if (member == NULL || member->rim_type != RPC_MEMBER_PROPERTY) {
+		rpc_set_last_error(ENOENT, "Property not found", NULL);
+		return (-1);
+	}
+
+	return (member->rim_property.rp_rights);
 }
 
 static rpc_object_t
@@ -782,15 +777,16 @@ static rpc_object_t
 rpc_observable_property_get(void *cookie, rpc_object_t args)
 {
 	rpc_instance_t inst = rpc_function_get_instance(cookie);
+	const char *interface;
 	const char *name;
 
-	if (rpc_object_unpack(args, "[s]", &name) < 1) {
+	if (rpc_object_unpack(args, "[s,s]", &interface, &name) < 2) {
 		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
 		return (NULL);
 	}
 
-	if (rpc_instance_get_property_rights(inst, name) & RPC_PROPERTY_READ)
-		return (rpc_instance_get_property(inst, name));
+	if (rpc_instance_get_property_rights(inst, interface, name) & RPC_PROPERTY_READ)
+		return (rpc_instance_get_property(inst, interface, name));
 
 	return (NULL);
 }
@@ -799,16 +795,17 @@ static rpc_object_t
 rpc_observable_property_set(void *cookie, rpc_object_t args)
 {
 	rpc_instance_t inst = rpc_function_get_instance(cookie);
+	const char *interface;
 	const char *name;
 	rpc_object_t value;
 
-	if (rpc_object_unpack(args, "[s,v]", &name, &value) < 2) {
+	if (rpc_object_unpack(args, "[s,s,v]", &interface, &name, &value) < 3) {
 		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
 		return (NULL);
 	}
 
-	if (rpc_instance_get_property_rights(inst, name) & RPC_PROPERTY_WRITE) {
-		rpc_instance_set_property(inst, name, value);
+	if (rpc_instance_get_property_rights(inst, interface, name) & RPC_PROPERTY_WRITE) {
+		rpc_instance_set_property(inst, interface, name, value);
 		return (NULL);
 	}
 
@@ -817,22 +814,33 @@ rpc_observable_property_set(void *cookie, rpc_object_t args)
 }
 
 static rpc_object_t
-rpc_observable_property_get_all(void *cookie, rpc_object_t args __unused)
+rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 {
 	rpc_instance_t inst = rpc_function_get_instance(cookie);
 	GHashTableIter iter;
+	const char *interface;
 	const char *k;
-	struct rpc_instance_property *v;
+	struct rpc_if_member *v;
+	struct rpc_interface_priv *priv;
 	rpc_object_t fragment;
 
-	g_hash_table_iter_init(&iter, inst->ri_properties);
+	if (rpc_object_unpack(args, "[s]", &interface) < 1) {
+		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
+		return (NULL);
+	}
+
+	priv = g_hash_table_lookup(inst->ri_interfaces, interface);
+	if (priv == NULL) {
+		rpc_function_error(cookie, ENOENT, "Interface not found");
+		return (NULL);
+	}
 
 	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
 		fragment = rpc_object_pack("{s,v,b,b}",
-		    "name", v->rip_name,
-		    "value", v->rip_value,
-		    "readable", v->rip_rights & RPC_PROPERTY_READ,
-		    "writable", v->rip_rights & RPC_PROPERTY_WRITE);
+		    "name", v->rim_name,
+		    "value", *v->rim_property.rp_value,
+		    "readable", v->rim_property.rp_rights & RPC_PROPERTY_READ,
+		    "writable", v->rim_property.rp_rights & RPC_PROPERTY_WRITE);
 
 		if (rpc_function_yield(cookie, fragment) != 0)
 			goto done;

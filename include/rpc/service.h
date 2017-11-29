@@ -67,57 +67,87 @@ typedef rpc_object_t (^rpc_function_t)(void *cookie, rpc_object_t args);
  */
 typedef rpc_object_t (*rpc_function_f)(void *cookie, rpc_object_t args);
 
-typedef void (^rpc_property_watcher_t)(const char *name, rpc_object_t value);
+typedef void (^rpc_property_callback_t)(const char *name, rpc_object_t value);
 
 #define	RPC_FUNCTION(_fn)						\
 	^(void *_cookie, rpc_object_t _args) {				\
 		return (_fn(_cookie, _args));				\
 	}
 
-#define	RPC_METHOD(_interface, _name, _fn, _arg)			\
+#define	RPC_EVENT(_name)						\
 	{								\
-		.rm_name = (_name),					\
-		.rm_interface = (_interface),				\
-		.rm_block = RPC_FUNCTION(_fn),				\
-		.rm_arg = (_arg)					\
+		.rim_type = RPC_MEMBER_EVENT,				\
+		.rim_name = (_name)					\
 	}
 
-/**
- * RPC method descriptor.
- */
-struct rpc_method
-{
-	const char *		rm_name;
-	const char *		rm_interface;
-	rpc_function_t  	rm_block;
-	void *			rm_arg;
-};
+#define	RPC_PROPERTY(_name, _rights, _callback)				\
+	{								\
+		.rim_type = RPC_MEMBER_PROPERTY,			\
+		.rim_name = (_name),					\
+		.rim_property = {					\
+                        .rp_rights = (_rights),				\
+                        .rp_callback = (_callback),			\
+                }							\
+	}
 
-struct rpc_property
-{
-	const char *		rp_name;
-	const char *		rp_interface;
-	int			rp_rights;
-};
+#define	RPC_METHOD(_name, _fn, _arg)					\
+	{								\
+		.rim_type = RPC_MEMBER_METHOD,				\
+		.rim_name = (_name),					\
+		.rim_method = {						\
+                        .rm_block = RPC_FUNCTION(_fn),			\
+                        .rm_arg = (_arg)				\
+                }							\
+	}
 
-struct rpc_event
-{
-	const char *		re_name;
-	const char *		re_interface;
-};
+#define	RPC_MEMBER_END {}
 
-struct rpc_interface
+enum rpc_if_member_type
 {
-	const char *		ri_name;
-	struct {
-		enum rpc_mem
-	};
+	RPC_MEMBER_EVENT,
+	RPC_MEMBER_PROPERTY,
+	RPC_MEMBER_METHOD,
 };
 
 enum rpc_property_rights
 {
 	RPC_PROPERTY_READ = (1 << 0),
 	RPC_PROPERTY_WRITE = (1 << 1),
+};
+
+
+/**
+ * RPC method descriptor.
+ */
+struct rpc_if_method
+{
+	const char *		rm_name;
+	rpc_function_t  	rm_block;
+	void *			rm_arg;
+};
+
+struct rpc_if_property
+{
+	const char *		rp_name;
+	int			rp_rights;
+	rpc_object_t *		rp_value;
+	rpc_property_callback_t rp_callback;
+};
+
+struct rpc_if_member {
+	const char *		rim_name;
+	enum rpc_if_member_type	rim_type;
+	union {
+		struct rpc_if_method rim_method;
+		struct rpc_if_property rim_property;
+	};
+};
+
+struct rpc_interface
+{
+	const char *		ri_name;
+	const char *		ri_description;
+	struct rpc_if_member	ri_members[];
 };
 
 /**
@@ -174,7 +204,7 @@ void rpc_context_unregister_instance(rpc_context_t context, const char *path);
  * @param m RPC method structure.
  * @return Status.
  */
-int rpc_context_register_method(rpc_context_t context, struct rpc_method *m);
+int rpc_context_register_member(rpc_context_t context, struct rpc_if_member *m);
 
 /**
  * Registers a given block as a RPC method for a given context.
@@ -380,7 +410,28 @@ const char *rpc_instance_get_path(rpc_instance_t instance);
  * @param name
  * @param fn
  */
-int rpc_instance_register_methods(rpc_instance_t instance, struct rpc_method *m, size_t n);
+int rpc_instance_register_interface(rpc_instance_t instance,
+    struct rpc_interface *iface);
+
+/**
+ *
+ * @param instance
+ * @param interface
+ * @param member
+ * @return
+ */
+int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
+    struct rpc_if_member *member);
+
+/**
+ *
+ * @param instance
+ * @param interface
+ * @param name
+ * @return
+ */
+int rpc_instance_unregister_member(rpc_instance_t instance,
+    const char *interface, const char *name);
 
 /**
  *
@@ -404,16 +455,6 @@ int rpc_instance_register_func(rpc_instance_t instance, const char *interface,
     const char *name, void *arg, rpc_function_f fn);
 
 /**
- *
- * @param instance
- * @param interface
- * @param name
- * @return
- */
-int rpc_instance_unregister_method(rpc_instance_t instance,
-    const char *interface, const char *name);
-
-/**
  * Finds a given method belonging to a given interface in instance.
  *
  * @param instance
@@ -421,7 +462,7 @@ int rpc_instance_unregister_method(rpc_instance_t instance,
  * @param name
  * @return
  */
-struct rpc_method *rpc_instance_find_method(rpc_instance_t instance,
+struct rpc_if_member *rpc_instance_find_member(rpc_instance_t instance,
     const char *interface, const char *name);
 
 /**
@@ -447,16 +488,9 @@ void rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
  * @param value
  * @return
  */
-int rpc_instance_register_property(rpc_instance_t instance, const char *name,
-    rpc_object_t value, int rights);
-
-/**
- *
- * @param instance
- * @param name
- */
-void rpc_instance_unregister_property(rpc_instance_t instance,
-    const char *name);
+int rpc_instance_register_property(rpc_instance_t instance,
+    const char *interface, const char *name, rpc_object_t *value, int rights,
+    rpc_property_callback_t callback);
 
 /**
  *
@@ -465,7 +499,7 @@ void rpc_instance_unregister_property(rpc_instance_t instance,
  * @return
  */
 rpc_object_t rpc_instance_get_property(rpc_instance_t instance,
-    const char *name);
+    const char *interface, const char *name);
 
 /**
  *
@@ -474,7 +508,7 @@ rpc_object_t rpc_instance_get_property(rpc_instance_t instance,
  * @param value
  */
 void rpc_instance_set_property(rpc_instance_t instance, const char *name,
-    rpc_object_t value);
+    const char *interface, rpc_object_t value);
 
 /**
  *
@@ -482,24 +516,11 @@ void rpc_instance_set_property(rpc_instance_t instance, const char *name,
  * @param name
  * @return
  */
-void *rpc_instance_watch_property(rpc_instance_t instance, const char *name,
-    rpc_property_watcher_t fn);
+int rpc_instance_get_property_rights(rpc_instance_t instance,
+    const char *interface, const char *name);
 
-/**
- *
- * @param instance
- * @param cookie
- */
-void rpc_instance_unwatch_property(rpc_instance_t instance, const char *name,
-    void *cookie);
-
-/**
- *
- * @param instance
- * @param name
- * @return
- */
-int rpc_instance_get_property_rights(rpc_instance_t instance, const char *name);
+int rpc_instance_register_event(rpc_instance_t, const char *interface,
+    const char *name);
 
 /**
  *

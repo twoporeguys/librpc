@@ -230,7 +230,7 @@ cdef extern from "rpc/server.h" nogil:
     int rpc_server_stop(rpc_server_t server);
     int rpc_server_close(rpc_server_t server);
 
-    void rpc_server_broadcast_event(rpc_server_t server, const char *name, rpc_object_t args)
+    void rpc_server_broadcast_event(rpc_server_t server, const char *path, const char *interface, const char *name, rpc_object_t args)
 
 
 cdef extern from "rpc/bus.h" nogil:
