@@ -104,7 +104,8 @@ typedef void (^rpc_property_setter_t)(void *cookie, rpc_object_t value);
 		.rim_name = (#_name),					\
 		.rim_property = {					\
                         .rp_getter = RPC_PROPERTY_GETTER(_getter),	\
-			.rp_setter = NULL				\
+			.rp_setter = NULL,				\
+			.rp_arg = NULL					\
                 }							\
 	}
 
@@ -115,6 +116,7 @@ typedef void (^rpc_property_setter_t)(void *cookie, rpc_object_t value);
 		.rim_property = {					\
                         .rp_getter = NULL,				\
 			.rp_setter = RPC_PROPERTY_SETTER(_setter),	\
+			.rp_arg = NULL					\
                 }							\
 	}
 
@@ -125,6 +127,7 @@ typedef void (^rpc_property_setter_t)(void *cookie, rpc_object_t value);
 		.rim_property = {					\
                         .rp_getter = RPC_PROPERTY_GETTER(_getter),	\
 			.rp_setter = RPC_PROPERTY_SETTER(_setter),	\
+			.rp_arg = NULL					\
                 }							\
 	}
 
@@ -134,6 +137,7 @@ typedef void (^rpc_property_setter_t)(void *cookie, rpc_object_t value);
 		.rim_name = (#_name),					\
 		.rim_method = {						\
                         .rm_block = RPC_FUNCTION(_fn),			\
+			.rm_arg = NULL					\
                 }							\
 	}
 
@@ -177,6 +181,7 @@ struct rpc_if_property
 	const char *		rp_name;
 	rpc_property_getter_t	rp_getter;
 	rpc_property_setter_t	rp_setter;
+	void *			rp_arg;
 };
 
 struct rpc_if_member {
@@ -456,7 +461,7 @@ const char *rpc_instance_get_path(rpc_instance_t instance);
  * @param fn
  */
 int rpc_instance_register_interface(rpc_instance_t instance,
-    const struct rpc_interface *iface);
+    const struct rpc_interface *iface, void *arg);
 
 /**
  *

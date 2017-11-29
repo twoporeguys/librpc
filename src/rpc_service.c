@@ -130,7 +130,7 @@ rpc_context_create(void)
 	result->rcx_threadpool = g_thread_pool_new(rpc_context_tp_handler,
 	    result, g_get_num_processors() * 4, true, &err);
 
-	rpc_instance_register_interface(result->rcx_root, &rpc_discoverable_if);
+	rpc_instance_register_interface(result->rcx_root, &rpc_discoverable_if, NULL);
 	rpc_context_register_instance(result, result->rcx_root);
 	return (result);
 }
@@ -467,7 +467,7 @@ rpc_instance_new(const char *fmt, ...)
 	result->ri_interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 	result->ri_arg = arg;
 
-	rpc_instance_register_interface(result, &rpc_introspectable_if);
+	rpc_instance_register_interface(result, &rpc_introspectable_if, NULL);
 	return (result);
 }
 
@@ -519,7 +519,7 @@ rpc_instance_has_interface(rpc_instance_t instance, const char *interface)
 
 int
 rpc_instance_register_interface(rpc_instance_t instance,
-    const struct rpc_interface *iface)
+    const struct rpc_interface *iface, void *arg)
 {
 	struct rpc_interface_priv *priv;
 	const struct rpc_if_member *member;
@@ -529,6 +529,8 @@ rpc_instance_register_interface(rpc_instance_t instance,
 	priv->rip_members = g_hash_table_new(g_str_hash, g_str_equal);
 	priv->rip_name = g_strdup(iface->ri_name != NULL ? iface->ri_name : "");
 	priv->rip_description = g_strdup(iface->ri_description);
+	priv->rip_arg = arg;
+
 	g_hash_table_insert(instance->ri_interfaces, g_strdup(iface->ri_name), priv);
 
 	for (member = &iface->ri_members[0]; member->rim_name != NULL; member++)
@@ -554,6 +556,9 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 	if (copy->rim_type == RPC_MEMBER_METHOD) {
 		copy->rim_method.rm_block = Block_copy(
 		    copy->rim_method.rm_block);
+
+		if (copy->rim_method.rm_arg == NULL)
+			copy->rim_method.rm_arg = priv->rip_arg;
 	}
 
 	if (copy->rim_type == RPC_MEMBER_PROPERTY) {
@@ -567,9 +572,12 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 			    copy->rim_property.rp_setter);
 		}
 
+		if (copy->rim_property.rp_arg == NULL)
+			copy->rim_property.rp_arg = priv->rip_arg;
+
 		/* Install Observable interface if needed */
 		if (!rpc_instance_has_interface(instance, "librpc.Observable"))
-			rpc_instance_register_interface(instance, &rpc_observable_if);
+			rpc_instance_register_interface(instance, &rpc_observable_if, NULL);
 
 		/* Emit property added event */
 		rpc_instance_emit_event(instance, "librpc.Observable",
@@ -746,11 +754,11 @@ done:
 static rpc_object_t
 rpc_get_methods(void *cookie, rpc_object_t args)
 {
-	GHashTable *methods;
 	GHashTableIter iter;
+	struct rpc_interface_priv *priv;
 	const char *interface;
 	const char *k;
-	void *v;
+	struct rpc_if_member *v;
 	rpc_object_t fragment;
 	rpc_instance_t instance = rpc_function_get_instance(cookie);
 
@@ -759,14 +767,17 @@ rpc_get_methods(void *cookie, rpc_object_t args)
 		return (NULL);
 	}
 
-	methods = g_hash_table_lookup(instance->ri_interfaces, interface);
-	if (methods == NULL) {
+	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
+	if (priv == NULL) {
 		rpc_function_error(cookie, ENOENT, "Interface not found");
 		return (NULL);
 	}
 
-	g_hash_table_iter_init(&iter, methods);
+	g_hash_table_iter_init(&iter, priv->rip_members);
 	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
+		if (v->rim_type != RPC_MEMBER_METHOD)
+			continue;
+
 		fragment = rpc_string_create(k);
 		if (rpc_function_yield(cookie, fragment) != 0)
 			goto done;
@@ -819,7 +830,7 @@ rpc_observable_property_get(void *cookie, rpc_object_t args)
 
 	prop.instance = inst;
 	prop.name = name;
-	prop.arg = rpc_function_get_arg(cookie);
+	prop.arg = member->rim_property.rp_arg;
 	prop.error = NULL;
 	result = member->rim_property.rp_getter(&prop);
 
@@ -859,7 +870,7 @@ rpc_observable_property_set(void *cookie, rpc_object_t args)
 
 	prop.instance = inst;
 	prop.name = name;
-	prop.arg = rpc_function_get_arg(cookie);
+	prop.arg = member->rim_property.rp_arg;
 	prop.error = NULL;
 	member->rim_property.rp_setter(&prop, value);
 
@@ -895,13 +906,17 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 		return (NULL);
 	}
 
+	g_hash_table_iter_init(&iter, priv->rip_members);
 	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
+		if (v->rim_type != RPC_MEMBER_PROPERTY)
+			continue;
+
 		if (v->rim_property.rp_getter == NULL)
 			continue;
 
 		prop.instance = inst;
 		prop.name = k;
-		prop.arg = rpc_function_get_arg(cookie);
+		prop.arg = v->rim_property.rp_arg;
 		prop.error = NULL;
 		result = v->rim_property.rp_getter(&prop);
 
