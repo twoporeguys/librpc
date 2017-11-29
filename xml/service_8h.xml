@@ -1190,22 +1190,17 @@
         </inbodydescription>
         <location file="/code/include/rpc/service.h" line="382" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="service_8h_1a3e37008b3939ab52f95f17ae68318e75" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="service_8h_1aee57eb01576d11b3eba2cc357667db4a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>rpc_instance_t</type>
         <definition>rpc_instance_t rpc_instance_new</definition>
-        <argsstring>(const char *path, const char *descr, void *arg)</argsstring>
+        <argsstring>(const char *fmt,...)</argsstring>
         <name>rpc_instance_new</name>
         <param>
           <type>const char *</type>
-          <declname>path</declname>
+          <declname>fmt</declname>
         </param>
         <param>
-          <type>const char *</type>
-          <declname>descr</declname>
-        </param>
-        <param>
-          <type>void *</type>
-          <declname>arg</declname>
+          <type>...</type>
         </param>
         <briefdescription>
         </briefdescription>
@@ -2122,7 +2117,7 @@
 <codeline lineno="374"><highlight class="normal"></highlight></codeline>
 <codeline lineno="382"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a23fb9149cf7ad5bfdec4bc24fd805617" kindref="member">rpc_function_should_abort</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*cookie);</highlight></codeline>
 <codeline lineno="383"><highlight class="normal"></highlight></codeline>
-<codeline lineno="390"><highlight class="normal">rpc_instance_t<sp/><ref refid="service_8h_1a3e37008b3939ab52f95f17ae68318e75" kindref="member">rpc_instance_new</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*path,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*descr,<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*arg);</highlight></codeline>
+<codeline lineno="390"><highlight class="normal">rpc_instance_t<sp/><ref refid="service_8h_1aee57eb01576d11b3eba2cc357667db4a" kindref="member">rpc_instance_new</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*fmt,<sp/>...);</highlight></codeline>
 <codeline lineno="391"><highlight class="normal"></highlight></codeline>
 <codeline lineno="397"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<ref refid="service_8h_1a6f4eb6df2553bf05ce15f74950f6415e" kindref="member">rpc_instance_get_arg</ref>(rpc_instance_t<sp/>instance);</highlight></codeline>
 <codeline lineno="398"><highlight class="normal"></highlight></codeline>

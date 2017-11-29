@@ -96,7 +96,7 @@ void \hyperlink{connection_8h_a209856a794a9a10a53735787926f4b95}{rpc\+\_\+connec
 \item 
 \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} \hyperlink{connection_8h_a2d2059a4a18c0bfb8d8482af47d34072}{rpc\+\_\+connection\+\_\+call} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args, \hyperlink{connection_8h_a659dfc386fa0add62a07c17662a29641}{rpc\+\_\+callback\+\_\+t} callback)
 \item 
-int \hyperlink{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}{rpc\+\_\+connection\+\_\+send\+\_\+event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
+int \hyperlink{connection_8h_a4fe29725255d1cbfcfec6e719e7023df}{rpc\+\_\+connection\+\_\+send\+\_\+event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
 int \hyperlink{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}{rpc\+\_\+connection\+\_\+ping} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
@@ -721,13 +721,15 @@ Each time an event occurs, a handler block is going to be called.
 \end{DoxyParams}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+send\+\_\+event@{rpc\+\_\+connection\+\_\+send\+\_\+event}}
 \index{rpc\+\_\+connection\+\_\+send\+\_\+event@{rpc\+\_\+connection\+\_\+send\+\_\+event}!connection.\+h@{connection.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+send\+\_\+event(rpc\+\_\+connection\+\_\+t conn, const char $\ast$name, rpc\+\_\+object\+\_\+t args)}{rpc_connection_send_event(rpc_connection_t conn, const char *name, rpc_object_t args)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+connection\+\_\+send\+\_\+event (
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+send\+\_\+event(rpc\+\_\+connection\+\_\+t conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name, rpc\+\_\+object\+\_\+t args)}{rpc_connection_send_event(rpc_connection_t conn, const char *path, const char *interface, const char *name, rpc_object_t args)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+connection\+\_\+send\+\_\+event (
 \begin{DoxyParamCaption}
 \item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
+\item[{const char $\ast$}]{path, }
+\item[{const char $\ast$}]{interface, }
 \item[{const char $\ast$}]{name, }
 \item[{{\bf rpc\+\_\+object\+\_\+t}}]{args}
 \end{DoxyParamCaption}
-)}\hypertarget{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}{}\label{connection_8h_a1bc22789ecc5ca9cbe8637c8f173ee4d}
+)}\hypertarget{connection_8h_a4fe29725255d1cbfcfec6e719e7023df}{}\label{connection_8h_a4fe29725255d1cbfcfec6e719e7023df}
 Sends an event.
 
 

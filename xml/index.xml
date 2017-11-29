@@ -95,7 +95,7 @@
     <member refid="connection_8h_1a0528a5ec56934aa35e9c51423b54c880" kind="function"><name>rpc_connection_call_syncpv</name></member>
     <member refid="connection_8h_1a308c17c19fccdd57ae46739b860aea19" kind="function"><name>rpc_connection_call_simple</name></member>
     <member refid="connection_8h_1a2d2059a4a18c0bfb8d8482af47d34072" kind="function"><name>rpc_connection_call</name></member>
-    <member refid="connection_8h_1a1bc22789ecc5ca9cbe8637c8f173ee4d" kind="function"><name>rpc_connection_send_event</name></member>
+    <member refid="connection_8h_1a4fe29725255d1cbfcfec6e719e7023df" kind="function"><name>rpc_connection_send_event</name></member>
     <member refid="connection_8h_1a2d9343c2c38625f9659358e0710ed0c7" kind="function"><name>rpc_connection_ping</name></member>
     <member refid="connection_8h_1ae843166183a4bd6dbf5a58133b3fcaf3" kind="function"><name>rpc_connection_set_event_handler</name></member>
     <member refid="connection_8h_1a8f332abcc5d0a80c86f8317c7dcc79ec" kind="function"><name>rpc_connection_set_error_handler</name></member>
@@ -325,7 +325,7 @@
     <member refid="service_8h_1a36b4ff5a09f3a8139f1d5b59ab930139" kind="function"><name>rpc_function_yield</name></member>
     <member refid="service_8h_1a7e912e42af9c3899e74e1ef539ca7e50" kind="function"><name>rpc_function_end</name></member>
     <member refid="service_8h_1a23fb9149cf7ad5bfdec4bc24fd805617" kind="function"><name>rpc_function_should_abort</name></member>
-    <member refid="service_8h_1a3e37008b3939ab52f95f17ae68318e75" kind="function"><name>rpc_instance_new</name></member>
+    <member refid="service_8h_1aee57eb01576d11b3eba2cc357667db4a" kind="function"><name>rpc_instance_new</name></member>
     <member refid="service_8h_1a6f4eb6df2553bf05ce15f74950f6415e" kind="function"><name>rpc_instance_get_arg</name></member>
     <member refid="service_8h_1a68b61823da7220e591aa5b815fe5cc5e" kind="function"><name>rpc_instance_get_path</name></member>
     <member refid="service_8h_1ab25f7fa77bebdb5c070da29d4f1c0f75" kind="function"><name>rpc_instance_register_interface</name></member>
