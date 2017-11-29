@@ -288,8 +288,17 @@ struct rpc_interface_priv
 {
 	char *			rip_name;
 	char *			rip_description;
+	void *			rip_arg;
 	GHashTable *		rip_members;
 	GMutex			rip_mtx;
+};
+
+struct rpc_property_cookie
+{
+	rpc_instance_t 		instance;
+	rpc_object_t 		error;
+	void *			arg;
+	const char *		name;
 };
 
 struct rpc_context

@@ -46,33 +46,32 @@ static rpc_object_t rpc_observable_property_get_all(void *cookie, rpc_object_t a
 static rpc_object_t rpc_observable_property_set(void *cookie, rpc_object_t args);
 
 struct rpc_interface rpc_discoverable_if = {
-	.ri_name = "librpc.Discoverable",
+	.ri_name = "com.twoporeguys.librpc.Discoverable",
 	.ri_members = {
-		RPC_EVENT("instance_added"),
-		RPC_EVENT("instance_removed"),
-		RPC_METHOD("get_instances", rpc_get_objects, NULL),
+		RPC_EVENT(instance_added),
+		RPC_EVENT(instance_removed),
+		RPC_METHOD(get_instances, rpc_get_objects),
 		RPC_MEMBER_END
 	}
 };
 
 struct rpc_interface rpc_introspectable_if = {
-	.ri_name = "librpc.Introspectable",
+	.ri_name = "com.twoporeguys.librpc.Introspectable",
 	.ri_members = {
-		RPC_PROPERTY("description", RPC_PROPERTY_READ, NULL),
-		RPC_METHOD("get_interfaces", rpc_get_interfaces, NULL),
-		RPC_METHOD("get_methods", rpc_get_methods, NULL),
-		RPC_METHOD("interface_exists", rpc_interface_exists, NULL),
+		RPC_METHOD(get_interfaces, rpc_get_interfaces),
+		RPC_METHOD(get_methods, rpc_get_methods),
+		RPC_METHOD(interface_exists, rpc_interface_exists),
 		RPC_MEMBER_END
 	}
 };
 
 struct rpc_interface rpc_observable_if = {
-	.ri_name = "librpc.Observable",
+	.ri_name = "com.twoporeguys.librpc.Observable",
 	.ri_members = {
-		RPC_EVENT("changed"),
-		RPC_METHOD("get", rpc_observable_property_get, NULL),
-		RPC_METHOD("get_all", rpc_observable_property_get_all, NULL),
-		RPC_METHOD("set", rpc_observable_property_set, NULL),
+		RPC_EVENT(changed),
+		RPC_METHOD(get, rpc_observable_property_get),
+		RPC_METHOD(get_all, rpc_observable_property_get_all),
+		RPC_METHOD(set, rpc_observable_property_set),
 		RPC_MEMBER_END
 	}
 };
@@ -207,56 +206,18 @@ rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
 
 int
 rpc_instance_register_property(rpc_instance_t instance, const char *interface,
-    const char *name, rpc_object_t *value, int rights,
-    rpc_property_callback_t callback)
+    const char *name, rpc_property_getter_t getter,
+    rpc_property_setter_t setter)
 {
 	struct rpc_if_member member;
 
 	member.rim_name = name;
 	member.rim_type = RPC_MEMBER_PROPERTY;
 	member.rim_property.rp_name = name;
-	member.rim_property.rp_rights = rights;
-	member.rim_property.rp_callback = callback;
-	member.rim_property.rp_value = value;
+	member.rim_property.rp_getter = getter;
+	member.rim_property.rp_setter = setter;
 
 	return (rpc_instance_register_member(instance, interface, &member));
-}
-
-rpc_object_t
-rpc_instance_get_property(rpc_instance_t instance, const char *interface,
-    const char *name)
-{
-	struct rpc_if_member *member;
-
-	member = rpc_instance_find_member(instance, interface, name);
-	if (member == NULL || member->rim_type != RPC_MEMBER_PROPERTY) {
-		rpc_set_last_error(ENOENT, "Property not found", NULL);
-		return (NULL);
-	}
-
-	return (*member->rim_property.rp_value);
-}
-
-void
-rpc_instance_set_property(rpc_instance_t instance, const char *interface,
-    const char *name, rpc_object_t value)
-{
-	struct rpc_if_member *member;
-
-	member = rpc_instance_find_member(instance, interface, name);
-	if (member == NULL || member->rim_type != RPC_MEMBER_PROPERTY)
-		return;
-
-	rpc_release(*member->rim_property.rp_value);
-	*member->rim_property.rp_value = rpc_retain(value);
-
-	if (member->rim_property.rp_callback)
-		member->rim_property.rp_callback(name, value);
-
-	rpc_instance_emit_event(instance, "librpc.Observable",
-	    "property_changed", rpc_object_pack("{s,v}",
-	        "name", name,
-	        "value", value));
 }
 
 int
@@ -273,7 +234,7 @@ rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
 
 	if (context->rcx_server != NULL) {
 		rpc_server_broadcast_event(context->rcx_server, "/",
-		    "librpc.Discoverable", "object_added",
+		    "com.twoporeguys.librpc.Discoverable", "object_added",
 		    rpc_string_create(instance->ri_path));
 	}
 
@@ -291,7 +252,7 @@ rpc_context_unregister_instance(rpc_context_t context, const char *path)
 	if (g_hash_table_remove(context->rcx_instances, path)) {
 		if (context->rcx_server != NULL) {
 			rpc_server_broadcast_event(context->rcx_server, "/",
-			    "librpc.Discoverable", "object_removed",
+			    "com.twoporeguys.librpc.Discoverable", "object_removed",
 			    rpc_string_create(path));
 		}
 	}
@@ -558,10 +519,10 @@ rpc_instance_has_interface(rpc_instance_t instance, const char *interface)
 
 int
 rpc_instance_register_interface(rpc_instance_t instance,
-    struct rpc_interface *iface)
+    const struct rpc_interface *iface)
 {
 	struct rpc_interface_priv *priv;
-	struct rpc_if_member *member;
+	const struct rpc_if_member *member;
 
 	priv = g_malloc0(sizeof(*priv));
 	g_mutex_init(&priv->rip_mtx);
@@ -577,7 +538,7 @@ rpc_instance_register_interface(rpc_instance_t instance,
 }
 
 int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
-    struct rpc_if_member *member)
+    const struct rpc_if_member *member)
 {
 	struct rpc_interface_priv *priv;
 	struct rpc_if_member *copy;
@@ -588,20 +549,22 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 		return (-1);
 	}
 
-	if (member->rim_type == RPC_MEMBER_METHOD) {
-		member->rim_method.rm_block = Block_copy(
-		    member->rim_method.rm_block);
+	copy = g_memdup(member, sizeof(*member));
+
+	if (copy->rim_type == RPC_MEMBER_METHOD) {
+		copy->rim_method.rm_block = Block_copy(
+		    copy->rim_method.rm_block);
 	}
 
-	if (member->rim_type == RPC_MEMBER_PROPERTY) {
-		if (member->rim_property.rp_callback != NULL) {
-			member->rim_property.rp_callback = Block_copy(
-			    member->rim_property.rp_callback);
+	if (copy->rim_type == RPC_MEMBER_PROPERTY) {
+		if (copy->rim_property.rp_getter != NULL) {
+			copy->rim_property.rp_getter = Block_copy(
+			    copy->rim_property.rp_getter);
 		}
 
-		if (member->rim_property.rp_value == NULL) {
-			member->rim_property.rp_value = g_malloc0(
-			    sizeof(rpc_object_t *));
+		if (copy->rim_property.rp_setter != NULL) {
+			copy->rim_property.rp_setter = Block_copy(
+			    copy->rim_property.rp_setter);
 		}
 
 		/* Install Observable interface if needed */
@@ -610,15 +573,13 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 
 		/* Emit property added event */
 		rpc_instance_emit_event(instance, "librpc.Observable",
-		    "property_added", rpc_object_pack("{s,v,b,b}",
+		    "property_added", rpc_object_pack("{s,b,b}",
 		        "name", member->rim_name,
-		        "value", *member->rim_property.rp_value,
-		        "readable", member->rim_property.rp_rights & RPC_PROPERTY_READ,
-		        "writable", member->rim_property.rp_rights & RPC_PROPERTY_WRITE));
+		        "readable", member->rim_property.rp_getter != NULL,
+		        "writable", member->rim_property.rp_setter != NULL));
 
 	}
 
-	copy = g_memdup(member, sizeof(*member));
 	g_hash_table_insert(priv->rip_members, g_strdup(member->rim_name), copy);
 	return (0);
 }
@@ -680,6 +641,7 @@ rpc_instance_get_property_rights(rpc_instance_t instance, const char *interface,
     const char *name)
 {
 	struct rpc_if_member *member;
+	int rights = 0;
 
 	member = rpc_instance_find_member(instance, interface, name);
 	if (member == NULL || member->rim_type != RPC_MEMBER_PROPERTY) {
@@ -687,7 +649,53 @@ rpc_instance_get_property_rights(rpc_instance_t instance, const char *interface,
 		return (-1);
 	}
 
-	return (member->rim_property.rp_rights);
+	if (member->rim_property.rp_getter != NULL)
+		rights |= RPC_PROPERTY_READ;
+
+	if (member->rim_property.rp_setter != NULL)
+		rights |= RPC_PROPERTY_WRITE;
+
+	return (rights);
+}
+
+rpc_instance_t
+rpc_property_get_instance(void *cookie)
+{
+	struct rpc_property_cookie *prop = cookie;
+
+	return (prop->instance);
+}
+
+void *
+rpc_property_get_arg(void *cookie)
+{
+	struct rpc_property_cookie *prop = cookie;
+
+	return (prop->arg);
+}
+
+const char *
+rpc_property_get_name(void *cookie)
+{
+	struct rpc_property_cookie *prop = cookie;
+
+	return (prop->name);
+}
+
+void
+rpc_property_error(void *cookie, int code, const char *fmt, ...)
+{
+	struct rpc_property_cookie *prop = cookie;
+	char *msg;
+	va_list ap;
+
+	va_start(ap, fmt);
+	msg = g_strdup_vprintf(fmt, ap);
+	va_end(ap);
+
+	prop->error = rpc_error_create(code, msg, NULL);
+	g_free(msg);
+
 }
 
 static rpc_object_t
@@ -787,6 +795,9 @@ static rpc_object_t
 rpc_observable_property_get(void *cookie, rpc_object_t args)
 {
 	rpc_instance_t inst = rpc_function_get_instance(cookie);
+	rpc_object_t result;
+	struct rpc_property_cookie prop;
+	struct rpc_if_member *member;
 	const char *interface;
 	const char *name;
 
@@ -795,16 +806,37 @@ rpc_observable_property_get(void *cookie, rpc_object_t args)
 		return (NULL);
 	}
 
-	if (rpc_instance_get_property_rights(inst, interface, name) & RPC_PROPERTY_READ)
-		return (rpc_instance_get_property(inst, interface, name));
+	member = rpc_instance_find_member(inst, interface, name);
+	if (member == NULL || member->rim_type != RPC_MEMBER_PROPERTY) {
+		rpc_function_error(cookie, ENOENT, "Property not found");
+		return (NULL);
+	}
 
-	return (NULL);
+	if (member->rim_property.rp_getter == NULL) {
+		rpc_function_error(cookie, EPERM, "Property read not allowed");
+		return (NULL);
+	}
+
+	prop.instance = inst;
+	prop.name = name;
+	prop.arg = rpc_function_get_arg(cookie);
+	prop.error = NULL;
+	result = member->rim_property.rp_getter(&prop);
+
+	if (prop.error != NULL) {
+		rpc_function_error_ex(cookie, prop.error);
+		return (NULL);
+	}
+
+	return (result);
 }
 
 static rpc_object_t
 rpc_observable_property_set(void *cookie, rpc_object_t args)
 {
 	rpc_instance_t inst = rpc_function_get_instance(cookie);
+	struct rpc_property_cookie prop;
+	struct rpc_if_member *member;
 	const char *interface;
 	const char *name;
 	rpc_object_t value;
@@ -814,12 +846,28 @@ rpc_observable_property_set(void *cookie, rpc_object_t args)
 		return (NULL);
 	}
 
-	if (rpc_instance_get_property_rights(inst, interface, name) & RPC_PROPERTY_WRITE) {
-		rpc_instance_set_property(inst, interface, name, value);
+	member = rpc_instance_find_member(inst, interface, name);
+	if (member == NULL || member->rim_type != RPC_MEMBER_PROPERTY) {
+		rpc_function_error(cookie, ENOENT, "Property not found");
 		return (NULL);
 	}
 
-	rpc_function_error(cookie, EPERM, "Property write not allowed");
+	if (member->rim_property.rp_setter == NULL) {
+		rpc_function_error(cookie, EPERM, "Property write not allowed");
+		return (NULL);
+	}
+
+	prop.instance = inst;
+	prop.name = name;
+	prop.arg = rpc_function_get_arg(cookie);
+	prop.error = NULL;
+	member->rim_property.rp_setter(&prop, value);
+
+	if (prop.error != NULL) {
+		rpc_function_error_ex(cookie, prop.error);
+		return (NULL);
+	}
+
 	return (NULL);
 }
 
@@ -828,11 +876,13 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 {
 	rpc_instance_t inst = rpc_function_get_instance(cookie);
 	GHashTableIter iter;
+	struct rpc_property_cookie prop;
 	const char *interface;
 	const char *k;
 	struct rpc_if_member *v;
 	struct rpc_interface_priv *priv;
 	rpc_object_t fragment;
+	rpc_object_t result;
 
 	if (rpc_object_unpack(args, "[s]", &interface) < 1) {
 		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
@@ -846,11 +896,23 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 	}
 
 	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
-		fragment = rpc_object_pack("{s,v,b,b}",
+		if (v->rim_property.rp_getter == NULL)
+			continue;
+
+		prop.instance = inst;
+		prop.name = k;
+		prop.arg = rpc_function_get_arg(cookie);
+		prop.error = NULL;
+		result = v->rim_property.rp_getter(&prop);
+
+		if (prop.error != NULL) {
+			rpc_function_error_ex(cookie, prop.error);
+			return (NULL);
+		}
+
+		fragment = rpc_object_pack("{s,v}",
 		    "name", v->rim_name,
-		    "value", *v->rim_property.rp_value,
-		    "readable", v->rim_property.rp_rights & RPC_PROPERTY_READ,
-		    "writable", v->rim_property.rp_rights & RPC_PROPERTY_WRITE);
+		    "value", result);
 
 		if (rpc_function_yield(cookie, fragment) != 0)
 			goto done;

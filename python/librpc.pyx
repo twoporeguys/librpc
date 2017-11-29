@@ -728,6 +728,27 @@ cdef class Context(object):
         del self.methods[name]
         rpc_context_unregister_method(self.context, interface, name)
 
+    def __materialized_paths_to_tree(self, lst, separator='.'):
+        result = {'children': {}, 'path': []}
+
+        def add(parent, path):
+            if not path:
+                return
+
+            p = path.pop(0)
+            c = parent['children'].get(p)
+            if not c:
+                c = {'children': {}, 'path': parent['path'] + [p], 'label': p}
+                parent['children'][p] = c
+
+            add(c, path)
+
+        for i in lst:
+            path = i.split(separator)
+            add(result, path)
+
+        return result
+
     def __dealloc__(self):
         if not self.borrowed:
             rpc_context_free(self.context)
@@ -759,6 +780,31 @@ cdef class Instance(object):
             <void *>fn,
             <rpc_function_f>c_cb_function
         )
+
+
+cdef class RemoteObject(object):
+    cdef object client
+    cdef object path
+
+    def __init__(self, client, path):
+        self.client = client
+        self.path = path
+
+    property path:
+        def __get__(self):
+            return self.path
+
+    property description:
+        def __get__(self):
+            pass
+
+    property interfaces:
+        def __get__(self):
+            return list(self.client.call_sync(
+                'get_interfaces',
+                path=self.path,
+                interface='com.twoporeguys.librpc.Introspectable'
+            ))
 
 
 cdef class RemoteInterface(object):

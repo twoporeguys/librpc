@@ -67,36 +67,82 @@ typedef rpc_object_t (^rpc_function_t)(void *cookie, rpc_object_t args);
  */
 typedef rpc_object_t (*rpc_function_f)(void *cookie, rpc_object_t args);
 
-typedef void (^rpc_property_callback_t)(const char *name, rpc_object_t value);
+/**
+ *
+ */
+typedef rpc_object_t (^rpc_property_getter_t)(void *cookie);
+
+/**
+ *
+ */
+typedef void (^rpc_property_setter_t)(void *cookie, rpc_object_t value);
 
 #define	RPC_FUNCTION(_fn)						\
 	^(void *_cookie, rpc_object_t _args) {				\
-		return (_fn(_cookie, _args));				\
+		return ((rpc_object_t)_fn(_cookie, _args));		\
+	}
+
+#define	RPC_PROPERTY_GETTER(_fn)					\
+	^(void *_cookie) {						\
+		return ((rpc_object_t)_fn(_cookie));			\
+	}
+
+#define	RPC_PROPERTY_SETTER(_fn)					\
+	^(void *_cookie, rpc_object_t _value) {				\
+		_fn(_cookie, _value);					\
 	}
 
 #define	RPC_EVENT(_name)						\
 	{								\
 		.rim_type = RPC_MEMBER_EVENT,				\
-		.rim_name = (_name)					\
+		.rim_name = (#_name)					\
 	}
 
-#define	RPC_PROPERTY(_name, _rights, _callback)				\
+#define	RPC_PROPERTY_RO(_name, _getter)					\
 	{								\
 		.rim_type = RPC_MEMBER_PROPERTY,			\
-		.rim_name = (_name),					\
+		.rim_name = (#_name),					\
 		.rim_property = {					\
-                        .rp_rights = (_rights),				\
-                        .rp_callback = (_callback),			\
+                        .rp_getter = RPC_PROPERTY_GETTER(_getter),	\
+			.rp_setter = NULL				\
                 }							\
 	}
 
-#define	RPC_METHOD(_name, _fn, _arg)					\
+#define	RPC_PROPERTY_WO(_name, _setter)					\
+	{								\
+		.rim_type = RPC_MEMBER_PROPERTY,			\
+		.rim_name = (#_name),					\
+		.rim_property = {					\
+                        .rp_getter = NULL,				\
+			.rp_setter = RPC_PROPERTY_SETTER(_setter),	\
+                }							\
+	}
+
+#define	RPC_PROPERTY_RW(_name, _getter, _setter)			\
+	{								\
+		.rim_type = RPC_MEMBER_PROPERTY,			\
+		.rim_name = (#_name),					\
+		.rim_property = {					\
+                        .rp_getter = RPC_PROPERTY_GETTER(_getter),	\
+			.rp_setter = RPC_PROPERTY_SETTER(_setter),	\
+                }							\
+	}
+
+#define	RPC_METHOD(_name, _fn)						\
 	{								\
 		.rim_type = RPC_MEMBER_METHOD,				\
-		.rim_name = (_name),					\
+		.rim_name = (#_name),					\
 		.rim_method = {						\
                         .rm_block = RPC_FUNCTION(_fn),			\
-                        .rm_arg = (_arg)				\
+                }							\
+	}
+
+#define	RPC_METHOD_BLOCK(_name, _block)					\
+	{								\
+		.rim_type = RPC_MEMBER_METHOD,				\
+		.rim_name = (#_name),					\
+		.rim_method = {						\
+                        .rm_block = (_block),				\
                 }							\
 	}
 
@@ -129,9 +175,8 @@ struct rpc_if_method
 struct rpc_if_property
 {
 	const char *		rp_name;
-	int			rp_rights;
-	rpc_object_t *		rp_value;
-	rpc_property_callback_t rp_callback;
+	rpc_property_getter_t	rp_getter;
+	rpc_property_setter_t	rp_setter;
 };
 
 struct rpc_if_member {
@@ -411,7 +456,7 @@ const char *rpc_instance_get_path(rpc_instance_t instance);
  * @param fn
  */
 int rpc_instance_register_interface(rpc_instance_t instance,
-    struct rpc_interface *iface);
+    const struct rpc_interface *iface);
 
 /**
  *
@@ -421,7 +466,7 @@ int rpc_instance_register_interface(rpc_instance_t instance,
  * @return
  */
 int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
-    struct rpc_if_member *member);
+    const struct rpc_if_member *member);
 
 /**
  *
@@ -489,26 +534,8 @@ void rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
  * @return
  */
 int rpc_instance_register_property(rpc_instance_t instance,
-    const char *interface, const char *name, rpc_object_t *value, int rights,
-    rpc_property_callback_t callback);
-
-/**
- *
- * @param instance
- * @param name
- * @return
- */
-rpc_object_t rpc_instance_get_property(rpc_instance_t instance,
-    const char *interface, const char *name);
-
-/**
- *
- * @param instance
- * @param name
- * @param value
- */
-void rpc_instance_set_property(rpc_instance_t instance, const char *name,
-    const char *interface, rpc_object_t value);
+    const char *interface, const char *name, rpc_property_getter_t getter,
+    rpc_property_setter_t setter);
 
 /**
  *
@@ -521,6 +548,29 @@ int rpc_instance_get_property_rights(rpc_instance_t instance,
 
 int rpc_instance_register_event(rpc_instance_t, const char *interface,
     const char *name);
+
+/**
+ *
+ * @param cookie
+ * @return
+ */
+rpc_instance_t rpc_property_get_instance(void *cookie);
+
+/**
+ *
+ * @param cookie
+ * @return
+ */
+void *rpc_property_get_arg(void *cookie);
+
+/**
+ *
+ * @param cookie
+ * @param code
+ * @param fmt
+ * @param ...
+ */
+void rpc_property_error(void *cookie, int code, const char *fmt, ...);
 
 /**
  *
