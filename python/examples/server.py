@@ -31,35 +31,36 @@ import time
 import errno
 
 
+@librpc.interface('com.twoporeguys.librpc.ExampleServer')
 class ExampleServer(librpc.Instance):
     def __init__(self):
         super(ExampleServer, self).__init__('/example', 'Example service')
 
-    @librpc.Instance.method(interface='com.twoporeguys.librpc.ExampleServer')
+    @librpc.method
     def hello(self, string):
         return 'Hello {0}'.format(string.value)
 
-    @librpc.Instance.method(interface='com.twoporeguys.librpc.ExampleServer')
+    @librpc.method
     def adder(self, n1, n2):
         print('adder called with args: {0}, {1}'.format(n1, n2))
         return n1.value + n2.value
 
-    @librpc.Instance.method(interface='com.twoporeguys.librpc.ExampleServer')
+    @librpc.method
     def subtracter(self, n1, n2):
         print('subtracter called with args: {0}, {1}'.format(n1, n2))
         return n1.value - n2.value
 
-    @librpc.Instance.method(interface='com.twoporeguys.librpc.ExampleServer')
+    @librpc.method
     def streamer(self):
         for i in range(0, 10):
             time.sleep(0.1)
             yield {'index': i}
 
-    @librpc.Instance.method(interface='com.twoporeguys.librpc.ExampleServer')
+    @librpc.method
     def error(self):
         raise librpc.RpcException(errno.EPERM, 'Not allowed here')
 
-    @librpc.Instance.method(interface='com.twoporeguys.librpc.ExampleServer')
+    @librpc.method
     def slacker(self):
         time.sleep(30)
         return "Oh hey.. You're still here?"

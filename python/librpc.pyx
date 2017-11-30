@@ -30,6 +30,7 @@ import enum
 import errno
 import types
 import inspect
+import functools
 import traceback
 import datetime
 from librpc cimport *
@@ -776,13 +777,15 @@ cdef class Instance(object):
         )
 
         for name, i in inspect.getmembers(self, inspect.ismethod):
-            if getattr(i, '_librpc_method', None):
-                name = getattr(i, '_librpc_name', name)
-                interface = getattr(i, '_librpc_interface', getattr(self, '_librpc_interface', None))
+            if getattr(i, '_librpc_method__', None):
+                name = getattr(i, '__librpc_name__', name)
+                interface = getattr(i, '__librpc_interface__', getattr(self, '__librpc_interface__', None))
+
+                if not interface:
+                    continue
+
                 b_name = name.encode('utf-8')
                 b_interface = interface.encode('utf-8')
-
-                print('name = {0}, interface = {1}'.format(name, interface))
 
                 if interface not in self.interfaces:
                     iface.ri_name = b_interface
@@ -802,19 +805,7 @@ cdef class Instance(object):
                 ) != 0:
                     raise_internal_exc()
 
-    @staticmethod
-    def method(interface=None, name=None):
-        def wrapped(fn):
-            if name:
-                fn._librpc_name = name
-
-            if interface:
-                fn._librpc_interface = interface
-
-            fn._librpc_method = True
-            return fn
-
-        return wrapped
+                self.methods[name] = i
 
 
 cdef class RemoteObject(object):
@@ -885,7 +876,7 @@ cdef class RemoteInterface(object):
                 interface='com.twoporeguys.librpc.Introspectable',
                 unpack=True
             ):
-                def fn(*args):
+                def fn(method, *args):
                     return self.client.call_sync(
                         method,
                         *args,
@@ -894,7 +885,7 @@ cdef class RemoteInterface(object):
                     )
 
                 self.methods[method] = fn
-                setattr(self, method, fn)
+                setattr(self, method, functools.partial(fn, method))
         except:
             pass
 
@@ -1749,3 +1740,36 @@ def uint(value):
 
 def fd(value):
     return Object(value, force_type=ObjectType.FD)
+
+
+def method(name=None):
+    def wrapped(fn):
+        fn.__librpc_name__ = name or fn.__name__
+        fn.__librpc_method__ = True
+        return fn
+
+    return wrapped
+
+
+def interface(name):
+    def wrapped(fn):
+        fn.__librpc_interface__ = name
+        return fn
+
+    return wrapped
+
+
+def interface_base(name):
+    def wrapped(fn):
+        fn.__librpc_interface_base__ = name
+        return fn
+
+    return wrapped
+
+
+def description(name):
+    def wrapped(fn):
+        fn.__librpc_description__ = name
+        return fn
+
+    return wrapped
