@@ -29,6 +29,7 @@ import sys
 import enum
 import errno
 import types
+import inspect
 import traceback
 import datetime
 from librpc cimport *
@@ -764,22 +765,56 @@ cdef class Instance(object):
             return rpc_instance_get_path(self.instance).decode('utf-8')
 
     def __init__(self, path, description='Generic instance'):
+        cdef rpc_interface iface
+
         self.methods = {}
+        self.interfaces = {}
         self.instance = rpc_instance_new(
             path.encode('utf-8'),
             description.encode('utf-8'),
             <void *>self
         )
 
-    def register_method(self, name, fn, interface=''):
-        self.methods[name] = fn
-        rpc_instance_register_func(
-            self.instance,
-            interface.encode('utf-8'),
-            name.encode('utf-8'),
-            <void *>fn,
-            <rpc_function_f>c_cb_function
-        )
+        for name, i in inspect.getmembers(self, inspect.ismethod):
+            if getattr(i, '_librpc_method', None):
+                name = getattr(i, '_librpc_name', name)
+                interface = getattr(i, '_librpc_interface', getattr(self, '_librpc_interface', None))
+                b_name = name.encode('utf-8')
+                b_interface = interface.encode('utf-8')
+
+                print('name = {0}, interface = {1}'.format(name, interface))
+
+                if interface not in self.interfaces:
+                    iface.ri_name = b_interface
+                    iface.ri_description = ""
+                    iface.ri_members[0].rim_name = NULL
+                    if rpc_instance_register_interface(self.instance, &iface, <void *>self) != 0:
+                        raise_internal_exc()
+
+                    self.interfaces[interface] = True
+
+                if rpc_instance_register_func(
+                    self.instance,
+                    b_interface,
+                    b_name,
+                    <void *>i,
+                    <rpc_function_f>c_cb_function
+                ) != 0:
+                    raise_internal_exc()
+
+    @staticmethod
+    def method(interface=None, name=None):
+        def wrapped(fn):
+            if name:
+                fn._librpc_name = name
+
+            if interface:
+                fn._librpc_interface = interface
+
+            fn._librpc_method = True
+            return fn
+
+        return wrapped
 
 
 cdef class RemoteObject(object):
@@ -1090,7 +1125,7 @@ cdef class Connection(object):
                     break
 
         if call_status == CallStatus.ERROR:
-            raise get_chunk().value
+            raise get_chunk()
 
         if call_status == CallStatus.DONE:
             return get_chunk()

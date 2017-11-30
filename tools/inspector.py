@@ -39,6 +39,5 @@ def main():
     for i in client.instances.values():
         instance(i)
 
-
 if __name__ == '__main__':
     main()

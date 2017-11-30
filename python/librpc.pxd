@@ -176,6 +176,15 @@ cdef extern from "rpc/connection.h" nogil:
 
 cdef extern from "rpc/service.h" nogil:
     ctypedef rpc_object_t (*rpc_function_f)(void *cookie, rpc_object_t args);
+
+    cdef struct rpc_if_member:
+        const char *rim_name
+
+    cdef struct rpc_interface:
+        const char *ri_name
+        const char *ri_description
+        rpc_if_member ri_members[1]
+
     ctypedef struct rpc_context_t:
         pass
 
@@ -200,9 +209,10 @@ cdef extern from "rpc/service.h" nogil:
     rpc_instance_t rpc_instance_new(const char *path, const char *descr, void *arg)
     void *rpc_instance_get_arg(rpc_instance_t instance)
     const char *rpc_instance_get_path(rpc_instance_t instance)
-    void rpc_instance_register_method(rpc_instance_t instance, const char *interface,
+    int rpc_instance_register_interface(rpc_instance_t instance, const rpc_interface *iface, void *arg)
+    int rpc_instance_register_method(rpc_instance_t instance, const char *interface,
         const char *name, void *arg, void *fn)
-    void rpc_instance_register_func(rpc_instance_t instance, const char *interface,
+    int rpc_instance_register_func(rpc_instance_t instance, const char *interface,
         const char *name, void *arg, rpc_function_f fn)
     void rpc_instance_free(rpc_instance_t instance)
 

@@ -31,30 +31,38 @@ import time
 import errno
 
 
-def hello(string):
-    return 'Hello {0}'.format(string.value)
+class ExampleServer(librpc.Instance):
+    def __init__(self):
+        super(ExampleServer, self).__init__('/example', 'Example service')
 
+    @librpc.Instance.method(interface='com.twoporeguys.librpc.ExampleServer')
+    def hello(self, string):
+        return 'Hello {0}'.format(string.value)
 
-def adder(n1, n2):
-    return n1.value + n2.value
+    @librpc.Instance.method(interface='com.twoporeguys.librpc.ExampleServer')
+    def adder(self, n1, n2):
+        print('adder called with args: {0}, {1}'.format(n1, n2))
+        return n1.value + n2.value
 
+    @librpc.Instance.method(interface='com.twoporeguys.librpc.ExampleServer')
+    def subtracter(self, n1, n2):
+        print('subtracter called with args: {0}, {1}'.format(n1, n2))
+        return n1.value - n2.value
 
-def subtracter(n1, n2):
-    return n1.value - n2.value
+    @librpc.Instance.method(interface='com.twoporeguys.librpc.ExampleServer')
+    def streamer(self):
+        for i in range(0, 10):
+            time.sleep(0.1)
+            yield {'index': i}
 
+    @librpc.Instance.method(interface='com.twoporeguys.librpc.ExampleServer')
+    def error(self):
+        raise librpc.RpcException(errno.EPERM, 'Not allowed here')
 
-def streamer():
-    for i in range(0, 10):
-        time.sleep(0.1)
-        yield {'index': i}
-
-def error():
-    raise librpc.RpcException(errno.EPERM, 'Not allowed here')
-
-
-def slacker():
-    time.sleep(30)
-    return "Oh hey.. You're still here?"
+    @librpc.Instance.method(interface='com.twoporeguys.librpc.ExampleServer')
+    def slacker(self):
+        time.sleep(30)
+        return "Oh hey.. You're still here?"
 
 
 def main():
@@ -64,12 +72,7 @@ def main():
     context = librpc.Context()
     server = librpc.Server(args.uri, context)
 
-    context.register_method('hello', 'Classic hello world', hello)
-    context.register_method('add', 'Adds two numbers', adder)
-    context.register_method('sub', 'Subtracts two numbers', subtracter)
-    context.register_method('stream', 'Streams some numbers', streamer)
-    context.register_method('error', 'Raises an exception', error)
-    context.register_method('delay', 'Waits for long time, then returns a string', slacker)
+    context.register_instance(ExampleServer())
 
     def sigint(signo, frame):
         server.close()
