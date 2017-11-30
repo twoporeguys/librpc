@@ -14,7 +14,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="198" column="1" bodyfile="/code/include/rpc/service.h" bodystart="198" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="202" column="1" bodyfile="/code/include/rpc/service.h" bodystart="202" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__interface_1a851f0bfb495af801a2958fef34596e6a" prot="public" static="no" mutable="no">
         <type>const char *</type>
@@ -27,7 +27,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="199" column="1" bodyfile="/code/include/rpc/service.h" bodystart="199" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="203" column="1" bodyfile="/code/include/rpc/service.h" bodystart="203" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__interface_1af28bb2a8e330bb25c2c7e681cd2f7356" prot="public" static="no" mutable="no">
         <type>struct <ref refid="structrpc__if__member" kindref="compound">rpc_if_member</ref></type>
@@ -40,7 +40,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="199" column="1" bodyfile="/code/include/rpc/service.h" bodystart="200" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="203" column="1" bodyfile="/code/include/rpc/service.h" bodystart="204" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -74,7 +74,7 @@
         <link refid="structrpc__if__method"/>
       </node>
     </collaborationgraph>
-    <location file="/code/include/rpc/service.h" line="197" column="1" bodyfile="/code/include/rpc/service.h" bodystart="196" bodyend="201"/>
+    <location file="/code/include/rpc/service.h" line="201" column="1" bodyfile="/code/include/rpc/service.h" bodystart="200" bodyend="205"/>
     <listofallmembers>
       <member refid="structrpc__interface_1a851f0bfb495af801a2958fef34596e6a" prot="public" virt="non-virtual"><scope>rpc_interface</scope><name>ri_description</name></member>
       <member refid="structrpc__interface_1af28bb2a8e330bb25c2c7e681cd2f7356" prot="public" virt="non-virtual"><scope>rpc_interface</scope><name>ri_members</name></member>
