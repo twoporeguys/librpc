@@ -46,7 +46,7 @@ static rpc_object_t rpc_observable_property_get_all(void *cookie, rpc_object_t a
 static rpc_object_t rpc_observable_property_set(void *cookie, rpc_object_t args);
 
 struct rpc_interface rpc_discoverable_if = {
-	.ri_name = "com.twoporeguys.librpc.Discoverable",
+	.ri_name = RPC_DISCOVERABLE_INTERFACE,
 	.ri_members = {
 		RPC_EVENT(instance_added),
 		RPC_EVENT(instance_removed),
@@ -56,7 +56,7 @@ struct rpc_interface rpc_discoverable_if = {
 };
 
 struct rpc_interface rpc_introspectable_if = {
-	.ri_name = "com.twoporeguys.librpc.Introspectable",
+	.ri_name = RPC_INTROSPECTABLE_INTERFACE,
 	.ri_members = {
 		RPC_METHOD(get_interfaces, rpc_get_interfaces),
 		RPC_METHOD(get_methods, rpc_get_methods),
@@ -66,7 +66,7 @@ struct rpc_interface rpc_introspectable_if = {
 };
 
 struct rpc_interface rpc_observable_if = {
-	.ri_name = "com.twoporeguys.librpc.Observable",
+	.ri_name = RPC_OBSERVABLE_INTERFACE,
 	.ri_members = {
 		RPC_EVENT(changed),
 		RPC_METHOD(get, rpc_observable_property_get),

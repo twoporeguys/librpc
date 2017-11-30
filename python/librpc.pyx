@@ -885,6 +885,9 @@ cdef class RemoteInterface(object):
         except:
             pass
 
+    def __collect_events(self):
+        pass
+
     def __getattr__(self, item):
         return self.properties[item]()
 
