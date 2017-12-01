@@ -206,7 +206,7 @@ rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
 
 int
 rpc_instance_register_property(rpc_instance_t instance, const char *interface,
-    const char *name, rpc_property_getter_t getter,
+    const char *name, void *arg, rpc_property_getter_t getter,
     rpc_property_setter_t setter)
 {
 	struct rpc_if_member member;
@@ -216,6 +216,7 @@ rpc_instance_register_property(rpc_instance_t instance, const char *interface,
 	member.rim_property.rp_name = name;
 	member.rim_property.rp_getter = getter;
 	member.rim_property.rp_setter = setter;
+	member.rim_property.rp_arg = arg;
 
 	return (rpc_instance_register_member(instance, interface, &member));
 }
@@ -234,7 +235,7 @@ rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
 
 	if (context->rcx_server != NULL) {
 		rpc_server_broadcast_event(context->rcx_server, "/",
-		    "com.twoporeguys.librpc.Discoverable", "object_added",
+		    RPC_DISCOVERABLE_INTERFACE, "object_added",
 		    rpc_string_create(instance->ri_path));
 	}
 
@@ -252,7 +253,7 @@ rpc_context_unregister_instance(rpc_context_t context, const char *path)
 	if (g_hash_table_remove(context->rcx_instances, path)) {
 		if (context->rcx_server != NULL) {
 			rpc_server_broadcast_event(context->rcx_server, "/",
-			    "com.twoporeguys.librpc.Discoverable", "object_removed",
+			    RPC_DISCOVERABLE_INTERFACE, "object_removed",
 			    rpc_string_create(path));
 		}
 	}

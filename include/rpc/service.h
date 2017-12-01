@@ -543,8 +543,8 @@ void rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
  * @return
  */
 int rpc_instance_register_property(rpc_instance_t instance,
-    const char *interface, const char *name, rpc_property_getter_t getter,
-    rpc_property_setter_t setter);
+    const char *interface, const char *name, void *arg,
+    rpc_property_getter_t getter, rpc_property_setter_t setter);
 
 /**
  *

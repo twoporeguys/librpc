@@ -37,6 +37,8 @@ ctypedef void (*rpc_bus_event_handler_f)(void *arg, rpc_bus_event_t, rpc_bus_nod
 ctypedef bint (*rpct_type_applier_f)(void *arg, rpct_type_t type)
 ctypedef bint (*rpct_member_applier_f)(void *arg, rpct_member_t member)
 ctypedef bint (*rpct_function_applier_f)(void *arg, rpct_function_t func)
+ctypedef rpc_object_t (*rpc_property_getter_f)(void *cookie)
+ctypedef void (*rpc_property_setter_f)(void *cookie, rpc_object_t value)
 
 
 cdef extern from "rpc/object.h" nogil:
@@ -175,7 +177,10 @@ cdef extern from "rpc/connection.h" nogil:
 
 
 cdef extern from "rpc/service.h" nogil:
-    ctypedef rpc_object_t (*rpc_function_f)(void *cookie, rpc_object_t args);
+    ctypedef rpc_object_t (*rpc_function_f)(void *cookie, rpc_object_t args)
+
+    void *RPC_PROPERTY_GETTER(rpc_property_getter_f getter)
+    void *RPC_PROPERTY_SETTER(rpc_property_setter_f setter)
 
     cdef struct rpc_if_member:
         const char *rim_name
@@ -183,7 +188,7 @@ cdef extern from "rpc/service.h" nogil:
     cdef struct rpc_interface:
         const char *ri_name
         const char *ri_description
-        rpc_if_member ri_members[1]
+        rpc_if_member ri_members[0]
 
     ctypedef struct rpc_context_t:
         pass
@@ -206,6 +211,9 @@ cdef extern from "rpc/service.h" nogil:
     void rpc_function_produce(void *cookie, rpc_object_t fragment)
     void rpc_function_end(void *cookie)
 
+    void *rpc_property_get_arg(void *cookie)
+    void rpc_property_error(void *cookie, int code, const char *fmt)
+
     rpc_instance_t rpc_instance_new(const char *path, const char *descr, void *arg)
     void *rpc_instance_get_arg(rpc_instance_t instance)
     const char *rpc_instance_get_path(rpc_instance_t instance)
@@ -214,6 +222,8 @@ cdef extern from "rpc/service.h" nogil:
         const char *name, void *arg, void *fn)
     int rpc_instance_register_func(rpc_instance_t instance, const char *interface,
         const char *name, void *arg, rpc_function_f fn)
+    int rpc_instance_register_property(rpc_instance_t instance, const char *interface, const char *name,
+        void *arg, void *getter, void *setter)
     void rpc_instance_free(rpc_instance_t instance)
 
     int rpc_instance_register(rpc_context_t context, rpc_instance_t instance)
@@ -371,10 +381,19 @@ cdef class Instance(object):
     cdef readonly Context context
     cdef rpc_instance_t instance
     cdef public arg
-    cdef object methods
 
     @staticmethod
     cdef Instance init_from_ptr(rpc_instance_t ptr)
+    @staticmethod
+    cdef rpc_object_t c_property_getter(void *cookie) with gil
+    @staticmethod
+    cdef void c_property_setter(void *cookie, rpc_object_t value) with gil
+
+
+cdef class Service(object):
+    cdef Instance instance
+    cdef object methods
+    cdef object interfaces
 
 
 cdef class RemoteInterface(object):

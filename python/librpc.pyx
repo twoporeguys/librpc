@@ -761,20 +761,97 @@ cdef class Instance(object):
     cdef Instance init_from_ptr(rpc_instance_t ptr):
         pass
 
+    @staticmethod
+    cdef rpc_object_t c_property_getter(void *cookie) with gil:
+        cdef object mux
+        cdef Object result
+
+        mux = <object>rpc_property_get_arg(cookie)
+        getter, _ = mux
+
+        try:
+            result = <Object>getter()
+            return result.obj
+        except RpcException as err:
+            rpc_property_error(cookie, err.code, err.message.encode('utf-8'))
+            return <rpc_object_t>NULL
+        except Exception as err:
+            rpc_property_error(cookie, errno.EINVAL, str(err).encode('utf-8'))
+            return <rpc_object_t>NULL
+
+    @staticmethod
+    cdef void c_property_setter(void *cookie, rpc_object_t value) with gil:
+        cdef object mux
+
+        mux = <object>rpc_property_get_arg(cookie)
+        _, setter = mux
+
+        try:
+            setter(Object.init_from_ptr(value))
+        except RpcException as err:
+            rpc_property_error(cookie, err.code, err.message.encode('utf-8'))
+        except Exception as err:
+            rpc_property_error(cookie, errno.EINVAL, str(err).encode('utf-8'))
+
+    def __init__(self, path, description=None):
+        b_path = path.encode('utf-8')
+        b_description = description.encode('utf-8')
+        self.instance = rpc_instance_new(b_path, b_description, NULL)
+
+    def register_interface(self, interface, description=None):
+        cdef rpc_interface iface
+
+        b_interface = interface.encode('utf-8')
+        iface.ri_name = b_interface
+        iface.ri_description = ""
+        iface.ri_members[0].rim_name = NULL
+        if rpc_instance_register_interface(self.instance, &iface, <void *>self) != 0:
+            raise_internal_exc()
+
+    def register_method(self, interface, name, fn):
+        b_interface = interface.encode('utf-8')
+        b_name = name.encode('utf-8')
+
+        if rpc_instance_register_func(
+            self.instance,
+            b_interface,
+            b_name,
+            <void *>fn,
+            <rpc_function_f>c_cb_function
+        ) != 0:
+            raise_internal_exc()
+
+    def register_property(self, interface, name, getter=None, setter=None):
+        b_interface = interface.encode('utf-8')
+        b_name = name.encode('utf-8')
+        mux = getter, setter
+
+        if rpc_instance_register_property(
+            self.instance,
+            b_interface,
+            b_name,
+            <void *>mux,
+            RPC_PROPERTY_GETTER(self.c_property_getter),
+            RPC_PROPERTY_SETTER(self.c_property_setter)
+        ) != 0:
+            raise_internal_exc()
+
+    def register_event(self, interface, name):
+        pass
+
     property path:
         def __get__(self):
             return rpc_instance_get_path(self.instance).decode('utf-8')
 
-    def __init__(self, path, description='Generic instance'):
-        cdef rpc_interface iface
 
+cdef class Service(object):
+    def __init__(self, path=None, description='Generic instance', instance=None):
         self.methods = {}
         self.interfaces = {}
-        self.instance = rpc_instance_new(
-            path.encode('utf-8'),
-            description.encode('utf-8'),
-            <void *>self
-        )
+        self.instance = instance
+
+        if not instance:
+            self.instance = Instance(path, description)
 
         for name, i in inspect.getmembers(self, inspect.ismethod):
             if getattr(i, '_librpc_method__', None):
@@ -784,28 +861,17 @@ cdef class Instance(object):
                 if not interface:
                     continue
 
-                b_name = name.encode('utf-8')
-                b_interface = interface.encode('utf-8')
-
                 if interface not in self.interfaces:
-                    iface.ri_name = b_interface
-                    iface.ri_description = ""
-                    iface.ri_members[0].rim_name = NULL
-                    if rpc_instance_register_interface(self.instance, &iface, <void *>self) != 0:
-                        raise_internal_exc()
-
+                    self.instance.register_interace(name, )
                     self.interfaces[interface] = True
 
-                if rpc_instance_register_func(
-                    self.instance,
-                    b_interface,
-                    b_name,
-                    <void *>i,
-                    <rpc_function_f>c_cb_function
-                ) != 0:
-                    raise_internal_exc()
+
 
                 self.methods[name] = i
+
+    property path:
+        def __get__(self):
+            return self.instance.path
 
 
 cdef class RemoteObject(object):
@@ -1746,6 +1812,21 @@ def method(name=None):
     def wrapped(fn):
         fn.__librpc_name__ = name or fn.__name__
         fn.__librpc_method__ = True
+        return fn
+
+    return wrapped
+
+
+def prop(name=None):
+    def wrapped(fn):
+        def setter(fn2):
+            fn2.__librpc_name__ = fn.__librpc_name__
+            fn2.__librpc_setter__ = True
+            return fn2
+
+        fn.setter = setter
+        fn.__libpc_name__ = name or fn.__name__
+        fn.__librpc_getter__ = True
         return fn
 
     return wrapped

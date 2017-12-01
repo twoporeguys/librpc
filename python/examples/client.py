@@ -29,6 +29,26 @@ import traceback
 import librpc
 
 
+class CommandDispatcher(object):
+    def __init__(self):
+        pass
+
+    def cmd_show(self):
+        pass
+
+    def cmd_cd(self):
+        pass
+
+    def cmd_objects(self):
+        pass
+
+    def cmd_call(self):
+        pass
+
+    def cmd_watch(self):
+        pass
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--uri', help='Server URI')

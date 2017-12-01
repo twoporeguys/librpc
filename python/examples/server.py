@@ -35,6 +35,15 @@ import errno
 class ExampleServer(librpc.Instance):
     def __init__(self):
         super(ExampleServer, self).__init__('/example', 'Example service')
+        self.__name = None
+
+    @librpc.prop
+    def name(self):
+        return self.__name
+
+    @name.__nae
+    def name(self, value):
+        self.__name = value
 
     @librpc.method
     def hello(self, string):
