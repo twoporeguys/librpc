@@ -1823,10 +1823,10 @@
         </inbodydescription>
         <location file="/code/include/rpc/service.h" line="535" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="service_8h_1af5bab961aa1534ede745679dbd4039a7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="service_8h_1abe3e96fe6a3517d8953cec716c9f959a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
         <definition>int rpc_instance_register_property</definition>
-        <argsstring>(rpc_instance_t instance, const char *interface, const char *name, rpc_property_getter_t getter, rpc_property_setter_t setter)</argsstring>
+        <argsstring>(rpc_instance_t instance, const char *interface, const char *name, void *arg, rpc_property_getter_t getter, rpc_property_setter_t setter)</argsstring>
         <name>rpc_instance_register_property</name>
         <param>
           <type>rpc_instance_t</type>
@@ -1839,6 +1839,10 @@
         <param>
           <type>const char *</type>
           <declname>name</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>arg</declname>
         </param>
         <param>
           <type>rpc_property_getter_t</type>
@@ -2346,9 +2350,9 @@
 <codeline lineno="535"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a2e027c8f7bdaee75f54d9957c33a0895" kindref="member">rpc_instance_emit_event</ref>(rpc_instance_t<sp/>instance,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*interface,</highlight></codeline>
 <codeline lineno="536"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
 <codeline lineno="537"><highlight class="normal"></highlight></codeline>
-<codeline lineno="545"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1af5bab961aa1534ede745679dbd4039a7" kindref="member">rpc_instance_register_property</ref>(rpc_instance_t<sp/>instance,</highlight></codeline>
-<codeline lineno="546"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name,<sp/>rpc_property_getter_t<sp/>getter,</highlight></codeline>
-<codeline lineno="547"><highlight class="normal"><sp/><sp/><sp/><sp/>rpc_property_setter_t<sp/>setter);</highlight></codeline>
+<codeline lineno="545"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1abe3e96fe6a3517d8953cec716c9f959a" kindref="member">rpc_instance_register_property</ref>(rpc_instance_t<sp/>instance,</highlight></codeline>
+<codeline lineno="546"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name,<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*arg,</highlight></codeline>
+<codeline lineno="547"><highlight class="normal"><sp/><sp/><sp/><sp/>rpc_property_getter_t<sp/>getter,<sp/>rpc_property_setter_t<sp/>setter);</highlight></codeline>
 <codeline lineno="548"><highlight class="normal"></highlight></codeline>
 <codeline lineno="555"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a6abc968c40f43e5ba37040bdb5e1338e" kindref="member">rpc_instance_get_property_rights</ref>(rpc_instance_t<sp/>instance,</highlight></codeline>
 <codeline lineno="556"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name);</highlight></codeline>
