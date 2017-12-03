@@ -76,13 +76,13 @@ enum \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\+\_\+call\+
 \item 
 int \hyperlink{connection_8h_a6d4de49f4d9121c4077e62b73064b99d}{rpc\+\_\+connection\+\_\+close} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
-int \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\+\_\+connection\+\_\+subscribe\+\_\+event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name)
+int \hyperlink{connection_8h_ae9e20b8d59848a4124c4150be552c623}{rpc\+\_\+connection\+\_\+subscribe\+\_\+event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name)
 \item 
-int \hyperlink{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name)
+int \hyperlink{connection_8h_a52a9651ed03823775ef6bb8716f1db03}{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name)
 \item 
-void $\ast$ \hyperlink{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, \hyperlink{connection_8h_ae18f6c0163bc8460cee1b6332c83fe07}{rpc\+\_\+handler\+\_\+t} handler)
+void $\ast$ \hyperlink{connection_8h_a2d2006058675a9f55c48a116790132c8}{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name, \hyperlink{connection_8h_ae18f6c0163bc8460cee1b6332c83fe07}{rpc\+\_\+handler\+\_\+t} handler)
 \item 
-void \hyperlink{connection_8h_a209856a794a9a10a53735787926f4b95}{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$name, void $\ast$cookie)
+void \hyperlink{connection_8h_a8174aa9225c291138d5f409a1089f6cc}{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, void $\ast$cookie)
 \item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a4bb388f7cc19ce3d01577993fcf7dd63}{rpc\+\_\+connection\+\_\+call\+\_\+sync} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$method,...)
 \item 
@@ -699,13 +699,15 @@ true if credentials information is available, otherwise false
 )}\hypertarget{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}{}\label{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}
 Ping the other end of a connection. \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler}}
 \index{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler}!connection.\+h@{connection.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler(rpc\+\_\+connection\+\_\+t conn, const char $\ast$name, rpc\+\_\+handler\+\_\+t handler)}{rpc_connection_register_event_handler(rpc_connection_t conn, const char *name, rpc_handler_t handler)}}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler (
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler(rpc\+\_\+connection\+\_\+t conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name, rpc\+\_\+handler\+\_\+t handler)}{rpc_connection_register_event_handler(rpc_connection_t conn, const char *path, const char *interface, const char *name, rpc_handler_t handler)}}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler (
 \begin{DoxyParamCaption}
 \item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
+\item[{const char $\ast$}]{path, }
+\item[{const char $\ast$}]{interface, }
 \item[{const char $\ast$}]{name, }
 \item[{{\bf rpc\+\_\+handler\+\_\+t}}]{handler}
 \end{DoxyParamCaption}
-)}\hypertarget{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}{}\label{connection_8h_a82d9bf3dc3219c41e89739acd0b314d5}
+)}\hypertarget{connection_8h_a2d2006058675a9f55c48a116790132c8}{}\label{connection_8h_a2d2006058675a9f55c48a116790132c8}
 Registers an event handler block for an event of a given name.
 
 Each time an event occurs, a handler block is going to be called.
@@ -780,17 +782,19 @@ Sets global event handler for a connection.
 \end{DoxyParams}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+subscribe\+\_\+event@{rpc\+\_\+connection\+\_\+subscribe\+\_\+event}}
 \index{rpc\+\_\+connection\+\_\+subscribe\+\_\+event@{rpc\+\_\+connection\+\_\+subscribe\+\_\+event}!connection.\+h@{connection.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+subscribe\+\_\+event(rpc\+\_\+connection\+\_\+t conn, const char $\ast$name)}{rpc_connection_subscribe_event(rpc_connection_t conn, const char *name)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+connection\+\_\+subscribe\+\_\+event (
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+subscribe\+\_\+event(rpc\+\_\+connection\+\_\+t conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name)}{rpc_connection_subscribe_event(rpc_connection_t conn, const char *path, const char *interface, const char *name)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+connection\+\_\+subscribe\+\_\+event (
 \begin{DoxyParamCaption}
 \item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
+\item[{const char $\ast$}]{path, }
+\item[{const char $\ast$}]{interface, }
 \item[{const char $\ast$}]{name}
 \end{DoxyParamCaption}
-)}\hypertarget{connection_8h_a820acf081ad5784aafde954b5ec9270a}{}\label{connection_8h_a820acf081ad5784aafde954b5ec9270a}
+)}\hypertarget{connection_8h_ae9e20b8d59848a4124c4150be552c623}{}\label{connection_8h_ae9e20b8d59848a4124c4150be552c623}
 Subscribes for an event.
 
 This function can be called multiple times on a single event name -\/ subsequent calls will not send a subscribe message to the server, but instead increment internal reference count for a subscription.
 
-Calls to \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\+\_\+connection\+\_\+subscribe\+\_\+event()} must be paired with \hyperlink{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event()}.
+Calls to \hyperlink{connection_8h_ae9e20b8d59848a4124c4150be552c623}{rpc\+\_\+connection\+\_\+subscribe\+\_\+event()} must be paired with \hyperlink{connection_8h_a52a9651ed03823775ef6bb8716f1db03}{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event()}.
 
 
 \begin{DoxyParams}{Parameters}
@@ -804,32 +808,31 @@ Calls to \hyperlink{connection_8h_a820acf081ad5784aafde954b5ec9270a}{rpc\+\_\+co
 \end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler}}
 \index{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler}!connection.\+h@{connection.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler(rpc\+\_\+connection\+\_\+t conn, const char $\ast$name, void $\ast$cookie)}{rpc_connection_unregister_event_handler(rpc_connection_t conn, const char *name, void *cookie)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler (
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler(rpc\+\_\+connection\+\_\+t conn, void $\ast$cookie)}{rpc_connection_unregister_event_handler(rpc_connection_t conn, void *cookie)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler (
 \begin{DoxyParamCaption}
 \item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
-\item[{const char $\ast$}]{name, }
 \item[{void $\ast$}]{cookie}
 \end{DoxyParamCaption}
-)}\hypertarget{connection_8h_a209856a794a9a10a53735787926f4b95}{}\label{connection_8h_a209856a794a9a10a53735787926f4b95}
+)}\hypertarget{connection_8h_a8174aa9225c291138d5f409a1089f6cc}{}\label{connection_8h_a8174aa9225c291138d5f409a1089f6cc}
 Cancels further execution of a given event handler block for ongoing events of a given name.
 
 
 \begin{DoxyParams}{Parameters}
 {\em conn} & Connection to remove event handler from \\
 \hline
-{\em name} & Name of an event related to event handler \\
-\hline
 {\em cookie} & Void pointer to event handler itself \\
 \hline
 \end{DoxyParams}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event@{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event}}
 \index{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event@{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event}!connection.\+h@{connection.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event(rpc\+\_\+connection\+\_\+t conn, const char $\ast$name)}{rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event (
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event(rpc\+\_\+connection\+\_\+t conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name)}{rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *path, const char *interface, const char *name)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event (
 \begin{DoxyParamCaption}
 \item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
+\item[{const char $\ast$}]{path, }
+\item[{const char $\ast$}]{interface, }
 \item[{const char $\ast$}]{name}
 \end{DoxyParamCaption}
-)}\hypertarget{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}{}\label{connection_8h_a60ace791b01ad3aee0fc20d266c9673f}
+)}\hypertarget{connection_8h_a52a9651ed03823775ef6bb8716f1db03}{}\label{connection_8h_a52a9651ed03823775ef6bb8716f1db03}
 Undoes previous event subscription.
 
 This function may either\+:

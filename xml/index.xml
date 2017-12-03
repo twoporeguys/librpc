@@ -14,12 +14,10 @@
     <member refid="structrpc__if__member_1a7c950b405b6852b3038ae847d0b7e2e0" kind="variable"><name>@1</name></member>
   </compound>
   <compound refid="structrpc__if__method" kind="struct"><name>rpc_if_method</name>
-    <member refid="structrpc__if__method_1a207409b75ef6c2cee361fb2ba4421c97" kind="variable"><name>rm_name</name></member>
     <member refid="structrpc__if__method_1ad02bcfe0adc134947ab369c927e307a0" kind="variable"><name>rm_block</name></member>
     <member refid="structrpc__if__method_1a30f477ae1a1636164e2cc5051deb4fa1" kind="variable"><name>rm_arg</name></member>
   </compound>
   <compound refid="structrpc__if__property" kind="struct"><name>rpc_if_property</name>
-    <member refid="structrpc__if__property_1a5482e72e7b9df03cba9e3b86a4aa162c" kind="variable"><name>rp_name</name></member>
     <member refid="structrpc__if__property_1a6b88200bb991311dae3c05e92dc16fdc" kind="variable"><name>rp_getter</name></member>
     <member refid="structrpc__if__property_1ab095fba7efd97b90f3440c2db5369f1e" kind="variable"><name>rp_setter</name></member>
     <member refid="structrpc__if__property_1a0171db6c0ee6ad206634d42de210ae52" kind="variable"><name>rp_arg</name></member>
@@ -85,10 +83,10 @@
     <member refid="connection_8h_1a659dfc386fa0add62a07c17662a29641" kind="typedef"><name>rpc_callback_t</name></member>
     <member refid="connection_8h_1a0382631023d9cf812d978e80d5814bc8" kind="function"><name>rpc_connection_create</name></member>
     <member refid="connection_8h_1a6d4de49f4d9121c4077e62b73064b99d" kind="function"><name>rpc_connection_close</name></member>
-    <member refid="connection_8h_1a820acf081ad5784aafde954b5ec9270a" kind="function"><name>rpc_connection_subscribe_event</name></member>
-    <member refid="connection_8h_1a60ace791b01ad3aee0fc20d266c9673f" kind="function"><name>rpc_connection_unsubscribe_event</name></member>
-    <member refid="connection_8h_1a82d9bf3dc3219c41e89739acd0b314d5" kind="function"><name>rpc_connection_register_event_handler</name></member>
-    <member refid="connection_8h_1a209856a794a9a10a53735787926f4b95" kind="function"><name>rpc_connection_unregister_event_handler</name></member>
+    <member refid="connection_8h_1ae9e20b8d59848a4124c4150be552c623" kind="function"><name>rpc_connection_subscribe_event</name></member>
+    <member refid="connection_8h_1a52a9651ed03823775ef6bb8716f1db03" kind="function"><name>rpc_connection_unsubscribe_event</name></member>
+    <member refid="connection_8h_1a2d2006058675a9f55c48a116790132c8" kind="function"><name>rpc_connection_register_event_handler</name></member>
+    <member refid="connection_8h_1a8174aa9225c291138d5f409a1089f6cc" kind="function"><name>rpc_connection_unregister_event_handler</name></member>
     <member refid="connection_8h_1a4bb388f7cc19ce3d01577993fcf7dd63" kind="function"><name>rpc_connection_call_sync</name></member>
     <member refid="connection_8h_1a62df11aec4a738cc80defd3408354721" kind="function"><name>rpc_connection_call_syncv</name></member>
     <member refid="connection_8h_1a0bbf25b18122ee854bc8f0016bc84eeb" kind="function"><name>rpc_connection_call_syncp</name></member>
