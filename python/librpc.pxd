@@ -173,7 +173,8 @@ cdef extern from "rpc/connection.h" nogil:
     rpc_object_t rpc_call_result(rpc_call_t call)
     void rpc_call_free(rpc_call_t call)
 
-    int rpc_connection_register_event_handler(rpc_connection_t conn, const char *name, void *handler)
+    int rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
+        const char *interface, const char *name, void *handler)
 
 
 cdef extern from "rpc/service.h" nogil:
@@ -380,6 +381,7 @@ cdef class Context(object):
 cdef class Instance(object):
     cdef readonly Context context
     cdef rpc_instance_t instance
+    cdef object properties
     cdef public arg
 
     @staticmethod
@@ -391,9 +393,15 @@ cdef class Instance(object):
 
 
 cdef class Service(object):
-    cdef Instance instance
+    cdef readonly Instance instance
     cdef object methods
+    cdef object properties
     cdef object interfaces
+
+
+cdef class RemoteObject(object):
+    cdef object client
+    cdef object path
 
 
 cdef class RemoteInterface(object):
@@ -402,7 +410,14 @@ cdef class RemoteInterface(object):
     cdef readonly interface
     cdef readonly methods
     cdef readonly properties
+    cdef readonly events
     cdef dict __dict__
+
+
+cdef class RemoteEvent(object):
+    cdef object handlers
+
+    cdef emit(self, name, Object args)
 
 
 cdef class Call(object):

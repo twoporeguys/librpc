@@ -177,8 +177,17 @@ struct rpc_call
 
 struct rpc_subscription
 {
+	const char *		rsu_name;
+	const char *		rsu_path;
+	const char *		rsu_interface;
     	int 			rsu_refcount;
     	GPtrArray *		rsu_handlers;
+};
+
+struct rpc_subscription_handler
+{
+	struct rpc_subscription *rsh_parent;
+	rpc_handler_t 		rsh_handler;
 };
 
 struct rpc_inbound_call
@@ -223,7 +232,7 @@ struct rpc_connection
 	GHashTable *		rco_calls;
 	GHashTable *		rco_inbound_calls;
     	GHashTable *		rco_event_listeners;
-    	GHashTable *		rco_subscriptions;
+    	GPtrArray *		rco_subscriptions;
     	GMutex			rco_subscription_mtx;
     	GMutex			rco_send_mtx;
     	GMainContext *		rco_mainloop;

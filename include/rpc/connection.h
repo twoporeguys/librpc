@@ -146,7 +146,8 @@ int rpc_connection_close(rpc_connection_t conn);
  * @param name Event name
  * @return 0 on success, -1 on failure
  */
-int rpc_connection_subscribe_event(rpc_connection_t conn, const char *name);
+int rpc_connection_subscribe_event(rpc_connection_t conn, const char *path,
+    const char *interface, const char *name);
 
 /**
  * Undoes previous event subscription.
@@ -160,7 +161,8 @@ int rpc_connection_subscribe_event(rpc_connection_t conn, const char *name);
  * @param name Event name
  * @return 0 on success, -1 on failure
  */
-int rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name);
+int rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *path,
+    const char *interface, const char *name);
 
 /**
  * Registers an event handler block for an event of a given name.
@@ -172,18 +174,18 @@ int rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name);
  * @param handler Event handler of rpc_handler_t type
  */
 void *rpc_connection_register_event_handler(rpc_connection_t conn,
-    const char *name, rpc_handler_t handler);
+    const char *path, const char *interface, const char *name,
+    rpc_handler_t handler);
 
 /**
  * Cancels further execution of a given event handler block for ongoing events
  * of a given name.
  *
  * @param conn Connection to remove event handler from
- * @param name Name of an event related to event handler
  * @param cookie Void pointer to event handler itself
  */
 void rpc_connection_unregister_event_handler(rpc_connection_t conn,
-    const char *name, void *cookie);
+    void *cookie);
 
 /**
  * Performs a synchronous RPC method call using a given connection.

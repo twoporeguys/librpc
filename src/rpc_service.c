@@ -213,7 +213,6 @@ rpc_instance_register_property(rpc_instance_t instance, const char *interface,
 
 	member.rim_name = name;
 	member.rim_type = RPC_MEMBER_PROPERTY;
-	member.rim_property.rp_name = name;
 	member.rim_property.rp_getter = getter;
 	member.rim_property.rp_setter = setter;
 	member.rim_property.rp_arg = arg;
@@ -553,6 +552,7 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 	}
 
 	copy = g_memdup(member, sizeof(*member));
+	copy->rim_name = g_strdup(member->rim_name);
 
 	if (copy->rim_type == RPC_MEMBER_METHOD) {
 		copy->rim_method.rm_block = Block_copy(

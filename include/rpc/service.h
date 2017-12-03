@@ -175,14 +175,12 @@ enum rpc_property_rights
  */
 struct rpc_if_method
 {
-	const char *		rm_name;
 	rpc_function_t  	rm_block;
 	void *			rm_arg;
 };
 
 struct rpc_if_property
 {
-	const char *		rp_name;
 	rpc_property_getter_t	rp_getter;
 	rpc_property_setter_t	rp_setter;
 	void *			rp_arg;
@@ -555,6 +553,12 @@ int rpc_instance_register_property(rpc_instance_t instance,
 int rpc_instance_get_property_rights(rpc_instance_t instance,
     const char *interface, const char *name);
 
+/**
+ * 
+ * @param interface
+ * @param name
+ * @return
+ */
 int rpc_instance_register_event(rpc_instance_t, const char *interface,
     const char *name);
 

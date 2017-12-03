@@ -710,10 +710,19 @@ cdef class Context(object):
         ret.context = ptr
         return ret
 
-    def register_instance(self, Instance instance):
+    def register_instance(self, obj):
+        cdef Instance instance
+
+        if isinstance(obj, Service):
+            instance = <Instance>obj.instance
+
+        if isinstance(obj, Instance):
+            instance = <Instance>obj
+
         self.instances[instance.path] = instance
         if rpc_context_register_instance(self.context, instance.instance) != 0:
             raise_internal_exc()
+
 
     def register_method(self, name, fn, interface=''):
         self.methods[name] = fn
@@ -771,7 +780,7 @@ cdef class Instance(object):
 
         try:
             result = <Object>getter()
-            return result.obj
+            return rpc_retain(result.obj)
         except RpcException as err:
             rpc_property_error(cookie, err.code, err.message.encode('utf-8'))
             return <rpc_object_t>NULL
@@ -797,6 +806,7 @@ cdef class Instance(object):
         b_path = path.encode('utf-8')
         b_description = description.encode('utf-8')
         self.instance = rpc_instance_new(b_path, b_description, NULL)
+        self.properties = []
 
     def register_interface(self, interface, description=None):
         cdef rpc_interface iface
@@ -826,6 +836,8 @@ cdef class Instance(object):
         b_name = name.encode('utf-8')
         mux = getter, setter
 
+        self.properties.append(mux)
+
         if rpc_instance_register_property(
             self.instance,
             b_interface,
@@ -847,6 +859,7 @@ cdef class Instance(object):
 cdef class Service(object):
     def __init__(self, path=None, description='Generic instance', instance=None):
         self.methods = {}
+        self.properties = {}
         self.interfaces = {}
         self.instance = instance
 
@@ -854,20 +867,41 @@ cdef class Service(object):
             self.instance = Instance(path, description)
 
         for name, i in inspect.getmembers(self, inspect.ismethod):
-            if getattr(i, '_librpc_method__', None):
+            if getattr(i, '__librpc_method__', None):
                 name = getattr(i, '__librpc_name__', name)
                 interface = getattr(i, '__librpc_interface__', getattr(self, '__librpc_interface__', None))
+                description = getattr(self, '__librpc_description__', '')
 
                 if not interface:
                     continue
 
                 if interface not in self.interfaces:
-                    self.instance.register_interace(name, )
+                    self.instance.register_interface(interface)
                     self.interfaces[interface] = True
 
-
-
+                self.instance.register_method(interface, name, i)
                 self.methods[name] = i
+                continue
+
+            if getattr(i, '__librpc_getter__', None):
+                name = getattr(i, '__librpc_name__', name)
+                setter = getattr(i, '__librpc_setter__', None)
+                interface = getattr(i, '__librpc_interface__', getattr(self, '__librpc_interface__', None))
+                description = getattr(self, '__librpc_description__', '')
+
+                if not interface:
+                    continue
+
+                if interface not in self.interfaces:
+                    self.instance.register_interface(interface)
+                    self.interfaces[interface] = True
+
+                # Setter is an unbound method reference, so we need to bind it to "self" first
+                setter = setter.__get__(self, self.__class__)
+
+                self.instance.register_property(interface, name, i, setter)
+                self.properties[name] = i
+                continue
 
     property path:
         def __get__(self):
@@ -875,9 +909,6 @@ cdef class Service(object):
 
 
 cdef class RemoteObject(object):
-    cdef object client
-    cdef object path
-
     def __init__(self, client, path):
         self.client = client
         self.path = path
@@ -915,6 +946,7 @@ cdef class RemoteInterface(object):
         self.interface = interface
         self.methods = {}
         self.properties = {}
+        self.events = {}
 
         try:
             if not self.client.call_sync(
@@ -950,9 +982,10 @@ cdef class RemoteInterface(object):
                         interface=self.interface
                     )
 
-                self.methods[method] = fn
-                setattr(self, method, functools.partial(fn, method))
-        except:
+                partial = functools.partial(fn, method)
+                self.methods[method] = partial
+                setattr(self, method, partial)
+        except Exception as err:
             pass
 
     def __collect_properties(self):
@@ -964,7 +997,7 @@ cdef class RemoteInterface(object):
                 interface='com.twoporeguys.librpc.Observable',
                 unpack=True
             ):
-                def fn(name=prop['name']):
+                def getter(name=prop['name']):
                     return self.client.call_sync(
                         'get',
                         self.interface,
@@ -973,15 +1006,44 @@ cdef class RemoteInterface(object):
                         interface='com.twoporeguys.librpc.Observable'
                     )
 
-                self.properties[prop['name']] = fn
+                def setter(name=prop['name'], value=None):
+                    return self.client.call_sync(
+                        'set',
+                        self.interface,
+                        name,
+                        value,
+                        path=self.path,
+                        interface='com.twoporeguys.librpc.Observable'
+                    )
+
+                self.properties[prop['name']] = (
+                    functools.partial(getter, prop['name']),
+                    functools.partial(setter, prop['name'])
+                )
         except:
             pass
 
     def __collect_events(self):
-        pass
+            for method in self.client.call_sync(
+                'get_events',
+                self.interface,
+                path=self.path,
+                interface='com.twoporeguys.librpc.Introspectable',
+                unpack=True
+            ):
+                self.client.register_event_handler()
 
     def __getattr__(self, item):
-        return self.properties[item]()
+        getter, _ = self.properties[item]
+        return getter()
+
+    def __setattr__(self, item, value):
+        if item in self.properties:
+            _, setter = self.properties[item]
+            setter(value)
+            return
+
+        self.__dict__[item] = value
 
     def __str__(self):
         return "<librpc.RemoteInterface '{0}' at '{1}'>".format(
@@ -991,6 +1053,18 @@ cdef class RemoteInterface(object):
 
     def __repr__(self):
         return str(self)
+
+
+cdef class RemoteEvent(object):
+    def connect(self, handler):
+        self.handlers.append(handler)
+
+    def disconnect(self, handler):
+        self.handlers.remove(handler)
+
+    cdef emit(self, name, Object args):
+        for h in self.handlers:
+            h(args)
 
 
 cdef class Call(object):
@@ -1057,7 +1131,8 @@ cdef class Connection(object):
                 fn = None
 
             self.error_handler = fn
-            rpc_connection_set_error_handler(self.connection,
+            rpc_connection_set_error_handler(
+                self.connection,
                 RPC_ERROR_HANDLER(
                     self.c_error_handler,
                     <void *>self.error_handler
@@ -1216,15 +1291,20 @@ cdef class Connection(object):
         with nogil:
             rpc_connection_send_event(self.connection, c_path, c_interface, c_name, data.obj)
 
-    def register_event_handler(self, name, fn):
+    def register_event_handler(self, name, fn, path='/', interface=None):
         if self.connection == <rpc_connection_t>NULL:
             raise RuntimeError("Not connected")
 
-        byte_name = name.encode('utf-8')
+        b_path = path.encode('utf-8')
+        b_interface = path.encode('utf-8')
+        b_name = name.encode('utf-8')
+
         self.ev_handlers.append(fn)
         rpc_connection_register_event_handler(
             self.connection,
-            byte_name,
+            b_path,
+            b_interface,
+            b_name,
             RPC_HANDLER(
                 <rpc_handler_f>Connection.c_ev_handler,
                 <void *>fn
@@ -1808,26 +1888,34 @@ def fd(value):
     return Object(value, force_type=ObjectType.FD)
 
 
-def method(name=None):
+def method(arg):
     def wrapped(fn):
-        fn.__librpc_name__ = name or fn.__name__
+        fn.__librpc_name__ = arg
         fn.__librpc_method__ = True
         return fn
+
+    if callable(arg):
+        arg.__librpc_name__ = arg.__name__
+        arg.__librpc_method__ = True
+        return arg
 
     return wrapped
 
 
-def prop(name=None):
+def prop(arg):
     def wrapped(fn):
-        def setter(fn2):
-            fn2.__librpc_name__ = fn.__librpc_name__
-            fn2.__librpc_setter__ = True
-            return fn2
-
-        fn.setter = setter
-        fn.__libpc_name__ = name or fn.__name__
+        fn.__libpc_name__ = arg
         fn.__librpc_getter__ = True
         return fn
+
+    if callable(arg):
+        def setter(fn):
+            arg.__librpc_setter__ = fn
+
+        arg.setter = setter
+        arg.__librpc_name__ = arg.__name__
+        arg.__librpc_getter__ = True
+        return arg
 
     return wrapped
 

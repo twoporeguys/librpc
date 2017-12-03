@@ -57,7 +57,10 @@ static void on_events_unsubscribe(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void rpc_callback_worker(void *, void *);
 static int rpc_call_wait_locked(rpc_call_t);
 static gboolean rpc_call_timeout(gpointer user_data);
-static int rpc_connection_subscribe_event_locked(rpc_connection_t, const char *);
+static int rpc_connection_subscribe_event_locked(rpc_connection_t, const char *,
+    const char *, const char *);
+static struct rpc_subscription *rpc_connection_find_subscription(rpc_connection_t,
+    const char *, const char *, const char *);
 
 struct message_handler
 {
@@ -632,6 +635,35 @@ rpc_send_frame(rpc_connection_t conn, rpc_object_t frame)
 	return (ret);
 }
 
+static struct rpc_subscription *
+rpc_connection_find_subscription(rpc_connection_t conn, const char *path,
+    const char *interface, const char *name)
+{
+	struct rpc_subscription *result;
+	int i;
+
+	g_mutex_lock(&conn->rco_subscription_mtx);
+
+	for (i = 0; i < conn->rco_subscriptions->len; i++) {
+		result = g_ptr_array_index(conn->rco_subscriptions, i);
+
+		if (g_strcmp0(result->rsu_path, path) != 0)
+			continue;
+
+		if (g_strcmp0(result->rsu_interface, interface) != 0)
+			continue;
+
+		if (g_strcmp0(result->rsu_name, name) != 0)
+			continue;
+
+		g_mutex_unlock(&conn->rco_subscription_mtx);
+		return (result);
+	}
+
+	g_mutex_unlock(&conn->rco_subscription_mtx);
+	return (NULL);
+}
+
 void
 rpc_connection_send_err(rpc_connection_t conn, rpc_object_t id, int code,
     const char *descr, ...)
@@ -869,26 +901,28 @@ rpc_connection_dispatch(rpc_connection_t conn, rpc_object_t frame)
 }
 
 static int
-rpc_connection_subscribe_event_locked(rpc_connection_t conn, const char *name)
+rpc_connection_subscribe_event_locked(rpc_connection_t conn, const char *path,
+    const char *interface, const char *name)
 {
 	struct rpc_subscription *sub;
 	rpc_object_t frame;
-	rpc_object_t args, str;
+	rpc_object_t args;
 
 
-	sub = g_hash_table_lookup(conn->rco_subscriptions, name);
+	sub = rpc_connection_find_subscription(conn, path, interface, name);
 	if (sub == NULL) {
 		sub = g_malloc0(sizeof(*sub));
+		sub->rsu_path = g_strdup(path);
+		sub->rsu_interface = g_strdup(interface);
+		sub->rsu_name = g_strdup(name);
 		sub->rsu_handlers = g_ptr_array_new();
-		str = rpc_string_create(name);
-		args = rpc_array_create_ex(&str, 1, true);
+		args = rpc_object_pack("[s]", name);
 		frame = rpc_pack_frame("events", "subscribe", NULL, args);
 
 		if (rpc_send_frame(conn, frame) != 0)
 			return (-1);
 
-		g_hash_table_insert(conn->rco_subscriptions, g_strdup(name),
-		    (gpointer)sub);
+		g_ptr_array_add(conn->rco_subscriptions, sub);
 	}
 
 	sub->rsu_refcount++;
@@ -896,19 +930,21 @@ rpc_connection_subscribe_event_locked(rpc_connection_t conn, const char *name)
 }
 
 int
-rpc_connection_subscribe_event(rpc_connection_t conn, const char *name)
+rpc_connection_subscribe_event(rpc_connection_t conn, const char *path,
+    const char *interface, const char *name)
 {
 	int ret;
 
 	g_mutex_lock(&conn->rco_subscription_mtx);
-	ret = rpc_connection_subscribe_event_locked(conn, name);
+	ret = rpc_connection_subscribe_event_locked(conn, path, interface, name);
 	g_mutex_unlock(&conn->rco_subscription_mtx);
 
 	return (ret);
 }
 
 int
-rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name)
+rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *path,
+    const char *interface, const char *name)
 {
 	rpc_object_t frame;
 	rpc_object_t args, str;
@@ -927,33 +963,32 @@ rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name)
 }
 
 void *
-rpc_connection_register_event_handler(rpc_connection_t conn, const char *name,
-    rpc_handler_t handler)
+rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
+    const char *interface, const char *name, rpc_handler_t handler)
 {
 	struct rpc_subscription *sub;
-	rpc_handler_t fn;
-
-	fn = Block_copy(handler);
-
+	struct rpc_subscription_handler *rsh;
 	g_mutex_lock(&conn->rco_subscription_mtx);
-	rpc_connection_subscribe_event_locked(conn, name);
-	sub = g_hash_table_lookup(conn->rco_subscriptions, name);
-	g_ptr_array_add(sub->rsu_handlers, fn);
+
+	rpc_connection_subscribe_event_locked(conn, path, interface, name);
+	sub = rpc_connection_find_subscription(conn, path, interface, name);
+	rsh = g_malloc0(sizeof(*rsh));
+	rsh->rsh_parent = sub;
+	rsh->rsh_handler = Block_copy(handler);
+	g_ptr_array_add(sub->rsu_handlers, rsh);
+
 	g_mutex_unlock(&conn->rco_subscription_mtx);
 
-	return (fn);
+	return (rsh);
 }
 
 void
-rpc_connection_unregister_event_handler(rpc_connection_t conn, const char *name,
-    void *cookie)
+rpc_connection_unregister_event_handler(rpc_connection_t conn, void *cookie)
 {
-	struct rpc_subscription *sub;
+	struct rpc_subscription_handler *rsh = cookie;
 
 	g_mutex_lock(&conn->rco_subscription_mtx);
-	rpc_connection_subscribe_event_locked(conn, name);
-	sub = g_hash_table_lookup(conn->rco_subscriptions, name);
-	g_ptr_array_remove(sub->rsu_handlers, cookie);
+	g_ptr_array_remove(rsh->rsh_parent->rsu_handlers, cookie);
 	g_mutex_unlock(&conn->rco_subscription_mtx);
 
 }
