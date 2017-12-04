@@ -27,26 +27,84 @@
 import argparse
 import traceback
 import librpc
+import readline
 
 
 class CommandDispatcher(object):
-    def __init__(self):
+    def __init__(self, client):
+        self.client = client
+        self.current = client.instances['/']
+
+    def cmd_show(self, *args):
+        print('Interfaces:')
+        for i in self.current.interfaces:
+            print('    {0}'.format(i))
+
+        print('Methods:')
+        for ifname, iface in self.current.interfaces.items():
+            for mname in iface.methods:
+                print('    {0}.{1}'.format(ifname, mname))
+
+        print('Properties:')
+        for ifname, iface in self.current.interfaces.items():
+            for pname in iface.properties:
+                print('    {0}.{1}'.format(ifname, pname))
+
+    def cmd_cd(self, *args):
+        self.current = self.client.instances[args[0]]
+
+    def cmd_pwd(self, *args):
+        print(self.current.path)
+
+    def cmd_objects(self, *args):
+        for i in sorted(self.client.instances):
+            print(i)
+
+    def cmd_call(self, *args):
+        iface = self.current.interfaces[args[0]]
+
+        try:
+            fn = getattr(iface, args[1])
+            params = [eval(s) for s in args[2:]]
+            result = fn(*params)
+
+            if hasattr(result, '__next__'):
+                for r in result:
+                    print(r)
+            else:
+                print(result)
+        except Exception:
+            traceback.print_exc()
+
+    def cmd_get(self, *args):
+        iface = self.current.interfaces[args[0]]
+
+        try:
+            prop = getattr(iface, args[1])
+            print(prop)
+        except Exception:
+            traceback.print_exc()
+
+    def cmd_set(self, *args):
         pass
 
-    def cmd_show(self):
+    def cmd_watch(self, *args):
         pass
 
-    def cmd_cd(self):
-        pass
+    def repl(self):
+        while True:
+            line = input('{0}> '.format(self.current.path))
+            tokens = line.split()
 
-    def cmd_objects(self):
-        pass
+            if not tokens:
+                continue
 
-    def cmd_call(self):
-        pass
-
-    def cmd_watch(self):
-        pass
+            try:
+                fn = getattr(self, 'cmd_{0}'.format(tokens[0]))
+                fn(*tokens[1:])
+            except AttributeError:
+                print('Command not found')
+                continue
 
 
 def main():
@@ -55,28 +113,11 @@ def main():
     args = parser.parse_args()
     client = librpc.Client()
     client.connect(args.uri)
+    client.unpack = True
 
     try:
-        while True:
-            line = input('> ')
-            tokens = line.split()
-
-            if not tokens:
-                continue
-
-            method = tokens[0]
-            args = [eval(s) for s in tokens[1:]]
-
-            try:
-                result = client.call_sync(method, *args)
-                if hasattr(result, '__next__'):
-                    for r in result:
-                        print(r)
-                else:
-                    print(result)
-            except Exception:
-                traceback.print_exc()
-
+        cmd = CommandDispatcher(client)
+        cmd.repl()
     except KeyboardInterrupt:
         pass
 
