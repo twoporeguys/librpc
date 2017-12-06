@@ -897,7 +897,8 @@ cdef class Service(object):
                     self.interfaces[interface] = True
 
                 # Setter is an unbound method reference, so we need to bind it to "self" first
-                setter = setter.__get__(self, self.__class__)
+                if setter:
+                    setter = setter.__get__(self, self.__class__)
 
                 self.instance.register_property(interface, name, i, setter)
                 self.properties[name] = i
@@ -1904,6 +1905,10 @@ def method(arg):
 
 def prop(arg):
     def wrapped(fn):
+        def setter(sfn):
+            fn.__librpc_setter__ = sfn
+
+        fn.setter = setter
         fn.__libpc_name__ = arg
         fn.__librpc_getter__ = True
         return fn
