@@ -256,7 +256,6 @@ ws_close(SoupWebsocketConnection *ws, gpointer user_data)
 
 	debugf("closed: conn=%p", conn);
 	conn->wc_parent->rco_close(conn->wc_parent);
-	g_object_unref(ws);
 }
 
 static int
@@ -264,6 +263,9 @@ ws_send_message(void *arg, void *buf, size_t len, const int *fds __unused,
     size_t nfds __unused)
 {
 	struct ws_connection *conn = arg;
+
+	if (soup_websocket_connection_get_state(conn->wc_ws) != SOUP_WEBSOCKET_STATE_OPEN)
+		return (-1);
 
 	soup_websocket_connection_send_binary(conn->wc_ws, buf, len);
 	return (0);
