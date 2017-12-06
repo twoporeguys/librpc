@@ -27,6 +27,7 @@
 import argparse
 import traceback
 import librpc
+import os
 import readline
 
 
@@ -107,12 +108,18 @@ class CommandDispatcher(object):
                 continue
 
 
+def on_error(code, args):
+    print('Connection closed: {0}'.format(str(code)))
+    os._exit(1)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--uri', help='Server URI')
     args = parser.parse_args()
     client = librpc.Client()
     client.connect(args.uri)
+    client.error_handler = on_error
     client.unpack = True
 
     try:
