@@ -4,6 +4,7 @@ BUILD_PYTHON := ON
 PYTHON_VERSION := python3
 INSTALL_PREFIX := /usr/local
 PREFIX := /usr/local
+BUILD_CLIENT := OFF
 
 all:
 	mkdir -p build && \
@@ -11,6 +12,7 @@ all:
 	cmake .. -DBUILD_LIBUSB=ON \
 	-DPYTHON_VERSION=${PYTHON_VERSION} \
 	-DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
+	-DBUILD_CLIENT=${BUILD_CLIENT} \
 	-DBUILD_PYTHON=${BUILD_PYTHON} && \
 	make
 

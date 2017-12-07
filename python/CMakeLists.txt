@@ -1,9 +1,14 @@
 find_program(PYTHON "${PYTHON_VERSION}")
 
+option(BUILD_CLIENT "Compile and install librpc python client application")
+
 set(SETUP_PY ${CMAKE_SOURCE_DIR}/python/setup.py)
-set(CONVERT_SCRIPT ${CMAKE_SOURCE_DIR}/python/utils/convert_manifest.py)
 set(DEPS ${CMAKE_SOURCE_DIR}/python/librpc.pyx ${CMAKE_SOURCE_DIR}/python/librpc.pxd)
 set(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/timestamp)
+
+if(BUILD_CLIENT)
+    add_subdirectory(examples/client)
+endif()
 
 add_custom_command(OUTPUT ${OUTPUT}
         COMMAND cp -a ${CMAKE_SOURCE_DIR}/python/* ${CMAKE_CURRENT_BINARY_DIR}/
