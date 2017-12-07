@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 #
 # Copyright 2017 Two Pore Guys, Inc.
 # All rights reserved
@@ -115,7 +116,7 @@ def on_error(code, args):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--uri', help='Server URI')
+    parser.add_argument('--uri', help='Server URI', required=True)
     args = parser.parse_args()
     client = librpc.Client()
     client.connect(args.uri)
