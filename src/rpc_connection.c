@@ -174,6 +174,7 @@ rpc_callback_worker(void *arg, void *data)
 {
 	struct work_item *item = arg;
 	struct rpc_subscription *sub;
+	struct rpc_subscription_handler *handler;
 	const char *path;
 	const char *interface;
 	const char *name;
@@ -203,14 +204,12 @@ rpc_callback_worker(void *arg, void *data)
 		interface = rpc_dictionary_get_string(item->event, "interface");
 		name = rpc_dictionary_get_string(item->event, "name");
 		data = rpc_dictionary_get_value(item->event, "args");
-		sub = g_hash_table_lookup(conn->rco_subscriptions, name);
+		sub = rpc_connection_find_subscription(conn, path, interface, name);
 
 		if (sub != NULL) {
 			for (guint i = 0; i < sub->rsu_handlers->len; i++) {
-				rpc_handler_t handler = g_ptr_array_index(
-				    sub->rsu_handlers, i);
-
-				handler(path, interface, name, data);
+				handler = g_ptr_array_index(sub->rsu_handlers, i);
+				handler->rsh_handler(path, interface, name, data);
 			}
 		}
 
@@ -363,7 +362,7 @@ on_rpc_end(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_status = RPC_CALL_DONE;
-	call->rc_result = NULL;
+	call->rc_result = rpc_null_create();
 
 	g_cond_broadcast(&call->rc_cv);
 	g_mutex_unlock(&call->rc_mtx);
@@ -785,7 +784,7 @@ rpc_connection_alloc(rpc_server_t server)
 	conn->rco_server = server;
 	conn->rco_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_inbound_calls = g_hash_table_new(g_str_hash, g_str_equal);
-	conn->rco_subscriptions = g_hash_table_new(g_str_hash, g_str_equal);
+	conn->rco_subscriptions = g_ptr_array_new();
 	conn->rco_rpc_timeout = DEFAULT_RPC_TIMEOUT;
 	conn->rco_recv_msg = &rpc_recv_msg;
 	conn->rco_close = &rpc_close;
@@ -822,7 +821,7 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	conn->rco_mainloop = client->rci_g_context;
 	conn->rco_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_inbound_calls = g_hash_table_new(g_str_hash, g_str_equal);
-	conn->rco_subscriptions = g_hash_table_new(g_str_hash, g_str_equal);
+	conn->rco_subscriptions = g_ptr_array_new();
 	conn->rco_rpc_timeout = DEFAULT_RPC_TIMEOUT;
 	conn->rco_recv_msg = &rpc_recv_msg;
 	conn->rco_close = &rpc_close;
@@ -853,7 +852,7 @@ rpc_connection_close(rpc_connection_t conn)
 	g_thread_pool_free(conn->rco_callback_pool, true, true);
 	g_hash_table_destroy(conn->rco_calls);
 	g_hash_table_destroy(conn->rco_inbound_calls);
-	g_hash_table_destroy(conn->rco_subscriptions);
+	g_ptr_array_free(conn->rco_subscriptions, true);
 	g_free(conn);
 	return (0);
 }
