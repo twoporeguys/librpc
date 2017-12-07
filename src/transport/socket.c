@@ -282,8 +282,7 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 		goto done;
 	}
 
-	g_output_stream_write(conn->sc_ostream, buf, size, NULL, &err);
-	if (err != NULL) {
+	if (!g_output_stream_write_all(conn->sc_ostream, buf, size, NULL, NULL, &err)) {
 		rpc_set_last_gerror(err);
 		g_error_free(err);
 		ret = -1;
@@ -350,16 +349,11 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	}
 #endif
 
-	read = g_input_stream_read(conn->sc_istream, *frame, *size, NULL, &err);
-	if (err != NULL) {
+	if (!g_input_stream_read_all(conn->sc_istream, *frame, *size, NULL,
+	   NULL, &err)) {
+		rpc_set_last_gerror(err);
 		g_free(err);
-		free(frame);
-		return (-1);
-	}
-
-	if (read < (ssize_t)length) {
-		/* Short read */
-		free(frame);
+		free(*frame);
 		return (-1);
 	}
 
