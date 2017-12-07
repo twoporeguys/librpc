@@ -773,14 +773,16 @@ cdef class Instance(object):
     @staticmethod
     cdef rpc_object_t c_property_getter(void *cookie) with gil:
         cdef object mux
-        cdef Object result
 
         mux = <object>rpc_property_get_arg(cookie)
         getter, _ = mux
 
         try:
-            result = <Object>getter()
-            return rpc_retain(result.obj)
+            result = getter()
+            if not isinstance(result, Object):
+                raise ValueError('returned value is not librpc.Object')
+
+            return rpc_retain((<Object>result).obj)
         except RpcException as err:
             rpc_property_error(cookie, err.code, err.message.encode('utf-8'))
             return <rpc_object_t>NULL
@@ -870,38 +872,50 @@ cdef class Service(object):
             if getattr(i, '__librpc_method__', None):
                 name = getattr(i, '__librpc_name__', name)
                 interface = getattr(i, '__librpc_interface__', getattr(self, '__librpc_interface__', None))
+                unpack = getattr(i, '__librpc_unpack__', getattr(self, '__librpc_unpack__', False))
                 description = getattr(self, '__librpc_description__', '')
+                fn = i
 
                 if not interface:
                     continue
+
+                if unpack:
+                    fn = lambda *args, fn=fn: fn(*(a.unpack() for a in args))
 
                 if interface not in self.interfaces:
                     self.instance.register_interface(interface)
                     self.interfaces[interface] = True
 
-                self.instance.register_method(interface, name, i)
-                self.methods[name] = i
+                self.instance.register_method(interface, name, fn)
+                self.methods[name] = fn
                 continue
 
             if getattr(i, '__librpc_getter__', None):
                 name = getattr(i, '__librpc_name__', name)
                 setter = getattr(i, '__librpc_setter__', None)
                 interface = getattr(i, '__librpc_interface__', getattr(self, '__librpc_interface__', None))
+                unpack = getattr(i, '__librpc_unpack__', getattr(self, '__librpc_unpack__', False))
                 description = getattr(self, '__librpc_description__', '')
+                getter = i
 
                 if not interface:
                     continue
-
-                if interface not in self.interfaces:
-                    self.instance.register_interface(interface)
-                    self.interfaces[interface] = True
 
                 # Setter is an unbound method reference, so we need to bind it to "self" first
                 if setter:
                     setter = setter.__get__(self, self.__class__)
 
-                self.instance.register_property(interface, name, i, setter)
-                self.properties[name] = i
+                if unpack:
+                    getter = lambda fn=getter: Object(fn())
+                    if setter:
+                        setter = lambda v, fn=setter: fn(v.unpack())
+
+                if interface not in self.interfaces:
+                    self.instance.register_interface(interface)
+                    self.interfaces[interface] = True
+
+                self.instance.register_property(interface, name, getter, setter)
+                self.properties[name] = getter, setter
                 continue
 
     property path:
@@ -1947,3 +1961,8 @@ def description(name):
         return fn
 
     return wrapped
+
+
+def unpack(fn):
+    fn.__librpc_unpack__ = True
+    return fn

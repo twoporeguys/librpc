@@ -31,6 +31,7 @@ import time
 import errno
 
 
+@librpc.unpack
 @librpc.interface('com.twoporeguys.librpc.ExampleServer')
 class ExampleServer(librpc.Service):
     def __init__(self):
@@ -39,26 +40,26 @@ class ExampleServer(librpc.Service):
 
     @librpc.prop
     def name(self):
-        return librpc.Object(self.__name)
+        return self.__name
 
     @name.setter
     def setname(self, value):
         print('Setting name to {0}'.format(value))
-        self.__name = value.value
+        self.__name = value
 
     @librpc.method
     def hello(self, string):
-        return 'Hello {0}'.format(string.value)
+        return 'Hello {0}'.format(string)
 
     @librpc.method
     def adder(self, n1, n2):
         print('adder called with args: {0}, {1}'.format(n1, n2))
-        return n1.value + n2.value
+        return n1 + n2
 
     @librpc.method
     def subtracter(self, n1, n2):
         print('subtracter called with args: {0}, {1}'.format(n1, n2))
-        return n1.value - n2.value
+        return n1 - n2
 
     @librpc.method
     def streamer(self):
