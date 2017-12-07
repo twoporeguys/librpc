@@ -33,7 +33,7 @@ setup(
     description='Command Line Interface for librpc',
     entry_points={
         'console_scripts': [
-            'librpc_client = librpc_client:main'
+            'librpc-client = librpc_client:main'
         ]
     },
     install_requires=['librpc']
