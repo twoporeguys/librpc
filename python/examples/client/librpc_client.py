@@ -49,8 +49,10 @@ class CommandDispatcher(object):
 
         print('Properties:')
         for ifname, iface in self.current.interfaces.items():
-            for pname in iface.properties:
-                print('    {0}.{1}'.format(ifname, pname))
+            for pname, fns in iface.properties.items():
+                getter, _ = fns
+                value = repr(getter()) if getter else '<no getter>'
+                print('    {0}.{1} ({2})'.format(ifname, pname, value))
 
     def cmd_cd(self, *args):
         self.current = self.client.instances[args[0]]
