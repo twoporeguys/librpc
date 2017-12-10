@@ -26,6 +26,8 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
 #include <glib.h>
 #include <rpc/object.h>
@@ -49,29 +51,70 @@ static struct {
 	const char *name;
 	int (*fn)(int argc, const char *argv[]);
 } commands[] = {
-    { "tree", cmd_tree },
-    { "inspect", cmd_inspect },
-    { "call", cmd_call },
-    { "get", cmd_get },
-    { "set", cmd_set },
-    { NULL}
+	{ "tree", cmd_tree },
+	{ "inspect", cmd_inspect },
+	{ "call", cmd_call },
+	{ "get", cmd_get },
+	{ "set", cmd_set },
+	{ NULL}
 };
 
 static GOptionEntry options[] = {
-    { "server", 's', 0, G_OPTION_ARG_STRING, &server, "Server URI", NULL },
-    { "json", 'j', 0, G_OPTION_ARG_NONE, &json, "JSON output", NULL },
-    { "yaml", 'y', 0, G_OPTION_ARG_NONE, &yaml, "YAML output", NULL },
-    { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args, "Command...", NULL },
-    { NULL }
+	{ "server", 's', 0, G_OPTION_ARG_STRING, &server, "Server URI", NULL },
+	{ "json", 'j', 0, G_OPTION_ARG_NONE, &json, "JSON output", NULL },
+	{ "yaml", 'y', 0, G_OPTION_ARG_NONE, &yaml, "YAML output", NULL },
+	{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args, "", NULL },
+	{ NULL }
 };
 
 static rpc_connection_t
 connect(void)
 {
 	rpc_client_t client;
+	rpc_object_t error;
 
 	client = rpc_client_create(server, NULL);
+	if (client == NULL) {
+		error = rpc_get_last_error();
+		fprintf(stderr, "Cannot connect: %s\n",
+		    rpc_error_get_message(error));
+		exit(1);
+	}
+
 	return (rpc_client_get_connection(client));
+}
+
+static void
+output(rpc_object_t obj)
+{
+	char *str;
+	void *frame;
+	size_t len;
+
+	if (obj == NULL)
+		return;
+
+	if (json) {
+		if (rpc_serializer_dump("json", obj, &frame, &len) != 0)
+			abort();
+
+		printf("%s\n", (char *)frame);
+		g_free(frame);
+		return;
+	}
+
+	if (yaml) {
+		if (rpc_serializer_dump("yaml", obj, &frame, &len) != 0)
+			abort();
+
+		printf("%s\n", (char *)frame);
+		g_free(frame);
+		return;
+	}
+
+	str = rpc_copy_description(obj);
+	printf("%s\n", str);
+	g_free(str);
 }
 
 static int
@@ -142,7 +185,56 @@ cmd_inspect(int argc, const char *argv[])
 static int
 cmd_call(int argc, const char *argv[])
 {
+	rpc_connection_t conn;
+	rpc_call_t call;
+	rpc_object_t args;
+	rpc_object_t error;
+	int ret = 0;
 
+	if (argc < 4) {
+		fprintf(stderr, "Not enough arguments provided\n");
+		return (1);
+	}
+
+	args = rpc_serializer_load("json", argv[3], strlen(argv[3]));
+	if (args == NULL) {
+		error = rpc_get_last_error();
+		fprintf(stderr, "Cannot read input: %s\n",
+		    rpc_error_get_message(error));
+		return (1);
+	}
+
+	conn = connect();
+	call = rpc_connection_call(conn, argv[0], argv[1], argv[2],
+	    NULL, NULL);
+
+	for (;;) {
+		rpc_call_wait(call);
+
+		switch (rpc_call_status(call)) {
+			case RPC_CALL_MORE_AVAILABLE:
+				output(rpc_call_result(call));
+				rpc_call_continue(call, false);
+				break;
+
+			case RPC_CALL_DONE:
+				output(rpc_call_result(call));
+				goto done;
+
+			case RPC_CALL_ERROR:
+				ret = 1;
+				goto error;
+
+			default:
+				g_assert_not_reached();
+		}
+	}
+
+error:
+	output(rpc_call_result(call));
+done:
+	rpc_call_free(call);
+	return (0);
 }
 
 static int
