@@ -96,6 +96,14 @@ void \hyperlink{connection_8h_a8174aa9225c291138d5f409a1089f6cc}{rpc\+\_\+connec
 \item 
 \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} \hyperlink{connection_8h_a2d2059a4a18c0bfb8d8482af47d34072}{rpc\+\_\+connection\+\_\+call} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args, \hyperlink{connection_8h_a659dfc386fa0add62a07c17662a29641}{rpc\+\_\+callback\+\_\+t} callback)
 \item 
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a87b152a8ef73a75ac770a74283e05dc8}{rpc\+\_\+connection\+\_\+get\+\_\+property} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name)
+\item 
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a6fa1783ffe617c0c0342d365ad9c28fa}{rpc\+\_\+connection\+\_\+set\+\_\+property} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} value)
+\item 
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_aae34b6e1d7bffb1d6af187b1d893affa}{rpc\+\_\+connection\+\_\+set\+\_\+propertyp} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name, const char $\ast$fmt,...)
+\item 
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_aede502dc903184162fbe144c6a29968f}{rpc\+\_\+connection\+\_\+set\+\_\+propertypv} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name, const char $\ast$fmt, va\+\_\+list ap)
+\item 
 int \hyperlink{connection_8h_a4fe29725255d1cbfcfec6e719e7023df}{rpc\+\_\+connection\+\_\+send\+\_\+event} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
 int \hyperlink{connection_8h_a2d9343c2c38625f9659358e0710ed0c7}{rpc\+\_\+connection\+\_\+ping} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
@@ -627,6 +635,30 @@ Closes the connection and frees all resources associated with it.
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on failure 
 \end{DoxyReturn}
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+property@{rpc\+\_\+connection\+\_\+get\+\_\+property}}
+\index{rpc\+\_\+connection\+\_\+get\+\_\+property@{rpc\+\_\+connection\+\_\+get\+\_\+property}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+get\+\_\+property(rpc\+\_\+connection\+\_\+t conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name)}{rpc_connection_get_property(rpc_connection_t conn, const char *path, const char *interface, const char *name)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+get\+\_\+property (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
+\item[{const char $\ast$}]{path, }
+\item[{const char $\ast$}]{interface, }
+\item[{const char $\ast$}]{name}
+\end{DoxyParamCaption}
+)}\hypertarget{connection_8h_a87b152a8ef73a75ac770a74283e05dc8}{}\label{connection_8h_a87b152a8ef73a75ac770a74283e05dc8}
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & \\
+\hline
+{\em path} & \\
+\hline
+{\em interface} & \\
+\hline
+{\em name} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address}}
 \index{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address}!connection.\+h@{connection.\+h}}
 \subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address(rpc\+\_\+connection\+\_\+t conn)}{rpc_connection_get_remote_address(rpc_connection_t conn)}}]{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address (
@@ -794,6 +826,93 @@ Sets global event handler for a connection.
 {\em handler} & Handler block \\
 \hline
 \end{DoxyParams}
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+set\+\_\+property@{rpc\+\_\+connection\+\_\+set\+\_\+property}}
+\index{rpc\+\_\+connection\+\_\+set\+\_\+property@{rpc\+\_\+connection\+\_\+set\+\_\+property}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+set\+\_\+property(rpc\+\_\+connection\+\_\+t conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name, rpc\+\_\+object\+\_\+t value)}{rpc_connection_set_property(rpc_connection_t conn, const char *path, const char *interface, const char *name, rpc_object_t value)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+set\+\_\+property (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
+\item[{const char $\ast$}]{path, }
+\item[{const char $\ast$}]{interface, }
+\item[{const char $\ast$}]{name, }
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{value}
+\end{DoxyParamCaption}
+)}\hypertarget{connection_8h_a6fa1783ffe617c0c0342d365ad9c28fa}{}\label{connection_8h_a6fa1783ffe617c0c0342d365ad9c28fa}
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & \\
+\hline
+{\em path} & \\
+\hline
+{\em interface} & \\
+\hline
+{\em name} & \\
+\hline
+{\em value} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+set\+\_\+propertyp@{rpc\+\_\+connection\+\_\+set\+\_\+propertyp}}
+\index{rpc\+\_\+connection\+\_\+set\+\_\+propertyp@{rpc\+\_\+connection\+\_\+set\+\_\+propertyp}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+set\+\_\+propertyp(rpc\+\_\+connection\+\_\+t conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name, const char $\ast$fmt,...)}{rpc_connection_set_propertyp(rpc_connection_t conn, const char *path, const char *interface, const char *name, const char *fmt,...)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+set\+\_\+propertyp (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
+\item[{const char $\ast$}]{path, }
+\item[{const char $\ast$}]{interface, }
+\item[{const char $\ast$}]{name, }
+\item[{const char $\ast$}]{fmt, }
+\item[{}]{...}
+\end{DoxyParamCaption}
+)}\hypertarget{connection_8h_aae34b6e1d7bffb1d6af187b1d893affa}{}\label{connection_8h_aae34b6e1d7bffb1d6af187b1d893affa}
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & \\
+\hline
+{\em path} & \\
+\hline
+{\em interface} & \\
+\hline
+{\em name} & \\
+\hline
+{\em fmt} & \\
+\hline
+{\em ...} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+set\+\_\+propertypv@{rpc\+\_\+connection\+\_\+set\+\_\+propertypv}}
+\index{rpc\+\_\+connection\+\_\+set\+\_\+propertypv@{rpc\+\_\+connection\+\_\+set\+\_\+propertypv}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+set\+\_\+propertypv(rpc\+\_\+connection\+\_\+t conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name, const char $\ast$fmt, va\+\_\+list ap)}{rpc_connection_set_propertypv(rpc_connection_t conn, const char *path, const char *interface, const char *name, const char *fmt, va_list ap)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+set\+\_\+propertypv (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+connection\+\_\+t}}]{conn, }
+\item[{const char $\ast$}]{path, }
+\item[{const char $\ast$}]{interface, }
+\item[{const char $\ast$}]{name, }
+\item[{const char $\ast$}]{fmt, }
+\item[{va\+\_\+list}]{ap}
+\end{DoxyParamCaption}
+)}\hypertarget{connection_8h_aede502dc903184162fbe144c6a29968f}{}\label{connection_8h_aede502dc903184162fbe144c6a29968f}
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & \\
+\hline
+{\em path} & \\
+\hline
+{\em interface} & \\
+\hline
+{\em name} & \\
+\hline
+{\em fmt} & \\
+\hline
+{\em ap} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+subscribe\+\_\+event@{rpc\+\_\+connection\+\_\+subscribe\+\_\+event}}
 \index{rpc\+\_\+connection\+\_\+subscribe\+\_\+event@{rpc\+\_\+connection\+\_\+subscribe\+\_\+event}!connection.\+h@{connection.\+h}}
 \subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+subscribe\+\_\+event(rpc\+\_\+connection\+\_\+t conn, const char $\ast$path, const char $\ast$interface, const char $\ast$name)}{rpc_connection_subscribe_event(rpc_connection_t conn, const char *path, const char *interface, const char *name)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+connection\+\_\+subscribe\+\_\+event (
