@@ -120,7 +120,7 @@ typedef rpc_object_t (^rpc_dictionary_mapper_t)(const char *key,
  *
  * @param o1 A value.
  * @param o2 A value to compare with.
- * @return Negative value if a < b ; zero if a = b ; positive value if a > b.
+ * @return Negative value if a < b; zero if a = b; positive value if a > b.
  */
 typedef int (^rpc_array_cmp_t)(rpc_object_t o1, rpc_object_t o2);
 

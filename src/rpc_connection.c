@@ -248,7 +248,9 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	call = g_malloc0(sizeof(*call));
 	call->ric_conn = conn;
 	call->ric_id = id;
-	call->ric_args = rpc_dictionary_get_value(args, "args");
+	call->ric_args = rpc_dictionary_has_key(args, "args")
+	    ? rpc_dictionary_get_value(args, "args")
+	    : rpc_array_create();
 	call->ric_name = rpc_dictionary_get_string(args, "method");
 	call->ric_interface = rpc_dictionary_get_string(args, "interface");
 	call->ric_path = rpc_dictionary_get_string(args, "path");
