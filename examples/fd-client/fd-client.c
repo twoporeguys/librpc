@@ -57,7 +57,8 @@ main(int argc, const char *argv[])
 	}
 
 	conn = rpc_client_get_connection(client);
-	result = rpc_connection_call_sync(conn, "write_to_pipe", rpc_fd_create(fds[1]), NULL);
+	result = rpc_connection_call_sync(conn, NULL, NULL, "write_to_pipe",
+	    rpc_fd_create(fds[1]), NULL);
 	printf("result = %s\n", rpc_string_get_string_ptr(result));
 	rpc_release(result);
 
