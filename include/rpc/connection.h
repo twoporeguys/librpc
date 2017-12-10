@@ -293,6 +293,60 @@ rpc_call_t rpc_connection_call(rpc_connection_t conn, const char *path,
     rpc_callback_t callback);
 
 /**
+ *
+ * @param conn
+ * @param path
+ * @param interface
+ * @param name
+ * @return
+ */
+rpc_object_t rpc_connection_get_property(rpc_connection_t conn,
+    const char *path, const char *interface, const char *name);
+
+/**
+ *
+ * @param conn
+ * @param path
+ * @param interface
+ * @param name
+ * @param value
+ * @return
+ */
+rpc_object_t rpc_connection_set_property(rpc_connection_t conn,
+    const char *path, const char *interface, const char *name,
+    rpc_object_t value);
+
+
+/**
+ *
+ * @param conn
+ * @param path
+ * @param interface
+ * @param name
+ * @param fmt
+ * @param ...
+ * @return
+ */
+rpc_object_t rpc_connection_set_propertyp(rpc_connection_t conn,
+    const char *path, const char *interface, const char *name,
+    const char *fmt, ...);
+
+/**
+ *
+ * @param conn
+ * @param path
+ * @param interface
+ * @param name
+ * @param fmt
+ * @param ap
+ * @return
+ */
+rpc_object_t rpc_connection_set_propertypv(rpc_connection_t conn,
+    const char *path, const char *interface, const char *name,
+    const char *fmt, va_list ap);
+
+
+/**
  * Sends an event.
  *
  * @param conn Connection to send event across

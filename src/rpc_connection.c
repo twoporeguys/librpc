@@ -1134,6 +1134,51 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	return (call);
 }
 
+rpc_object_t
+rpc_connection_get_property(rpc_connection_t conn, const char *path,
+    const char *interface, const char *name)
+{
+
+	return (rpc_connection_call_syncp(conn, path, RPC_OBSERVABLE_INTERFACE,
+	    "get", "[s,s]", interface, name));
+}
+
+
+rpc_object_t
+rpc_connection_set_property(rpc_connection_t conn, const char *path,
+    const char *interface, const char *name, rpc_object_t value)
+{
+
+	return (rpc_connection_call_syncp(conn, path, RPC_OBSERVABLE_INTERFACE,
+	    "set", "[s,s,v]", interface, name, value));
+}
+
+
+rpc_object_t
+rpc_connection_set_propertyp(rpc_connection_t conn, const char *path,
+    const char *interface, const char *name, const char *fmt, ...)
+{
+	rpc_object_t value;
+	va_list ap;
+
+	va_start(ap, fmt);
+	value = rpc_object_vpack(fmt, ap);
+	va_end(ap);
+
+	return (rpc_connection_set_property(conn, path, interface, name, value));
+}
+
+
+rpc_object_t
+rpc_connection_set_propertypv(rpc_connection_t conn, const char *path,
+    const char *interface, const char *name, const char *fmt, va_list ap)
+{
+	rpc_object_t value;
+
+	value = rpc_object_vpack(fmt, ap);
+	return (rpc_connection_set_property(conn, path, interface, name, value));
+}
+
 int
 rpc_connection_send_event(rpc_connection_t conn, const char *path,
     const char *interface, const char *name, rpc_object_t args)
