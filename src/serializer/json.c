@@ -27,6 +27,7 @@
 
 #include <glib.h>
 #include <string.h>
+#include <errno.h>
 #include <rpc/object.h>
 #include <yajl/yajl_parse.h>
 #include <yajl/yajl_gen.h>
@@ -617,15 +618,18 @@ rpc_json_deserialize(const void *frame, size_t size)
 	handle = yajl_alloc(&callbacks, NULL, (void *) &ctx);
 	if (yajl_parse(handle, (const guchar *)frame, size) != yajl_status_ok) {
 		rpc_release(ctx.result);
+		rpc_set_last_error(EINVAL, "Parse error", NULL);
 		goto end;
 	}
 
-	if (yajl_complete_parse(handle) !=  yajl_status_ok) {
+	if (yajl_complete_parse(handle) != yajl_status_ok) {
 		rpc_release(ctx.result);
+		rpc_set_last_error(EINVAL, "Parse error", NULL);
 		goto end;
 	}
 
-end:	yajl_free(handle);
+end:
+	yajl_free(handle);
 	g_queue_free(ctx.leaf_stack);
 	g_free(ctx.key_buf);
 	return (ctx.result);
