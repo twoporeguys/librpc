@@ -416,7 +416,7 @@
 <para>A value to compare with. </para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>Negative value if a &lt; b ; zero if a = b ; positive value if a &gt; b. </para></simplesect>
+<simplesect kind="return"><para>Negative value if a &lt; b; zero if a = b; positive value if a &gt; b. </para></simplesect>
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
