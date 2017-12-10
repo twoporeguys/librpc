@@ -948,17 +948,18 @@ rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *path,
     const char *interface, const char *name)
 {
 	rpc_object_t frame;
-	rpc_object_t args, str;
+	rpc_object_t args;
 
+	args = rpc_object_pack("{s,s,s}",
+	    "path", path,
+	    "interface", interface,
+	    "name", name);
 
-	str = rpc_string_create(name);
-	args = rpc_array_create_ex(&str, 1, true);
 	frame = rpc_pack_frame("events", "unsubscribe", NULL, args);
 
 	if (rpc_send_frame(conn, frame) != 0)
 		return (-1);
 
-	rpc_release(str);
 	rpc_release(args);
 	return (0);
 }
