@@ -326,6 +326,11 @@ void rpc_connection_set_event_handler(rpc_connection_t conn,
 void rpc_connection_set_error_handler(rpc_connection_t conn,
     rpc_error_handler_t handler);
 
+/**
+ *
+ * @param conn
+ * @return
+ */
 const char *rpc_connection_get_remote_address(rpc_connection_t conn);
 
 /**
