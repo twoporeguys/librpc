@@ -145,11 +145,13 @@ bus_connect(struct rpc_connection *rco, const char *uri_string,
 	conn->bc_parent = rco;
 
 	if (bus_lookup_address(uri->host, &conn->bc_address) != 0) {
+		rpc_set_last_error(ENOENT, "Cannot find device", NULL);
 		g_free(conn);
 		return (-1);
 	}
 
 	if (bus_netlink_open(&conn->bc_bn) != 0) {
+		rpc_set_last_error(EINVAL, "Cannot open device", NULL);
 		g_free(conn);
 		return (-1);
 	}

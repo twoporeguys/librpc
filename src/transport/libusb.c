@@ -282,13 +282,17 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	if (uri->port != 0)
 		conn->uc_handle = usb_find(conn->uc_libusb, NULL, uri->port);
 
-	if (conn->uc_handle == NULL)
+	if (conn->uc_handle == NULL) {
+		rpc_set_last_error(ENOENT, "Cannot find device", NULL);
 		goto error;
+	}
 
 	/* Read the log buffer size */
 	if (usb_xfer(conn->uc_handle, LIBRPC_USB_IDENTIFY, &ident,
-	    sizeof(ident), 500) < 0)
+	    sizeof(ident), 500) < 0) {
+		rpc_set_last_error(EINVAL, "Cannot identify device", NULL);
 		goto error;
+	}
 
 	conn->uc_event_source = g_timeout_source_new(500);
 	g_source_set_callback(conn->uc_event_source, usb_event_impl, conn,

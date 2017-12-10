@@ -115,6 +115,7 @@ ws_connect(struct rpc_connection *rco, const char *uri_string,
 
 	return (0);
 err:
+	rpc_set_last_gerror(conn->wc_connect_err);
 	g_object_unref(conn->wc_session);
 	g_free(conn);
 	return (-1);

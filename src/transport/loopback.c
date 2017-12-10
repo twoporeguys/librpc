@@ -26,6 +26,7 @@
  */
 
 #include <stdlib.h>
+#include <errno.h>
 #include <glib.h>
 #include <libsoup/soup.h>
 #include "../../src/linker_set.h"
@@ -76,13 +77,16 @@ loopback_connect(struct rpc_connection *conn, const char *uri_string,
 	int number;
 
 	uri = soup_uri_new(uri_string);
-	if (uri == NULL)
+	if (uri == NULL) {
+		rpc_set_last_error(EINVAL, "Invalid URI", NULL);
 		return (-1);
+	}
 
 	number = (int)strtoul(uri->host, NULL, 10);
 	chan = g_hash_table_lookup(loopback_channels, GINT_TO_POINTER(number));
 
 	if (chan == NULL) {
+		rpc_set_last_error(ENOENT, "Channel not found", NULL);
 		soup_uri_free(uri);
 		return (-1);
 	}

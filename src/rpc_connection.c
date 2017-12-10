@@ -810,7 +810,7 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	g_free(scheme);
 
 	if (transport == NULL) {
-		errno = ENXIO;
+		rpc_set_last_error(ENXIO, "Transport not found", NULL);
 		goto fail;
 	}
 
