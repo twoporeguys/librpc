@@ -195,13 +195,6 @@ struct rpc_if_member {
 	};
 };
 
-struct rpc_interface
-{
-	const char *		ri_name;
-	const char *		ri_description;
-	struct rpc_if_member	ri_members[];
-};
-
 /**
  * Creates a new RPC context.
  *
@@ -463,7 +456,7 @@ const char *rpc_instance_get_path(rpc_instance_t instance);
  * @param fn
  */
 int rpc_instance_register_interface(rpc_instance_t instance,
-    const struct rpc_interface *iface, void *arg);
+    const char *interface, const struct rpc_if_member *vtable, void *arg);
 
 /**
  *

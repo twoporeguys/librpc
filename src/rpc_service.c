@@ -45,35 +45,26 @@ static rpc_object_t rpc_observable_property_get(void *cookie, rpc_object_t args)
 static rpc_object_t rpc_observable_property_get_all(void *cookie, rpc_object_t args);
 static rpc_object_t rpc_observable_property_set(void *cookie, rpc_object_t args);
 
-struct rpc_interface rpc_discoverable_if = {
-	.ri_name = RPC_DISCOVERABLE_INTERFACE,
-	.ri_members = {
-		RPC_EVENT(instance_added),
-		RPC_EVENT(instance_removed),
-		RPC_METHOD(get_instances, rpc_get_objects),
-		RPC_MEMBER_END
-	}
+static const struct rpc_if_member rpc_discoverable_vtable[] = {
+	RPC_EVENT(instance_added),
+	RPC_EVENT(instance_removed),
+	RPC_METHOD(get_instances, rpc_get_objects),
+	RPC_MEMBER_END
 };
 
-struct rpc_interface rpc_introspectable_if = {
-	.ri_name = RPC_INTROSPECTABLE_INTERFACE,
-	.ri_members = {
-		RPC_METHOD(get_interfaces, rpc_get_interfaces),
-		RPC_METHOD(get_methods, rpc_get_methods),
-		RPC_METHOD(interface_exists, rpc_interface_exists),
-		RPC_MEMBER_END
-	}
+static const struct rpc_if_member rpc_introspectable_vtable[] = {
+	RPC_METHOD(get_interfaces, rpc_get_interfaces),
+	RPC_METHOD(get_methods, rpc_get_methods),
+	RPC_METHOD(interface_exists, rpc_interface_exists),
+	RPC_MEMBER_END
 };
 
-struct rpc_interface rpc_observable_if = {
-	.ri_name = RPC_OBSERVABLE_INTERFACE,
-	.ri_members = {
-		RPC_EVENT(changed),
-		RPC_METHOD(get, rpc_observable_property_get),
-		RPC_METHOD(get_all, rpc_observable_property_get_all),
-		RPC_METHOD(set, rpc_observable_property_set),
-		RPC_MEMBER_END
-	}
+static const struct rpc_if_member rpc_observable_vtable[] = {
+	RPC_EVENT(changed),
+	RPC_METHOD(get, rpc_observable_property_get),
+	RPC_METHOD(get_all, rpc_observable_property_get_all),
+	RPC_METHOD(set, rpc_observable_property_set),
+	RPC_MEMBER_END
 };
 
 static void
@@ -130,7 +121,9 @@ rpc_context_create(void)
 	result->rcx_threadpool = g_thread_pool_new(rpc_context_tp_handler,
 	    result, g_get_num_processors() * 4, true, &err);
 
-	rpc_instance_register_interface(result->rcx_root, &rpc_discoverable_if, NULL);
+	rpc_instance_register_interface(result->rcx_root,
+	    RPC_DISCOVERABLE_INTERFACE, rpc_discoverable_vtable, NULL);
+
 	rpc_context_register_instance(result, result->rcx_root);
 	return (result);
 }
@@ -467,7 +460,9 @@ rpc_instance_new(const char *fmt, ...)
 	result->ri_interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 	result->ri_arg = arg;
 
-	rpc_instance_register_interface(result, &rpc_introspectable_if, NULL);
+	rpc_instance_register_interface(result, RPC_INTROSPECTABLE_INTERFACE,
+	    rpc_introspectable_vtable, NULL);
+
 	return (result);
 }
 
@@ -519,7 +514,7 @@ rpc_instance_has_interface(rpc_instance_t instance, const char *interface)
 
 int
 rpc_instance_register_interface(rpc_instance_t instance,
-    const struct rpc_interface *iface, void *arg)
+    const char *interface, const struct rpc_if_member *vtable, void *arg)
 {
 	struct rpc_interface_priv *priv;
 	const struct rpc_if_member *member;
@@ -527,14 +522,15 @@ rpc_instance_register_interface(rpc_instance_t instance,
 	priv = g_malloc0(sizeof(*priv));
 	g_mutex_init(&priv->rip_mtx);
 	priv->rip_members = g_hash_table_new(g_str_hash, g_str_equal);
-	priv->rip_name = g_strdup(iface->ri_name != NULL ? iface->ri_name : "");
-	priv->rip_description = g_strdup(iface->ri_description);
 	priv->rip_arg = arg;
+	priv->rip_name = g_strdup(interface != NULL
+	    ? interface
+	    : "com.twoporeguys.librpc.Default");
 
-	g_hash_table_insert(instance->ri_interfaces, g_strdup(iface->ri_name), priv);
+	g_hash_table_insert(instance->ri_interfaces, priv->rip_name, priv);
 
-	for (member = &iface->ri_members[0]; member->rim_name != NULL; member++)
-		rpc_instance_register_member(instance, iface->ri_name, member);
+	for (member = &vtable[0]; member->rim_name != NULL; member++)
+		rpc_instance_register_member(instance, interface, member);
 
 	return (0);
 }
@@ -577,11 +573,15 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 			copy->rim_property.rp_arg = priv->rip_arg;
 
 		/* Install Observable interface if needed */
-		if (!rpc_instance_has_interface(instance, "librpc.Observable"))
-			rpc_instance_register_interface(instance, &rpc_observable_if, NULL);
+		if (!rpc_instance_has_interface(instance,
+		    RPC_OBSERVABLE_INTERFACE)) {
+			rpc_instance_register_interface(instance,
+			    RPC_OBSERVABLE_INTERFACE, rpc_observable_vtable,
+			    NULL);
+		}
 
 		/* Emit property added event */
-		rpc_instance_emit_event(instance, "librpc.Observable",
+		rpc_instance_emit_event(instance, RPC_OBSERVABLE_INTERFACE,
 		    "property_added", rpc_object_pack("{s,b,b}",
 		        "name", member->rim_name,
 		        "readable", member->rim_property.rp_getter != NULL,
