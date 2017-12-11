@@ -149,6 +149,9 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 	if (call->ric_path == NULL)
 		instance = context->rcx_root;
 
+	if (call->ric_interface == NULL)
+		call->ric_interface = RPC_DEFAULT_INTERFACE;
+
 	if (instance == NULL)
 		instance = rpc_context_find_instance(context, call->ric_path);
 
