@@ -36,11 +36,11 @@
 #include <rpc/service.h>
 #include <rpc/serializer.h>
 
-static int cmd_tree(int argc, const char *argv[]);
-static int cmd_inspect(int argc, const char *argv[]);
-static int cmd_call(int argc, const char *argv[]);
-static int cmd_get(int argc, const char *argv[]);
-static int cmd_set(int argc, const char *argv[]);
+static int cmd_tree(int argc, char *argv[]);
+static int cmd_inspect(int argc, char *argv[]);
+static int cmd_call(int argc, char *argv[]);
+static int cmd_get(int argc, char *argv[]);
+static int cmd_set(int argc, char *argv[]);
 
 static const char *server;
 static char **args;
@@ -49,14 +49,14 @@ static bool yaml;
 
 static struct {
 	const char *name;
-	int (*fn)(int argc, const char *argv[]);
+	int (*fn)(int argc, char *argv[]);
 } commands[] = {
 	{ "tree", cmd_tree },
 	{ "inspect", cmd_inspect },
 	{ "call", cmd_call },
 	{ "get", cmd_get },
 	{ "set", cmd_set },
-	{ NULL}
+	{ }
 };
 
 static GOptionEntry options[] = {
@@ -64,7 +64,7 @@ static GOptionEntry options[] = {
 	{ "json", 'j', 0, G_OPTION_ARG_NONE, &json, "JSON output", NULL },
 	{ "yaml", 'y', 0, G_OPTION_ARG_NONE, &yaml, "YAML output", NULL },
 	{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args, "", NULL },
-	{ NULL }
+	{ }
 };
 
 static rpc_connection_t
@@ -118,7 +118,7 @@ output(rpc_object_t obj)
 }
 
 static int
-cmd_tree(int argc, const char *argv[])
+cmd_tree(int argc, char *argv[])
 {
 	rpc_call_t call;
 	rpc_object_t tree;
@@ -177,13 +177,14 @@ error:
 }
 
 static int
-cmd_inspect(int argc, const char *argv[])
+cmd_inspect(int argc, char *argv[])
 {
 
+	return (0);
 }
 
 static int
-cmd_call(int argc, const char *argv[])
+cmd_call(int argc, char *argv[])
 {
 	rpc_connection_t conn;
 	rpc_call_t call;
@@ -238,19 +239,51 @@ done:
 }
 
 static int
-cmd_get(int argc, const char *argv[])
+cmd_get(int argc, char *argv[])
 {
+	rpc_connection_t conn;
+	rpc_object_t result;
 
+	if (argc != 3) {
+
+	}
+
+	conn = connect();
+	result = rpc_connection_get_property(conn, argv[0], argv[1], argv[2]);
+	output(result);
+
+	return (rpc_is_error(result) ? 1 : 0);
 }
 
 static int
-cmd_set(int argc, const char *argv[])
+cmd_set(int argc, char *argv[])
 {
+	rpc_connection_t conn;
+	rpc_object_t value;
+	rpc_object_t result;
 
+	if (argc != 4) {
+
+	}
+
+	value = rpc_serializer_load("json", argv[3], strlen(argv[3]));
+	if (value == NULL) {
+		output(rpc_get_last_error());
+		return (1);
+	}
+
+	conn = connect();
+	result = rpc_connection_set_property(conn, argv[0], argv[1], argv[2],
+	    value);
+
+	if (result != NULL && rpc_is_error(result))
+		output(result);
+
+	return (rpc_is_error(result) ? 1 : 0);
 }
 
 int
-main(int argc, const char *argv[])
+main(int argc, char *argv[])
 {
 	GError *err = NULL;
 	GOptionContext *context;
@@ -265,7 +298,8 @@ main(int argc, const char *argv[])
 	}
 
 	if (args == NULL) {
-		fprintf(stderr, "No command specified. Use \"rpctool -h\" to see help.\n");
+		fprintf(stderr, "No command specified. Use \"rpctool -h\" to "
+		    "get help.\n");
 		return (1);
 	}
 
@@ -277,6 +311,7 @@ main(int argc, const char *argv[])
 			return (commands[i].fn(nargs - 1, args + 1));
 	}
 
-	fprintf(stderr, "Command %s not found, use \"rpctool -h\" to see help\n", cmd);
+	fprintf(stderr, "Command %s not found, use \"rpctool -h\" to "
+	    "get help\n", cmd);
 	return (1);
 }
