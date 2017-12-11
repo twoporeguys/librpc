@@ -351,10 +351,19 @@ rpc_object_unpack_layer(rpc_object_t branch, const char *fmt, int fmt_cnt,
 				i = i + (int)(search_ptr - &fmt[i]);
 			}
 
+			if (current == NULL) {
+				va_arg(ap, void *);
+				if (ch == 'B')
+					va_arg(ap, void *);
+				continue;
+			}
+
 		}
 
-		if (current == NULL) {
+		if (!is_container && (current == NULL)) {
 			va_arg(ap, void *);
+			if (ch == 'B')
+				va_arg(ap, void *);
 			continue;
 		}
 
