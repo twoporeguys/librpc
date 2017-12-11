@@ -257,7 +257,7 @@ rpc_context_unregister_instance(rpc_context_t context, const char *path)
 }
 
 int
-rpc_context_register_member(rpc_context_t context const char *interface,
+rpc_context_register_member(rpc_context_t context, const char *interface,
     struct rpc_if_member *m)
 {
 
