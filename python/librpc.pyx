@@ -810,14 +810,9 @@ cdef class Instance(object):
         self.instance = rpc_instance_new(b_path, b_description, NULL)
         self.properties = []
 
-    def register_interface(self, interface, description=None):
-        cdef rpc_interface iface
-
+    def register_interface(self, interface):
         b_interface = interface.encode('utf-8')
-        iface.ri_name = b_interface
-        iface.ri_description = ""
-        iface.ri_members[0].rim_name = NULL
-        if rpc_instance_register_interface(self.instance, &iface, <void *>self) != 0:
+        if rpc_instance_register_interface(self.instance, b_interface, NULL, <void *>self) != 0:
             raise_internal_exc()
 
     def register_method(self, interface, name, fn):

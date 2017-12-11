@@ -186,11 +186,6 @@ cdef extern from "rpc/service.h" nogil:
     cdef struct rpc_if_member:
         const char *rim_name
 
-    cdef struct rpc_interface:
-        const char *ri_name
-        const char *ri_description
-        rpc_if_member ri_members[0]
-
     ctypedef struct rpc_context_t:
         pass
 
@@ -218,7 +213,7 @@ cdef extern from "rpc/service.h" nogil:
     rpc_instance_t rpc_instance_new(const char *path, const char *descr, void *arg)
     void *rpc_instance_get_arg(rpc_instance_t instance)
     const char *rpc_instance_get_path(rpc_instance_t instance)
-    int rpc_instance_register_interface(rpc_instance_t instance, const rpc_interface *iface, void *arg)
+    int rpc_instance_register_interface(rpc_instance_t instance, const char *interface, rpc_if_member *vtable, void *arg)
     int rpc_instance_register_method(rpc_instance_t instance, const char *interface,
         const char *name, void *arg, void *fn)
     int rpc_instance_register_func(rpc_instance_t instance, const char *interface,

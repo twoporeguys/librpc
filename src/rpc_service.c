@@ -529,6 +529,9 @@ rpc_instance_register_interface(rpc_instance_t instance,
 
 	g_hash_table_insert(instance->ri_interfaces, priv->rip_name, priv);
 
+	if (vtable == NULL)
+		return (0);
+
 	for (member = &vtable[0]; member->rim_name != NULL; member++)
 		rpc_instance_register_member(instance, interface, member);
 
