@@ -44,7 +44,7 @@ main(int argc, const char *argv[])
 
 	ctx = rpc_context_create();
 
-	rpc_context_register_block(ctx, "hello", "", NULL,
+	rpc_context_register_block(ctx, NULL, "hello", NULL,
 	    ^(void *cookie, rpc_object_t args) {
 	    	return rpc_string_create("world");
 	});
