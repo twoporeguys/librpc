@@ -262,8 +262,8 @@ int rpc_context_register_member(rpc_context_t context, struct rpc_if_member *m);
  * @param func RPC method block.
  * @return Status.
  */
-int rpc_context_register_block(rpc_context_t context, const char *name,
-    const char *descr, void *arg, rpc_function_t func);
+int rpc_context_register_block(rpc_context_t context, const char *interface,
+    const char *name, void *arg, rpc_function_t func);
 
 /**
  * Registers a given function as a RPC method for a given context.
@@ -275,8 +275,8 @@ int rpc_context_register_block(rpc_context_t context, const char *name,
  * @param func RPC method function
  * @return Status.
  */
-int rpc_context_register_func(rpc_context_t context, const char *name,
-    const char *descr, void *arg, rpc_function_f func);
+int rpc_context_register_func(rpc_context_t context, const char *interface,
+    const char *name, void *arg, rpc_function_f func);
 
 /**
  * Unregisters a given RPC method.

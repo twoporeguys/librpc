@@ -270,14 +270,14 @@ rpc_context_register_block(rpc_context_t context, const char *interface,
 }
 
 int
-rpc_context_register_func(rpc_context_t context, const char *name,
-    const char *descr, void *arg, rpc_function_f func)
+rpc_context_register_func(rpc_context_t context, const char *interface,
+    const char *name, void *arg, rpc_function_f func)
 {
 	rpc_function_t fn = ^(void *cookie, rpc_object_t args) {
 		return (func(cookie, args));
 	};
 
-	return (rpc_context_register_block(context, name, descr, arg, fn));
+	return (rpc_context_register_block(context, interface, name, arg, fn));
 }
 
 int
@@ -543,6 +543,12 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 {
 	struct rpc_interface_priv *priv;
 	struct rpc_if_member *copy;
+
+	if (interface == NULL) {
+		interface = RPC_DEFAULT_INTERFACE;
+		rpc_instance_register_interface(instance,
+		    interface, NULL, NULL);
+	}
 
 	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
 	if (priv == NULL) {
