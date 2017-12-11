@@ -525,7 +525,7 @@ rpc_instance_register_interface(rpc_instance_t instance,
 	priv->rip_arg = arg;
 	priv->rip_name = g_strdup(interface != NULL
 	    ? interface
-	    : "com.twoporeguys.librpc.Default");
+	    : RPC_DEFAULT_INTERFACE);
 
 	g_hash_table_insert(instance->ri_interfaces, priv->rip_name, priv);
 

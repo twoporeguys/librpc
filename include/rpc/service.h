@@ -47,6 +47,7 @@ extern "C" {
 #define	RPC_DISCOVERABLE_INTERFACE	"com.twoporeguys.librpc.Discoverable"
 #define	RPC_INTROSPECTABLE_INTERFACE	"com.twoporeguys.librpc.Introspectable"
 #define	RPC_OBSERVABLE_INTERFACE	"com.twoporeguys.librpc.Observable"
+#define	RPC_DEFAULT_INTERFACE		"com.twoporeguys.librpc.Default"
 
 /**
  * RPC context structure definition.
