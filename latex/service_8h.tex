@@ -113,7 +113,7 @@ int \hyperlink{service_8h_a2cb77d1cf1cc6cc22ce7f620f434c1d3}{rpc\+\_\+context\+\
 \item 
 void \hyperlink{service_8h_ab99b0f2ed56026d6eff48b05fea7f95e}{rpc\+\_\+context\+\_\+unregister\+\_\+instance} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$path)
 \item 
-int \hyperlink{service_8h_a64166c1ba658b15d9764008a7a6f9c49}{rpc\+\_\+context\+\_\+register\+\_\+member} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member} $\ast$m)
+int \hyperlink{service_8h_a05121bbbb6c5d37da3742811b9ed4fa0}{rpc\+\_\+context\+\_\+register\+\_\+member} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$interface, struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member} $\ast$m)
 \item 
 int \hyperlink{service_8h_a96063ed4919011bfcc1a6364dbae38c1}{rpc\+\_\+context\+\_\+register\+\_\+block} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$interface, const char $\ast$name, void $\ast$arg, \hyperlink{service_8h_a02d3dbd723de9bd5140887c9935ff05a}{rpc\+\_\+function\+\_\+t} func)
 \item 
@@ -569,12 +569,13 @@ Registers a new object under context\textquotesingle{}s object tree.
 \end{DoxyReturn}
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+register\+\_\+member@{rpc\+\_\+context\+\_\+register\+\_\+member}}
 \index{rpc\+\_\+context\+\_\+register\+\_\+member@{rpc\+\_\+context\+\_\+register\+\_\+member}!service.\+h@{service.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+context\+\_\+register\+\_\+member(rpc\+\_\+context\+\_\+t context, struct rpc\+\_\+if\+\_\+member $\ast$m)}{rpc_context_register_member(rpc_context_t context, struct rpc_if_member *m)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+context\+\_\+register\+\_\+member (
+\subsubsection[{\texorpdfstring{rpc\+\_\+context\+\_\+register\+\_\+member(rpc\+\_\+context\+\_\+t context, const char $\ast$interface, struct rpc\+\_\+if\+\_\+member $\ast$m)}{rpc_context_register_member(rpc_context_t context, const char *interface, struct rpc_if_member *m)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+context\+\_\+register\+\_\+member (
 \begin{DoxyParamCaption}
 \item[{{\bf rpc\+\_\+context\+\_\+t}}]{context, }
+\item[{const char $\ast$}]{interface, }
 \item[{struct {\bf rpc\+\_\+if\+\_\+member} $\ast$}]{m}
 \end{DoxyParamCaption}
-)}\hypertarget{service_8h_a64166c1ba658b15d9764008a7a6f9c49}{}\label{service_8h_a64166c1ba658b15d9764008a7a6f9c49}
+)}\hypertarget{service_8h_a05121bbbb6c5d37da3742811b9ed4fa0}{}\label{service_8h_a05121bbbb6c5d37da3742811b9ed4fa0}
 Registers a given rpc\+\_\+method structure as an R\+PC method in a given context.
 
 

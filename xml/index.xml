@@ -313,7 +313,7 @@
     <member refid="service_8h_1a9b55b5c3cd7c1f3de1755f8b287ee6db" kind="function"><name>rpc_context_get_root</name></member>
     <member refid="service_8h_1a2cb77d1cf1cc6cc22ce7f620f434c1d3" kind="function"><name>rpc_context_register_instance</name></member>
     <member refid="service_8h_1ab99b0f2ed56026d6eff48b05fea7f95e" kind="function"><name>rpc_context_unregister_instance</name></member>
-    <member refid="service_8h_1a64166c1ba658b15d9764008a7a6f9c49" kind="function"><name>rpc_context_register_member</name></member>
+    <member refid="service_8h_1a05121bbbb6c5d37da3742811b9ed4fa0" kind="function"><name>rpc_context_register_member</name></member>
     <member refid="service_8h_1a96063ed4919011bfcc1a6364dbae38c1" kind="function"><name>rpc_context_register_block</name></member>
     <member refid="service_8h_1ac06980168dfbfa6246dece62378a032f" kind="function"><name>rpc_context_register_func</name></member>
     <member refid="service_8h_1a26f714ff6f48eebc62cb0b6eef611e90" kind="function"><name>rpc_context_unregister_member</name></member>

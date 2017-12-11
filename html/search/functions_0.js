@@ -85,7 +85,7 @@ var searchData=
   ['rpc_5fcontext_5fregister_5fblock',['rpc_context_register_block',['../service_8h.html#a96063ed4919011bfcc1a6364dbae38c1',1,'service.h']]],
   ['rpc_5fcontext_5fregister_5ffunc',['rpc_context_register_func',['../service_8h.html#ac06980168dfbfa6246dece62378a032f',1,'service.h']]],
   ['rpc_5fcontext_5fregister_5finstance',['rpc_context_register_instance',['../service_8h.html#a2cb77d1cf1cc6cc22ce7f620f434c1d3',1,'service.h']]],
-  ['rpc_5fcontext_5fregister_5fmember',['rpc_context_register_member',['../service_8h.html#a64166c1ba658b15d9764008a7a6f9c49',1,'service.h']]],
+  ['rpc_5fcontext_5fregister_5fmember',['rpc_context_register_member',['../service_8h.html#a05121bbbb6c5d37da3742811b9ed4fa0',1,'service.h']]],
   ['rpc_5fcontext_5fset_5fpost_5fcall_5fhook',['rpc_context_set_post_call_hook',['../service_8h.html#a36c5dae2cc75f5d4a740c5db25e25d7a',1,'service.h']]],
   ['rpc_5fcontext_5fset_5fpre_5fcall_5fhook',['rpc_context_set_pre_call_hook',['../service_8h.html#ad1c0c9c7897adf4ad5e7ee9c40e545b8',1,'service.h']]],
   ['rpc_5fcontext_5funregister_5finstance',['rpc_context_unregister_instance',['../service_8h.html#ab99b0f2ed56026d6eff48b05fea7f95e',1,'service.h']]],
