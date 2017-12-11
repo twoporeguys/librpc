@@ -372,11 +372,13 @@ rpc_yaml_write_object(yaml_emitter_t *emitter, rpc_object_t object)
 			    YAML_ANY_SCALAR_STYLE);
 			if (status != 1)
 				break;
+
 			status = yaml_emitter_emit(emitter, &event);
 			if (status != 1)
 				break;
 
-			status = rpc_yaml_write_object(emitter, object);
+			status = rpc_yaml_write_object(emitter,
+			    rpc_error_get_extra(object));
 			if (status != 1)
 				break;
 		}
