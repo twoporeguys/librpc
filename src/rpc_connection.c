@@ -1116,21 +1116,17 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	g_hash_table_insert(conn->rco_calls,
 	    (gpointer)rpc_string_get_string_ptr(call->rc_id), call);
 
-	if (rpc_send_frame(conn, frame) != 0) {
-		g_mutex_unlock(&call->rc_mtx);
-		rpc_call_destroy(call);
-		rpc_release(payload);
-		return (NULL);
-	}
-
-	rpc_release(payload);
-
+	call->rc_status = RPC_CALL_IN_PROGRESS;
 	call->rc_timeout = g_timeout_source_new_seconds(conn->rco_rpc_timeout);
 	g_source_set_callback(call->rc_timeout, &rpc_call_timeout, call, NULL);
 	g_source_attach(call->rc_timeout, conn->rco_client->rci_g_context);
-
-	call->rc_status = RPC_CALL_IN_PROGRESS;
 	g_mutex_unlock(&call->rc_mtx);
+
+	if (rpc_send_frame(conn, frame) != 0) {
+		g_mutex_unlock(&call->rc_mtx);
+		return (NULL);
+	}
+
 	return (call);
 }
 
