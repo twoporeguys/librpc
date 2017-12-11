@@ -97,7 +97,7 @@ main(int argc, const char *argv[])
 	}
 
 	conn = rpc_client_get_connection(client);
-	result = rpc_connection_call_simple(conn, "hello", "[sibv]",
+	result = rpc_connection_call_simple(conn, "hello", "[s,i,b,v]",
 	    "world", 123, true,
 	    rpc_dictionary_create_ex(keys, values, 1, true));
 
