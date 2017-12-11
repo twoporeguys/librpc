@@ -66,9 +66,8 @@ main(int argc, const char *argv[])
 	(void)argv;
 
 	ctx = rpc_context_create();
-	rpc_context_register_func(ctx, "exchange_blob", "Exchanges binary blob",
-	    NULL, &exchange_blob);
-
+	rpc_context_register_func(ctx, NULL, "exchange_blob", NULL,
+	    exchange_blob);
 	srv = rpc_server_create("unix:///tmp/server.sock", ctx);
 	pause();
 }

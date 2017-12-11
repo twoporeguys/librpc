@@ -64,9 +64,8 @@ main(int argc, const char *argv[])
 	(void)argv;
 
 	ctx = rpc_context_create();
-	rpc_context_register_func(ctx, "write_to_pipe", "Writes to a pipe",
-	    NULL, &write_to_pipe);
-
+	rpc_context_register_func(ctx, NULL, "write_to_pipe", NULL,
+	    write_to_pipe);
 	srv = rpc_server_create("unix:///tmp/server.sock", ctx);
 	pause();
 }

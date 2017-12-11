@@ -53,21 +53,21 @@ main(int argc, const char *argv[])
 	(void)argv;
 
 	ctx = rpc_context_create();
-	rpc_context_register_func(ctx, "hello", "Hello world function",
+	rpc_context_register_func(ctx, NULL, "hello",
 	    NULL, hello);
 
-	rpc_context_register_block(ctx, "block", "Test function using blocks",
+	rpc_context_register_block(ctx, NULL, "block",
 	    NULL, ^(void *cookie __unused, rpc_object_t args __unused) {
 		return (rpc_string_create("haha lol"));
 	    });
 
-	rpc_context_register_block(ctx, "delay", "Sleeps for a long time",
+	rpc_context_register_block(ctx, NULL, "delay",
 	    NULL, ^(void *cookie __unused, rpc_object_t args __unused) {
 		sleep(60);
 		return (rpc_int64_create(42));
 	    });
 
-	rpc_context_register_block(ctx, "event", "Sends a bunch of events",
+	rpc_context_register_block(ctx, NULL, "event",
 	    NULL, ^(void *cookie __unused, rpc_object_t args __unused) {
 		rpc_server_broadcast_event(srv, NULL, NULL, "server.hello",
 		    rpc_string_create("world"));
