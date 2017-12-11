@@ -250,7 +250,8 @@ void rpc_context_unregister_instance(rpc_context_t context, const char *path);
  * @param m RPC method structure.
  * @return Status.
  */
-int rpc_context_register_member(rpc_context_t context, struct rpc_if_member *m);
+int rpc_context_register_member(rpc_context_t context, const char *interface,
+    struct rpc_if_member *m);
 
 /**
  * Registers a given block as a RPC method for a given context.

@@ -257,10 +257,11 @@ rpc_context_unregister_instance(rpc_context_t context, const char *path)
 }
 
 int
-rpc_context_register_member(rpc_context_t context, struct rpc_if_member *m)
+rpc_context_register_member(rpc_context_t context const char *interface,
+    struct rpc_if_member *m)
 {
 
-	return (rpc_instance_register_member(context->rcx_root, "", m));
+	return (rpc_instance_register_member(context->rcx_root, interface, m));
 }
 
 int
@@ -500,8 +501,7 @@ rpc_instance_find_member(rpc_instance_t instance, const char *interface,
 {
 	struct rpc_interface_priv *iface;
 
-	iface = g_hash_table_lookup(instance->ri_interfaces,
-	    interface != NULL ? interface : "");
+	iface = g_hash_table_lookup(instance->ri_interfaces, interface);
 	if (iface == NULL)
 		return (NULL);
 
@@ -522,13 +522,14 @@ rpc_instance_register_interface(rpc_instance_t instance,
 	struct rpc_interface_priv *priv;
 	const struct rpc_if_member *member;
 
+	if (rpc_instance_has_interface(instance, interface))
+		return (0);
+
 	priv = g_malloc0(sizeof(*priv));
 	g_mutex_init(&priv->rip_mtx);
 	priv->rip_members = g_hash_table_new(g_str_hash, g_str_equal);
 	priv->rip_arg = arg;
-	priv->rip_name = g_strdup(interface != NULL
-	    ? interface
-	    : RPC_DEFAULT_INTERFACE);
+	priv->rip_name = g_strdup(interface);
 
 	g_hash_table_insert(instance->ri_interfaces, priv->rip_name, priv);
 
