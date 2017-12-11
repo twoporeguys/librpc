@@ -73,6 +73,14 @@ connect(void)
 	rpc_client_t client;
 	rpc_object_t error;
 
+	if (server == NULL)
+		server = getenv("LIBRPC_SERVER");
+
+	if (server == NULL) {
+		fprintf(stderr, "Server URI not provided\n");
+		exit(1);
+	}
+
 	client = rpc_client_create(server, NULL);
 	if (client == NULL) {
 		error = rpc_get_last_error();
@@ -115,6 +123,46 @@ output(rpc_object_t obj)
 	str = rpc_copy_description(obj);
 	printf("%s\n", str);
 	g_free(str);
+}
+
+static int
+inspect_interface(rpc_connection_t conn, const char *path, const char *interface)
+{
+	rpc_object_t args;
+	rpc_call_t call;
+	int ret = 0;
+
+	args = rpc_object_pack("[s]", interface);
+	call = rpc_connection_call(conn, path, RPC_INTROSPECTABLE_INTERFACE,
+	    "get_methods", args, NULL);
+
+	printf("  Methods:\n");
+
+	for (;;) {
+		rpc_call_wait(call);
+
+		switch (rpc_call_status(call)) {
+			case RPC_CALL_MORE_AVAILABLE:
+				printf("    %s\n", rpc_string_get_string_ptr(
+				    rpc_call_result(call)));
+				rpc_call_continue(call, false);
+				break;
+
+			case RPC_CALL_DONE:
+				goto done;
+
+			case RPC_CALL_ERROR:
+				ret = 1;
+				goto error;
+
+			default:
+				g_assert_not_reached();
+		}
+	}
+
+done:
+error:
+	return (ret);
 }
 
 static int
@@ -179,8 +227,41 @@ error:
 static int
 cmd_inspect(int argc, char *argv[])
 {
+	rpc_connection_t conn;
+	rpc_call_t call;
+	const char *interface;
+	int ret = 0;
 
-	return (0);
+	conn = connect();
+	call = rpc_connection_call(conn, argv[0], RPC_INTROSPECTABLE_INTERFACE,
+	    "get_interfaces", NULL, NULL);
+
+	for (;;) {
+		rpc_call_wait(call);
+
+		switch (rpc_call_status(call)) {
+		case RPC_CALL_MORE_AVAILABLE:
+			interface = rpc_string_get_string_ptr(rpc_call_result(call));
+			printf("Interface %s:\n", interface);
+			inspect_interface(conn, argv[0], interface);
+			rpc_call_continue(call, false);
+			break;
+
+		case RPC_CALL_DONE:
+			goto done;
+
+		case RPC_CALL_ERROR:
+			ret = 1;
+			goto error;
+
+		default:
+			g_assert_not_reached();
+		}
+	}
+
+done:
+error:
+	return (ret);
 }
 
 static int
@@ -207,7 +288,7 @@ cmd_call(int argc, char *argv[])
 
 	conn = connect();
 	call = rpc_connection_call(conn, argv[0], argv[1], argv[2],
-	    NULL, NULL);
+	    args, NULL);
 
 	for (;;) {
 		rpc_call_wait(call);
