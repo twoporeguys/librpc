@@ -182,6 +182,7 @@ usb_hotplug_callback(libusb_context *ctx __unused, libusb_device *dev,
 static gboolean
 usb_hotplug_impl(void *arg)
 {
+	struct libusb_device_descriptor devdesc;
 	struct usb_hotplug_state *state = arg;
 	struct rpc_bus_node node = {};
 
@@ -194,6 +195,13 @@ usb_hotplug_impl(void *arg)
 		break;
 
 	case LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT:
+		if (libusb_get_device_descriptor(state->uss_dev, &devdesc) != 0)
+			break;
+
+		if (devdesc.idVendor != LIBRPC_USB_VID ||
+		    devdesc.idProduct != LIBRPC_USB_PID)
+			break;
+
 		node.rbn_address = libusb_get_device_address(state->uss_dev);
 		rpc_bus_event(RPC_BUS_DETACHED, &node);
 		break;
