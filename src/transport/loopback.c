@@ -58,6 +58,7 @@ loopback_accept(struct loopback_channel *chan, struct rpc_connection *conn)
 	newconn->rco_send_msg = loopback_send_msg;
 	newconn->rco_abort = loopback_abort;
 	newconn->rco_arg = conn;
+	newconn->rco_release = loopback_release;
 
 	conn->rco_send_msg = loopback_send_msg;
 	conn->rco_abort = loopback_abort;
