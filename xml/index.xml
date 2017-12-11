@@ -22,11 +22,6 @@
     <member refid="structrpc__if__property_1ab095fba7efd97b90f3440c2db5369f1e" kind="variable"><name>rp_setter</name></member>
     <member refid="structrpc__if__property_1a0171db6c0ee6ad206634d42de210ae52" kind="variable"><name>rp_arg</name></member>
   </compound>
-  <compound refid="structrpc__interface" kind="struct"><name>rpc_interface</name>
-    <member refid="structrpc__interface_1a7e1b33ccc8a32e6daaf69ec6daec7bc1" kind="variable"><name>ri_name</name></member>
-    <member refid="structrpc__interface_1a851f0bfb495af801a2958fef34596e6a" kind="variable"><name>ri_description</name></member>
-    <member refid="structrpc__interface_1af28bb2a8e330bb25c2c7e681cd2f7356" kind="variable"><name>ri_members</name></member>
-  </compound>
   <compound refid="structrpc__query__params" kind="struct"><name>rpc_query_params</name>
     <member refid="structrpc__query__params_1a6e4eafac062b7f7490a4983d56296385" kind="variable"><name>single</name></member>
     <member refid="structrpc__query__params_1a7b488114aeb262c508dd28acc1a7fc95" kind="variable"><name>count</name></member>
@@ -339,7 +334,7 @@
     <member refid="service_8h_1aee57eb01576d11b3eba2cc357667db4a" kind="function"><name>rpc_instance_new</name></member>
     <member refid="service_8h_1a6f4eb6df2553bf05ce15f74950f6415e" kind="function"><name>rpc_instance_get_arg</name></member>
     <member refid="service_8h_1a68b61823da7220e591aa5b815fe5cc5e" kind="function"><name>rpc_instance_get_path</name></member>
-    <member refid="service_8h_1a78f4a464af39a3711a3c8c9970f4f501" kind="function"><name>rpc_instance_register_interface</name></member>
+    <member refid="service_8h_1a7bdc22f054ebb8f6fb45a01f120c6d67" kind="function"><name>rpc_instance_register_interface</name></member>
     <member refid="service_8h_1a92a30352b433de4d418106ebb1f55333" kind="function"><name>rpc_instance_register_member</name></member>
     <member refid="service_8h_1a4e994c6ca543fac956c12c2523d2b27d" kind="function"><name>rpc_instance_unregister_member</name></member>
     <member refid="service_8h_1afa0f59ae87c130966ba378bc6c2ee12b" kind="function"><name>rpc_instance_register_block</name></member>

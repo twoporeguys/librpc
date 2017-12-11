@@ -26,8 +26,6 @@ struct \hyperlink{structrpc__if__method}{rpc\+\_\+if\+\_\+method}
 struct \hyperlink{structrpc__if__property}{rpc\+\_\+if\+\_\+property}
 \item 
 struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member}
-\item 
-struct \hyperlink{structrpc__interface}{rpc\+\_\+interface}
 \end{DoxyCompactItemize}
 \subsection*{Macros}
 \begin{DoxyCompactItemize}
@@ -156,7 +154,7 @@ void $\ast$ \hyperlink{service_8h_a6f4eb6df2553bf05ce15f74950f6415e}{rpc\+\_\+in
 \item 
 const char $\ast$ \hyperlink{service_8h_a68b61823da7220e591aa5b815fe5cc5e}{rpc\+\_\+instance\+\_\+get\+\_\+path} (rpc\+\_\+instance\+\_\+t instance)
 \item 
-int \hyperlink{service_8h_a78f4a464af39a3711a3c8c9970f4f501}{rpc\+\_\+instance\+\_\+register\+\_\+interface} (rpc\+\_\+instance\+\_\+t instance, const struct \hyperlink{structrpc__interface}{rpc\+\_\+interface} $\ast$iface, void $\ast$arg)
+int \hyperlink{service_8h_a7bdc22f054ebb8f6fb45a01f120c6d67}{rpc\+\_\+instance\+\_\+register\+\_\+interface} (rpc\+\_\+instance\+\_\+t instance, const char $\ast$interface, const struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member} $\ast$vtable, void $\ast$arg)
 \item 
 int \hyperlink{service_8h_a92a30352b433de4d418106ebb1f55333}{rpc\+\_\+instance\+\_\+register\+\_\+member} (rpc\+\_\+instance\+\_\+t instance, const char $\ast$interface, const struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member} $\ast$member)
 \item 
@@ -1066,13 +1064,14 @@ Finds a given method belonging to a given interface in instance.
 \end{DoxyParams}
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+register\+\_\+interface@{rpc\+\_\+instance\+\_\+register\+\_\+interface}}
 \index{rpc\+\_\+instance\+\_\+register\+\_\+interface@{rpc\+\_\+instance\+\_\+register\+\_\+interface}!service.\+h@{service.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+instance\+\_\+register\+\_\+interface(rpc\+\_\+instance\+\_\+t instance, const struct rpc\+\_\+interface $\ast$iface, void $\ast$arg)}{rpc_instance_register_interface(rpc_instance_t instance, const struct rpc_interface *iface, void *arg)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+instance\+\_\+register\+\_\+interface (
+\subsubsection[{\texorpdfstring{rpc\+\_\+instance\+\_\+register\+\_\+interface(rpc\+\_\+instance\+\_\+t instance, const char $\ast$interface, const struct rpc\+\_\+if\+\_\+member $\ast$vtable, void $\ast$arg)}{rpc_instance_register_interface(rpc_instance_t instance, const char *interface, const struct rpc_if_member *vtable, void *arg)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+instance\+\_\+register\+\_\+interface (
 \begin{DoxyParamCaption}
 \item[{rpc\+\_\+instance\+\_\+t}]{instance, }
-\item[{const struct {\bf rpc\+\_\+interface} $\ast$}]{iface, }
+\item[{const char $\ast$}]{interface, }
+\item[{const struct {\bf rpc\+\_\+if\+\_\+member} $\ast$}]{vtable, }
 \item[{void $\ast$}]{arg}
 \end{DoxyParamCaption}
-)}\hypertarget{service_8h_a78f4a464af39a3711a3c8c9970f4f501}{}\label{service_8h_a78f4a464af39a3711a3c8c9970f4f501}
+)}\hypertarget{service_8h_a7bdc22f054ebb8f6fb45a01f120c6d67}{}\label{service_8h_a7bdc22f054ebb8f6fb45a01f120c6d67}
 
 \begin{DoxyParams}{Parameters}
 {\em instance} & \\

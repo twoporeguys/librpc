@@ -124,8 +124,6 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrpc__if__member.html">rpc_if_member</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrpc__interface.html">rpc_interface</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
@@ -251,8 +249,8 @@ Functions</h2></td></tr>
 <tr class="separator:a6f4eb6df2553bf05ce15f74950f6415e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68b61823da7220e591aa5b815fe5cc5e"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a68b61823da7220e591aa5b815fe5cc5e">rpc_instance_get_path</a> (rpc_instance_t instance)</td></tr>
 <tr class="separator:a68b61823da7220e591aa5b815fe5cc5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78f4a464af39a3711a3c8c9970f4f501"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a78f4a464af39a3711a3c8c9970f4f501">rpc_instance_register_interface</a> (rpc_instance_t instance, const struct <a class="el" href="structrpc__interface.html">rpc_interface</a> *iface, void *arg)</td></tr>
-<tr class="separator:a78f4a464af39a3711a3c8c9970f4f501"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bdc22f054ebb8f6fb45a01f120c6d67"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a7bdc22f054ebb8f6fb45a01f120c6d67">rpc_instance_register_interface</a> (rpc_instance_t instance, const char *interface, const struct <a class="el" href="structrpc__if__member.html">rpc_if_member</a> *vtable, void *arg)</td></tr>
+<tr class="separator:a7bdc22f054ebb8f6fb45a01f120c6d67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92a30352b433de4d418106ebb1f55333"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a92a30352b433de4d418106ebb1f55333">rpc_instance_register_member</a> (rpc_instance_t instance, const char *interface, const struct <a class="el" href="structrpc__if__member.html">rpc_if_member</a> *member)</td></tr>
 <tr class="separator:a92a30352b433de4d418106ebb1f55333"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e994c6ca543fac956c12c2523d2b27d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a4e994c6ca543fac956c12c2523d2b27d">rpc_instance_unregister_member</a> (rpc_instance_t instance, const char *interface, const char *name)</td></tr>
@@ -1771,7 +1769,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a78f4a464af39a3711a3c8c9970f4f501"></a>
+<a class="anchor" id="a7bdc22f054ebb8f6fb45a01f120c6d67"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1784,8 +1782,14 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const struct <a class="el" href="structrpc__interface.html">rpc_interface</a> *&#160;</td>
-          <td class="paramname"><em>iface</em>, </td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>interface</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const struct <a class="el" href="structrpc__if__member.html">rpc_if_member</a> *&#160;</td>
+          <td class="paramname"><em>vtable</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
