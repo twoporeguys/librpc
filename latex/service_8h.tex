@@ -115,9 +115,9 @@ void \hyperlink{service_8h_ab99b0f2ed56026d6eff48b05fea7f95e}{rpc\+\_\+context\+
 \item 
 int \hyperlink{service_8h_a64166c1ba658b15d9764008a7a6f9c49}{rpc\+\_\+context\+\_\+register\+\_\+member} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member} $\ast$m)
 \item 
-int \hyperlink{service_8h_af83b298b11aec4f97c0db5d4391b0be7}{rpc\+\_\+context\+\_\+register\+\_\+block} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$name, const char $\ast$descr, void $\ast$arg, \hyperlink{service_8h_a02d3dbd723de9bd5140887c9935ff05a}{rpc\+\_\+function\+\_\+t} func)
+int \hyperlink{service_8h_a96063ed4919011bfcc1a6364dbae38c1}{rpc\+\_\+context\+\_\+register\+\_\+block} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$interface, const char $\ast$name, void $\ast$arg, \hyperlink{service_8h_a02d3dbd723de9bd5140887c9935ff05a}{rpc\+\_\+function\+\_\+t} func)
 \item 
-int \hyperlink{service_8h_a6de78771a848fe3b2001e08a7cf0a88c}{rpc\+\_\+context\+\_\+register\+\_\+func} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$name, const char $\ast$descr, void $\ast$arg, \hyperlink{service_8h_a1f67d69a108ffc8087346616d82eacf7}{rpc\+\_\+function\+\_\+f} func)
+int \hyperlink{service_8h_ac06980168dfbfa6246dece62378a032f}{rpc\+\_\+context\+\_\+register\+\_\+func} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$interface, const char $\ast$name, void $\ast$arg, \hyperlink{service_8h_a1f67d69a108ffc8087346616d82eacf7}{rpc\+\_\+function\+\_\+f} func)
 \item 
 int \hyperlink{service_8h_a26f714ff6f48eebc62cb0b6eef611e90}{rpc\+\_\+context\+\_\+unregister\+\_\+member} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$interface, const char $\ast$name)
 \item 
@@ -489,15 +489,15 @@ Disposes existing R\+PC context and frees all associated resources.
 \end{DoxyReturn}
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+register\+\_\+block@{rpc\+\_\+context\+\_\+register\+\_\+block}}
 \index{rpc\+\_\+context\+\_\+register\+\_\+block@{rpc\+\_\+context\+\_\+register\+\_\+block}!service.\+h@{service.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+context\+\_\+register\+\_\+block(rpc\+\_\+context\+\_\+t context, const char $\ast$name, const char $\ast$descr, void $\ast$arg, rpc\+\_\+function\+\_\+t func)}{rpc_context_register_block(rpc_context_t context, const char *name, const char *descr, void *arg, rpc_function_t func)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+context\+\_\+register\+\_\+block (
+\subsubsection[{\texorpdfstring{rpc\+\_\+context\+\_\+register\+\_\+block(rpc\+\_\+context\+\_\+t context, const char $\ast$interface, const char $\ast$name, void $\ast$arg, rpc\+\_\+function\+\_\+t func)}{rpc_context_register_block(rpc_context_t context, const char *interface, const char *name, void *arg, rpc_function_t func)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+context\+\_\+register\+\_\+block (
 \begin{DoxyParamCaption}
 \item[{{\bf rpc\+\_\+context\+\_\+t}}]{context, }
+\item[{const char $\ast$}]{interface, }
 \item[{const char $\ast$}]{name, }
-\item[{const char $\ast$}]{descr, }
 \item[{void $\ast$}]{arg, }
 \item[{{\bf rpc\+\_\+function\+\_\+t}}]{func}
 \end{DoxyParamCaption}
-)}\hypertarget{service_8h_af83b298b11aec4f97c0db5d4391b0be7}{}\label{service_8h_af83b298b11aec4f97c0db5d4391b0be7}
+)}\hypertarget{service_8h_a96063ed4919011bfcc1a6364dbae38c1}{}\label{service_8h_a96063ed4919011bfcc1a6364dbae38c1}
 Registers a given block as a R\+PC method for a given context.
 
 
@@ -518,15 +518,15 @@ Status.
 \end{DoxyReturn}
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+register\+\_\+func@{rpc\+\_\+context\+\_\+register\+\_\+func}}
 \index{rpc\+\_\+context\+\_\+register\+\_\+func@{rpc\+\_\+context\+\_\+register\+\_\+func}!service.\+h@{service.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+context\+\_\+register\+\_\+func(rpc\+\_\+context\+\_\+t context, const char $\ast$name, const char $\ast$descr, void $\ast$arg, rpc\+\_\+function\+\_\+f func)}{rpc_context_register_func(rpc_context_t context, const char *name, const char *descr, void *arg, rpc_function_f func)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+context\+\_\+register\+\_\+func (
+\subsubsection[{\texorpdfstring{rpc\+\_\+context\+\_\+register\+\_\+func(rpc\+\_\+context\+\_\+t context, const char $\ast$interface, const char $\ast$name, void $\ast$arg, rpc\+\_\+function\+\_\+f func)}{rpc_context_register_func(rpc_context_t context, const char *interface, const char *name, void *arg, rpc_function_f func)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+context\+\_\+register\+\_\+func (
 \begin{DoxyParamCaption}
 \item[{{\bf rpc\+\_\+context\+\_\+t}}]{context, }
+\item[{const char $\ast$}]{interface, }
 \item[{const char $\ast$}]{name, }
-\item[{const char $\ast$}]{descr, }
 \item[{void $\ast$}]{arg, }
 \item[{{\bf rpc\+\_\+function\+\_\+f}}]{func}
 \end{DoxyParamCaption}
-)}\hypertarget{service_8h_a6de78771a848fe3b2001e08a7cf0a88c}{}\label{service_8h_a6de78771a848fe3b2001e08a7cf0a88c}
+)}\hypertarget{service_8h_ac06980168dfbfa6246dece62378a032f}{}\label{service_8h_ac06980168dfbfa6246dece62378a032f}
 Registers a given function as a R\+PC method for a given context.
 
 

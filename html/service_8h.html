@@ -210,10 +210,10 @@ Functions</h2></td></tr>
 <tr class="separator:ab99b0f2ed56026d6eff48b05fea7f95e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64166c1ba658b15d9764008a7a6f9c49"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a64166c1ba658b15d9764008a7a6f9c49">rpc_context_register_member</a> (<a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, struct <a class="el" href="structrpc__if__member.html">rpc_if_member</a> *m)</td></tr>
 <tr class="separator:a64166c1ba658b15d9764008a7a6f9c49"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af83b298b11aec4f97c0db5d4391b0be7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#af83b298b11aec4f97c0db5d4391b0be7">rpc_context_register_block</a> (<a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *name, const char *descr, void *arg, <a class="el" href="service_8h.html#a02d3dbd723de9bd5140887c9935ff05a">rpc_function_t</a> func)</td></tr>
-<tr class="separator:af83b298b11aec4f97c0db5d4391b0be7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6de78771a848fe3b2001e08a7cf0a88c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a6de78771a848fe3b2001e08a7cf0a88c">rpc_context_register_func</a> (<a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *name, const char *descr, void *arg, <a class="el" href="service_8h.html#a1f67d69a108ffc8087346616d82eacf7">rpc_function_f</a> func)</td></tr>
-<tr class="separator:a6de78771a848fe3b2001e08a7cf0a88c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96063ed4919011bfcc1a6364dbae38c1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a96063ed4919011bfcc1a6364dbae38c1">rpc_context_register_block</a> (<a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *interface, const char *name, void *arg, <a class="el" href="service_8h.html#a02d3dbd723de9bd5140887c9935ff05a">rpc_function_t</a> func)</td></tr>
+<tr class="separator:a96063ed4919011bfcc1a6364dbae38c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac06980168dfbfa6246dece62378a032f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ac06980168dfbfa6246dece62378a032f">rpc_context_register_func</a> (<a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *interface, const char *name, void *arg, <a class="el" href="service_8h.html#a1f67d69a108ffc8087346616d82eacf7">rpc_function_f</a> func)</td></tr>
+<tr class="separator:ac06980168dfbfa6246dece62378a032f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26f714ff6f48eebc62cb0b6eef611e90"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a26f714ff6f48eebc62cb0b6eef611e90">rpc_context_unregister_member</a> (<a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *interface, const char *name)</td></tr>
 <tr class="separator:a26f714ff6f48eebc62cb0b6eef611e90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1c0c9c7897adf4ad5e7ee9c40e545b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ad1c0c9c7897adf4ad5e7ee9c40e545b8">rpc_context_set_pre_call_hook</a> (<a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, <a class="el" href="service_8h.html#a02d3dbd723de9bd5140887c9935ff05a">rpc_function_t</a> fn)</td></tr>
@@ -695,7 +695,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="af83b298b11aec4f97c0db5d4391b0be7"></a>
+<a class="anchor" id="a96063ed4919011bfcc1a6364dbae38c1"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -709,13 +709,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
+          <td class="paramname"><em>interface</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>descr</em>, </td>
+          <td class="paramname"><em>name</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -751,7 +751,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a6de78771a848fe3b2001e08a7cf0a88c"></a>
+<a class="anchor" id="ac06980168dfbfa6246dece62378a032f"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -765,13 +765,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
+          <td class="paramname"><em>interface</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>descr</em>, </td>
+          <td class="paramname"><em>name</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
