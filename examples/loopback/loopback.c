@@ -34,7 +34,7 @@
 #include <rpc/service.h>
 
 int
-main(int argc __attribute__((unused)), const char *argv[] __attribute__((unused)))
+main(int argc, const char *argv[])
 {
 	rpc_context_t ctx;
 	rpc_server_t server;
