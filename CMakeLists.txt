@@ -223,7 +223,6 @@ endif()
 
 if(BUILD_EXAMPLES)
     add_subdirectory(examples/client)
-    add_subdirectory(examples/discovery)
     add_subdirectory(examples/event)
     add_subdirectory(examples/loopback)
     add_subdirectory(examples/pack-unpack)
