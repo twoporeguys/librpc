@@ -283,6 +283,7 @@
     <member refid="service_8h_1a4395f88fcaac71516f1fc2ba4d594c63" kind="define"><name>RPC_DISCOVERABLE_INTERFACE</name></member>
     <member refid="service_8h_1a29c88b53b39ac5d6e93a1285968db34b" kind="define"><name>RPC_INTROSPECTABLE_INTERFACE</name></member>
     <member refid="service_8h_1a6c627e2b2a7578de3a34131e51f14577" kind="define"><name>RPC_OBSERVABLE_INTERFACE</name></member>
+    <member refid="service_8h_1aab7d9b8cc8af170d750fb53d752457fa" kind="define"><name>RPC_DEFAULT_INTERFACE</name></member>
     <member refid="service_8h_1a5484afe5b3f646a7989ad91e011cc5b1" kind="define"><name>RPC_FUNCTION</name></member>
     <member refid="service_8h_1a9f26d5c3cd4053019f402fa48d59d4c7" kind="define"><name>RPC_PROPERTY_GETTER</name></member>
     <member refid="service_8h_1ae4fea18e9501ac8051f8c674a81d5432" kind="define"><name>RPC_PROPERTY_SETTER</name></member>

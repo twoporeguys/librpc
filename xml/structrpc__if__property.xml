@@ -14,7 +14,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="184" column="1" bodyfile="/code/include/rpc/service.h" bodystart="184" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="185" column="1" bodyfile="/code/include/rpc/service.h" bodystart="185" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__if__property_1ab095fba7efd97b90f3440c2db5369f1e" prot="public" static="no" mutable="no">
         <type>rpc_property_setter_t</type>
@@ -27,7 +27,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="185" column="1" bodyfile="/code/include/rpc/service.h" bodystart="185" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="186" column="1" bodyfile="/code/include/rpc/service.h" bodystart="186" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__if__property_1a0171db6c0ee6ad206634d42de210ae52" prot="public" static="no" mutable="no">
         <type>void *</type>
@@ -40,14 +40,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="186" column="1" bodyfile="/code/include/rpc/service.h" bodystart="186" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="187" column="1" bodyfile="/code/include/rpc/service.h" bodystart="187" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/code/include/rpc/service.h" line="183" column="1" bodyfile="/code/include/rpc/service.h" bodystart="182" bodyend="187"/>
+    <location file="/code/include/rpc/service.h" line="184" column="1" bodyfile="/code/include/rpc/service.h" bodystart="183" bodyend="188"/>
     <listofallmembers>
       <member refid="structrpc__if__property_1a0171db6c0ee6ad206634d42de210ae52" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_arg</name></member>
       <member refid="structrpc__if__property_1a6b88200bb991311dae3c05e92dc16fdc" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_getter</name></member>
