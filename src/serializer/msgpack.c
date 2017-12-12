@@ -167,7 +167,7 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 			    (const char *)&be_int64, sizeof(be_int64));
 		} else {
 			be_int32.value = htobe32(object->ro_value.rv_ui);
-			be_int32.tag = 0xd2;
+			be_int32.tag = 0xce;
 			mpack_write_object_bytes(writer,
 			    (const char *)&be_int32, sizeof(be_int32));
 		}
