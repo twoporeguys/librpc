@@ -126,6 +126,54 @@ output(rpc_object_t obj)
 }
 
 static int
+inspect_properties(rpc_connection_t conn, const char *path, const char *interface)
+{
+	rpc_call_t call;
+	rpc_object_t args;
+	rpc_object_t value;
+	const char *name;
+	char *str;
+	int ret = 0;
+
+	args = rpc_object_pack("[s]", interface);
+	call = rpc_connection_call(conn, path, RPC_OBSERVABLE_INTERFACE,
+	    "get_all", args, NULL);
+
+	printf("  Properties:\n");
+
+	for (;;) {
+		rpc_call_wait(call);
+
+		switch (rpc_call_status(call)) {
+		case RPC_CALL_MORE_AVAILABLE:
+			rpc_object_unpack(rpc_call_result(call), "{s,v}",
+			    "name", &name,
+			    "value", &value);
+
+			str = rpc_copy_description(value);
+			printf("    %s (= %s)\n", name, str);
+			g_free(str);
+			rpc_call_continue(call, false);
+			break;
+
+		case RPC_CALL_DONE:
+			goto done;
+
+		case RPC_CALL_ERROR:
+			ret = 1;
+			goto error;
+
+		default:
+			g_assert_not_reached();
+		}
+	}
+
+	done:
+	error:
+	return (ret);
+}
+
+static int
 inspect_interface(rpc_connection_t conn, const char *path, const char *interface)
 {
 	rpc_object_t args;
@@ -161,6 +209,8 @@ inspect_interface(rpc_connection_t conn, const char *path, const char *interface
 	}
 
 done:
+	ret = inspect_properties(conn, path, interface);
+
 error:
 	return (ret);
 }
