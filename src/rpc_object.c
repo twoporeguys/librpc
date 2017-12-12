@@ -652,8 +652,102 @@ rpc_cmp(rpc_object_t o1, rpc_object_t o2)
 inline bool
 rpc_equal(rpc_object_t o1, rpc_object_t o2)
 {
+	struct stat o1_fdstat;
+	struct stat o2_fdstat;
+	size_t data_len;
 
-	return (rpc_hash(o1) == rpc_hash(o2));
+	g_assert_nonnull(o1);
+	g_assert_nonnull(o2);
+
+	if (o1->ro_type != o2->ro_type)
+		return (false);
+
+	switch (o1->ro_type) {
+	case RPC_TYPE_NULL:
+		return (true);
+
+	case RPC_TYPE_BOOL:
+		return (o1->ro_value.rv_b == o2->ro_value.rv_b);
+
+	case RPC_TYPE_INT64:
+		return (o1->ro_value.rv_i == o2->ro_value.rv_i);
+
+	case RPC_TYPE_UINT64:
+		return (o1->ro_value.rv_ui == o2->ro_value.rv_ui);
+
+	case RPC_TYPE_DOUBLE:
+		return (o1->ro_value.rv_d == o2->ro_value.rv_d);
+
+	case RPC_TYPE_FD:
+		fstat(o1->ro_value.rv_fd, &o1_fdstat);
+		fstat(o2->ro_value.rv_fd, &o2_fdstat);
+		return ((o1_fdstat.st_dev == o2_fdstat.st_dev) &&
+		    (o1_fdstat.st_ino == o2_fdstat.st_ino));
+
+	case RPC_TYPE_DATE:
+		return (rpc_date_get_value(o1) == rpc_date_get_value(o2));
+
+	case RPC_TYPE_STRING:
+		return (bool)(g_string_equal(o1->ro_value.rv_str,
+		    o2->ro_value.rv_str));
+
+	case RPC_TYPE_BINARY:
+		data_len = rpc_data_get_length(o1);
+		if (data_len != rpc_data_get_length(o2))
+			return (false);
+
+		return (memcmp(rpc_data_get_bytes_ptr(o1),
+		    rpc_data_get_bytes_ptr(o2), data_len) == 0);
+
+	case RPC_TYPE_ERROR:
+		if (rpc_error_get_code(o1) != rpc_error_get_code(o2))
+			return (false);
+
+		if (!g_string_equal(o1->ro_value.rv_error.rev_message,
+		    o2->ro_value.rv_error.rev_message))
+			return (false);
+
+		return (rpc_equal(o1->ro_value.rv_error.rev_extra,
+		    o2->ro_value.rv_error.rev_extra));
+
+#if defined(__linux__)
+	case RPC_TYPE_SHMEM:
+		fstat(o1->ro_value.rv_shmem.rsb_fd, &o1_fdstat);
+		fstat(o2->ro_value.rv_shmem.rsb_fd, &o2_fdstat);
+		return ((o1_fdstat.st_dev == o2_fdstat.st_dev) &&
+		    (o1_fdstat.st_ino == o2_fdstat.st_ino));
+#endif
+
+	case RPC_TYPE_DICTIONARY:
+		if (rpc_dictionary_get_count(o1) != rpc_dictionary_get_count(o2))
+			return (false);
+
+		return (!rpc_dictionary_apply(o1,
+		    ^(const char *k, rpc_object_t v1) {
+			rpc_object_t v2;
+
+			v2 = rpc_dictionary_get_value(o2, k);
+			if (v2 == NULL)
+				return ((bool)false);
+
+			return ((bool)rpc_equal(v1, v2));
+		}));
+
+	case RPC_TYPE_ARRAY:
+		if (rpc_array_get_count(o1) != rpc_array_get_count(o2))
+			return (false);
+
+		return (!rpc_array_apply(o1, ^(size_t idx, rpc_object_t v1) {
+			rpc_object_t v2;
+
+			v2 = rpc_array_get_value(o2, idx);
+
+			return ((bool)rpc_equal(v1, v2));
+		}));
+	}
+
+	g_assert_not_reached();
+	return (false);
 }
 
 inline size_t
