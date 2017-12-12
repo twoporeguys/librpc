@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
+/*
 #include "../catch.hpp"
 #include <rpc/object.h>
 #include <rpc/service.h>
@@ -112,3 +112,4 @@ SCENARIO("RPC_CLIENT", "Create a simple RPC server and connect to it") {
 			rpc_context_free(ctx);
 	}
 }
+*/
