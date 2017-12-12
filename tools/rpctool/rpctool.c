@@ -27,6 +27,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 #include <stdbool.h>
 #include <glib.h>
@@ -41,6 +42,7 @@ static int cmd_inspect(int argc, char *argv[]);
 static int cmd_call(int argc, char *argv[]);
 static int cmd_get(int argc, char *argv[]);
 static int cmd_set(int argc, char *argv[]);
+static int cmd_listen(int argc, char *argv[]);
 
 static const char *server;
 static char **args;
@@ -56,6 +58,7 @@ static struct {
 	{ "call", cmd_call },
 	{ "get", cmd_get },
 	{ "set", cmd_set },
+	{ "listen", cmd_listen },
 	{ }
 };
 
@@ -411,6 +414,21 @@ cmd_set(int argc, char *argv[])
 		output(result);
 
 	return (rpc_is_error(result) ? 1 : 0);
+}
+
+static int
+cmd_listen(int argc, char *argv[])
+{
+	rpc_connection_t conn;
+
+	conn = connect();
+	rpc_connection_register_event_handler(conn, argv[0], argv[1], argv[2],
+	    ^(const char *path, const char *interface, const char *name, rpc_object_t args) {
+	    	output(args);
+	    });
+
+	pause();
+	return (0);
 }
 
 int
