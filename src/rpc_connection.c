@@ -447,10 +447,10 @@ on_events_subscribe(rpc_connection_t conn, rpc_object_t args,
 {
 	rpc_array_apply(args, ^(size_t index __unused, rpc_object_t value) {
 		rpc_instance_t instance;
+		struct rpc_subscription *sub;
 		const char *path = NULL;
 		const char *interface = NULL;
 		const char *name = NULL;
-		int *refcount;
 
 		if (rpc_object_unpack(value, "{s,s,s}",
 		    "name", &name,
@@ -465,14 +465,13 @@ on_events_subscribe(rpc_connection_t conn, rpc_object_t args,
 			return ((bool)true);
 
 		g_mutex_lock(&instance->ri_mtx);
-		refcount = g_hash_table_lookup(instance->ri_subscriptions, name);
-		if (refcount == NULL) {
-			refcount = g_malloc0(sizeof(int));
-			g_hash_table_insert(conn->rco_subscriptions,
-			    (gpointer)name, refcount);
+		sub = rpc_connection_find_subscription(conn, path, interface, name);
+		if (sub == NULL) {
+			sub = g_malloc0(sizeof(*sub));
+			g_ptr_array_add(conn->rco_subscriptions, sub);
 		}
 
-		(*refcount)++;
+		sub->rsu_refcount++;
 		g_mutex_unlock(&instance->ri_mtx);
 		return ((bool)true);
 	});
@@ -484,10 +483,10 @@ on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args,
 {
 	rpc_array_apply(args, ^(size_t index __unused, rpc_object_t value) {
 		rpc_instance_t instance;
+		struct rpc_subscription *sub;
 		const char *path = NULL;
 		const char *interface = NULL;
 		const char *name = NULL;
-		int *refcount;
 
 		if (rpc_object_unpack(value, "{s,s,s}",
 		    "name", &name,
@@ -502,11 +501,11 @@ on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args,
 			return ((bool)true);
 
 		g_mutex_lock(&instance->ri_mtx);
-		refcount = g_hash_table_lookup(instance->ri_subscriptions, name);
-		if (refcount == NULL)
+		sub = rpc_connection_find_subscription(conn, path, interface, name);
+		if (sub == NULL)
 			return ((bool)true);
 
-		(*refcount)--;
+		sub->rsu_refcount--;
 		g_mutex_unlock(&instance->ri_mtx);
 		return ((bool)true);
 	});
@@ -641,7 +640,7 @@ rpc_connection_find_subscription(rpc_connection_t conn, const char *path,
     const char *interface, const char *name)
 {
 	struct rpc_subscription *result;
-	int i;
+	guint i;
 
 	g_mutex_lock(&conn->rco_subscription_mtx);
 
@@ -851,11 +850,13 @@ rpc_connection_close(rpc_connection_t conn)
 	conn->rco_closed = true;
 	conn->rco_abort(conn->rco_arg);
 	conn->rco_release(conn->rco_arg);
-	g_thread_pool_free(conn->rco_callback_pool, true, true);
 	g_hash_table_destroy(conn->rco_calls);
 	g_hash_table_destroy(conn->rco_inbound_calls);
 	g_ptr_array_free(conn->rco_subscriptions, true);
-	g_free(conn);
+
+	if (conn->rco_callback_pool != NULL)
+		g_thread_pool_free(conn->rco_callback_pool, true, true);
+
 	return (0);
 }
 
