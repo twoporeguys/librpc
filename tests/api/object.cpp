@@ -585,8 +585,8 @@ SCENARIO("RPC_BINARY_OBJECT", "Create a BINARY RPC object and perform basic oper
 		int value = 0xff00ff00;
 		int different_value = 0xabcdef00;
 		int *buffer = (int *)malloc(sizeof(value));
-		object = rpc_data_create(&value, sizeof(value), true);
-		different_object = rpc_data_create(&different_value, sizeof(different_value), true);
+		object = rpc_data_create(&value, sizeof(value), NULL);
+		different_object = rpc_data_create(&different_value, sizeof(different_value), NULL);
 
 		THEN("Type is BINARY") {
 			REQUIRE(rpc_get_type(object) == RPC_TYPE_BINARY);
@@ -596,9 +596,8 @@ SCENARIO("RPC_BINARY_OBJECT", "Create a BINARY RPC object and perform basic oper
 			REQUIRE(object->ro_refcnt == 1);
 		}
 
-		THEN("Object is referencing a copy of inital data") {
-			REQUIRE(object->ro_value.rv_bin.rbv_copy);
-			REQUIRE(rpc_data_get_bytes_ptr(object) != &value);
+		THEN("Object is referencing inital data") {
+			REQUIRE(rpc_data_get_bytes_ptr(object) == &value);
 		}
 
 		THEN("Length of data inside of the object is the same as length of initial data") {
@@ -618,7 +617,6 @@ SCENARIO("RPC_BINARY_OBJECT", "Create a BINARY RPC object and perform basic oper
 			}
 
 			AND_THEN("Object and its copy are referencing different buffers") {
-				REQUIRE(copy->ro_value.rv_bin.rbv_copy);
 				REQUIRE(rpc_data_get_bytes_ptr(object) != rpc_data_get_bytes_ptr(copy));
 			}
 
@@ -663,7 +661,6 @@ SCENARIO("RPC_BINARY_OBJECT", "Create a BINARY RPC object and perform basic oper
 			}
 
 			THEN("Object is referencing inital data") {
-				REQUIRE(!object->ro_value.rv_bin.rbv_copy);
 				REQUIRE(rpc_data_get_bytes_ptr(object) == &value);
 			}
 
