@@ -231,7 +231,6 @@ struct rpc_connection
 	guint                 	rco_rpc_timeout;
 	GHashTable *		rco_calls;
 	GHashTable *		rco_inbound_calls;
-    	GHashTable *		rco_event_listeners;
     	GPtrArray *		rco_subscriptions;
     	GMutex			rco_subscription_mtx;
     	GMutex			rco_send_mtx;
@@ -315,7 +314,7 @@ struct rpc_context
 	GMutex			rcx_mtx;
     	GThreadPool *		rcx_threadpool;
 	GHashTable *		rcx_instances;
-	rpc_server_t 		rcx_server;
+	GPtrArray * 		rcx_servers;
 	rpc_instance_t 		rcx_root;
 
 	/* Hooks */

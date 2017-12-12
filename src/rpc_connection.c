@@ -642,8 +642,6 @@ rpc_connection_find_subscription(rpc_connection_t conn, const char *path,
 	struct rpc_subscription *result;
 	guint i;
 
-	g_mutex_lock(&conn->rco_subscription_mtx);
-
 	for (i = 0; i < conn->rco_subscriptions->len; i++) {
 		result = g_ptr_array_index(conn->rco_subscriptions, i);
 
@@ -656,11 +654,9 @@ rpc_connection_find_subscription(rpc_connection_t conn, const char *path,
 		if (g_strcmp0(result->rsu_name, name) != 0)
 			continue;
 
-		g_mutex_unlock(&conn->rco_subscription_mtx);
 		return (result);
 	}
 
-	g_mutex_unlock(&conn->rco_subscription_mtx);
 	return (NULL);
 }
 
@@ -910,7 +906,6 @@ rpc_connection_subscribe_event_locked(rpc_connection_t conn, const char *path,
 	rpc_object_t frame;
 	rpc_object_t args;
 
-
 	sub = rpc_connection_find_subscription(conn, path, interface, name);
 	if (sub == NULL) {
 		sub = g_malloc0(sizeof(*sub));
@@ -918,7 +913,11 @@ rpc_connection_subscribe_event_locked(rpc_connection_t conn, const char *path,
 		sub->rsu_interface = g_strdup(interface);
 		sub->rsu_name = g_strdup(name);
 		sub->rsu_handlers = g_ptr_array_new();
-		args = rpc_object_pack("[s]", name);
+		args = rpc_object_pack("[{s,s,s}]",
+		    "path", path,
+		    "interface", interface,
+		    "name", name);
+
 		frame = rpc_pack_frame("events", "subscribe", NULL, args);
 
 		if (rpc_send_frame(conn, frame) != 0)
@@ -971,6 +970,7 @@ rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
 {
 	struct rpc_subscription *sub;
 	struct rpc_subscription_handler *rsh;
+
 	g_mutex_lock(&conn->rco_subscription_mtx);
 
 	rpc_connection_subscribe_event_locked(conn, path, interface, name);
@@ -979,9 +979,7 @@ rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
 	rsh->rsh_parent = sub;
 	rsh->rsh_handler = Block_copy(handler);
 	g_ptr_array_add(sub->rsu_handlers, rsh);
-
 	g_mutex_unlock(&conn->rco_subscription_mtx);
-
 	return (rsh);
 }
 

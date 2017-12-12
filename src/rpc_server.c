@@ -105,6 +105,7 @@ rpc_server_create(const char *uri, rpc_context_t context)
 	while (!server->rs_operational)
 		g_cond_wait(&server->rs_cv, &server->rs_mtx);
 
+	g_ptr_array_add(context->rcx_servers, server);
 	g_mutex_unlock(&server->rs_mtx);
 	return (server);
 }

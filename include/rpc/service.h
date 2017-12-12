@@ -322,6 +322,16 @@ rpc_call_t rpc_context_dispatch_call(rpc_context_t context, const char *name,
     rpc_object_t args);
 
 /**
+ *
+ * @param context
+ * @param path
+ * @param interface
+ * @param name
+ */
+void rpc_context_emit_event(rpc_context_t context, const char *path,
+    const char *interface, const char *name, rpc_object_t args);
+
+/**
  * Returns the argument associated with method.
  *
  * @param cookie Running call identifier.
@@ -554,7 +564,16 @@ int rpc_instance_get_property_rights(rpc_instance_t instance,
  * @param name
  * @return
  */
-int rpc_instance_register_event(rpc_instance_t, const char *interface,
+int rpc_instance_register_event(rpc_instance_t instance, const char *interface,
+    const char *name);
+
+/**
+ *
+ * @param instance
+ * @param interface
+ * @param name
+ */
+void rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
     const char *name);
 
 /**

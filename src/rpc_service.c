@@ -117,6 +117,7 @@ rpc_context_create(void)
 
 	result = g_malloc0(sizeof(*result));
 	result->rcx_root = rpc_instance_new("/", "Root object", NULL);
+	result->rcx_servers = g_ptr_array_new();
 	result->rcx_instances = g_hash_table_new(g_str_hash, g_str_equal);
 	result->rcx_threadpool = g_thread_pool_new(rpc_context_tp_handler,
 	    result, g_get_num_processors() * 4, true, &err);
@@ -192,9 +193,9 @@ rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
 {
 	g_mutex_lock(&instance->ri_mtx);
 
-	if (instance->ri_context && instance->ri_context->rcx_server) {
-		rpc_server_broadcast_event(instance->ri_context->rcx_server,
-		    instance->ri_path, interface, name, args);
+	if (instance->ri_context) {
+		rpc_context_emit_event(instance->ri_context, instance->ri_path,
+		    interface, name, args);
 	}
 
 	g_mutex_unlock(&instance->ri_mtx);
@@ -228,12 +229,11 @@ rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
 		return (-1);
 	}
 
-	if (context->rcx_server != NULL) {
-		rpc_server_broadcast_event(context->rcx_server, "/",
-		    RPC_DISCOVERABLE_INTERFACE, "object_added",
-		    rpc_string_create(instance->ri_path));
-	}
+	rpc_context_emit_event(context, "/",
+	    RPC_DISCOVERABLE_INTERFACE, "object_added",
+	    rpc_string_create(instance->ri_path));
 
+	instance->ri_context = context;
 	g_hash_table_insert(context->rcx_instances, instance->ri_path, instance);
 	g_mutex_unlock(&context->rcx_mtx);
 	return (0);
@@ -246,11 +246,9 @@ rpc_context_unregister_instance(rpc_context_t context, const char *path)
 	g_mutex_lock(&context->rcx_mtx);
 
 	if (g_hash_table_remove(context->rcx_instances, path)) {
-		if (context->rcx_server != NULL) {
-			rpc_server_broadcast_event(context->rcx_server, "/",
-			    RPC_DISCOVERABLE_INTERFACE, "object_removed",
-			    rpc_string_create(path));
-		}
+		rpc_context_emit_event(context, "/",
+		    RPC_DISCOVERABLE_INTERFACE, "object_removed",
+		    rpc_string_create(path));
 	}
 
 	g_mutex_unlock(&context->rcx_mtx);
@@ -291,6 +289,18 @@ rpc_context_unregister_member(rpc_context_t context, const char *interface,
 
 	return (rpc_instance_unregister_member(context->rcx_root, interface,
 	    name));
+}
+
+void
+rpc_context_emit_event(rpc_context_t context, const char *path,
+    const char *interface, const char *name, rpc_object_t args)
+{
+	rpc_server_t server;
+
+	for (guint i = 0; i < context->rcx_servers->len; i++) {
+		server = g_ptr_array_index(context->rcx_servers, i);
+		rpc_server_broadcast_event(server, path, interface, name, args);
+	}
 }
 
 inline void *
@@ -680,6 +690,15 @@ rpc_instance_get_property_rights(rpc_instance_t instance, const char *interface,
 	return (rights);
 }
 
+void
+rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
+    const char *name)
+{
+
+	rpc_instance_emit_event(instance, RPC_OBSERVABLE_INTERFACE, "changed",
+	    rpc_object_pack("{s,s}", "interface", interface, "name", name));
+}
+
 rpc_instance_t
 rpc_property_get_instance(void *cookie)
 {
@@ -893,6 +912,7 @@ rpc_observable_property_set(void *cookie, rpc_object_t args)
 		return (NULL);
 	}
 
+	rpc_instance_property_changed(inst, interface, name);
 	return (NULL);
 }
 
