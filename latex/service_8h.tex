@@ -127,6 +127,8 @@ void \hyperlink{service_8h_a36c5dae2cc75f5d4a740c5db25e25d7a}{rpc\+\_\+context\+
 \item 
 \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} \hyperlink{service_8h_a206fab24804db208f9b4d44f4c303596}{rpc\+\_\+context\+\_\+dispatch\+\_\+call} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
+void \hyperlink{service_8h_a5b58b015b8100f11a7e063890a72ba57}{rpc\+\_\+context\+\_\+emit\+\_\+event} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$path, const char $\ast$interface, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
+\item 
 void $\ast$ \hyperlink{service_8h_a62e71e6c0208e7ed1e23e2f9f3cd78f2}{rpc\+\_\+function\+\_\+get\+\_\+arg} (void $\ast$cookie)
 \item 
 \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} \hyperlink{service_8h_a51694182976cc6191bdd45205f027ca1}{rpc\+\_\+function\+\_\+get\+\_\+context} (void $\ast$cookie)
@@ -177,7 +179,9 @@ int \hyperlink{service_8h_abe3e96fe6a3517d8953cec716c9f959a}{rpc\+\_\+instance\+
 \item 
 int \hyperlink{service_8h_a6abc968c40f43e5ba37040bdb5e1338e}{rpc\+\_\+instance\+\_\+get\+\_\+property\+\_\+rights} (rpc\+\_\+instance\+\_\+t instance, const char $\ast$interface, const char $\ast$name)
 \item 
-int \hyperlink{service_8h_ac0f58bd08ffb28653cb084d5c464c7b8}{rpc\+\_\+instance\+\_\+register\+\_\+event} (rpc\+\_\+instance\+\_\+t, const char $\ast$interface, const char $\ast$name)
+int \hyperlink{service_8h_a4c93a52a6e865a77cdc3dfbc9f5590b0}{rpc\+\_\+instance\+\_\+register\+\_\+event} (rpc\+\_\+instance\+\_\+t instance, const char $\ast$interface, const char $\ast$name)
+\item 
+void \hyperlink{service_8h_a7fd5c99a3c86dab5b3074de4a093becd}{rpc\+\_\+instance\+\_\+property\+\_\+changed} (rpc\+\_\+instance\+\_\+t instance, const char $\ast$interface, const char $\ast$name)
 \item 
 rpc\+\_\+instance\+\_\+t \hyperlink{service_8h_a7b163c81c10d1672cc9d4192db3d166c}{rpc\+\_\+property\+\_\+get\+\_\+instance} (void $\ast$cookie)
 \item 
@@ -440,6 +444,28 @@ Newly created R\+PC context object.
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
+\index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+emit\+\_\+event@{rpc\+\_\+context\+\_\+emit\+\_\+event}}
+\index{rpc\+\_\+context\+\_\+emit\+\_\+event@{rpc\+\_\+context\+\_\+emit\+\_\+event}!service.\+h@{service.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+context\+\_\+emit\+\_\+event(rpc\+\_\+context\+\_\+t context, const char $\ast$path, const char $\ast$interface, const char $\ast$name, rpc\+\_\+object\+\_\+t args)}{rpc_context_emit_event(rpc_context_t context, const char *path, const char *interface, const char *name, rpc_object_t args)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+context\+\_\+emit\+\_\+event (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+context\+\_\+t}}]{context, }
+\item[{const char $\ast$}]{path, }
+\item[{const char $\ast$}]{interface, }
+\item[{const char $\ast$}]{name, }
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{args}
+\end{DoxyParamCaption}
+)}\hypertarget{service_8h_a5b58b015b8100f11a7e063890a72ba57}{}\label{service_8h_a5b58b015b8100f11a7e063890a72ba57}
+
+\begin{DoxyParams}{Parameters}
+{\em context} & \\
+\hline
+{\em path} & \\
+\hline
+{\em interface} & \\
+\hline
+{\em name} & \\
+\hline
+\end{DoxyParams}
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+find\+\_\+instance@{rpc\+\_\+context\+\_\+find\+\_\+instance}}
 \index{rpc\+\_\+context\+\_\+find\+\_\+instance@{rpc\+\_\+context\+\_\+find\+\_\+instance}!service.\+h@{service.\+h}}
 \subsubsection[{\texorpdfstring{rpc\+\_\+context\+\_\+find\+\_\+instance(rpc\+\_\+context\+\_\+t context, const char $\ast$path)}{rpc_context_find_instance(rpc_context_t context, const char *path)}}]{\setlength{\rightskip}{0pt plus 5cm}rpc\+\_\+instance\+\_\+t rpc\+\_\+context\+\_\+find\+\_\+instance (
@@ -1001,6 +1027,24 @@ Finds a given method belonging to a given interface in instance.
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
+\index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+property\+\_\+changed@{rpc\+\_\+instance\+\_\+property\+\_\+changed}}
+\index{rpc\+\_\+instance\+\_\+property\+\_\+changed@{rpc\+\_\+instance\+\_\+property\+\_\+changed}!service.\+h@{service.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+instance\+\_\+property\+\_\+changed(rpc\+\_\+instance\+\_\+t instance, const char $\ast$interface, const char $\ast$name)}{rpc_instance_property_changed(rpc_instance_t instance, const char *interface, const char *name)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+instance\+\_\+property\+\_\+changed (
+\begin{DoxyParamCaption}
+\item[{rpc\+\_\+instance\+\_\+t}]{instance, }
+\item[{const char $\ast$}]{interface, }
+\item[{const char $\ast$}]{name}
+\end{DoxyParamCaption}
+)}\hypertarget{service_8h_a7fd5c99a3c86dab5b3074de4a093becd}{}\label{service_8h_a7fd5c99a3c86dab5b3074de4a093becd}
+
+\begin{DoxyParams}{Parameters}
+{\em instance} & \\
+\hline
+{\em interface} & \\
+\hline
+{\em name} & \\
+\hline
+\end{DoxyParams}
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+register\+\_\+block@{rpc\+\_\+instance\+\_\+register\+\_\+block}}
 \index{rpc\+\_\+instance\+\_\+register\+\_\+block@{rpc\+\_\+instance\+\_\+register\+\_\+block}!service.\+h@{service.\+h}}
 \subsubsection[{\texorpdfstring{rpc\+\_\+instance\+\_\+register\+\_\+block(rpc\+\_\+instance\+\_\+t instance, const char $\ast$interface, const char $\ast$name, void $\ast$arg, rpc\+\_\+function\+\_\+t fn)}{rpc_instance_register_block(rpc_instance_t instance, const char *interface, const char *name, void *arg, rpc_function_t fn)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+instance\+\_\+register\+\_\+block (
@@ -1027,13 +1071,13 @@ Finds a given method belonging to a given interface in instance.
 \end{DoxyParams}
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+register\+\_\+event@{rpc\+\_\+instance\+\_\+register\+\_\+event}}
 \index{rpc\+\_\+instance\+\_\+register\+\_\+event@{rpc\+\_\+instance\+\_\+register\+\_\+event}!service.\+h@{service.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+instance\+\_\+register\+\_\+event(rpc\+\_\+instance\+\_\+t, const char $\ast$interface, const char $\ast$name)}{rpc_instance_register_event(rpc_instance_t, const char *interface, const char *name)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+instance\+\_\+register\+\_\+event (
+\subsubsection[{\texorpdfstring{rpc\+\_\+instance\+\_\+register\+\_\+event(rpc\+\_\+instance\+\_\+t instance, const char $\ast$interface, const char $\ast$name)}{rpc_instance_register_event(rpc_instance_t instance, const char *interface, const char *name)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+instance\+\_\+register\+\_\+event (
 \begin{DoxyParamCaption}
-\item[{rpc\+\_\+instance\+\_\+t}]{, }
+\item[{rpc\+\_\+instance\+\_\+t}]{instance, }
 \item[{const char $\ast$}]{interface, }
 \item[{const char $\ast$}]{name}
 \end{DoxyParamCaption}
-)}\hypertarget{service_8h_ac0f58bd08ffb28653cb084d5c464c7b8}{}\label{service_8h_ac0f58bd08ffb28653cb084d5c464c7b8}
+)}\hypertarget{service_8h_a4c93a52a6e865a77cdc3dfbc9f5590b0}{}\label{service_8h_a4c93a52a6e865a77cdc3dfbc9f5590b0}
 
 \begin{DoxyParams}{Parameters}
 {\em interface} & \\
