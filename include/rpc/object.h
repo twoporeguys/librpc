@@ -304,6 +304,12 @@ const char *rpc_get_type_name(rpc_type_t type);
 			(_object) = NULL;				\
 	} while(0)
 
+#define	rpc_swap(_old, _new)						\
+	do {								\
+		rpc_release(_old);					\
+		(_old) = (_new);					\
+	} while(0)
+
 /**
  * Returns last runtime error reported by the library.
  *
