@@ -228,7 +228,7 @@ cmd_tree(int argc, char *argv[])
 
 	tree = rpc_array_create();
 	conn = connect();
-	call = rpc_connection_call(conn, "/", RPC_DISCOVERABLE_INTERFACE,
+	call = rpc_connection_call(conn, argv[0], RPC_DISCOVERABLE_INTERFACE,
 	    "get_instances", NULL, NULL);
 
 	for (;;) {
