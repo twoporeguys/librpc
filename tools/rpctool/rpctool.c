@@ -132,9 +132,6 @@ static int
 inspect_properties(rpc_connection_t conn, const char *path, const char *interface)
 {
 	rpc_object_t properties;
-	const char *name;
-	char *str;
-	int ret = 0;
 
 	properties = rpc_connection_call_syncp(conn, path, RPC_OBSERVABLE_INTERFACE,
 	    "get_all", "[s]", interface);
