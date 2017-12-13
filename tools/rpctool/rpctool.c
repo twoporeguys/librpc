@@ -136,8 +136,11 @@ inspect_properties(rpc_connection_t conn, const char *path, const char *interfac
 	properties = rpc_connection_call_syncp(conn, path, RPC_OBSERVABLE_INTERFACE,
 	    "get_all", "[s]", interface);
 
-	if (rpc_is_error(properties))
+	if (rpc_is_error(properties)) {
+		fprintf(stderr, "Failed to read properties: %s\n",
+		    rpc_error_get_message(properties));
 		return (-1);
+	}
 
 	printf("  Properties:\n");
 
