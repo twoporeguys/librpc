@@ -136,6 +136,8 @@ Macros</h2></td></tr>
 <tr class="separator:aa125ec0a73c4c9953b07e5da1712573e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac19be935f72b35eeb2851bc509eabb2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">rpc_release</a>(_object)</td></tr>
 <tr class="separator:aac19be935f72b35eeb2851bc509eabb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a541e997e04e48fe86df08ae323516490"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_swap</b>(_old,  _new)</td></tr>
+<tr class="separator:a541e997e04e48fe86df08ae323516490"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -565,6 +567,35 @@ Functions</h2></td></tr>
 </dl>
 
 <p>Definition at line <a class="el" href="object_8h_source.html#l00301">301</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a541e997e04e48fe86df08ae323516490"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define rpc_swap</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_old, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_new&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                <a class="code" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">\</a></div><div class="line"><a class="code" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">		rpc_release</a>(_old);                    \</div><div class="line">        (_old) = (_new);                    \</div><div class="line">    } <span class="keywordflow">while</span>(0)</div><div class="ttc" id="object_8h_html_aac19be935f72b35eeb2851bc509eabb2"><div class="ttname"><a href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">rpc_release</a></div><div class="ttdeci">#define rpc_release(_object)</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00301">object.h:301</a></div></div>
+</div><!-- fragment -->
+<p>Definition at line <a class="el" href="object_8h_source.html#l00307">307</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>

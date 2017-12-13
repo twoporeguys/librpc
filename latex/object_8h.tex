@@ -35,6 +35,8 @@ This graph shows which files directly or indirectly include this file\+:
 \#define \hyperlink{object_8h_aa125ec0a73c4c9953b07e5da1712573e}{rpc\+\_\+is\+\_\+error}(\+\_\+object)~(\hyperlink{object_8h_a842969702ab17ad4b7e1b0c2ed9a4aef}{rpc\+\_\+get\+\_\+type}(\+\_\+object) == \hyperlink{object_8h_a40ea3143863f0a2b47446ccaf655638ea7c63246a7c7bc5912d499fb117358506}{R\+P\+C\+\_\+\+T\+Y\+P\+E\+\_\+\+E\+R\+R\+OR})
 \item 
 \#define \hyperlink{object_8h_aac19be935f72b35eeb2851bc509eabb2}{rpc\+\_\+release}(\+\_\+object)
+\item 
+\#define {\bfseries rpc\+\_\+swap}(\+\_\+old,  \+\_\+new)
 \end{DoxyCompactItemize}
 \subsection*{Typedefs}
 \begin{DoxyCompactItemize}
@@ -421,6 +423,25 @@ Also sets it to N\+U\+LL if as a result of the operation reference count dropped
 
 
 Definition at line 301 of file object.\+h.
+
+\index{object.\+h@{object.\+h}!rpc\+\_\+swap@{rpc\+\_\+swap}}
+\index{rpc\+\_\+swap@{rpc\+\_\+swap}!object.\+h@{object.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+swap}{rpc_swap}}]{\setlength{\rightskip}{0pt plus 5cm}\#define rpc\+\_\+swap(
+\begin{DoxyParamCaption}
+\item[{}]{\+\_\+old, }
+\item[{}]{\+\_\+new}
+\end{DoxyParamCaption}
+)}\hypertarget{object_8h_a541e997e04e48fe86df08ae323516490}{}\label{object_8h_a541e997e04e48fe86df08ae323516490}
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\textcolor{keywordflow}{do} \{                                \hyperlink{object_8h_aac19be935f72b35eeb2851bc509eabb2}{\(\backslash\)}
+\hyperlink{object_8h_aac19be935f72b35eeb2851bc509eabb2}{        rpc\_release}(\_old);                 \(\backslash\)
+        (\_old) = (\_new);                    \(\backslash\)
+    \} \textcolor{keywordflow}{while}(0)
+\end{DoxyCode}
+
+
+Definition at line 307 of file object.\+h.
 
 
 
