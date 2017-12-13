@@ -936,7 +936,7 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 	const char *k;
 	struct rpc_if_member *v;
 	struct rpc_interface_priv *priv;
-	rpc_object_t fragment;
+	rpc_object_t value;
 	rpc_object_t result;
 
 	if (rpc_object_unpack(args, "[s]", &interface) < 1) {
@@ -950,7 +950,9 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 		return (NULL);
 	}
 
+	result = rpc_array_create();
 	g_hash_table_iter_init(&iter, priv->rip_members);
+
 	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
 		if (v->rim_type != RPC_MEMBER_PROPERTY)
 			continue;
@@ -962,23 +964,17 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 		prop.name = k;
 		prop.arg = v->rim_property.rp_arg;
 		prop.error = NULL;
-		result = v->rim_property.rp_getter(&prop);
+		value = v->rim_property.rp_getter(&prop);
 
-		if (prop.error != NULL) {
-			rpc_function_error_ex(cookie, prop.error);
-			return (NULL);
-		}
+		if (prop.error != NULL)
+			continue;
 
-		fragment = rpc_object_pack("{s,v}",
+		rpc_array_append_stolen_value(result, rpc_object_pack("{s,v}",
 		    "name", v->rim_name,
-		    "value", result);
-
-		if (rpc_function_yield(cookie, fragment) != 0)
-			goto done;
+		    "value", value));
 	}
 
-done:
-	return (NULL);
+	return (result);
 }
 
 static bool
