@@ -122,9 +122,6 @@ rpc_context_create(void)
 	result->rcx_threadpool = g_thread_pool_new(rpc_context_tp_handler,
 	    result, g_get_num_processors() * 4, true, &err);
 
-	rpc_instance_register_interface(result->rcx_root,
-	    RPC_DISCOVERABLE_INTERFACE, rpc_discoverable_vtable, NULL);
-
 	rpc_context_register_instance(result, result->rcx_root);
 	return (result);
 }
@@ -474,6 +471,9 @@ rpc_instance_new(const char *fmt, ...)
 	result->ri_interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 	result->ri_arg = arg;
 
+	rpc_instance_register_interface(result, RPC_DISCOVERABLE_INTERFACE,
+	    rpc_discoverable_vtable, NULL);
+
 	rpc_instance_register_interface(result, RPC_INTROSPECTABLE_INTERFACE,
 	    rpc_introspectable_vtable, NULL);
 
@@ -745,12 +745,21 @@ rpc_get_objects(void *cookie, rpc_object_t args __unused)
 	rpc_context_t context = rpc_function_get_context(cookie);
 	GHashTableIter iter;
 	const char *k;
+	char *prefix = NULL;
+	rpc_instance_t instance;
 	rpc_instance_t v;
 	rpc_object_t fragment;
 
+	instance = rpc_function_get_instance(cookie);
 	g_hash_table_iter_init(&iter, context->rcx_instances);
 
+	if (strlen(rpc_instance_get_path(instance)) > 1)
+		prefix = g_strdup_printf("%s/", rpc_instance_get_path(instance));
+
 	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
+		if (prefix != NULL && !g_str_has_prefix(v->ri_path, prefix))
+			continue;
+
 		fragment = rpc_object_pack("{s,s}",
 		    "path", v->ri_path,
 		    "description", v->ri_descr);
@@ -760,6 +769,7 @@ rpc_get_objects(void *cookie, rpc_object_t args __unused)
 	}
 
 done:
+	g_free(prefix);
 	return ((rpc_object_t)NULL);
 }
 
