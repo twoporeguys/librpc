@@ -142,7 +142,6 @@ struct usb_connection
 	struct usb_thread_state		uc_state;
 	size_t 				uc_logsize;
 	int				uc_logfd;
-	FILE *				uc_logfile;
 };
 
 struct rpc_bus_transport libusb_bus_ops = {
@@ -276,8 +275,6 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	libusb_init(&conn->uc_libusb);
 
 	rpc_object_unpack(args, "f", &conn->uc_logfd);
-	if (conn->uc_logfd != -1)
-		conn->uc_logfile = fdopen(conn->uc_logfd, "a");
 
 	conn->uc_state.uts_libusb = conn->uc_libusb;
 	conn->uc_state.uts_exit = false;
@@ -318,9 +315,6 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	return (0);
 
 error:
-	if (conn->uc_logfile != NULL)
-		fclose(conn->uc_logfile);
-
 	conn->uc_state.uts_exit = true;
 	g_thread_join(conn->uc_libusb_thread);
 
@@ -349,9 +343,6 @@ static int
 usb_abort(void *arg)
 {
 	struct usb_connection *conn = arg;
-
-	if (conn->uc_logfile != NULL)
-		fclose(conn->uc_logfile);
 
 	conn->uc_state.uts_exit = true;
 	g_thread_join(conn->uc_libusb_thread);
@@ -612,7 +603,7 @@ usb_event_impl(void *arg)
 	for (;;) {
 		memset(log, 0, sizeof(*log) + conn->uc_logsize);
 		ret = usb_xfer(conn->uc_handle, LIBRPC_USB_READ_LOG, log,
-			       sizeof(*log) + conn->uc_logsize, 500);
+		   sizeof(*log) + conn->uc_logsize, 500);
 
 		if (ret < 1)
 			goto disconnected;
@@ -620,9 +611,9 @@ usb_event_impl(void *arg)
 		if (log->status != LIBRPC_USB_OK)
 			break;
 
-		if (conn->uc_logfile != NULL) {
-			fprintf(conn->uc_logfile, "%*s", ret - 1, log->buffer);
-			fflush(conn->uc_logfile);
+		if (conn->uc_logfd != -1) {
+			dprintf(conn->uc_logfd, "%*s", ret - 1, log->buffer);
+			fsync(conn->uc_logfd);
 		}
 	}
 
@@ -644,11 +635,9 @@ static void *
 usb_libusb_thread(void *arg)
 {
 	struct usb_thread_state *uts = arg;
-	struct timeval tv = {0 ,0};
 
 	while (!uts->uts_exit)
-		libusb_handle_events_timeout_completed(uts->uts_libusb, &tv,
-		    NULL);
+		libusb_handle_events(uts->uts_libusb);
 
 	return (NULL);
 }
