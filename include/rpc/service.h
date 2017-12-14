@@ -581,7 +581,7 @@ int rpc_instance_register_event(rpc_instance_t instance, const char *interface,
  * @param name
  */
 void rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
-    const char *name);
+    const char *name, rpc_object_t value);
 
 /**
  *

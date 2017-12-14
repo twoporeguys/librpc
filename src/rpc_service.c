@@ -704,11 +704,14 @@ rpc_instance_get_property_rights(rpc_instance_t instance, const char *interface,
 
 void
 rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
-    const char *name)
+    const char *name, rpc_object_t value)
 {
 
 	rpc_instance_emit_event(instance, RPC_OBSERVABLE_INTERFACE, "changed",
-	    rpc_object_pack("{s,s}", "interface", interface, "name", name));
+	    rpc_object_pack("{s,s,v}",
+	        "interface", interface,
+	        "name", name,
+	        "value", value));
 }
 
 rpc_instance_t
@@ -934,7 +937,7 @@ rpc_observable_property_set(void *cookie, rpc_object_t args)
 		return (NULL);
 	}
 
-	rpc_instance_property_changed(inst, interface, name);
+	rpc_instance_property_changed(inst, interface, name, value);
 	return (NULL);
 }
 
