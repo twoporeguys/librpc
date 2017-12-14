@@ -231,6 +231,8 @@ cmd_tree(int argc, char *argv[])
 
 		case RPC_CALL_ERROR:
 			ret = 1;
+			fprintf(stderr, "Cannot get instances: %s\n",
+			    rpc_error_get_message(rpc_call_result(call)));
 			goto error;
 
 		default:
