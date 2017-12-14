@@ -447,13 +447,16 @@ rpc_instance_t
 rpc_instance_new(const char *fmt, ...)
 {
 	va_list ap;
+	va_list path_ap;
 	rpc_instance_t result;
 	char *path;
 	const char *descr;
 	void *arg;
 
 	va_start(ap, fmt);
-	path = g_strdup_vprintf(fmt, ap);
+	va_copy(path_ap, ap);
+	path = g_strdup_vprintf(fmt, path_ap);
+	va_end(path_ap);
 	descr = va_arg(ap, const char *);
 	arg = va_arg(ap, void *);
 	va_end(ap);
