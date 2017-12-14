@@ -2087,10 +2087,10 @@
         </inbodydescription>
         <location file="/code/include/rpc/service.h" line="574" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="service_8h_1a7fd5c99a3c86dab5b3074de4a093becd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="service_8h_1a7428bf965d629a8c92488977bfb1d79d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void rpc_instance_property_changed</definition>
-        <argsstring>(rpc_instance_t instance, const char *interface, const char *name)</argsstring>
+        <argsstring>(rpc_instance_t instance, const char *interface, const char *name, rpc_object_t value)</argsstring>
         <name>rpc_instance_property_changed</name>
         <param>
           <type>rpc_instance_t</type>
@@ -2103,6 +2103,10 @@
         <param>
           <type>const char *</type>
           <declname>name</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>value</declname>
         </param>
         <briefdescription>
         </briefdescription>
@@ -2544,8 +2548,8 @@
 <codeline lineno="574"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a4c93a52a6e865a77cdc3dfbc9f5590b0" kindref="member">rpc_instance_register_event</ref>(rpc_instance_t<sp/>instance,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*interface,</highlight></codeline>
 <codeline lineno="575"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name);</highlight></codeline>
 <codeline lineno="576"><highlight class="normal"></highlight></codeline>
-<codeline lineno="583"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a7fd5c99a3c86dab5b3074de4a093becd" kindref="member">rpc_instance_property_changed</ref>(rpc_instance_t<sp/>instance,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*interface,</highlight></codeline>
-<codeline lineno="584"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name);</highlight></codeline>
+<codeline lineno="583"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a7428bf965d629a8c92488977bfb1d79d" kindref="member">rpc_instance_property_changed</ref>(rpc_instance_t<sp/>instance,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*interface,</highlight></codeline>
+<codeline lineno="584"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>value);</highlight></codeline>
 <codeline lineno="585"><highlight class="normal"></highlight></codeline>
 <codeline lineno="591"><highlight class="normal">rpc_instance_t<sp/><ref refid="service_8h_1a7b163c81c10d1672cc9d4192db3d166c" kindref="member">rpc_property_get_instance</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*cookie);</highlight></codeline>
 <codeline lineno="592"><highlight class="normal"></highlight></codeline>

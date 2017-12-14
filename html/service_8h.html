@@ -278,8 +278,8 @@ Functions</h2></td></tr>
 <tr class="separator:a6abc968c40f43e5ba37040bdb5e1338e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c93a52a6e865a77cdc3dfbc9f5590b0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a4c93a52a6e865a77cdc3dfbc9f5590b0">rpc_instance_register_event</a> (rpc_instance_t instance, const char *interface, const char *name)</td></tr>
 <tr class="separator:a4c93a52a6e865a77cdc3dfbc9f5590b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fd5c99a3c86dab5b3074de4a093becd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a7fd5c99a3c86dab5b3074de4a093becd">rpc_instance_property_changed</a> (rpc_instance_t instance, const char *interface, const char *name)</td></tr>
-<tr class="separator:a7fd5c99a3c86dab5b3074de4a093becd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7428bf965d629a8c92488977bfb1d79d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a7428bf965d629a8c92488977bfb1d79d">rpc_instance_property_changed</a> (rpc_instance_t instance, const char *interface, const char *name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
+<tr class="separator:a7428bf965d629a8c92488977bfb1d79d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b163c81c10d1672cc9d4192db3d166c"><td class="memItemLeft" align="right" valign="top">rpc_instance_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a7b163c81c10d1672cc9d4192db3d166c">rpc_property_get_instance</a> (void *cookie)</td></tr>
 <tr class="separator:a7b163c81c10d1672cc9d4192db3d166c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64aabf8f8437449a16718f932e85691a"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a64aabf8f8437449a16718f932e85691a">rpc_property_get_arg</a> (void *cookie)</td></tr>
@@ -1696,7 +1696,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a7fd5c99a3c86dab5b3074de4a093becd"></a>
+<a class="anchor" id="a7428bf965d629a8c92488977bfb1d79d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1716,7 +1716,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>name</em>&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
