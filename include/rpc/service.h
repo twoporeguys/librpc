@@ -444,7 +444,14 @@ bool rpc_function_should_abort(void *cookie);
  * @param arg
  * @return
  */
-rpc_instance_t rpc_instance_new(const char *fmt, ...);
+rpc_instance_t rpc_instance_new(void *arg, const char *fmt, ...);
+
+/**
+ *
+ * @param fmt
+ * @param ...
+ */
+void rpc_instance_set_description(rpc_instance_t, const char *fmt, ...);
 
 /**
  *

@@ -210,7 +210,8 @@ cdef extern from "rpc/service.h" nogil:
     void *rpc_property_get_arg(void *cookie)
     void rpc_property_error(void *cookie, int code, const char *fmt)
 
-    rpc_instance_t rpc_instance_new(const char *path, const char *descr, void *arg)
+    rpc_instance_t rpc_instance_new(void *arg, const char *path)
+    void rpc_instance_set_description(rpc_instance_t instance, const char *description)
     void *rpc_instance_get_arg(rpc_instance_t instance)
     const char *rpc_instance_get_path(rpc_instance_t instance)
     int rpc_instance_register_interface(rpc_instance_t instance, const char *interface, rpc_if_member *vtable, void *arg)

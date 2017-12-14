@@ -806,9 +806,12 @@ cdef class Instance(object):
 
     def __init__(self, path, description=None):
         b_path = path.encode('utf-8')
-        b_description = description.encode('utf-8')
-        self.instance = rpc_instance_new(b_path, b_description, NULL)
+        self.instance = rpc_instance_new(NULL, b_path)
         self.properties = []
+
+        if description:
+            b_description = description.encode('utf-8')
+            rpc_instance_set_description(self.instance, b_description)
 
     def register_interface(self, interface):
         b_interface = interface.encode('utf-8')

@@ -116,12 +116,13 @@ rpc_context_create(void)
 	rpc_context_t result;
 
 	result = g_malloc0(sizeof(*result));
-	result->rcx_root = rpc_instance_new("/", "Root object", NULL);
+	result->rcx_root = rpc_instance_new(NULL, "/");
 	result->rcx_servers = g_ptr_array_new();
 	result->rcx_instances = g_hash_table_new(g_str_hash, g_str_equal);
 	result->rcx_threadpool = g_thread_pool_new(rpc_context_tp_handler,
 	    result, g_get_num_processors() * 4, true, &err);
 
+	rpc_instance_set_description(result->rcx_root, "Root object");
 	rpc_context_register_instance(result, result->rcx_root);
 	return (result);
 }
@@ -444,18 +445,14 @@ rpc_function_should_abort(void *cookie)
 }
 
 rpc_instance_t
-rpc_instance_new(const char *fmt, ...)
+rpc_instance_new(void *arg, const char *fmt, ...)
 {
 	va_list ap;
 	rpc_instance_t result;
 	char *path;
-	const char *descr;
-	void *arg;
 
 	va_start(ap, fmt);
 	path = g_strdup_vprintf(fmt, ap);
-	descr = va_arg(ap, const char *);
-	arg = va_arg(ap, void *);
 	va_end(ap);
 
 	if (!rpc_context_path_is_valid(path)) {
@@ -466,7 +463,6 @@ rpc_instance_new(const char *fmt, ...)
 	result = g_malloc0(sizeof(*result));
 	g_mutex_init(&result->ri_mtx);
 	result->ri_path = g_strdup(path);
-	result->ri_descr = g_strdup(descr);
 	result->ri_subscriptions = g_hash_table_new(g_str_hash, g_str_equal);
 	result->ri_interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 	result->ri_arg = arg;
@@ -480,7 +476,21 @@ rpc_instance_new(const char *fmt, ...)
 	return (result);
 }
 
-void *rpc_instance_get_arg(rpc_instance_t instance)
+void
+rpc_instance_set_description(rpc_instance_t instance, const char *fmt, ...)
+{
+	va_list ap;
+	char *description;
+
+	va_start(ap, fmt);
+	description = g_strdup_vprintf(fmt, ap);
+	va_end(ap);
+
+	instance->ri_descr = description;
+}
+
+void *
+rpc_instance_get_arg(rpc_instance_t instance)
 {
 
 	g_assert_nonnull(instance);
@@ -488,7 +498,8 @@ void *rpc_instance_get_arg(rpc_instance_t instance)
 	return (instance->ri_arg);
 }
 
-const char *rpc_instance_get_path(rpc_instance_t instance)
+const char *
+rpc_instance_get_path(rpc_instance_t instance)
 {
 
 	g_assert_nonnull(instance);
@@ -496,7 +507,8 @@ const char *rpc_instance_get_path(rpc_instance_t instance)
 	return (instance->ri_path);
 }
 
-void rpc_instance_free(rpc_instance_t instance)
+void
+rpc_instance_free(rpc_instance_t instance)
 {
 	g_assert_nonnull(instance);
 
