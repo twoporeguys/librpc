@@ -248,8 +248,10 @@ Functions</h2></td></tr>
 <tr class="separator:a7e912e42af9c3899e74e1ef539ca7e50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23fb9149cf7ad5bfdec4bc24fd805617"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a23fb9149cf7ad5bfdec4bc24fd805617">rpc_function_should_abort</a> (void *cookie)</td></tr>
 <tr class="separator:a23fb9149cf7ad5bfdec4bc24fd805617"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aee57eb01576d11b3eba2cc357667db4a"><td class="memItemLeft" align="right" valign="top">rpc_instance_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#aee57eb01576d11b3eba2cc357667db4a">rpc_instance_new</a> (const char *fmt,...)</td></tr>
-<tr class="separator:aee57eb01576d11b3eba2cc357667db4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43128f643278635bdf8fe81e1affd629"><td class="memItemLeft" align="right" valign="top">rpc_instance_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a43128f643278635bdf8fe81e1affd629">rpc_instance_new</a> (void *arg, const char *fmt,...)</td></tr>
+<tr class="separator:a43128f643278635bdf8fe81e1affd629"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a889563fa5fee4a5587e4b741f40127ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a889563fa5fee4a5587e4b741f40127ac">rpc_instance_set_description</a> (rpc_instance_t, const char *fmt,...)</td></tr>
+<tr class="separator:a889563fa5fee4a5587e4b741f40127ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f4eb6df2553bf05ce15f74950f6415e"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a6f4eb6df2553bf05ce15f74950f6415e">rpc_instance_get_arg</a> (rpc_instance_t instance)</td></tr>
 <tr class="separator:a6f4eb6df2553bf05ce15f74950f6415e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68b61823da7220e591aa5b815fe5cc5e"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a68b61823da7220e591aa5b815fe5cc5e">rpc_instance_get_path</a> (rpc_instance_t instance)</td></tr>
@@ -1654,13 +1656,19 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aee57eb01576d11b3eba2cc357667db4a"></a>
+<a class="anchor" id="a43128f643278635bdf8fe81e1affd629"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">rpc_instance_t rpc_instance_new </td>
           <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>arg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>fmt</em>, </td>
         </tr>
@@ -2019,6 +2027,45 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a889563fa5fee4a5587e4b741f40127ac"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rpc_instance_set_description </td>
+          <td>(</td>
+          <td class="paramtype">rpc_instance_t&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fmt</td><td></td></tr>
+    <tr><td class="paramname">...</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

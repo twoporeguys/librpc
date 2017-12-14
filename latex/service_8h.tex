@@ -153,7 +153,9 @@ void \hyperlink{service_8h_a7e912e42af9c3899e74e1ef539ca7e50}{rpc\+\_\+function\
 \item 
 bool \hyperlink{service_8h_a23fb9149cf7ad5bfdec4bc24fd805617}{rpc\+\_\+function\+\_\+should\+\_\+abort} (void $\ast$cookie)
 \item 
-rpc\+\_\+instance\+\_\+t \hyperlink{service_8h_aee57eb01576d11b3eba2cc357667db4a}{rpc\+\_\+instance\+\_\+new} (const char $\ast$fmt,...)
+rpc\+\_\+instance\+\_\+t \hyperlink{service_8h_a43128f643278635bdf8fe81e1affd629}{rpc\+\_\+instance\+\_\+new} (void $\ast$arg, const char $\ast$fmt,...)
+\item 
+void \hyperlink{service_8h_a889563fa5fee4a5587e4b741f40127ac}{rpc\+\_\+instance\+\_\+set\+\_\+description} (rpc\+\_\+instance\+\_\+t, const char $\ast$fmt,...)
 \item 
 void $\ast$ \hyperlink{service_8h_a6f4eb6df2553bf05ce15f74950f6415e}{rpc\+\_\+instance\+\_\+get\+\_\+arg} (rpc\+\_\+instance\+\_\+t instance)
 \item 
@@ -1011,12 +1013,13 @@ Finds a given method belonging to a given interface in instance.
 \end{DoxyReturn}
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+new@{rpc\+\_\+instance\+\_\+new}}
 \index{rpc\+\_\+instance\+\_\+new@{rpc\+\_\+instance\+\_\+new}!service.\+h@{service.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+instance\+\_\+new(const char $\ast$fmt,...)}{rpc_instance_new(const char *fmt,...)}}]{\setlength{\rightskip}{0pt plus 5cm}rpc\+\_\+instance\+\_\+t rpc\+\_\+instance\+\_\+new (
+\subsubsection[{\texorpdfstring{rpc\+\_\+instance\+\_\+new(void $\ast$arg, const char $\ast$fmt,...)}{rpc_instance_new(void *arg, const char *fmt,...)}}]{\setlength{\rightskip}{0pt plus 5cm}rpc\+\_\+instance\+\_\+t rpc\+\_\+instance\+\_\+new (
 \begin{DoxyParamCaption}
+\item[{void $\ast$}]{arg, }
 \item[{const char $\ast$}]{fmt, }
 \item[{}]{...}
 \end{DoxyParamCaption}
-)}\hypertarget{service_8h_aee57eb01576d11b3eba2cc357667db4a}{}\label{service_8h_aee57eb01576d11b3eba2cc357667db4a}
+)}\hypertarget{service_8h_a43128f643278635bdf8fe81e1affd629}{}\label{service_8h_a43128f643278635bdf8fe81e1affd629}
 
 \begin{DoxyParams}{Parameters}
 {\em path} & \\
@@ -1176,6 +1179,22 @@ Finds a given method belonging to a given interface in instance.
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
+\index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+set\+\_\+description@{rpc\+\_\+instance\+\_\+set\+\_\+description}}
+\index{rpc\+\_\+instance\+\_\+set\+\_\+description@{rpc\+\_\+instance\+\_\+set\+\_\+description}!service.\+h@{service.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+instance\+\_\+set\+\_\+description(rpc\+\_\+instance\+\_\+t, const char $\ast$fmt,...)}{rpc_instance_set_description(rpc_instance_t, const char *fmt,...)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+instance\+\_\+set\+\_\+description (
+\begin{DoxyParamCaption}
+\item[{rpc\+\_\+instance\+\_\+t}]{, }
+\item[{const char $\ast$}]{fmt, }
+\item[{}]{...}
+\end{DoxyParamCaption}
+)}\hypertarget{service_8h_a889563fa5fee4a5587e4b741f40127ac}{}\label{service_8h_a889563fa5fee4a5587e4b741f40127ac}
+
+\begin{DoxyParams}{Parameters}
+{\em fmt} & \\
+\hline
+{\em ...} & \\
+\hline
+\end{DoxyParams}
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+unregister\+\_\+member@{rpc\+\_\+instance\+\_\+unregister\+\_\+member}}
 \index{rpc\+\_\+instance\+\_\+unregister\+\_\+member@{rpc\+\_\+instance\+\_\+unregister\+\_\+member}!service.\+h@{service.\+h}}
 \subsubsection[{\texorpdfstring{rpc\+\_\+instance\+\_\+unregister\+\_\+member(rpc\+\_\+instance\+\_\+t instance, const char $\ast$interface, const char $\ast$name)}{rpc_instance_unregister_member(rpc_instance_t instance, const char *interface, const char *name)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+instance\+\_\+unregister\+\_\+member (
