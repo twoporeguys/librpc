@@ -230,6 +230,7 @@ ws_process_connection(SoupServer *ss __unused,
 	rco->rco_get_fd = &ws_get_fd;
 	rco->rco_arg = conn;
 	conn->wc_parent = rco;
+	server->ws_server->rs_accept(server->ws_server, rco);
 
 	g_object_ref(conn->wc_ws);
 	g_signal_connect(conn->wc_ws, "closed", G_CALLBACK(ws_close), conn);
