@@ -445,6 +445,9 @@ static void
 on_events_subscribe(rpc_connection_t conn, rpc_object_t args,
     rpc_object_t id __unused)
 {
+	if (rpc_get_type(args) != RPC_TYPE_ARRAY)
+		return;
+
 	rpc_array_apply(args, ^(size_t index __unused, rpc_object_t value) {
 		rpc_instance_t instance;
 		struct rpc_subscription *sub;
@@ -481,6 +484,9 @@ static void
 on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args,
     rpc_object_t id __unused)
 {
+	if (rpc_get_type(args) != RPC_TYPE_ARRAY)
+		return;
+
 	rpc_array_apply(args, ^(size_t index __unused, rpc_object_t value) {
 		rpc_instance_t instance;
 		struct rpc_subscription *sub;
