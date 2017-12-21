@@ -1270,7 +1270,7 @@ cdef class Connection(object):
                     break
 
         if call_status == CallStatus.ERROR:
-            raise get_chunk()
+            raise self.do_unpack(get_chunk(), True)
 
         if call_status == CallStatus.DONE:
             return get_chunk()
