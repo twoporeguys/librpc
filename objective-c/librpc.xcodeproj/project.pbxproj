@@ -9,12 +9,60 @@
 /* Begin PBXBuildFile section */
 		EBBD58491FE75C7B0017F053 /* librpc.h in Headers */ = {isa = PBXBuildFile; fileRef = EBBD58481FE75C7B0017F053 /* librpc.h */; };
 		EBBD584B1FE75C7B0017F053 /* librpc.m in Sources */ = {isa = PBXBuildFile; fileRef = EBBD584A1FE75C7B0017F053 /* librpc.m */; };
+		EBBD58871FE8ACC40017F053 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EBBD58861FE8ACC40017F053 /* main.m */; };
+		EBBD588E1FE8AE1A0017F053 /* liblibrpc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EBBD58451FE75C7B0017F053 /* liblibrpc.dylib */; };
+		EBBD58961FE8BC120017F053 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBD58951FE8BC120017F053 /* main.swift */; };
+		EBBD589C1FE8BC310017F053 /* liblibrpc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EBBD58451FE75C7B0017F053 /* liblibrpc.dylib */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EBBD588B1FE8ADEE0017F053 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EBBD583D1FE75C7B0017F053 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EBBD58441FE75C7B0017F053;
+			remoteInfo = librpc;
+		};
+		EBBD589A1FE8BC2D0017F053 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EBBD583D1FE75C7B0017F053 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EBBD58441FE75C7B0017F053;
+			remoteInfo = librpc;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		EBBD58821FE8ACC40017F053 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		EBBD58911FE8BC120017F053 /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			name = "Copy Files";
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		EBBD58451FE75C7B0017F053 /* liblibrpc.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liblibrpc.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBBD58481FE75C7B0017F053 /* librpc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = librpc.h; sourceTree = "<group>"; };
 		EBBD584A1FE75C7B0017F053 /* librpc.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = librpc.m; sourceTree = "<group>"; };
+		EBBD58841FE8ACC40017F053 /* example-client */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "example-client"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EBBD58861FE8ACC40017F053 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		EBBD58931FE8BC120017F053 /* example-swift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "example-swift"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EBBD58951FE8BC120017F053 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		EBBD589D1FE8BCD20017F053 /* bridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bridge.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -25,6 +73,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EBBD58811FE8ACC40017F053 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EBBD588E1FE8AE1A0017F053 /* liblibrpc.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EBBD58901FE8BC120017F053 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EBBD589C1FE8BC310017F053 /* liblibrpc.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -32,7 +96,10 @@
 			isa = PBXGroup;
 			children = (
 				EBBD58471FE75C7B0017F053 /* librpc */,
+				EBBD58851FE8ACC40017F053 /* example-client */,
+				EBBD58941FE8BC120017F053 /* example-swift */,
 				EBBD58461FE75C7B0017F053 /* Products */,
+				EBBD588D1FE8AE1A0017F053 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -40,6 +107,8 @@
 			isa = PBXGroup;
 			children = (
 				EBBD58451FE75C7B0017F053 /* liblibrpc.dylib */,
+				EBBD58841FE8ACC40017F053 /* example-client */,
+				EBBD58931FE8BC120017F053 /* example-swift */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -51,6 +120,30 @@
 				EBBD584A1FE75C7B0017F053 /* librpc.m */,
 			);
 			path = librpc;
+			sourceTree = "<group>";
+		};
+		EBBD58851FE8ACC40017F053 /* example-client */ = {
+			isa = PBXGroup;
+			children = (
+				EBBD58861FE8ACC40017F053 /* main.m */,
+			);
+			path = "example-client";
+			sourceTree = "<group>";
+		};
+		EBBD588D1FE8AE1A0017F053 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EBBD58941FE8BC120017F053 /* example-swift */ = {
+			isa = PBXGroup;
+			children = (
+				EBBD589D1FE8BCD20017F053 /* bridge.h */,
+				EBBD58951FE8BC120017F053 /* main.swift */,
+			);
+			path = "example-swift";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -84,16 +177,62 @@
 			productReference = EBBD58451FE75C7B0017F053 /* liblibrpc.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
+		EBBD58831FE8ACC40017F053 /* example-client */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EBBD58881FE8ACC40017F053 /* Build configuration list for PBXNativeTarget "example-client" */;
+			buildPhases = (
+				EBBD58801FE8ACC40017F053 /* Sources */,
+				EBBD58811FE8ACC40017F053 /* Frameworks */,
+				EBBD58821FE8ACC40017F053 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EBBD588C1FE8ADEE0017F053 /* PBXTargetDependency */,
+			);
+			name = "example-client";
+			productName = "example-client";
+			productReference = EBBD58841FE8ACC40017F053 /* example-client */;
+			productType = "com.apple.product-type.tool";
+		};
+		EBBD58921FE8BC120017F053 /* example-swift */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EBBD58971FE8BC120017F053 /* Build configuration list for PBXNativeTarget "example-swift" */;
+			buildPhases = (
+				EBBD588F1FE8BC120017F053 /* Sources */,
+				EBBD58901FE8BC120017F053 /* Frameworks */,
+				EBBD58911FE8BC120017F053 /* Copy Files */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EBBD589B1FE8BC2D0017F053 /* PBXTargetDependency */,
+			);
+			name = "example-swift";
+			productName = "example-swift";
+			productReference = EBBD58931FE8BC120017F053 /* example-swift */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		EBBD583D1FE75C7B0017F053 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0920;
 				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Jakub Klama";
 				TargetAttributes = {
 					EBBD58441FE75C7B0017F053 = {
+						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 0920;
+						ProvisioningStyle = Automatic;
+					};
+					EBBD58831FE8ACC40017F053 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					EBBD58921FE8BC120017F053 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
@@ -112,6 +251,8 @@
 			projectRoot = "";
 			targets = (
 				EBBD58441FE75C7B0017F053 /* librpc */,
+				EBBD58831FE8ACC40017F053 /* example-client */,
+				EBBD58921FE8BC120017F053 /* example-swift */,
 			);
 		};
 /* End PBXProject section */
@@ -125,7 +266,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EBBD58801FE8ACC40017F053 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EBBD58871FE8ACC40017F053 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EBBD588F1FE8BC120017F053 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EBBD58961FE8BC120017F053 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EBBD588C1FE8ADEE0017F053 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EBBD58441FE75C7B0017F053 /* librpc */;
+			targetProxy = EBBD588B1FE8ADEE0017F053 /* PBXContainerItemProxy */;
+		};
+		EBBD589B1FE8BC2D0017F053 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EBBD58441FE75C7B0017F053 /* librpc */;
+			targetProxy = EBBD589A1FE8BC2D0017F053 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		EBBD584C1FE75C7B0017F053 /* Debug */ = {
@@ -234,32 +404,80 @@
 		EBBD584F1FE75C7B0017F053 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				HEADER_SEARCH_PATHS = /usr/local/include;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
 					"-lrpc",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "librpc/librpc-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		EBBD58501FE75C7B0017F053 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				HEADER_SEARCH_PATHS = /usr/local/include;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				OTHER_LDFLAGS = (
 					"-L/usr/local/lib",
 					"-lrpc",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "librpc/librpc-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		EBBD58891FE8ACC40017F053 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		EBBD588A1FE8ACC40017F053 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		EBBD58981FE8BC120017F053 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "example-swift/bridge.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		EBBD58991FE8BC120017F053 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "example-swift/bridge.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -280,6 +498,24 @@
 			buildConfigurations = (
 				EBBD584F1FE75C7B0017F053 /* Debug */,
 				EBBD58501FE75C7B0017F053 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EBBD58881FE8ACC40017F053 /* Build configuration list for PBXNativeTarget "example-client" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EBBD58891FE8ACC40017F053 /* Debug */,
+				EBBD588A1FE8ACC40017F053 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EBBD58971FE8BC120017F053 /* Build configuration list for PBXNativeTarget "example-swift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EBBD58981FE8BC120017F053 /* Debug */,
+				EBBD58991FE8BC120017F053 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

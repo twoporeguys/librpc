@@ -9,28 +9,39 @@
 #import <Foundation/Foundation.h>
 
 @interface RPCObject : NSObject
-+ (RPCObject *)initWithValue:(NSObject *)value;
++ (RPCObject *)initWithValue:(id)value;
++ (RPCObject *)initFromNativeObject:(void *)object;
 - (NSString *)describe;
+- (NSObject *)value;
+- (void *)nativeValue;
 @end
 
-@interface RPCUnsignedNumber : NSNumber
-+ (void)initWithValue:(NSNumber *)value;
+@interface RPCCall : NSObject
++ (RPCCall *)initFromNativeObject:(void *)object;
+- (void)wait;
+- (void)resume;
+- (void)abort;
+- (RPCObject *)result;
 @end
 
-@interface RPCBool : NSNumber
-+ (void)initWithValue:(BOOL)value;
-@end
+typedef void(^RPCFunctionCallback)(RPCCall *call, RPCObject *value);
 
 @interface RPCClient : NSObject
 - (void)connect:(NSString *)uri;
 - (void)disconnect;
+- (NSDictionary *)instances;
+- (RPCCall *)call:(NSString *)method path:(NSString *)path interface:(NSString *)interface args:(RPCObject *)args;
 - (RPCObject *)callSync:(NSString *)method path:(NSString *)path interface:(NSString *)interface args:(RPCObject *)args;
+- (void)callAsync:(NSString *)method path:(NSString *)path interface:(NSString *)interface args:(RPCObject *)args callback:(RPCFunctionCallback)cb;
 @end
 
 @interface RPCInstance : NSObject
-
+@property (readonly) RPCClient *client;
+@property (readonly) NSString *path;
 @end
 
 @interface RPCInterface : NSObject
-
+@property (readonly) RPCInstance *instance;
+- (void)forwardInvocation:(NSInvocation *)anInvocation;
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector;
 @end
