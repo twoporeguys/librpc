@@ -267,6 +267,7 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 static void
 on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 {
+	struct work_item *item;
 	GError *err = NULL;
 	rpc_call_t call;
 
@@ -280,7 +281,9 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	call->rc_result = args;
 
 	if (call->rc_callback) {
-		g_thread_pool_push(conn->rco_callback_pool, call, &err);
+		item = g_malloc0(sizeof(*item));
+		item->call = call;
+		g_thread_pool_push(conn->rco_callback_pool, item, &err);
 		if (err != NULL) {
 
 		}
@@ -294,6 +297,7 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 static void
 on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 {
+	struct work_item *item;
 	GError *err = NULL;
 	rpc_call_t call;
 	rpc_object_t payload;
@@ -318,7 +322,9 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	call->rc_seqno = seqno;
 
 	if (call->rc_callback) {
-		g_thread_pool_push(conn->rco_callback_pool, call, &err);
+		item = g_malloc0(sizeof(*item));
+		item->call = call;
+		g_thread_pool_push(conn->rco_callback_pool, item, &err);
 		if (err != NULL) {
 
 		}
@@ -1105,7 +1111,7 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	call->rc_interface = interface;
 	call->rc_method = name;
 	call->rc_args = args != NULL ? args : rpc_array_create();
-	call->rc_callback = callback;
+	call->rc_callback = callback != NULL ? Block_copy(callback) : NULL;
 
 	if (path)
 		rpc_dictionary_set_string(payload, "path", path);
