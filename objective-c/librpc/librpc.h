@@ -30,9 +30,19 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
 - (void)connect:(nonnull NSString *)uri;
 - (void)disconnect;
 - (nonnull NSDictionary *)instances;
-- (nonnull RPCCall *)call:(nonnull NSString *)method path:(nullable NSString *)path interface:(nullable NSString *)interface args:(nullable RPCObject *)args;
-- (nonnull RPCObject *)callSync:(nonnull NSString *)method path:(nullable NSString *)path interface:(nullable NSString *)interface args:(nullable RPCObject *)args;
-- (void)callAsync:(nonnull NSString *)method path:(nullable NSString *)path interface:(nullable NSString *)interface args:(nullable RPCObject *)args callback:(nonnull RPCFunctionCallback)cb;
+- (nonnull RPCCall *)call:(nonnull NSString *)method
+                     path:(nullable NSString *)path
+                interface:(nullable NSString *)interface
+                     args:(nullable RPCObject *)args;
+- (nonnull RPCObject *)callSync:(nonnull NSString *)method
+                           path:(nullable NSString *)path
+                      interface:(nullable NSString *)interface
+                           args:(nullable RPCObject *)args;
+- (void)callAsync:(nonnull NSString *)method
+             path:(nullable NSString *)path
+        interface:(nullable NSString *)interface
+             args:(nullable RPCObject *)args
+         callback:(nonnull RPCFunctionCallback)cb;
 @end
 
 @interface RPCInstance : NSObject
