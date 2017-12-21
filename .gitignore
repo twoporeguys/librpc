@@ -35,5 +35,12 @@
 # Cmake files
 cmake-build-debug
 
+# Build directory
+
 # Idea directory
 .idea
+
+# Xcode preferences
+*.xcuserdatad
+xcuserdata
+
