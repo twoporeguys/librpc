@@ -37,7 +37,6 @@
 #include <glib.h>
 #include <libsoup/soup.h>
 #include <libudev.h>
-#include <linux/socket.h>
 #include <linux/netlink.h>
 #include <linux/connector.h>
 #include <rpc/bus.h>
