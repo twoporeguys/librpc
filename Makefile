@@ -22,9 +22,9 @@ bootstrap:
 clean:
 	rm -rf *~ build
 
-
 install:
 	make -C build install
+	ldconfig
 
 uninstall:
 	make -C build uninstall
