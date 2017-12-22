@@ -284,9 +284,9 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 		item = g_malloc0(sizeof(*item));
 		item->call = call;
 		g_thread_pool_push(conn->rco_callback_pool, item, &err);
-		if (err != NULL) {
 
-		}
+		if (err != NULL)
+			g_free(item);
 	}
 
 	rpc_retain(call->rc_result);
@@ -325,9 +325,9 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 		item = g_malloc0(sizeof(*item));
 		item->call = call;
 		g_thread_pool_push(conn->rco_callback_pool, item, &err);
-		if (err != NULL) {
 
-		}
+		if (err != NULL)
+			g_free(item);
 	}
 
 	rpc_retain(call->rc_result);
