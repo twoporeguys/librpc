@@ -256,7 +256,7 @@ void rpc_context_unregister_instance(_Nonnull rpc_context_t context,
  * @return Status.
  */
 int rpc_context_register_member(_Nonnull rpc_context_t context,
-    const char *_Nonnull interface, struct rpc_if_member *_Nonnull m);
+    const char *_Nullable interface, struct rpc_if_member *_Nonnull m);
 
 /**
  * Registers a given block as a RPC method for a given context.
@@ -269,7 +269,7 @@ int rpc_context_register_member(_Nonnull rpc_context_t context,
  * @return Status.
  */
 int rpc_context_register_block(_Nonnull rpc_context_t context,
-    const char *_Nonnull interface, const char *_Nonnull name,
+    const char *_Nullable interface, const char *_Nonnull name,
     void *_Nullable arg, _Nonnull rpc_function_t func);
 
 /**
@@ -458,7 +458,7 @@ bool rpc_function_should_abort(void *_Nonnull cookie);
  * @param arg
  * @return
  */
-_Nonnull rpc_instance_t rpc_instance_new(void *_Nullable arg,
+_Nullable rpc_instance_t rpc_instance_new(void *_Nullable arg,
     const char *_Nonnull fmt, ...);
 
 /**
