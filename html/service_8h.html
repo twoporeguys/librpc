@@ -208,10 +208,10 @@ Functions</h2></td></tr>
 <tr class="separator:acfa9c9b0063bd316850e8a58878cb44e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6d86450498479f51012a50bd973e273"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ae6d86450498479f51012a50bd973e273">rpc_context_unregister_instance</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *_Nonnull path)</td></tr>
 <tr class="separator:ae6d86450498479f51012a50bd973e273"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3b0d2b03089e8c24447ee4c4f9afd6d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#aa3b0d2b03089e8c24447ee4c4f9afd6d">rpc_context_register_member</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *_Nonnull interface, struct <a class="el" href="structrpc__if__member.html">rpc_if_member</a> *_Nonnull m)</td></tr>
-<tr class="separator:aa3b0d2b03089e8c24447ee4c4f9afd6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf6d4f633383ea596767ed2243b1df7e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#abf6d4f633383ea596767ed2243b1df7e">rpc_context_register_block</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *_Nonnull interface, const char *_Nonnull name, void *_Nullable arg, _Nonnull <a class="el" href="service_8h.html#ae49a22468cfcd4adfa558078e9e4e312">rpc_function_t</a> func)</td></tr>
-<tr class="separator:abf6d4f633383ea596767ed2243b1df7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afdc2720f56729686fea39d6bb498da37"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#afdc2720f56729686fea39d6bb498da37">rpc_context_register_member</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *_Nullable interface, struct <a class="el" href="structrpc__if__member.html">rpc_if_member</a> *_Nonnull m)</td></tr>
+<tr class="separator:afdc2720f56729686fea39d6bb498da37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0a7c2d5e6bb7464de61d346f97c0b04"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ac0a7c2d5e6bb7464de61d346f97c0b04">rpc_context_register_block</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *_Nullable interface, const char *_Nonnull name, void *_Nullable arg, _Nonnull <a class="el" href="service_8h.html#ae49a22468cfcd4adfa558078e9e4e312">rpc_function_t</a> func)</td></tr>
+<tr class="separator:ac0a7c2d5e6bb7464de61d346f97c0b04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1aac077f97529f7c26834c139fefc2f5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a1aac077f97529f7c26834c139fefc2f5">rpc_context_register_func</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *_Nullable interface, const char *_Nonnull name, void *_Nullable arg, _Nonnull <a class="el" href="service_8h.html#add2d357ed7db564684628b3467048431">rpc_function_f</a> func)</td></tr>
 <tr class="separator:a1aac077f97529f7c26834c139fefc2f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a982fcc47ab91486b508ca9cff5b7ed8f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a982fcc47ab91486b508ca9cff5b7ed8f">rpc_context_unregister_member</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *_Nonnull interface, const char *_Nonnull name)</td></tr>
@@ -248,8 +248,8 @@ Functions</h2></td></tr>
 <tr class="separator:a5f0f3252a2c4e12050419519afe64e92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0185b8a60875843d91ca00b3e8d4886"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ad0185b8a60875843d91ca00b3e8d4886">rpc_function_should_abort</a> (void *_Nonnull cookie)</td></tr>
 <tr class="separator:ad0185b8a60875843d91ca00b3e8d4886"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af1e26456ceab19a64ed5a94e97844734"><td class="memItemLeft" align="right" valign="top">_Nonnull rpc_instance_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#af1e26456ceab19a64ed5a94e97844734">rpc_instance_new</a> (void *_Nullable arg, const char *_Nonnull fmt,...)</td></tr>
-<tr class="separator:af1e26456ceab19a64ed5a94e97844734"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a805d705c1a9f94cf4aa04bb71a46a928"><td class="memItemLeft" align="right" valign="top">_Nullable rpc_instance_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a805d705c1a9f94cf4aa04bb71a46a928">rpc_instance_new</a> (void *_Nullable arg, const char *_Nonnull fmt,...)</td></tr>
+<tr class="separator:a805d705c1a9f94cf4aa04bb71a46a928"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90c4373b5060928fbbe43046634c6982"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a90c4373b5060928fbbe43046634c6982">rpc_instance_set_description</a> (_Nonnull rpc_instance_t, const char *_Nonnull fmt,...)</td></tr>
 <tr class="separator:a90c4373b5060928fbbe43046634c6982"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a661c65e4aa798fd4b63851e267f5c018"><td class="memItemLeft" align="right" valign="top">void *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a661c65e4aa798fd4b63851e267f5c018">rpc_instance_get_arg</a> (_Nonnull rpc_instance_t instance)</td></tr>
@@ -754,7 +754,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="abf6d4f633383ea596767ed2243b1df7e"></a>
+<a class="anchor" id="ac0a7c2d5e6bb7464de61d346f97c0b04"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -767,7 +767,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *_Nonnull&#160;</td>
+          <td class="paramtype">const char *_Nullable&#160;</td>
           <td class="paramname"><em>interface</em>, </td>
         </tr>
         <tr>
@@ -902,7 +902,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aa3b0d2b03089e8c24447ee4c4f9afd6d"></a>
+<a class="anchor" id="afdc2720f56729686fea39d6bb498da37"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -915,7 +915,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *_Nonnull&#160;</td>
+          <td class="paramtype">const char *_Nullable&#160;</td>
           <td class="paramname"><em>interface</em>, </td>
         </tr>
         <tr>
@@ -1657,12 +1657,12 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="af1e26456ceab19a64ed5a94e97844734"></a>
+<a class="anchor" id="a805d705c1a9f94cf4aa04bb71a46a928"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">_Nonnull rpc_instance_t rpc_instance_new </td>
+          <td class="memname">_Nullable rpc_instance_t rpc_instance_new </td>
           <td>(</td>
           <td class="paramtype">void *_Nullable&#160;</td>
           <td class="paramname"><em>arg</em>, </td>

@@ -314,8 +314,8 @@
     <member refid="service_8h_1a099a8fc4046be7999da0454548825513" kind="function"><name>rpc_context_get_root</name></member>
     <member refid="service_8h_1acfa9c9b0063bd316850e8a58878cb44e" kind="function"><name>rpc_context_register_instance</name></member>
     <member refid="service_8h_1ae6d86450498479f51012a50bd973e273" kind="function"><name>rpc_context_unregister_instance</name></member>
-    <member refid="service_8h_1aa3b0d2b03089e8c24447ee4c4f9afd6d" kind="function"><name>rpc_context_register_member</name></member>
-    <member refid="service_8h_1abf6d4f633383ea596767ed2243b1df7e" kind="function"><name>rpc_context_register_block</name></member>
+    <member refid="service_8h_1afdc2720f56729686fea39d6bb498da37" kind="function"><name>rpc_context_register_member</name></member>
+    <member refid="service_8h_1ac0a7c2d5e6bb7464de61d346f97c0b04" kind="function"><name>rpc_context_register_block</name></member>
     <member refid="service_8h_1a1aac077f97529f7c26834c139fefc2f5" kind="function"><name>rpc_context_register_func</name></member>
     <member refid="service_8h_1a982fcc47ab91486b508ca9cff5b7ed8f" kind="function"><name>rpc_context_unregister_member</name></member>
     <member refid="service_8h_1a5eb243586ec426274b93ad40f64f0ea5" kind="function"><name>rpc_context_set_pre_call_hook</name></member>
@@ -334,7 +334,7 @@
     <member refid="service_8h_1ac8c50ecedc9e59086e1ab63e1dd6c425" kind="function"><name>rpc_function_yield</name></member>
     <member refid="service_8h_1a5f0f3252a2c4e12050419519afe64e92" kind="function"><name>rpc_function_end</name></member>
     <member refid="service_8h_1ad0185b8a60875843d91ca00b3e8d4886" kind="function"><name>rpc_function_should_abort</name></member>
-    <member refid="service_8h_1af1e26456ceab19a64ed5a94e97844734" kind="function"><name>rpc_instance_new</name></member>
+    <member refid="service_8h_1a805d705c1a9f94cf4aa04bb71a46a928" kind="function"><name>rpc_instance_new</name></member>
     <member refid="service_8h_1a90c4373b5060928fbbe43046634c6982" kind="function"><name>rpc_instance_set_description</name></member>
     <member refid="service_8h_1a661c65e4aa798fd4b63851e267f5c018" kind="function"><name>rpc_instance_get_arg</name></member>
     <member refid="service_8h_1ad1901375c6ba0463bd572396682ed36f" kind="function"><name>rpc_instance_get_path</name></member>

@@ -628,17 +628,17 @@
         </inbodydescription>
         <location file="/code/include/rpc/service.h" line="248" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="service_8h_1aa3b0d2b03089e8c24447ee4c4f9afd6d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="service_8h_1afdc2720f56729686fea39d6bb498da37" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
         <definition>int rpc_context_register_member</definition>
-        <argsstring>(_Nonnull rpc_context_t context, const char *_Nonnull interface, struct rpc_if_member *_Nonnull m)</argsstring>
+        <argsstring>(_Nonnull rpc_context_t context, const char *_Nullable interface, struct rpc_if_member *_Nonnull m)</argsstring>
         <name>rpc_context_register_member</name>
         <param>
           <type>_Nonnull <ref refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kindref="member">rpc_context_t</ref></type>
           <declname>context</declname>
         </param>
         <param>
-          <type>const char *_Nonnull</type>
+          <type>const char *_Nullable</type>
           <declname>interface</declname>
         </param>
         <param>
@@ -669,17 +669,17 @@
         </inbodydescription>
         <location file="/code/include/rpc/service.h" line="258" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="service_8h_1abf6d4f633383ea596767ed2243b1df7e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="service_8h_1ac0a7c2d5e6bb7464de61d346f97c0b04" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
         <definition>int rpc_context_register_block</definition>
-        <argsstring>(_Nonnull rpc_context_t context, const char *_Nonnull interface, const char *_Nonnull name, void *_Nullable arg, _Nonnull rpc_function_t func)</argsstring>
+        <argsstring>(_Nonnull rpc_context_t context, const char *_Nullable interface, const char *_Nonnull name, void *_Nullable arg, _Nonnull rpc_function_t func)</argsstring>
         <name>rpc_context_register_block</name>
         <param>
           <type>_Nonnull <ref refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kindref="member">rpc_context_t</ref></type>
           <declname>context</declname>
         </param>
         <param>
-          <type>const char *_Nonnull</type>
+          <type>const char *_Nullable</type>
           <declname>interface</declname>
         </param>
         <param>
@@ -1401,9 +1401,9 @@
         </inbodydescription>
         <location file="/code/include/rpc/service.h" line="453" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="service_8h_1af1e26456ceab19a64ed5a94e97844734" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>_Nonnull rpc_instance_t</type>
-        <definition>_Nonnull rpc_instance_t rpc_instance_new</definition>
+      <memberdef kind="function" id="service_8h_1a805d705c1a9f94cf4aa04bb71a46a928" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>_Nullable rpc_instance_t</type>
+        <definition>_Nullable rpc_instance_t rpc_instance_new</definition>
         <argsstring>(void *_Nullable arg, const char *_Nonnull fmt,...)</argsstring>
         <name>rpc_instance_new</name>
         <param>
@@ -2467,11 +2467,11 @@
 <codeline lineno="248"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1ae6d86450498479f51012a50bd973e273" kindref="member">rpc_context_unregister_instance</ref>(_Nonnull<sp/>rpc_context_t<sp/>context,</highlight></codeline>
 <codeline lineno="249"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>path);</highlight></codeline>
 <codeline lineno="250"><highlight class="normal"></highlight></codeline>
-<codeline lineno="258"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1aa3b0d2b03089e8c24447ee4c4f9afd6d" kindref="member">rpc_context_register_member</ref>(_Nonnull<sp/>rpc_context_t<sp/>context,</highlight></codeline>
-<codeline lineno="259"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structrpc__if__member" kindref="compound">rpc_if_member</ref><sp/>*_Nonnull<sp/>m);</highlight></codeline>
+<codeline lineno="258"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1afdc2720f56729686fea39d6bb498da37" kindref="member">rpc_context_register_member</ref>(_Nonnull<sp/>rpc_context_t<sp/>context,</highlight></codeline>
+<codeline lineno="259"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>interface,<sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structrpc__if__member" kindref="compound">rpc_if_member</ref><sp/>*_Nonnull<sp/>m);</highlight></codeline>
 <codeline lineno="260"><highlight class="normal"></highlight></codeline>
-<codeline lineno="271"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1abf6d4f633383ea596767ed2243b1df7e" kindref="member">rpc_context_register_block</ref>(_Nonnull<sp/>rpc_context_t<sp/>context,</highlight></codeline>
-<codeline lineno="272"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
+<codeline lineno="271"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1ac0a7c2d5e6bb7464de61d346f97c0b04" kindref="member">rpc_context_register_block</ref>(_Nonnull<sp/>rpc_context_t<sp/>context,</highlight></codeline>
+<codeline lineno="272"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
 <codeline lineno="273"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>arg,<sp/>_Nonnull<sp/><ref refid="service_8h_1ae49a22468cfcd4adfa558078e9e4e312" kindref="member">rpc_function_t</ref><sp/>func);</highlight></codeline>
 <codeline lineno="274"><highlight class="normal"></highlight></codeline>
 <codeline lineno="285"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a1aac077f97529f7c26834c139fefc2f5" kindref="member">rpc_context_register_func</ref>(_Nonnull<sp/>rpc_context_t<sp/>context,</highlight></codeline>
@@ -2520,7 +2520,7 @@
 <codeline lineno="445"><highlight class="normal"></highlight></codeline>
 <codeline lineno="453"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="service_8h_1ad0185b8a60875843d91ca00b3e8d4886" kindref="member">rpc_function_should_abort</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie);</highlight></codeline>
 <codeline lineno="454"><highlight class="normal"></highlight></codeline>
-<codeline lineno="461"><highlight class="normal">_Nonnull<sp/>rpc_instance_t<sp/><ref refid="service_8h_1af1e26456ceab19a64ed5a94e97844734" kindref="member">rpc_instance_new</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>arg,</highlight></codeline>
+<codeline lineno="461"><highlight class="normal">_Nullable<sp/>rpc_instance_t<sp/><ref refid="service_8h_1a805d705c1a9f94cf4aa04bb71a46a928" kindref="member">rpc_instance_new</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>arg,</highlight></codeline>
 <codeline lineno="462"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>fmt,<sp/>...);</highlight></codeline>
 <codeline lineno="463"><highlight class="normal"></highlight></codeline>
 <codeline lineno="469"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a90c4373b5060928fbbe43046634c6982" kindref="member">rpc_instance_set_description</ref>(_Nonnull<sp/>rpc_instance_t,</highlight></codeline>
