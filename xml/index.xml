@@ -153,9 +153,9 @@
     <member refid="object_8h_1a779caec7eaf97b96bf396c36b9288f1d" kind="function"><name>rpc_object_from_json</name></member>
     <member refid="object_8h_1ae3401dd36d39da20b6abdd20b8bcc38e" kind="function"><name>rpc_object_to_json</name></member>
     <member refid="object_8h_1a8a8454f12dcde323f5daba961febea97" kind="function"><name>rpc_object_pack</name></member>
-    <member refid="object_8h_1a723bb4434d9acf3bddf66c9e41f205e9" kind="function"><name>rpc_object_vpack</name></member>
+    <member refid="object_8h_1a3c15ce52778038cf6bbfe191cf30fe71" kind="function"><name>rpc_object_vpack</name></member>
     <member refid="object_8h_1a6ff01b9e6d71ba03e2dff76ede7366f6" kind="function"><name>rpc_object_unpack</name></member>
-    <member refid="object_8h_1a1c3b1f10f6aad2595e20e3c315f6a51f" kind="function"><name>rpc_object_vunpack</name></member>
+    <member refid="object_8h_1aacdca2e75cc35de88ff0282c17dda05d" kind="function"><name>rpc_object_vunpack</name></member>
     <member refid="object_8h_1af71ab5e00bfb82e6733e59c42e3ed157" kind="function"><name>rpc_null_create</name></member>
     <member refid="object_8h_1af1b839aeabfc9be778224c3d191cafdc" kind="function"><name>rpc_bool_create</name></member>
     <member refid="object_8h_1ac2298d4c51a389269922f24ac4a398e2" kind="function"><name>rpc_bool_get_value</name></member>
@@ -176,7 +176,7 @@
     <member refid="object_8h_1ae7ba5d4d5a269764aaac74170be2884c" kind="function"><name>rpc_string_create</name></member>
     <member refid="object_8h_1a227a4ec7bd24bd07dd68678d4900340e" kind="function"><name>rpc_string_create_len</name></member>
     <member refid="object_8h_1a90b42194b061a3f7c010cfbd67e43e06" kind="function"><name>rpc_string_create_with_format</name></member>
-    <member refid="object_8h_1aec5a683b0d5312e147eb90bba41bf4da" kind="function"><name>rpc_string_create_with_format_and_arguments</name></member>
+    <member refid="object_8h_1a2ee591e97432340d93de769e723c6f92" kind="function"><name>rpc_string_create_with_format_and_arguments</name></member>
     <member refid="object_8h_1a1fe4187920e3b5b436f1b76773e5cc3c" kind="function"><name>rpc_string_get_length</name></member>
     <member refid="object_8h_1a04a698c1f5f736ef71bc81ccf91be52d" kind="function"><name>rpc_string_get_string_ptr</name></member>
     <member refid="object_8h_1aa2e6228045667b4e13b9897cfd2dc072" kind="function"><name>rpc_fd_create</name></member>

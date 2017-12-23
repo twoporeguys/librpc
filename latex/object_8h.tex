@@ -110,11 +110,11 @@ int \hyperlink{object_8h_ae3401dd36d39da20b6abdd20b8bcc38e}{rpc\+\_\+object\+\_\
 \item 
 \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_a8a8454f12dcde323f5daba961febea97}{rpc\+\_\+object\+\_\+pack} (const char $\ast$\+\_\+\+Nonnull fmt,...)
 \item 
-\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_a723bb4434d9acf3bddf66c9e41f205e9}{rpc\+\_\+object\+\_\+vpack} (const char $\ast$\+\_\+\+Nonnull fmt, \+\_\+\+Nonnull va\+\_\+list ap)
+\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_a3c15ce52778038cf6bbfe191cf30fe71}{rpc\+\_\+object\+\_\+vpack} (const char $\ast$\+\_\+\+Nonnull fmt, va\+\_\+list ap)
 \item 
 int \hyperlink{object_8h_a6ff01b9e6d71ba03e2dff76ede7366f6}{rpc\+\_\+object\+\_\+unpack} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}, const char $\ast$\+\_\+\+Nonnull fmt,...)
 \item 
-int \hyperlink{object_8h_a1c3b1f10f6aad2595e20e3c315f6a51f}{rpc\+\_\+object\+\_\+vunpack} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}, const char $\ast$\+\_\+\+Nonnull fmt, \+\_\+\+Nonnull va\+\_\+list ap)
+int \hyperlink{object_8h_aacdca2e75cc35de88ff0282c17dda05d}{rpc\+\_\+object\+\_\+vunpack} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}, const char $\ast$\+\_\+\+Nonnull fmt, va\+\_\+list ap)
 \item 
 \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_af71ab5e00bfb82e6733e59c42e3ed157}{rpc\+\_\+null\+\_\+create} (void)
 \item 
@@ -156,7 +156,7 @@ size\+\_\+t \hyperlink{object_8h_ab5d1feb11fc902658b7fe53bf7cc1627}{rpc\+\_\+dat
 \item 
 \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_a90b42194b061a3f7c010cfbd67e43e06}{rpc\+\_\+string\+\_\+create\+\_\+with\+\_\+format} (const char $\ast$\+\_\+\+Nonnull fmt,...)
 \item 
-\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_aec5a683b0d5312e147eb90bba41bf4da}{rpc\+\_\+string\+\_\+create\+\_\+with\+\_\+format\+\_\+and\+\_\+arguments} (const char $\ast$\+\_\+\+Nonnull fmt, \+\_\+\+Nonnull va\+\_\+list ap)
+\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_a2ee591e97432340d93de769e723c6f92}{rpc\+\_\+string\+\_\+create\+\_\+with\+\_\+format\+\_\+and\+\_\+arguments} (const char $\ast$\+\_\+\+Nonnull fmt, va\+\_\+list ap)
 \item 
 size\+\_\+t \hyperlink{object_8h_a1fe4187920e3b5b436f1b76773e5cc3c}{rpc\+\_\+string\+\_\+get\+\_\+length} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} xstring)
 \item 
@@ -2640,12 +2640,12 @@ The number of successfully unpacked objects or -\/1 on error.
 \end{DoxyReturn}
 \index{object.\+h@{object.\+h}!rpc\+\_\+object\+\_\+vpack@{rpc\+\_\+object\+\_\+vpack}}
 \index{rpc\+\_\+object\+\_\+vpack@{rpc\+\_\+object\+\_\+vpack}!object.\+h@{object.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+object\+\_\+vpack(const char $\ast$\+\_\+\+Nonnull fmt, \+\_\+\+Nonnull va\+\_\+list ap)}{rpc_object_vpack(const char *_Nonnull fmt, _Nonnull va_list ap)}}]{\setlength{\rightskip}{0pt plus 5cm}\+\_\+\+Nullable {\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+object\+\_\+vpack (
+\subsubsection[{\texorpdfstring{rpc\+\_\+object\+\_\+vpack(const char $\ast$\+\_\+\+Nonnull fmt, va\+\_\+list ap)}{rpc_object_vpack(const char *_Nonnull fmt, va_list ap)}}]{\setlength{\rightskip}{0pt plus 5cm}\+\_\+\+Nullable {\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+object\+\_\+vpack (
 \begin{DoxyParamCaption}
 \item[{const char $\ast$\+\_\+\+Nonnull}]{fmt, }
-\item[{\+\_\+\+Nonnull va\+\_\+list}]{ap}
+\item[{va\+\_\+list}]{ap}
 \end{DoxyParamCaption}
-)}\hypertarget{object_8h_a723bb4434d9acf3bddf66c9e41f205e9}{}\label{object_8h_a723bb4434d9acf3bddf66c9e41f205e9}
+)}\hypertarget{object_8h_a3c15ce52778038cf6bbfe191cf30fe71}{}\label{object_8h_a3c15ce52778038cf6bbfe191cf30fe71}
 Packs provided values accordingly to a specified format string an into object compatible with library\textquotesingle{}s data model.
 
 The functions acts exactly the same as the rpc\+\_\+object\+\_\+pack function, but takes assembled variable arguments list structure as its argument.
@@ -2662,13 +2662,13 @@ Packed object.
 \end{DoxyReturn}
 \index{object.\+h@{object.\+h}!rpc\+\_\+object\+\_\+vunpack@{rpc\+\_\+object\+\_\+vunpack}}
 \index{rpc\+\_\+object\+\_\+vunpack@{rpc\+\_\+object\+\_\+vunpack}!object.\+h@{object.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+object\+\_\+vunpack(\+\_\+\+Nonnull rpc\+\_\+object\+\_\+t, const char $\ast$\+\_\+\+Nonnull fmt, \+\_\+\+Nonnull va\+\_\+list ap)}{rpc_object_vunpack(_Nonnull rpc_object_t, const char *_Nonnull fmt, _Nonnull va_list ap)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+object\+\_\+vunpack (
+\subsubsection[{\texorpdfstring{rpc\+\_\+object\+\_\+vunpack(\+\_\+\+Nonnull rpc\+\_\+object\+\_\+t, const char $\ast$\+\_\+\+Nonnull fmt, va\+\_\+list ap)}{rpc_object_vunpack(_Nonnull rpc_object_t, const char *_Nonnull fmt, va_list ap)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+object\+\_\+vunpack (
 \begin{DoxyParamCaption}
 \item[{\+\_\+\+Nonnull}]{rpc\+\_\+object\+\_\+t, }
 \item[{const char $\ast$\+\_\+\+Nonnull}]{fmt, }
-\item[{\+\_\+\+Nonnull va\+\_\+list}]{ap}
+\item[{va\+\_\+list}]{ap}
 \end{DoxyParamCaption}
-)}\hypertarget{object_8h_a1c3b1f10f6aad2595e20e3c315f6a51f}{}\label{object_8h_a1c3b1f10f6aad2595e20e3c315f6a51f}
+)}\hypertarget{object_8h_aacdca2e75cc35de88ff0282c17dda05d}{}\label{object_8h_aacdca2e75cc35de88ff0282c17dda05d}
 Unpacks provided values accordingly to a specified format string from an object.
 
 The functions acts exactly the same as the rpc\+\_\+object\+\_\+unpack function, but takes assembled variable arguments list structure as its argument.
@@ -2780,12 +2780,12 @@ Newly created object.
 \end{DoxyReturn}
 \index{object.\+h@{object.\+h}!rpc\+\_\+string\+\_\+create\+\_\+with\+\_\+format\+\_\+and\+\_\+arguments@{rpc\+\_\+string\+\_\+create\+\_\+with\+\_\+format\+\_\+and\+\_\+arguments}}
 \index{rpc\+\_\+string\+\_\+create\+\_\+with\+\_\+format\+\_\+and\+\_\+arguments@{rpc\+\_\+string\+\_\+create\+\_\+with\+\_\+format\+\_\+and\+\_\+arguments}!object.\+h@{object.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+string\+\_\+create\+\_\+with\+\_\+format\+\_\+and\+\_\+arguments(const char $\ast$\+\_\+\+Nonnull fmt, \+\_\+\+Nonnull va\+\_\+list ap)}{rpc_string_create_with_format_and_arguments(const char *_Nonnull fmt, _Nonnull va_list ap)}}]{\setlength{\rightskip}{0pt plus 5cm}\+\_\+\+Nonnull {\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+string\+\_\+create\+\_\+with\+\_\+format\+\_\+and\+\_\+arguments (
+\subsubsection[{\texorpdfstring{rpc\+\_\+string\+\_\+create\+\_\+with\+\_\+format\+\_\+and\+\_\+arguments(const char $\ast$\+\_\+\+Nonnull fmt, va\+\_\+list ap)}{rpc_string_create_with_format_and_arguments(const char *_Nonnull fmt, va_list ap)}}]{\setlength{\rightskip}{0pt plus 5cm}\+\_\+\+Nonnull {\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+string\+\_\+create\+\_\+with\+\_\+format\+\_\+and\+\_\+arguments (
 \begin{DoxyParamCaption}
 \item[{const char $\ast$\+\_\+\+Nonnull}]{fmt, }
-\item[{\+\_\+\+Nonnull va\+\_\+list}]{ap}
+\item[{va\+\_\+list}]{ap}
 \end{DoxyParamCaption}
-)}\hypertarget{object_8h_aec5a683b0d5312e147eb90bba41bf4da}{}\label{object_8h_aec5a683b0d5312e147eb90bba41bf4da}
+)}\hypertarget{object_8h_a2ee591e97432340d93de769e723c6f92}{}\label{object_8h_a2ee591e97432340d93de769e723c6f92}
 Creates an R\+PC object holding a string formatted using the regular printf function format string and arguments (as variable arguments list type).
 
 
