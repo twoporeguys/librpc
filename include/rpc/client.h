@@ -67,7 +67,8 @@ _Nullable rpc_client_t rpc_client_create(const char *_Nonnull uri,
  * @param client Client object to get the connection from
  * @return Connection object
  */
-_Nonnull rpc_connection_t rpc_client_get_connection(_Nonnull rpc_client_t client);
+_Nonnull rpc_connection_t rpc_client_get_connection(
+    _Nonnull rpc_client_t client);
 
 /**
  * Closes the connection and frees associated resources.

@@ -61,7 +61,7 @@ typedef struct rpc_query_iter *rpc_query_iter_t;
  * as skipping currently processed chunk of the result - query function won't
  * return NULL, but look for the next matching element instead.
  */
-typedef rpc_object_t (^rpc_query_cb_t)(rpc_object_t object);
+typedef _Nullable rpc_object_t (^rpc_query_cb_t)(_Nonnull rpc_object_t object);
 
 /**
  * Converts function pointer to an rpc_query_cb_t block type.
@@ -95,13 +95,13 @@ typedef rpc_object_t (^rpc_query_cb_t)(rpc_object_t object);
  *   returns NULL instead of an RPC object.
  */
 struct rpc_query_params {
-	bool 			single;
-	bool			count;
-	uint64_t 		offset;
-	uint64_t 		limit;
-	rpc_array_cmp_t 	sort;
-	bool			reverse;
-	rpc_query_cb_t 		callback;
+	bool 				single;
+	bool				count;
+	uint64_t 			offset;
+	uint64_t 			limit;
+	bool				reverse;
+	_Nullable rpc_array_cmp_t	sort;
+	_Nullable rpc_query_cb_t	callback;
 };
 
 /**
@@ -124,8 +124,8 @@ typedef struct rpc_query_params *rpc_query_params_t;
  * be found - nullable.
  * @return Found RPC object or the default value.
  */
-rpc_object_t rpc_query_get(rpc_object_t object, const char *path,
-    rpc_object_t default_val);
+_Nullable rpc_object_t rpc_query_get(_Nonnull rpc_object_t object,
+    const char *_Nonnull path, _Nullable rpc_object_t default_val);
 
 /**
  * The function follows a given "key1.key2.0.key3.1" like path to find the last
@@ -142,7 +142,8 @@ rpc_object_t rpc_query_get(rpc_object_t object, const char *path,
  * @param steal Boolean flag - if set, then the function does not increase
  * refcount of a set value.
  */
-void rpc_query_set(rpc_object_t object, const char *path, rpc_object_t value,
+void rpc_query_set(_Nonnull rpc_object_t object, const char *_Nonnull path,
+    _Nullable rpc_object_t value,
     bool steal);
 
 /**
@@ -156,7 +157,7 @@ void rpc_query_set(rpc_object_t object, const char *path, rpc_object_t value,
  * @param path Path to the object to be deleted - '.' character is required
  * between each key/idx pair.
  */
-void rpc_query_delete(rpc_object_t object, const char *path);
+void rpc_query_delete(_Nonnull rpc_object_t object, const char *_Nonnull path);
 
 /**
  * The function follows a given "key1.key2.0.key3.1" like path to check whether
@@ -169,7 +170,7 @@ void rpc_query_delete(rpc_object_t object, const char *path);
  * between each key/idx pair.
  * @return Boolean result of the check.
  */
-bool rpc_query_contains(rpc_object_t object, const char *path);
+bool rpc_query_contains(_Nonnull rpc_object_t object, const char *_Nonnull path);
 
 /**
  * Performs a query operation on a given object.
@@ -226,8 +227,8 @@ bool rpc_query_contains(rpc_object_t object, const char *path);
  * @param rules Query rules.
  * @return Query iterator.
  */
-rpc_query_iter_t rpc_query(rpc_object_t object, rpc_query_params_t params,
-    rpc_object_t rules);
+_Nullable rpc_query_iter_t rpc_query(_Nonnull rpc_object_t object,
+    _Nullable rpc_query_params_t params, _Nullable rpc_object_t rules);
 
 /**
  * Performs a query operation on a given object.
@@ -243,8 +244,8 @@ rpc_query_iter_t rpc_query(rpc_object_t object, rpc_query_params_t params,
  * @param ... Variable length list of arguments to be assembled as query rules.
  * @return Query iterator.
  */
-rpc_query_iter_t rpc_query_fmt(rpc_object_t object, rpc_query_params_t params,
-    const char *rules_fmt, ...);
+_Nullable rpc_query_iter_t rpc_query_fmt(_Nonnull rpc_object_t object,
+    _Nonnull rpc_query_params_t params, const char *_Nonnull rules_fmt, ...);
 
 /**
  * Checks if a given RPC object does match a provided object representing
@@ -257,7 +258,8 @@ rpc_query_iter_t rpc_query_fmt(rpc_object_t object, rpc_query_params_t params,
  * @param rules Set of query-like rules.
  * @return The object itself if is matches the rules, otherwise NULL.
  */
-rpc_object_t rpc_query_apply(rpc_object_t object, rpc_object_t rules);
+_Nullable rpc_object_t rpc_query_apply(_Nonnull rpc_object_t object,
+    _Nonnull rpc_object_t rules);
 
 /**
  * Yields the next RPC object matching params and rules stored within
@@ -276,7 +278,8 @@ rpc_object_t rpc_query_apply(rpc_object_t object, rpc_object_t rules);
  * @param chunk Pointer to be set to the next result.
  * @return "Continue iteration" boolean flag.
  */
-bool rpc_query_next(rpc_query_iter_t iter, rpc_object_t *chunk);
+bool rpc_query_next(_Nonnull rpc_query_iter_t iter,
+    _Nonnull rpc_object_t *_Nullable chunk);
 
 /**
  * Releases internal contents of rpc query iterator structure and then
@@ -284,6 +287,6 @@ bool rpc_query_next(rpc_query_iter_t iter, rpc_object_t *chunk);
  *
  * @param iter Structure to be freed.
  */
-void rpc_query_iter_free(rpc_query_iter_t iter);
+void rpc_query_iter_free(_Nonnull rpc_query_iter_t iter);
 
 #endif //LIBRPC_QUERY_H

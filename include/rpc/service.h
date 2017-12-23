@@ -65,22 +65,25 @@ typedef struct rpc_instance *rpc_instance_t;
 /**
  * Definition of RPC method block type.
  */
-typedef rpc_object_t (^rpc_function_t)(void *cookie, rpc_object_t args);
+typedef _Nullable rpc_object_t (^rpc_function_t)(void *_Nonnull cookie,
+    _Nonnull rpc_object_t args);
 
 /**
  * Definition of RPC method function type.
  */
-typedef rpc_object_t (*rpc_function_f)(void *cookie, rpc_object_t args);
+typedef _Nullable rpc_object_t (*rpc_function_f)(void *_Nonnull cookie,
+    _Nonnull rpc_object_t args);
 
 /**
  *
  */
-typedef rpc_object_t (^rpc_property_getter_t)(void *cookie);
+typedef _Nullable rpc_object_t (^rpc_property_getter_t)(void *_Nonnull cookie);
 
 /**
  *
  */
-typedef void (^rpc_property_setter_t)(void *cookie, rpc_object_t value);
+typedef void (^rpc_property_setter_t)(void *_Nonnull cookie,
+    _Nonnull rpc_object_t value);
 
 #define	RPC_FUNCTION(_fn)						\
 	^(void *_cookie, rpc_object_t _args) {				\
@@ -176,23 +179,23 @@ enum rpc_property_rights
  */
 struct rpc_if_method
 {
-	rpc_function_t  	rm_block;
-	void *			rm_arg;
+	_Nonnull rpc_function_t		rm_block;
+	void *_Nullable			rm_arg;
 };
 
 struct rpc_if_property
 {
-	rpc_property_getter_t	rp_getter;
-	rpc_property_setter_t	rp_setter;
-	void *			rp_arg;
+	_Nullable rpc_property_getter_t	rp_getter;
+	_Nullable rpc_property_setter_t	rp_setter;
+	void *_Nullable			rp_arg;
 };
 
 struct rpc_if_member {
-	const char *		rim_name;
-	enum rpc_if_member_type	rim_type;
+	const char *_Nonnull		rim_name;
+	enum rpc_if_member_type		rim_type;
 	union {
-		struct rpc_if_method rim_method;
-		struct rpc_if_property rim_property;
+		struct rpc_if_method 	rim_method;
+		struct rpc_if_property 	rim_property;
 	};
 };
 
@@ -201,14 +204,14 @@ struct rpc_if_member {
  *
  * @return Newly created RPC context object.
  */
-rpc_context_t rpc_context_create(void);
+_Nonnull rpc_context_t rpc_context_create(void);
 
 /**
  * Disposes existing RPC context and frees all associated resources.
  *
  * @param context Context to dispose
  */
-void rpc_context_free(rpc_context_t context);
+void rpc_context_free(_Nonnull rpc_context_t context);
 
 /**
  *
@@ -216,15 +219,15 @@ void rpc_context_free(rpc_context_t context);
  * @param path
  * @return
  */
-rpc_instance_t rpc_context_find_instance(rpc_context_t context,
-    const char *path);
+_Nullable rpc_instance_t rpc_context_find_instance(
+    _Nonnull rpc_context_t context, const char *_Nonnull path);
 
 /**
  *
  * @param context
  * @return
  */
-rpc_instance_t rpc_context_get_root(rpc_context_t context);
+_Nonnull rpc_instance_t rpc_context_get_root(_Nonnull rpc_context_t context);
 
 /**
  * Registers a new object under context's object tree.
@@ -234,14 +237,16 @@ rpc_instance_t rpc_context_get_root(rpc_context_t context);
  * @param instance
  * @return
  */
-int rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance);
+int rpc_context_register_instance(_Nonnull rpc_context_t context,
+    _Nonnull rpc_instance_t instance);
 
 /**
  *
  * @param context
  * @param path
  */
-void rpc_context_unregister_instance(rpc_context_t context, const char *path);
+void rpc_context_unregister_instance(_Nonnull rpc_context_t context,
+    const char *_Nonnull path);
 
 /**
  * Registers a given rpc_method structure as an RPC method in a given context.
@@ -250,8 +255,8 @@ void rpc_context_unregister_instance(rpc_context_t context, const char *path);
  * @param m RPC method structure.
  * @return Status.
  */
-int rpc_context_register_member(rpc_context_t context, const char *interface,
-    struct rpc_if_member *m);
+int rpc_context_register_member(_Nonnull rpc_context_t context,
+    const char *_Nonnull interface, struct rpc_if_member *_Nonnull m);
 
 /**
  * Registers a given block as a RPC method for a given context.
@@ -263,8 +268,9 @@ int rpc_context_register_member(rpc_context_t context, const char *interface,
  * @param func RPC method block.
  * @return Status.
  */
-int rpc_context_register_block(rpc_context_t context, const char *interface,
-    const char *name, void *arg, rpc_function_t func);
+int rpc_context_register_block(_Nonnull rpc_context_t context,
+    const char *_Nonnull interface, const char *_Nonnull name,
+    void *_Nullable arg, _Nonnull rpc_function_t func);
 
 /**
  * Registers a given function as a RPC method for a given context.
@@ -276,8 +282,9 @@ int rpc_context_register_block(rpc_context_t context, const char *interface,
  * @param func RPC method function
  * @return Status.
  */
-int rpc_context_register_func(rpc_context_t context, const char *interface,
-    const char *name, void *arg, rpc_function_f func);
+int rpc_context_register_func(_Nonnull rpc_context_t context,
+    const char *_Nullable interface, const char *_Nonnull name,
+    void *_Nullable arg, _Nonnull rpc_function_f func);
 
 /**
  * Unregisters a given RPC method.
@@ -286,8 +293,8 @@ int rpc_context_register_func(rpc_context_t context, const char *interface,
  * @param name Method name.
  * @return Status.
  */
-int rpc_context_unregister_member(rpc_context_t context, const char *interface,
-    const char *name);
+int rpc_context_unregister_member(_Nonnull rpc_context_t context,
+    const char *_Nonnull interface, const char *_Nonnull name);
 
 /**
  * Installs a hook for every RPC function called.
@@ -298,7 +305,8 @@ int rpc_context_unregister_member(rpc_context_t context, const char *interface,
  * @param context Target context
  * @param fn Hook function
  */
-void rpc_context_set_pre_call_hook(rpc_context_t context, rpc_function_t fn);
+void rpc_context_set_pre_call_hook(_Nonnull rpc_context_t context,
+    _Nonnull rpc_function_t fn);
 
 /**
  * Installs a hook for every RPC function called.
@@ -309,7 +317,8 @@ void rpc_context_set_pre_call_hook(rpc_context_t context, rpc_function_t fn);
  * @param context Target context
  * @param fn Hook function
  */
-void rpc_context_set_post_call_hook(rpc_context_t context, rpc_function_t fn);
+void rpc_context_set_post_call_hook(_Nonnull rpc_context_t context,
+    _Nonnull rpc_function_t fn);
 
 /**
  *
@@ -318,8 +327,8 @@ void rpc_context_set_post_call_hook(rpc_context_t context, rpc_function_t fn);
  * @param args
  * @return
  */
-rpc_call_t rpc_context_dispatch_call(rpc_context_t context, const char *name,
-    rpc_object_t args);
+_Nullable rpc_call_t rpc_context_dispatch_call(_Nonnull rpc_context_t context,
+    const char *_Nonnull name, _Nullable rpc_object_t args);
 
 /**
  *
@@ -328,50 +337,51 @@ rpc_call_t rpc_context_dispatch_call(rpc_context_t context, const char *name,
  * @param interface
  * @param name
  */
-void rpc_context_emit_event(rpc_context_t context, const char *path,
-    const char *interface, const char *name, rpc_object_t args);
+void rpc_context_emit_event(_Nonnull rpc_context_t context,
+    const char *_Nullable path, const char *_Nullable interface,
+    const char *_Nonnull name, _Nonnull rpc_object_t args);
 
 /**
  * Returns the argument associated with method.
  *
  * @param cookie Running call identifier.
  */
-void *rpc_function_get_arg(void *cookie);
+void *_Nullable rpc_function_get_arg(void *_Nonnull cookie);
 
 /**
  *
  * @param cookie
  * @return
  */
-rpc_context_t rpc_function_get_context(void *cookie);
+_Nonnull rpc_context_t rpc_function_get_context(void *_Nonnull cookie);
 
 /**
  *
  * @param cookie
  * @return
  */
-rpc_instance_t rpc_function_get_instance(void *cookie);
+_Nonnull rpc_instance_t rpc_function_get_instance(void *_Nonnull cookie);
 
 /**
  * Returns the called method name.
  *
  * @param cookie Running call identifier.
  */
-const char *rpc_function_get_name(void *cookie);
+const char *_Nonnull rpc_function_get_name(void *_Nonnull cookie);
 
 /**
  * Returns the path method was called on or NULL.
  *
  * @param cookie Running call identifier.
  */
-const char *rpc_function_get_path(void *cookie);
+const char *_Nonnull rpc_function_get_path(void *_Nonnull cookie);
 
 /**
  * Returns the called interface name or NULL.
  *
  * @param cookie Running call identifier.
  */
-const char *rpc_function_get_interface(void *cookie);
+const char *_Nonnull rpc_function_get_interface(void *_Nonnull cookie);
 
 /**
  * Sends a response to a call.
@@ -383,7 +393,7 @@ const char *rpc_function_get_interface(void *cookie);
  * @param cookie Running call identifier.
  * @param object Response.
  */
-void rpc_function_respond(void *cookie, rpc_object_t object);
+void rpc_function_respond(void *_Nonnull cookie, _Nullable rpc_object_t object);
 
 /**
  * Sends an error response to a call.
@@ -399,7 +409,8 @@ void rpc_function_respond(void *cookie, rpc_object_t object);
  * @param message Error message format.
  * @param ... Format arguments.
  */
-void rpc_function_error(void *cookie, int code, const char *message, ...);
+void rpc_function_error(void *_Nonnull cookie, int code,
+    const char *_Nonnull message, ...);
 
 /**
  * Reports an exception for a given ongoing call identifier.
@@ -407,7 +418,8 @@ void rpc_function_error(void *cookie, int code, const char *message, ...);
  * @param cookie Running call identifier.
  * @param exception Exception data.
  */
-void rpc_function_error_ex(void *cookie, rpc_object_t exception);
+void rpc_function_error_ex(void *_Nonnull cookie,
+    _Nonnull rpc_object_t exception);
 
 /**
  * Generates a new value in a streaming response.
@@ -416,7 +428,7 @@ void rpc_function_error_ex(void *cookie, rpc_object_t exception);
  * @param fragment Next data fragment.
  * @return Status. Success is reported by returning 0.
  */
-int rpc_function_yield(void *cookie, rpc_object_t fragment);
+int rpc_function_yield(void *_Nonnull cookie, _Nonnull rpc_object_t fragment);
 
 /**
  * Ends a streaming response.
@@ -427,7 +439,7 @@ int rpc_function_yield(void *cookie, rpc_object_t fragment);
  *
  * @param cookie Running call identifier.
  */
-void rpc_function_end(void *cookie);
+void rpc_function_end(void *_Nonnull cookie);
 
 /**
  * Returns the value of a flag saying whether or not a method should
@@ -436,7 +448,7 @@ void rpc_function_end(void *cookie);
  * @param cookie Running call identifier.
  * @return Whether or not function should abort.
  */
-bool rpc_function_should_abort(void *cookie);
+bool rpc_function_should_abort(void *_Nonnull cookie);
 
 /**
  *
@@ -444,28 +456,30 @@ bool rpc_function_should_abort(void *cookie);
  * @param arg
  * @return
  */
-rpc_instance_t rpc_instance_new(void *arg, const char *fmt, ...);
+_Nonnull rpc_instance_t rpc_instance_new(void *_Nullable arg,
+    const char *_Nonnull fmt, ...);
 
 /**
  *
  * @param fmt
  * @param ...
  */
-void rpc_instance_set_description(rpc_instance_t, const char *fmt, ...);
+void rpc_instance_set_description(_Nonnull rpc_instance_t,
+    const char *_Nonnull fmt, ...);
 
 /**
  *
  * @param instance
  * @return
  */
-void *rpc_instance_get_arg(rpc_instance_t instance);
+void *_Nullable rpc_instance_get_arg(_Nonnull rpc_instance_t instance);
 
 /**
  *
  * @param instance
  * @return
  */
-const char *rpc_instance_get_path(rpc_instance_t instance);
+const char *_Nonnull rpc_instance_get_path(_Nonnull rpc_instance_t instance);
 
 /**
  *
@@ -474,8 +488,9 @@ const char *rpc_instance_get_path(rpc_instance_t instance);
  * @param name
  * @param fn
  */
-int rpc_instance_register_interface(rpc_instance_t instance,
-    const char *interface, const struct rpc_if_member *vtable, void *arg);
+int rpc_instance_register_interface(_Nonnull rpc_instance_t instance,
+    const char *_Nonnull interface,
+    const struct rpc_if_member *_Nullable vtable, void *_Nullable arg);
 
 /**
  *
@@ -484,8 +499,9 @@ int rpc_instance_register_interface(rpc_instance_t instance,
  * @param member
  * @return
  */
-int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
-    const struct rpc_if_member *member);
+int rpc_instance_register_member(_Nonnull rpc_instance_t instance,
+    const char *_Nonnull interface,
+    const struct rpc_if_member *_Nonnull member);
 
 /**
  *
@@ -494,8 +510,8 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
  * @param name
  * @return
  */
-int rpc_instance_unregister_member(rpc_instance_t instance,
-    const char *interface, const char *name);
+int rpc_instance_unregister_member(_Nonnull rpc_instance_t instance,
+    const char *_Nonnull interface, const char *_Nonnull name);
 
 /**
  *
@@ -505,8 +521,9 @@ int rpc_instance_unregister_member(rpc_instance_t instance,
  * @param arg
  * @param fn
  */
-int rpc_instance_register_block(rpc_instance_t instance, const char *interface,
-    const char *name, void *arg, rpc_function_t fn);
+int rpc_instance_register_block(_Nonnull rpc_instance_t instance,
+    const char *_Nonnull interface, const char *_Nonnull name,
+    void *_Nullable arg, _Nonnull rpc_function_t fn);
 
 /**
  *
@@ -515,8 +532,9 @@ int rpc_instance_register_block(rpc_instance_t instance, const char *interface,
  * @param name
  * @param fn
  */
-int rpc_instance_register_func(rpc_instance_t instance, const char *interface,
-    const char *name, void *arg, rpc_function_f fn);
+int rpc_instance_register_func(_Nonnull rpc_instance_t instance,
+    const char *_Nonnull interface, const char *_Nonnull name,
+    void *_Nullable arg, _Nonnull rpc_function_f fn);
 
 /**
  * Finds a given method belonging to a given interface in instance.
@@ -526,15 +544,17 @@ int rpc_instance_register_func(rpc_instance_t instance, const char *interface,
  * @param name
  * @return
  */
-struct rpc_if_member *rpc_instance_find_member(rpc_instance_t instance,
-    const char *interface, const char *name);
+struct rpc_if_member *_Nullable rpc_instance_find_member(
+    _Nonnull rpc_instance_t instance, const char *_Nullable interface,
+    const char *_Nonnull name);
 
 /**
  *
  * @param interface
  * @return
  */
-bool rpc_instance_has_interface(rpc_instance_t instance, const char *interface);
+bool rpc_instance_has_interface(_Nonnull rpc_instance_t instance,
+    const char *_Nonnull interface);
 
 /**
  *
@@ -542,8 +562,9 @@ bool rpc_instance_has_interface(rpc_instance_t instance, const char *interface);
  * @param interface
  * @param name
  */
-void rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
-    const char *name, rpc_object_t args);
+void rpc_instance_emit_event(_Nonnull rpc_instance_t instance,
+    const char *_Nonnull interface, const char *_Nonnull name,
+    _Nonnull rpc_object_t args);
 
 /**
  *
@@ -552,9 +573,10 @@ void rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
  * @param value
  * @return
  */
-int rpc_instance_register_property(rpc_instance_t instance,
-    const char *interface, const char *name, void *arg,
-    rpc_property_getter_t getter, rpc_property_setter_t setter);
+int rpc_instance_register_property(_Nonnull rpc_instance_t instance,
+    const char *_Nonnull interface, const char *_Nonnull name,
+    void *_Nullable arg, _Nullable rpc_property_getter_t getter,
+    _Nullable rpc_property_setter_t setter);
 
 /**
  *
@@ -562,8 +584,8 @@ int rpc_instance_register_property(rpc_instance_t instance,
  * @param name
  * @return
  */
-int rpc_instance_get_property_rights(rpc_instance_t instance,
-    const char *interface, const char *name);
+int rpc_instance_get_property_rights(_Nonnull rpc_instance_t instance,
+    const char *_Nonnull interface, const char *_Nonnull name);
 
 /**
  * 
@@ -571,8 +593,8 @@ int rpc_instance_get_property_rights(rpc_instance_t instance,
  * @param name
  * @return
  */
-int rpc_instance_register_event(rpc_instance_t instance, const char *interface,
-    const char *name);
+int rpc_instance_register_event(_Nonnull rpc_instance_t instance,
+    const char *_Nonnull interface, const char *_Nonnull name);
 
 /**
  *
@@ -580,22 +602,23 @@ int rpc_instance_register_event(rpc_instance_t instance, const char *interface,
  * @param interface
  * @param name
  */
-void rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
-    const char *name, rpc_object_t value);
+void rpc_instance_property_changed(_Nonnull rpc_instance_t instance,
+    const char *_Nonnull interface, const char *_Nonnull name,
+    _Nonnull rpc_object_t value);
 
 /**
  *
  * @param cookie
  * @return
  */
-rpc_instance_t rpc_property_get_instance(void *cookie);
+_Nonnull rpc_instance_t rpc_property_get_instance(void *_Nonnull cookie);
 
 /**
  *
  * @param cookie
  * @return
  */
-void *rpc_property_get_arg(void *cookie);
+void *_Nullable rpc_property_get_arg(void *_Nonnull cookie);
 
 /**
  *
@@ -604,13 +627,14 @@ void *rpc_property_get_arg(void *cookie);
  * @param fmt
  * @param ...
  */
-void rpc_property_error(void *cookie, int code, const char *fmt, ...);
+void rpc_property_error(void *_Nonnull cookie, int code,
+    const char *_Nonnull fmt, ...);
 
 /**
  *
  * @param instance
  */
-void rpc_instance_free(rpc_instance_t instance);
+void rpc_instance_free(_Nonnull rpc_instance_t instance);
 
 #ifdef __cplusplus
 }
