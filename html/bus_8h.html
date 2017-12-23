@@ -136,12 +136,12 @@ Functions</h2></td></tr>
 <tr class="separator:a5fa0c254755deec118b2e3dcb4ec9bdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac4f30e57bd3b17725db2e517e7cf72a4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#ac4f30e57bd3b17725db2e517e7cf72a4">rpc_bus_ping</a> (const char *_Nonnull serial)</td></tr>
 <tr class="separator:ac4f30e57bd3b17725db2e517e7cf72a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85cd042c0a2e2bddaea2a09ca10af76f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#a85cd042c0a2e2bddaea2a09ca10af76f">rpc_bus_enumerate</a> (struct <a class="el" href="structrpc__bus__node.html">rpc_bus_node</a> **result)</td></tr>
-<tr class="separator:a85cd042c0a2e2bddaea2a09ca10af76f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e0894b8914690e83a155b33a2854d8c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#a9e0894b8914690e83a155b33a2854d8c">rpc_bus_free_result</a> (struct <a class="el" href="structrpc__bus__node.html">rpc_bus_node</a> *result)</td></tr>
-<tr class="separator:a9e0894b8914690e83a155b33a2854d8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c9f3676441138dfb89655d3ad080d08"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#a1c9f3676441138dfb89655d3ad080d08">rpc_bus_register_event_handler</a> (rpc_bus_event_handler_t handler)</td></tr>
-<tr class="separator:a1c9f3676441138dfb89655d3ad080d08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7dfb66a85e5f3037635a95b693d39a97"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#a7dfb66a85e5f3037635a95b693d39a97">rpc_bus_enumerate</a> (struct <a class="el" href="structrpc__bus__node.html">rpc_bus_node</a> *_Nullable *_Nonnull result)</td></tr>
+<tr class="separator:a7dfb66a85e5f3037635a95b693d39a97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a0ada5e8a9c567b1e7d18297e1cde42"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#a7a0ada5e8a9c567b1e7d18297e1cde42">rpc_bus_free_result</a> (struct <a class="el" href="structrpc__bus__node.html">rpc_bus_node</a> *_Nonnull result)</td></tr>
+<tr class="separator:a7a0ada5e8a9c567b1e7d18297e1cde42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbc9a5badea0314236b1ccabb060e090"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#adbc9a5badea0314236b1ccabb060e090">rpc_bus_register_event_handler</a> (_Nonnull rpc_bus_event_handler_t handler)</td></tr>
+<tr class="separator:adbc9a5badea0314236b1ccabb060e090"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6437acd78bb490baac4517ddffb0792"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bus_8h.html#ae6437acd78bb490baac4517ddffb0792">rpc_bus_unregister_event_handler</a> (void)</td></tr>
 <tr class="separator:ae6437acd78bb490baac4517ddffb0792"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -199,14 +199,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a85cd042c0a2e2bddaea2a09ca10af76f"></a>
+<a class="anchor" id="a7dfb66a85e5f3037635a95b693d39a97"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">int rpc_bus_enumerate </td>
           <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structrpc__bus__node.html">rpc_bus_node</a> **&#160;</td>
+          <td class="paramtype">struct <a class="el" href="structrpc__bus__node.html">rpc_bus_node</a> *_Nullable *_Nonnull&#160;</td>
           <td class="paramname"><em>result</em></td><td>)</td>
           <td></td>
         </tr>
@@ -223,14 +223,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a9e0894b8914690e83a155b33a2854d8c"></a>
+<a class="anchor" id="a7a0ada5e8a9c567b1e7d18297e1cde42"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void rpc_bus_free_result </td>
           <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structrpc__bus__node.html">rpc_bus_node</a> *&#160;</td>
+          <td class="paramtype">struct <a class="el" href="structrpc__bus__node.html">rpc_bus_node</a> *_Nonnull&#160;</td>
           <td class="paramname"><em>result</em></td><td>)</td>
           <td></td>
         </tr>
@@ -287,14 +287,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a1c9f3676441138dfb89655d3ad080d08"></a>
+<a class="anchor" id="adbc9a5badea0314236b1ccabb060e090"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void rpc_bus_register_event_handler </td>
           <td>(</td>
-          <td class="paramtype">rpc_bus_event_handler_t&#160;</td>
+          <td class="paramtype">_Nonnull rpc_bus_event_handler_t&#160;</td>
           <td class="paramname"><em>handler</em></td><td>)</td>
           <td></td>
         </tr>

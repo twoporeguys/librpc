@@ -134,13 +134,13 @@
         </inbodydescription>
         <location file="/code/include/rpc/bus.h" line="89" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="bus_8h_1a85cd042c0a2e2bddaea2a09ca10af76f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="bus_8h_1a7dfb66a85e5f3037635a95b693d39a97" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
         <definition>int rpc_bus_enumerate</definition>
-        <argsstring>(struct rpc_bus_node **result)</argsstring>
+        <argsstring>(struct rpc_bus_node *_Nullable *_Nonnull result)</argsstring>
         <name>rpc_bus_enumerate</name>
         <param>
-          <type>struct <ref refid="structrpc__bus__node" kindref="compound">rpc_bus_node</ref> **</type>
+          <type>struct <ref refid="structrpc__bus__node" kindref="compound">rpc_bus_node</ref> *_Nullable *_Nonnull</type>
           <declname>result</declname>
         </param>
         <briefdescription>
@@ -160,13 +160,13 @@
         </inbodydescription>
         <location file="/code/include/rpc/bus.h" line="97" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="bus_8h_1a9e0894b8914690e83a155b33a2854d8c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="bus_8h_1a7a0ada5e8a9c567b1e7d18297e1cde42" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void rpc_bus_free_result</definition>
-        <argsstring>(struct rpc_bus_node *result)</argsstring>
+        <argsstring>(struct rpc_bus_node *_Nonnull result)</argsstring>
         <name>rpc_bus_free_result</name>
         <param>
-          <type>struct <ref refid="structrpc__bus__node" kindref="compound">rpc_bus_node</ref> *</type>
+          <type>struct <ref refid="structrpc__bus__node" kindref="compound">rpc_bus_node</ref> *_Nonnull</type>
           <declname>result</declname>
         </param>
         <briefdescription>
@@ -185,13 +185,13 @@
         </inbodydescription>
         <location file="/code/include/rpc/bus.h" line="104" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="bus_8h_1a1c9f3676441138dfb89655d3ad080d08" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="bus_8h_1adbc9a5badea0314236b1ccabb060e090" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void rpc_bus_register_event_handler</definition>
-        <argsstring>(rpc_bus_event_handler_t handler)</argsstring>
+        <argsstring>(_Nonnull rpc_bus_event_handler_t handler)</argsstring>
         <name>rpc_bus_register_event_handler</name>
         <param>
-          <type>rpc_bus_event_handler_t</type>
+          <type>_Nonnull rpc_bus_event_handler_t</type>
           <declname>handler</declname>
         </param>
         <briefdescription>
@@ -274,10 +274,10 @@
 <codeline lineno="46"><highlight class="normal"></highlight></codeline>
 <codeline lineno="50" refid="structrpc__bus__node" refkind="compound"><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structrpc__bus__node" kindref="compound">rpc_bus_node</ref></highlight></codeline>
 <codeline lineno="51"><highlight class="normal">{</highlight></codeline>
-<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<sp/><sp/><sp/><sp/>rbn_name;</highlight></codeline>
-<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<sp/><sp/><sp/><sp/>rbn_description;</highlight></codeline>
-<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<sp/><sp/><sp/><sp/>rbn_serial;</highlight></codeline>
-<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><sp/><sp/><sp/>rbn_address;</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/><sp/><sp/>rbn_name;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/><sp/><sp/>rbn_description;</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/><sp/><sp/>rbn_serial;</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/>uint32_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>rbn_address;</highlight></codeline>
 <codeline lineno="56"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="57"><highlight class="normal"></highlight></codeline>
 <codeline lineno="58"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void<sp/>(^rpc_bus_event_handler_t)(rpc_bus_event_t<sp/>event,</highlight></codeline>
@@ -294,11 +294,11 @@
 <codeline lineno="82"><highlight class="normal"></highlight></codeline>
 <codeline lineno="89"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="bus_8h_1ac4f30e57bd3b17725db2e517e7cf72a4" kindref="member">rpc_bus_ping</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>serial);</highlight></codeline>
 <codeline lineno="90"><highlight class="normal"></highlight></codeline>
-<codeline lineno="97"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="bus_8h_1a85cd042c0a2e2bddaea2a09ca10af76f" kindref="member">rpc_bus_enumerate</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structrpc__bus__node" kindref="compound">rpc_bus_node</ref><sp/>**result);</highlight></codeline>
+<codeline lineno="97"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="bus_8h_1a7dfb66a85e5f3037635a95b693d39a97" kindref="member">rpc_bus_enumerate</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structrpc__bus__node" kindref="compound">rpc_bus_node</ref><sp/>*_Nullable<sp/>*_Nonnull<sp/>result);</highlight></codeline>
 <codeline lineno="98"><highlight class="normal"></highlight></codeline>
-<codeline lineno="104"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="bus_8h_1a9e0894b8914690e83a155b33a2854d8c" kindref="member">rpc_bus_free_result</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structrpc__bus__node" kindref="compound">rpc_bus_node</ref><sp/>*result);</highlight></codeline>
+<codeline lineno="104"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="bus_8h_1a7a0ada5e8a9c567b1e7d18297e1cde42" kindref="member">rpc_bus_free_result</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structrpc__bus__node" kindref="compound">rpc_bus_node</ref><sp/>*_Nonnull<sp/>result);</highlight></codeline>
 <codeline lineno="105"><highlight class="normal"></highlight></codeline>
-<codeline lineno="112"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="bus_8h_1a1c9f3676441138dfb89655d3ad080d08" kindref="member">rpc_bus_register_event_handler</ref>(rpc_bus_event_handler_t<sp/>handler);</highlight></codeline>
+<codeline lineno="112"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="bus_8h_1adbc9a5badea0314236b1ccabb060e090" kindref="member">rpc_bus_register_event_handler</ref>(_Nonnull<sp/>rpc_bus_event_handler_t<sp/>handler);</highlight></codeline>
 <codeline lineno="113"><highlight class="normal"></highlight></codeline>
 <codeline lineno="118"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="bus_8h_1ae6437acd78bb490baac4517ddffb0792" kindref="member">rpc_bus_unregister_event_handler</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
 <codeline lineno="119"><highlight class="normal"></highlight></codeline>

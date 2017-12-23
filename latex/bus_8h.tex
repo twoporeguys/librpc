@@ -42,11 +42,11 @@ int \hyperlink{bus_8h_a5fa0c254755deec118b2e3dcb4ec9bdf}{rpc\+\_\+bus\+\_\+close
 \item 
 int \hyperlink{bus_8h_ac4f30e57bd3b17725db2e517e7cf72a4}{rpc\+\_\+bus\+\_\+ping} (const char $\ast$\+\_\+\+Nonnull serial)
 \item 
-int \hyperlink{bus_8h_a85cd042c0a2e2bddaea2a09ca10af76f}{rpc\+\_\+bus\+\_\+enumerate} (struct \hyperlink{structrpc__bus__node}{rpc\+\_\+bus\+\_\+node} $\ast$$\ast$result)
+int \hyperlink{bus_8h_a7dfb66a85e5f3037635a95b693d39a97}{rpc\+\_\+bus\+\_\+enumerate} (struct \hyperlink{structrpc__bus__node}{rpc\+\_\+bus\+\_\+node} $\ast$\+\_\+\+Nullable $\ast$\+\_\+\+Nonnull result)
 \item 
-void \hyperlink{bus_8h_a9e0894b8914690e83a155b33a2854d8c}{rpc\+\_\+bus\+\_\+free\+\_\+result} (struct \hyperlink{structrpc__bus__node}{rpc\+\_\+bus\+\_\+node} $\ast$result)
+void \hyperlink{bus_8h_a7a0ada5e8a9c567b1e7d18297e1cde42}{rpc\+\_\+bus\+\_\+free\+\_\+result} (struct \hyperlink{structrpc__bus__node}{rpc\+\_\+bus\+\_\+node} $\ast$\+\_\+\+Nonnull result)
 \item 
-void \hyperlink{bus_8h_a1c9f3676441138dfb89655d3ad080d08}{rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler} (rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t handler)
+void \hyperlink{bus_8h_adbc9a5badea0314236b1ccabb060e090}{rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler} (\+\_\+\+Nonnull rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t handler)
 \item 
 void \hyperlink{bus_8h_ae6437acd78bb490baac4517ddffb0792}{rpc\+\_\+bus\+\_\+unregister\+\_\+event\+\_\+handler} (void)
 \end{DoxyCompactItemize}
@@ -91,11 +91,11 @@ Closes the librpc bus connection.
 \end{DoxyReturn}
 \index{bus.\+h@{bus.\+h}!rpc\+\_\+bus\+\_\+enumerate@{rpc\+\_\+bus\+\_\+enumerate}}
 \index{rpc\+\_\+bus\+\_\+enumerate@{rpc\+\_\+bus\+\_\+enumerate}!bus.\+h@{bus.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+bus\+\_\+enumerate(struct rpc\+\_\+bus\+\_\+node $\ast$$\ast$result)}{rpc_bus_enumerate(struct rpc_bus_node **result)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+bus\+\_\+enumerate (
+\subsubsection[{\texorpdfstring{rpc\+\_\+bus\+\_\+enumerate(struct rpc\+\_\+bus\+\_\+node $\ast$\+\_\+\+Nullable $\ast$\+\_\+\+Nonnull result)}{rpc_bus_enumerate(struct rpc_bus_node *_Nullable *_Nonnull result)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+bus\+\_\+enumerate (
 \begin{DoxyParamCaption}
-\item[{struct {\bf rpc\+\_\+bus\+\_\+node} $\ast$$\ast$}]{result}
+\item[{struct {\bf rpc\+\_\+bus\+\_\+node} $\ast$\+\_\+\+Nullable $\ast$\+\_\+\+Nonnull}]{result}
 \end{DoxyParamCaption}
-)}\hypertarget{bus_8h_a85cd042c0a2e2bddaea2a09ca10af76f}{}\label{bus_8h_a85cd042c0a2e2bddaea2a09ca10af76f}
+)}\hypertarget{bus_8h_a7dfb66a85e5f3037635a95b693d39a97}{}\label{bus_8h_a7dfb66a85e5f3037635a95b693d39a97}
 Enumerates connected devices on the R\+PC bus.
 
 
@@ -108,11 +108,11 @@ Enumerates connected devices on the R\+PC bus.
 \end{DoxyReturn}
 \index{bus.\+h@{bus.\+h}!rpc\+\_\+bus\+\_\+free\+\_\+result@{rpc\+\_\+bus\+\_\+free\+\_\+result}}
 \index{rpc\+\_\+bus\+\_\+free\+\_\+result@{rpc\+\_\+bus\+\_\+free\+\_\+result}!bus.\+h@{bus.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+bus\+\_\+free\+\_\+result(struct rpc\+\_\+bus\+\_\+node $\ast$result)}{rpc_bus_free_result(struct rpc_bus_node *result)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+bus\+\_\+free\+\_\+result (
+\subsubsection[{\texorpdfstring{rpc\+\_\+bus\+\_\+free\+\_\+result(struct rpc\+\_\+bus\+\_\+node $\ast$\+\_\+\+Nonnull result)}{rpc_bus_free_result(struct rpc_bus_node *_Nonnull result)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+bus\+\_\+free\+\_\+result (
 \begin{DoxyParamCaption}
-\item[{struct {\bf rpc\+\_\+bus\+\_\+node} $\ast$}]{result}
+\item[{struct {\bf rpc\+\_\+bus\+\_\+node} $\ast$\+\_\+\+Nonnull}]{result}
 \end{DoxyParamCaption}
-)}\hypertarget{bus_8h_a9e0894b8914690e83a155b33a2854d8c}{}\label{bus_8h_a9e0894b8914690e83a155b33a2854d8c}
+)}\hypertarget{bus_8h_a7a0ada5e8a9c567b1e7d18297e1cde42}{}\label{bus_8h_a7a0ada5e8a9c567b1e7d18297e1cde42}
 
 \begin{DoxyParams}{Parameters}
 {\em result} & \\
@@ -149,11 +149,11 @@ Checks whether a node with specified serial is reachable.
 \end{DoxyReturn}
 \index{bus.\+h@{bus.\+h}!rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler@{rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler}}
 \index{rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler@{rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler}!bus.\+h@{bus.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler(rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t handler)}{rpc_bus_register_event_handler(rpc_bus_event_handler_t handler)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler (
+\subsubsection[{\texorpdfstring{rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler(\+\_\+\+Nonnull rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t handler)}{rpc_bus_register_event_handler(_Nonnull rpc_bus_event_handler_t handler)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler (
 \begin{DoxyParamCaption}
-\item[{rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t}]{handler}
+\item[{\+\_\+\+Nonnull rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t}]{handler}
 \end{DoxyParamCaption}
-)}\hypertarget{bus_8h_a1c9f3676441138dfb89655d3ad080d08}{}\label{bus_8h_a1c9f3676441138dfb89655d3ad080d08}
+)}\hypertarget{bus_8h_adbc9a5badea0314236b1ccabb060e090}{}\label{bus_8h_adbc9a5badea0314236b1ccabb060e090}
 Configures an event handler block to be called whenever a bus event occurs.
 
 

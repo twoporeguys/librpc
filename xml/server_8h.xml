@@ -233,13 +233,13 @@
         </inbodydescription>
         <location file="/code/include/rpc/server.h" line="95" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="server_8h_1aecd13196295690cff8a48b90b9467c1d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="server_8h_1a1bf6070b1bb3b31d394f3862405eaf8c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
         <definition>int rpc_server_close</definition>
-        <argsstring>(rpc_server_t server)</argsstring>
+        <argsstring>(_Nonnull rpc_server_t server)</argsstring>
         <name>rpc_server_close</name>
         <param>
-          <type><ref refid="server_8h_1a46fd27cbcf75a54103df9d51d90a7fca" kindref="member">rpc_server_t</ref></type>
+          <type>_Nonnull <ref refid="server_8h_1a46fd27cbcf75a54103df9d51d90a7fca" kindref="member">rpc_server_t</ref></type>
           <declname>server</declname>
         </param>
         <briefdescription>
@@ -324,7 +324,7 @@
 <codeline lineno="89"><highlight class="normal"></highlight></codeline>
 <codeline lineno="95"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="server_8h_1ac6bfcd59fe8ec8386b1e3d312705e786" kindref="member">rpc_server_set_event_handler</ref>(_Nullable<sp/><ref refid="server_8h_1a2d9a540637c63449db9ac5882cb5f7ab" kindref="member">rpc_server_event_handler_t</ref><sp/>handler);</highlight></codeline>
 <codeline lineno="96"><highlight class="normal"></highlight></codeline>
-<codeline lineno="103"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="server_8h_1aecd13196295690cff8a48b90b9467c1d" kindref="member">rpc_server_close</ref>(rpc_server_t<sp/>server);</highlight></codeline>
+<codeline lineno="103"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="server_8h_1a1bf6070b1bb3b31d394f3862405eaf8c" kindref="member">rpc_server_close</ref>(_Nonnull<sp/>rpc_server_t<sp/>server);</highlight></codeline>
 <codeline lineno="104"><highlight class="normal"></highlight></codeline>
 <codeline lineno="105"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="106"><highlight class="normal">}</highlight></codeline>

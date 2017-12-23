@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.11">
   <compound refid="structrpc__bus__node" kind="struct"><name>rpc_bus_node</name>
-    <member refid="structrpc__bus__node_1a7fa4491eff39bb96c779b4208ca388ec" kind="variable"><name>rbn_name</name></member>
-    <member refid="structrpc__bus__node_1aa7eab44be63bee011e2b7589a092a3ab" kind="variable"><name>rbn_description</name></member>
-    <member refid="structrpc__bus__node_1a9f5b9214a64d9cd54cd4839f869ba7df" kind="variable"><name>rbn_serial</name></member>
+    <member refid="structrpc__bus__node_1a9afbf9a155ae01c1c47dc210a8334022" kind="variable"><name>rbn_name</name></member>
+    <member refid="structrpc__bus__node_1af5d23beee7c50520e7235f0c922fafb1" kind="variable"><name>rbn_description</name></member>
+    <member refid="structrpc__bus__node_1a885b358a61a0b459d86d7c534be6ef0f" kind="variable"><name>rbn_serial</name></member>
     <member refid="structrpc__bus__node_1a624e2a0be665938924ab2f815afb669e" kind="variable"><name>rbn_address</name></member>
   </compound>
   <compound refid="structrpc__if__member" kind="struct"><name>rpc_if_member</name>
@@ -40,9 +40,9 @@
     <member refid="bus_8h_1a845c8c255ac97bb03ac9ad1418eb66f0" kind="function"><name>rpc_bus_open</name></member>
     <member refid="bus_8h_1a5fa0c254755deec118b2e3dcb4ec9bdf" kind="function"><name>rpc_bus_close</name></member>
     <member refid="bus_8h_1ac4f30e57bd3b17725db2e517e7cf72a4" kind="function"><name>rpc_bus_ping</name></member>
-    <member refid="bus_8h_1a85cd042c0a2e2bddaea2a09ca10af76f" kind="function"><name>rpc_bus_enumerate</name></member>
-    <member refid="bus_8h_1a9e0894b8914690e83a155b33a2854d8c" kind="function"><name>rpc_bus_free_result</name></member>
-    <member refid="bus_8h_1a1c9f3676441138dfb89655d3ad080d08" kind="function"><name>rpc_bus_register_event_handler</name></member>
+    <member refid="bus_8h_1a7dfb66a85e5f3037635a95b693d39a97" kind="function"><name>rpc_bus_enumerate</name></member>
+    <member refid="bus_8h_1a7a0ada5e8a9c567b1e7d18297e1cde42" kind="function"><name>rpc_bus_free_result</name></member>
+    <member refid="bus_8h_1adbc9a5badea0314236b1ccabb060e090" kind="function"><name>rpc_bus_register_event_handler</name></member>
     <member refid="bus_8h_1ae6437acd78bb490baac4517ddffb0792" kind="function"><name>rpc_bus_unregister_event_handler</name></member>
   </compound>
   <compound refid="client_8h" kind="file"><name>client.h</name>
@@ -277,7 +277,7 @@
     <member refid="server_8h_1a2d524c3d5822d34b46f1d8552bf7ede0" kind="function"><name>rpc_server_create</name></member>
     <member refid="server_8h_1a28eeff2b8ec73f31f1af9feff11cb698" kind="function"><name>rpc_server_broadcast_event</name></member>
     <member refid="server_8h_1ac6bfcd59fe8ec8386b1e3d312705e786" kind="function"><name>rpc_server_set_event_handler</name></member>
-    <member refid="server_8h_1aecd13196295690cff8a48b90b9467c1d" kind="function"><name>rpc_server_close</name></member>
+    <member refid="server_8h_1a1bf6070b1bb3b31d394f3862405eaf8c" kind="function"><name>rpc_server_close</name></member>
   </compound>
   <compound refid="service_8h" kind="file"><name>service.h</name>
     <member refid="service_8h_1a4c7094875a0bd8cc87e7c1d24a4481a6" kind="define"><name>RPC_FUNCTION_STILL_RUNNING</name></member>
