@@ -3,6 +3,11 @@ DOCS_PATH = '/mnt/builds/docs'
 pipeline {
     agent any
 
+    environment {
+        CC = 'clang'
+        CXX = 'clang++'
+    }
+
     stages {
         stage('Build') {
             steps {
