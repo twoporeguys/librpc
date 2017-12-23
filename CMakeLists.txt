@@ -15,6 +15,7 @@ option(BUILD_PYTHON "Build and install Python extension" ON)
 option(BUILD_JSON "Build and install JSON serializer" ON)
 option(BUILD_LIBUSB "Build and install libusb transport")
 option(BUILD_RPCTOOL" Build and install rpctool" ON)
+option(ENABLE_UBSAN "Enable undefined behavior sanitizer" ON)
 
 if(LINUX)
     option(BUILD_BUS "Build and install bus transport" ON)
@@ -77,6 +78,10 @@ link_directories(${YAML_LIBRARY_DIRS})
 
 if(RPC_DEBUG)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DRPC_DEBUG")
+endif()
+
+if (ENABLE_UBSAN)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=undefined -fsanitize=integer -fsanitize=nullability")
 endif()
 
 if(BUILD_JSON)
