@@ -431,8 +431,7 @@ _Nullable rpc_object_t rpc_object_pack(const char *_Nonnull fmt, ...);
  * @param ap Variable arguments list structure.
  * @return Packed object.
  */
-_Nullable rpc_object_t rpc_object_vpack(const char *_Nonnull fmt,
-    _Nonnull va_list ap);
+_Nullable rpc_object_t rpc_object_vpack(const char *_Nonnull fmt, va_list ap);
 
 /**
  * Unpacks provided values accordingly to a specified format string from an
@@ -518,7 +517,7 @@ int rpc_object_unpack(_Nonnull rpc_object_t, const char *_Nonnull fmt, ...);
  * @return Unpacking status. Errors are reported as negative values.
  */
 int rpc_object_vunpack(_Nonnull rpc_object_t, const char *_Nonnull fmt,
-    _Nonnull va_list ap);
+    va_list ap);
 
 /**
  * Creates an object holding null value.
@@ -717,7 +716,7 @@ _Nonnull rpc_object_t rpc_string_create_with_format(const char *_Nonnull fmt,
  * @return Newly created object.
  */
 _Nonnull rpc_object_t rpc_string_create_with_format_and_arguments(
-    const char *_Nonnull fmt, _Nonnull va_list ap);
+    const char *_Nonnull fmt, va_list ap);
 
 /**
  * Returns the length of internal string buffer of a provided object.
@@ -1185,7 +1184,7 @@ int rpc_array_dup_fd(_Nonnull rpc_object_t array, size_t index);
  * @param size Size (in bytes) of a shared memory to be allocated.
  * @return Newly created object representing a shared memory.
  */
-rpc_object_t rpc_shmem_create(size_t size);
+_Nonnull rpc_object_t rpc_shmem_create(size_t size);
 
 /**
  * Maps a given shared memory object to an actual address.
@@ -1193,7 +1192,7 @@ rpc_object_t rpc_shmem_create(size_t size);
  * @param shmem Input shared memory object.
  * @return Address a shared memory has been mapped to.
  */
-void *rpc_shmem_map(rpc_object_t shmem);
+void *rpc_shmem_map(_Nonnull rpc_object_t shmem);
 
 /**
  * Unmaps a given shared memory object from a given address.
@@ -1201,7 +1200,7 @@ void *rpc_shmem_map(rpc_object_t shmem);
  * @param shmem Input shared memory object.
  * @param addr Address to be unmapped.
  */
-void rpc_shmem_unmap(rpc_object_t shmem, void *addr);
+void rpc_shmem_unmap(_Nonnull rpc_object_t shmem, void *_Nonnull addr);
 
 /**
  * Returns a size of a provided shared memory chunk.
@@ -1209,7 +1208,7 @@ void rpc_shmem_unmap(rpc_object_t shmem, void *addr);
  * @param shmem Object representing a shared memory.
  * @return Size of a shared memory.
  */
-size_t rpc_shmem_get_size(rpc_object_t shmem);
+size_t rpc_shmem_get_size(_Nonnull rpc_object_t shmem);
 #endif
 
 /**

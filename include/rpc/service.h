@@ -349,9 +349,11 @@ void rpc_context_emit_event(_Nonnull rpc_context_t context,
 void *_Nullable rpc_function_get_arg(void *_Nonnull cookie);
 
 /**
+ * Returns the RPC context object associated with currently executing
+ * function.
  *
- * @param cookie
- * @return
+ * @param cookie Running call identifier
+ * @return RPC context
  */
 _Nonnull rpc_context_t rpc_function_get_context(void *_Nonnull cookie);
 
