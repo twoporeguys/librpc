@@ -55,8 +55,8 @@ typedef struct rpc_server *rpc_server_t;
 /**
  * Definition of RPC server event handler block type.
  */
-typedef void (^rpc_server_event_handler_t)(rpc_connection_t source,
-    const char *name, rpc_object_t args);
+typedef void (^rpc_server_event_handler_t)(_Nonnull rpc_connection_t source,
+    const char *_Nonnull name, _Nonnull rpc_object_t args);
 
 /**
  * Converts function pointer to a ::rpc_server_event_handler_t block type.
@@ -73,7 +73,8 @@ typedef void (^rpc_server_event_handler_t)(rpc_connection_t source,
  * @param context RPC context for a server instance.
  * @return Server structure.
  */
-rpc_server_t rpc_server_create(const char *uri, rpc_context_t context);
+_Nullable rpc_server_t rpc_server_create(const char *_Nonnull uri,
+    _Nonnull rpc_context_t context);
 
 /**
  * Broadcasts an event of a given name among its subscribers.
@@ -82,15 +83,16 @@ rpc_server_t rpc_server_create(const char *uri, rpc_context_t context);
  * @param name Name of an event to be broadcasted.
  * @param args Event arguments.
  */
-void rpc_server_broadcast_event(rpc_server_t server, const char *path,
-    const char *interface, const char *name, rpc_object_t args);
+void rpc_server_broadcast_event(_Nonnull rpc_server_t server,
+    const char *_Nullable path, const char *_Nullable interface,
+    const char *_Nonnull name, _Nullable rpc_object_t args);
 
 /**
  * Creates an event handler internal to a server for an event of a given name.
  *
  * @param handler
  */
-void rpc_server_set_event_handler(rpc_server_event_handler_t handler);
+void rpc_server_set_event_handler(_Nullable rpc_server_event_handler_t handler);
 
 /**
  * Closes a given RPC server.
