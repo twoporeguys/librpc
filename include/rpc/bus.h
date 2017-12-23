@@ -56,7 +56,7 @@ struct rpc_bus_node
 };
 
 typedef void (^rpc_bus_event_handler_t)(rpc_bus_event_t event,
-    struct rpc_bus_node *node);
+    struct rpc_bus_node *_Nonnull node);
 
 /**
  * Converts function pointer to an rpc_bus_event_t block type.
@@ -86,7 +86,7 @@ int rpc_bus_close(void);
  * @param name
  * @return
  */
-int rpc_bus_ping(const char *serial);
+int rpc_bus_ping(const char *_Nonnull serial);
 
 /**
  * Enumerates connected devices on the RPC bus.

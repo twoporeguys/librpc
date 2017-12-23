@@ -58,7 +58,8 @@ typedef struct rpc_client *rpc_client_t;
  * @param params Transport-specific parameters or NULL
  * @return Connect RPC client object
  */
-rpc_client_t rpc_client_create(const char *uri, rpc_object_t params);
+_Nullable rpc_client_t rpc_client_create(const char *_Nonnull uri,
+    _Nullable rpc_object_t params);
 
 /**
  * Gets the connection object from a client.
@@ -66,14 +67,14 @@ rpc_client_t rpc_client_create(const char *uri, rpc_object_t params);
  * @param client Client object to get the connection from
  * @return Connection object
  */
-rpc_connection_t rpc_client_get_connection(rpc_client_t client);
+_Nonnull rpc_connection_t rpc_client_get_connection(_Nonnull rpc_client_t client);
 
 /**
  * Closes the connection and frees associated resources.
  *
  * @param client Client object
  */
-void rpc_client_close(rpc_client_t client);
+void rpc_client_close(_Nonnull rpc_client_t client);
 
 #ifdef __cplusplus
 }
