@@ -1192,7 +1192,7 @@ _Nonnull rpc_object_t rpc_shmem_create(size_t size);
  * @param shmem Input shared memory object.
  * @return Address a shared memory has been mapped to.
  */
-void *rpc_shmem_map(_Nonnull rpc_object_t shmem);
+void *_Nonnull rpc_shmem_map(_Nonnull rpc_object_t shmem);
 
 /**
  * Unmaps a given shared memory object from a given address.
