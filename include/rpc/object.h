@@ -87,7 +87,8 @@ typedef bool (^rpc_array_applier_t)(size_t index, _Nonnull rpc_object_t value);
 /**
  *
  */
-typedef _Nonnull rpc_object_t (^rpc_array_mapper_t)(size_t index, _Nonnull rpc_object_t value);
+typedef _Nonnull rpc_object_t (^rpc_array_mapper_t)(size_t index,
+    _Nonnull rpc_object_t value);
 
 /**
  * Definition of dictionary applier block type.
@@ -123,7 +124,8 @@ typedef _Nonnull rpc_object_t (^rpc_dictionary_mapper_t)(
  * @param o2 A value to compare with.
  * @return Negative value if a < b; zero if a = b; positive value if a > b.
  */
-typedef int (^rpc_array_cmp_t)(_Nonnull rpc_object_t o1, _Nonnull rpc_object_t o2);
+typedef int (^rpc_array_cmp_t)(_Nonnull rpc_object_t o1,
+    _Nonnull rpc_object_t o2);
 
 /**
  * Definition of binary block destructor type.
@@ -325,7 +327,8 @@ _Nullable rpc_object_t rpc_get_last_error(void);
  * @param size JSON string size.
  * @return Deserialized object.
  */
-_Nullable rpc_object_t rpc_object_from_json(const void *_Nonnull frame, size_t size);
+_Nullable rpc_object_t rpc_object_from_json(const void *_Nonnull frame,
+    size_t size);
 
 /**
  * Serialize an object to a JSON string.
@@ -645,7 +648,8 @@ _Nonnull rpc_object_t rpc_data_create(const void *_Nonnull bytes, size_t length,
  * @param niov Number of iovec in the iovec list.
  * @return Newly created object.
  */
-_Nonnull rpc_object_t rpc_data_create_iov(struct iovec *_Nonnull iov, size_t niov);
+_Nonnull rpc_object_t rpc_data_create_iov(struct iovec *_Nonnull iov,
+    size_t niov);
 
 /**
  * Returns the length of internal binary data buffer of a provided object.
@@ -701,7 +705,8 @@ _Nonnull rpc_object_t rpc_string_create_len(const char *_Nonnull string,
  * @param ... Variable length list of input data arguments for formatting.
  * @return Newly created object.
  */
-_Nonnull rpc_object_t rpc_string_create_with_format(const char *_Nonnull fmt, ...);
+_Nonnull rpc_object_t rpc_string_create_with_format(const char *_Nonnull fmt,
+    ...);
 
 /**
  * Creates an RPC object holding a string formatted using the regular printf
@@ -828,7 +833,8 @@ void rpc_array_remove_index(_Nonnull rpc_object_t array, size_t index);
  * @param array Input array.
  * @param value Object to be appended.
  */
-void rpc_array_append_value(_Nonnull rpc_object_t array, _Nonnull rpc_object_t value);
+void rpc_array_append_value(_Nonnull rpc_object_t array,
+    _Nonnull rpc_object_t value);
 
 /**
  * Appends an object at the end of a provided array.
@@ -836,7 +842,8 @@ void rpc_array_append_value(_Nonnull rpc_object_t array, _Nonnull rpc_object_t v
  * @param array Input array.
  * @param value Object to be appended.
  */
-void rpc_array_append_stolen_value(_Nonnull rpc_object_t array, _Nonnull rpc_object_t value);
+void rpc_array_append_stolen_value(_Nonnull rpc_object_t array,
+    _Nonnull rpc_object_t value);
 
 /**
  * Returns an object held by a provided array at a given index.
@@ -847,7 +854,8 @@ void rpc_array_append_stolen_value(_Nonnull rpc_object_t array, _Nonnull rpc_obj
  * @param index Index of an object to be returned.
  * @return Object at a given index.
  */
-_Nullable rpc_object_t rpc_array_get_value(_Nonnull rpc_object_t array, size_t index);
+_Nullable rpc_object_t rpc_array_get_value(_Nonnull rpc_object_t array,
+    size_t index);
 
 /**
  * Returns a number of elements in a provided array.
@@ -870,7 +878,8 @@ size_t rpc_array_get_count(_Nonnull rpc_object_t array);
  * @param applier Block of code to be executed for each array element.
  * @return Iteration terminated (true)/finished (false) boolean flag.
  */
-bool rpc_array_apply(_Nonnull rpc_object_t array, _Nonnull rpc_array_applier_t applier);
+bool rpc_array_apply(_Nonnull rpc_object_t array,
+    _Nonnull rpc_array_applier_t applier);
 
 /**
  * Iterates over a given array and replaces each element of said array with
@@ -879,7 +888,8 @@ bool rpc_array_apply(_Nonnull rpc_object_t array, _Nonnull rpc_array_applier_t a
  * @param array Input array
  * @param mapper Block of code to be executed for each array element
  */
-void rpc_array_map(_Nonnull rpc_object_t array, _Nonnull rpc_array_mapper_t mapper);
+void rpc_array_map(_Nonnull rpc_object_t array,
+    _Nonnull rpc_array_mapper_t mapper);
 
 /**
  * Checks if an entry with the same value as provided
@@ -891,7 +901,8 @@ void rpc_array_map(_Nonnull rpc_object_t array, _Nonnull rpc_array_mapper_t mapp
  * @param value RPC object representing value of a searched object.
  * @return Boolean result of the search operation.
  */
-bool rpc_array_contains(_Nonnull rpc_object_t array, _Nonnull rpc_object_t value);
+bool rpc_array_contains(_Nonnull rpc_object_t array,
+    _Nonnull rpc_object_t value);
 
 /**
  * Iterates over a given array in reversed order (starting from its end).
@@ -901,7 +912,8 @@ bool rpc_array_contains(_Nonnull rpc_object_t array, _Nonnull rpc_object_t value
  * @param applier Block of code to be executed for each of an array's elements.
  * @return Iteration terminated (true)/finished (false) boolean flag.
  */
-bool rpc_array_reverse_apply(_Nonnull rpc_object_t array, _Nonnull rpc_array_applier_t applier);
+bool rpc_array_reverse_apply(_Nonnull rpc_object_t array,
+    _Nonnull rpc_array_applier_t applier);
 
 /**
  * Sorts contents of a given array using provided comparator code block.
@@ -958,7 +970,8 @@ void rpc_array_set_bool(_Nonnull rpc_object_t array, size_t index, bool value);
  * @param index Index to store an input value.
  * @param value Input value (64-bit signed integer).
  */
-void rpc_array_set_int64(_Nonnull rpc_object_t array, size_t index, int64_t value);
+void rpc_array_set_int64(_Nonnull rpc_object_t array, size_t index,
+    int64_t value);
 
 /**
  * Sets a selected index of an input array to a newly created RPC object holding
@@ -971,7 +984,8 @@ void rpc_array_set_int64(_Nonnull rpc_object_t array, size_t index, int64_t valu
  * @param index Index to store an input value.
  * @param value Input value (64-bit unsigned integer).
  */
-void rpc_array_set_uint64(_Nonnull rpc_object_t array, size_t index, uint64_t value);
+void rpc_array_set_uint64(_Nonnull rpc_object_t array, size_t index,
+    uint64_t value);
 
 /**
  * Sets a selected index of an input array to a newly created RPC object holding
@@ -984,7 +998,8 @@ void rpc_array_set_uint64(_Nonnull rpc_object_t array, size_t index, uint64_t va
  * @param index Index to store an input value.
  * @param value Input value (double).
  */
-void rpc_array_set_double(_Nonnull rpc_object_t array, size_t index, double value);
+void rpc_array_set_double(_Nonnull rpc_object_t array, size_t index,
+    double value);
 
 /**
  * Sets a selected index of an input array to a newly created RPC object holding
@@ -997,7 +1012,8 @@ void rpc_array_set_double(_Nonnull rpc_object_t array, size_t index, double valu
  * @param index Index to store an input value.
  * @param value Input value (UNIX timestamp represented as an integer).
  */
-void rpc_array_set_date(_Nonnull rpc_object_t array, size_t index, int64_t value);
+void rpc_array_set_date(_Nonnull rpc_object_t array, size_t index,
+    int64_t value);
 
 /**
  * Sets a selected index of an input array to a newly created RPC object holding
@@ -1263,7 +1279,8 @@ _Nullable rpc_object_t rpc_error_get_extra(_Nonnull rpc_object_t error);
  * @param error Input error object.
  * @param extra Extra data to be attached to an error.
  */
-void rpc_error_set_extra(_Nonnull rpc_object_t error, _Nonnull rpc_object_t extra);
+void rpc_error_set_extra(_Nonnull rpc_object_t error,
+    _Nonnull rpc_object_t extra);
 
 /**
  * Returns a stack trace associated with an error condition of a provided
@@ -1398,7 +1415,8 @@ void rpc_dictionary_map(_Nonnull rpc_object_t dictionary,
  * @param key Key to be tested.
  * @return Boolean check result.
  */
-bool rpc_dictionary_has_key(_Nonnull rpc_object_t dictionary, const char *_Nonnull key);
+bool rpc_dictionary_has_key(_Nonnull rpc_object_t dictionary,
+    const char *_Nonnull key);
 
 /**
  * Sets a selected key of an input dictionary to a newly created RPC object
@@ -1408,8 +1426,8 @@ bool rpc_dictionary_has_key(_Nonnull rpc_object_t dictionary, const char *_Nonnu
  * @param key Key to store an input value.
  * @param value Input value (boolean).
  */
-void rpc_dictionary_set_bool(_Nonnull rpc_object_t dictionary, const char *_Nonnull key,
-    bool value);
+void rpc_dictionary_set_bool(_Nonnull rpc_object_t dictionary,
+    const char *_Nonnull key, bool value);
 
 /**
  * Sets a selected key of an input dictionary to a newly created RPC object
@@ -1419,8 +1437,8 @@ void rpc_dictionary_set_bool(_Nonnull rpc_object_t dictionary, const char *_Nonn
  * @param key Key to store an input value.
  * @param value Input value (64-bit signed integer).
  */
-void rpc_dictionary_set_int64(_Nonnull rpc_object_t dictionary, const char *_Nonnull key,
-    int64_t value);
+void rpc_dictionary_set_int64(_Nonnull rpc_object_t dictionary,
+    const char *_Nonnull key, int64_t value);
 
 /**
  * Sets a selected key of an input dictionary to a newly created RPC object
@@ -1430,8 +1448,8 @@ void rpc_dictionary_set_int64(_Nonnull rpc_object_t dictionary, const char *_Non
  * @param key Key to store an input value.
  * @param value Input value (64-bit unsigned integer).
  */
-void rpc_dictionary_set_uint64(_Nonnull rpc_object_t dictionary, const char *_Nonnull key,
-    uint64_t value);
+void rpc_dictionary_set_uint64(_Nonnull rpc_object_t dictionary,
+    const char *_Nonnull key, uint64_t value);
 
 /**
  * Sets a selected key of an input dictionary to a newly created RPC object
@@ -1441,8 +1459,8 @@ void rpc_dictionary_set_uint64(_Nonnull rpc_object_t dictionary, const char *_No
  * @param key Key to store an input value.
  * @param value Input value (double).
  */
-void rpc_dictionary_set_double(_Nonnull rpc_object_t dictionary, const char *_Nonnull key,
-    double value);
+void rpc_dictionary_set_double(_Nonnull rpc_object_t dictionary,
+    const char *_Nonnull key, double value);
 
 /**
  * Sets a selected key of an input dictionary to a newly created RPC object
@@ -1452,8 +1470,8 @@ void rpc_dictionary_set_double(_Nonnull rpc_object_t dictionary, const char *_No
  * @param key Key to store an input value.
  * @param value Input value (UNIX timestamp represented as an integer).
  */
-void rpc_dictionary_set_date(_Nonnull rpc_object_t dictionary, const char *_Nonnull key,
-    int64_t value);
+void rpc_dictionary_set_date(_Nonnull rpc_object_t dictionary,
+    const char *_Nonnull key, int64_t value);
 
 /**
  * Sets a selected key of an input dictionary to a newly created RPC object
@@ -1464,8 +1482,8 @@ void rpc_dictionary_set_date(_Nonnull rpc_object_t dictionary, const char *_Nonn
  * @param value Input binary data buffer.
  * @param length Size of an input data buffer.
  */
-void rpc_dictionary_set_data(_Nonnull rpc_object_t dictionary, const char *_Nonnull key,
-    const void *_Nonnull value, size_t length);
+void rpc_dictionary_set_data(_Nonnull rpc_object_t dictionary,
+    const char *_Nonnull key, const void *_Nonnull value, size_t length);
 
 /**
  * Sets a selected key of an input dictionary to a newly created RPC object
@@ -1475,8 +1493,8 @@ void rpc_dictionary_set_data(_Nonnull rpc_object_t dictionary, const char *_Nonn
  * @param key Key to store an input value.
  * @param value Input string (null byte terminated constant character pointer).
  */
-void rpc_dictionary_set_string(_Nonnull rpc_object_t dictionary, const char *_Nonnull key,
-    const char *_Nonnull value);
+void rpc_dictionary_set_string(_Nonnull rpc_object_t dictionary,
+    const char *_Nonnull key, const char *_Nonnull value);
 
 /**
  * Sets a selected key of an input dictionary to a newly created RPC object
@@ -1486,8 +1504,8 @@ void rpc_dictionary_set_string(_Nonnull rpc_object_t dictionary, const char *_No
  * @param key Key to store an input value.
  * @param value Input file descriptor (integer).
  */
-void rpc_dictionary_set_fd(_Nonnull rpc_object_t dictionary, const char *_Nonnull key,
-    int value);
+void rpc_dictionary_set_fd(_Nonnull rpc_object_t dictionary,
+    const char *_Nonnull key, int value);
 
 /**
  * Returns a value from a given key of an input dictionary.
@@ -1500,7 +1518,8 @@ void rpc_dictionary_set_fd(_Nonnull rpc_object_t dictionary, const char *_Nonnul
  * @param key Key storing an output value.
  * @return Boolean value.
  */
-bool rpc_dictionary_get_bool(_Nonnull rpc_object_t dictionary, const char *_Nonnull key);
+bool rpc_dictionary_get_bool(_Nonnull rpc_object_t dictionary,
+    const char *_Nonnull key);
 
 /**
  * Returns a value from a given key of an input dictionary.
@@ -1513,7 +1532,8 @@ bool rpc_dictionary_get_bool(_Nonnull rpc_object_t dictionary, const char *_Nonn
  * @param key Key storing an output value.
  * @return 64-bit signed integer value.
  */
-int64_t rpc_dictionary_get_int64(_Nonnull rpc_object_t dictionary, const char *_Nonnull key);
+int64_t rpc_dictionary_get_int64(_Nonnull rpc_object_t dictionary,
+    const char *_Nonnull key);
 
 /**
  * Returns a value from a given key of an input dictionary.
@@ -1526,7 +1546,8 @@ int64_t rpc_dictionary_get_int64(_Nonnull rpc_object_t dictionary, const char *_
  * @param key Key storing an output value.
  * @return 64-bit unsigned integer value.
  */
-uint64_t rpc_dictionary_get_uint64(_Nonnull rpc_object_t dictionary, const char *_Nonnull key);
+uint64_t rpc_dictionary_get_uint64(_Nonnull rpc_object_t dictionary,
+    const char *_Nonnull key);
 
 /**
  * Returns a value from a given key of an input dictionary.
@@ -1582,8 +1603,8 @@ const void *_Nullable rpc_dictionary_get_data(_Nonnull rpc_object_t dictionary,
  * @param key Key storing an output value.
  * @return String value.
  */
-const char *_Nullable rpc_dictionary_get_string(_Nonnull rpc_object_t dictionary,
-    const char *_Nonnull key);
+const char *_Nullable rpc_dictionary_get_string(
+    _Nonnull rpc_object_t dictionary, const char *_Nonnull key);
 
 /**
  * Returns a value from a given key of an input dictionary.
@@ -1610,7 +1631,8 @@ int rpc_dictionary_get_fd(_Nonnull rpc_object_t dictionary,
  * @param key File descriptor's key.
  * @return Duplicated file descriptor (integer).
  */
-int rpc_dictionary_dup_fd(_Nonnull rpc_object_t dictionary, const char *_Nonnull key);
+int rpc_dictionary_dup_fd(_Nonnull rpc_object_t dictionary,
+    const char *_Nonnull key);
 
 #ifdef __cplusplus
 }
