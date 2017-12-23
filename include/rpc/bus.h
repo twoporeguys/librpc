@@ -49,10 +49,10 @@ typedef enum {
  */
 struct rpc_bus_node
 {
-    	const char *	rbn_name;
-    	const char *	rbn_description;
-	const char *	rbn_serial;
-    	uint32_t 	rbn_address;
+	const char *_Nullable	rbn_name;
+	const char *_Nullable	rbn_description;
+	const char *_Nullable	rbn_serial;
+	uint32_t 		rbn_address;
 };
 
 typedef void (^rpc_bus_event_handler_t)(rpc_bus_event_t event,
@@ -94,14 +94,14 @@ int rpc_bus_ping(const char *_Nonnull serial);
  * @param result
  * @return
  */
-int rpc_bus_enumerate(struct rpc_bus_node **result);
+int rpc_bus_enumerate(struct rpc_bus_node *_Nullable *_Nonnull result);
 
 /**
  *
  *
  * @param result
  */
-void rpc_bus_free_result(struct rpc_bus_node *result);
+void rpc_bus_free_result(struct rpc_bus_node *_Nonnull result);
 
 /**
  * Configures an event handler block to be called whenever a bus
@@ -109,7 +109,7 @@ void rpc_bus_free_result(struct rpc_bus_node *result);
  *
  * @param handler Bus event handler
  */
-void rpc_bus_register_event_handler(rpc_bus_event_handler_t handler);
+void rpc_bus_register_event_handler(_Nonnull rpc_bus_event_handler_t handler);
 
 /**
  * Unsets the previously set event handler. If there was no handler previously
