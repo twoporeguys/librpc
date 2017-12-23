@@ -702,7 +702,7 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Performs a synchronous RPC method call using a given connection.</para><para>This function is similar to <ref refid="connection_8h_1a4bb388f7cc19ce3d01577993fcf7dd63" kindref="member">rpc_connection_call_sync()</ref>, but instead of taking rpc_object_t arguments, it accepts a format string and a list of values to pack, in format used by the <ref refid="object_8h_1a87da19ea6b0ec7daf50ce660162e26be" kindref="member">rpc_object_pack()</ref> function.</para><para><parameterlist kind="param"><parameteritem>
+<para>Performs a synchronous RPC method call using a given connection.</para><para>This function is similar to <ref refid="connection_8h_1a4bb388f7cc19ce3d01577993fcf7dd63" kindref="member">rpc_connection_call_sync()</ref>, but instead of taking rpc_object_t arguments, it accepts a format string and a list of values to pack, in format used by the <ref refid="object_8h_1a8a8454f12dcde323f5daba961febea97" kindref="member">rpc_object_pack()</ref> function.</para><para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>conn</parametername>
 </parameternamelist>

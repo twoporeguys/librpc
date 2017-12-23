@@ -19,11 +19,11 @@ typedef struct rpc\+\_\+client $\ast$ {\bfseries rpc\+\_\+client\+\_\+t}\hyperta
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-rpc\+\_\+client\+\_\+t \hyperlink{client_8h_aba8b2ed8b613a26a6e241f6122e1cb5e}{rpc\+\_\+client\+\_\+create} (const char $\ast$uri, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} params)
+\+\_\+\+Nullable rpc\+\_\+client\+\_\+t \hyperlink{client_8h_aaf8c4f2be48ef8d79a29e004264f0bf6}{rpc\+\_\+client\+\_\+create} (const char $\ast$\+\_\+\+Nonnull uri, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} params)
 \item 
-\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} \hyperlink{client_8h_a115d9a7fa40d9ec52a2fb553426fc202}{rpc\+\_\+client\+\_\+get\+\_\+connection} (rpc\+\_\+client\+\_\+t client)
+\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} \hyperlink{client_8h_a9e840cab717dbd16e7913f6c143c4804}{rpc\+\_\+client\+\_\+get\+\_\+connection} (\+\_\+\+Nonnull rpc\+\_\+client\+\_\+t client)
 \item 
-void \hyperlink{client_8h_ababbc19eeaefeab208c5b6d80411ee77}{rpc\+\_\+client\+\_\+close} (rpc\+\_\+client\+\_\+t client)
+void \hyperlink{client_8h_ac4404bc6ff0f1d8be969acab48ba543b}{rpc\+\_\+client\+\_\+close} (\+\_\+\+Nonnull rpc\+\_\+client\+\_\+t client)
 \end{DoxyCompactItemize}
 
 
@@ -33,11 +33,11 @@ R\+PC client A\+PI.
 \subsection{Function Documentation}
 \index{client.\+h@{client.\+h}!rpc\+\_\+client\+\_\+close@{rpc\+\_\+client\+\_\+close}}
 \index{rpc\+\_\+client\+\_\+close@{rpc\+\_\+client\+\_\+close}!client.\+h@{client.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+client\+\_\+close(rpc\+\_\+client\+\_\+t client)}{rpc_client_close(rpc_client_t client)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+client\+\_\+close (
+\subsubsection[{\texorpdfstring{rpc\+\_\+client\+\_\+close(\+\_\+\+Nonnull rpc\+\_\+client\+\_\+t client)}{rpc_client_close(_Nonnull rpc_client_t client)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+client\+\_\+close (
 \begin{DoxyParamCaption}
-\item[{rpc\+\_\+client\+\_\+t}]{client}
+\item[{\+\_\+\+Nonnull rpc\+\_\+client\+\_\+t}]{client}
 \end{DoxyParamCaption}
-)}\hypertarget{client_8h_ababbc19eeaefeab208c5b6d80411ee77}{}\label{client_8h_ababbc19eeaefeab208c5b6d80411ee77}
+)}\hypertarget{client_8h_ac4404bc6ff0f1d8be969acab48ba543b}{}\label{client_8h_ac4404bc6ff0f1d8be969acab48ba543b}
 Closes the connection and frees associated resources.
 
 
@@ -47,12 +47,12 @@ Closes the connection and frees associated resources.
 \end{DoxyParams}
 \index{client.\+h@{client.\+h}!rpc\+\_\+client\+\_\+create@{rpc\+\_\+client\+\_\+create}}
 \index{rpc\+\_\+client\+\_\+create@{rpc\+\_\+client\+\_\+create}!client.\+h@{client.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+client\+\_\+create(const char $\ast$uri, rpc\+\_\+object\+\_\+t params)}{rpc_client_create(const char *uri, rpc_object_t params)}}]{\setlength{\rightskip}{0pt plus 5cm}rpc\+\_\+client\+\_\+t rpc\+\_\+client\+\_\+create (
+\subsubsection[{\texorpdfstring{rpc\+\_\+client\+\_\+create(const char $\ast$\+\_\+\+Nonnull uri, \+\_\+\+Nullable rpc\+\_\+object\+\_\+t params)}{rpc_client_create(const char *_Nonnull uri, _Nullable rpc_object_t params)}}]{\setlength{\rightskip}{0pt plus 5cm}\+\_\+\+Nullable rpc\+\_\+client\+\_\+t rpc\+\_\+client\+\_\+create (
 \begin{DoxyParamCaption}
-\item[{const char $\ast$}]{uri, }
-\item[{{\bf rpc\+\_\+object\+\_\+t}}]{params}
+\item[{const char $\ast$\+\_\+\+Nonnull}]{uri, }
+\item[{\+\_\+\+Nullable {\bf rpc\+\_\+object\+\_\+t}}]{params}
 \end{DoxyParamCaption}
-)}\hypertarget{client_8h_aba8b2ed8b613a26a6e241f6122e1cb5e}{}\label{client_8h_aba8b2ed8b613a26a6e241f6122e1cb5e}
+)}\hypertarget{client_8h_aaf8c4f2be48ef8d79a29e004264f0bf6}{}\label{client_8h_aaf8c4f2be48ef8d79a29e004264f0bf6}
 Creates a new, connected R\+PC client.
 
 U\+RI parameter can take multiple forms\+:
@@ -75,11 +75,11 @@ Connect R\+PC client object
 \end{DoxyReturn}
 \index{client.\+h@{client.\+h}!rpc\+\_\+client\+\_\+get\+\_\+connection@{rpc\+\_\+client\+\_\+get\+\_\+connection}}
 \index{rpc\+\_\+client\+\_\+get\+\_\+connection@{rpc\+\_\+client\+\_\+get\+\_\+connection}!client.\+h@{client.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+client\+\_\+get\+\_\+connection(rpc\+\_\+client\+\_\+t client)}{rpc_client_get_connection(rpc_client_t client)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+connection\+\_\+t} rpc\+\_\+client\+\_\+get\+\_\+connection (
+\subsubsection[{\texorpdfstring{rpc\+\_\+client\+\_\+get\+\_\+connection(\+\_\+\+Nonnull rpc\+\_\+client\+\_\+t client)}{rpc_client_get_connection(_Nonnull rpc_client_t client)}}]{\setlength{\rightskip}{0pt plus 5cm}\+\_\+\+Nonnull {\bf rpc\+\_\+connection\+\_\+t} rpc\+\_\+client\+\_\+get\+\_\+connection (
 \begin{DoxyParamCaption}
-\item[{rpc\+\_\+client\+\_\+t}]{client}
+\item[{\+\_\+\+Nonnull rpc\+\_\+client\+\_\+t}]{client}
 \end{DoxyParamCaption}
-)}\hypertarget{client_8h_a115d9a7fa40d9ec52a2fb553426fc202}{}\label{client_8h_a115d9a7fa40d9ec52a2fb553426fc202}
+)}\hypertarget{client_8h_a9e840cab717dbd16e7913f6c143c4804}{}\label{client_8h_a9e840cab717dbd16e7913f6c143c4804}
 Gets the connection object from a client.
 
 

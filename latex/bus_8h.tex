@@ -22,7 +22,7 @@ struct \hyperlink{structrpc__bus__node}{rpc\+\_\+bus\+\_\+node}
 \subsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
-typedef void($^\wedge$ {\bfseries rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t}) (rpc\+\_\+bus\+\_\+event\+\_\+t event, struct \hyperlink{structrpc__bus__node}{rpc\+\_\+bus\+\_\+node} $\ast$node)\hypertarget{bus_8h_ad73f1cbe9ff7bebd610a19f8afcf867a}{}\label{bus_8h_ad73f1cbe9ff7bebd610a19f8afcf867a}
+typedef void($^\wedge$ {\bfseries rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t}) (rpc\+\_\+bus\+\_\+event\+\_\+t event, struct \hyperlink{structrpc__bus__node}{rpc\+\_\+bus\+\_\+node} $\ast$\+\_\+\+Nonnull node)\hypertarget{bus_8h_a77cfaa0d7a20750369e9aba0e226a5b5}{}\label{bus_8h_a77cfaa0d7a20750369e9aba0e226a5b5}
 
 \end{DoxyCompactItemize}
 \subsection*{Enumerations}
@@ -40,7 +40,7 @@ int \hyperlink{bus_8h_a845c8c255ac97bb03ac9ad1418eb66f0}{rpc\+\_\+bus\+\_\+open}
 \item 
 int \hyperlink{bus_8h_a5fa0c254755deec118b2e3dcb4ec9bdf}{rpc\+\_\+bus\+\_\+close} (void)
 \item 
-int \hyperlink{bus_8h_aa8ebea01297a21f28b1bc11f13c2d310}{rpc\+\_\+bus\+\_\+ping} (const char $\ast$serial)
+int \hyperlink{bus_8h_ac4f30e57bd3b17725db2e517e7cf72a4}{rpc\+\_\+bus\+\_\+ping} (const char $\ast$\+\_\+\+Nonnull serial)
 \item 
 int \hyperlink{bus_8h_a85cd042c0a2e2bddaea2a09ca10af76f}{rpc\+\_\+bus\+\_\+enumerate} (struct \hyperlink{structrpc__bus__node}{rpc\+\_\+bus\+\_\+node} $\ast$$\ast$result)
 \item 
@@ -132,11 +132,11 @@ Opens the librpc bus connection.
 \end{DoxyReturn}
 \index{bus.\+h@{bus.\+h}!rpc\+\_\+bus\+\_\+ping@{rpc\+\_\+bus\+\_\+ping}}
 \index{rpc\+\_\+bus\+\_\+ping@{rpc\+\_\+bus\+\_\+ping}!bus.\+h@{bus.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+bus\+\_\+ping(const char $\ast$serial)}{rpc_bus_ping(const char *serial)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+bus\+\_\+ping (
+\subsubsection[{\texorpdfstring{rpc\+\_\+bus\+\_\+ping(const char $\ast$\+\_\+\+Nonnull serial)}{rpc_bus_ping(const char *_Nonnull serial)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+bus\+\_\+ping (
 \begin{DoxyParamCaption}
-\item[{const char $\ast$}]{serial}
+\item[{const char $\ast$\+\_\+\+Nonnull}]{serial}
 \end{DoxyParamCaption}
-)}\hypertarget{bus_8h_aa8ebea01297a21f28b1bc11f13c2d310}{}\label{bus_8h_aa8ebea01297a21f28b1bc11f13c2d310}
+)}\hypertarget{bus_8h_ac4f30e57bd3b17725db2e517e7cf72a4}{}\label{bus_8h_ac4f30e57bd3b17725db2e517e7cf72a4}
 Checks whether a node with specified serial is reachable.
 
 
