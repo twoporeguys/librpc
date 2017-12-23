@@ -24,7 +24,7 @@ clean:
 
 install:
 	make -C build install
-	ldconfig
+	ldconfig || true
 
 uninstall:
 	make -C build uninstall
