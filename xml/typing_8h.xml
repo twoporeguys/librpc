@@ -1,42 +1,42 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
   <compounddef id="typing_8h" kind="file" language="C++">
     <compoundname>typing.h</compoundname>
     <includes refid="object_8h" local="no">rpc/object.h</includes>
     <incdepgraph>
-      <node id="84">
+      <node id="173">
         <label>stdbool.h</label>
       </node>
-      <node id="85">
+      <node id="174">
         <label>stdarg.h</label>
       </node>
-      <node id="83">
+      <node id="172">
         <label>stdint.h</label>
       </node>
-      <node id="81">
+      <node id="170">
         <label>/code/include/rpc/typing.h</label>
-        <link refid="typing_8h"/>
-        <childnode refid="82" relation="include">
+        <link refid="typing.h"/>
+        <childnode refid="171" relation="include">
         </childnode>
       </node>
-      <node id="87">
+      <node id="176">
         <label>sys/types.h</label>
       </node>
-      <node id="82">
+      <node id="171">
         <label>rpc/object.h</label>
         <link refid="object_8h"/>
-        <childnode refid="83" relation="include">
+        <childnode refid="172" relation="include">
         </childnode>
-        <childnode refid="84" relation="include">
+        <childnode refid="173" relation="include">
         </childnode>
-        <childnode refid="85" relation="include">
+        <childnode refid="174" relation="include">
         </childnode>
-        <childnode refid="86" relation="include">
+        <childnode refid="175" relation="include">
         </childnode>
-        <childnode refid="87" relation="include">
+        <childnode refid="176" relation="include">
         </childnode>
       </node>
-      <node id="86">
+      <node id="175">
         <label>sys/uio.h</label>
       </node>
     </incdepgraph>
