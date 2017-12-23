@@ -163,7 +163,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/client.h" line="77" column="1"/>
+        <location file="/code/include/rpc/client.h" line="78" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -215,15 +215,16 @@
 <codeline lineno="61"><highlight class="normal">_Nullable<sp/>rpc_client_t<sp/><ref refid="client_8h_1aaf8c4f2be48ef8d79a29e004264f0bf6" kindref="member">rpc_client_create</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>uri,</highlight></codeline>
 <codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>params);</highlight></codeline>
 <codeline lineno="63"><highlight class="normal"></highlight></codeline>
-<codeline lineno="70"><highlight class="normal">_Nonnull<sp/><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref><sp/><ref refid="client_8h_1a9e840cab717dbd16e7913f6c143c4804" kindref="member">rpc_client_get_connection</ref>(_Nonnull<sp/>rpc_client_t<sp/>client);</highlight></codeline>
-<codeline lineno="71"><highlight class="normal"></highlight></codeline>
-<codeline lineno="77"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="client_8h_1ac4404bc6ff0f1d8be969acab48ba543b" kindref="member">rpc_client_close</ref>(_Nonnull<sp/>rpc_client_t<sp/>client);</highlight></codeline>
-<codeline lineno="78"><highlight class="normal"></highlight></codeline>
-<codeline lineno="79"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="80"><highlight class="normal">}</highlight></codeline>
-<codeline lineno="81"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="82"><highlight class="normal"></highlight></codeline>
-<codeline lineno="83"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//LIBRPC_CLIENT_H</highlight></codeline>
+<codeline lineno="70"><highlight class="normal">_Nonnull<sp/><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref><sp/><ref refid="client_8h_1a9e840cab717dbd16e7913f6c143c4804" kindref="member">rpc_client_get_connection</ref>(</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/>rpc_client_t<sp/>client);</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="client_8h_1ac4404bc6ff0f1d8be969acab48ba543b" kindref="member">rpc_client_close</ref>(_Nonnull<sp/>rpc_client_t<sp/>client);</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//LIBRPC_CLIENT_H</highlight></codeline>
     </programlisting>
     <location file="/code/include/rpc/client.h"/>
   </compounddef>

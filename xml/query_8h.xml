@@ -72,10 +72,10 @@
         </inbodydescription>
         <location file="/code/include/rpc/query.h" line="49" column="1" bodyfile="/code/include/rpc/query.h" bodystart="49" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="query_8h_1a3dd3753b86199ebdc48d1cb3ab4cf985" prot="public" static="no">
-        <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref>(^</type>
-        <definition>typedef rpc_object_t(^ rpc_query_cb_t) (rpc_object_t object)</definition>
-        <argsstring>)(rpc_object_t object)</argsstring>
+      <memberdef kind="typedef" id="query_8h_1a2e4187b74c3bd970f9e41bb2d02d09a0" prot="public" static="no">
+        <type>_Nullable <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref>(^</type>
+        <definition>typedef _Nullable rpc_object_t(^ rpc_query_cb_t) (_Nonnull rpc_object_t object)</definition>
+        <argsstring>)(_Nonnull rpc_object_t object)</argsstring>
         <name>rpc_query_cb_t</name>
         <briefdescription>
         </briefdescription>
@@ -100,21 +100,21 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
-      <memberdef kind="function" id="query_8h_1a01933536bbe1cf312e19e164d16c5c39" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
-        <definition>rpc_object_t rpc_query_get</definition>
-        <argsstring>(rpc_object_t object, const char *path, rpc_object_t default_val)</argsstring>
+      <memberdef kind="function" id="query_8h_1a6b66ceac8404c2581558e4fa3dfc048e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>_Nullable <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+        <definition>_Nullable rpc_object_t rpc_query_get</definition>
+        <argsstring>(_Nonnull rpc_object_t object, const char *_Nonnull path, _Nullable rpc_object_t default_val)</argsstring>
         <name>rpc_query_get</name>
         <param>
-          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <type>_Nonnull <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
           <declname>object</declname>
         </param>
         <param>
-          <type>const char *</type>
+          <type>const char *_Nonnull</type>
           <declname>path</declname>
         </param>
         <param>
-          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <type>_Nullable <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
           <declname>default_val</declname>
         </param>
         <briefdescription>
@@ -148,21 +148,21 @@
         </inbodydescription>
         <location file="/code/include/rpc/query.h" line="127" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="query_8h_1a6d582b462dd592a3b22a2cf6748962eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="query_8h_1a03159f0ef216c368c85ea63dd5a6cd64" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void rpc_query_set</definition>
-        <argsstring>(rpc_object_t object, const char *path, rpc_object_t value, bool steal)</argsstring>
+        <argsstring>(_Nonnull rpc_object_t object, const char *_Nonnull path, _Nullable rpc_object_t value, bool steal)</argsstring>
         <name>rpc_query_set</name>
         <param>
-          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <type>_Nonnull <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
           <declname>object</declname>
         </param>
         <param>
-          <type>const char *</type>
+          <type>const char *_Nonnull</type>
           <declname>path</declname>
         </param>
         <param>
-          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <type>_Nullable <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
           <declname>value</declname>
         </param>
         <param>
@@ -206,17 +206,17 @@
         </inbodydescription>
         <location file="/code/include/rpc/query.h" line="145" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="query_8h_1a303496386da1e129bdd3b67275d043f7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="query_8h_1af59ef4e3522115f09116bf7048738de4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void rpc_query_delete</definition>
-        <argsstring>(rpc_object_t object, const char *path)</argsstring>
+        <argsstring>(_Nonnull rpc_object_t object, const char *_Nonnull path)</argsstring>
         <name>rpc_query_delete</name>
         <param>
-          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <type>_Nonnull <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
           <declname>object</declname>
         </param>
         <param>
-          <type>const char *</type>
+          <type>const char *_Nonnull</type>
           <declname>path</declname>
         </param>
         <briefdescription>
@@ -240,19 +240,19 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/query.h" line="159" column="1"/>
+        <location file="/code/include/rpc/query.h" line="160" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="query_8h_1aa2347f7c12f14c8290b0d9ab7efa7253" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="query_8h_1a530296c952ff239de8b91371227d36ba" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>bool</type>
         <definition>bool rpc_query_contains</definition>
-        <argsstring>(rpc_object_t object, const char *path)</argsstring>
+        <argsstring>(_Nonnull rpc_object_t object, const char *_Nonnull path)</argsstring>
         <name>rpc_query_contains</name>
         <param>
-          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <type>_Nonnull <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
           <declname>object</declname>
         </param>
         <param>
-          <type>const char *</type>
+          <type>const char *_Nonnull</type>
           <declname>path</declname>
         </param>
         <briefdescription>
@@ -277,23 +277,23 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/query.h" line="172" column="1"/>
+        <location file="/code/include/rpc/query.h" line="173" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="query_8h_1a1e8c03d1046fad3a029862adb64508f4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type><ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref></type>
-        <definition>rpc_query_iter_t rpc_query</definition>
-        <argsstring>(rpc_object_t object, rpc_query_params_t params, rpc_object_t rules)</argsstring>
+      <memberdef kind="function" id="query_8h_1a5e66848b79c142525768cfebfa9cf0e6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>_Nullable <ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref></type>
+        <definition>_Nullable rpc_query_iter_t rpc_query</definition>
+        <argsstring>(_Nonnull rpc_object_t object, _Nullable rpc_query_params_t params, _Nullable rpc_object_t rules)</argsstring>
         <name>rpc_query</name>
         <param>
-          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <type>_Nonnull <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
           <declname>object</declname>
         </param>
         <param>
-          <type><ref refid="query_8h_1a831694aa25fae9a6c3243911c3defb94" kindref="member">rpc_query_params_t</ref></type>
+          <type>_Nullable <ref refid="query_8h_1a831694aa25fae9a6c3243911c3defb94" kindref="member">rpc_query_params_t</ref></type>
           <declname>params</declname>
         </param>
         <param>
-          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <type>_Nullable <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
           <declname>rules</declname>
         </param>
         <briefdescription>
@@ -329,23 +329,23 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/query.h" line="229" column="1"/>
+        <location file="/code/include/rpc/query.h" line="230" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="query_8h_1aab26ee7cd5e504b2e066a74845738268" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type><ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref></type>
-        <definition>rpc_query_iter_t rpc_query_fmt</definition>
-        <argsstring>(rpc_object_t object, rpc_query_params_t params, const char *rules_fmt,...)</argsstring>
+      <memberdef kind="function" id="query_8h_1a674e1f4b009fc26f19dd33d0c5d0b10d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>_Nullable <ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref></type>
+        <definition>_Nullable rpc_query_iter_t rpc_query_fmt</definition>
+        <argsstring>(_Nonnull rpc_object_t object, _Nonnull rpc_query_params_t params, const char *_Nonnull rules_fmt,...)</argsstring>
         <name>rpc_query_fmt</name>
         <param>
-          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <type>_Nonnull <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
           <declname>object</declname>
         </param>
         <param>
-          <type><ref refid="query_8h_1a831694aa25fae9a6c3243911c3defb94" kindref="member">rpc_query_params_t</ref></type>
+          <type>_Nonnull <ref refid="query_8h_1a831694aa25fae9a6c3243911c3defb94" kindref="member">rpc_query_params_t</ref></type>
           <declname>params</declname>
         </param>
         <param>
-          <type>const char *</type>
+          <type>const char *_Nonnull</type>
           <declname>rules_fmt</declname>
         </param>
         <param>
@@ -387,19 +387,19 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/query.h" line="246" column="1"/>
+        <location file="/code/include/rpc/query.h" line="247" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="query_8h_1aea5aa716ae6ccb562ad7a27ccffb5087" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
-        <definition>rpc_object_t rpc_query_apply</definition>
-        <argsstring>(rpc_object_t object, rpc_object_t rules)</argsstring>
+      <memberdef kind="function" id="query_8h_1ad32074f2b7671ae25b4076d085423a0f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>_Nullable <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+        <definition>_Nullable rpc_object_t rpc_query_apply</definition>
+        <argsstring>(_Nonnull rpc_object_t object, _Nonnull rpc_object_t rules)</argsstring>
         <name>rpc_query_apply</name>
         <param>
-          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <type>_Nonnull <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
           <declname>object</declname>
         </param>
         <param>
-          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <type>_Nonnull <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
           <declname>rules</declname>
         </param>
         <briefdescription>
@@ -424,19 +424,19 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/query.h" line="260" column="1"/>
+        <location file="/code/include/rpc/query.h" line="261" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="query_8h_1a170e0ae1387522fc419565c13f7a611c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="query_8h_1a979b1dfd5f0fb3be66501ed3c7df3f78" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>bool</type>
         <definition>bool rpc_query_next</definition>
-        <argsstring>(rpc_query_iter_t iter, rpc_object_t *chunk)</argsstring>
+        <argsstring>(_Nonnull rpc_query_iter_t iter, _Nonnull rpc_object_t *_Nullable chunk)</argsstring>
         <name>rpc_query_next</name>
         <param>
-          <type><ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref></type>
+          <type>_Nonnull <ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref></type>
           <declname>iter</declname>
         </param>
         <param>
-          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref> *</type>
+          <type>_Nonnull <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref> *_Nullable</type>
           <declname>chunk</declname>
         </param>
         <briefdescription>
@@ -461,15 +461,15 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/query.h" line="279" column="1"/>
+        <location file="/code/include/rpc/query.h" line="281" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="query_8h_1a004da45b366b82be1df7452e48103297" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="query_8h_1acfa3a9a25b98a0acd3a64c7c222e5f99" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void rpc_query_iter_free</definition>
-        <argsstring>(rpc_query_iter_t iter)</argsstring>
+        <argsstring>(_Nonnull rpc_query_iter_t iter)</argsstring>
         <name>rpc_query_iter_free</name>
         <param>
-          <type><ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref></type>
+          <type>_Nonnull <ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref></type>
           <declname>iter</declname>
         </param>
         <briefdescription>
@@ -486,7 +486,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/query.h" line="287" column="1"/>
+        <location file="/code/include/rpc/query.h" line="290" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -530,7 +530,7 @@
 <codeline lineno="45"><highlight class="normal"></highlight></codeline>
 <codeline lineno="49" refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">rpc_query_iter<sp/>*<ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref>;</highlight></codeline>
 <codeline lineno="50"><highlight class="normal"></highlight></codeline>
-<codeline lineno="64" refid="query_8h_1a3dd3753b86199ebdc48d1cb3ab4cf985" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>(^<ref refid="query_8h_1a3dd3753b86199ebdc48d1cb3ab4cf985" kindref="member">rpc_query_cb_t</ref>)(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>object);</highlight></codeline>
+<codeline lineno="64" refid="query_8h_1a2e4187b74c3bd970f9e41bb2d02d09a0" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>(^<ref refid="query_8h_1a2e4187b74c3bd970f9e41bb2d02d09a0" kindref="member">rpc_query_cb_t</ref>)(_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>object);</highlight></codeline>
 <codeline lineno="65"><highlight class="normal"></highlight></codeline>
 <codeline lineno="69" refid="query_8h_1ac5142dc38666b2011833bab884b6af9d" refkind="member"><highlight class="preprocessor">#define<sp/>RPC_QUERY_CB(_fn,<sp/>_arg)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
 <codeline lineno="70"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>^(rpc_object_t<sp/>_object)<sp/>{<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
@@ -538,40 +538,43 @@
 <codeline lineno="72"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="73"><highlight class="normal"></highlight></codeline>
 <codeline lineno="97" refid="structrpc__query__params" refkind="compound"><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structrpc__query__params" kindref="compound">rpc_query_params</ref><sp/>{</highlight></codeline>
-<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>single;</highlight></codeline>
-<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>count;</highlight></codeline>
-<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/>uint64_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>offset;</highlight></codeline>
-<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/>uint64_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>limit;</highlight></codeline>
-<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1a29f4de14614637dc5848764170dcd186" kindref="member">rpc_array_cmp_t</ref><sp/><sp/><sp/><sp/><sp/>sort;</highlight></codeline>
-<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>reverse;</highlight></codeline>
-<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="query_8h_1a3dd3753b86199ebdc48d1cb3ab4cf985" kindref="member">rpc_query_cb_t</ref><sp/><sp/><sp/><sp/><sp/><sp/>callback;</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>single;</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>count;</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/>uint64_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>offset;</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/>uint64_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>limit;</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>reverse;</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="object_8h_1a29f4de14614637dc5848764170dcd186" kindref="member">rpc_array_cmp_t</ref><sp/><sp/><sp/>sort;</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="query_8h_1a2e4187b74c3bd970f9e41bb2d02d09a0" kindref="member">rpc_query_cb_t</ref><sp/><sp/><sp/><sp/>callback;</highlight></codeline>
 <codeline lineno="105"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="106"><highlight class="normal"></highlight></codeline>
 <codeline lineno="110" refid="query_8h_1a831694aa25fae9a6c3243911c3defb94" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structrpc__query__params" kindref="compound">rpc_query_params</ref><sp/>*<ref refid="query_8h_1a831694aa25fae9a6c3243911c3defb94" kindref="member">rpc_query_params_t</ref>;</highlight></codeline>
 <codeline lineno="111"><highlight class="normal"></highlight></codeline>
-<codeline lineno="127"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="query_8h_1a01933536bbe1cf312e19e164d16c5c39" kindref="member">rpc_query_get</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*path,</highlight></codeline>
-<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>default_val);</highlight></codeline>
+<codeline lineno="127"><highlight class="normal">_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="query_8h_1a6b66ceac8404c2581558e4fa3dfc048e" kindref="member">rpc_query_get</ref>(_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>path,<sp/>_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>default_val);</highlight></codeline>
 <codeline lineno="129"><highlight class="normal"></highlight></codeline>
-<codeline lineno="145"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="query_8h_1a6d582b462dd592a3b22a2cf6748962eb" kindref="member">rpc_query_set</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*path,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>value,</highlight></codeline>
-<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>steal);</highlight></codeline>
-<codeline lineno="147"><highlight class="normal"></highlight></codeline>
-<codeline lineno="159"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="query_8h_1a303496386da1e129bdd3b67275d043f7" kindref="member">rpc_query_delete</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*path);</highlight></codeline>
-<codeline lineno="160"><highlight class="normal"></highlight></codeline>
-<codeline lineno="172"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="query_8h_1aa2347f7c12f14c8290b0d9ab7efa7253" kindref="member">rpc_query_contains</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*path);</highlight></codeline>
-<codeline lineno="173"><highlight class="normal"></highlight></codeline>
-<codeline lineno="229"><highlight class="normal"><ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref><sp/><ref refid="query_8h_1a1e8c03d1046fad3a029862adb64508f4" kindref="member">rpc_query</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/>rpc_query_params_t<sp/>params,</highlight></codeline>
-<codeline lineno="230"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>rules);</highlight></codeline>
-<codeline lineno="231"><highlight class="normal"></highlight></codeline>
-<codeline lineno="246"><highlight class="normal"><ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref><sp/><ref refid="query_8h_1aab26ee7cd5e504b2e066a74845738268" kindref="member">rpc_query_fmt</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/>rpc_query_params_t<sp/>params,</highlight></codeline>
-<codeline lineno="247"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*rules_fmt,<sp/>...);</highlight></codeline>
-<codeline lineno="248"><highlight class="normal"></highlight></codeline>
-<codeline lineno="260"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="query_8h_1aea5aa716ae6ccb562ad7a27ccffb5087" kindref="member">rpc_query_apply</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>rules);</highlight></codeline>
-<codeline lineno="261"><highlight class="normal"></highlight></codeline>
-<codeline lineno="279"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="query_8h_1a170e0ae1387522fc419565c13f7a611c" kindref="member">rpc_query_next</ref>(<ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref><sp/>iter,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>*chunk);</highlight></codeline>
-<codeline lineno="280"><highlight class="normal"></highlight></codeline>
-<codeline lineno="287"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="query_8h_1a004da45b366b82be1df7452e48103297" kindref="member">rpc_query_iter_free</ref>(<ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref><sp/>iter);</highlight></codeline>
-<codeline lineno="288"><highlight class="normal"></highlight></codeline>
-<codeline lineno="289"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//LIBRPC_QUERY_H</highlight></codeline>
+<codeline lineno="145"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="query_8h_1a03159f0ef216c368c85ea63dd5a6cd64" kindref="member">rpc_query_set</ref>(_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>path,</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>value,</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>steal);</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"></highlight></codeline>
+<codeline lineno="160"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="query_8h_1af59ef4e3522115f09116bf7048738de4" kindref="member">rpc_query_delete</ref>(_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>path);</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"></highlight></codeline>
+<codeline lineno="173"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="query_8h_1a530296c952ff239de8b91371227d36ba" kindref="member">rpc_query_contains</ref>(_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>path);</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"></highlight></codeline>
+<codeline lineno="230"><highlight class="normal">_Nullable<sp/><ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref><sp/><ref refid="query_8h_1a5e66848b79c142525768cfebfa9cf0e6" kindref="member">rpc_query</ref>(_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="231"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/>rpc_query_params_t<sp/>params,<sp/>_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>rules);</highlight></codeline>
+<codeline lineno="232"><highlight class="normal"></highlight></codeline>
+<codeline lineno="247"><highlight class="normal">_Nullable<sp/><ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref><sp/><ref refid="query_8h_1a674e1f4b009fc26f19dd33d0c5d0b10d" kindref="member">rpc_query_fmt</ref>(_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="248"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/>rpc_query_params_t<sp/>params,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>rules_fmt,<sp/>...);</highlight></codeline>
+<codeline lineno="249"><highlight class="normal"></highlight></codeline>
+<codeline lineno="261"><highlight class="normal">_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="query_8h_1ad32074f2b7671ae25b4076d085423a0f" kindref="member">rpc_query_apply</ref>(_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="262"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>rules);</highlight></codeline>
+<codeline lineno="263"><highlight class="normal"></highlight></codeline>
+<codeline lineno="281"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="query_8h_1a979b1dfd5f0fb3be66501ed3c7df3f78" kindref="member">rpc_query_next</ref>(_Nonnull<sp/><ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref><sp/>iter,</highlight></codeline>
+<codeline lineno="282"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>*_Nullable<sp/>chunk);</highlight></codeline>
+<codeline lineno="283"><highlight class="normal"></highlight></codeline>
+<codeline lineno="290"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="query_8h_1acfa3a9a25b98a0acd3a64c7c222e5f99" kindref="member">rpc_query_iter_free</ref>(_Nonnull<sp/><ref refid="query_8h_1a927ba6540a1cd3a2f2cf5d20b39fdadd" kindref="member">rpc_query_iter_t</ref><sp/>iter);</highlight></codeline>
+<codeline lineno="291"><highlight class="normal"></highlight></codeline>
+<codeline lineno="292"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//LIBRPC_QUERY_H</highlight></codeline>
     </programlisting>
     <location file="/code/include/rpc/query.h"/>
   </compounddef>

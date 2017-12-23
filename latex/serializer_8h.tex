@@ -12,25 +12,25 @@ Include dependency graph for serializer.\+h\+:
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-bool \hyperlink{serializer_8h_aec43c3467d5931ec29b407aa6f010b61}{rpc\+\_\+serializer\+\_\+exists} (const char $\ast$serializer)
+bool \hyperlink{serializer_8h_aab2daa65954ec29b20ac84a12946e154}{rpc\+\_\+serializer\+\_\+exists} (const char $\ast$\+\_\+\+Nonnull serializer)
 \item 
-\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{serializer_8h_a41c887139710f0043a9109faa74c7ae7}{rpc\+\_\+serializer\+\_\+load} (const char $\ast$serializer, const void $\ast$frame, size\+\_\+t len)
+\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{serializer_8h_a9797556d5c860ee04b86c3bb53d95f47}{rpc\+\_\+serializer\+\_\+load} (const char $\ast$\+\_\+\+Nonnull serializer, const void $\ast$\+\_\+\+Nonnull frame, size\+\_\+t len)
 \item 
-int \hyperlink{serializer_8h_ae8d18b07cd3202e3c763e3a6c3afcc2e}{rpc\+\_\+serializer\+\_\+dump} (const char $\ast$serializer, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} obj, void $\ast$$\ast$framep, size\+\_\+t $\ast$lenp)
+int \hyperlink{serializer_8h_a307b5202b7d8f3ef3a7c27815e002946}{rpc\+\_\+serializer\+\_\+dump} (const char $\ast$\+\_\+\+Nonnull serializer, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} obj, void $\ast$\+\_\+\+Nullable $\ast$\+\_\+\+Nonnull framep, size\+\_\+t $\ast$\+\_\+\+Nullable lenp)
 \end{DoxyCompactItemize}
 
 
 \subsection{Function Documentation}
 \index{serializer.\+h@{serializer.\+h}!rpc\+\_\+serializer\+\_\+dump@{rpc\+\_\+serializer\+\_\+dump}}
 \index{rpc\+\_\+serializer\+\_\+dump@{rpc\+\_\+serializer\+\_\+dump}!serializer.\+h@{serializer.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+serializer\+\_\+dump(const char $\ast$serializer, rpc\+\_\+object\+\_\+t obj, void $\ast$$\ast$framep, size\+\_\+t $\ast$lenp)}{rpc_serializer_dump(const char *serializer, rpc_object_t obj, void **framep, size_t *lenp)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+serializer\+\_\+dump (
+\subsubsection[{\texorpdfstring{rpc\+\_\+serializer\+\_\+dump(const char $\ast$\+\_\+\+Nonnull serializer, \+\_\+\+Nonnull rpc\+\_\+object\+\_\+t obj, void $\ast$\+\_\+\+Nullable $\ast$\+\_\+\+Nonnull framep, size\+\_\+t $\ast$\+\_\+\+Nullable lenp)}{rpc_serializer_dump(const char *_Nonnull serializer, _Nonnull rpc_object_t obj, void *_Nullable *_Nonnull framep, size_t *_Nullable lenp)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+serializer\+\_\+dump (
 \begin{DoxyParamCaption}
-\item[{const char $\ast$}]{serializer, }
-\item[{{\bf rpc\+\_\+object\+\_\+t}}]{obj, }
-\item[{void $\ast$$\ast$}]{framep, }
-\item[{size\+\_\+t $\ast$}]{lenp}
+\item[{const char $\ast$\+\_\+\+Nonnull}]{serializer, }
+\item[{\+\_\+\+Nonnull {\bf rpc\+\_\+object\+\_\+t}}]{obj, }
+\item[{void $\ast$\+\_\+\+Nullable $\ast$\+\_\+\+Nonnull}]{framep, }
+\item[{size\+\_\+t $\ast$\+\_\+\+Nullable}]{lenp}
 \end{DoxyParamCaption}
-)}\hypertarget{serializer_8h_ae8d18b07cd3202e3c763e3a6c3afcc2e}{}\label{serializer_8h_ae8d18b07cd3202e3c763e3a6c3afcc2e}
+)}\hypertarget{serializer_8h_a307b5202b7d8f3ef3a7c27815e002946}{}\label{serializer_8h_a307b5202b7d8f3ef3a7c27815e002946}
 Dumps an R\+PC object into a serialized blob form. 
 \begin{DoxyParams}{Parameters}
 {\em serializer} & Serializer type (msgpack, json or yaml) \\
@@ -45,11 +45,11 @@ Dumps an R\+PC object into a serialized blob form.
 \end{DoxyReturn}
 \index{serializer.\+h@{serializer.\+h}!rpc\+\_\+serializer\+\_\+exists@{rpc\+\_\+serializer\+\_\+exists}}
 \index{rpc\+\_\+serializer\+\_\+exists@{rpc\+\_\+serializer\+\_\+exists}!serializer.\+h@{serializer.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+serializer\+\_\+exists(const char $\ast$serializer)}{rpc_serializer_exists(const char *serializer)}}]{\setlength{\rightskip}{0pt plus 5cm}bool rpc\+\_\+serializer\+\_\+exists (
+\subsubsection[{\texorpdfstring{rpc\+\_\+serializer\+\_\+exists(const char $\ast$\+\_\+\+Nonnull serializer)}{rpc_serializer_exists(const char *_Nonnull serializer)}}]{\setlength{\rightskip}{0pt plus 5cm}bool rpc\+\_\+serializer\+\_\+exists (
 \begin{DoxyParamCaption}
-\item[{const char $\ast$}]{serializer}
+\item[{const char $\ast$\+\_\+\+Nonnull}]{serializer}
 \end{DoxyParamCaption}
-)}\hypertarget{serializer_8h_aec43c3467d5931ec29b407aa6f010b61}{}\label{serializer_8h_aec43c3467d5931ec29b407aa6f010b61}
+)}\hypertarget{serializer_8h_aab2daa65954ec29b20ac84a12946e154}{}\label{serializer_8h_aab2daa65954ec29b20ac84a12946e154}
 Checks whether specified serializer is available.
 
 
@@ -62,13 +62,13 @@ true if specified serializer exists, otherwise false
 \end{DoxyReturn}
 \index{serializer.\+h@{serializer.\+h}!rpc\+\_\+serializer\+\_\+load@{rpc\+\_\+serializer\+\_\+load}}
 \index{rpc\+\_\+serializer\+\_\+load@{rpc\+\_\+serializer\+\_\+load}!serializer.\+h@{serializer.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+serializer\+\_\+load(const char $\ast$serializer, const void $\ast$frame, size\+\_\+t len)}{rpc_serializer_load(const char *serializer, const void *frame, size_t len)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+serializer\+\_\+load (
+\subsubsection[{\texorpdfstring{rpc\+\_\+serializer\+\_\+load(const char $\ast$\+\_\+\+Nonnull serializer, const void $\ast$\+\_\+\+Nonnull frame, size\+\_\+t len)}{rpc_serializer_load(const char *_Nonnull serializer, const void *_Nonnull frame, size_t len)}}]{\setlength{\rightskip}{0pt plus 5cm}\+\_\+\+Nullable {\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+serializer\+\_\+load (
 \begin{DoxyParamCaption}
-\item[{const char $\ast$}]{serializer, }
-\item[{const void $\ast$}]{frame, }
+\item[{const char $\ast$\+\_\+\+Nonnull}]{serializer, }
+\item[{const void $\ast$\+\_\+\+Nonnull}]{frame, }
 \item[{size\+\_\+t}]{len}
 \end{DoxyParamCaption}
-)}\hypertarget{serializer_8h_a41c887139710f0043a9109faa74c7ae7}{}\label{serializer_8h_a41c887139710f0043a9109faa74c7ae7}
+)}\hypertarget{serializer_8h_a9797556d5c860ee04b86c3bb53d95f47}{}\label{serializer_8h_a9797556d5c860ee04b86c3bb53d95f47}
 Loads an R\+PC object from a serialized blob.
 
 

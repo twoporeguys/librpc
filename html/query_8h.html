@@ -119,31 +119,31 @@ Macros</h2></td></tr>
 Typedefs</h2></td></tr>
 <tr class="memitem:a927ba6540a1cd3a2f2cf5d20b39fdadd"><td class="memItemLeft" align="right" valign="top">typedef struct rpc_query_iter *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a></td></tr>
 <tr class="separator:a927ba6540a1cd3a2f2cf5d20b39fdadd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3dd3753b86199ebdc48d1cb3ab4cf985"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a3dd3753b86199ebdc48d1cb3ab4cf985">rpc_query_cb_t</a>) (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
-<tr class="separator:a3dd3753b86199ebdc48d1cb3ab4cf985"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e4187b74c3bd970f9e41bb2d02d09a0"><td class="memItemLeft" align="right" valign="top">typedef _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a2e4187b74c3bd970f9e41bb2d02d09a0">rpc_query_cb_t</a>) (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
+<tr class="separator:a2e4187b74c3bd970f9e41bb2d02d09a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a831694aa25fae9a6c3243911c3defb94"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structrpc__query__params.html">rpc_query_params</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a831694aa25fae9a6c3243911c3defb94">rpc_query_params_t</a></td></tr>
 <tr class="separator:a831694aa25fae9a6c3243911c3defb94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a01933536bbe1cf312e19e164d16c5c39"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a01933536bbe1cf312e19e164d16c5c39">rpc_query_get</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object, const char *path, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> default_val)</td></tr>
-<tr class="separator:a01933536bbe1cf312e19e164d16c5c39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d582b462dd592a3b22a2cf6748962eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a6d582b462dd592a3b22a2cf6748962eb">rpc_query_set</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object, const char *path, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value, bool steal)</td></tr>
-<tr class="separator:a6d582b462dd592a3b22a2cf6748962eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a303496386da1e129bdd3b67275d043f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a303496386da1e129bdd3b67275d043f7">rpc_query_delete</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object, const char *path)</td></tr>
-<tr class="separator:a303496386da1e129bdd3b67275d043f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa2347f7c12f14c8290b0d9ab7efa7253"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#aa2347f7c12f14c8290b0d9ab7efa7253">rpc_query_contains</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object, const char *path)</td></tr>
-<tr class="separator:aa2347f7c12f14c8290b0d9ab7efa7253"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e8c03d1046fad3a029862adb64508f4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a1e8c03d1046fad3a029862adb64508f4">rpc_query</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object, <a class="el" href="query_8h.html#a831694aa25fae9a6c3243911c3defb94">rpc_query_params_t</a> params, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> rules)</td></tr>
-<tr class="separator:a1e8c03d1046fad3a029862adb64508f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab26ee7cd5e504b2e066a74845738268"><td class="memItemLeft" align="right" valign="top"><a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#aab26ee7cd5e504b2e066a74845738268">rpc_query_fmt</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object, <a class="el" href="query_8h.html#a831694aa25fae9a6c3243911c3defb94">rpc_query_params_t</a> params, const char *rules_fmt,...)</td></tr>
-<tr class="separator:aab26ee7cd5e504b2e066a74845738268"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea5aa716ae6ccb562ad7a27ccffb5087"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#aea5aa716ae6ccb562ad7a27ccffb5087">rpc_query_apply</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> rules)</td></tr>
-<tr class="separator:aea5aa716ae6ccb562ad7a27ccffb5087"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a170e0ae1387522fc419565c13f7a611c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a170e0ae1387522fc419565c13f7a611c">rpc_query_next</a> (<a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a> iter, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> *chunk)</td></tr>
-<tr class="separator:a170e0ae1387522fc419565c13f7a611c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a004da45b366b82be1df7452e48103297"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a004da45b366b82be1df7452e48103297">rpc_query_iter_free</a> (<a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a> iter)</td></tr>
-<tr class="separator:a004da45b366b82be1df7452e48103297"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b66ceac8404c2581558e4fa3dfc048e"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a6b66ceac8404c2581558e4fa3dfc048e">rpc_query_get</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object, const char *_Nonnull path, _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> default_val)</td></tr>
+<tr class="separator:a6b66ceac8404c2581558e4fa3dfc048e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03159f0ef216c368c85ea63dd5a6cd64"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a03159f0ef216c368c85ea63dd5a6cd64">rpc_query_set</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object, const char *_Nonnull path, _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value, bool steal)</td></tr>
+<tr class="separator:a03159f0ef216c368c85ea63dd5a6cd64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af59ef4e3522115f09116bf7048738de4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#af59ef4e3522115f09116bf7048738de4">rpc_query_delete</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object, const char *_Nonnull path)</td></tr>
+<tr class="separator:af59ef4e3522115f09116bf7048738de4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a530296c952ff239de8b91371227d36ba"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a530296c952ff239de8b91371227d36ba">rpc_query_contains</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object, const char *_Nonnull path)</td></tr>
+<tr class="separator:a530296c952ff239de8b91371227d36ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e66848b79c142525768cfebfa9cf0e6"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a5e66848b79c142525768cfebfa9cf0e6">rpc_query</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object, _Nullable <a class="el" href="query_8h.html#a831694aa25fae9a6c3243911c3defb94">rpc_query_params_t</a> params, _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> rules)</td></tr>
+<tr class="separator:a5e66848b79c142525768cfebfa9cf0e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a674e1f4b009fc26f19dd33d0c5d0b10d"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a674e1f4b009fc26f19dd33d0c5d0b10d">rpc_query_fmt</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object, _Nonnull <a class="el" href="query_8h.html#a831694aa25fae9a6c3243911c3defb94">rpc_query_params_t</a> params, const char *_Nonnull rules_fmt,...)</td></tr>
+<tr class="separator:a674e1f4b009fc26f19dd33d0c5d0b10d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad32074f2b7671ae25b4076d085423a0f"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#ad32074f2b7671ae25b4076d085423a0f">rpc_query_apply</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> rules)</td></tr>
+<tr class="separator:ad32074f2b7671ae25b4076d085423a0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a979b1dfd5f0fb3be66501ed3c7df3f78"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#a979b1dfd5f0fb3be66501ed3c7df3f78">rpc_query_next</a> (_Nonnull <a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a> iter, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> *_Nullable chunk)</td></tr>
+<tr class="separator:a979b1dfd5f0fb3be66501ed3c7df3f78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfa3a9a25b98a0acd3a64c7c222e5f99"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="query_8h.html#acfa3a9a25b98a0acd3a64c7c222e5f99">rpc_query_iter_free</a> (_Nonnull <a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a> iter)</td></tr>
+<tr class="separator:acfa3a9a25b98a0acd3a64c7c222e5f99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Object query API </p>
@@ -181,12 +181,12 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Typedef Documentation</h2>
-<a class="anchor" id="a3dd3753b86199ebdc48d1cb3ab4cf985"></a>
+<a class="anchor" id="a2e4187b74c3bd970f9e41bb2d02d09a0"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>(^ rpc_query_cb_t) (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td>
+          <td class="memname">typedef _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>(^ rpc_query_cb_t) (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -229,26 +229,26 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="a1e8c03d1046fad3a029862adb64508f4"></a>
+<a class="anchor" id="a5e66848b79c142525768cfebfa9cf0e6"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a> rpc_query </td>
+          <td class="memname">_Nullable <a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a> rpc_query </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramtype">_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
           <td class="paramname"><em>object</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="query_8h.html#a831694aa25fae9a6c3243911c3defb94">rpc_query_params_t</a>&#160;</td>
+          <td class="paramtype">_Nullable <a class="el" href="query_8h.html#a831694aa25fae9a6c3243911c3defb94">rpc_query_params_t</a>&#160;</td>
           <td class="paramname"><em>params</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramtype">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
           <td class="paramname"><em>rules</em>&#160;</td>
         </tr>
         <tr>
@@ -296,20 +296,20 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aea5aa716ae6ccb562ad7a27ccffb5087"></a>
+<a class="anchor" id="ad32074f2b7671ae25b4076d085423a0f"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> rpc_query_apply </td>
+          <td class="memname">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> rpc_query_apply </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramtype">_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
           <td class="paramname"><em>object</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramtype">_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
           <td class="paramname"><em>rules</em>&#160;</td>
         </tr>
         <tr>
@@ -332,20 +332,20 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aa2347f7c12f14c8290b0d9ab7efa7253"></a>
+<a class="anchor" id="a530296c952ff239de8b91371227d36ba"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">bool rpc_query_contains </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramtype">_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
           <td class="paramname"><em>object</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *&#160;</td>
+          <td class="paramtype">const char *_Nonnull&#160;</td>
           <td class="paramname"><em>path</em>&#160;</td>
         </tr>
         <tr>
@@ -368,20 +368,20 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a303496386da1e129bdd3b67275d043f7"></a>
+<a class="anchor" id="af59ef4e3522115f09116bf7048738de4"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void rpc_query_delete </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramtype">_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
           <td class="paramname"><em>object</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *&#160;</td>
+          <td class="paramtype">const char *_Nonnull&#160;</td>
           <td class="paramname"><em>path</em>&#160;</td>
         </tr>
         <tr>
@@ -403,26 +403,26 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aab26ee7cd5e504b2e066a74845738268"></a>
+<a class="anchor" id="a674e1f4b009fc26f19dd33d0c5d0b10d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a> rpc_query_fmt </td>
+          <td class="memname">_Nullable <a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a> rpc_query_fmt </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramtype">_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
           <td class="paramname"><em>object</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="query_8h.html#a831694aa25fae9a6c3243911c3defb94">rpc_query_params_t</a>&#160;</td>
+          <td class="paramtype">_Nonnull <a class="el" href="query_8h.html#a831694aa25fae9a6c3243911c3defb94">rpc_query_params_t</a>&#160;</td>
           <td class="paramname"><em>params</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *&#160;</td>
+          <td class="paramtype">const char *_Nonnull&#160;</td>
           <td class="paramname"><em>rules_fmt</em>, </td>
         </tr>
         <tr>
@@ -453,26 +453,26 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a01933536bbe1cf312e19e164d16c5c39"></a>
+<a class="anchor" id="a6b66ceac8404c2581558e4fa3dfc048e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> rpc_query_get </td>
+          <td class="memname">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> rpc_query_get </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramtype">_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
           <td class="paramname"><em>object</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *&#160;</td>
+          <td class="paramtype">const char *_Nonnull&#160;</td>
           <td class="paramname"><em>path</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramtype">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
           <td class="paramname"><em>default_val</em>&#160;</td>
         </tr>
         <tr>
@@ -496,14 +496,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a004da45b366b82be1df7452e48103297"></a>
+<a class="anchor" id="acfa3a9a25b98a0acd3a64c7c222e5f99"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void rpc_query_iter_free </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a>&#160;</td>
+          <td class="paramtype">_Nonnull <a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a>&#160;</td>
           <td class="paramname"><em>iter</em></td><td>)</td>
           <td></td>
         </tr>
@@ -519,20 +519,20 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a170e0ae1387522fc419565c13f7a611c"></a>
+<a class="anchor" id="a979b1dfd5f0fb3be66501ed3c7df3f78"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">bool rpc_query_next </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a>&#160;</td>
+          <td class="paramtype">_Nonnull <a class="el" href="query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd">rpc_query_iter_t</a>&#160;</td>
           <td class="paramname"><em>iter</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> *&#160;</td>
+          <td class="paramtype">_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> *_Nullable&#160;</td>
           <td class="paramname"><em>chunk</em>&#160;</td>
         </tr>
         <tr>
@@ -557,26 +557,26 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a6d582b462dd592a3b22a2cf6748962eb"></a>
+<a class="anchor" id="a03159f0ef216c368c85ea63dd5a6cd64"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void rpc_query_set </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramtype">_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
           <td class="paramname"><em>object</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *&#160;</td>
+          <td class="paramtype">const char *_Nonnull&#160;</td>
           <td class="paramname"><em>path</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramtype">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
           <td class="paramname"><em>value</em>, </td>
         </tr>
         <tr>
