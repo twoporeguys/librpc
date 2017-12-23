@@ -100,7 +100,7 @@ void rpc_server_set_event_handler(_Nullable rpc_server_event_handler_t handler);
  * @param server Server to be closed.
  * @return 0 on successful teardown.
  */
-int rpc_server_close(rpc_server_t server);
+int rpc_server_close(_Nonnull rpc_server_t server);
 
 #ifdef __cplusplus
 }
