@@ -40,7 +40,7 @@
  * @param serializer Serializer name
  * @return true if specified serializer exists, otherwise false
  */
-bool rpc_serializer_exists(const char *serializer);
+bool rpc_serializer_exists(const char *_Nonnull serializer);
 
 /**
  * Loads an RPC object from a serialized blob.
@@ -50,8 +50,8 @@ bool rpc_serializer_exists(const char *serializer);
  * @param len Blob length
  * @return RPC object or NULL in case of error.
  */
-rpc_object_t rpc_serializer_load(const char *serializer, const void *frame,
-    size_t len);
+_Nullable rpc_object_t rpc_serializer_load(const char *_Nonnull serializer,
+    const void *_Nonnull frame, size_t len);
 
 /**
  * Dumps an RPC object into a serialized blob form.
@@ -60,7 +60,8 @@ rpc_object_t rpc_serializer_load(const char *serializer, const void *frame,
  * @param lenp Pointer to a variable holding resulting blob length
  * @return 0 on success, -1 on error
  */
-int rpc_serializer_dump(const char *serializer, rpc_object_t obj,
-    void **framep, size_t *lenp);
+int rpc_serializer_dump(const char *_Nonnull serializer,
+    _Nonnull rpc_object_t obj, void *_Nullable *_Nonnull framep,
+    size_t *_Nullable lenp);
 
 #endif //LIBRPC_SERIALIZER_H
