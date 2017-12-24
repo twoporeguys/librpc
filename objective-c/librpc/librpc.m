@@ -1,10 +1,29 @@
-//
-//  librpc.m
-//  librpc
-//
-//  Created by Jakub Klama on 18.12.2017.
-//  Copyright © 2017 Jakub Klama. All rights reserved.
-//
+/*+
+ * Copyright 2017 Two Pore Guys, Inc.
+ * All rights reserved
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted providing that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
 
 #import "librpc.h"
 #include <rpc/object.h>
@@ -23,36 +42,14 @@
         return (result);
     }
     
+    if ([value isKindOfClass:[RPCObject class]]) {
+        result->obj = rpc_retain([(RPCObject *)value nativeValue]);
+        return (result);
+    }
+
     if ([value isKindOfClass:[NSNumber class]]) {
-        NSNumber *number = (NSNumber *)value;
-        
-        /* XXX: doesn't work :( */
-        switch ([number objCType][0]) {
-            case 'c':
-            case 's':
-            case 'i':
-            case 'q':
-                result->obj = rpc_int64_create([number integerValue]);
-                return (result);
-            
-            case 'C':
-            case 'S':
-            case 'I':
-            case 'Q':
-                result->obj = rpc_uint64_create([number unsignedIntegerValue]);
-                return (result);
-                
-            case 'f':
-            case 'd':
-                result->obj = rpc_double_create([number doubleValue]);
-                return (result);
-                
-            case 'B':
-                result->obj = rpc_bool_create([number boolValue]);
-                return (result);
-        }
-        
-        @throw [NSException exceptionWithName:@"Invalid Value" reason:nil userInfo:nil];
+        result->obj = rpc_int64_create([(NSNumber *)value integerValue]);
+        return (result);
     }
     
     if ([value isKindOfClass:[NSString class]]) {
@@ -95,6 +92,42 @@
     }
     
     @throw [NSException exceptionWithName:@"foo" reason:nil userInfo:nil];
+}
+
++ (instancetype)initWithValue:(id)value andType:(RPCType)type {
+    RPCObject *result = [RPCObject alloc];
+
+    switch (type) {
+        case RPCTypeBoolean:
+            result->obj = rpc_bool_create([(NSNumber *)value boolValue]);
+            return result;
+
+        case RPCTypeUInt64:
+            result->obj = rpc_uint64_create([(NSNumber *)value unsignedIntegerValue]);
+            return result;
+
+        case RPCTypeInt64:
+            result->obj = rpc_int64_create([(NSNumber *)value integerValue]);
+            return result;
+
+        case RPCTypeDouble:
+            result->obj = rpc_double_create([(NSNumber *)value doubleValue]);
+            return result;
+
+        case RPCTypeFD:
+            result->obj = rpc_fd_create([(NSNumber *)value integerValue]);
+            return result;
+
+        case RPCTypeNull:
+        case RPCTypeString:
+        case RPCTypeBinary:
+        case RPCTypeArray:
+        case RPCTypeDictionary:
+            return [RPCObject initWithValue:value];
+
+        default:
+            return nil;
+    }
 }
 
 + (RPCObject *)initFromNativeObject:(void *)object {
@@ -165,6 +198,28 @@
 - (void *)nativeValue {
     return obj;
 }
+
+- (RPCType)type {
+    return (RPCType)rpc_get_type(obj);
+}
+@end
+
+@implementation RPCUnsignedInt
++ (instancetype)init:(NSNumber *)value {
+    return [super initWithValue:value andType:RPCTypeUInt64];
+}
+@end
+
+@implementation RPCDouble
++ (instancetype)init:(NSNumber *)value {
+    return [super initWithValue:value andType:RPCTypeDouble];
+}
+@end
+
+@implementation RPCBool
++ (instancetype)init:(NSNumber *)value {
+    return [super initWithValue:value andType:RPCTypeBoolean];
+}
 @end
 
 @implementation RPCCall {
@@ -214,7 +269,10 @@
     return nil;
 }
 
-- (RPCObject *)callSync:(NSString *)method path:(NSString *)path interface:(NSString *)interface args:(RPCObject *)args {
+- (RPCObject *)callSync:(NSString *)method
+                   path:(NSString *)path
+              interface:(NSString *)interface
+                   args:(RPCObject *)args {
     rpc_call_t call;
     
     call = rpc_connection_call(conn, [path UTF8String], [interface UTF8String], [method UTF8String], NULL, NULL);
@@ -235,15 +293,24 @@
     }
 }
 
-- (RPCCall *)call:(NSString *)method path:(NSString *)path interface:(NSString *)interface args:(RPCObject *)args {
+- (RPCCall *)call:(NSString *)method
+             path:(NSString *)path
+        interface:(NSString *)interface
+             args:(RPCObject *)args {
     return [RPCCall initFromNativeObject:rpc_connection_call(conn, [path UTF8String], [interface UTF8String], [method UTF8String], NULL, NULL)];
     
 }
 
-- (void)callAsync:(NSString *)method path:(NSString *)path interface:(NSString *)interface args:(RPCObject *)args callback:(RPCFunctionCallback)cb {
+- (void)callAsync:(NSString *)method
+             path:(NSString *)path
+        interface:(NSString *)interface
+             args:(RPCObject *)args
+         callback:(RPCFunctionCallback)cb {
     __block rpc_call_t call;
     
-    call = rpc_connection_call(conn, [path UTF8String], [interface UTF8String], [method UTF8String], [args nativeValue], ^bool(rpc_object_t args, rpc_call_status_t status) {
+    call = rpc_connection_call(conn, [path UTF8String], [interface UTF8String],
+                               [method UTF8String], [args nativeValue],
+                               ^bool(rpc_object_t args, rpc_call_status_t status) {
         cb([RPCCall initFromNativeObject:call], [RPCObject initFromNativeObject:rpc_call_result(call)]);
         return (bool)true;
     });
