@@ -38,6 +38,9 @@
 #include <stdio.h>
 #include <setjmp.h>
 #include <glib.h>
+#ifdef LIBDISPATCH_SUPPORT
+#include <dispatch/dispatch.h>
+#endif
 #include "linker_set.h"
 
 #ifndef __unused
@@ -242,6 +245,9 @@ struct rpc_connection
 	rpc_object_t 		rco_params;
     	int			rco_flags;
 	bool			rco_closed;
+#if LIBDISPATCH_SUPPORT
+	dispatch_queue_t	rco_dispatch_queue;
+#endif
 
     	/* Callbacks */
 	rpc_recv_msg_fn_t	rco_recv_msg;

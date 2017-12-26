@@ -17,6 +17,7 @@ option(BUILD_LIBUSB "Build and install libusb transport")
 option(BUILD_RPCTOOL" Build and install rpctool" ON)
 option(ENABLE_UBSAN "Enable undefined behavior sanitizer" ON)
 option(ENABLE_UBSAN_NULLABILITY "Enable nullability sanitizer")
+option(ENABLE_LIBDISPATCH "Enable libdispatch support")
 
 if(LINUX)
     option(BUILD_BUS "Build and install bus transport" ON)
@@ -76,6 +77,10 @@ link_directories(${YAML_LIBRARY_DIRS})
 
 if(RPC_DEBUG)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DRPC_DEBUG")
+endif()
+
+if(ENABLE_LIBDISPATCH)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DLIBDISPATCH_SUPPORT")
 endif()
 
 if (ENABLE_UBSAN)
