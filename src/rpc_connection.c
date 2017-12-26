@@ -31,6 +31,9 @@
 #include <glib/gprintf.h>
 #include <rpc/object.h>
 #include <rpc/connection.h>
+#ifdef LIBDISPATCH_SUPPORT
+#include <dispatch/dispatch.h>
+#endif
 #include "linker_set.h"
 #include "internal.h"
 #include "serializer/msgpack.h"
@@ -38,9 +41,12 @@
 #define	DEFAULT_RPC_TIMEOUT	60
 #define	MAX_FDS			128
 
+struct work_item;
+
 static rpc_object_t rpc_new_id(void);
 static rpc_object_t rpc_pack_frame(const char *, const char *, rpc_object_t,
     rpc_object_t);
+static bool rpc_run_callback(rpc_connection_t, struct work_item *);
 static struct rpc_call *rpc_call_alloc(rpc_connection_t, rpc_object_t);
 static int rpc_send_frame(rpc_connection_t, rpc_object_t);
 static void on_rpc_call(rpc_connection_t, rpc_object_t, rpc_object_t);
@@ -169,6 +175,28 @@ rpc_restore_fds(rpc_object_t obj, int *fds, size_t nfds)
 	}
 }
 
+static bool
+rpc_run_callback(rpc_connection_t conn, struct work_item *item)
+{
+	GError *err = NULL;
+
+	if (conn->rco_dispatch_queue != NULL) {
+		dispatch_async(conn->rco_dispatch_queue, ^{
+			rpc_callback_worker(item, conn);
+		});
+
+		return (true);
+	}
+
+	g_thread_pool_push(conn->rco_callback_pool, item, &err);
+	if (err != NULL) {
+		g_error_free(err);
+		return (false);
+	}
+
+	return (true);
+}
+
 static void
 rpc_callback_worker(void *arg, void *data)
 {
@@ -268,7 +296,6 @@ static void
 on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 {
 	struct work_item *item;
-	GError *err = NULL;
 	rpc_call_t call;
 
 	call = g_hash_table_lookup(conn->rco_calls,
@@ -283,9 +310,7 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	if (call->rc_callback) {
 		item = g_malloc0(sizeof(*item));
 		item->call = call;
-		g_thread_pool_push(conn->rco_callback_pool, item, &err);
-
-		if (err != NULL)
+		if (!rpc_run_callback(conn, item))
 			g_free(item);
 	}
 
@@ -298,7 +323,6 @@ static void
 on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 {
 	struct work_item *item;
-	GError *err = NULL;
 	rpc_call_t call;
 	rpc_object_t payload;
 	uint64_t seqno;
@@ -324,9 +348,7 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	if (call->rc_callback) {
 		item = g_malloc0(sizeof(*item));
 		item->call = call;
-		g_thread_pool_push(conn->rco_callback_pool, item, &err);
-
-		if (err != NULL)
+		if (!rpc_run_callback(conn, item))
 			g_free(item);
 	}
 
@@ -429,7 +451,7 @@ on_events_event(rpc_connection_t conn, rpc_object_t args,
 	rpc_retain(args);
 	item = g_malloc0(sizeof(*item));
 	item->event = args;
-	g_thread_pool_push(conn->rco_callback_pool, item, NULL);
+	rpc_run_callback(conn, item);
 }
 
 static void
@@ -442,7 +464,7 @@ on_events_event_burst(rpc_connection_t conn, rpc_object_t args,
 
 		rpc_retain(value);
 		item = g_malloc0(sizeof(*item));
-		g_thread_pool_push(conn->rco_callback_pool, item, NULL);
+		rpc_run_callback(conn, item);
 		return ((bool)true);
 	});
 }
@@ -867,6 +889,18 @@ rpc_connection_close(rpc_connection_t conn)
 
 	return (0);
 }
+
+#ifdef LIBDISPATCH_SUPPORT
+int
+rpc_connection_set_dispatch_queue(rpc_connection_t conn, dispatch_queue_t queue)
+{
+	GError *err = NULL;
+
+	g_thread_pool_set_max_threads(conn->rco_callback_pool, 0, &err);
+	conn->rco_dispatch_queue = queue;
+	return (0);
+}
+#endif
 
 void
 rpc_connection_dispatch(rpc_connection_t conn, rpc_object_t frame)

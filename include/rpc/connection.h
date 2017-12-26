@@ -31,6 +31,9 @@
 #include <Block.h>
 #include <sys/time.h>
 #include <rpc/object.h>
+#ifdef LIBDISPATCH_SUPPORT
+#include <dispatch/dispatch.h>
+#endif
 
 /**
  * @file connection.h
@@ -131,6 +134,17 @@ rpc_connection_t rpc_connection_create(void *cookie, rpc_object_t params);
  * @return 0 on success, -1 on failure
  */
 int rpc_connection_close(rpc_connection_t conn);
+
+#ifdef LIBDISPATCH_SUPPORT
+/**
+ *
+ * @param conn
+ * @param queue
+ * @return
+ */
+int rpc_connection_set_dispatch_queue(rpc_connection_t conn,
+    dispatch_queue_t queue);
+#endif
 
 /**
  * Subscribes for an event.
