@@ -1219,13 +1219,13 @@ rpc_data_create_iov(struct iovec *iov, size_t niov)
 	size_t i;
 
 	if (iov == NULL)
-		return (NULL);
+		return (rpc_data_create(NULL, 0, NULL));
 
 	for (i = 0; i < niov; i++)
 		data_size += iov[i].iov_len;
 
 	if (data_size == 0)
-		return (NULL);
+		return (rpc_data_create(NULL, 0, NULL));
 
 	data_buf = g_malloc(data_size);
 

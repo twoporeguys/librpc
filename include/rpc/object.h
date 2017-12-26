@@ -636,8 +636,8 @@ int64_t rpc_date_get_value(_Nonnull rpc_object_t xdate);
  * @param destructor Block to call once reference count drops to 0 (or NULL)
  * @return Newly created object.
  */
-_Nonnull rpc_object_t rpc_data_create(const void *_Nonnull bytes, size_t length,
-    _Nullable rpc_binary_destructor_t destructor);
+_Nonnull rpc_object_t rpc_data_create(const void *_Nullable bytes,
+    size_t length, _Nullable rpc_binary_destructor_t destructor);
 
 /**
  * The same as rpc_data_create, but takes iovec list as an argument
