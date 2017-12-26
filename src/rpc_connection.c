@@ -180,6 +180,7 @@ rpc_run_callback(rpc_connection_t conn, struct work_item *item)
 {
 	GError *err = NULL;
 
+#ifdef LIBDISPATCH_SUPPORT
 	if (conn->rco_dispatch_queue != NULL) {
 		dispatch_async(conn->rco_dispatch_queue, ^{
 			rpc_callback_worker(item, conn);
@@ -187,6 +188,7 @@ rpc_run_callback(rpc_connection_t conn, struct work_item *item)
 
 		return (true);
 	}
+#endif
 
 	g_thread_pool_push(conn->rco_callback_pool, item, &err);
 	if (err != NULL) {
