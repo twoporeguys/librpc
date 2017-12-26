@@ -17,6 +17,7 @@ option(BUILD_LIBUSB "Build and install libusb transport")
 option(BUILD_RPCTOOL" Build and install rpctool" ON)
 option(ENABLE_UBSAN "Enable undefined behavior sanitizer")
 option(ENABLE_UBSAN_NULLABILITY "Enable nullability sanitizer")
+option(ENABLE_ASAN "Enable address sanitizer")
 option(ENABLE_LIBDISPATCH "Enable libdispatch support")
 
 if(LINUX)
@@ -89,6 +90,10 @@ endif()
 
 if (ENABLE_UBSAN_NULLABILITY)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=nullability")
+endif()
+
+if (ENABLE_ASAN)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address")
 endif()
 
 if(BUILD_JSON)
