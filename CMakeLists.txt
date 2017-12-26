@@ -15,7 +15,7 @@ option(BUILD_PYTHON "Build and install Python extension" ON)
 option(BUILD_JSON "Build and install JSON serializer" ON)
 option(BUILD_LIBUSB "Build and install libusb transport")
 option(BUILD_RPCTOOL" Build and install rpctool" ON)
-option(ENABLE_UBSAN "Enable undefined behavior sanitizer" ON)
+option(ENABLE_UBSAN "Enable undefined behavior sanitizer")
 option(ENABLE_UBSAN_NULLABILITY "Enable nullability sanitizer")
 option(ENABLE_LIBDISPATCH "Enable libdispatch support")
 
