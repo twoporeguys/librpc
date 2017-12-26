@@ -1319,13 +1319,13 @@
         </inbodydescription>
         <location file="/code/include/rpc/object.h" line="629" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="object_8h_1a91f2e022ff997a143f155080b2bb0775" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="object_8h_1acf509ab42ce47d0b4c0ce1951c0c11af" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>_Nonnull <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
         <definition>_Nonnull rpc_object_t rpc_data_create</definition>
-        <argsstring>(const void *_Nonnull bytes, size_t length, _Nullable rpc_binary_destructor_t destructor)</argsstring>
+        <argsstring>(const void *_Nullable bytes, size_t length, _Nullable rpc_binary_destructor_t destructor)</argsstring>
         <name>rpc_data_create</name>
         <param>
-          <type>const void *_Nonnull</type>
+          <type>const void *_Nullable</type>
           <declname>bytes</declname>
         </param>
         <param>
@@ -4648,8 +4648,8 @@
 <codeline lineno="619"><highlight class="normal"></highlight></codeline>
 <codeline lineno="629"><highlight class="normal">int64_t<sp/><ref refid="object_8h_1aaa0b31994b3093e3e183ef9f0f1e6940" kindref="member">rpc_date_get_value</ref>(_Nonnull<sp/>rpc_object_t<sp/>xdate);</highlight></codeline>
 <codeline lineno="630"><highlight class="normal"></highlight></codeline>
-<codeline lineno="639"><highlight class="normal">_Nonnull<sp/>rpc_object_t<sp/><ref refid="object_8h_1a91f2e022ff997a143f155080b2bb0775" kindref="member">rpc_data_create</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>bytes,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>length,</highlight></codeline>
-<codeline lineno="640"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="object_8h_1af9a3ce2bd5f1b2c442a37baceccc4790" kindref="member">rpc_binary_destructor_t</ref><sp/>destructor);</highlight></codeline>
+<codeline lineno="639"><highlight class="normal">_Nonnull<sp/>rpc_object_t<sp/><ref refid="object_8h_1acf509ab42ce47d0b4c0ce1951c0c11af" kindref="member">rpc_data_create</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>bytes,</highlight></codeline>
+<codeline lineno="640"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>length,<sp/>_Nullable<sp/><ref refid="object_8h_1af9a3ce2bd5f1b2c442a37baceccc4790" kindref="member">rpc_binary_destructor_t</ref><sp/>destructor);</highlight></codeline>
 <codeline lineno="641"><highlight class="normal"></highlight></codeline>
 <codeline lineno="650"><highlight class="normal">_Nonnull<sp/>rpc_object_t<sp/><ref refid="object_8h_1a81716cdca66934bee041b7fdefad94e7" kindref="member">rpc_data_create_iov</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>iovec<sp/>*_Nonnull<sp/>iov,</highlight></codeline>
 <codeline lineno="651"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>niov);</highlight></codeline>

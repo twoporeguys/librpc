@@ -93,7 +93,7 @@ var searchData=
   ['rpc_5fcontext_5funregister_5fmember',['rpc_context_unregister_member',['../service_8h.html#a982fcc47ab91486b508ca9cff5b7ed8f',1,'service.h']]],
   ['rpc_5fcopy',['rpc_copy',['../object_8h.html#a14ffadb854f6dfe280235c819ba92030',1,'object.h']]],
   ['rpc_5fcopy_5fdescription',['rpc_copy_description',['../object_8h.html#ac3266a5b20add52514c1b2c70a4a5878',1,'object.h']]],
-  ['rpc_5fdata_5fcreate',['rpc_data_create',['../object_8h.html#a91f2e022ff997a143f155080b2bb0775',1,'object.h']]],
+  ['rpc_5fdata_5fcreate',['rpc_data_create',['../object_8h.html#acf509ab42ce47d0b4c0ce1951c0c11af',1,'object.h']]],
   ['rpc_5fdata_5fcreate_5fiov',['rpc_data_create_iov',['../object_8h.html#a81716cdca66934bee041b7fdefad94e7',1,'object.h']]],
   ['rpc_5fdata_5fget_5fbytes',['rpc_data_get_bytes',['../object_8h.html#ab5d1feb11fc902658b7fe53bf7cc1627',1,'object.h']]],
   ['rpc_5fdata_5fget_5fbytes_5fptr',['rpc_data_get_bytes_ptr',['../object_8h.html#a73259e1914dbb4c18a995768a7d3930b',1,'object.h']]],
