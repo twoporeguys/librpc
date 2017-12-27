@@ -194,7 +194,8 @@ rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
 	if (instance->ri_context) {
 		rpc_context_emit_event(instance->ri_context, instance->ri_path,
 		    interface, name, args);
-	}
+	} else
+		rpc_release(args);
 
 	g_mutex_unlock(&instance->ri_mtx);
 }
@@ -299,6 +300,8 @@ rpc_context_emit_event(rpc_context_t context, const char *path,
 		server = g_ptr_array_index(context->rcx_servers, i);
 		rpc_server_broadcast_event(server, path, interface, name, args);
 	}
+
+	rpc_release(args);
 }
 
 inline void *

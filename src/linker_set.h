@@ -118,7 +118,7 @@
  * and the address of each set item is obtained inside the loop by "*pvar".
  */
 #define SET_FOREACH(pvar, set)						\
-	for (pvar = SET_BEGIN(set); pvar < SET_LIMIT(set); pvar++)
+	for (pvar = SET_BEGIN(set); pvar < SET_LIMIT(set); pvar+=8)
 
 #define SET_ITEM(set, i)						\
 	((SET_BEGIN(set))[i])
