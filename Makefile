@@ -1,8 +1,7 @@
 .PHONY: all clean bootstrap install uninstall
 
-export CC ?= clang
-export CC ?= clang++
-
+export CC := clang
+export CXX := clang++
 BUILD_PYTHON := ON
 PYTHON_VERSION := python3
 INSTALL_PREFIX := /usr/local
