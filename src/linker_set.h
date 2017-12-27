@@ -30,7 +30,11 @@
 #ifndef _SYS_LINKER_SET_H_
 #define _SYS_LINKER_SET_H_
 
+#if __has_feature(address_sanitizer)
 #define __no_sanitize	__attribute__((no_sanitize("address")))
+#else
+#define __no_sanitize
+#endif
 #define __weak_symbol   __attribute__((__weak__))
 #ifndef __used
 #define __used          __attribute__((__used__))
