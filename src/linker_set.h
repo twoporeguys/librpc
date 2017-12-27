@@ -30,6 +30,7 @@
 #ifndef _SYS_LINKER_SET_H_
 #define _SYS_LINKER_SET_H_
 
+#define __no_sanitize	__attribute__((no_sanitize("address")))
 #define __weak_symbol   __attribute__((__weak__))
 #ifndef __used
 #define __used          __attribute__((__used__))
@@ -77,7 +78,7 @@
 	__GLOBL(__CONCAT(__stop_set_, set));			\
 	static void const * __MAKE_SET_CONST			\
 	__set_##set##_sym_##sym __section("set_" #set)		\
-	__used = &(sym)
+	__no_sanitize __used = &(sym)
 #endif
 #else /* !__GNUCLIKE___SECTION */
 
@@ -118,7 +119,7 @@
  * and the address of each set item is obtained inside the loop by "*pvar".
  */
 #define SET_FOREACH(pvar, set)						\
-	for (pvar = SET_BEGIN(set); pvar < SET_LIMIT(set); pvar+=8)
+	for (pvar = SET_BEGIN(set); pvar < SET_LIMIT(set); pvar++)
 
 #define SET_ITEM(set, i)						\
 	((SET_BEGIN(set))[i])
