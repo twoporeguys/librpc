@@ -57,7 +57,7 @@ struct rpc_transport socket_transport = {
 
 struct socket_server
 {
-	const char *			ss_uri;
+	char *				ss_uri;
 	struct rpc_server *		ss_server;
 	GSocketListener *		ss_listener;
 };
@@ -221,6 +221,7 @@ socket_listen(struct rpc_server *srv, const char *uri,
 				rpc_set_last_gerror(err);
 				g_object_unref(addr);
 				g_error_free(err);
+				g_free(server->ss_uri);
 				g_free(server);
 				return (-1);
 			}
@@ -234,6 +235,7 @@ socket_listen(struct rpc_server *srv, const char *uri,
 		rpc_set_last_gerror(err);
 		g_object_unref(addr);
 		g_error_free(err);
+		g_free(server->ss_uri);
 		g_free(server);
 		return (-1);
 	}
