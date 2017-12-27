@@ -25,6 +25,7 @@ if(LINUX)
     option(BUILD_KMOD "Build and install kmod" ON)
 endif()
 
+set(PKGCONFIG_C_FLAGS "")
 set(CPACK_PACKAGE_NAME librpc)
 set(CPACK_PACKAGE_VENDOR Two Pore Guys)
 set(CPACK_PACKAGE_VERSION_MAJOR 0)
@@ -62,9 +63,21 @@ if(BUNDLED_BLOCKS_RUNTIME)
     include_directories(contrib/BlocksRuntime)
 endif()
 
+if (ENABLE_UBSAN)
+    set(PKGCONFIG_C_FLAGS "${PKGCONFIG_C_FLAGS} -fsanitize=undefined -fsanitize=integer")
+endif()
+
+if (ENABLE_UBSAN_NULLABILITY)
+    set(PKGCONFIG_C_FLAGS "${PKGCONFIG_C_FLAGS} -fsanitize=nullability")
+endif()
+
+if (ENABLE_ASAN)
+    set(PKGCONFIG_C_FLAGS "${PKGCONFIG_C_FLAGS} -fsanitize=address")
+endif()
+
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_FLAGS "-fblocks -Wall -Wextra -Wno-unused-parameter -DRPC_TRACE")
-set(CMAKE_CXX_FLAGS "-fblocks -Wall -Wextra -Wno-unused-parameter -DRPC_TRACE")
+set(CMAKE_C_FLAGS "-fblocks -Wall -Wextra -Wno-unused-parameter -DRPC_TRACE ${PKGCONFIG_C_FLAGS}")
+set(CMAKE_CXX_FLAGS "-fblocks -Wall -Wextra -Wno-unused-parameter -DRPC_TRACE ${PKGCONFIG_C_FLAGS}")
 include_directories(include)
 include_directories(/usr/local/include)
 include_directories (${GLIB_INCLUDE_DIRS})
@@ -82,18 +95,6 @@ endif()
 
 if(ENABLE_LIBDISPATCH)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DLIBDISPATCH_SUPPORT")
-endif()
-
-if (ENABLE_UBSAN)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=undefined -fsanitize=integer")
-endif()
-
-if (ENABLE_UBSAN_NULLABILITY)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=nullability")
-endif()
-
-if (ENABLE_ASAN)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address")
 endif()
 
 if(BUILD_JSON)

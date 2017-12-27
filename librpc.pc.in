@@ -1,5 +1,6 @@
 prefix=@CMAKE_INSTALL_PREFIX@
 exec_prefix=@CMAKE_INSTALL_PREFIX@
+cflags=@PKGCONFIG_C_FLAGS@
 libdir=${prefix}/lib
 sharedlibdir=${prefix}/lib
 includedir=${prefix}/include
@@ -7,5 +8,5 @@ includedir=${prefix}/include
 Name: librpc
 Description: A general purpose RPC library
 Version: @VERSION@
-Cflags: -I${includedir}
+Cflags: -I${includedir} ${cflags}
 Libs: -L${libdir} -lrpc
