@@ -9,6 +9,12 @@ pipeline {
     }
 
     stages {
+        stage('Bootstrap') {
+            steps {
+	        sh 'sudo make bootstrap'
+            }
+        }
+
         stage('Build') {
             steps {
                 sh 'mkdir -p build' 
