@@ -178,7 +178,7 @@ cdef class Object(object):
             self.obj = rpc_error_create_with_stack(value.code, value.message.encode('utf-8'), extra.obj, stack.obj)
             return
 
-        if isinstance(value, list) or force_type == ObjectType.ARRAY:
+        if isinstance(value, (list, tuple)) or force_type == ObjectType.ARRAY:
             self.obj = rpc_array_create()
 
             for v in value:
