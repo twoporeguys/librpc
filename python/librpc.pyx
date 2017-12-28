@@ -33,6 +33,7 @@ import inspect
 import functools
 import traceback
 import datetime
+import uuid
 from librpc cimport *
 from libc.string cimport strdup
 from libc.stdint cimport *
@@ -154,8 +155,8 @@ cdef class Object(object):
             return
 
         if isinstance(value, str) or force_type == ObjectType.STRING:
-            byte_str = value.encode('utf-8')
-            self.obj = rpc_string_create(byte_str)
+            bstr = value.encode('utf-8')
+            self.obj = rpc_string_create(bstr)
             return
 
         if isinstance(value, float) or force_type == ObjectType.DOUBLE:
@@ -195,6 +196,10 @@ cdef class Object(object):
                 rpc_dictionary_set_value(self.obj, byte_k, child.obj)
 
             return
+
+        if isinstance(value, uuid.UUID):
+            bstr = str(value).encode('utf-8')
+            self.obj = rpc_string_create(bstr)
 
         if isinstance(value, Object):
             self.obj = rpc_copy((<Object>value).obj)
