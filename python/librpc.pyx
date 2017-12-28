@@ -200,6 +200,7 @@ cdef class Object(object):
         if isinstance(value, uuid.UUID):
             bstr = str(value).encode('utf-8')
             self.obj = rpc_string_create(bstr)
+            return
 
         if isinstance(value, Object):
             self.obj = rpc_copy((<Object>value).obj)
@@ -208,8 +209,10 @@ cdef class Object(object):
         raise LibException(errno.EINVAL, "Unknown value type: {0}".format(type(value)))
 
     def __repr__(self):
-        byte_descr = rpc_copy_description(self.obj)
-        return byte_descr.decode('utf-8')
+        bdescr = rpc_copy_description(self.obj)
+        result = bdescr.decode('utf-8')
+        free(bdescr)
+        return result
 
     def __str__(self):
         return str(self.value)
