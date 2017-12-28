@@ -191,9 +191,9 @@ cdef class Object(object):
             self.obj = rpc_dictionary_create()
 
             for k, v in value.items():
-                byte_k = k.encode('utf-8')
+                bkey = k.encode('utf-8')
                 child = Object(v)
-                rpc_dictionary_set_value(self.obj, byte_k, child.obj)
+                rpc_dictionary_set_value(self.obj, bkey, child.obj)
 
             return
 
@@ -205,6 +205,24 @@ cdef class Object(object):
         if isinstance(value, Object):
             self.obj = rpc_copy((<Object>value).obj)
             return
+
+        if hasattr(value, '__getstate__'):
+            try:
+                child = Object(value.__getstate__())
+                self.obj = rpc_retain(child.obj)
+                return
+            except:
+                pass
+
+        for typ, hook in type_hooks.items():
+            if isinstance(value, typ):
+                try:
+                    conv = hook(value)
+                    if type(conv) is Object:
+                        self.obj = rpc_copy((<Object>conv).obj)
+                        return
+                except:
+                    pass
 
         raise LibException(errno.EINVAL, "Unknown value type: {0}".format(type(value)))
 
@@ -1972,3 +1990,6 @@ def description(name):
 def unpack(fn):
     fn.__librpc_unpack__ = True
     return fn
+
+
+type_hooks = {}
