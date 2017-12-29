@@ -1,5 +1,3 @@
-DOCS_PATH = '/mnt/builds/docs'
-
 pipeline {
     agent any
 
@@ -24,6 +22,9 @@ pipeline {
         }
 
         stage('Deploy docs') {
+            when {
+                expression { "${env.DOCS_PATH}" != "" }
+            }
             steps {
                 sh "mkdir -p ${DOCS_PATH}/librpc"
                 sh "rm -rf ${DOCS_PATH}/librpc/*"
