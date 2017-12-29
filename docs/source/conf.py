@@ -34,7 +34,6 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
-    'breathe'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -157,9 +156,3 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
-# -- Options for Breathe --------------------------------------------------
-breathe_projects = {
-    "librpc": os.path.join(build_dir, "doxygen/xml")
-}
-
-breathe_default_project = "librpc"
