@@ -299,7 +299,7 @@ const char *_Nullable rpc_get_type_name(rpc_type_t type);
  * Also sets it to NULL if as a result of the operation
  * reference count dropped to 0 and the object was freed.
  *
- * @param object Object to release.
+ * @param _object Object to release.
  */
 #define	rpc_release(_object)						\
 	do {								\
@@ -307,11 +307,17 @@ const char *_Nullable rpc_get_type_name(rpc_type_t type);
 			(_object) = NULL;				\
 	} while(0)
 
+
+/**
+ * Swaps @p _old object with @p_new object.
+ *
+ * Releases @p _old before replacing it with @p _new.
+ */
 #define	rpc_swap(_old, _new)						\
 	do {								\
 		rpc_release(_old);					\
 		(_old) = (_new);					\
-	} while(0)
+	} while (0)
 
 /**
  * Returns last runtime error reported by the library.
@@ -769,9 +775,9 @@ _Nonnull rpc_object_t rpc_array_create(void);
  * Creates a new array of objects, optionally populating it with data.
  *
  * @param objects Array of objects to insert.
- * @param count Number of items in @ref objects.
+ * @param count Number of items in @p objects.
  * @param steal Reference vs. reference and increment refcount of elements
- *        in @ref objects.
+ * 	in @p objects.
  * @return Newly created object.
  */
 _Nonnull rpc_object_t rpc_array_create_ex(
@@ -779,17 +785,17 @@ _Nonnull rpc_object_t rpc_array_create_ex(
     bool steal);
 
 /**
- * Inserts an object to an input array at a given index and increments object's
+ * Inserts an object to @p array at @p index and increments @p value
  * refcount.
  *
- * If an index is bigger than an array itself, gap will be filled
+ * If @p index is bigger than the array itself, gap will be filled
  * with null objects.
  *
- * If an index is already occupied, then a new object takes place of
+ * If @p index is already occupied, then a new object takes place of
  * an old object and the refcount of an old object is decremented.
  *
- * If an object is NULL, then this function removes an old object
- * from a given index.
+ * If @p array is NULL, then this function removes an old object
+ * from @p index.
  *
  * @param array Input array.
  * @param value Value to be inserted.
