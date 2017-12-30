@@ -29,11 +29,11 @@ set(PKGCONFIG_C_FLAGS "")
 set(CPACK_PACKAGE_NAME librpc)
 set(CPACK_PACKAGE_VENDOR Two Pore Guys)
 set(CPACK_PACKAGE_VERSION_MAJOR 0)
-set(CPACK_PACKAGE_VERSION_MINOR 1)
+set(CPACK_PACKAGE_VERSION_MINOR 3)
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER Jakub Klama <jakub.klama@twoporeguys.com>)
 set(CPACK_GENERATOR DEB)
 execute_process(
-        COMMAND git rev-parse --short HEAD
+        COMMAND git rev-list --count HEAD
         OUTPUT_VARIABLE CPACK_PACKAGE_VERSION_PATCH
         OUTPUT_STRIP_TRAILING_WHITESPACE)
 include(CPack)
