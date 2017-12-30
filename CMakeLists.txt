@@ -32,10 +32,21 @@ set(CPACK_PACKAGE_VERSION_MAJOR 0)
 set(CPACK_PACKAGE_VERSION_MINOR 3)
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER Jakub Klama <jakub.klama@twoporeguys.com>)
 set(CPACK_GENERATOR DEB)
+
 execute_process(
-        COMMAND git rev-list --count HEAD
-        OUTPUT_VARIABLE CPACK_PACKAGE_VERSION_PATCH
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
+        COMMAND git describe --exact-match HEAD
+        RESULT_VARIABLE RELEASE_TAG
+        OUTPUT_QUIET
+        ERROR_QUIET
+)
+
+if(NOT RELEASE_TAG)
+    execute_process(
+            COMMAND git rev-list --count HEAD
+            OUTPUT_VARIABLE CPACK_PACKAGE_VERSION_PATCH
+            OUTPUT_STRIP_TRAILING_WHITESPACE)
+endif()
+
 include(CPack)
 
 find_package (PkgConfig REQUIRED)
