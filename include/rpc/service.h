@@ -42,6 +42,12 @@
 extern "C" {
 #endif
 
+/**
+ * Marks the function as "still running" even though the implementing
+ * call returned.
+ *
+ *
+ */
 #define	RPC_FUNCTION_STILL_RUNNING	((rpc_object_t)1)
 
 #define	RPC_DISCOVERABLE_INTERFACE	"com.twoporeguys.librpc.Discoverable"
@@ -50,16 +56,23 @@ extern "C" {
 #define	RPC_DEFAULT_INTERFACE		"com.twoporeguys.librpc.Default"
 
 /**
- * RPC context structure definition.
+ * RPC context structure.
  */
 struct rpc_context;
 
 /**
- * RPC context structure pointer definition.
+ * RPC instance structure.
+ */
+struct rpc_instance;
+
+/**
+ * RPC context handle.
  */
 typedef struct rpc_context *rpc_context_t;
 
-struct rpc_instance;
+/**
+ * RPC instance handle.
+ */
 typedef struct rpc_instance *rpc_instance_t;
 
 /**
@@ -175,7 +188,7 @@ enum rpc_property_rights
 
 
 /**
- * RPC method descriptor.
+ * Method descriptor.
  */
 struct rpc_if_method
 {
@@ -183,6 +196,9 @@ struct rpc_if_method
 	void *_Nullable			rm_arg;
 };
 
+/**
+ * Property descriptor
+ */
 struct rpc_if_property
 {
 	_Nullable rpc_property_getter_t	rp_getter;
@@ -190,6 +206,11 @@ struct rpc_if_property
 	void *_Nullable			rp_arg;
 };
 
+/**
+ * Interface member descriptor.
+ *
+ * Can be either a method, property or event.
+ * */
 struct rpc_if_member {
 	const char *_Nonnull		rim_name;
 	enum rpc_if_member_type		rim_type;
@@ -214,28 +235,29 @@ _Nonnull rpc_context_t rpc_context_create(void);
 void rpc_context_free(_Nonnull rpc_context_t context);
 
 /**
+ * Finds an instance registered in @p context.
  *
- * @param context
- * @param path
- * @return
+ * @param context RPC context handle
+ * @param path Instance path
+ * @return RPC instance handle or NULL if not found
  */
 _Nullable rpc_instance_t rpc_context_find_instance(
     _Nonnull rpc_context_t context, const char *_Nonnull path);
 
 /**
+ * Returns root instance associated with @p context.
  *
- * @param context
- * @return
+ * @param context RPC context handle
+ * @return RPC instance handle
  */
 _Nonnull rpc_instance_t rpc_context_get_root(_Nonnull rpc_context_t context);
 
 /**
- * Registers a new object under context's object tree.
+ * Registers a new instance in @p context instance tree.
  *
- * @param context
- * @param path
- * @param instance
- * @return
+ * @param context RPC context handle
+ * @param instance RPC instance handle
+ * @return 0 on success, -1 on error
  */
 int rpc_context_register_instance(_Nonnull rpc_context_t context,
     _Nonnull rpc_instance_t instance);
@@ -344,44 +366,45 @@ void rpc_context_emit_event(_Nonnull rpc_context_t context,
 /**
  * Returns the argument associated with method.
  *
- * @param cookie Running call identifier.
+ * @param cookie Running call handle
  */
 void *_Nullable rpc_function_get_arg(void *_Nonnull cookie);
 
 /**
- * Returns the RPC context object associated with currently executing
+ * Returns the RPC context handle associated with currently executing
  * function.
  *
- * @param cookie Running call identifier
- * @return RPC context
+ * @param cookie Running call handle
+ * @return RPC context handle
  */
 _Nonnull rpc_context_t rpc_function_get_context(void *_Nonnull cookie);
 
 /**
+ * Returns the instance handle associated with currently executing function.
  *
- * @param cookie
- * @return
+ * @param cookie Running call handle
+ * @return RPC context handle
  */
 _Nonnull rpc_instance_t rpc_function_get_instance(void *_Nonnull cookie);
 
 /**
  * Returns the called method name.
  *
- * @param cookie Running call identifier.
+ * @param cookie Running call handle
  */
 const char *_Nonnull rpc_function_get_name(void *_Nonnull cookie);
 
 /**
  * Returns the path method was called on or NULL.
  *
- * @param cookie Running call identifier.
+ * @param cookie Running call handle
  */
 const char *_Nonnull rpc_function_get_path(void *_Nonnull cookie);
 
 /**
  * Returns the called interface name or NULL.
  *
- * @param cookie Running call identifier.
+ * @param cookie Running call handle
  */
 const char *_Nonnull rpc_function_get_interface(void *_Nonnull cookie);
 
@@ -392,7 +415,7 @@ const char *_Nonnull rpc_function_get_interface(void *_Nonnull cookie);
  * call (for a given cookie). When called, return value of a method
  * is silently ignored (it is preferred to return NULL).
  *
- * @param cookie Running call identifier.
+ * @param cookie Running call handle
  * @param object Response.
  */
 void rpc_function_respond(void *_Nonnull cookie, _Nullable rpc_object_t object);
@@ -406,10 +429,10 @@ void rpc_function_respond(void *_Nonnull cookie, _Nullable rpc_object_t object);
  *
  * When called in a streaming function, implicitly ends streaming response.
  *
- * @param cookie Running call identifier.
- * @param code Error (errno) code.
- * @param message Error message format.
- * @param ... Format arguments.
+ * @param cookie Running call handle
+ * @param code Error (errno) code
+ * @param message Error message format
+ * @param ... Format arguments
  */
 void rpc_function_error(void *_Nonnull cookie, int code,
     const char *_Nonnull message, ...);
@@ -417,8 +440,8 @@ void rpc_function_error(void *_Nonnull cookie, int code,
 /**
  * Reports an exception for a given ongoing call identifier.
  *
- * @param cookie Running call identifier.
- * @param exception Exception data.
+ * @param cookie Running call handle
+ * @param exception Exception object
  */
 void rpc_function_error_ex(void *_Nonnull cookie,
     _Nonnull rpc_object_t exception);
@@ -426,9 +449,9 @@ void rpc_function_error_ex(void *_Nonnull cookie,
 /**
  * Generates a new value in a streaming response.
  *
- * @param cookie Running call identifier.
- * @param fragment Next data fragment.
- * @return Status. Success is reported by returning 0.
+ * @param cookie Running call handle
+ * @param fragment Next data fragment
+ * @return Status. Success is reported by returning 0
  */
 int rpc_function_yield(void *_Nonnull cookie, _Nonnull rpc_object_t fragment);
 
@@ -439,7 +462,7 @@ int rpc_function_yield(void *_Nonnull cookie, _Nonnull rpc_object_t fragment);
  * streaming or error responses) is not allowed. Return value of a method
  * functions is ignored.
  *
- * @param cookie Running call identifier.
+ * @param cookie Running call handle
  */
 void rpc_function_end(void *_Nonnull cookie);
 
@@ -447,32 +470,36 @@ void rpc_function_end(void *_Nonnull cookie);
  * Returns the value of a flag saying whether or not a method should
  * immediately stop because it was aborted on the client side.
  *
- * @param cookie Running call identifier.
- * @return Whether or not function should abort.
+ * @param cookie Running call handle
+ * @return Whether or not function should abort
  */
 bool rpc_function_should_abort(void *_Nonnull cookie);
 
 /**
+ * Creates a new instance handle.
  *
- * @param path
- * @param arg
+ * @param path Instance path
+ * @param arg User data pointer
  * @return
  */
 _Nullable rpc_instance_t rpc_instance_new(void *_Nullable arg,
     const char *_Nonnull fmt, ...);
 
 /**
+ * Sets the description string of an instance.
  *
- * @param fmt
- * @param ...
+ * @param instance Instance handle
+ * @param fmt Format string
+ * @param ... Format arguments
  */
-void rpc_instance_set_description(_Nonnull rpc_instance_t,
+void rpc_instance_set_description(_Nonnull rpc_instance_t instance,
     const char *_Nonnull fmt, ...);
 
 /**
+ * Returns the user data pointer associated with @p instance.
  *
- * @param instance
- * @return
+ * @param instance Instance handle
+ * @return User data pointer
  */
 void *_Nullable rpc_instance_get_arg(_Nonnull rpc_instance_t instance);
 

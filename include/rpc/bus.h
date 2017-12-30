@@ -39,27 +39,36 @@
 extern "C" {
 #endif
 
+/**
+ * Bus hot-plug event type.
+ */
 typedef enum {
-	RPC_BUS_ATTACHED,
-	RPC_BUS_DETACHED
+	RPC_BUS_ATTACHED,	/**< Device attached to the system */
+	RPC_BUS_DETACHED	/**< Device detached from the system */
 } rpc_bus_event_t;
 
 /**
  * Bus node descriptor.
+ *
+ * Node address (@ref rbn_address) and serial number (@ref rbn_serial) fields
+ * are guaranteed to be unique.
  */
 struct rpc_bus_node
 {
-	const char *_Nullable	rbn_name;
-	const char *_Nullable	rbn_description;
-	const char *_Nullable	rbn_serial;
-	uint32_t 		rbn_address;
+	const char *_Nullable	rbn_name;	/**< Node name */
+	const char *_Nullable	rbn_description;/**< Description */
+	const char *_Nullable	rbn_serial;	/**< Device serial number */
+	uint32_t 		rbn_address;	/**< Address on the bus */
 };
 
+/**
+ * Hotplug event handler callback block type.
+ */
 typedef void (^rpc_bus_event_handler_t)(rpc_bus_event_t event,
     struct rpc_bus_node *_Nonnull node);
 
 /**
- * Converts function pointer to an rpc_bus_event_t block type.
+ * Converts function pointer to an @ref rpc_bus_event_t block type.
  */
 #define	RPC_BUS_EVENT_HANDLER(_fn, _arg)				\
     ^(rpc_bus_event_t _event, struct rpc_bus_node *_node) {		\
@@ -83,23 +92,23 @@ int rpc_bus_close(void);
 /**
  * Checks whether a node with specified serial is reachable.
  *
- * @param name
- * @return
+ * @param serial Node serial number
+ * @return 0 if reachable, -1 otherwise
  */
 int rpc_bus_ping(const char *_Nonnull serial);
 
 /**
  * Enumerates connected devices on the RPC bus.
  *
- * @param result
- * @return
+ * @param result Array of @ref rpc_bus_node elements
+ * @return 0 on success, -1 on error
  */
 int rpc_bus_enumerate(struct rpc_bus_node *_Nullable *_Nonnull result);
 
 /**
+ * Frees struct rpc_bus_node array obtained in @ref rpc_bus_enumerate call.
  *
- *
- * @param result
+ * @param result Array of struct rpc_bus_node elements
  */
 void rpc_bus_free_result(struct rpc_bus_node *_Nonnull result);
 
@@ -122,4 +131,4 @@ void rpc_bus_unregister_event_handler(void);
 }
 #endif
 
-#endif //LIBRPC_BUS_H
+#endif /* LIBRPC_BUS_H */

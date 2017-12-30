@@ -41,22 +41,28 @@
 extern "C" {
 #endif
 
+/**
+ * RPC client structure.
+ */
 struct rpc_client;
 
+/**
+ * RPC client handle.
+ */
 typedef struct rpc_client *rpc_client_t;
 
 /**
  * Creates a new, connected RPC client.
  *
  * URI parameter can take multiple forms:
- * - unix://<path> connects to an Unix domain socket
- * - tcp://<ip-address>:<port> connects using a TCP socket
- * - ws://<ip-address>:<port>/<path> connects using a WebSocket
- * - loopback://<id> connects using a local transport
+ * - unix://(path) connects to an Unix domain socket
+ * - tcp://(ip-address):(port) connects using a TCP socket
+ * - ws://(ip-address):(port)/(path) connects using a WebSocket
+ * - loopback://(id) connects using a local transport
  *
  * @param uri Endpoint URI
  * @param params Transport-specific parameters or NULL
- * @return Connect RPC client object
+ * @return Connect RPC client handle
  */
 _Nullable rpc_client_t rpc_client_create(const char *_Nonnull uri,
     _Nullable rpc_object_t params);
@@ -65,7 +71,7 @@ _Nullable rpc_client_t rpc_client_create(const char *_Nonnull uri,
  * Gets the connection object from a client.
  *
  * @param client Client object to get the connection from
- * @return Connection object
+ * @return Connection handle
  */
 _Nonnull rpc_connection_t rpc_client_get_connection(
     _Nonnull rpc_client_t client);
@@ -73,7 +79,7 @@ _Nonnull rpc_connection_t rpc_client_get_connection(
 /**
  * Closes the connection and frees associated resources.
  *
- * @param client Client object
+ * @param client Client handle
  */
 void rpc_client_close(_Nonnull rpc_client_t client);
 
