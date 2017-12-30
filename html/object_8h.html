@@ -136,7 +136,7 @@ Macros</h2></td></tr>
 <tr class="separator:aa125ec0a73c4c9953b07e5da1712573e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac19be935f72b35eeb2851bc509eabb2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">rpc_release</a>(_object)</td></tr>
 <tr class="separator:aac19be935f72b35eeb2851bc509eabb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a541e997e04e48fe86df08ae323516490"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_swap</b>(_old,  _new)</td></tr>
+<tr class="memitem:a541e997e04e48fe86df08ae323516490"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a541e997e04e48fe86df08ae323516490">rpc_swap</a>(_old,  _new)</td></tr>
 <tr class="separator:a541e997e04e48fe86df08ae323516490"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -561,7 +561,7 @@ Functions</h2></td></tr>
 <p>Also sets it to NULL if as a result of the operation reference count dropped to 0 and the object was freed.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">object</td><td>Object to release. </td></tr>
+    <tr><td class="paramname">_object</td><td>Object to release. </td></tr>
   </table>
   </dd>
 </dl>
@@ -593,9 +593,11 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                <a class="code" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">\</a></div><div class="line"><a class="code" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">		rpc_release</a>(_old);                    \</div><div class="line">        (_old) = (_new);                    \</div><div class="line">    } <span class="keywordflow">while</span>(0)</div><div class="ttc" id="object_8h_html_aac19be935f72b35eeb2851bc509eabb2"><div class="ttname"><a href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">rpc_release</a></div><div class="ttdeci">#define rpc_release(_object)</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00304">object.h:304</a></div></div>
-</div><!-- fragment -->
-<p>Definition at line <a class="el" href="object_8h_source.html#l00310">310</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                <a class="code" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">\</a></div><div class="line"><a class="code" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">		rpc_release</a>(_old);                    \</div><div class="line">        (_old) = (_new);                    \</div><div class="line">    } <span class="keywordflow">while</span> (0)</div><div class="ttc" id="object_8h_html_aac19be935f72b35eeb2851bc509eabb2"><div class="ttname"><a href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">rpc_release</a></div><div class="ttdeci">#define rpc_release(_object)</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00304">object.h:304</a></div></div>
+</div><!-- fragment --><p>Swaps <code>_old</code> object with  object.</p>
+<p>Releases <code>_old</code> before replacing it with <code>_new</code>. </p>
+
+<p>Definition at line <a class="el" href="object_8h_source.html#l00316">316</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -950,8 +952,8 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">objects</td><td>Array of objects to insert. </td></tr>
-    <tr><td class="paramname">count</td><td>Number of items in objects. </td></tr>
-    <tr><td class="paramname">steal</td><td>Reference vs. reference and increment refcount of elements in objects. </td></tr>
+    <tr><td class="paramname">count</td><td>Number of items in <code>objects</code>. </td></tr>
+    <tr><td class="paramname">steal</td><td>Reference vs. reference and increment refcount of elements in <code>objects</code>. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1825,10 +1827,10 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Inserts an object to an input array at a given index and increments object's refcount.</p>
-<p>If an index is bigger than an array itself, gap will be filled with null objects.</p>
-<p>If an index is already occupied, then a new object takes place of an old object and the refcount of an old object is decremented.</p>
-<p>If an object is NULL, then this function removes an old object from a given index.</p>
+<p>Inserts an object to <code>array</code> at <code>index</code> and increments <code>value</code> refcount.</p>
+<p>If <code>index</code> is bigger than the array itself, gap will be filled with null objects.</p>
+<p>If <code>index</code> is already occupied, then a new object takes place of an old object and the refcount of an old object is decremented.</p>
+<p>If <code>array</code> is NULL, then this function removes an old object from <code>index</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">array</td><td>Input array. </td></tr>

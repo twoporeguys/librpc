@@ -62,6 +62,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
 <!-- window showing the filter options -->
@@ -92,24 +93,82 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a9afbf9a155ae01c1c47dc210a8334022"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9afbf9a155ae01c1c47dc210a8334022"></a>
-const char *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><b>rbn_name</b></td></tr>
+<tr class="memitem:a9afbf9a155ae01c1c47dc210a8334022"><td class="memItemLeft" align="right" valign="top">const char *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrpc__bus__node.html#a9afbf9a155ae01c1c47dc210a8334022">rbn_name</a></td></tr>
 <tr class="separator:a9afbf9a155ae01c1c47dc210a8334022"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5d23beee7c50520e7235f0c922fafb1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af5d23beee7c50520e7235f0c922fafb1"></a>
-const char *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><b>rbn_description</b></td></tr>
+<tr class="memitem:af5d23beee7c50520e7235f0c922fafb1"><td class="memItemLeft" align="right" valign="top">const char *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrpc__bus__node.html#af5d23beee7c50520e7235f0c922fafb1">rbn_description</a></td></tr>
 <tr class="separator:af5d23beee7c50520e7235f0c922fafb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a885b358a61a0b459d86d7c534be6ef0f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a885b358a61a0b459d86d7c534be6ef0f"></a>
-const char *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><b>rbn_serial</b></td></tr>
+<tr class="memitem:a885b358a61a0b459d86d7c534be6ef0f"><td class="memItemLeft" align="right" valign="top">const char *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrpc__bus__node.html#a885b358a61a0b459d86d7c534be6ef0f">rbn_serial</a></td></tr>
 <tr class="separator:a885b358a61a0b459d86d7c534be6ef0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a624e2a0be665938924ab2f815afb669e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a624e2a0be665938924ab2f815afb669e"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>rbn_address</b></td></tr>
+<tr class="memitem:a624e2a0be665938924ab2f815afb669e"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrpc__bus__node.html#a624e2a0be665938924ab2f815afb669e">rbn_address</a></td></tr>
 <tr class="separator:a624e2a0be665938924ab2f815afb669e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Bus node descriptor. </p>
+<div class="textblock"><p>Bus node descriptor.</p>
+<p>Node address (<a class="el" href="structrpc__bus__node.html#a624e2a0be665938924ab2f815afb669e">rbn_address</a>) and serial number (<a class="el" href="structrpc__bus__node.html#a885b358a61a0b459d86d7c534be6ef0f">rbn_serial</a>) fields are guaranteed to be unique. </p>
 
-<p>Definition at line <a class="el" href="bus_8h_source.html#l00050">50</a> of file <a class="el" href="bus_8h_source.html">bus.h</a>.</p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<p>Definition at line <a class="el" href="bus_8h_source.html#l00056">56</a> of file <a class="el" href="bus_8h_source.html">bus.h</a>.</p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a624e2a0be665938924ab2f815afb669e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t rpc_bus_node::rbn_address</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Address on the bus </p>
+
+<p>Definition at line <a class="el" href="bus_8h_source.html#l00061">61</a> of file <a class="el" href="bus_8h_source.html">bus.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af5d23beee7c50520e7235f0c922fafb1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* _Nullable rpc_bus_node::rbn_description</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Description </p>
+
+<p>Definition at line <a class="el" href="bus_8h_source.html#l00059">59</a> of file <a class="el" href="bus_8h_source.html">bus.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9afbf9a155ae01c1c47dc210a8334022"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* _Nullable rpc_bus_node::rbn_name</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Node name </p>
+
+<p>Definition at line <a class="el" href="bus_8h_source.html#l00058">58</a> of file <a class="el" href="bus_8h_source.html">bus.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a885b358a61a0b459d86d7c534be6ef0f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* _Nullable rpc_bus_node::rbn_serial</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Device serial number </p>
+
+<p>Definition at line <a class="el" href="bus_8h_source.html#l00060">60</a> of file <a class="el" href="bus_8h_source.html">bus.h</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/code/include/rpc/<a class="el" href="bus_8h_source.html">bus.h</a></li>
 </ul>
 </div><!-- contents -->

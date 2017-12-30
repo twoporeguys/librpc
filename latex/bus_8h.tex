@@ -22,16 +22,14 @@ struct \hyperlink{structrpc__bus__node}{rpc\+\_\+bus\+\_\+node}
 \subsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
-typedef void($^\wedge$ {\bfseries rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t}) (rpc\+\_\+bus\+\_\+event\+\_\+t event, struct \hyperlink{structrpc__bus__node}{rpc\+\_\+bus\+\_\+node} $\ast$\+\_\+\+Nonnull node)\hypertarget{bus_8h_a77cfaa0d7a20750369e9aba0e226a5b5}{}\label{bus_8h_a77cfaa0d7a20750369e9aba0e226a5b5}
-
+typedef void($^\wedge$ \hyperlink{bus_8h_a77cfaa0d7a20750369e9aba0e226a5b5}{rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t}) (\hyperlink{bus_8h_a38a66d3c4093e9ca458510dd2eea7ba7}{rpc\+\_\+bus\+\_\+event\+\_\+t} event, struct \hyperlink{structrpc__bus__node}{rpc\+\_\+bus\+\_\+node} $\ast$\+\_\+\+Nonnull node)
 \end{DoxyCompactItemize}
 \subsection*{Enumerations}
 \begin{DoxyCompactItemize}
 \item 
-enum {\bfseries rpc\+\_\+bus\+\_\+event\+\_\+t} \{ {\bfseries R\+P\+C\+\_\+\+B\+U\+S\+\_\+\+A\+T\+T\+A\+C\+H\+ED}, 
-{\bfseries R\+P\+C\+\_\+\+B\+U\+S\+\_\+\+D\+E\+T\+A\+C\+H\+ED}
- \}\hypertarget{bus_8h_a38a66d3c4093e9ca458510dd2eea7ba7}{}\label{bus_8h_a38a66d3c4093e9ca458510dd2eea7ba7}
-
+enum \hyperlink{bus_8h_a38a66d3c4093e9ca458510dd2eea7ba7}{rpc\+\_\+bus\+\_\+event\+\_\+t} \{ \hyperlink{bus_8h_a38a66d3c4093e9ca458510dd2eea7ba7a254ff6e09f83f70511fad76529666af5}{R\+P\+C\+\_\+\+B\+U\+S\+\_\+\+A\+T\+T\+A\+C\+H\+ED}, 
+\hyperlink{bus_8h_a38a66d3c4093e9ca458510dd2eea7ba7a511c831e9b160756cb2bbcfc587427c6}{R\+P\+C\+\_\+\+B\+U\+S\+\_\+\+D\+E\+T\+A\+C\+H\+ED}
+ \}
 \end{DoxyCompactItemize}
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
@@ -46,7 +44,7 @@ int \hyperlink{bus_8h_a7dfb66a85e5f3037635a95b693d39a97}{rpc\+\_\+bus\+\_\+enume
 \item 
 void \hyperlink{bus_8h_a7a0ada5e8a9c567b1e7d18297e1cde42}{rpc\+\_\+bus\+\_\+free\+\_\+result} (struct \hyperlink{structrpc__bus__node}{rpc\+\_\+bus\+\_\+node} $\ast$\+\_\+\+Nonnull result)
 \item 
-void \hyperlink{bus_8h_adbc9a5badea0314236b1ccabb060e090}{rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler} (\+\_\+\+Nonnull rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t handler)
+void \hyperlink{bus_8h_adbc9a5badea0314236b1ccabb060e090}{rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler} (\+\_\+\+Nonnull \hyperlink{bus_8h_a77cfaa0d7a20750369e9aba0e226a5b5}{rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t} handler)
 \item 
 void \hyperlink{bus_8h_ae6437acd78bb490baac4517ddffb0792}{rpc\+\_\+bus\+\_\+unregister\+\_\+event\+\_\+handler} (void)
 \end{DoxyCompactItemize}
@@ -66,13 +64,42 @@ Bus transport A\+PI
 )}\hypertarget{bus_8h_aaa8f0d5a3405318f9df38fc2ae8dd587}{}\label{bus_8h_aaa8f0d5a3405318f9df38fc2ae8dd587}
 {\bfseries Value\+:}
 \begin{DoxyCode}
-^(rpc\_bus\_event\_t \_event, \textcolor{keyword}{struct }\hyperlink{structrpc__bus__node}{rpc\_bus\_node} *\_node) \{     \(\backslash\)
+^(\hyperlink{bus_8h_a38a66d3c4093e9ca458510dd2eea7ba7}{rpc\_bus\_event\_t} \_event, \textcolor{keyword}{struct }\hyperlink{structrpc__bus__node}{rpc\_bus\_node} *\_node) \{      \(\backslash\)
             \_fn(\_arg, \_event, \_node);                   \(\backslash\)
     \}
 \end{DoxyCode}
-Converts function pointer to an rpc\+\_\+bus\+\_\+event\+\_\+t block type. 
+Converts function pointer to an \hyperlink{bus_8h_a38a66d3c4093e9ca458510dd2eea7ba7}{rpc\+\_\+bus\+\_\+event\+\_\+t} block type. 
 
-Definition at line 64 of file bus.\+h.
+Definition at line 73 of file bus.\+h.
+
+
+
+\subsection{Typedef Documentation}
+\index{bus.\+h@{bus.\+h}!rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t@{rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t}}
+\index{rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t@{rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t}!bus.\+h@{bus.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t}{rpc_bus_event_handler_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t) ({\bf rpc\+\_\+bus\+\_\+event\+\_\+t} event, struct {\bf rpc\+\_\+bus\+\_\+node} $\ast$\+\_\+\+Nonnull node)}\hypertarget{bus_8h_a77cfaa0d7a20750369e9aba0e226a5b5}{}\label{bus_8h_a77cfaa0d7a20750369e9aba0e226a5b5}
+Hotplug event handler callback block type. 
+
+Definition at line 67 of file bus.\+h.
+
+
+
+\subsection{Enumeration Type Documentation}
+\index{bus.\+h@{bus.\+h}!rpc\+\_\+bus\+\_\+event\+\_\+t@{rpc\+\_\+bus\+\_\+event\+\_\+t}}
+\index{rpc\+\_\+bus\+\_\+event\+\_\+t@{rpc\+\_\+bus\+\_\+event\+\_\+t}!bus.\+h@{bus.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+bus\+\_\+event\+\_\+t}{rpc_bus_event_t}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf rpc\+\_\+bus\+\_\+event\+\_\+t}}\hypertarget{bus_8h_a38a66d3c4093e9ca458510dd2eea7ba7}{}\label{bus_8h_a38a66d3c4093e9ca458510dd2eea7ba7}
+Bus hot-\/plug event type. \begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{R\+P\+C\+\_\+\+B\+U\+S\+\_\+\+A\+T\+T\+A\+C\+H\+ED@{R\+P\+C\+\_\+\+B\+U\+S\+\_\+\+A\+T\+T\+A\+C\+H\+ED}!bus.\+h@{bus.\+h}}\index{bus.\+h@{bus.\+h}!R\+P\+C\+\_\+\+B\+U\+S\+\_\+\+A\+T\+T\+A\+C\+H\+ED@{R\+P\+C\+\_\+\+B\+U\+S\+\_\+\+A\+T\+T\+A\+C\+H\+ED}}\item[{\em 
+R\+P\+C\+\_\+\+B\+U\+S\+\_\+\+A\+T\+T\+A\+C\+H\+ED\hypertarget{bus_8h_a38a66d3c4093e9ca458510dd2eea7ba7a254ff6e09f83f70511fad76529666af5}{}\label{bus_8h_a38a66d3c4093e9ca458510dd2eea7ba7a254ff6e09f83f70511fad76529666af5}
+}]Device attached to the system \index{R\+P\+C\+\_\+\+B\+U\+S\+\_\+\+D\+E\+T\+A\+C\+H\+ED@{R\+P\+C\+\_\+\+B\+U\+S\+\_\+\+D\+E\+T\+A\+C\+H\+ED}!bus.\+h@{bus.\+h}}\index{bus.\+h@{bus.\+h}!R\+P\+C\+\_\+\+B\+U\+S\+\_\+\+D\+E\+T\+A\+C\+H\+ED@{R\+P\+C\+\_\+\+B\+U\+S\+\_\+\+D\+E\+T\+A\+C\+H\+ED}}\item[{\em 
+R\+P\+C\+\_\+\+B\+U\+S\+\_\+\+D\+E\+T\+A\+C\+H\+ED\hypertarget{bus_8h_a38a66d3c4093e9ca458510dd2eea7ba7a511c831e9b160756cb2bbcfc587427c6}{}\label{bus_8h_a38a66d3c4093e9ca458510dd2eea7ba7a511c831e9b160756cb2bbcfc587427c6}
+}]Device detached from the system \end{description}
+\end{Desc}
+
+
+Definition at line 45 of file bus.\+h.
 
 
 
@@ -100,11 +127,11 @@ Enumerates connected devices on the R\+PC bus.
 
 
 \begin{DoxyParams}{Parameters}
-{\em result} & \\
+{\em result} & Array of \hyperlink{structrpc__bus__node}{rpc\+\_\+bus\+\_\+node} elements \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-
+0 on success, -\/1 on error 
 \end{DoxyReturn}
 \index{bus.\+h@{bus.\+h}!rpc\+\_\+bus\+\_\+free\+\_\+result@{rpc\+\_\+bus\+\_\+free\+\_\+result}}
 \index{rpc\+\_\+bus\+\_\+free\+\_\+result@{rpc\+\_\+bus\+\_\+free\+\_\+result}!bus.\+h@{bus.\+h}}
@@ -113,9 +140,11 @@ Enumerates connected devices on the R\+PC bus.
 \item[{struct {\bf rpc\+\_\+bus\+\_\+node} $\ast$\+\_\+\+Nonnull}]{result}
 \end{DoxyParamCaption}
 )}\hypertarget{bus_8h_a7a0ada5e8a9c567b1e7d18297e1cde42}{}\label{bus_8h_a7a0ada5e8a9c567b1e7d18297e1cde42}
+Frees struct \hyperlink{structrpc__bus__node}{rpc\+\_\+bus\+\_\+node} array obtained in \hyperlink{bus_8h_a7dfb66a85e5f3037635a95b693d39a97}{rpc\+\_\+bus\+\_\+enumerate} call.
+
 
 \begin{DoxyParams}{Parameters}
-{\em result} & \\
+{\em result} & Array of struct \hyperlink{structrpc__bus__node}{rpc\+\_\+bus\+\_\+node} elements \\
 \hline
 \end{DoxyParams}
 \index{bus.\+h@{bus.\+h}!rpc\+\_\+bus\+\_\+open@{rpc\+\_\+bus\+\_\+open}}
@@ -141,17 +170,17 @@ Checks whether a node with specified serial is reachable.
 
 
 \begin{DoxyParams}{Parameters}
-{\em name} & \\
+{\em serial} & Node serial number \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-
+0 if reachable, -\/1 otherwise 
 \end{DoxyReturn}
 \index{bus.\+h@{bus.\+h}!rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler@{rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler}}
 \index{rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler@{rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler}!bus.\+h@{bus.\+h}}
 \subsubsection[{\texorpdfstring{rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler(\+\_\+\+Nonnull rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t handler)}{rpc_bus_register_event_handler(_Nonnull rpc_bus_event_handler_t handler)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+bus\+\_\+register\+\_\+event\+\_\+handler (
 \begin{DoxyParamCaption}
-\item[{\+\_\+\+Nonnull rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t}]{handler}
+\item[{\+\_\+\+Nonnull {\bf rpc\+\_\+bus\+\_\+event\+\_\+handler\+\_\+t}}]{handler}
 \end{DoxyParamCaption}
 )}\hypertarget{bus_8h_adbc9a5badea0314236b1ccabb060e090}{}\label{bus_8h_adbc9a5badea0314236b1ccabb060e090}
 Configures an event handler block to be called whenever a bus event occurs.

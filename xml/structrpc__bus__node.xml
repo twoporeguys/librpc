@@ -12,10 +12,10 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-        </detaileddescription>
+<para>Node name </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/bus.h" line="52" column="1" bodyfile="/code/include/rpc/bus.h" bodystart="52" bodyend="-1"/>
+        <location file="/code/include/rpc/bus.h" line="58" column="1" bodyfile="/code/include/rpc/bus.h" bodystart="58" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__bus__node_1af5d23beee7c50520e7235f0c922fafb1" prot="public" static="no" mutable="no">
         <type>const char *_Nullable</type>
@@ -25,10 +25,10 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-        </detaileddescription>
+<para>Description </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/bus.h" line="53" column="1" bodyfile="/code/include/rpc/bus.h" bodystart="53" bodyend="-1"/>
+        <location file="/code/include/rpc/bus.h" line="59" column="1" bodyfile="/code/include/rpc/bus.h" bodystart="59" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__bus__node_1a885b358a61a0b459d86d7c534be6ef0f" prot="public" static="no" mutable="no">
         <type>const char *_Nullable</type>
@@ -38,10 +38,10 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-        </detaileddescription>
+<para>Device serial number </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/bus.h" line="54" column="1" bodyfile="/code/include/rpc/bus.h" bodystart="54" bodyend="-1"/>
+        <location file="/code/include/rpc/bus.h" line="60" column="1" bodyfile="/code/include/rpc/bus.h" bodystart="60" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__bus__node_1a624e2a0be665938924ab2f815afb669e" prot="public" static="no" mutable="no">
         <type>uint32_t</type>
@@ -51,17 +51,17 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-        </detaileddescription>
+<para>Address on the bus </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/bus.h" line="55" column="1" bodyfile="/code/include/rpc/bus.h" bodystart="55" bodyend="-1"/>
+        <location file="/code/include/rpc/bus.h" line="61" column="1" bodyfile="/code/include/rpc/bus.h" bodystart="61" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Bus node descriptor. </para>    </detaileddescription>
-    <location file="/code/include/rpc/bus.h" line="51" column="1" bodyfile="/code/include/rpc/bus.h" bodystart="50" bodyend="56"/>
+<para>Bus node descriptor.</para><para>Node address (<ref refid="structrpc__bus__node_1a624e2a0be665938924ab2f815afb669e" kindref="member">rbn_address</ref>) and serial number (<ref refid="structrpc__bus__node_1a885b358a61a0b459d86d7c534be6ef0f" kindref="member">rbn_serial</ref>) fields are guaranteed to be unique. </para>    </detaileddescription>
+    <location file="/code/include/rpc/bus.h" line="57" column="1" bodyfile="/code/include/rpc/bus.h" bodystart="56" bodyend="62"/>
     <listofallmembers>
       <member refid="structrpc__bus__node_1a624e2a0be665938924ab2f815afb669e" prot="public" virt="non-virtual"><scope>rpc_bus_node</scope><name>rbn_address</name></member>
       <member refid="structrpc__bus__node_1af5d23beee7c50520e7235f0c922fafb1" prot="public" virt="non-virtual"><scope>rpc_bus_node</scope><name>rbn_description</name></member>

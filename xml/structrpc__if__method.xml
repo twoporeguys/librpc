@@ -15,7 +15,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="182" column="1" bodyfile="/code/include/rpc/service.h" bodystart="182" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="195" column="1" bodyfile="/code/include/rpc/service.h" bodystart="195" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__if__method_1a85a2f339a726ef4afb885cbf157c0998" prot="public" static="no" mutable="no">
         <type>void *_Nullable</type>
@@ -28,14 +28,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="183" column="1" bodyfile="/code/include/rpc/service.h" bodystart="183" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="196" column="1" bodyfile="/code/include/rpc/service.h" bodystart="196" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>RPC method descriptor. </para>    </detaileddescription>
-    <location file="/code/include/rpc/service.h" line="181" column="1" bodyfile="/code/include/rpc/service.h" bodystart="180" bodyend="184"/>
+<para>Method descriptor. </para>    </detaileddescription>
+    <location file="/code/include/rpc/service.h" line="194" column="1" bodyfile="/code/include/rpc/service.h" bodystart="193" bodyend="197"/>
     <listofallmembers>
       <member refid="structrpc__if__method_1a85a2f339a726ef4afb885cbf157c0998" prot="public" virt="non-virtual"><scope>rpc_if_method</scope><name>rm_arg</name></member>
       <member refid="structrpc__if__method_1a5db192112740ed1adb36f74ff7c92a80" prot="public" virt="non-virtual"><scope>rpc_if_method</scope><name>rm_block</name></member>

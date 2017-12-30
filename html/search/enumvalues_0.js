@@ -1,5 +1,7 @@
 var searchData=
 [
+  ['rpc_5fbus_5fattached',['RPC_BUS_ATTACHED',['../bus_8h.html#a38a66d3c4093e9ca458510dd2eea7ba7a254ff6e09f83f70511fad76529666af5',1,'bus.h']]],
+  ['rpc_5fbus_5fdetached',['RPC_BUS_DETACHED',['../bus_8h.html#a38a66d3c4093e9ca458510dd2eea7ba7a511c831e9b160756cb2bbcfc587427c6',1,'bus.h']]],
   ['rpc_5fcall_5faborted',['RPC_CALL_ABORTED',['../connection_8h.html#a22306445a7503bab94835382d07e0410a6c33a14b8aa6d0797cb614b890e9c741',1,'connection.h']]],
   ['rpc_5fcall_5fdone',['RPC_CALL_DONE',['../connection_8h.html#a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d',1,'connection.h']]],
   ['rpc_5fcall_5ferror',['RPC_CALL_ERROR',['../connection_8h.html#a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856',1,'connection.h']]],

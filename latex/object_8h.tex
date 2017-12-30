@@ -36,7 +36,7 @@ This graph shows which files directly or indirectly include this file\+:
 \item 
 \#define \hyperlink{object_8h_aac19be935f72b35eeb2851bc509eabb2}{rpc\+\_\+release}(\+\_\+object)
 \item 
-\#define {\bfseries rpc\+\_\+swap}(\+\_\+old,  \+\_\+new)
+\#define \hyperlink{object_8h_a541e997e04e48fe86df08ae323516490}{rpc\+\_\+swap}(\+\_\+old,  \+\_\+new)
 \end{DoxyCompactItemize}
 \subsection*{Typedefs}
 \begin{DoxyCompactItemize}
@@ -417,7 +417,7 @@ Also sets it to N\+U\+LL if as a result of the operation reference count dropped
 
 
 \begin{DoxyParams}{Parameters}
-{\em object} & Object to release. \\
+{\em \+\_\+object} & Object to release. \\
 \hline
 \end{DoxyParams}
 
@@ -437,11 +437,13 @@ Definition at line 304 of file object.\+h.
 \textcolor{keywordflow}{do} \{                                \hyperlink{object_8h_aac19be935f72b35eeb2851bc509eabb2}{\(\backslash\)}
 \hyperlink{object_8h_aac19be935f72b35eeb2851bc509eabb2}{        rpc\_release}(\_old);                 \(\backslash\)
         (\_old) = (\_new);                    \(\backslash\)
-    \} \textcolor{keywordflow}{while}(0)
+    \} \textcolor{keywordflow}{while} (0)
 \end{DoxyCode}
+Swaps {\ttfamily \+\_\+old} object with  object.
 
+Releases {\ttfamily \+\_\+old} before replacing it with {\ttfamily \+\_\+new}. 
 
-Definition at line 310 of file object.\+h.
+Definition at line 316 of file object.\+h.
 
 
 
@@ -674,9 +676,9 @@ Creates a new array of objects, optionally populating it with data.
 \begin{DoxyParams}{Parameters}
 {\em objects} & Array of objects to insert. \\
 \hline
-{\em count} & Number of items in objects. \\
+{\em count} & Number of items in {\ttfamily objects}. \\
 \hline
-{\em steal} & Reference vs. reference and increment refcount of elements in objects. \\
+{\em steal} & Reference vs. reference and increment refcount of elements in {\ttfamily objects}. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
@@ -1164,13 +1166,13 @@ If a selected index is larger than an input array size, then a gap between a las
 \item[{\+\_\+\+Nullable {\bf rpc\+\_\+object\+\_\+t}}]{value}
 \end{DoxyParamCaption}
 )}\hypertarget{object_8h_af53ea18b86140d9570a7133ac9beda82}{}\label{object_8h_af53ea18b86140d9570a7133ac9beda82}
-Inserts an object to an input array at a given index and increments object\textquotesingle{}s refcount.
+Inserts an object to {\ttfamily array} at {\ttfamily index} and increments {\ttfamily value} refcount.
 
-If an index is bigger than an array itself, gap will be filled with null objects.
+If {\ttfamily index} is bigger than the array itself, gap will be filled with null objects.
 
-If an index is already occupied, then a new object takes place of an old object and the refcount of an old object is decremented.
+If {\ttfamily index} is already occupied, then a new object takes place of an old object and the refcount of an old object is decremented.
 
-If an object is N\+U\+LL, then this function removes an old object from a given index.
+If {\ttfamily array} is N\+U\+LL, then this function removes an old object from {\ttfamily index}.
 
 
 \begin{DoxyParams}{Parameters}
