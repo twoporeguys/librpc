@@ -76,24 +76,24 @@ typedef struct rpc_context *rpc_context_t;
 typedef struct rpc_instance *rpc_instance_t;
 
 /**
- * Definition of RPC method block type.
+ * Method block type.
  */
 typedef _Nullable rpc_object_t (^rpc_function_t)(void *_Nonnull cookie,
     _Nonnull rpc_object_t args);
 
 /**
- * Definition of RPC method function type.
+ * Method function type.
  */
 typedef _Nullable rpc_object_t (*rpc_function_f)(void *_Nonnull cookie,
     _Nonnull rpc_object_t args);
 
 /**
- *
+ * Property getter block type.
  */
 typedef _Nullable rpc_object_t (^rpc_property_getter_t)(void *_Nonnull cookie);
 
 /**
- *
+ * Property setter block type.
  */
 typedef void (^rpc_property_setter_t)(void *_Nonnull cookie,
     _Nonnull rpc_object_t value);
@@ -173,17 +173,20 @@ typedef void (^rpc_property_setter_t)(void *_Nonnull cookie,
 
 #define	RPC_MEMBER_END {}
 
+/**
+ * Enumerates possible kinds of RPC interface members.
+ */
 enum rpc_if_member_type
 {
-	RPC_MEMBER_EVENT,
-	RPC_MEMBER_PROPERTY,
-	RPC_MEMBER_METHOD,
+	RPC_MEMBER_EVENT,		/**< Event member */
+	RPC_MEMBER_PROPERTY,		/**< Property member */
+	RPC_MEMBER_METHOD,		/**< Method member */
 };
 
 enum rpc_property_rights
 {
-	RPC_PROPERTY_READ = (1 << 0),
-	RPC_PROPERTY_WRITE = (1 << 1),
+	RPC_PROPERTY_READ = (1 << 0),	/**< Property is readable */
+	RPC_PROPERTY_WRITE = (1 << 1),	/**< Property is writable */
 };
 
 
@@ -344,7 +347,7 @@ void rpc_context_set_post_call_hook(_Nonnull rpc_context_t context,
 
 /**
  *
- * @param context
+ * @param context RPC context handle
  * @param name
  * @param args
  * @return
@@ -512,84 +515,97 @@ void *_Nullable rpc_instance_get_arg(_Nonnull rpc_instance_t instance);
 const char *_Nonnull rpc_instance_get_path(_Nonnull rpc_instance_t instance);
 
 /**
+ * Registers interface @p interface under @p instance.
  *
- * @param instance
- * @param interface
- * @param name
- * @param fn
+ * @param instance Instance handle
+ * @param interface Interface name
+ * @param vtable Member virtual table (vtable)
+ * @param arg User data pointer
+ * @return 0 on success, -1 on error
  */
 int rpc_instance_register_interface(_Nonnull rpc_instance_t instance,
     const char *_Nonnull interface,
     const struct rpc_if_member *_Nullable vtable, void *_Nullable arg);
 
 /**
+ * Registers a single member of interface @p interface under @p instance.
  *
- * @param instance
- * @param interface
- * @param member
- * @return
+ * @param instance Intance handle
+ * @param interface Interface name
+ * @param member Member descriptor
+ * @return 0 on success, -1 on error
  */
 int rpc_instance_register_member(_Nonnull rpc_instance_t instance,
     const char *_Nonnull interface,
     const struct rpc_if_member *_Nonnull member);
 
 /**
+ * Unregisters a previously registered member named @p name from interface
+ * @p interface on @p instance.
  *
- * @param instance
- * @param interface
- * @param name
- * @return
+ * @param instance Instance handle
+ * @param interface Interface name
+ * @param name Member name
+ * @return 0 on success, -1 on error
  */
 int rpc_instance_unregister_member(_Nonnull rpc_instance_t instance,
     const char *_Nonnull interface, const char *_Nonnull name);
 
 /**
+ * Registers a new method called @p name on interface @p interface under
+ * instance @p instance.
  *
- * @param instance
- * @param interface
- * @param name
- * @param arg
- * @param fn
+ * @param instance Instance handle
+ * @param interface Interface name
+ * @param name Method name
+ * @param arg Method private data pointer
+ * @param fn Block
+ * @return 0 on success, -1 on error
  */
 int rpc_instance_register_block(_Nonnull rpc_instance_t instance,
     const char *_Nonnull interface, const char *_Nonnull name,
     void *_Nullable arg, _Nonnull rpc_function_t fn);
 
 /**
+ * Same as @ref rpc_instance_register_block, but takes a function pointer
+ * instead.
  *
- * @param instance
- * @param interface
- * @param name
- * @param fn
+ * @param instance Instance handle
+ * @param interface Interface name
+ * @param name Method name
+ * @param arg Method private data pointer
+ * @param fn Function pointer
  */
 int rpc_instance_register_func(_Nonnull rpc_instance_t instance,
     const char *_Nonnull interface, const char *_Nonnull name,
     void *_Nullable arg, _Nonnull rpc_function_f fn);
 
 /**
- * Finds a given method belonging to a given interface in instance.
+ * Finds member called @p name belonging to a @p interface in @p instance.
  *
- * @param instance
- * @param interface
- * @param name
- * @return
+ * @param instance Instance handle
+ * @param interface Interface name
+ * @param name Member name
+ * @return @ref rpc_if_member structure pointer or @p NULL if not found.
  */
 struct rpc_if_member *_Nullable rpc_instance_find_member(
     _Nonnull rpc_instance_t instance, const char *_Nullable interface,
     const char *_Nonnull name);
 
 /**
+ * Tells whether or not @p instance implements interface @p interface.
  *
- * @param interface
- * @return
+ * @param instance Instance handle
+ * @param interface Interface name
+ * @return @p true if implemented, otherwise @p false
  */
 bool rpc_instance_has_interface(_Nonnull rpc_instance_t instance,
     const char *_Nonnull interface);
 
 /**
  *
- * @param instance
- * @param interface
+ * @param instance Instance handle
+ * @param interface Interface name
  * @param name
  */
 void rpc_instance_emit_event(_Nonnull rpc_instance_t instance,
@@ -597,11 +613,21 @@ void rpc_instance_emit_event(_Nonnull rpc_instance_t instance,
     _Nonnull rpc_object_t args);
 
 /**
+ * Registers property named @p name on interface @p interface under instance
+ * @p instance.
  *
- * @param instance
- * @param name
- * @param value
- * @return
+ * The property can be:
+ * - read-only, when getter is non-NULL and setter is NULL
+ * - write-only, when getter is NULL and setter is non-NULL
+ * - read-write, when both getter and setter blocks are provided.
+ *
+ * @param instance Instance handle
+ * @param interface Interface name
+ * @param name Property name
+ * @param arg User data pointer
+ * @param getter Getter block or NULL if write-only
+ * @param setter Setter block or NULL if read-nly
+ * @return 0 on success, -1 on error
  */
 int rpc_instance_register_property(_Nonnull rpc_instance_t instance,
     const char *_Nonnull interface, const char *_Nonnull name,
@@ -609,17 +635,21 @@ int rpc_instance_register_property(_Nonnull rpc_instance_t instance,
     _Nullable rpc_property_setter_t setter);
 
 /**
+ * Returns access rights of property @p name of interface @p interface
+ * implemented in instance @p instance.
  *
- * @param instance
- * @param name
+ * @param instance Instance handle
+ * @param interface Interface name
+ * @param name Property name
  * @return
  */
 int rpc_instance_get_property_rights(_Nonnull rpc_instance_t instance,
     const char *_Nonnull interface, const char *_Nonnull name);
 
 /**
- * 
- * @param interface
+ *
+ * @param instance Instance handle
+ * @param interface Interface name
  * @param name
  * @return
  */
@@ -646,8 +676,8 @@ _Nonnull rpc_instance_t rpc_property_get_instance(void *_Nonnull cookie);
 /**
  * Returns the user data pointer associated with the property.
  *
- * @param cookie
- * @return
+ * @param cookie Property call handle
+ * @return User data pointer
  */
 void *_Nullable rpc_property_get_arg(void *_Nonnull cookie);
 

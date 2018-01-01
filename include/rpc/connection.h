@@ -103,7 +103,7 @@ typedef void (^rpc_error_handler_t)(rpc_error_code_t code,
 typedef bool (^rpc_callback_t)(_Nullable rpc_object_t args, rpc_call_status_t status);
 
 /**
- * Converts function pointer to a ::rpc_handler_t block type.
+ * Converts function pointer to a @ref rpc_handler_t block type.
  */
 #define	RPC_HANDLER(_fn, _arg) 						\
 	^(const char *_path, const char *_iface, const char *_name, 	\
@@ -112,7 +112,7 @@ typedef bool (^rpc_callback_t)(_Nullable rpc_object_t args, rpc_call_status_t st
 	}
 
 /**
- * Converts function pointer to a ::rpc_error_handler_t block type.
+ * Converts function pointer to a @ref rpc_error_handler_t block type.
  */
 #define	RPC_ERROR_HANDLER(_fn, _arg) 					\
 	^(rpc_error_code_t _code, rpc_object_t _args) {			\
@@ -120,13 +120,20 @@ typedef bool (^rpc_callback_t)(_Nullable rpc_object_t args, rpc_call_status_t st
 	}
 
 /**
- * Converts function pointer to a ::rpc_callback_t block type.
+ * Converts function pointer to a @ref rpc_callback_t block type.
  */
 #define	RPC_CALLBACK(_fn, _arg) 					\
 	^(rpc_object_t _args, rpc_call_status_t _status) {		\
 		return ((bool)_fn(_arg, _args, _status));		\
 	}
 
+/**
+ * Creates a new connection from the provided opaque cookie.
+ *
+ * @param cookie Opaque data
+ * @param params Transport-specific parameters
+ * @return Connection handle or NULL on failure
+ */
 _Nullable rpc_connection_t rpc_connection_create(void *_Nonnull cookie,
     _Nullable rpc_object_t params);
 
@@ -140,10 +147,15 @@ int rpc_connection_close(_Nonnull rpc_connection_t conn);
 
 #ifdef LIBDISPATCH_SUPPORT
 /**
+ * Assigns a libdispatch queue to the connection.
  *
- * @param conn
- * @param queue
- * @return
+ * Once called, all callbacks invoked by a connection (asynchronous call
+ * callbacks or event callbacks) will be pushed to @p queue instead of being
+ * serviced by internal glib thread pool.
+ *
+ * @param conn Connection handle
+ * @param queue libdispatch queue
+ * @return 0 on success, -1 on failure
  */
 int rpc_connection_set_dispatch_queue(_Nonnull rpc_connection_t conn,
     _Nonnull dispatch_queue_t queue);
@@ -252,7 +264,7 @@ _Nullable rpc_object_t rpc_connection_call_syncv(_Nonnull rpc_connection_t conn,
  * string and a list of values to pack, in format used by the
  * rpc_object_pack() function.
  *
- * @param conn Connection to do a call on
+ * @param conn Connection handle
  * @param method Name of a method to be called
  * @param fmt Format strin
  * @param ... Called method arguments
@@ -263,8 +275,10 @@ _Nullable rpc_object_t rpc_connection_call_syncp(_Nonnull rpc_connection_t conn,
     const char *_Nonnull method, const char *_Nullable fmt, ...);
 
 /**
+ * A variation of @ref rpc_connection_call_syncp that takes a @p va_list
+ * instead of the variable argument list.
  *
- * @param conn
+ * @param conn Connection handle
  * @param path
  * @param interface
  * @param method
@@ -427,22 +441,23 @@ const char *_Nullable rpc_connection_get_remote_address(
 bool rpc_connection_has_credentials(_Nonnull rpc_connection_t conn);
 
 /**
+ * Gets remote side UID.
  *
- * @param conn
+ * @param conn Connection handle
  * @return
  */
 uid_t rpc_connection_get_remote_uid(_Nonnull rpc_connection_t conn);
 
 /**
  *
- * @param conn
+ * @param conn Connection handle
  * @return
  */
 gid_t rpc_connection_get_remote_gid(_Nonnull rpc_connection_t conn);
 
 /**
  *
- * @param conn
+ * @param conn Connection handle
  * @return
  */
 pid_t rpc_connection_get_remote_pid(_Nonnull rpc_connection_t conn);
