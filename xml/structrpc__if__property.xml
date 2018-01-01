@@ -5,7 +5,7 @@
     <includes refid="service_8h" local="no">service.h</includes>
       <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structrpc__if__property_1a2b294c7fed3665f1a58020040ec13aee" prot="public" static="no" mutable="no">
-        <type>_Nullable rpc_property_getter_t</type>
+        <type>_Nullable <ref refid="service_8h_1ab438f0c33f3f3876f1c9a23d62134f16" kindref="member">rpc_property_getter_t</ref></type>
         <definition>_Nullable rpc_property_getter_t rpc_if_property::rp_getter</definition>
         <argsstring></argsstring>
         <name>rp_getter</name>
@@ -15,10 +15,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="204" column="1" bodyfile="/code/include/rpc/service.h" bodystart="204" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="207" column="1" bodyfile="/code/include/rpc/service.h" bodystart="207" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__if__property_1a02e1f9e6e5680714278ed6dd67987d67" prot="public" static="no" mutable="no">
-        <type>_Nullable rpc_property_setter_t</type>
+        <type>_Nullable <ref refid="service_8h_1aa8b38d8ab3bafe79a96edaebafe13b8d" kindref="member">rpc_property_setter_t</ref></type>
         <definition>_Nullable rpc_property_setter_t rpc_if_property::rp_setter</definition>
         <argsstring></argsstring>
         <name>rp_setter</name>
@@ -28,7 +28,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="205" column="1" bodyfile="/code/include/rpc/service.h" bodystart="205" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="208" column="1" bodyfile="/code/include/rpc/service.h" bodystart="208" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__if__property_1a81d2953a7a4bdff1775330c29992546b" prot="public" static="no" mutable="no">
         <type>void *_Nullable</type>
@@ -41,14 +41,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="206" column="1" bodyfile="/code/include/rpc/service.h" bodystart="206" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="209" column="1" bodyfile="/code/include/rpc/service.h" bodystart="209" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Property descriptor </para>    </detaileddescription>
-    <location file="/code/include/rpc/service.h" line="203" column="1" bodyfile="/code/include/rpc/service.h" bodystart="202" bodyend="207"/>
+    <location file="/code/include/rpc/service.h" line="206" column="1" bodyfile="/code/include/rpc/service.h" bodystart="205" bodyend="210"/>
     <listofallmembers>
       <member refid="structrpc__if__property_1a81d2953a7a4bdff1775330c29992546b" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_arg</name></member>
       <member refid="structrpc__if__property_1a2b294c7fed3665f1a58020040ec13aee" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_getter</name></member>

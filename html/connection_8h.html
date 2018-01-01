@@ -170,8 +170,7 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a254ad98a921503f712a2adba41160a5f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a254ad98a921503f712a2adba41160a5f"></a>
-_Nullable <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_connection_create</b> (void *_Nonnull cookie, _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> params)</td></tr>
+<tr class="memitem:a254ad98a921503f712a2adba41160a5f"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a254ad98a921503f712a2adba41160a5f">rpc_connection_create</a> (void *_Nonnull cookie, _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> params)</td></tr>
 <tr class="separator:a254ad98a921503f712a2adba41160a5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa63689ba3875975bc8a1fd0177c1a228"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aa63689ba3875975bc8a1fd0177c1a228">rpc_connection_close</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
 <tr class="separator:aa63689ba3875975bc8a1fd0177c1a228"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -944,7 +943,7 @@ _Nullable <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe278
 <p>This function is similar to <a class="el" href="connection_8h.html#af5e8d63da05fa221ac8bb51ff22e7f3b">rpc_connection_call_sync()</a>, but instead of taking rpc_object_t arguments, it accepts a format string and a list of values to pack, in format used by the <a class="el" href="object_8h.html#a8a8454f12dcde323f5daba961febea97">rpc_object_pack()</a> function.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td>Connection to do a call on </td></tr>
+    <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
     <tr><td class="paramname">method</td><td>Name of a method to be called </td></tr>
     <tr><td class="paramname">fmt</td><td>Format strin </td></tr>
     <tr><td class="paramname">...</td><td>Called method arguments </td></tr>
@@ -1002,9 +1001,10 @@ _Nullable <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe278
         </tr>
       </table>
 </div><div class="memdoc">
+<p>A variation of <a class="el" href="connection_8h.html#ac0f2ec46d7379ad838a2bcf4cc6ef7a9">rpc_connection_call_syncp</a> that takes a <code>va_list</code> instead of the variable argument list.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td></td></tr>
+    <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
     <tr><td class="paramname">path</td><td></td></tr>
     <tr><td class="paramname">interface</td><td></td></tr>
     <tr><td class="paramname">method</td><td></td></tr>
@@ -1097,6 +1097,41 @@ _Nullable <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe278
 
 </div>
 </div>
+<a class="anchor" id="a254ad98a921503f712a2adba41160a5f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">_Nullable <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> rpc_connection_create </td>
+          <td>(</td>
+          <td class="paramtype">void *_Nonnull&#160;</td>
+          <td class="paramname"><em>cookie</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>params</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Creates a new connection from the provided opaque cookie.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cookie</td><td>Opaque data </td></tr>
+    <tr><td class="paramname">params</td><td>Transport-specific parameters </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Connection handle or NULL on failure </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a5332b87fc6add76392bdc17d0db2e982"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1183,7 +1218,7 @@ _Nullable <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe278
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td></td></tr>
+    <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
   </table>
   </dd>
 </dl>
@@ -1206,7 +1241,7 @@ _Nullable <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe278
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td></td></tr>
+    <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
   </table>
   </dd>
 </dl>
@@ -1227,9 +1262,10 @@ _Nullable <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe278
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Gets remote side UID.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td></td></tr>
+    <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
   </table>
   </dd>
 </dl>

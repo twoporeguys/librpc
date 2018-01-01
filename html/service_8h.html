@@ -173,22 +173,20 @@ Typedefs</h2></td></tr>
 <tr class="separator:ae49a22468cfcd4adfa558078e9e4e312"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add2d357ed7db564684628b3467048431"><td class="memItemLeft" align="right" valign="top">typedef _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#add2d357ed7db564684628b3467048431">rpc_function_f</a>) (void *_Nonnull cookie, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:add2d357ed7db564684628b3467048431"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab438f0c33f3f3876f1c9a23d62134f16"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab438f0c33f3f3876f1c9a23d62134f16"></a>
-typedef _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_property_getter_t</b>) (void *_Nonnull cookie)</td></tr>
+<tr class="memitem:ab438f0c33f3f3876f1c9a23d62134f16"><td class="memItemLeft" align="right" valign="top">typedef _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ab438f0c33f3f3876f1c9a23d62134f16">rpc_property_getter_t</a>) (void *_Nonnull cookie)</td></tr>
 <tr class="separator:ab438f0c33f3f3876f1c9a23d62134f16"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8b38d8ab3bafe79a96edaebafe13b8d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa8b38d8ab3bafe79a96edaebafe13b8d"></a>
-typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_property_setter_t</b>) (void *_Nonnull cookie, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
+<tr class="memitem:aa8b38d8ab3bafe79a96edaebafe13b8d"><td class="memItemLeft" align="right" valign="top">typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#aa8b38d8ab3bafe79a96edaebafe13b8d">rpc_property_setter_t</a>) (void *_Nonnull cookie, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
 <tr class="separator:aa8b38d8ab3bafe79a96edaebafe13b8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a543850b4e1fac65207114c51d9c3f1a4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a543850b4e1fac65207114c51d9c3f1a4"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>rpc_if_member_type</b> { <b>RPC_MEMBER_EVENT</b>, 
-<b>RPC_MEMBER_PROPERTY</b>, 
-<b>RPC_MEMBER_METHOD</b>
+<tr class="memitem:a543850b4e1fac65207114c51d9c3f1a4"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4">rpc_if_member_type</a> { <a class="el" href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a09012f2433454a86df08ee430a0378f2">RPC_MEMBER_EVENT</a>, 
+<a class="el" href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a3576bdd6edc3d94a5e60a91a1006ab72">RPC_MEMBER_PROPERTY</a>, 
+<a class="el" href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a3b8dba044cf7b9b552bc4e3a3437a94a">RPC_MEMBER_METHOD</a>
  }</td></tr>
 <tr class="separator:a543850b4e1fac65207114c51d9c3f1a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae93cefa938d7efd2095f73e9dcdf8926"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae93cefa938d7efd2095f73e9dcdf8926"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>rpc_property_rights</b> { <b>RPC_PROPERTY_READ</b> = (1 &lt;&lt; 0), 
-<b>RPC_PROPERTY_WRITE</b> = (1 &lt;&lt; 1)
+<tr class="memitem:ae93cefa938d7efd2095f73e9dcdf8926"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ae93cefa938d7efd2095f73e9dcdf8926">rpc_property_rights</a> { <a class="el" href="service_8h.html#ae93cefa938d7efd2095f73e9dcdf8926a2573aa57a92525ca22dad5ff517bc9d0">RPC_PROPERTY_READ</a> = (1 &lt;&lt; 0), 
+<a class="el" href="service_8h.html#ae93cefa938d7efd2095f73e9dcdf8926aea82a0471278ee17a5ea4b53afb43aee">RPC_PROPERTY_WRITE</a> = (1 &lt;&lt; 1)
  }</td></tr>
 <tr class="separator:ae93cefa938d7efd2095f73e9dcdf8926"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -270,7 +268,7 @@ Functions</h2></td></tr>
 <tr class="separator:a8ad4da2277db627163ebae9ddb55582c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adbf8b5a032c56514343d3ac6ece77db0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#adbf8b5a032c56514343d3ac6ece77db0">rpc_instance_emit_event</a> (_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a> instance, const char *_Nonnull interface, const char *_Nonnull name, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:adbf8b5a032c56514343d3ac6ece77db0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a31ae88657323ba7713051b80164eb061"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a31ae88657323ba7713051b80164eb061">rpc_instance_register_property</a> (_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a> instance, const char *_Nonnull interface, const char *_Nonnull name, void *_Nullable arg, _Nullable rpc_property_getter_t getter, _Nullable rpc_property_setter_t setter)</td></tr>
+<tr class="memitem:a31ae88657323ba7713051b80164eb061"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a31ae88657323ba7713051b80164eb061">rpc_instance_register_property</a> (_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a> instance, const char *_Nonnull interface, const char *_Nonnull name, void *_Nullable arg, _Nullable <a class="el" href="service_8h.html#ab438f0c33f3f3876f1c9a23d62134f16">rpc_property_getter_t</a> getter, _Nullable <a class="el" href="service_8h.html#aa8b38d8ab3bafe79a96edaebafe13b8d">rpc_property_setter_t</a> setter)</td></tr>
 <tr class="separator:a31ae88657323ba7713051b80164eb061"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7224c3ccac52a67ec034c6cc06e7a8b7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a7224c3ccac52a67ec034c6cc06e7a8b7">rpc_instance_get_property_rights</a> (_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a> instance, const char *_Nonnull interface, const char *_Nonnull name)</td></tr>
 <tr class="separator:a7224c3ccac52a67ec034c6cc06e7a8b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -305,7 +303,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = RPC_MEMBER_EVENT,               \</div><div class="line">        .rim_name = (#_name)                    \</div><div class="line">    }</div></div><!-- fragment -->
+<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = <a class="code" href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a09012f2433454a86df08ee430a0378f2">RPC_MEMBER_EVENT</a>,               \</div><div class="line">        .rim_name = (#_name)                    \</div><div class="line">    }</div><div class="ttc" id="service_8h_html_a543850b4e1fac65207114c51d9c3f1a4a09012f2433454a86df08ee430a0378f2"><div class="ttname"><a href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a09012f2433454a86df08ee430a0378f2">RPC_MEMBER_EVENT</a></div><div class="ttdef"><b>Definition:</b> <a href="service_8h_source.html#l00181">service.h:181</a></div></div>
+</div><!-- fragment -->
 <p>Definition at line <a class="el" href="service_8h_source.html#l00116">116</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
 </div>
@@ -367,7 +366,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = RPC_MEMBER_METHOD,              \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_method = {                     \</div><div class="line">                        .rm_block = RPC_FUNCTION(_fn),          \</div><div class="line">            .rm_arg = NULL                  \</div><div class="line">                }                           \</div><div class="line">    }</div></div><!-- fragment -->
+<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = <a class="code" href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a3b8dba044cf7b9b552bc4e3a3437a94a">RPC_MEMBER_METHOD</a>,              \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_method = {                     \</div><div class="line">                        .rm_block = RPC_FUNCTION(_fn),          \</div><div class="line">            .rm_arg = NULL                  \</div><div class="line">                }                           \</div><div class="line">    }</div><div class="ttc" id="service_8h_html_a543850b4e1fac65207114c51d9c3f1a4a3b8dba044cf7b9b552bc4e3a3437a94a"><div class="ttname"><a href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a3b8dba044cf7b9b552bc4e3a3437a94a">RPC_MEMBER_METHOD</a></div><div class="ttdef"><b>Definition:</b> <a href="service_8h_source.html#l00183">service.h:183</a></div></div>
+</div><!-- fragment -->
 <p>Definition at line <a class="el" href="service_8h_source.html#l00155">155</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
 </div>
@@ -395,7 +395,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = RPC_MEMBER_METHOD,              \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_method = {                     \</div><div class="line">                        .rm_block = (_block),               \</div><div class="line">                }                           \</div><div class="line">    }</div></div><!-- fragment -->
+<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = <a class="code" href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a3b8dba044cf7b9b552bc4e3a3437a94a">RPC_MEMBER_METHOD</a>,              \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_method = {                     \</div><div class="line">                        .rm_block = (_block),               \</div><div class="line">                }                           \</div><div class="line">    }</div><div class="ttc" id="service_8h_html_a543850b4e1fac65207114c51d9c3f1a4a3b8dba044cf7b9b552bc4e3a3437a94a"><div class="ttname"><a href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a3b8dba044cf7b9b552bc4e3a3437a94a">RPC_MEMBER_METHOD</a></div><div class="ttdef"><b>Definition:</b> <a href="service_8h_source.html#l00183">service.h:183</a></div></div>
+</div><!-- fragment -->
 <p>Definition at line <a class="el" href="service_8h_source.html#l00165">165</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
 </div>
@@ -442,7 +443,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = RPC_MEMBER_PROPERTY,            \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_property = {                   \</div><div class="line">                        .rp_getter = RPC_PROPERTY_GETTER(_getter),  \</div><div class="line">            .rp_setter = NULL,              \</div><div class="line">            .rp_arg = NULL                  \</div><div class="line">                }                           \</div><div class="line">    }</div></div><!-- fragment -->
+<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = <a class="code" href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a3576bdd6edc3d94a5e60a91a1006ab72">RPC_MEMBER_PROPERTY</a>,            \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_property = {                   \</div><div class="line">                        .rp_getter = RPC_PROPERTY_GETTER(_getter),  \</div><div class="line">            .rp_setter = NULL,              \</div><div class="line">            .rp_arg = NULL                  \</div><div class="line">                }                           \</div><div class="line">    }</div><div class="ttc" id="service_8h_html_a543850b4e1fac65207114c51d9c3f1a4a3576bdd6edc3d94a5e60a91a1006ab72"><div class="ttname"><a href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a3576bdd6edc3d94a5e60a91a1006ab72">RPC_MEMBER_PROPERTY</a></div><div class="ttdef"><b>Definition:</b> <a href="service_8h_source.html#l00182">service.h:182</a></div></div>
+</div><!-- fragment -->
 <p>Definition at line <a class="el" href="service_8h_source.html#l00122">122</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
 </div>
@@ -476,7 +478,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = RPC_MEMBER_PROPERTY,            \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_property = {                   \</div><div class="line">                        .rp_getter = RPC_PROPERTY_GETTER(_getter),  \</div><div class="line">            .rp_setter = RPC_PROPERTY_SETTER(_setter),  \</div><div class="line">            .rp_arg = NULL                  \</div><div class="line">                }                           \</div><div class="line">    }</div></div><!-- fragment -->
+<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = <a class="code" href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a3576bdd6edc3d94a5e60a91a1006ab72">RPC_MEMBER_PROPERTY</a>,            \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_property = {                   \</div><div class="line">                        .rp_getter = RPC_PROPERTY_GETTER(_getter),  \</div><div class="line">            .rp_setter = RPC_PROPERTY_SETTER(_setter),  \</div><div class="line">            .rp_arg = NULL                  \</div><div class="line">                }                           \</div><div class="line">    }</div><div class="ttc" id="service_8h_html_a543850b4e1fac65207114c51d9c3f1a4a3576bdd6edc3d94a5e60a91a1006ab72"><div class="ttname"><a href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a3576bdd6edc3d94a5e60a91a1006ab72">RPC_MEMBER_PROPERTY</a></div><div class="ttdef"><b>Definition:</b> <a href="service_8h_source.html#l00182">service.h:182</a></div></div>
+</div><!-- fragment -->
 <p>Definition at line <a class="el" href="service_8h_source.html#l00144">144</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
 </div>
@@ -523,7 +526,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = RPC_MEMBER_PROPERTY,            \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_property = {                   \</div><div class="line">                        .rp_getter = NULL,              \</div><div class="line">            .rp_setter = RPC_PROPERTY_SETTER(_setter),  \</div><div class="line">            .rp_arg = NULL                  \</div><div class="line">                }                           \</div><div class="line">    }</div></div><!-- fragment -->
+<b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = <a class="code" href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a3576bdd6edc3d94a5e60a91a1006ab72">RPC_MEMBER_PROPERTY</a>,            \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_property = {                   \</div><div class="line">                        .rp_getter = NULL,              \</div><div class="line">            .rp_setter = RPC_PROPERTY_SETTER(_setter),  \</div><div class="line">            .rp_arg = NULL                  \</div><div class="line">                }                           \</div><div class="line">    }</div><div class="ttc" id="service_8h_html_a543850b4e1fac65207114c51d9c3f1a4a3576bdd6edc3d94a5e60a91a1006ab72"><div class="ttname"><a href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a3576bdd6edc3d94a5e60a91a1006ab72">RPC_MEMBER_PROPERTY</a></div><div class="ttdef"><b>Definition:</b> <a href="service_8h_source.html#l00182">service.h:182</a></div></div>
+</div><!-- fragment -->
 <p>Definition at line <a class="el" href="service_8h_source.html#l00133">133</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
 </div>
@@ -553,7 +557,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Definition of RPC method function type. </p>
+<p>Method function type. </p>
 
 <p>Definition at line <a class="el" href="service_8h_source.html#l00087">87</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
@@ -568,7 +572,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Definition of RPC method block type. </p>
+<p>Method block type. </p>
 
 <p>Definition at line <a class="el" href="service_8h_source.html#l00081">81</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
@@ -586,6 +590,85 @@ Functions</h2></td></tr>
 <p>RPC instance handle. </p>
 
 <p>Definition at line <a class="el" href="service_8h_source.html#l00076">76</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab438f0c33f3f3876f1c9a23d62134f16"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>(^ rpc_property_getter_t) (void *_Nonnull cookie)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Property getter block type. </p>
+
+<p>Definition at line <a class="el" href="service_8h_source.html#l00093">93</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa8b38d8ab3bafe79a96edaebafe13b8d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(^ rpc_property_setter_t) (void *_Nonnull cookie, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Property setter block type. </p>
+
+<p>Definition at line <a class="el" href="service_8h_source.html#l00098">98</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a class="anchor" id="a543850b4e1fac65207114c51d9c3f1a4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4">rpc_if_member_type</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Enumerates possible kinds of RPC interface members. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="a543850b4e1fac65207114c51d9c3f1a4a09012f2433454a86df08ee430a0378f2"></a>RPC_MEMBER_EVENT&#160;</td><td class="fielddoc">
+<p>Event member </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a543850b4e1fac65207114c51d9c3f1a4a3576bdd6edc3d94a5e60a91a1006ab72"></a>RPC_MEMBER_PROPERTY&#160;</td><td class="fielddoc">
+<p>Property member </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a543850b4e1fac65207114c51d9c3f1a4a3b8dba044cf7b9b552bc4e3a3437a94a"></a>RPC_MEMBER_METHOD&#160;</td><td class="fielddoc">
+<p>Method member </p>
+</td></tr>
+</table>
+
+<p>Definition at line <a class="el" href="service_8h_source.html#l00179">179</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae93cefa938d7efd2095f73e9dcdf8926"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="service_8h.html#ae93cefa938d7efd2095f73e9dcdf8926">rpc_property_rights</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="ae93cefa938d7efd2095f73e9dcdf8926a2573aa57a92525ca22dad5ff517bc9d0"></a>RPC_PROPERTY_READ&#160;</td><td class="fielddoc">
+<p>Property is readable </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ae93cefa938d7efd2095f73e9dcdf8926aea82a0471278ee17a5ea4b53afb43aee"></a>RPC_PROPERTY_WRITE&#160;</td><td class="fielddoc">
+<p>Property is writable </p>
+</td></tr>
+</table>
+
+<p>Definition at line <a class="el" href="service_8h_source.html#l00186">186</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
 </div>
 </div>
@@ -639,7 +722,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">context</td><td></td></tr>
+    <tr><td class="paramname">context</td><td>RPC context handle </td></tr>
     <tr><td class="paramname">name</td><td></td></tr>
     <tr><td class="paramname">args</td><td></td></tr>
   </table>
@@ -1495,8 +1578,8 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">instance</td><td></td></tr>
-    <tr><td class="paramname">interface</td><td></td></tr>
+    <tr><td class="paramname">instance</td><td>Instance handle </td></tr>
+    <tr><td class="paramname">interface</td><td>Interface name </td></tr>
     <tr><td class="paramname">name</td><td></td></tr>
   </table>
   </dd>
@@ -1533,16 +1616,16 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Finds a given method belonging to a given interface in instance.</p>
+<p>Finds member called <code>name</code> belonging to a <code>interface</code> in <code>instance</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">instance</td><td></td></tr>
-    <tr><td class="paramname">interface</td><td></td></tr>
-    <tr><td class="paramname">name</td><td></td></tr>
+    <tr><td class="paramname">instance</td><td>Instance handle </td></tr>
+    <tr><td class="paramname">interface</td><td>Interface name </td></tr>
+    <tr><td class="paramname">name</td><td>Member name </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="structrpc__if__member.html">rpc_if_member</a> structure pointer or <code>NULL</code> if not found. </dd></dl>
 
 </div>
 </div>
@@ -1645,10 +1728,12 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Returns access rights of property <code>name</code> of interface <code>interface</code> implemented in instance <code>instance</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">instance</td><td></td></tr>
-    <tr><td class="paramname">name</td><td></td></tr>
+    <tr><td class="paramname">instance</td><td>Instance handle </td></tr>
+    <tr><td class="paramname">interface</td><td>Interface name </td></tr>
+    <tr><td class="paramname">name</td><td>Property name </td></tr>
   </table>
   </dd>
 </dl>
@@ -1679,13 +1764,15 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Tells whether or not <code>instance</code> implements interface <code>interface</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">interface</td><td></td></tr>
+    <tr><td class="paramname">instance</td><td>Instance handle </td></tr>
+    <tr><td class="paramname">interface</td><td>Interface name </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if implemented, otherwise <code>false</code> </dd></dl>
 
 </div>
 </div>
@@ -1817,16 +1904,18 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Registers a new method called <code>name</code> on interface <code>interface</code> under instance <code>instance</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">instance</td><td></td></tr>
-    <tr><td class="paramname">interface</td><td></td></tr>
-    <tr><td class="paramname">name</td><td></td></tr>
-    <tr><td class="paramname">arg</td><td></td></tr>
-    <tr><td class="paramname">fn</td><td></td></tr>
+    <tr><td class="paramname">instance</td><td>Instance handle </td></tr>
+    <tr><td class="paramname">interface</td><td>Interface name </td></tr>
+    <tr><td class="paramname">name</td><td>Method name </td></tr>
+    <tr><td class="paramname">arg</td><td>Method private data pointer </td></tr>
+    <tr><td class="paramname">fn</td><td>Block </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
 
 </div>
 </div>
@@ -1861,7 +1950,8 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">interface</td><td></td></tr>
+    <tr><td class="paramname">instance</td><td>Instance handle </td></tr>
+    <tr><td class="paramname">interface</td><td>Interface name </td></tr>
     <tr><td class="paramname">name</td><td></td></tr>
   </table>
   </dd>
@@ -1911,12 +2001,14 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Same as <a class="el" href="service_8h.html#a2b399f37ac7a85287074efb1b3cec060">rpc_instance_register_block</a>, but takes a function pointer instead.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">instance</td><td></td></tr>
-    <tr><td class="paramname">interface</td><td></td></tr>
-    <tr><td class="paramname">name</td><td></td></tr>
-    <tr><td class="paramname">fn</td><td></td></tr>
+    <tr><td class="paramname">instance</td><td>Instance handle </td></tr>
+    <tr><td class="paramname">interface</td><td>Interface name </td></tr>
+    <tr><td class="paramname">name</td><td>Method name </td></tr>
+    <tr><td class="paramname">arg</td><td>Method private data pointer </td></tr>
+    <tr><td class="paramname">fn</td><td>Function pointer </td></tr>
   </table>
   </dd>
 </dl>
@@ -1958,15 +2050,17 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Registers interface <code>interface</code> under <code>instance</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">instance</td><td></td></tr>
-    <tr><td class="paramname">interface</td><td></td></tr>
-    <tr><td class="paramname">name</td><td></td></tr>
-    <tr><td class="paramname">fn</td><td></td></tr>
+    <tr><td class="paramname">instance</td><td>Instance handle </td></tr>
+    <tr><td class="paramname">interface</td><td>Interface name </td></tr>
+    <tr><td class="paramname">vtable</td><td>Member virtual table (vtable) </td></tr>
+    <tr><td class="paramname">arg</td><td>User data pointer </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
 
 </div>
 </div>
@@ -1999,15 +2093,16 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Registers a single member of interface <code>interface</code> under <code>instance</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">instance</td><td></td></tr>
-    <tr><td class="paramname">interface</td><td></td></tr>
-    <tr><td class="paramname">member</td><td></td></tr>
+    <tr><td class="paramname">instance</td><td>Intance handle </td></tr>
+    <tr><td class="paramname">interface</td><td>Interface name </td></tr>
+    <tr><td class="paramname">member</td><td>Member descriptor </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
 
 </div>
 </div>
@@ -2042,13 +2137,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">_Nullable rpc_property_getter_t&#160;</td>
+          <td class="paramtype">_Nullable <a class="el" href="service_8h.html#ab438f0c33f3f3876f1c9a23d62134f16">rpc_property_getter_t</a>&#160;</td>
           <td class="paramname"><em>getter</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">_Nullable rpc_property_setter_t&#160;</td>
+          <td class="paramtype">_Nullable <a class="el" href="service_8h.html#aa8b38d8ab3bafe79a96edaebafe13b8d">rpc_property_setter_t</a>&#160;</td>
           <td class="paramname"><em>setter</em>&#160;</td>
         </tr>
         <tr>
@@ -2058,15 +2153,24 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Registers property named <code>name</code> on interface <code>interface</code> under instance <code>instance</code>.</p>
+<p>The property can be:</p><ul>
+<li>read-only, when getter is non-NULL and setter is NULL</li>
+<li>write-only, when getter is NULL and setter is non-NULL</li>
+<li>read-write, when both getter and setter blocks are provided.</li>
+</ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">instance</td><td></td></tr>
-    <tr><td class="paramname">name</td><td></td></tr>
-    <tr><td class="paramname">value</td><td></td></tr>
+    <tr><td class="paramname">instance</td><td>Instance handle </td></tr>
+    <tr><td class="paramname">interface</td><td>Interface name </td></tr>
+    <tr><td class="paramname">name</td><td>Property name </td></tr>
+    <tr><td class="paramname">arg</td><td>User data pointer </td></tr>
+    <tr><td class="paramname">getter</td><td>Getter block or NULL if write-only </td></tr>
+    <tr><td class="paramname">setter</td><td>Setter block or NULL if read-nly </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
 
 </div>
 </div>
@@ -2140,15 +2244,16 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Unregisters a previously registered member named <code>name</code> from interface <code>interface</code> on <code>instance</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">instance</td><td></td></tr>
-    <tr><td class="paramname">interface</td><td></td></tr>
-    <tr><td class="paramname">name</td><td></td></tr>
+    <tr><td class="paramname">instance</td><td>Instance handle </td></tr>
+    <tr><td class="paramname">interface</td><td>Interface name </td></tr>
+    <tr><td class="paramname">name</td><td>Member name </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
 
 </div>
 </div>
@@ -2212,13 +2317,14 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Returns the user data pointer associated with the currently running getter/setter.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">cookie</td><td></td></tr>
+    <tr><td class="paramname">cookie</td><td>Property call handle </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>User data pointer </dd></dl>
 
 </div>
 </div>

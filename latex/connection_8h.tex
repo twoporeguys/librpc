@@ -71,8 +71,7 @@ enum \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\+\_\+call\+
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\+\_\+\+Nullable \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} {\bfseries rpc\+\_\+connection\+\_\+create} (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} params)\hypertarget{connection_8h_a254ad98a921503f712a2adba41160a5f}{}\label{connection_8h_a254ad98a921503f712a2adba41160a5f}
-
+\+\_\+\+Nullable \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} \hyperlink{connection_8h_a254ad98a921503f712a2adba41160a5f}{rpc\+\_\+connection\+\_\+create} (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} params)
 \item 
 int \hyperlink{connection_8h_aa63689ba3875975bc8a1fd0177c1a228}{rpc\+\_\+connection\+\_\+close} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
@@ -547,7 +546,7 @@ This function is similar to \hyperlink{connection_8h_af5e8d63da05fa221ac8bb51ff2
 
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & Connection to do a call on \\
+{\em conn} & Connection handle \\
 \hline
 {\em method} & Name of a method to be called \\
 \hline
@@ -571,9 +570,11 @@ Result of the call
 \item[{va\+\_\+list}]{ap}
 \end{DoxyParamCaption}
 )}\hypertarget{connection_8h_a7f212d17eac02cd846041fccbd79d3c6}{}\label{connection_8h_a7f212d17eac02cd846041fccbd79d3c6}
+A variation of \hyperlink{connection_8h_ac0f2ec46d7379ad838a2bcf4cc6ef7a9}{rpc\+\_\+connection\+\_\+call\+\_\+syncp} that takes a {\ttfamily va\+\_\+list} instead of the variable argument list.
+
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & \\
+{\em conn} & Connection handle \\
 \hline
 {\em path} & \\
 \hline
@@ -635,6 +636,26 @@ Closes the connection and frees all resources associated with it.
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on failure 
 \end{DoxyReturn}
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+create@{rpc\+\_\+connection\+\_\+create}}
+\index{rpc\+\_\+connection\+\_\+create@{rpc\+\_\+connection\+\_\+create}!connection.\+h@{connection.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+create(void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nullable rpc\+\_\+object\+\_\+t params)}{rpc_connection_create(void *_Nonnull cookie, _Nullable rpc_object_t params)}}]{\setlength{\rightskip}{0pt plus 5cm}\+\_\+\+Nullable {\bf rpc\+\_\+connection\+\_\+t} rpc\+\_\+connection\+\_\+create (
+\begin{DoxyParamCaption}
+\item[{void $\ast$\+\_\+\+Nonnull}]{cookie, }
+\item[{\+\_\+\+Nullable {\bf rpc\+\_\+object\+\_\+t}}]{params}
+\end{DoxyParamCaption}
+)}\hypertarget{connection_8h_a254ad98a921503f712a2adba41160a5f}{}\label{connection_8h_a254ad98a921503f712a2adba41160a5f}
+Creates a new connection from the provided opaque cookie.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cookie} & Opaque data \\
+\hline
+{\em params} & Transport-\/specific parameters \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Connection handle or N\+U\+LL on failure 
+\end{DoxyReturn}
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+property@{rpc\+\_\+connection\+\_\+get\+\_\+property}}
 \index{rpc\+\_\+connection\+\_\+get\+\_\+property@{rpc\+\_\+connection\+\_\+get\+\_\+property}!connection.\+h@{connection.\+h}}
 \subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+get\+\_\+property(\+\_\+\+Nonnull rpc\+\_\+connection\+\_\+t conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name)}{rpc_connection_get_property(_Nonnull rpc_connection_t conn, const char *_Nullable path, const char *_Nonnull interface, const char *_Nonnull name)}}]{\setlength{\rightskip}{0pt plus 5cm}\+\_\+\+Nullable {\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+get\+\_\+property (
@@ -683,7 +704,7 @@ Closes the connection and frees all resources associated with it.
 )}\hypertarget{connection_8h_adf5617e400a0a91ffefc45d19dda2531}{}\label{connection_8h_adf5617e400a0a91ffefc45d19dda2531}
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & \\
+{\em conn} & Connection handle \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
@@ -698,7 +719,7 @@ Closes the connection and frees all resources associated with it.
 )}\hypertarget{connection_8h_a3e2ec927f332c312dc187b6f38c81337}{}\label{connection_8h_a3e2ec927f332c312dc187b6f38c81337}
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & \\
+{\em conn} & Connection handle \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
@@ -711,9 +732,11 @@ Closes the connection and frees all resources associated with it.
 \item[{\+\_\+\+Nonnull {\bf rpc\+\_\+connection\+\_\+t}}]{conn}
 \end{DoxyParamCaption}
 )}\hypertarget{connection_8h_a43855db9f044fdc830fc1370d84a4f4b}{}\label{connection_8h_a43855db9f044fdc830fc1370d84a4f4b}
+Gets remote side U\+ID.
+
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & \\
+{\em conn} & Connection handle \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}

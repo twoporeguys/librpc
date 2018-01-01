@@ -60,6 +60,7 @@ var searchData=
   ['rpc_5fconnection_5fcall_5fsyncpv',['rpc_connection_call_syncpv',['../connection_8h.html#a7f212d17eac02cd846041fccbd79d3c6',1,'connection.h']]],
   ['rpc_5fconnection_5fcall_5fsyncv',['rpc_connection_call_syncv',['../connection_8h.html#ac23facad7f27401980fcb21762368760',1,'connection.h']]],
   ['rpc_5fconnection_5fclose',['rpc_connection_close',['../connection_8h.html#aa63689ba3875975bc8a1fd0177c1a228',1,'connection.h']]],
+  ['rpc_5fconnection_5fcreate',['rpc_connection_create',['../connection_8h.html#a254ad98a921503f712a2adba41160a5f',1,'connection.h']]],
   ['rpc_5fconnection_5fget_5fproperty',['rpc_connection_get_property',['../connection_8h.html#a5332b87fc6add76392bdc17d0db2e982',1,'connection.h']]],
   ['rpc_5fconnection_5fget_5fremote_5faddress',['rpc_connection_get_remote_address',['../connection_8h.html#ab74f1419e8a907d1c99dbef5358b6dd2',1,'connection.h']]],
   ['rpc_5fconnection_5fget_5fremote_5fgid',['rpc_connection_get_remote_gid',['../connection_8h.html#adf5617e400a0a91ffefc45d19dda2531',1,'connection.h']]],
