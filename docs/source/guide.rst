@@ -25,6 +25,7 @@ Following primitive data types are defined:
 - ``fd``
 - ``array``
 - ``dictionary``
+- ``error``
 - ``shmem`` (supported only on Linux)
 
 Arrays are lists of values constructed of any librpc types. Dictionaries are
@@ -40,7 +41,7 @@ Both servers and clients can also send `events` to each other. Events are
 messages containing event name and event payload and are not acknowledged
 by the receiving end.
 
-Functions
+Instances, interfaces and functions
 ---------
 Servers expose a number of `functions` to the clients. Functions are grouped
 in namespaces using dotted syntax: ``namespace1.namespace2.function``.
