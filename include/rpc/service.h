@@ -98,6 +98,9 @@ typedef _Nullable rpc_object_t (^rpc_property_getter_t)(void *_Nonnull cookie);
 typedef void (^rpc_property_setter_t)(void *_Nonnull cookie,
     _Nonnull rpc_object_t value);
 
+/**
+ * A macro to convert function pointer into @ref rpc_function_t block.
+ */
 #define	RPC_FUNCTION(_fn)						\
 	^(void *_cookie, rpc_object_t _args) {				\
 		return ((rpc_object_t)_fn(_cookie, _args));		\
@@ -119,6 +122,9 @@ typedef void (^rpc_property_setter_t)(void *_Nonnull cookie,
 		.rim_name = (#_name)					\
 	}
 
+/**
+ * A convenience macro to declare read-only property in the vtable array.
+ */
 #define	RPC_PROPERTY_RO(_name, _getter)					\
 	{								\
 		.rim_type = RPC_MEMBER_PROPERTY,			\
@@ -130,6 +136,9 @@ typedef void (^rpc_property_setter_t)(void *_Nonnull cookie,
                 }							\
 	}
 
+/**
+ * A convenience macro to declare write-only property in the vtable array.
+ */
 #define	RPC_PROPERTY_WO(_name, _setter)					\
 	{								\
 		.rim_type = RPC_MEMBER_PROPERTY,			\
@@ -141,6 +150,9 @@ typedef void (^rpc_property_setter_t)(void *_Nonnull cookie,
                 }							\
 	}
 
+/**
+ * A convenience macro to declare read-write property in the vtable array.
+ */
 #define	RPC_PROPERTY_RW(_name, _getter, _setter)			\
 	{								\
 		.rim_type = RPC_MEMBER_PROPERTY,			\
@@ -152,6 +164,9 @@ typedef void (^rpc_property_setter_t)(void *_Nonnull cookie,
                 }							\
 	}
 
+/**
+ * A convenience macro to declare RPC method in the vtable array.
+ */
 #define	RPC_METHOD(_name, _fn)						\
 	{								\
 		.rim_type = RPC_MEMBER_METHOD,				\
@@ -162,6 +177,10 @@ typedef void (^rpc_property_setter_t)(void *_Nonnull cookie,
                 }							\
 	}
 
+/**
+ * Same as @ref RPC_METHOD, but takes a block instead of a function
+ * pointer.
+ */
 #define	RPC_METHOD_BLOCK(_name, _block)					\
 	{								\
 		.rim_type = RPC_MEMBER_METHOD,				\
@@ -183,6 +202,9 @@ enum rpc_if_member_type
 	RPC_MEMBER_METHOD,		/**< Method member */
 };
 
+/**
+ * Enumerates possible property right flags.
+ */
 enum rpc_property_rights
 {
 	RPC_PROPERTY_READ = (1 << 0),	/**< Property is readable */
@@ -657,19 +679,25 @@ int rpc_instance_register_event(_Nonnull rpc_instance_t instance,
     const char *_Nonnull interface, const char *_Nonnull name);
 
 /**
+ * Notifies the librpc layer that property value has changed.
  *
- * @param instance
- * @param interface
- * @param name
+ * This function is used to notify remote property listneres that the
+ * value might have changed.
+ *
+ * @param instance Instance handle
+ * @param interface Interface name
+ * @param name Property name
+ * @param value New property value
  */
 void rpc_instance_property_changed(_Nonnull rpc_instance_t instance,
     const char *_Nonnull interface, const char *_Nonnull name,
     _Nonnull rpc_object_t value);
 
 /**
+ * Returns instance associated with the getter or setter call.
  *
- * @param cookie
- * @return
+ * @param cookie Running call identifier
+ * @return Instance handle
  */
 _Nonnull rpc_instance_t rpc_property_get_instance(void *_Nonnull cookie);
 
@@ -683,18 +711,22 @@ _Nonnull rpc_instance_t rpc_property_get_instance(void *_Nonnull cookie);
 void *_Nullable rpc_property_get_arg(void *_Nonnull cookie);
 
 /**
+ * Indicate that the current getter or setter run should generate an error.
  *
- * @param cookie
- * @param code
- * @param fmt
- * @param ...
+ * After using this function, return value from the getter is ignored.
+ *
+ * @param cookie Property call handle
+ * @param code Error code
+ * @param fmt Message format string
+ * @param ... Format string arguments
  */
 void rpc_property_error(void *_Nonnull cookie, int code,
     const char *_Nonnull fmt, ...);
 
 /**
+ * Releases instance handle.
  *
- * @param instance
+ * @param instance Instance handle
  */
 void rpc_instance_free(_Nonnull rpc_instance_t instance);
 
