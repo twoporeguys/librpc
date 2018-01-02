@@ -393,9 +393,8 @@ on_rpc_end(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 	}
 
 	g_mutex_lock(&call->rc_mtx);
-	call->rc_status = RPC_CALL_DONE;
-	call->rc_result = rpc_null_create();
-
+	call->rc_status = RPC_CALL_ENDED;
+	call->rc_result = NULL;
 	g_cond_broadcast(&call->rc_cv);
 	g_mutex_unlock(&call->rc_mtx);
 }
