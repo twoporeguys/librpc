@@ -71,7 +71,8 @@ typedef enum rpc_call_status
 	RPC_CALL_MORE_AVAILABLE,	/**< Streaming response, more data available */
 	RPC_CALL_DONE,			/**< Call finished, response received */
 	RPC_CALL_ERROR,			/**< Call finished, error received */
-	RPC_CALL_ABORTED		/**< Call was aborted by the user */
+	RPC_CALL_ABORTED,		/**< Call was aborted by the user */
+	RPC_CALL_ENDED			/**< Streaming call ended */
 } rpc_call_status_t;
 
 /**

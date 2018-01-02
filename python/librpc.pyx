@@ -75,6 +75,7 @@ class CallStatus(enum.IntEnum):
     DONE = RPC_CALL_DONE,
     ERROR = RPC_CALL_ERROR
     ABORTED = RPC_CALL_ABORTED
+    ENDED = RPC_CALL_ENDED
 
 
 class BusEvent(enum.IntEnum):
@@ -1301,7 +1302,7 @@ cdef class Connection(object):
         if call_status == CallStatus.DONE:
             return get_chunk()
 
-        if call_status == CallStatus.MORE_AVAILABLE:
+        if call_status in (CallStatus.MORE_AVAILABLE, CallStatus.ENDED):
             return iter_chunk()
 
         raise AssertionError('Impossible call status {0}'.format(call_status))

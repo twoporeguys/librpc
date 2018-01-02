@@ -137,11 +137,12 @@ cdef extern from "rpc/object.h" nogil:
 
 cdef extern from "rpc/connection.h" nogil:
     ctypedef enum rpc_call_status_t:
-        RPC_CALL_IN_PROGRESS,
-        RPC_CALL_MORE_AVAILABLE,
-        RPC_CALL_DONE,
+        RPC_CALL_IN_PROGRESS
+        RPC_CALL_MORE_AVAILABLE
+        RPC_CALL_DONE
         RPC_CALL_ERROR
         RPC_CALL_ABORTED
+        RPC_CALL_ENDED
 
     ctypedef struct rpc_connection_t:
         pass
