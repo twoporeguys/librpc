@@ -61,6 +61,7 @@ var searchData=
   ['rpc_5fcall_5faborted',['RPC_CALL_ABORTED',['../connection_8h.html#a22306445a7503bab94835382d07e0410a6c33a14b8aa6d0797cb614b890e9c741',1,'connection.h']]],
   ['rpc_5fcall_5fcontinue',['rpc_call_continue',['../connection_8h.html#aaa5cabcf5efe1e9a94e97d63c0b4a388',1,'connection.h']]],
   ['rpc_5fcall_5fdone',['RPC_CALL_DONE',['../connection_8h.html#a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d',1,'connection.h']]],
+  ['rpc_5fcall_5fended',['RPC_CALL_ENDED',['../connection_8h.html#a22306445a7503bab94835382d07e0410aefeace6607a011c0ea3bb12990abbd1c',1,'connection.h']]],
   ['rpc_5fcall_5ferror',['RPC_CALL_ERROR',['../connection_8h.html#a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856',1,'connection.h']]],
   ['rpc_5fcall_5ffree',['rpc_call_free',['../connection_8h.html#aeba8ba3e9dc7e1310568709cbcae22da',1,'connection.h']]],
   ['rpc_5fcall_5fin_5fprogress',['RPC_CALL_IN_PROGRESS',['../connection_8h.html#a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1',1,'connection.h']]],

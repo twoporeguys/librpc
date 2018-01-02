@@ -69,6 +69,7 @@
     <member refid="connection_8h_1a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d" kind="enumvalue"><name>RPC_CALL_DONE</name></member>
     <member refid="connection_8h_1a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856" kind="enumvalue"><name>RPC_CALL_ERROR</name></member>
     <member refid="connection_8h_1a22306445a7503bab94835382d07e0410a6c33a14b8aa6d0797cb614b890e9c741" kind="enumvalue"><name>RPC_CALL_ABORTED</name></member>
+    <member refid="connection_8h_1a22306445a7503bab94835382d07e0410aefeace6607a011c0ea3bb12990abbd1c" kind="enumvalue"><name>RPC_CALL_ENDED</name></member>
     <member refid="connection_8h_1a043170f29cb25827a88be4dab2313a91" kind="typedef"><name>rpc_error_code_t</name></member>
     <member refid="connection_8h_1a5e44285dc90be1f6bc541504a3f6d929" kind="typedef"><name>rpc_call_status_t</name></member>
     <member refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kind="typedef"><name>rpc_connection_t</name></member>
