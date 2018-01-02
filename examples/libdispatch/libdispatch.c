@@ -56,11 +56,10 @@ main(int argc, const char *argv[])
 		rpc_object_t args;
 		args = rpc_object_pack("[s]", "world");
 		rpc_connection_call(conn, NULL, NULL, "hello", args,
-		    ^(rpc_object_t value, rpc_call_status_t status) {
+		    ^bool(rpc_object_t value, rpc_call_status_t status) {
 			printf("%s\n", rpc_copy_description(value));
 			rpc_client_close(client);
 			exit(0);
-			return ((bool)true);
 		});
 	});
 
