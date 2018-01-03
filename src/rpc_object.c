@@ -945,9 +945,16 @@ rpc_object_vpack(const char *fmt, va_list ap)
 
 		switch (ch) {
 		case 'v':
+		case 'V':
 			current = va_arg(ap, rpc_object_t);
-			if (current == NULL)
+			if (current == NULL) {
 				current = rpc_null_create();
+				break;
+			}
+
+			if (ch == 'V')
+				rpc_retain(current);
+
 			break;
 
 		case 'n':
@@ -964,7 +971,7 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			    va_arg(ap, rpc_binary_destructor_t));
 			break;
 
-		case 'V':
+		case 'I':
 			current = rpc_data_create_iov(
 			    va_arg(ap, struct iovec *), va_arg(ap, size_t));
 			break;
