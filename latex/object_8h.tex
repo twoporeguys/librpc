@@ -2536,9 +2536,11 @@ Example\+: \{\mbox{[}i,s,i\mbox{]},\mbox{[}10\+:b,s,1\+:d,u\mbox{]},\{key\+:v,f,
 Format string syntax\+:
 \begin{DoxyItemize}
 \item v -\/ Librpc object -\/ args\+: rpc\+\_\+object\+\_\+t object
+\item V -\/ Librpc object (increases refcount) -\/ args\+: rpc\+\_\+object\+\_\+t object
 \item n -\/ Null object
 \item b -\/ Boolean object -\/ args\+: bool value
 \item B -\/ Binary object -\/ args\+: void $\ast$buffer, size\+\_\+t size, bool copy
+\item I -\/ Binary object (from list of iovec) -\/ args\+: struct iovec $\ast$list, size\+\_\+t list\+\_\+size
 \item f -\/ File descriptor object -\/ args\+: int fd
 \item i -\/ Integer object -\/ args\+: int value
 \item u -\/ Unsigned integer object -\/ args\+: unsigned int value
