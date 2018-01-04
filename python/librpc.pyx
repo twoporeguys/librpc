@@ -1191,6 +1191,11 @@ cdef class Connection(object):
         def __set__(self, fn):
             self.event_handler = fn
 
+    property instances:
+        def __get__(self):
+            objects = self.call_sync('get_instances', interface='com.twoporeguys.librpc.Discoverable', path='/', unpack=True)
+            return {o['path']: RemoteObject(self, o['path']) for o in objects}
+
     @staticmethod
     cdef Connection init_from_ptr(rpc_connection_t ptr):
         cdef Connection ret
@@ -1393,11 +1398,6 @@ cdef class Client(Connection):
 
         rpc_client_close(self.client)
         self.client = <rpc_client_t>NULL
-
-    property instances:
-        def __get__(self):
-            objects = self.call_sync('get_instances', interface='com.twoporeguys.librpc.Discoverable', path='/', unpack=True)
-            return {o['path']: RemoteObject(self, o['path']) for o in objects}
 
 
 cdef class Server(object):
