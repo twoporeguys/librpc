@@ -37,6 +37,8 @@ This graph shows which files directly or indirectly include this file\+:
 \#define \hyperlink{object_8h_aac19be935f72b35eeb2851bc509eabb2}{rpc\+\_\+release}(\+\_\+object)
 \item 
 \#define \hyperlink{object_8h_a541e997e04e48fe86df08ae323516490}{rpc\+\_\+swap}(\+\_\+old,  \+\_\+new)
+\item 
+\#define \hyperlink{object_8h_aa2468583d15995a2451e3f2072631086}{rpc\+\_\+auto\+\_\+object\+\_\+t}~\+\_\+\+\_\+attribute\+\_\+\+\_\+((cleanup(\+\_\+\+\_\+rpc\+\_\+raii\+\_\+release))) \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}
 \end{DoxyCompactItemize}
 \subsection*{Typedefs}
 \begin{DoxyCompactItemize}
@@ -343,6 +345,13 @@ Definition at line 142 of file object.\+h.
 Converts function pointer to an rpc\+\_\+array\+\_\+cmp\+\_\+t block type. 
 
 Definition at line 158 of file object.\+h.
+
+\index{object.\+h@{object.\+h}!rpc\+\_\+auto\+\_\+object\+\_\+t@{rpc\+\_\+auto\+\_\+object\+\_\+t}}
+\index{rpc\+\_\+auto\+\_\+object\+\_\+t@{rpc\+\_\+auto\+\_\+object\+\_\+t}!object.\+h@{object.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+auto\+\_\+object\+\_\+t}{rpc_auto_object_t}}]{\setlength{\rightskip}{0pt plus 5cm}\#define rpc\+\_\+auto\+\_\+object\+\_\+t~\+\_\+\+\_\+attribute\+\_\+\+\_\+((cleanup(\+\_\+\+\_\+rpc\+\_\+raii\+\_\+release))) {\bf rpc\+\_\+object\+\_\+t}}\hypertarget{object_8h_aa2468583d15995a2451e3f2072631086}{}\label{object_8h_aa2468583d15995a2451e3f2072631086}
+R\+A\+II version of \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}. Automatically released when goes out of scope. 
+
+Definition at line 1660 of file object.\+h.
 
 \index{object.\+h@{object.\+h}!R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR@{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}}
 \index{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR@{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}!object.\+h@{object.\+h}}

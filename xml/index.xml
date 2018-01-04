@@ -119,6 +119,7 @@
     <member refid="object_8h_1aa125ec0a73c4c9953b07e5da1712573e" kind="define"><name>rpc_is_error</name></member>
     <member refid="object_8h_1aac19be935f72b35eeb2851bc509eabb2" kind="define"><name>rpc_release</name></member>
     <member refid="object_8h_1a541e997e04e48fe86df08ae323516490" kind="define"><name>rpc_swap</name></member>
+    <member refid="object_8h_1aa2468583d15995a2451e3f2072631086" kind="define"><name>rpc_auto_object_t</name></member>
     <member refid="object_8h_1a40ea3143863f0a2b47446ccaf655638e" kind="enum"><name>rpc_type_t</name></member>
     <member refid="object_8h_1a40ea3143863f0a2b47446ccaf655638ea71dacfbd072b09e8cbb22055447b660d" kind="enumvalue"><name>RPC_TYPE_NULL</name></member>
     <member refid="object_8h_1a40ea3143863f0a2b47446ccaf655638ea318fdf911250c3ae135bb51839ff033d" kind="enumvalue"><name>RPC_TYPE_BOOL</name></member>
@@ -250,6 +251,7 @@
     <member refid="object_8h_1a1d35c7ce4fcef9100661092730601422" kind="function"><name>rpc_dictionary_get_string</name></member>
     <member refid="object_8h_1aac340e7a62ab629fb8aedcc5958b99b9" kind="function"><name>rpc_dictionary_get_fd</name></member>
     <member refid="object_8h_1a120334575ef9e27138842d8686bb1d59" kind="function"><name>rpc_dictionary_dup_fd</name></member>
+    <member refid="object_8h_1adb8efe36125dba589f843c31e9efeb9d" kind="function"><name>__rpc_raii_release</name></member>
   </compound>
   <compound refid="query_8h" kind="file"><name>query.h</name>
     <member refid="query_8h_1ac5142dc38666b2011833bab884b6af9d" kind="define"><name>RPC_QUERY_CB</name></member>

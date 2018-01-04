@@ -138,6 +138,8 @@ Macros</h2></td></tr>
 <tr class="separator:aac19be935f72b35eeb2851bc509eabb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a541e997e04e48fe86df08ae323516490"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a541e997e04e48fe86df08ae323516490">rpc_swap</a>(_old,  _new)</td></tr>
 <tr class="separator:a541e997e04e48fe86df08ae323516490"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2468583d15995a2451e3f2072631086"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aa2468583d15995a2451e3f2072631086">rpc_auto_object_t</a>&#160;&#160;&#160;__attribute__((cleanup(__rpc_raii_release))) <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></td></tr>
+<tr class="separator:aa2468583d15995a2451e3f2072631086"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -466,6 +468,21 @@ Functions</h2></td></tr>
 </div><!-- fragment --><p>Converts function pointer to an rpc_array_cmp_t block type. </p>
 
 <p>Definition at line <a class="el" href="object_8h_source.html#l00158">158</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa2468583d15995a2451e3f2072631086"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define rpc_auto_object_t&#160;&#160;&#160;__attribute__((cleanup(__rpc_raii_release))) <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>RAII version of <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>. Automatically released when goes out of scope. </p>
+
+<p>Definition at line <a class="el" href="object_8h_source.html#l01660">1660</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>

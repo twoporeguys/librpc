@@ -214,6 +214,17 @@
         </inbodydescription>
         <location file="/code/include/rpc/object.h" line="316" column="9" bodyfile="/code/include/rpc/object.h" bodystart="316" bodyend="-1"/>
       </memberdef>
+      <memberdef kind="define" id="object_8h_1aa2468583d15995a2451e3f2072631086" prot="public" static="no">
+        <name>rpc_auto_object_t</name>
+        <initializer>__attribute__((cleanup(__rpc_raii_release))) <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>RAII version of <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref>. Automatically released when goes out of scope. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/object.h" line="1660" column="9" bodyfile="/code/include/rpc/object.h" bodystart="1660" bodyend="-1"/>
+      </memberdef>
       </sectiondef>
       <sectiondef kind="enum">
       <memberdef kind="enum" id="object_8h_1a40ea3143863f0a2b47446ccaf655638e" prot="public" static="no">
@@ -4467,6 +4478,31 @@
         </inbodydescription>
         <location file="/code/include/rpc/object.h" line="1642" column="1"/>
       </memberdef>
+      <memberdef kind="function" id="object_8h_1adb8efe36125dba589f843c31e9efeb9d" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void __rpc_raii_release</definition>
+        <argsstring>(_Nonnull rpc_object_t *_Nullable object)</argsstring>
+        <name>__rpc_raii_release</name>
+        <param>
+          <type>_Nonnull <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref> *_Nullable</type>
+          <declname>object</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Helper function to automatically release a <ref refid="object_8h_1aa2468583d15995a2451e3f2072631086" kindref="member">rpc_auto_object_t</ref> when it goes out of scope.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to object to release </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/object.h" line="1651" column="1" bodyfile="/code/include/rpc/object.h" bodystart="1651" bodyend="1654"/>
+      </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
@@ -4881,11 +4917,20 @@
 <codeline lineno="1642"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="object_8h_1a120334575ef9e27138842d8686bb1d59" kindref="member">rpc_dictionary_dup_fd</ref>(_Nonnull<sp/>rpc_object_t<sp/>dictionary,</highlight></codeline>
 <codeline lineno="1643"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>key);</highlight></codeline>
 <codeline lineno="1644"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1645"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1646"><highlight class="normal">}</highlight></codeline>
-<codeline lineno="1647"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="1648"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1649"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//LIBRPC_OBJECT_H</highlight></codeline>
+<codeline lineno="1651"><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>__rpc_raii_release(_Nonnull<sp/>rpc_object_t<sp/>*_Nullable<sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="1652"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="1653"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1aef96805793fdeeb98b88d03890d034ba" kindref="member">rpc_release_impl</ref>(*</highlight><highlight class="keywordtype">object</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="1654"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="1655"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1660" refid="object_8h_1aa2468583d15995a2451e3f2072631086" refkind="member"><highlight class="preprocessor">#define<sp/>rpc_auto_object_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="1661"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__attribute__((cleanup(__rpc_raii_release)))<sp/>rpc_object_t</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1662"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1663"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1664"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1665"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="1666"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="1667"><highlight class="normal"></highlight></codeline>
+<codeline lineno="1668"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//LIBRPC_OBJECT_H</highlight></codeline>
     </programlisting>
     <location file="/code/include/rpc/object.h"/>
   </compounddef>
