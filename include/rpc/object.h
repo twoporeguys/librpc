@@ -1642,6 +1642,25 @@ int rpc_dictionary_get_fd(_Nonnull rpc_object_t dictionary,
 int rpc_dictionary_dup_fd(_Nonnull rpc_object_t dictionary,
     const char *_Nonnull key);
 
+/**
+ * Helper function to automatically release a @ref rpc_auto_object_t
+ * when it goes out of scope.
+ *
+ * @param object Pointer to object to release
+ */
+inline static void __rpc_raii_release(_Nonnull rpc_object_t *_Nullable object)
+{
+	rpc_release_impl(*object);
+}
+
+/**
+ * RAII version of @ref rpc_object_t. Automatically released when goes out
+ * of scope.
+ */
+#define rpc_auto_object_t						\
+    __attribute__((cleanup(__rpc_raii_release))) rpc_object_t
+
+
 #ifdef __cplusplus
 }
 #endif
