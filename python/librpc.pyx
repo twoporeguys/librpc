@@ -795,7 +795,12 @@ cdef class Context(object):
 cdef class Instance(object):
     @staticmethod
     cdef Instance init_from_ptr(rpc_instance_t ptr):
-        pass
+        cdef Instance result
+
+        result = Instance.__new__(Instance)
+        result.properties = []
+        result.instance = ptr
+        return result
 
     @staticmethod
     cdef rpc_object_t c_property_getter(void *cookie) with gil:
@@ -1308,6 +1313,9 @@ cdef class Connection(object):
         raise AssertionError('Impossible call status {0}'.format(call_status))
 
     def do_unpack(self, value, unpack=None):
+        if not isinstance(value, Object):
+            return value
+
         unpack = self.unpack if unpack is None else unpack
         return value.unpack() if unpack else value
 
