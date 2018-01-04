@@ -217,7 +217,7 @@ if(NOT APPLE)
     target_link_libraries(librpc BlocksRuntime)
 endif()
 
-if(ENABLE_LIBDISPATCH)
+if(ENABLE_LIBDISPATCH AND NOT APPLE)
     target_link_libraries(librpc dispatch)
 endif()
 
