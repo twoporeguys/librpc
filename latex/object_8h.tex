@@ -32,15 +32,11 @@ This graph shows which files directly or indirectly include this file\+:
 \item 
 \#define \hyperlink{object_8h_a470d0e93b159810ff425aec90f47c817}{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}(\+\_\+fn)
 \item 
-\#define \hyperlink{object_8h_a5b9fa1b598d399f5eacdbf2a8f86fd41}{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+O\+R\+\_\+\+A\+RG}(\+\_\+fn,  \+\_\+arg)
-\item 
 \#define \hyperlink{object_8h_aa125ec0a73c4c9953b07e5da1712573e}{rpc\+\_\+is\+\_\+error}(\+\_\+object)~(\hyperlink{object_8h_aa1f69b6cfaa4ae287272d76da16b005d}{rpc\+\_\+get\+\_\+type}(\+\_\+object) == \hyperlink{object_8h_a40ea3143863f0a2b47446ccaf655638ea7c63246a7c7bc5912d499fb117358506}{R\+P\+C\+\_\+\+T\+Y\+P\+E\+\_\+\+E\+R\+R\+OR})
 \item 
 \#define \hyperlink{object_8h_aac19be935f72b35eeb2851bc509eabb2}{rpc\+\_\+release}(\+\_\+object)
 \item 
 \#define \hyperlink{object_8h_a541e997e04e48fe86df08ae323516490}{rpc\+\_\+swap}(\+\_\+old,  \+\_\+new)
-\item 
-\#define \hyperlink{object_8h_aa2468583d15995a2451e3f2072631086}{rpc\+\_\+auto\+\_\+object\+\_\+t}~\+\_\+\+\_\+attribute\+\_\+\+\_\+((cleanup(\+\_\+\+\_\+rpc\+\_\+raii\+\_\+release))) \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}
 \end{DoxyCompactItemize}
 \subsection*{Typedefs}
 \begin{DoxyCompactItemize}
@@ -348,13 +344,6 @@ Converts function pointer to an rpc\+\_\+array\+\_\+cmp\+\_\+t block type.
 
 Definition at line 158 of file object.\+h.
 
-\index{object.\+h@{object.\+h}!rpc\+\_\+auto\+\_\+object\+\_\+t@{rpc\+\_\+auto\+\_\+object\+\_\+t}}
-\index{rpc\+\_\+auto\+\_\+object\+\_\+t@{rpc\+\_\+auto\+\_\+object\+\_\+t}!object.\+h@{object.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+auto\+\_\+object\+\_\+t}{rpc_auto_object_t}}]{\setlength{\rightskip}{0pt plus 5cm}\#define rpc\+\_\+auto\+\_\+object\+\_\+t~\+\_\+\+\_\+attribute\+\_\+\+\_\+((cleanup(\+\_\+\+\_\+rpc\+\_\+raii\+\_\+release))) {\bf rpc\+\_\+object\+\_\+t}}\hypertarget{object_8h_aa2468583d15995a2451e3f2072631086}{}\label{object_8h_aa2468583d15995a2451e3f2072631086}
-R\+A\+II version of \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}. Automatically released when goes out of scope. 
-
-Definition at line 1669 of file object.\+h.
-
 \index{object.\+h@{object.\+h}!R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR@{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}}
 \index{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR@{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}!object.\+h@{object.\+h}}
 \subsubsection[{\texorpdfstring{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}{RPC_BINARY_DESTRUCTOR}}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR(
@@ -368,27 +357,9 @@ Definition at line 1669 of file object.\+h.
         \_fn(block);                     \(\backslash\)
     \}
 \end{DoxyCode}
-Converts function pointer to an rpc\+\_\+binary\+\_\+destructor\+\_\+t block type. 
+Converts function poitner to an rpc\+\_\+binary\+\_\+destructor\+\_\+t block type. 
 
 Definition at line 166 of file object.\+h.
-
-\index{object.\+h@{object.\+h}!R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+O\+R\+\_\+\+A\+RG@{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+O\+R\+\_\+\+A\+RG}}
-\index{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+O\+R\+\_\+\+A\+RG@{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+O\+R\+\_\+\+A\+RG}!object.\+h@{object.\+h}}
-\subsubsection[{\texorpdfstring{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+O\+R\+\_\+\+A\+RG}{RPC_BINARY_DESTRUCTOR_ARG}}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+O\+R\+\_\+\+A\+RG(
-\begin{DoxyParamCaption}
-\item[{}]{\+\_\+fn, }
-\item[{}]{\+\_\+arg}
-\end{DoxyParamCaption}
-)}\hypertarget{object_8h_a5b9fa1b598d399f5eacdbf2a8f86fd41}{}\label{object_8h_a5b9fa1b598d399f5eacdbf2a8f86fd41}
-{\bfseries Value\+:}
-\begin{DoxyCode}
-^(\textcolor{keywordtype}{void} *\_block) \{                       \(\backslash\)
-        \_fn(\_arg, \_block);                  \(\backslash\)
-    \}
-\end{DoxyCode}
-Same as \hyperlink{object_8h_a470d0e93b159810ff425aec90f47c817}{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}, but accepts an auxiliary {\ttfamily arg}. 
-
-Definition at line 174 of file object.\+h.
 
 \index{object.\+h@{object.\+h}!R\+P\+C\+\_\+\+D\+I\+C\+T\+I\+O\+N\+A\+R\+Y\+\_\+\+A\+P\+P\+L\+I\+ER@{R\+P\+C\+\_\+\+D\+I\+C\+T\+I\+O\+N\+A\+R\+Y\+\_\+\+A\+P\+P\+L\+I\+ER}}
 \index{R\+P\+C\+\_\+\+D\+I\+C\+T\+I\+O\+N\+A\+R\+Y\+\_\+\+A\+P\+P\+L\+I\+ER@{R\+P\+C\+\_\+\+D\+I\+C\+T\+I\+O\+N\+A\+R\+Y\+\_\+\+A\+P\+P\+L\+I\+ER}!object.\+h@{object.\+h}}
@@ -424,7 +395,7 @@ Checks if an object is of type R\+P\+C\+\_\+\+T\+Y\+P\+E\+\_\+\+E\+R\+R\+OR.
 \end{DoxyParams}
 
 
-Definition at line 303 of file object.\+h.
+Definition at line 294 of file object.\+h.
 
 \index{object.\+h@{object.\+h}!rpc\+\_\+release@{rpc\+\_\+release}}
 \index{rpc\+\_\+release@{rpc\+\_\+release}!object.\+h@{object.\+h}}
@@ -451,7 +422,7 @@ Also sets it to N\+U\+LL if as a result of the operation reference count dropped
 \end{DoxyParams}
 
 
-Definition at line 313 of file object.\+h.
+Definition at line 304 of file object.\+h.
 
 \index{object.\+h@{object.\+h}!rpc\+\_\+swap@{rpc\+\_\+swap}}
 \index{rpc\+\_\+swap@{rpc\+\_\+swap}!object.\+h@{object.\+h}}
@@ -472,7 +443,7 @@ Swaps {\ttfamily \+\_\+old} object with  object.
 
 Releases {\ttfamily \+\_\+old} before replacing it with {\ttfamily \+\_\+new}. 
 
-Definition at line 325 of file object.\+h.
+Definition at line 316 of file object.\+h.
 
 
 
@@ -2565,11 +2536,9 @@ Example\+: \{\mbox{[}i,s,i\mbox{]},\mbox{[}10\+:b,s,1\+:d,u\mbox{]},\{key\+:v,f,
 Format string syntax\+:
 \begin{DoxyItemize}
 \item v -\/ Librpc object -\/ args\+: rpc\+\_\+object\+\_\+t object
-\item V -\/ Librpc object (increases refcount) -\/ args\+: rpc\+\_\+object\+\_\+t object
 \item n -\/ Null object
 \item b -\/ Boolean object -\/ args\+: bool value
 \item B -\/ Binary object -\/ args\+: void $\ast$buffer, size\+\_\+t size, bool copy
-\item I -\/ Binary object (from list of iovec) -\/ args\+: struct iovec $\ast$list, size\+\_\+t list\+\_\+size
 \item f -\/ File descriptor object -\/ args\+: int fd
 \item i -\/ Integer object -\/ args\+: int value
 \item u -\/ Unsigned integer object -\/ args\+: unsigned int value
