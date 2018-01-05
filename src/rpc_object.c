@@ -477,6 +477,9 @@ rpc_release_impl(rpc_object_t object)
 			if (object->ro_value.rv_bin.rbv_destructor != NULL) {
 				object->ro_value.rv_bin.rbv_destructor(
 				    (void *)object->ro_value.rv_bin.rbv_ptr);
+
+				Block_release(
+				    object->ro_value.rv_bin.rbv_destructor);
 			}
 			break;
 
@@ -1209,7 +1212,7 @@ rpc_data_create(const void *bytes, size_t length,
 	union rpc_value value;
 
 	value.rv_bin.rbv_ptr = (uintptr_t)bytes;
-	value.rv_bin.rbv_destructor = destructor;
+	value.rv_bin.rbv_destructor = Block_copy(destructor);
 	value.rv_bin.rbv_length = length;
 
 	return (rpc_prim_create(RPC_TYPE_BINARY, value));
