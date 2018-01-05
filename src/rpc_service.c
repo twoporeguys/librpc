@@ -985,7 +985,7 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 		value = v->rim_property.rp_getter(&prop);
 
 		if (prop.error != NULL)
-			continue;
+			value = prop.error;
 
 		rpc_array_append_stolen_value(result, rpc_object_pack("{s,v}",
 		    "name", v->rim_name,
