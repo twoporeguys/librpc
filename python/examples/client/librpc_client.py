@@ -51,7 +51,11 @@ class CommandDispatcher(object):
         for ifname, iface in self.current.interfaces.items():
             for pname, fns in iface.properties.items():
                 getter, _ = fns
-                value = repr(getter()) if getter else '<no getter>'
+                try:
+                    value = repr(getter()) if getter else '<no getter>'
+                except librpc.RpcException as err:
+                    value = '<error: {0}>'.format(str(err))
+
                 print('    {0}.{1} ({2})'.format(ifname, pname, value))
 
     def cmd_cd(self, *args):
