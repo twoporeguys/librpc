@@ -116,6 +116,7 @@
     <member refid="object_8h_1a814f85a172b4dae9c201063cad92514e" kind="define"><name>RPC_DICTIONARY_APPLIER</name></member>
     <member refid="object_8h_1af7b40854202a0a6708b0611b4fdf9121" kind="define"><name>RPC_ARRAY_CMP</name></member>
     <member refid="object_8h_1a470d0e93b159810ff425aec90f47c817" kind="define"><name>RPC_BINARY_DESTRUCTOR</name></member>
+    <member refid="object_8h_1a5b9fa1b598d399f5eacdbf2a8f86fd41" kind="define"><name>RPC_BINARY_DESTRUCTOR_ARG</name></member>
     <member refid="object_8h_1aa125ec0a73c4c9953b07e5da1712573e" kind="define"><name>rpc_is_error</name></member>
     <member refid="object_8h_1aac19be935f72b35eeb2851bc509eabb2" kind="define"><name>rpc_release</name></member>
     <member refid="object_8h_1a541e997e04e48fe86df08ae323516490" kind="define"><name>rpc_swap</name></member>

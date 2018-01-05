@@ -4,6 +4,7 @@ var searchData=
   ['rpc_5farray_5fcmp',['RPC_ARRAY_CMP',['../object_8h.html#af7b40854202a0a6708b0611b4fdf9121',1,'object.h']]],
   ['rpc_5fauto_5fobject_5ft',['rpc_auto_object_t',['../object_8h.html#aa2468583d15995a2451e3f2072631086',1,'object.h']]],
   ['rpc_5fbinary_5fdestructor',['RPC_BINARY_DESTRUCTOR',['../object_8h.html#a470d0e93b159810ff425aec90f47c817',1,'object.h']]],
+  ['rpc_5fbinary_5fdestructor_5farg',['RPC_BINARY_DESTRUCTOR_ARG',['../object_8h.html#a5b9fa1b598d399f5eacdbf2a8f86fd41',1,'object.h']]],
   ['rpc_5fbus_5fevent_5fhandler',['RPC_BUS_EVENT_HANDLER',['../bus_8h.html#aaa8f0d5a3405318f9df38fc2ae8dd587',1,'bus.h']]],
   ['rpc_5fcallback',['RPC_CALLBACK',['../connection_8h.html#a7512dc753949d75650bbec7527f9d0a6',1,'connection.h']]],
   ['rpc_5fdictionary_5fapplier',['RPC_DICTIONARY_APPLIER',['../object_8h.html#a814f85a172b4dae9c201063cad92514e',1,'object.h']]],
