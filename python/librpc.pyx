@@ -248,7 +248,7 @@ cdef class Object(object):
 
     def __float__(self):
         if self.type in (ObjectType.BOOL, ObjectType.UINT64, ObjectType.INT64, ObjectType.DOUBLE):
-            return int(self.value)
+            return float(self.value)
 
         raise TypeError('float() argument must be a number or bool')
 
