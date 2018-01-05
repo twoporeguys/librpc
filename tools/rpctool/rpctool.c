@@ -186,6 +186,7 @@ inspect_interface(rpc_connection_t conn, const char *path, const char *interface
 				break;
 
 			case RPC_CALL_DONE:
+			case RPC_CALL_ENDED:
 				goto done;
 
 			case RPC_CALL_ERROR:
