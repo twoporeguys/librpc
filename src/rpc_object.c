@@ -1212,8 +1212,11 @@ rpc_data_create(const void *bytes, size_t length,
 	union rpc_value value;
 
 	value.rv_bin.rbv_ptr = (uintptr_t)bytes;
-	value.rv_bin.rbv_destructor = Block_copy(destructor);
 	value.rv_bin.rbv_length = length;
+	value.rv_bin.rbv_destructor = NULL;
+
+	if (destructor != NULL)
+		value.rv_bin.rbv_destructor = Block_copy(destructor);
 
 	return (rpc_prim_create(RPC_TYPE_BINARY, value));
 }
