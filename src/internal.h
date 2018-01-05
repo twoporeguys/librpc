@@ -317,10 +317,10 @@ struct rpc_property_cookie
 
 struct rpc_context
 {
-	GMutex			rcx_mtx;
     	GThreadPool *		rcx_threadpool;
 	GHashTable *		rcx_instances;
 	GPtrArray * 		rcx_servers;
+	GRWLock			rcx_rwlock;
 	rpc_instance_t 		rcx_root;
 
 	/* Hooks */

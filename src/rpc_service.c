@@ -220,11 +220,11 @@ int
 rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
 {
 
-	g_mutex_lock(&context->rcx_mtx);
+	g_rw_lock_writer_lock(&context->rcx_rwlock);
 
 	if (g_hash_table_contains(context->rcx_instances, instance->ri_path)) {
 		rpc_set_last_error(EEXIST, "Instance already exists", NULL);
-		g_mutex_unlock(&context->rcx_mtx);
+		g_rw_lock_writer_unlock(&context->rcx_rwlock);
 		return (-1);
 	}
 
@@ -233,8 +233,9 @@ rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
 	    rpc_string_create(instance->ri_path));
 
 	instance->ri_context = context;
+
 	g_hash_table_insert(context->rcx_instances, instance->ri_path, instance);
-	g_mutex_unlock(&context->rcx_mtx);
+	g_rw_lock_writer_unlock(&context->rcx_rwlock);
 	return (0);
 }
 
@@ -242,7 +243,7 @@ void
 rpc_context_unregister_instance(rpc_context_t context, const char *path)
 {
 
-	g_mutex_lock(&context->rcx_mtx);
+	g_rw_lock_writer_lock(&context->rcx_rwlock);
 
 	if (g_hash_table_remove(context->rcx_instances, path)) {
 		rpc_context_emit_event(context, "/",
@@ -250,7 +251,7 @@ rpc_context_unregister_instance(rpc_context_t context, const char *path)
 		    rpc_string_create(path));
 	}
 
-	g_mutex_unlock(&context->rcx_mtx);
+	g_rw_lock_writer_unlock(&context->rcx_rwlock);
 }
 
 int
@@ -769,10 +770,12 @@ rpc_get_objects(void *cookie, rpc_object_t args __unused)
 	rpc_object_t fragment;
 
 	instance = rpc_function_get_instance(cookie);
-	g_hash_table_iter_init(&iter, context->rcx_instances);
 
 	if (strlen(rpc_instance_get_path(instance)) > 1)
 		prefix = g_strdup_printf("%s/", rpc_instance_get_path(instance));
+
+	g_rw_lock_reader_lock(&context->rcx_rwlock);
+	g_hash_table_iter_init(&iter, context->rcx_instances);
 
 	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
 		if (prefix != NULL && !g_str_has_prefix(v->ri_path, prefix))
@@ -787,6 +790,7 @@ rpc_get_objects(void *cookie, rpc_object_t args __unused)
 	}
 
 done:
+	g_rw_lock_reader_unlock(&context->rcx_rwlock);
 	g_free(prefix);
 	return ((rpc_object_t)NULL);
 }
