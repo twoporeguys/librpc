@@ -227,6 +227,7 @@ cmd_tree(int argc, char *argv[])
 			break;
 
 		case RPC_CALL_DONE:
+		case RPC_CALL_ENDED:
 			goto done;
 
 		case RPC_CALL_ERROR:
@@ -289,6 +290,7 @@ cmd_inspect(int argc, char *argv[])
 			break;
 
 		case RPC_CALL_DONE:
+		case RPC_CALL_ENDED:
 			goto done;
 
 		case RPC_CALL_ERROR:
