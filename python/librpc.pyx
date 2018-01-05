@@ -34,6 +34,7 @@ import functools
 import traceback
 import datetime
 import uuid
+from cpython.ref cimport Py_INCREF, Py_DECREF
 from librpc cimport *
 from libc.string cimport strdup
 from libc.stdint cimport *
@@ -169,8 +170,8 @@ cdef class Object(object):
             return
 
         if isinstance(value, (bytearray, bytes)) or force_type == ObjectType.BINARY:
-            self.ref = value
-            self.obj = rpc_data_create(<char *>value, <size_t>len(value), NULL)
+            Py_INCREF(value)
+            self.obj = rpc_data_create(<char *>value, <size_t>len(value), RPC_BINARY_DESTRUCTOR_ARG(self.destruct_bytes, <void *>value))
             return
 
         if isinstance(value, (RpcException, LibException)):
@@ -266,6 +267,11 @@ cdef class Object(object):
         ret.obj = ptr
         rpc_retain(ret.obj)
         return ret
+
+    @staticmethod
+    cdef void destruct_bytes(void *arg, void *buffer) with gil:
+        cdef object value = <object>arg
+        Py_DECREF(value)
 
     def unpack(self):
         if self.type == ObjectType.DICTIONARY:

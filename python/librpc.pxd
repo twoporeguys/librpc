@@ -30,6 +30,7 @@ from libc.stdint cimport *
 ctypedef bint (*rpc_dictionary_applier_f)(void *arg, const char *key, rpc_object_t value)
 ctypedef bint (*rpc_array_applier_f)(void *arg, size_t index, rpc_object_t value)
 ctypedef void (*rpc_binary_destructor_f)(void *buffer)
+ctypedef void (*rpc_binary_destructor_arg_f)(void *arg, void *buffer)
 ctypedef void (*rpc_handler_f)(void *arg, const char *path, const char *interface, const char *name, rpc_object_t args)
 ctypedef void (*rpc_error_handler_f)(void *arg, rpc_error_code_t code, rpc_object_t args)
 ctypedef bint (*rpc_callback_f)(void *arg, rpc_call_t call, rpc_call_status_t status)
@@ -71,6 +72,7 @@ cdef extern from "rpc/object.h" nogil:
 
     void *RPC_DICTIONARY_APPLIER(rpc_dictionary_applier_f fn, void *arg)
     void *RPC_ARRAY_APPLIER(rpc_array_applier_f fn, void *arg)
+    void *RPC_BINARY_DESTRUCTOR_ARG(rpc_binary_destructor_arg_f fn, void *arg)
 
     rpc_object_t rpc_get_last_error()
 
@@ -376,6 +378,8 @@ cdef class Object(object):
 
     @staticmethod
     cdef Object init_from_ptr(rpc_object_t ptr)
+    @staticmethod
+    cdef void destruct_bytes(void *arg, void *buffer) with gil
 
 
 cdef class Context(object):
