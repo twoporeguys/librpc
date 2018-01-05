@@ -161,12 +161,21 @@ typedef void (^rpc_binary_destructor_t)(void *_Nullable);
         }
 
 /**
- * Converts function poitner to an rpc_binary_destructor_t block type.
+ * Converts function pointer to an rpc_binary_destructor_t block type.
  */
 #define	RPC_BINARY_DESTRUCTOR(_fn)					\
 	^(void *block) {						\
 		_fn(block);						\
 	}
+
+/**
+ * Same as @ref RPC_BINARY_DESTRUCTOR, but accepts an auxiliary @p arg.
+ */
+#define	RPC_BINARY_DESTRUCTOR_ARG(_fn, _arg)				\
+	^(void *_block) {						\
+		_fn(_arg, _block);					\
+	}
+
 
 /**
  * Increments reference count of an object.
