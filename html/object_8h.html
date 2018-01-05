@@ -132,12 +132,16 @@ Macros</h2></td></tr>
 <tr class="separator:af7b40854202a0a6708b0611b4fdf9121"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a470d0e93b159810ff425aec90f47c817"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a470d0e93b159810ff425aec90f47c817">RPC_BINARY_DESTRUCTOR</a>(_fn)</td></tr>
 <tr class="separator:a470d0e93b159810ff425aec90f47c817"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b9fa1b598d399f5eacdbf2a8f86fd41"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a5b9fa1b598d399f5eacdbf2a8f86fd41">RPC_BINARY_DESTRUCTOR_ARG</a>(_fn,  _arg)</td></tr>
+<tr class="separator:a5b9fa1b598d399f5eacdbf2a8f86fd41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa125ec0a73c4c9953b07e5da1712573e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aa125ec0a73c4c9953b07e5da1712573e">rpc_is_error</a>(_object)&#160;&#160;&#160;(<a class="el" href="object_8h.html#aa1f69b6cfaa4ae287272d76da16b005d">rpc_get_type</a>(_object) == <a class="el" href="object_8h.html#a40ea3143863f0a2b47446ccaf655638ea7c63246a7c7bc5912d499fb117358506">RPC_TYPE_ERROR</a>)</td></tr>
 <tr class="separator:aa125ec0a73c4c9953b07e5da1712573e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac19be935f72b35eeb2851bc509eabb2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">rpc_release</a>(_object)</td></tr>
 <tr class="separator:aac19be935f72b35eeb2851bc509eabb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a541e997e04e48fe86df08ae323516490"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a541e997e04e48fe86df08ae323516490">rpc_swap</a>(_old,  _new)</td></tr>
 <tr class="separator:a541e997e04e48fe86df08ae323516490"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2468583d15995a2451e3f2072631086"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aa2468583d15995a2451e3f2072631086">rpc_auto_object_t</a>&#160;&#160;&#160;__attribute__((cleanup(__rpc_raii_release))) <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></td></tr>
+<tr class="separator:aa2468583d15995a2451e3f2072631086"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -469,6 +473,21 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="aa2468583d15995a2451e3f2072631086"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define rpc_auto_object_t&#160;&#160;&#160;__attribute__((cleanup(__rpc_raii_release))) <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>RAII version of <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>. Automatically released when goes out of scope. </p>
+
+<p>Definition at line <a class="el" href="object_8h_source.html#l01669">1669</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a470d0e93b159810ff425aec90f47c817"></a>
 <div class="memitem">
 <div class="memproto">
@@ -482,9 +501,38 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">^(<span class="keywordtype">void</span> *block) {                        \</div><div class="line">        _fn(block);                     \</div><div class="line">    }</div></div><!-- fragment --><p>Converts function poitner to an rpc_binary_destructor_t block type. </p>
+<b>Value:</b><div class="fragment"><div class="line">^(<span class="keywordtype">void</span> *block) {                        \</div><div class="line">        _fn(block);                     \</div><div class="line">    }</div></div><!-- fragment --><p>Converts function pointer to an rpc_binary_destructor_t block type. </p>
 
 <p>Definition at line <a class="el" href="object_8h_source.html#l00166">166</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5b9fa1b598d399f5eacdbf2a8f86fd41"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define RPC_BINARY_DESTRUCTOR_ARG</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_fn, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_arg&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">^(<span class="keywordtype">void</span> *_block) {                       \</div><div class="line">        _fn(_arg, _block);                  \</div><div class="line">    }</div></div><!-- fragment --><p>Same as <a class="el" href="object_8h.html#a470d0e93b159810ff425aec90f47c817">RPC_BINARY_DESTRUCTOR</a>, but accepts an auxiliary <code>arg</code>. </p>
+
+<p>Definition at line <a class="el" href="object_8h_source.html#l00174">174</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -539,7 +587,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00294">294</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00303">303</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -566,7 +614,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00304">304</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00313">313</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -593,11 +641,11 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                <a class="code" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">\</a></div><div class="line"><a class="code" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">		rpc_release</a>(_old);                    \</div><div class="line">        (_old) = (_new);                    \</div><div class="line">    } <span class="keywordflow">while</span> (0)</div><div class="ttc" id="object_8h_html_aac19be935f72b35eeb2851bc509eabb2"><div class="ttname"><a href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">rpc_release</a></div><div class="ttdeci">#define rpc_release(_object)</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00304">object.h:304</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                <a class="code" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">\</a></div><div class="line"><a class="code" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">		rpc_release</a>(_old);                    \</div><div class="line">        (_old) = (_new);                    \</div><div class="line">    } <span class="keywordflow">while</span> (0)</div><div class="ttc" id="object_8h_html_aac19be935f72b35eeb2851bc509eabb2"><div class="ttname"><a href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">rpc_release</a></div><div class="ttdeci">#define rpc_release(_object)</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00313">object.h:313</a></div></div>
 </div><!-- fragment --><p>Swaps <code>_old</code> object with  object.</p>
 <p>Releases <code>_old</code> before replacing it with <code>_new</code>. </p>
 
-<p>Definition at line <a class="el" href="object_8h_source.html#l00316">316</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p>Definition at line <a class="el" href="object_8h_source.html#l00325">325</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -4054,9 +4102,11 @@ Functions</h2></td></tr>
 <p>Example: {[i,s,i],[10:b,s,1:d,u],{key:v,f,u}} Array in the middle of the example below is going to be created in the following order: indexes 0-9 are going to be padded with the NULL RPC objects, index 10 is going to contain BOOL RPC object, index 11 is going to contain a STRING RPC object, function jumps back to the index 1 and replaces NULL RPC object with the DOUBLE RPC object, function increments last index, that results in the index 2 and replaces the NULL RPC object below that index with UNSIGNED INT RPC object.</p>
 <p>Format string syntax:</p><ul>
 <li>v - Librpc object - args: rpc_object_t object</li>
+<li>V - Librpc object (increases refcount) - args: rpc_object_t object</li>
 <li>n - Null object</li>
 <li>b - Boolean object - args: bool value</li>
 <li>B - Binary object - args: void *buffer, size_t size, bool copy</li>
+<li>I - Binary object (from list of iovec) - args: struct iovec *list, size_t list_size</li>
 <li>f - File descriptor object - args: int fd</li>
 <li>i - Integer object - args: int value</li>
 <li>u - Unsigned integer object - args: unsigned int value</li>
