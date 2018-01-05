@@ -378,8 +378,6 @@ cdef class Object(object):
 
     @staticmethod
     cdef Object init_from_ptr(rpc_object_t ptr)
-    @staticmethod
-    cdef void destruct_bytes(void *arg, void *buffer) with gil
 
 
 cdef class Context(object):

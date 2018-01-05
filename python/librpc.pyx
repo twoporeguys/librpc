@@ -171,7 +171,7 @@ cdef class Object(object):
 
         if isinstance(value, (bytearray, bytes)) or force_type == ObjectType.BINARY:
             Py_INCREF(value)
-            self.obj = rpc_data_create(<char *>value, <size_t>len(value), RPC_BINARY_DESTRUCTOR_ARG(self.destruct_bytes, <void *>value))
+            self.obj = rpc_data_create(<char *>value, <size_t>len(value), RPC_BINARY_DESTRUCTOR_ARG(destruct_bytes, <void *>value))
             return
 
         if isinstance(value, (RpcException, LibException)):
@@ -267,11 +267,6 @@ cdef class Object(object):
         ret.obj = ptr
         rpc_retain(ret.obj)
         return ret
-
-    @staticmethod
-    cdef void destruct_bytes(void *arg, void *buffer) with gil:
-        cdef object value = <object>arg
-        Py_DECREF(value)
 
     def unpack(self):
         if self.type == ObjectType.DICTIONARY:
@@ -2021,6 +2016,11 @@ cdef raise_internal_exc(rpc=False):
             free(<void *>error)
 
     raise exc(errno.EFAULT, "Unknown error")
+
+
+cdef void destruct_bytes(void *arg, void *buffer) with gil:
+    cdef object value = <object>arg
+    Py_DECREF(value)
 
 
 def uint(value):
