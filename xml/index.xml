@@ -313,7 +313,7 @@
     <member refid="service_8h_1add2d357ed7db564684628b3467048431" kind="typedef"><name>rpc_function_f</name></member>
     <member refid="service_8h_1ab438f0c33f3f3876f1c9a23d62134f16" kind="typedef"><name>rpc_property_getter_t</name></member>
     <member refid="service_8h_1aa8b38d8ab3bafe79a96edaebafe13b8d" kind="typedef"><name>rpc_property_setter_t</name></member>
-    <member refid="service_8h_1ab4e251ce606775ee0d308021e939ad87" kind="typedef"><name>rpc_abort_handler_t</name></member>
+    <member refid="service_8h_1a2a9201f2a85f00328dbf01ce772d6df5" kind="typedef"><name>rpc_abort_handler_t</name></member>
     <member refid="service_8h_1aa53a346b1f60759fabc2f047e75fdb90" kind="function"><name>rpc_context_create</name></member>
     <member refid="service_8h_1a4f63ab83623a2f407eac2fe9b7f80023" kind="function"><name>rpc_context_free</name></member>
     <member refid="service_8h_1a125f2739087a2d4f89384d24fadb6cde" kind="function"><name>rpc_context_find_instance</name></member>

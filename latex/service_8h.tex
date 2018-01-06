@@ -82,7 +82,7 @@ typedef \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}
 \item 
 typedef void($^\wedge$ \hyperlink{service_8h_aa8b38d8ab3bafe79a96edaebafe13b8d}{rpc\+\_\+property\+\_\+setter\+\_\+t}) (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} value)
 \item 
-typedef void($^\wedge$ \hyperlink{service_8h_ab4e251ce606775ee0d308021e939ad87}{rpc\+\_\+abort\+\_\+handler\+\_\+t}) (void $\ast$\+\_\+\+Nonnull cookie)
+typedef void($^\wedge$ \hyperlink{service_8h_a2a9201f2a85f00328dbf01ce772d6df5}{rpc\+\_\+abort\+\_\+handler\+\_\+t}) ()
 \end{DoxyCompactItemize}
 \subsection*{Enumerations}
 \begin{DoxyCompactItemize}
@@ -151,7 +151,7 @@ void \hyperlink{service_8h_a5f0f3252a2c4e12050419519afe64e92}{rpc\+\_\+function\
 \item 
 bool \hyperlink{service_8h_ad0185b8a60875843d91ca00b3e8d4886}{rpc\+\_\+function\+\_\+should\+\_\+abort} (void $\ast$\+\_\+\+Nonnull cookie)
 \item 
-void \hyperlink{service_8h_a4b6ceb43e090fda8928a3a46e7da614a}{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler} (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nullable \hyperlink{service_8h_ab4e251ce606775ee0d308021e939ad87}{rpc\+\_\+abort\+\_\+handler\+\_\+t} handler)
+void \hyperlink{service_8h_a4b6ceb43e090fda8928a3a46e7da614a}{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler} (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nullable \hyperlink{service_8h_a2a9201f2a85f00328dbf01ce772d6df5}{rpc\+\_\+abort\+\_\+handler\+\_\+t} handler)
 \item 
 \+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_a805d705c1a9f94cf4aa04bb71a46a928}{rpc\+\_\+instance\+\_\+new} (void $\ast$\+\_\+\+Nullable arg, const char $\ast$\+\_\+\+Nonnull fmt,...)
 \item 
@@ -210,7 +210,7 @@ R\+PC service A\+PI.
 {\bfseries Value\+:}
 \begin{DoxyCode}
 ^(\textcolor{keywordtype}{void} *\_cookie) \{                      \(\backslash\)
-        \_fn(\_arg, \_cookie);                 \(\backslash\)
+        \_fn(\_arg);                      \(\backslash\)
     \}
 \end{DoxyCode}
 
@@ -416,7 +416,7 @@ Definition at line 152 of file service.\+h.
 \subsection{Typedef Documentation}
 \index{service.\+h@{service.\+h}!rpc\+\_\+abort\+\_\+handler\+\_\+t@{rpc\+\_\+abort\+\_\+handler\+\_\+t}}
 \index{rpc\+\_\+abort\+\_\+handler\+\_\+t@{rpc\+\_\+abort\+\_\+handler\+\_\+t}!service.\+h@{service.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+abort\+\_\+handler\+\_\+t}{rpc_abort_handler_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\+\_\+abort\+\_\+handler\+\_\+t) (void $\ast$\+\_\+\+Nonnull cookie)}\hypertarget{service_8h_ab4e251ce606775ee0d308021e939ad87}{}\label{service_8h_ab4e251ce606775ee0d308021e939ad87}
+\subsubsection[{\texorpdfstring{rpc\+\_\+abort\+\_\+handler\+\_\+t}{rpc_abort_handler_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\+\_\+abort\+\_\+handler\+\_\+t) ()}\hypertarget{service_8h_a2a9201f2a85f00328dbf01ce772d6df5}{}\label{service_8h_a2a9201f2a85f00328dbf01ce772d6df5}
 Asynchronous abort handler block type. 
 
 Definition at line 104 of file service.\+h.
