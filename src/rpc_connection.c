@@ -414,14 +414,13 @@ on_rpc_abort(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 
 	g_mutex_lock(&call->ric_mtx);
 	call->ric_aborted = true;
+	g_cond_broadcast(&call->ric_cv);
+	g_mutex_unlock(&call->ric_mtx);
 
 	if (call->ric_abort_handler) {
 		call->ric_abort_handler();
 		Block_release(call->ric_abort_handler);
 	}
-
-	g_cond_broadcast(&call->ric_cv);
-	g_mutex_unlock(&call->ric_mtx);
 }
 
 static void
@@ -603,14 +602,13 @@ rpc_close(rpc_connection_t conn)
 	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&icall)) {
 		g_mutex_lock(&icall->ric_mtx);
 		icall->ric_aborted = true;
+		g_cond_broadcast(&icall->ric_cv);
+		g_mutex_unlock(&icall->ric_mtx);
 
 		if (icall->ric_abort_handler) {
 			icall->ric_abort_handler();
 			Block_release(icall->ric_abort_handler);
 		}
-
-		g_cond_broadcast(&icall->ric_cv);
-		g_mutex_unlock(&icall->ric_mtx);
 	}
 
 	/* And the same for outbound calls */
