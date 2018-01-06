@@ -280,8 +280,8 @@ Functions</h2></td></tr>
 <tr class="separator:a7224c3ccac52a67ec034c6cc06e7a8b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad35c5259de4e86303083623ac0e762b8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ad35c5259de4e86303083623ac0e762b8">rpc_instance_register_event</a> (_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a> instance, const char *_Nonnull interface, const char *_Nonnull name)</td></tr>
 <tr class="separator:ad35c5259de4e86303083623ac0e762b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a419a9cd7a6cce11ec958e46d60a3aca5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a419a9cd7a6cce11ec958e46d60a3aca5">rpc_instance_property_changed</a> (_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a> instance, const char *_Nonnull interface, const char *_Nonnull name, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
-<tr class="separator:a419a9cd7a6cce11ec958e46d60a3aca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28d100b9b918d120d3d8c07a0c938932"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a28d100b9b918d120d3d8c07a0c938932">rpc_instance_property_changed</a> (_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a> instance, const char *_Nonnull interface, const char *_Nonnull name, _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
+<tr class="separator:a28d100b9b918d120d3d8c07a0c938932"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abec6b729eadcc1b83dd99b764db53a54"><td class="memItemLeft" align="right" valign="top">_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#abec6b729eadcc1b83dd99b764db53a54">rpc_property_get_instance</a> (void *_Nonnull cookie)</td></tr>
 <tr class="separator:abec6b729eadcc1b83dd99b764db53a54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2829cbce768c9d60ac83d0547dc837ed"><td class="memItemLeft" align="right" valign="top">void *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a2829cbce768c9d60ac83d0547dc837ed">rpc_property_get_arg</a> (void *_Nonnull cookie)</td></tr>
@@ -1909,7 +1909,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a419a9cd7a6cce11ec958e46d60a3aca5"></a>
+<a class="anchor" id="a28d100b9b918d120d3d8c07a0c938932"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1934,7 +1934,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramtype">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
           <td class="paramname"><em>value</em>&#160;</td>
         </tr>
         <tr>
@@ -1945,7 +1945,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Notifies the librpc layer that property value has changed.</p>
-<p>This function is used to notify remote property listneres that the value might have changed.</p>
+<p>This function is used to notify remote property listeners that the value might have changed.</p>
+<p>If <code>value</code> is <code>NULL</code>, then librpc will internally query the getter for the value.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">instance</td><td>Instance handle </td></tr>

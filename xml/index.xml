@@ -357,7 +357,7 @@
     <member refid="service_8h_1a31ae88657323ba7713051b80164eb061" kind="function"><name>rpc_instance_register_property</name></member>
     <member refid="service_8h_1a7224c3ccac52a67ec034c6cc06e7a8b7" kind="function"><name>rpc_instance_get_property_rights</name></member>
     <member refid="service_8h_1ad35c5259de4e86303083623ac0e762b8" kind="function"><name>rpc_instance_register_event</name></member>
-    <member refid="service_8h_1a419a9cd7a6cce11ec958e46d60a3aca5" kind="function"><name>rpc_instance_property_changed</name></member>
+    <member refid="service_8h_1a28d100b9b918d120d3d8c07a0c938932" kind="function"><name>rpc_instance_property_changed</name></member>
     <member refid="service_8h_1abec6b729eadcc1b83dd99b764db53a54" kind="function"><name>rpc_property_get_instance</name></member>
     <member refid="service_8h_1a2829cbce768c9d60ac83d0547dc837ed" kind="function"><name>rpc_property_get_arg</name></member>
     <member refid="service_8h_1af119057c34e0ac7b5ce6238d2551e3af" kind="function"><name>rpc_property_error</name></member>

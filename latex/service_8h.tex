@@ -183,7 +183,7 @@ int \hyperlink{service_8h_a7224c3ccac52a67ec034c6cc06e7a8b7}{rpc\+\_\+instance\+
 \item 
 int \hyperlink{service_8h_ad35c5259de4e86303083623ac0e762b8}{rpc\+\_\+instance\+\_\+register\+\_\+event} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name)
 \item 
-void \hyperlink{service_8h_a419a9cd7a6cce11ec958e46d60a3aca5}{rpc\+\_\+instance\+\_\+property\+\_\+changed} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} value)
+void \hyperlink{service_8h_a28d100b9b918d120d3d8c07a0c938932}{rpc\+\_\+instance\+\_\+property\+\_\+changed} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} value)
 \item 
 \+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_abec6b729eadcc1b83dd99b764db53a54}{rpc\+\_\+property\+\_\+get\+\_\+instance} (void $\ast$\+\_\+\+Nonnull cookie)
 \item 
@@ -1161,17 +1161,19 @@ Creates a new instance handle.
 \end{DoxyReturn}
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+property\+\_\+changed@{rpc\+\_\+instance\+\_\+property\+\_\+changed}}
 \index{rpc\+\_\+instance\+\_\+property\+\_\+changed@{rpc\+\_\+instance\+\_\+property\+\_\+changed}!service.\+h@{service.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+instance\+\_\+property\+\_\+changed(\+\_\+\+Nonnull rpc\+\_\+instance\+\_\+t instance, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nonnull rpc\+\_\+object\+\_\+t value)}{rpc_instance_property_changed(_Nonnull rpc_instance_t instance, const char *_Nonnull interface, const char *_Nonnull name, _Nonnull rpc_object_t value)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+instance\+\_\+property\+\_\+changed (
+\subsubsection[{\texorpdfstring{rpc\+\_\+instance\+\_\+property\+\_\+changed(\+\_\+\+Nonnull rpc\+\_\+instance\+\_\+t instance, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nullable rpc\+\_\+object\+\_\+t value)}{rpc_instance_property_changed(_Nonnull rpc_instance_t instance, const char *_Nonnull interface, const char *_Nonnull name, _Nullable rpc_object_t value)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+instance\+\_\+property\+\_\+changed (
 \begin{DoxyParamCaption}
 \item[{\+\_\+\+Nonnull {\bf rpc\+\_\+instance\+\_\+t}}]{instance, }
 \item[{const char $\ast$\+\_\+\+Nonnull}]{interface, }
 \item[{const char $\ast$\+\_\+\+Nonnull}]{name, }
-\item[{\+\_\+\+Nonnull {\bf rpc\+\_\+object\+\_\+t}}]{value}
+\item[{\+\_\+\+Nullable {\bf rpc\+\_\+object\+\_\+t}}]{value}
 \end{DoxyParamCaption}
-)}\hypertarget{service_8h_a419a9cd7a6cce11ec958e46d60a3aca5}{}\label{service_8h_a419a9cd7a6cce11ec958e46d60a3aca5}
+)}\hypertarget{service_8h_a28d100b9b918d120d3d8c07a0c938932}{}\label{service_8h_a28d100b9b918d120d3d8c07a0c938932}
 Notifies the librpc layer that property value has changed.
 
-This function is used to notify remote property listneres that the value might have changed.
+This function is used to notify remote property listeners that the value might have changed.
+
+If {\ttfamily value} is {\ttfamily N\+U\+LL}, then librpc will internally query the getter for the value.
 
 
 \begin{DoxyParams}{Parameters}
