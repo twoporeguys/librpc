@@ -163,6 +163,8 @@ const char $\ast$\+\_\+\+Nonnull \hyperlink{service_8h_ad1901375c6ba0463bd572396
 \item 
 int \hyperlink{service_8h_abca1b1b9d6d4a7ca012ca242e0adeafd}{rpc\+\_\+instance\+\_\+register\+\_\+interface} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface, const struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member} $\ast$\+\_\+\+Nullable vtable, void $\ast$\+\_\+\+Nullable arg)
 \item 
+void \hyperlink{service_8h_aab9955f657aeadeee70c6472300eb695}{rpc\+\_\+instance\+\_\+unregister\+\_\+interface} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface)
+\item 
 int \hyperlink{service_8h_a2a53bb90b2a657abd5d5ce7b43134ca1}{rpc\+\_\+instance\+\_\+register\+\_\+member} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface, const struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member} $\ast$\+\_\+\+Nonnull member)
 \item 
 int \hyperlink{service_8h_af75d5ffb28bdd8ea72d2470ca29ad46a}{rpc\+\_\+instance\+\_\+unregister\+\_\+member} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name)
@@ -1368,6 +1370,23 @@ Sets the description string of an instance.
 {\em fmt} & Format string \\
 \hline
 {\em ...} & Format arguments \\
+\hline
+\end{DoxyParams}
+\index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+unregister\+\_\+interface@{rpc\+\_\+instance\+\_\+unregister\+\_\+interface}}
+\index{rpc\+\_\+instance\+\_\+unregister\+\_\+interface@{rpc\+\_\+instance\+\_\+unregister\+\_\+interface}!service.\+h@{service.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+instance\+\_\+unregister\+\_\+interface(\+\_\+\+Nonnull rpc\+\_\+instance\+\_\+t instance, const char $\ast$\+\_\+\+Nonnull interface)}{rpc_instance_unregister_interface(_Nonnull rpc_instance_t instance, const char *_Nonnull interface)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+instance\+\_\+unregister\+\_\+interface (
+\begin{DoxyParamCaption}
+\item[{\+\_\+\+Nonnull {\bf rpc\+\_\+instance\+\_\+t}}]{instance, }
+\item[{const char $\ast$\+\_\+\+Nonnull}]{interface}
+\end{DoxyParamCaption}
+)}\hypertarget{service_8h_aab9955f657aeadeee70c6472300eb695}{}\label{service_8h_aab9955f657aeadeee70c6472300eb695}
+Unregisters interface {\ttfamily interface} from {\ttfamily instance} along with all interface members.
+
+
+\begin{DoxyParams}{Parameters}
+{\em instance} & Instance handle \\
+\hline
+{\em interface} & Interface name \\
 \hline
 \end{DoxyParams}
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+unregister\+\_\+member@{rpc\+\_\+instance\+\_\+unregister\+\_\+member}}

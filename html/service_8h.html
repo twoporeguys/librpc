@@ -260,6 +260,8 @@ Functions</h2></td></tr>
 <tr class="separator:ad1901375c6ba0463bd572396682ed36f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abca1b1b9d6d4a7ca012ca242e0adeafd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#abca1b1b9d6d4a7ca012ca242e0adeafd">rpc_instance_register_interface</a> (_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a> instance, const char *_Nonnull interface, const struct <a class="el" href="structrpc__if__member.html">rpc_if_member</a> *_Nullable vtable, void *_Nullable arg)</td></tr>
 <tr class="separator:abca1b1b9d6d4a7ca012ca242e0adeafd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab9955f657aeadeee70c6472300eb695"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#aab9955f657aeadeee70c6472300eb695">rpc_instance_unregister_interface</a> (_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a> instance, const char *_Nonnull interface)</td></tr>
+<tr class="separator:aab9955f657aeadeee70c6472300eb695"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a53bb90b2a657abd5d5ce7b43134ca1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a2a53bb90b2a657abd5d5ce7b43134ca1">rpc_instance_register_member</a> (_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a> instance, const char *_Nonnull interface, const struct <a class="el" href="structrpc__if__member.html">rpc_if_member</a> *_Nonnull member)</td></tr>
 <tr class="separator:a2a53bb90b2a657abd5d5ce7b43134ca1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af75d5ffb28bdd8ea72d2470ca29ad46a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#af75d5ffb28bdd8ea72d2470ca29ad46a">rpc_instance_unregister_member</a> (_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a> instance, const char *_Nonnull interface, const char *_Nonnull name)</td></tr>
@@ -2305,6 +2307,40 @@ Functions</h2></td></tr>
     <tr><td class="paramname">instance</td><td>Instance handle </td></tr>
     <tr><td class="paramname">fmt</td><td>Format string </td></tr>
     <tr><td class="paramname">...</td><td>Format arguments </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="aab9955f657aeadeee70c6472300eb695"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rpc_instance_unregister_interface </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a>&#160;</td>
+          <td class="paramname"><em>instance</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *_Nonnull&#160;</td>
+          <td class="paramname"><em>interface</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Unregisters interface <code>interface</code> from <code>instance</code> along with all interface members.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">instance</td><td>Instance handle </td></tr>
+    <tr><td class="paramname">interface</td><td>Interface name </td></tr>
   </table>
   </dd>
 </dl>
