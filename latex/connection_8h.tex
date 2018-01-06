@@ -56,6 +56,7 @@ enum \hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccd}{rpc\+\_\+error\
 \\*
 \hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d}{R\+P\+C\+\_\+\+S\+P\+U\+R\+I\+O\+U\+S\+\_\+\+R\+E\+S\+P\+O\+N\+SE}, 
 \hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b}{R\+P\+C\+\_\+\+L\+O\+G\+O\+UT}, 
+\hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccdaa65128c99a09232a14eb3e587d2cba8e}{R\+P\+C\+\_\+\+T\+R\+A\+N\+S\+P\+O\+R\+T\+\_\+\+E\+R\+R\+OR}, 
 \hyperlink{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1}{R\+P\+C\+\_\+\+O\+T\+H\+ER}
  \}
 \item 
@@ -160,7 +161,7 @@ R\+PC connection A\+PI.
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_a46a9d83415588d615d554fdc3455c969}{rpc\+\_\+callback\+\_\+t} block type. 
 
-Definition at line 126 of file connection.\+h.
+Definition at line 127 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER}}
 \index{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER}!connection.\+h@{connection.\+h}}
@@ -178,7 +179,7 @@ Definition at line 126 of file connection.\+h.
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_ad84e18a0f030d415f1ac06697fe93525}{rpc\+\_\+error\+\_\+handler\+\_\+t} block type. 
 
-Definition at line 118 of file connection.\+h.
+Definition at line 119 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER}}
 \index{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER}!connection.\+h@{connection.\+h}}
@@ -197,7 +198,7 @@ Definition at line 118 of file connection.\+h.
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}{rpc\+\_\+handler\+\_\+t} block type. 
 
-Definition at line 109 of file connection.\+h.
+Definition at line 110 of file connection.\+h.
 
 
 
@@ -210,21 +211,21 @@ Enumerates possible remote procedure call status values. \index{connection.\+h@{
 \subsubsection[{\texorpdfstring{rpc\+\_\+call\+\_\+t}{rpc_call_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct rpc\+\_\+call$\ast$ {\bf rpc\+\_\+call\+\_\+t}}\hypertarget{connection_8h_aeb6f25e395cc04930537960ef6b50106}{}\label{connection_8h_aeb6f25e395cc04930537960ef6b50106}
 Definition of R\+PC call pointer. 
 
-Definition at line 86 of file connection.\+h.
+Definition at line 87 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+callback\+\_\+t@{rpc\+\_\+callback\+\_\+t}}
 \index{rpc\+\_\+callback\+\_\+t@{rpc\+\_\+callback\+\_\+t}!connection.\+h@{connection.\+h}}
 \subsubsection[{\texorpdfstring{rpc\+\_\+callback\+\_\+t}{rpc_callback_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef bool($^\wedge$ rpc\+\_\+callback\+\_\+t) (\+\_\+\+Nullable {\bf rpc\+\_\+object\+\_\+t} args, {\bf rpc\+\_\+call\+\_\+status\+\_\+t} status)}\hypertarget{connection_8h_a46a9d83415588d615d554fdc3455c969}{}\label{connection_8h_a46a9d83415588d615d554fdc3455c969}
 Definition of R\+PC callback block type. 
 
-Definition at line 104 of file connection.\+h.
+Definition at line 105 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+t@{rpc\+\_\+connection\+\_\+t}}
 \index{rpc\+\_\+connection\+\_\+t@{rpc\+\_\+connection\+\_\+t}!connection.\+h@{connection.\+h}}
 \subsubsection[{\texorpdfstring{rpc\+\_\+connection\+\_\+t}{rpc_connection_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct rpc\+\_\+connection$\ast$ {\bf rpc\+\_\+connection\+\_\+t}}\hypertarget{connection_8h_a70838cb106c3464db299522c5fe2782d}{}\label{connection_8h_a70838cb106c3464db299522c5fe2782d}
 Definition of R\+PC connection pointer. 
 
-Definition at line 81 of file connection.\+h.
+Definition at line 82 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+error\+\_\+code\+\_\+t@{rpc\+\_\+error\+\_\+code\+\_\+t}}
 \index{rpc\+\_\+error\+\_\+code\+\_\+t@{rpc\+\_\+error\+\_\+code\+\_\+t}!connection.\+h@{connection.\+h}}
@@ -234,14 +235,14 @@ Enumerates possible R\+PC error codes. \index{connection.\+h@{connection.\+h}!rp
 \subsubsection[{\texorpdfstring{rpc\+\_\+error\+\_\+handler\+\_\+t}{rpc_error_handler_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\+\_\+error\+\_\+handler\+\_\+t) ({\bf rpc\+\_\+error\+\_\+code\+\_\+t} code, \+\_\+\+Nullable {\bf rpc\+\_\+object\+\_\+t} args)}\hypertarget{connection_8h_ad84e18a0f030d415f1ac06697fe93525}{}\label{connection_8h_ad84e18a0f030d415f1ac06697fe93525}
 Definition of R\+PC error handler block type. 
 
-Definition at line 98 of file connection.\+h.
+Definition at line 99 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+handler\+\_\+t@{rpc\+\_\+handler\+\_\+t}}
 \index{rpc\+\_\+handler\+\_\+t@{rpc\+\_\+handler\+\_\+t}!connection.\+h@{connection.\+h}}
 \subsubsection[{\texorpdfstring{rpc\+\_\+handler\+\_\+t}{rpc_handler_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\+\_\+handler\+\_\+t) (const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nonnull {\bf rpc\+\_\+object\+\_\+t} args)}\hypertarget{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}{}\label{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}
 Definition of R\+PC event handler block type. 
 
-Definition at line 91 of file connection.\+h.
+Definition at line 92 of file connection.\+h.
 
 
 
@@ -268,7 +269,7 @@ R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+E\+N\+D\+ED\hypertarget{connection_8h_a22306445
 \end{Desc}
 
 
-Definition at line 68 of file connection.\+h.
+Definition at line 69 of file connection.\+h.
 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+error\+\_\+code@{rpc\+\_\+error\+\_\+code}}
 \index{rpc\+\_\+error\+\_\+code@{rpc\+\_\+error\+\_\+code}!connection.\+h@{connection.\+h}}
@@ -288,7 +289,9 @@ R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+T\+I\+M\+E\+O\+UT\hypertarget{connection_8h_a88
 R\+P\+C\+\_\+\+S\+P\+U\+R\+I\+O\+U\+S\+\_\+\+R\+E\+S\+P\+O\+N\+SE\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d}{}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d}
 }]Response to unknown request \index{R\+P\+C\+\_\+\+L\+O\+G\+O\+UT@{R\+P\+C\+\_\+\+L\+O\+G\+O\+UT}!connection.\+h@{connection.\+h}}\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+L\+O\+G\+O\+UT@{R\+P\+C\+\_\+\+L\+O\+G\+O\+UT}}\item[{\em 
 R\+P\+C\+\_\+\+L\+O\+G\+O\+UT\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b}{}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b}
-}]Logged out by server \index{R\+P\+C\+\_\+\+O\+T\+H\+ER@{R\+P\+C\+\_\+\+O\+T\+H\+ER}!connection.\+h@{connection.\+h}}\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+O\+T\+H\+ER@{R\+P\+C\+\_\+\+O\+T\+H\+ER}}\item[{\em 
+}]Logged out by server \index{R\+P\+C\+\_\+\+T\+R\+A\+N\+S\+P\+O\+R\+T\+\_\+\+E\+R\+R\+OR@{R\+P\+C\+\_\+\+T\+R\+A\+N\+S\+P\+O\+R\+T\+\_\+\+E\+R\+R\+OR}!connection.\+h@{connection.\+h}}\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+T\+R\+A\+N\+S\+P\+O\+R\+T\+\_\+\+E\+R\+R\+OR@{R\+P\+C\+\_\+\+T\+R\+A\+N\+S\+P\+O\+R\+T\+\_\+\+E\+R\+R\+OR}}\item[{\em 
+R\+P\+C\+\_\+\+T\+R\+A\+N\+S\+P\+O\+R\+T\+\_\+\+E\+R\+R\+OR\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccdaa65128c99a09232a14eb3e587d2cba8e}{}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccdaa65128c99a09232a14eb3e587d2cba8e}
+}]Transport-\/specific error \index{R\+P\+C\+\_\+\+O\+T\+H\+ER@{R\+P\+C\+\_\+\+O\+T\+H\+ER}!connection.\+h@{connection.\+h}}\index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+O\+T\+H\+ER@{R\+P\+C\+\_\+\+O\+T\+H\+ER}}\item[{\em 
 R\+P\+C\+\_\+\+O\+T\+H\+ER\hypertarget{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1}{}\label{connection_8h_a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1}
 }]Other or unknown reason \end{description}
 \end{Desc}

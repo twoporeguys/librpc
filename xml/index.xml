@@ -62,6 +62,7 @@
     <member refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70" kind="enumvalue"><name>RPC_CALL_TIMEOUT</name></member>
     <member refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d" kind="enumvalue"><name>RPC_SPURIOUS_RESPONSE</name></member>
     <member refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda27f60e17ed6dc1019e2beec97e597c9b" kind="enumvalue"><name>RPC_LOGOUT</name></member>
+    <member refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccdaa65128c99a09232a14eb3e587d2cba8e" kind="enumvalue"><name>RPC_TRANSPORT_ERROR</name></member>
     <member refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1" kind="enumvalue"><name>RPC_OTHER</name></member>
     <member refid="connection_8h_1a22306445a7503bab94835382d07e0410" kind="enum"><name>rpc_call_status</name></member>
     <member refid="connection_8h_1a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1" kind="enumvalue"><name>RPC_CALL_IN_PROGRESS</name></member>

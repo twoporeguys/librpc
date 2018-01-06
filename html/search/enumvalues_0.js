@@ -20,6 +20,7 @@ var searchData=
   ['rpc_5fproperty_5fread',['RPC_PROPERTY_READ',['../service_8h.html#ae93cefa938d7efd2095f73e9dcdf8926a2573aa57a92525ca22dad5ff517bc9d0',1,'service.h']]],
   ['rpc_5fproperty_5fwrite',['RPC_PROPERTY_WRITE',['../service_8h.html#ae93cefa938d7efd2095f73e9dcdf8926aea82a0471278ee17a5ea4b53afb43aee',1,'service.h']]],
   ['rpc_5fspurious_5fresponse',['RPC_SPURIOUS_RESPONSE',['../connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda8efbac3939ec6e713c533b113ebb741d',1,'connection.h']]],
+  ['rpc_5ftransport_5ferror',['RPC_TRANSPORT_ERROR',['../connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccdaa65128c99a09232a14eb3e587d2cba8e',1,'connection.h']]],
   ['rpc_5ftype_5farray',['RPC_TYPE_ARRAY',['../object_8h.html#a40ea3143863f0a2b47446ccaf655638eab4f0a2ba87efaf952a1008c0771d7f5a',1,'object.h']]],
   ['rpc_5ftype_5fbinary',['RPC_TYPE_BINARY',['../object_8h.html#a40ea3143863f0a2b47446ccaf655638ea25c2db26d03cddd947fd0b9486c66858',1,'object.h']]],
   ['rpc_5ftype_5fbool',['RPC_TYPE_BOOL',['../object_8h.html#a40ea3143863f0a2b47446ccaf655638ea318fdf911250c3ae135bb51839ff033d',1,'object.h']]],
