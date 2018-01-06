@@ -701,8 +701,11 @@ int rpc_instance_register_event(_Nonnull rpc_instance_t instance,
 /**
  * Notifies the librpc layer that property value has changed.
  *
- * This function is used to notify remote property listneres that the
+ * This function is used to notify remote property listeners that the
  * value might have changed.
+ *
+ * If @p value is @p NULL, then librpc will internally query the getter
+ * for the value.
  *
  * @param instance Instance handle
  * @param interface Interface name
@@ -711,7 +714,7 @@ int rpc_instance_register_event(_Nonnull rpc_instance_t instance,
  */
 void rpc_instance_property_changed(_Nonnull rpc_instance_t instance,
     const char *_Nonnull interface, const char *_Nonnull name,
-    _Nonnull rpc_object_t value);
+    _Nullable rpc_object_t value);
 
 /**
  * Returns instance associated with the getter or setter call.
