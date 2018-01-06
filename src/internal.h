@@ -300,6 +300,7 @@ struct rpc_instance
 	GHashTable *		ri_subscriptions;
 	GHashTable *		ri_properties;
 	GMutex			ri_mtx;
+	GRWLock			ri_rwlock;
 };
 
 struct rpc_interface_priv
