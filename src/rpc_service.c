@@ -572,6 +572,9 @@ rpc_instance_register_interface(rpc_instance_t instance,
 	g_hash_table_insert(instance->ri_interfaces, priv->rip_name, priv);
 	g_rw_lock_writer_unlock(&instance->ri_rwlock);
 
+	rpc_instance_emit_event(instance, RPC_INTROSPECTABLE_INTERFACE,
+	    "interface_added", rpc_string_create(interface));
+
 	if (vtable == NULL)
 		return (0);
 
@@ -588,6 +591,9 @@ rpc_instance_unregister_interface(rpc_instance_t instance,
 	g_rw_lock_writer_lock(&instance->ri_rwlock);
 	g_hash_table_remove(instance->ri_interfaces, interface);
 	g_rw_lock_writer_unlock(&instance->ri_rwlock);
+
+	rpc_instance_emit_event(instance, RPC_INTROSPECTABLE_INTERFACE,
+	    "interface_removed", rpc_string_create(interface));
 }
 
 int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
