@@ -570,6 +570,16 @@ int rpc_instance_register_interface(_Nonnull rpc_instance_t instance,
     const struct rpc_if_member *_Nullable vtable, void *_Nullable arg);
 
 /**
+ * Unregisters interface @p interface from @p instance along with all
+ * interface members.
+ *
+ * @param instance Instance handle
+ * @param interface Interface name
+ */
+void rpc_instance_unregister_interface(_Nonnull rpc_instance_t instance,
+    const char *_Nonnull interface);
+
+/**
  * Registers a single member of interface @p interface under @p instance.
  *
  * @param instance Intance handle
