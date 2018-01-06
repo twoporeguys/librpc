@@ -59,6 +59,7 @@ typedef enum rpc_error_code
 	RPC_CALL_TIMEOUT,		/**< Request timed out */
 	RPC_SPURIOUS_RESPONSE,		/**< Response to unknown request */
 	RPC_LOGOUT,			/**< Logged out by server */
+	RPC_TRANSPORT_ERROR,		/**< Transport-specific error */
 	RPC_OTHER			/**< Other or unknown reason */
 } rpc_error_code_t;
 
