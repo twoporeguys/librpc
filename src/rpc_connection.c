@@ -416,7 +416,7 @@ on_rpc_abort(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 	call->ric_aborted = true;
 
 	if (call->ric_abort_handler) {
-		call->ric_abort_handler(call);
+		call->ric_abort_handler();
 		Block_release(call->ric_abort_handler);
 	}
 
