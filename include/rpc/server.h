@@ -59,7 +59,7 @@ typedef void (^rpc_server_event_handler_t)(_Nonnull rpc_connection_t source,
     const char *_Nonnull name, _Nonnull rpc_object_t args);
 
 /**
- * Converts function pointer to a ::rpc_server_event_handler_t block type.
+ * Converts function pointer to a @ref rpc_server_event_handler_t block type.
  */
 #define	RPC_SERVER_HANDLER(_fn, _arg) 						\
 	^(rpc_connection_t _source, const char *_name, rpc_object_t _args) {	\

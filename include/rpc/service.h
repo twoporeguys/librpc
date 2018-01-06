@@ -99,6 +99,11 @@ typedef void (^rpc_property_setter_t)(void *_Nonnull cookie,
     _Nonnull rpc_object_t value);
 
 /**
+ * Asynchronous abort handler block type.
+ */
+typedef void (^rpc_abort_handler_t)(void *_Nonnull cookie);
+
+/**
  * A macro to convert function pointer into @ref rpc_function_t block.
  */
 #define	RPC_FUNCTION(_fn)						\
@@ -114,6 +119,11 @@ typedef void (^rpc_property_setter_t)(void *_Nonnull cookie,
 #define	RPC_PROPERTY_SETTER(_fn)					\
 	^(void *_cookie, rpc_object_t _value) {				\
 		_fn(_cookie, _value);					\
+	}
+
+#define	RPC_ABORT_HANDLER(_fn, _arg)					\
+	^(void *_cookie) {						\
+		_fn(_arg, _cookie);					\
 	}
 
 #define	RPC_EVENT(_name)						\
@@ -499,6 +509,16 @@ void rpc_function_end(void *_Nonnull cookie);
  * @return Whether or not function should abort
  */
 bool rpc_function_should_abort(void *_Nonnull cookie);
+
+/**
+ * Sets a callback to be called when running method got an abort signal
+ * from the client.
+ *
+ * @param cookie Running call handle
+ * @param handler Abort handling block
+ */
+void rpc_function_set_async_abort_handler(void *_Nonnull cookie,
+    _Nullable rpc_abort_handler_t handler);
 
 /**
  * Creates a new instance handle.
