@@ -602,6 +602,8 @@ rpc_close(rpc_connection_t conn)
 	if (conn->rco_error_handler)
 		conn->rco_error_handler(RPC_CONNECTION_CLOSED, NULL);
 
+	g_mutex_lock(&conn->rco_call_mtx);
+
 	/* Tear down all the running inbound calls */
 	g_hash_table_iter_init(&iter, conn->rco_inbound_calls);
 	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&icall)) {
@@ -617,7 +619,6 @@ rpc_close(rpc_connection_t conn)
 	}
 
 	/* And the same for outbound calls */
-	g_mutex_lock(&conn->rco_call_mtx);
 	g_hash_table_iter_init(&iter, conn->rco_calls);
 	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&call)) {
 		g_mutex_lock(&call->rc_mtx);
@@ -628,8 +629,8 @@ rpc_close(rpc_connection_t conn)
 		g_cond_broadcast(&call->rc_cv);
 		g_mutex_unlock(&call->rc_mtx);
 	}
-	g_mutex_unlock(&conn->rco_call_mtx);
 
+	g_mutex_unlock(&conn->rco_call_mtx);
 	return (0);
 }
 
@@ -899,8 +900,10 @@ rpc_connection_close(rpc_connection_t conn)
 	conn->rco_closed = true;
 	conn->rco_abort(conn->rco_arg);
 	conn->rco_release(conn->rco_arg);
+	g_mutex_lock(&conn->rco_call_mtx);
 	g_hash_table_destroy(conn->rco_calls);
 	g_hash_table_destroy(conn->rco_inbound_calls);
+	g_mutex_unlock(&conn->rco_call_mtx);
 	g_ptr_array_free(conn->rco_subscriptions, true);
 
 	if (conn->rco_callback_pool != NULL)
@@ -1432,9 +1435,10 @@ rpc_call_result(rpc_call_t call)
 void
 rpc_call_free(rpc_call_t call)
 {
-
+	g_mutex_lock(&call->rc_conn->rco_call_mtx);
 	g_hash_table_remove(call->rc_conn->rco_calls,
 	    (gpointer)rpc_string_get_string_ptr(call->rc_id));
+	g_mutex_unlock(&call->rc_conn->rco_call_mtx);
 	g_source_unref(call->rc_timeout);
 	rpc_release(call->rc_id);
 	rpc_release(call->rc_args);
