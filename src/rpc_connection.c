@@ -603,6 +603,12 @@ rpc_close(rpc_connection_t conn)
 	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&icall)) {
 		g_mutex_lock(&icall->ric_mtx);
 		icall->ric_aborted = true;
+
+		if (icall->ric_abort_handler) {
+			icall->ric_abort_handler();
+			Block_release(icall->ric_abort_handler);
+		}
+
 		g_cond_broadcast(&icall->ric_cv);
 		g_mutex_unlock(&icall->ric_mtx);
 	}
