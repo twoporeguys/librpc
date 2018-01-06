@@ -568,16 +568,14 @@ rpc_instance_register_interface(rpc_instance_t instance,
 
 	g_rw_lock_writer_lock(&instance->ri_rwlock);
 	g_hash_table_insert(instance->ri_interfaces, priv->rip_name, priv);
+	g_rw_lock_writer_unlock(&instance->ri_rwlock);
 
-	if (vtable == NULL) {
-		g_rw_lock_writer_unlock(&instance->ri_rwlock);
+	if (vtable == NULL)
 		return (0);
-	}
 
 	for (member = &vtable[0]; member->rim_name != NULL; member++)
 		rpc_instance_register_member(instance, interface, member);
 
-	g_rw_lock_writer_unlock(&instance->ri_rwlock);
 	return (0);
 }
 
