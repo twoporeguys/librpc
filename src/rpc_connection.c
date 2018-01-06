@@ -596,7 +596,7 @@ rpc_close(rpc_connection_t conn)
 	rpc_object_t err;
 
 	err = rpc_get_last_error();
-	if (err != NULL)
+	if (conn->rco_error_handler && err != NULL)
 		conn->rco_error_handler(RPC_TRANSPORT_ERROR, err);
 
 	if (conn->rco_error_handler)
