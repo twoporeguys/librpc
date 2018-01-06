@@ -53,6 +53,8 @@ static const struct rpc_if_member rpc_discoverable_vtable[] = {
 };
 
 static const struct rpc_if_member rpc_introspectable_vtable[] = {
+	RPC_EVENT(interface_added),
+	RPC_EVENT(interface_removed),
 	RPC_METHOD(get_interfaces, rpc_get_interfaces),
 	RPC_METHOD(get_methods, rpc_get_methods),
 	RPC_METHOD(interface_exists, rpc_interface_exists),
@@ -577,6 +579,15 @@ rpc_instance_register_interface(rpc_instance_t instance,
 		rpc_instance_register_member(instance, interface, member);
 
 	return (0);
+}
+
+void
+rpc_instance_unregister_interface(rpc_instance_t instance,
+    const char *interface)
+{
+	g_rw_lock_writer_lock(&instance->ri_rwlock);
+	g_hash_table_remove(instance->ri_interfaces, interface);
+	g_rw_lock_writer_unlock(&instance->ri_rwlock);
 }
 
 int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
