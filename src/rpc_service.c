@@ -448,6 +448,14 @@ rpc_function_should_abort(void *cookie)
 	return (call->ric_aborted);
 }
 
+void rpc_function_set_async_abort_handler(void *_Nonnull cookie,
+    _Nullable rpc_abort_handler_t handler)
+{
+	struct rpc_inbound_call *call = cookie;
+
+	call->ric_abort_handler = Block_copy(handler);
+}
+
 rpc_instance_t
 rpc_instance_new(void *arg, const char *fmt, ...)
 {

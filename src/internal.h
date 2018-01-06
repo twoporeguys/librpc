@@ -200,6 +200,7 @@ struct rpc_inbound_call
 	rpc_instance_t 		ric_instance;
 	rpc_object_t        	ric_id;
 	rpc_object_t        	ric_args;
+	rpc_abort_handler_t	ric_abort_handler;
 	const char *        	ric_name;
 	const char *		ric_interface;
 	const char *		ric_path;
