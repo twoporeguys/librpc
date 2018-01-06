@@ -593,6 +593,11 @@ rpc_close(rpc_connection_t conn)
 	char *key;
 	struct rpc_inbound_call *icall;
 	struct rpc_call *call;
+	rpc_object_t err;
+
+	err = rpc_get_last_error();
+	if (err != NULL)
+		conn->rco_error_handler(RPC_TRANSPORT_ERROR, err);
 
 	if (conn->rco_error_handler)
 		conn->rco_error_handler(RPC_CONNECTION_CLOSED, NULL);
@@ -828,8 +833,8 @@ rpc_connection_alloc(rpc_server_t server)
 	conn->rco_inbound_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_subscriptions = g_ptr_array_new();
 	conn->rco_rpc_timeout = DEFAULT_RPC_TIMEOUT;
-	conn->rco_recv_msg = &rpc_recv_msg;
-	conn->rco_close = &rpc_close;
+	conn->rco_recv_msg = rpc_recv_msg;
+	conn->rco_close = rpc_close;
 	conn->rco_closed = false;
 	g_mutex_init(&conn->rco_send_mtx);
 
@@ -865,8 +870,8 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	conn->rco_inbound_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_subscriptions = g_ptr_array_new();
 	conn->rco_rpc_timeout = DEFAULT_RPC_TIMEOUT;
-	conn->rco_recv_msg = &rpc_recv_msg;
-	conn->rco_close = &rpc_close;
+	conn->rco_recv_msg = rpc_recv_msg;
+	conn->rco_close = rpc_close;
 	conn->rco_callback_pool = g_thread_pool_new(&rpc_callback_worker, conn,
 	    g_get_num_processors(), false, &err);
 

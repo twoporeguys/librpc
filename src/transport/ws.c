@@ -45,6 +45,7 @@ static void ws_process_banner(SoupServer *, SoupMessage *, const char *,
     GHashTable *, SoupClientContext *, gpointer);
 static void ws_process_connection(SoupServer *, SoupWebsocketConnection *,
     const char *, SoupClientContext *, gpointer);
+static void ws_error(SoupWebsocketConnection *, GError *, gpointer);
 static void ws_close(SoupWebsocketConnection *, gpointer);
 static int ws_abort(void *);
 static int ws_get_fd(void *);
@@ -62,6 +63,7 @@ struct ws_connection
     	GMutex				wc_mtx;
     	GCond				wc_cv;
     	GError *			wc_connect_err;
+	GError *			wc_last_err;
 	GSocketClient *			wc_client;
 	GSocketConnection *		wc_conn;
     	SoupSession *			wc_session;
@@ -234,6 +236,7 @@ ws_process_connection(SoupServer *ss __unused,
 
 	g_object_ref(conn->wc_ws);
 	g_signal_connect(conn->wc_ws, "closed", G_CALLBACK(ws_close), conn);
+	g_signal_connect(conn->wc_ws, "error", G_CALLBACK(ws_error), conn);
 	g_signal_connect(conn->wc_ws, "message",
 	    G_CALLBACK(ws_receive_message), conn);
 }
@@ -252,11 +255,23 @@ ws_receive_message(SoupWebsocketConnection *ws __unused,
 }
 
 static void
-ws_close(SoupWebsocketConnection *ws, gpointer user_data)
+ws_error(SoupWebsocketConnection *ws __unused, GError *error, gpointer user_data)
+{
+	struct ws_connection *conn = user_data;
+
+	conn->wc_last_err = error;
+}
+
+static void
+ws_close(SoupWebsocketConnection *ws __unused, gpointer user_data)
 {
 	struct ws_connection *conn = user_data;
 
 	debugf("closed: conn=%p", conn);
+
+	if (conn->wc_last_err != NULL)
+		rpc_set_last_gerror(conn->wc_last_err);
+
 	conn->wc_parent->rco_close(conn->wc_parent);
 }
 
