@@ -50,6 +50,8 @@ struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member}
 \item 
 \#define {\bfseries R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+S\+E\+T\+T\+ER}(\+\_\+fn)
 \item 
+\#define {\bfseries R\+P\+C\+\_\+\+A\+B\+O\+R\+T\+\_\+\+H\+A\+N\+D\+L\+ER}(\+\_\+fn,  \+\_\+arg)
+\item 
 \#define {\bfseries R\+P\+C\+\_\+\+E\+V\+E\+NT}(\+\_\+name)
 \item 
 \#define \hyperlink{service_8h_acbb40848a04a99a67fa65f1a103af208}{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+RO}(\+\_\+name,  \+\_\+getter)
@@ -79,6 +81,8 @@ typedef \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}
 typedef \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}($^\wedge$ \hyperlink{service_8h_ab438f0c33f3f3876f1c9a23d62134f16}{rpc\+\_\+property\+\_\+getter\+\_\+t}) (void $\ast$\+\_\+\+Nonnull cookie)
 \item 
 typedef void($^\wedge$ \hyperlink{service_8h_aa8b38d8ab3bafe79a96edaebafe13b8d}{rpc\+\_\+property\+\_\+setter\+\_\+t}) (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} value)
+\item 
+typedef void($^\wedge$ \hyperlink{service_8h_ab4e251ce606775ee0d308021e939ad87}{rpc\+\_\+abort\+\_\+handler\+\_\+t}) (void $\ast$\+\_\+\+Nonnull cookie)
 \end{DoxyCompactItemize}
 \subsection*{Enumerations}
 \begin{DoxyCompactItemize}
@@ -147,6 +151,8 @@ void \hyperlink{service_8h_a5f0f3252a2c4e12050419519afe64e92}{rpc\+\_\+function\
 \item 
 bool \hyperlink{service_8h_ad0185b8a60875843d91ca00b3e8d4886}{rpc\+\_\+function\+\_\+should\+\_\+abort} (void $\ast$\+\_\+\+Nonnull cookie)
 \item 
+void \hyperlink{service_8h_a4b6ceb43e090fda8928a3a46e7da614a}{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler} (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nullable \hyperlink{service_8h_ab4e251ce606775ee0d308021e939ad87}{rpc\+\_\+abort\+\_\+handler\+\_\+t} handler)
+\item 
 \+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_a805d705c1a9f94cf4aa04bb71a46a928}{rpc\+\_\+instance\+\_\+new} (void $\ast$\+\_\+\+Nullable arg, const char $\ast$\+\_\+\+Nonnull fmt,...)
 \item 
 void \hyperlink{service_8h_a913a58356a0366081127227d15a74cc4}{rpc\+\_\+instance\+\_\+set\+\_\+description} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull fmt,...)
@@ -193,6 +199,24 @@ void \hyperlink{service_8h_aecd81447bced207f9d62b7fbf55cb4c1}{rpc\+\_\+instance\
 R\+PC service A\+PI. 
 
 \subsection{Macro Definition Documentation}
+\index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+A\+B\+O\+R\+T\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+A\+B\+O\+R\+T\+\_\+\+H\+A\+N\+D\+L\+ER}}
+\index{R\+P\+C\+\_\+\+A\+B\+O\+R\+T\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+A\+B\+O\+R\+T\+\_\+\+H\+A\+N\+D\+L\+ER}!service.\+h@{service.\+h}}
+\subsubsection[{\texorpdfstring{R\+P\+C\+\_\+\+A\+B\+O\+R\+T\+\_\+\+H\+A\+N\+D\+L\+ER}{RPC_ABORT_HANDLER}}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\+P\+C\+\_\+\+A\+B\+O\+R\+T\+\_\+\+H\+A\+N\+D\+L\+ER(
+\begin{DoxyParamCaption}
+\item[{}]{\+\_\+fn, }
+\item[{}]{\+\_\+arg}
+\end{DoxyParamCaption}
+)}\hypertarget{service_8h_a48571f82fd8c922efdce9b1a13c782df}{}\label{service_8h_a48571f82fd8c922efdce9b1a13c782df}
+{\bfseries Value\+:}
+\begin{DoxyCode}
+^(\textcolor{keywordtype}{void} *\_cookie) \{                      \(\backslash\)
+        \_fn(\_arg, \_cookie);                 \(\backslash\)
+    \}
+\end{DoxyCode}
+
+
+Definition at line 124 of file service.\+h.
+
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+E\+V\+E\+NT@{R\+P\+C\+\_\+\+E\+V\+E\+NT}}
 \index{R\+P\+C\+\_\+\+E\+V\+E\+NT@{R\+P\+C\+\_\+\+E\+V\+E\+NT}!service.\+h@{service.\+h}}
 \subsubsection[{\texorpdfstring{R\+P\+C\+\_\+\+E\+V\+E\+NT}{RPC_EVENT}}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\+P\+C\+\_\+\+E\+V\+E\+NT(
@@ -209,7 +233,7 @@ R\+PC service A\+PI.
 \end{DoxyCode}
 
 
-Definition at line 119 of file service.\+h.
+Definition at line 129 of file service.\+h.
 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+F\+U\+N\+C\+T\+I\+ON@{R\+P\+C\+\_\+\+F\+U\+N\+C\+T\+I\+ON}}
 \index{R\+P\+C\+\_\+\+F\+U\+N\+C\+T\+I\+ON@{R\+P\+C\+\_\+\+F\+U\+N\+C\+T\+I\+ON}!service.\+h@{service.\+h}}
@@ -226,7 +250,7 @@ Definition at line 119 of file service.\+h.
 \end{DoxyCode}
 A macro to convert function pointer into \hyperlink{service_8h_ae49a22468cfcd4adfa558078e9e4e312}{rpc\+\_\+function\+\_\+t} block. 
 
-Definition at line 104 of file service.\+h.
+Definition at line 109 of file service.\+h.
 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+F\+U\+N\+C\+T\+I\+O\+N\+\_\+\+S\+T\+I\+L\+L\+\_\+\+R\+U\+N\+N\+I\+NG@{R\+P\+C\+\_\+\+F\+U\+N\+C\+T\+I\+O\+N\+\_\+\+S\+T\+I\+L\+L\+\_\+\+R\+U\+N\+N\+I\+NG}}
 \index{R\+P\+C\+\_\+\+F\+U\+N\+C\+T\+I\+O\+N\+\_\+\+S\+T\+I\+L\+L\+\_\+\+R\+U\+N\+N\+I\+NG@{R\+P\+C\+\_\+\+F\+U\+N\+C\+T\+I\+O\+N\+\_\+\+S\+T\+I\+L\+L\+\_\+\+R\+U\+N\+N\+I\+NG}!service.\+h@{service.\+h}}
@@ -256,7 +280,7 @@ Definition at line 51 of file service.\+h.
 \end{DoxyCode}
 A convenience macro to declare R\+PC method in the vtable array. 
 
-Definition at line 170 of file service.\+h.
+Definition at line 180 of file service.\+h.
 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+M\+E\+T\+H\+O\+D\+\_\+\+B\+L\+O\+CK@{R\+P\+C\+\_\+\+M\+E\+T\+H\+O\+D\+\_\+\+B\+L\+O\+CK}}
 \index{R\+P\+C\+\_\+\+M\+E\+T\+H\+O\+D\+\_\+\+B\+L\+O\+CK@{R\+P\+C\+\_\+\+M\+E\+T\+H\+O\+D\+\_\+\+B\+L\+O\+CK}!service.\+h@{service.\+h}}
@@ -278,7 +302,7 @@ Definition at line 170 of file service.\+h.
 \end{DoxyCode}
 Same as \hyperlink{service_8h_a3b7ed0fba131ae55d90cbf5deb8cba5d}{R\+P\+C\+\_\+\+M\+E\+T\+H\+OD}, but takes a block instead of a function pointer. 
 
-Definition at line 184 of file service.\+h.
+Definition at line 194 of file service.\+h.
 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+G\+E\+T\+T\+ER@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+G\+E\+T\+T\+ER}}
 \index{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+G\+E\+T\+T\+ER@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+G\+E\+T\+T\+ER}!service.\+h@{service.\+h}}
@@ -295,7 +319,7 @@ Definition at line 184 of file service.\+h.
 \end{DoxyCode}
 
 
-Definition at line 109 of file service.\+h.
+Definition at line 114 of file service.\+h.
 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+RO@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+RO}}
 \index{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+RO@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+RO}!service.\+h@{service.\+h}}
@@ -319,7 +343,7 @@ Definition at line 109 of file service.\+h.
 \end{DoxyCode}
 A convenience macro to declare read-\/only property in the vtable array. 
 
-Definition at line 128 of file service.\+h.
+Definition at line 138 of file service.\+h.
 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+RW@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+RW}}
 \index{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+RW@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+RW}!service.\+h@{service.\+h}}
@@ -344,7 +368,7 @@ Definition at line 128 of file service.\+h.
 \end{DoxyCode}
 A convenience macro to declare read-\/write property in the vtable array. 
 
-Definition at line 156 of file service.\+h.
+Definition at line 166 of file service.\+h.
 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+S\+E\+T\+T\+ER@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+S\+E\+T\+T\+ER}}
 \index{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+S\+E\+T\+T\+ER@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+S\+E\+T\+T\+ER}!service.\+h@{service.\+h}}
@@ -361,7 +385,7 @@ Definition at line 156 of file service.\+h.
 \end{DoxyCode}
 
 
-Definition at line 114 of file service.\+h.
+Definition at line 119 of file service.\+h.
 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+WO@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+WO}}
 \index{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+WO@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+WO}!service.\+h@{service.\+h}}
@@ -385,11 +409,18 @@ Definition at line 114 of file service.\+h.
 \end{DoxyCode}
 A convenience macro to declare write-\/only property in the vtable array. 
 
-Definition at line 142 of file service.\+h.
+Definition at line 152 of file service.\+h.
 
 
 
 \subsection{Typedef Documentation}
+\index{service.\+h@{service.\+h}!rpc\+\_\+abort\+\_\+handler\+\_\+t@{rpc\+\_\+abort\+\_\+handler\+\_\+t}}
+\index{rpc\+\_\+abort\+\_\+handler\+\_\+t@{rpc\+\_\+abort\+\_\+handler\+\_\+t}!service.\+h@{service.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+abort\+\_\+handler\+\_\+t}{rpc_abort_handler_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\+\_\+abort\+\_\+handler\+\_\+t) (void $\ast$\+\_\+\+Nonnull cookie)}\hypertarget{service_8h_ab4e251ce606775ee0d308021e939ad87}{}\label{service_8h_ab4e251ce606775ee0d308021e939ad87}
+Asynchronous abort handler block type. 
+
+Definition at line 104 of file service.\+h.
+
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+t@{rpc\+\_\+context\+\_\+t}}
 \index{rpc\+\_\+context\+\_\+t@{rpc\+\_\+context\+\_\+t}!service.\+h@{service.\+h}}
 \subsubsection[{\texorpdfstring{rpc\+\_\+context\+\_\+t}{rpc_context_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct rpc\+\_\+context$\ast$ {\bf rpc\+\_\+context\+\_\+t}}\hypertarget{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{}\label{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}
@@ -451,7 +482,7 @@ R\+P\+C\+\_\+\+M\+E\+M\+B\+E\+R\+\_\+\+M\+E\+T\+H\+OD\hypertarget{service_8h_a54
 \end{Desc}
 
 
-Definition at line 198 of file service.\+h.
+Definition at line 208 of file service.\+h.
 
 \index{service.\+h@{service.\+h}!rpc\+\_\+property\+\_\+rights@{rpc\+\_\+property\+\_\+rights}}
 \index{rpc\+\_\+property\+\_\+rights@{rpc\+\_\+property\+\_\+rights}!service.\+h@{service.\+h}}
@@ -467,7 +498,7 @@ R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+W\+R\+I\+TE\hypertarget{service_8h_
 \end{Desc}
 
 
-Definition at line 208 of file service.\+h.
+Definition at line 218 of file service.\+h.
 
 
 
@@ -918,6 +949,23 @@ This function may be called only once during the lifetime of a single call (for 
 {\em cookie} & Running call handle \\
 \hline
 {\em object} & Response. \\
+\hline
+\end{DoxyParams}
+\index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler@{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler}}
+\index{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler@{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler}!service.\+h@{service.\+h}}
+\subsubsection[{\texorpdfstring{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler(void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nullable rpc\+\_\+abort\+\_\+handler\+\_\+t handler)}{rpc_function_set_async_abort_handler(void *_Nonnull cookie, _Nullable rpc_abort_handler_t handler)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler (
+\begin{DoxyParamCaption}
+\item[{void $\ast$\+\_\+\+Nonnull}]{cookie, }
+\item[{\+\_\+\+Nullable {\bf rpc\+\_\+abort\+\_\+handler\+\_\+t}}]{handler}
+\end{DoxyParamCaption}
+)}\hypertarget{service_8h_a4b6ceb43e090fda8928a3a46e7da614a}{}\label{service_8h_a4b6ceb43e090fda8928a3a46e7da614a}
+Sets a callback to be called when running method got an abort signal from the client.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cookie} & Running call handle \\
+\hline
+{\em handler} & Abort handling block \\
 \hline
 \end{DoxyParams}
 \index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+should\+\_\+abort@{rpc\+\_\+function\+\_\+should\+\_\+abort}}

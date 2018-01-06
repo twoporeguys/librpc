@@ -153,6 +153,7 @@ var searchData=
   ['rpc_5ffunction_5fget_5fname',['rpc_function_get_name',['../service_8h.html#afa036dc361d52333f0360b556ddf28f8',1,'service.h']]],
   ['rpc_5ffunction_5fget_5fpath',['rpc_function_get_path',['../service_8h.html#a023e49d1050b5d175dd0ab8a5da03a4c',1,'service.h']]],
   ['rpc_5ffunction_5frespond',['rpc_function_respond',['../service_8h.html#a1c8603d576553224db42579cb9180d8d',1,'service.h']]],
+  ['rpc_5ffunction_5fset_5fasync_5fabort_5fhandler',['rpc_function_set_async_abort_handler',['../service_8h.html#a4b6ceb43e090fda8928a3a46e7da614a',1,'service.h']]],
   ['rpc_5ffunction_5fshould_5fabort',['rpc_function_should_abort',['../service_8h.html#ad0185b8a60875843d91ca00b3e8d4886',1,'service.h']]],
   ['rpc_5ffunction_5fyield',['rpc_function_yield',['../service_8h.html#ac8c50ecedc9e59086e1ab63e1dd6c425',1,'service.h']]],
   ['rpc_5fget_5fcolumn_5fnumber',['rpc_get_column_number',['../object_8h.html#ac2b74c41ca419b2daca6ffb7123a1fb7',1,'object.h']]],
