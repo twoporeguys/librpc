@@ -737,7 +737,7 @@ rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
 		if (cookie.error != NULL)
 			return;
 
-		value = prop->rim_property.rp_getter(&prop);
+		value = prop->rim_property.rp_getter(&cookie);
 	}
 
 	rpc_instance_emit_event(instance, RPC_OBSERVABLE_INTERFACE, "changed",
