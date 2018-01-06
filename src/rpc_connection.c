@@ -617,6 +617,7 @@ rpc_close(rpc_connection_t conn)
 	}
 
 	/* And the same for outbound calls */
+	g_mutex_lock(&conn->rco_call_mtx);
 	g_hash_table_iter_init(&iter, conn->rco_calls);
 	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&call)) {
 		g_mutex_lock(&call->rc_mtx);
@@ -627,6 +628,7 @@ rpc_close(rpc_connection_t conn)
 		g_cond_broadcast(&call->rc_cv);
 		g_mutex_unlock(&call->rc_mtx);
 	}
+	g_mutex_unlock(&conn->rco_call_mtx);
 
 	return (0);
 }
@@ -860,6 +862,7 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	}
 
 	conn = g_malloc0(sizeof(*conn));
+	g_mutex_init(&conn->rco_call_mtx);
 	g_mutex_init(&conn->rco_send_mtx);
 	g_mutex_init(&conn->rco_subscription_mtx);
 	conn->rco_flags = transport->flags;
@@ -1174,8 +1177,10 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	frame = rpc_pack_frame("rpc", "call", call->rc_id,  payload);
 
 	g_mutex_lock(&call->rc_mtx);
+	g_mutex_lock(&conn->rco_call_mtx);
 	g_hash_table_insert(conn->rco_calls,
 	    (gpointer)rpc_string_get_string_ptr(call->rc_id), call);
+	g_mutex_unlock(&conn->rco_call_mtx);
 
 	call->rc_status = RPC_CALL_IN_PROGRESS;
 	call->rc_timeout = g_timeout_source_new_seconds(conn->rco_rpc_timeout);

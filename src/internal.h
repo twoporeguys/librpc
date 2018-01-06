@@ -238,6 +238,7 @@ struct rpc_connection
     	GPtrArray *		rco_subscriptions;
     	GMutex			rco_subscription_mtx;
     	GMutex			rco_send_mtx;
+	GMutex			rco_call_mtx;
     	GMainContext *		rco_mainloop;
     	GThreadPool *		rco_callback_pool;
 	rpc_object_t 		rco_params;
