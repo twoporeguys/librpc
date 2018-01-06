@@ -474,6 +474,7 @@ rpc_instance_new(void *arg, const char *fmt, ...)
 
 	result = g_malloc0(sizeof(*result));
 	g_mutex_init(&result->ri_mtx);
+	g_rw_lock_init(&result->ri_rwlock);
 	result->ri_path = g_strdup(path);
 	result->ri_subscriptions = g_hash_table_new(g_str_hash, g_str_equal);
 	result->ri_interfaces = g_hash_table_new(g_str_hash, g_str_equal);
@@ -565,14 +566,18 @@ rpc_instance_register_interface(rpc_instance_t instance,
 	priv->rip_arg = arg;
 	priv->rip_name = g_strdup(interface);
 
+	g_rw_lock_writer_lock(&instance->ri_rwlock);
 	g_hash_table_insert(instance->ri_interfaces, priv->rip_name, priv);
 
-	if (vtable == NULL)
+	if (vtable == NULL) {
+		g_rw_lock_writer_unlock(&instance->ri_rwlock);
 		return (0);
+	}
 
 	for (member = &vtable[0]; member->rim_name != NULL; member++)
 		rpc_instance_register_member(instance, interface, member);
 
+	g_rw_lock_writer_unlock(&instance->ri_rwlock);
 	return (0);
 }
 
@@ -812,8 +817,8 @@ rpc_get_interfaces(void *cookie, rpc_object_t args __unused)
 	rpc_object_t fragment;
 	rpc_instance_t instance = rpc_function_get_instance(cookie);
 
+	g_rw_lock_reader_lock(&instance->ri_rwlock);
 	g_hash_table_iter_init(&iter, instance->ri_interfaces);
-
 	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
 		fragment = rpc_string_create(k);
 		if (rpc_function_yield(cookie, fragment) != 0)
@@ -821,6 +826,7 @@ rpc_get_interfaces(void *cookie, rpc_object_t args __unused)
 	}
 
 done:
+	g_rw_lock_reader_unlock(&instance->ri_rwlock);
 	return ((rpc_object_t)NULL);
 }
 
