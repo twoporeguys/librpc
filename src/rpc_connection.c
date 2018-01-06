@@ -1191,10 +1191,8 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	g_source_attach(call->rc_timeout, conn->rco_client->rci_g_context);
 	g_mutex_unlock(&call->rc_mtx);
 
-	if (rpc_send_frame(conn, frame) != 0) {
-		g_mutex_unlock(&call->rc_mtx);
+	if (rpc_send_frame(conn, frame) != 0)
 		return (NULL);
-	}
 
 	return (call);
 }
