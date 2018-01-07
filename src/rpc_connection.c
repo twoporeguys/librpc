@@ -305,6 +305,9 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	if (call == NULL)
 		return;
 
+	/* Cancel timeout source */
+	g_source_destroy(call->rc_timeout);
+
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_status = RPC_CALL_DONE;
 	call->rc_result = args;
@@ -340,6 +343,12 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	if (payload == NULL) {
 		debugf("Fragment with no payload received on %p", conn);
 		return;
+	}
+
+	/* Cancel timeout source */
+	if (call->rc_timeout) {
+		g_source_destroy(call->rc_timeout);
+		call->rc_timeout = NULL;
 	}
 
 	g_mutex_lock(&call->rc_mtx);
@@ -392,6 +401,10 @@ on_rpc_end(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 		return;
 	}
 
+	/* Cancel timeout source */
+	if (call->rc_timeout != NULL)
+		g_source_destroy(call->rc_timeout);
+
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_status = RPC_CALL_ENDED;
 	call->rc_result = NULL;
@@ -438,6 +451,9 @@ on_rpc_error(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, id);
 		return;
 	}
+
+	/* Cancel timeout source */
+	g_source_destroy(call->rc_timeout);
 
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_status = RPC_CALL_ERROR;
