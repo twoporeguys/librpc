@@ -886,7 +886,7 @@ cdef class Instance(object):
 
     def property_changed(self, interface, name):
         rpc_instance_property_changed(
-            self.instance.instance,
+            self.instance,
             interface.encode('utf-8'),
             name.encode('utf-8'),
             <rpc_object_t>NULL
