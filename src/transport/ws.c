@@ -34,6 +34,8 @@
 #include "../linker_set.h"
 #include "../internal.h"
 
+#define	WS_MAX_MESSAGE_SIZE	(1024 * 1024) /* 1MB */
+
 static gboolean ws_do_connect(gpointer user_data);
 static int ws_connect(struct rpc_connection *, const char *, rpc_object_t);
 static void ws_connect_done(GObject *, GAsyncResult *, gpointer);
@@ -140,6 +142,9 @@ ws_connect_done(GObject *obj, GAsyncResult *res, gpointer user_data)
 		g_mutex_unlock(&conn->wc_mtx);
 		return;
 	}
+
+	soup_websocket_connection_set_max_incoming_payload_size(ws,
+	    WS_MAX_MESSAGE_SIZE);
 
 	rco->rco_send_msg = ws_send_message;
 	rco->rco_abort = ws_abort;
