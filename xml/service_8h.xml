@@ -456,10 +456,10 @@
         </inbodydescription>
         <location file="/code/include/rpc/service.h" line="98" column="1" bodyfile="/code/include/rpc/service.h" bodystart="98" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="service_8h_1a2a9201f2a85f00328dbf01ce772d6df5" prot="public" static="no">
+      <memberdef kind="typedef" id="service_8h_1aebbaf8e39f128b6655d23aad6a8ab634" prot="public" static="no">
         <type>void(^</type>
-        <definition>typedef void(^ rpc_abort_handler_t) ()</definition>
-        <argsstring>)()</argsstring>
+        <definition>typedef void(^ rpc_abort_handler_t) (void)</definition>
+        <argsstring>)(void)</argsstring>
         <name>rpc_abort_handler_t</name>
         <briefdescription>
         </briefdescription>
@@ -1432,7 +1432,7 @@
           <declname>cookie</declname>
         </param>
         <param>
-          <type>_Nullable <ref refid="service_8h_1a2a9201f2a85f00328dbf01ce772d6df5" kindref="member">rpc_abort_handler_t</ref></type>
+          <type>_Nullable <ref refid="service_8h_1aebbaf8e39f128b6655d23aad6a8ab634" kindref="member">rpc_abort_handler_t</ref></type>
           <declname>handler</declname>
         </param>
         <briefdescription>
@@ -2502,7 +2502,7 @@
 <codeline lineno="98" refid="service_8h_1aa8b38d8ab3bafe79a96edaebafe13b8d" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void<sp/>(^<ref refid="service_8h_1aa8b38d8ab3bafe79a96edaebafe13b8d" kindref="member">rpc_property_setter_t</ref>)(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie,</highlight></codeline>
 <codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>value);</highlight></codeline>
 <codeline lineno="100"><highlight class="normal"></highlight></codeline>
-<codeline lineno="104" refid="service_8h_1a2a9201f2a85f00328dbf01ce772d6df5" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void<sp/>(^<ref refid="service_8h_1a2a9201f2a85f00328dbf01ce772d6df5" kindref="member">rpc_abort_handler_t</ref>)();</highlight></codeline>
+<codeline lineno="104" refid="service_8h_1aebbaf8e39f128b6655d23aad6a8ab634" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void<sp/>(^<ref refid="service_8h_1aebbaf8e39f128b6655d23aad6a8ab634" kindref="member">rpc_abort_handler_t</ref>)(void);</highlight></codeline>
 <codeline lineno="105"><highlight class="normal"></highlight></codeline>
 <codeline lineno="109" refid="service_8h_1a5484afe5b3f646a7989ad91e011cc5b1" refkind="member"><highlight class="preprocessor">#define<sp/>RPC_FUNCTION(_fn)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
 <codeline lineno="110"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>^(void<sp/>*_cookie,<sp/>rpc_object_t<sp/>_args)<sp/>{<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
@@ -2689,7 +2689,7 @@
 <codeline lineno="511"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="service_8h_1ad0185b8a60875843d91ca00b3e8d4886" kindref="member">rpc_function_should_abort</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie);</highlight></codeline>
 <codeline lineno="512"><highlight class="normal"></highlight></codeline>
 <codeline lineno="520"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a4b6ceb43e090fda8928a3a46e7da614a" kindref="member">rpc_function_set_async_abort_handler</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie,</highlight></codeline>
-<codeline lineno="521"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="service_8h_1a2a9201f2a85f00328dbf01ce772d6df5" kindref="member">rpc_abort_handler_t</ref><sp/>handler);</highlight></codeline>
+<codeline lineno="521"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="service_8h_1aebbaf8e39f128b6655d23aad6a8ab634" kindref="member">rpc_abort_handler_t</ref><sp/>handler);</highlight></codeline>
 <codeline lineno="522"><highlight class="normal"></highlight></codeline>
 <codeline lineno="530"><highlight class="normal">_Nullable<sp/>rpc_instance_t<sp/><ref refid="service_8h_1a805d705c1a9f94cf4aa04bb71a46a928" kindref="member">rpc_instance_new</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>arg,</highlight></codeline>
 <codeline lineno="531"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>fmt,<sp/>...);</highlight></codeline>
