@@ -101,7 +101,7 @@ typedef void (^rpc_property_setter_t)(void *_Nonnull cookie,
 /**
  * Asynchronous abort handler block type.
  */
-typedef void (^rpc_abort_handler_t)();
+typedef void (^rpc_abort_handler_t)(void);
 
 /**
  * A macro to convert function pointer into @ref rpc_function_t block.
