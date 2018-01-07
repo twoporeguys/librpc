@@ -25,7 +25,7 @@ clean:
 
 install:
 	make -C build install
-	ldconfig || true
+	@if [ "`uname -s`" = "Linux" ]; then ldconfig || true; fi
 
 uninstall:
 	make -C build uninstall
