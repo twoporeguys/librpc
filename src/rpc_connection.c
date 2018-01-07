@@ -421,6 +421,9 @@ on_rpc_abort(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 		call->ric_abort_handler();
 		Block_release(call->ric_abort_handler);
 	}
+
+	g_hash_table_remove(conn->rco_inbound_calls,
+	    rpc_string_get_string_ptr(id));
 }
 
 static void
