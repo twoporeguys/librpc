@@ -884,6 +884,14 @@ cdef class Instance(object):
     def register_event(self, interface, name):
         pass
 
+    def property_changed(self, interface, name):
+        rpc_instance_property_changed(
+            self.instance.instance,
+            interface.encode('utf-8'),
+            name.encode('utf-8'),
+            <rpc_object_t>NULL
+        )
+
     property path:
         def __get__(self):
             return rpc_instance_get_path(self.instance).decode('utf-8')

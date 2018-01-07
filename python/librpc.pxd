@@ -224,6 +224,8 @@ cdef extern from "rpc/service.h" nogil:
         const char *name, void *arg, rpc_function_f fn)
     int rpc_instance_register_property(rpc_instance_t instance, const char *interface, const char *name,
         void *arg, void *getter, void *setter)
+    void rpc_instance_property_changed(rpc_instance_t instance,
+        const char *interface, const char *name, rpc_object_t value)
     void rpc_instance_free(rpc_instance_t instance)
 
     int rpc_instance_register(rpc_context_t context, rpc_instance_t instance)
