@@ -261,7 +261,7 @@ rpc_pack_frame(const char *ns, const char *name, rpc_object_t id,
 	rpc_dictionary_set_string(obj, "namespace", ns);
 	rpc_dictionary_set_string(obj, "name", name);
 	rpc_dictionary_set_value(obj, "id", id ? id : rpc_null_create());
-	rpc_dictionary_set_value(obj, "args", args);
+	rpc_dictionary_steal_value(obj, "args", args);
 	return (obj);
 }
 
@@ -1047,7 +1047,6 @@ rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *path,
 	if (rpc_send_frame(conn, frame) != 0)
 		return (-1);
 
-	rpc_release(args);
 	return (0);
 }
 
