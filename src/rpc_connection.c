@@ -1402,6 +1402,7 @@ rpc_call_abort(rpc_call_t call)
 	}
 
 	call->rc_status = RPC_CALL_ABORTED;
+	g_source_destroy(call->rc_timeout);
 	g_mutex_unlock(&call->rc_mtx);
 	return (0);
 }
@@ -1455,7 +1456,6 @@ rpc_call_free(rpc_call_t call)
 	g_hash_table_remove(call->rc_conn->rco_calls,
 	    (gpointer)rpc_string_get_string_ptr(call->rc_id));
 	g_mutex_unlock(&call->rc_conn->rco_call_mtx);
-	g_source_unref(call->rc_timeout);
 	rpc_release(call->rc_id);
 	rpc_release(call->rc_args);
 	g_free(call);
