@@ -260,7 +260,7 @@ rpc_pack_frame(const char *ns, const char *name, rpc_object_t id,
 	obj = rpc_dictionary_create();
 	rpc_dictionary_set_string(obj, "namespace", ns);
 	rpc_dictionary_set_string(obj, "name", name);
-	rpc_dictionary_set_value(obj, "id", id ? id : rpc_null_create());
+	rpc_dictionary_steal_value(obj, "id", id ? rpc_retain(id) : rpc_null_create());
 	rpc_dictionary_steal_value(obj, "args", args);
 	return (obj);
 }
