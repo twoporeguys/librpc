@@ -1401,8 +1401,10 @@ rpc_call_abort(rpc_call_t call)
 		return (-1);
 	}
 
+	if (call->rc_timeout != NULL)
+		g_source_destroy(call->rc_timeout);
+
 	call->rc_status = RPC_CALL_ABORTED;
-	g_source_destroy(call->rc_timeout);
 	g_mutex_unlock(&call->rc_mtx);
 	return (0);
 }
