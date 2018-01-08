@@ -102,10 +102,8 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 
 	}
 
-	if (!call->ric_streaming && !call->ric_responded) {
+	if (!call->ric_streaming && !call->ric_responded)
 		rpc_connection_send_response(conn, call->ric_id, result);
-		rpc_release(result);
-	}
 
 	if (call->ric_streaming && !call->ric_ended)
 		rpc_function_end(data);
@@ -416,7 +414,6 @@ rpc_function_yield(void *cookie, rpc_object_t fragment)
 	call->ric_producer_seqno++;
 	call->ric_streaming = true;
 	g_mutex_unlock(&call->ric_mtx);
-	rpc_release(fragment);
 	return (0);
 }
 
