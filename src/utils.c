@@ -136,6 +136,7 @@ rpc_trace(const char *msg, rpc_object_t frame)
 	char *descr;
 	const char *dest;
 	static FILE *stream = NULL;
+	GDateTime *now;
 
 	if (stream == NULL) {
 		dest = getenv("LIBRPC_LOGGING");
@@ -149,8 +150,14 @@ rpc_trace(const char *msg, rpc_object_t frame)
 				return;
 	}
 
+	now = g_date_time_new_now_local();
 	descr = rpc_copy_description(frame);
-	fprintf(stream, "%s: %s\n", msg, descr);
+	fprintf(stream, "[%02d:%02d:%02d.%06d] %s: %s\n",
+	    g_date_time_get_hour(now), g_date_time_get_minute(now),
+	    g_date_time_get_second(now), g_date_time_get_microsecond(now),
+	    msg, descr);
+
+	g_date_time_unref(now);
 	g_free(descr);
 }
 
