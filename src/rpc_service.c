@@ -299,7 +299,8 @@ rpc_context_emit_event(rpc_context_t context, const char *path,
 
 	for (guint i = 0; i < context->rcx_servers->len; i++) {
 		server = g_ptr_array_index(context->rcx_servers, i);
-		rpc_server_broadcast_event(server, path, interface, name, args);
+		rpc_server_broadcast_event(server, path, interface, name,
+		    args);
 	}
 
 	rpc_release(args);
@@ -360,7 +361,6 @@ rpc_function_respond(void *cookie, rpc_object_t object)
 
 	rpc_connection_send_response(call->ric_conn, call->ric_id, object);
 	rpc_connection_close_inbound_call(call);
-	rpc_release(object);
 }
 
 void
