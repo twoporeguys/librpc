@@ -35,27 +35,26 @@
     rpc_object_t obj;
 }
 
-+ (RPCObject *)initWithValue:(id)value {
-    RPCObject *result = [RPCObject alloc];
-    
+- (instancetype)initWithValue:(id)value {
+
     if (value == nil) {
-        result->obj = rpc_null_create();
-        return (result);
+        obj = rpc_null_create();
+        return (self);
     }
     
     if ([value isKindOfClass:[RPCObject class]]) {
-        result->obj = rpc_retain([(RPCObject *)value nativeValue]);
-        return (result);
+        obj = rpc_retain([(RPCObject *)value nativeValue]);
+        return (self);
     }
 
     if ([value isKindOfClass:[NSNumber class]]) {
-        result->obj = rpc_int64_create([(NSNumber *)value integerValue]);
-        return (result);
+        obj = rpc_int64_create([(NSNumber *)value integerValue]);
+        return (self);
     }
     
     if ([value isKindOfClass:[NSString class]]) {
-        result->obj = rpc_string_create([(NSString *)value UTF8String]);
-        return (result);
+        obj = rpc_string_create([(NSString *)value UTF8String]);
+        return (self);
     }
     
     if ([value isKindOfClass:[NSDate class]]) {
@@ -63,78 +62,76 @@
     }
     
     if ([value isKindOfClass:[NSData class]]) {
-        result->obj = rpc_data_create([(NSData *)value bytes], [(NSData *)value length], NULL);
-        return (result);
+        obj = rpc_data_create([(NSData *)value bytes], [(NSData *)value length], NULL);
+        return (self);
     }
     
     if ([value isKindOfClass:[NSException class]]) {
-        result->obj = rpc_error_create(0, [[(NSException *)value reason] UTF8String], NULL);
-        return (result);
+        obj = rpc_error_create(0, [[(NSException *)value reason] UTF8String], NULL);
+        return (self);
     }
     
     if ([value isKindOfClass:[NSArray class]]) {
-        result->obj = rpc_array_create();
+        obj = rpc_array_create();
         for (id object in (NSArray *)value) {
-            RPCObject *robj = [RPCObject initWithValue:object];
-            rpc_array_append_stolen_value(result->obj, robj->obj);
+            RPCObject *robj = [[RPCObject alloc] initWithValue:object];
+            rpc_array_append_stolen_value(obj, robj->obj);
         }
         
-        return (result);
+        return (self);
     }
     
     if ([value isKindOfClass:[NSDictionary class]]) {
-        result->obj = rpc_dictionary_create();
+        obj = rpc_dictionary_create();
         for (NSString *key in (NSDictionary *)value) {
-            NSObject *obj = [(NSDictionary *)value valueForKey:key];
-            RPCObject *robj = [RPCObject initWithValue:obj];
-            rpc_dictionary_set_value(result->obj, [key UTF8String], robj->obj);
+            NSObject *val = [(NSDictionary *)value valueForKey:key];
+            RPCObject *robj = [[RPCObject alloc] initWithValue:val];
+            rpc_dictionary_set_value(obj, [key UTF8String], robj->obj);
         }
         
-        return (result);
+        return (self);
     }
     
     @throw [NSException exceptionWithName:@"foo" reason:nil userInfo:nil];
 }
 
-+ (instancetype)initWithValue:(id)value andType:(RPCType)type {
-    RPCObject *result = [RPCObject alloc];
-
+- (instancetype)initWithValue:(id)value andType:(RPCType)type {
     switch (type) {
         case RPCTypeBoolean:
-            result->obj = rpc_bool_create([(NSNumber *)value boolValue]);
-            return result;
+            obj = rpc_bool_create([(NSNumber *)value boolValue]);
+            return self;
 
         case RPCTypeUInt64:
-            result->obj = rpc_uint64_create([(NSNumber *)value unsignedIntegerValue]);
-            return result;
+            obj = rpc_uint64_create([(NSNumber *)value unsignedIntegerValue]);
+            return self;
 
         case RPCTypeInt64:
-            result->obj = rpc_int64_create([(NSNumber *)value integerValue]);
-            return result;
+            obj = rpc_int64_create([(NSNumber *)value integerValue]);
+            return self;
 
         case RPCTypeDouble:
-            result->obj = rpc_double_create([(NSNumber *)value doubleValue]);
-            return result;
+            obj = rpc_double_create([(NSNumber *)value doubleValue]);
+            return self;
 
         case RPCTypeFD:
-            result->obj = rpc_fd_create([(NSNumber *)value intValue]);
-            return result;
+            obj = rpc_fd_create([(NSNumber *)value intValue]);
+            return self;
 
         case RPCTypeNull:
         case RPCTypeString:
         case RPCTypeBinary:
         case RPCTypeArray:
         case RPCTypeDictionary:
-            return [RPCObject initWithValue:value];
+            return [[RPCObject alloc] initWithValue:value];
 
         default:
             return nil;
     }
 }
 
-+ (RPCObject *)initFromNativeObject:(void *)object {
+- (RPCObject *)initFromNativeObject:(void *)object {
     RPCObject *result = [RPCObject alloc];
-    result->obj = rpc_retain(object);
+    obj = rpc_retain(object);
     return result;
 }
 
@@ -174,7 +171,7 @@
         case RPC_TYPE_ARRAY:
             array = [[NSMutableArray alloc] init];
             rpc_array_apply(obj, ^bool(size_t index, rpc_object_t value) {
-                [array addObject:[RPCObject initFromNativeObject:value]];
+                [array addObject:[[RPCObject alloc] initFromNativeObject:value]];
                 return true;
             });
             
@@ -183,7 +180,7 @@
         case RPC_TYPE_DICTIONARY:
             dict = [[NSMutableDictionary alloc] init];
             rpc_dictionary_apply(obj, ^bool(const char *key, rpc_object_t value) {
-                [dict setObject:[RPCObject initFromNativeObject:value] forKey:[NSString stringWithUTF8String:key]];
+                [dict setObject:[[RPCObject alloc] initFromNativeObject:value] forKey:[NSString stringWithUTF8String:key]];
                 return true;
             });
             
@@ -193,7 +190,7 @@
             return [NSNumber numberWithInteger:rpc_fd_get_value(obj)];
             
         case RPC_TYPE_ERROR:
-            return [RPCException initWithCode:@(rpc_error_get_code(obj)) andMessage:@(rpc_error_get_message(obj))];
+            return [[RPCException alloc] initWithCode:@(rpc_error_get_code(obj)) andMessage:@(rpc_error_get_message(obj))];
     }
 }
 
@@ -207,7 +204,7 @@
 @end
 
 @implementation RPCException
-+ (nonnull instancetype)initWithCode:(NSNumber *)code andMessage:(NSString *)message {
+- (nonnull instancetype)initWithCode:(NSNumber *)code andMessage:(NSString *)message {
     return (RPCException *)[NSException
             exceptionWithName:@"RPCException"
             reason:message
@@ -220,20 +217,20 @@
 @end
 
 @implementation RPCUnsignedInt
-+ (instancetype)init:(NSNumber *)value {
+- (instancetype)init:(NSNumber *)value {
     return [super initWithValue:value andType:RPCTypeUInt64];
 }
 @end
 
 @implementation RPCDouble
-+ (instancetype)init:(NSNumber *)value {
+- (instancetype)init:(NSNumber *)value {
     return [super initWithValue:value andType:RPCTypeDouble];
 }
 @end
 
 @implementation RPCBool
-+ (instancetype)init:(NSNumber *)value {
-    return [super initWithValue:value andType:RPCTypeBoolean];
+- (instancetype)init:(BOOL)value {
+    return [super initWithValue:@(value) andType:RPCTypeBoolean];
 }
 @end
 
@@ -241,12 +238,9 @@
     rpc_call_t call;
 }
 
-+ (RPCCall *)initFromNativeObject:(void *)object {
-    RPCCall *result;
-    
-    result = [RPCCall alloc];
-    result->call = object;
-    return result;
+- (instancetype)initFromNativeObject:(void *)object {
+    call = object;
+    return self;
 }
 
 - (void)wait {
@@ -262,7 +256,7 @@
 }
 
 - (RPCObject *)result {
-    return [RPCObject initFromNativeObject:rpc_call_result(call)];
+    return [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)];
 }
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
@@ -272,7 +266,7 @@
 
     switch (rpc_call_status(call)) {
         case RPC_CALL_MORE_AVAILABLE:
-            buffer[0] = [RPCObject initFromNativeObject:rpc_call_result(call)];
+            buffer[0] = [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)];
             return (1);
 
         case RPC_CALL_ERROR:
@@ -319,10 +313,10 @@
     
     switch (rpc_call_status(call)) {
         case RPC_CALL_DONE:
-            return [RPCObject initFromNativeObject:rpc_call_result(call)];
+            return [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)];
             
         case RPC_CALL_ERROR:
-            @throw [RPCObject initFromNativeObject:rpc_call_result(call)];
+            @throw [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)];
         
         case RPC_CALL_MORE_AVAILABLE:
             return nil;
@@ -336,7 +330,7 @@
              path:(NSString *)path
         interface:(NSString *)interface
              args:(RPCObject *)args {
-    return [RPCCall initFromNativeObject:rpc_connection_call(conn, [path UTF8String], [interface UTF8String], [method UTF8String], NULL, NULL)];
+    return [[RPCCall alloc] initFromNativeObject:rpc_connection_call(conn, [path UTF8String], [interface UTF8String], [method UTF8String], NULL, NULL)];
     
 }
 
@@ -350,7 +344,7 @@
     call = rpc_connection_call(conn, [path UTF8String], [interface UTF8String],
                                [method UTF8String], [args nativeValue],
                                ^bool(rpc_object_t args, rpc_call_status_t status) {
-        cb([RPCCall initFromNativeObject:call], [RPCObject initFromNativeObject:rpc_call_result(call)]);
+        cb([[RPCCall alloc] initFromNativeObject:call], [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)]);
         return (bool)true;
     });
 }
