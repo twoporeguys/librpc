@@ -30,6 +30,7 @@
 #include <rpc/object.h>
 #include <rpc/connection.h>
 #include <rpc/client.h>
+#include <rpc/service.h>
 
 @implementation RPCObject {
     rpc_object_t obj;
@@ -130,9 +131,12 @@
 }
 
 - (RPCObject *)initFromNativeObject:(void *)object {
-    RPCObject *result = [RPCObject alloc];
     obj = rpc_retain(object);
-    return result;
+    return self;
+}
+
+- (void)dealloc {
+    rpc_release(obj);
 }
 
 - (NSString *)describe {
@@ -262,15 +266,21 @@
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                   objects:(__unsafe_unretained id _Nullable [])buffer
                                     count:(NSUInteger)len {
+    RPCObject *__autoreleasing tmp;
     rpc_call_continue(call, true);
+
+    state->state = 1;
+    state->mutationsPtr = (unsigned long *)call;
+    state->itemsPtr = buffer;
 
     switch (rpc_call_status(call)) {
         case RPC_CALL_MORE_AVAILABLE:
-            buffer[0] = [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)];
+            tmp = [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)];
+            state->itemsPtr[0] = tmp;
             return (1);
 
         case RPC_CALL_ERROR:
-            return (0);
+            @throw [[[RPCObject alloc] initFromNativeObject:rpc_call_result(call)] value];
 
         case RPC_CALL_ENDED:
             return (0);
@@ -295,7 +305,15 @@
 }
 
 - (NSDictionary *)instances {
-    return nil;
+    NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
+    RPCCall *call = [self call:@"get_instances" path:@"/" interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil];
+
+    for (RPCObject *value in call) {
+        NSDictionary *item = (NSDictionary *)[value value];
+        [result setValue:[[NSNull alloc] init] forKey:[[item objectForKey:@"path"] value]];
+    }
+
+    return result;
 }
 
 - (void)setDispatchQueue:(nullable dispatch_queue_t)queue {
