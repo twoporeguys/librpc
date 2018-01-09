@@ -26,6 +26,7 @@
  */
 
 #import "librpc.h"
+#include <dispatch/dispatch.h>
 #include <rpc/object.h>
 #include <rpc/connection.h>
 #include <rpc/client.h>
@@ -62,7 +63,8 @@
     }
     
     if ([value isKindOfClass:[NSData class]]) {
-        
+        result->obj = rpc_data_create([(NSData *)value bytes], [(NSData *)value length], NULL);
+        return (result);
     }
     
     if ([value isKindOfClass:[NSException class]]) {
@@ -115,7 +117,7 @@
             return result;
 
         case RPCTypeFD:
-            result->obj = rpc_fd_create([(NSNumber *)value integerValue]);
+            result->obj = rpc_fd_create([(NSNumber *)value intValue]);
             return result;
 
         case RPCTypeNull:
@@ -191,7 +193,7 @@
             return [NSNumber numberWithInteger:rpc_fd_get_value(obj)];
             
         case RPC_TYPE_ERROR:
-            return nil;
+            return [RPCException initWithCode:@(rpc_error_get_code(obj)) andMessage:@(rpc_error_get_message(obj))];
     }
 }
 
@@ -201,6 +203,19 @@
 
 - (RPCType)type {
     return (RPCType)rpc_get_type(obj);
+}
+@end
+
+@implementation RPCException
++ (nonnull instancetype)initWithCode:(NSNumber *)code andMessage:(NSString *)message {
+    return (RPCException *)[NSException
+            exceptionWithName:@"RPCException"
+            reason:message
+            userInfo:@{
+                @"code": code,
+                @"extra": [NSNull init],
+                @"stack": [NSNull init]
+            }];
 }
 @end
 
@@ -249,6 +264,26 @@
 - (RPCObject *)result {
     return [RPCObject initFromNativeObject:rpc_call_result(call)];
 }
+
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                  objects:(__unsafe_unretained id _Nullable [])buffer
+                                    count:(NSUInteger)len {
+    rpc_call_continue(call, true);
+
+    switch (rpc_call_status(call)) {
+        case RPC_CALL_MORE_AVAILABLE:
+            buffer[0] = [RPCObject initFromNativeObject:rpc_call_result(call)];
+            return (1);
+
+        case RPC_CALL_ERROR:
+            return (0);
+
+        case RPC_CALL_ENDED:
+            return (0);
+    }
+
+    return (0);
+}
 @end
 
 @implementation RPCClient {
@@ -267,6 +302,10 @@
 
 - (NSDictionary *)instances {
     return nil;
+}
+
+- (void)setDispatchQueue:(nullable dispatch_queue_t)queue {
+    rpc_connection_set_dispatch_queue(conn, queue);
 }
 
 - (RPCObject *)callSync:(NSString *)method

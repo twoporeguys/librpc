@@ -41,10 +41,43 @@ typedef NS_ENUM(NSInteger, RPCType) {
     RPCTypeError
 };
 
+/**
+ * A boxed type representing librpc value.
+ */
 @interface RPCObject : NSObject
+/**
+ * Creates a new RPCObject from NSObject-based value.
+ *
+ * @param value Value
+ * @returns Boxed RPCObject
+ */
 + (nonnull instancetype)initWithValue:(nullable id)value;
+
+/**
+ * Creates a new RPCObject from NSObject-based value with specific type.
+ *
+ * This function allows to override default type guess for the newly
+ * created RPCObject. Useful when creating unsigned integer, floating point
+ * or boolean values.
+ *
+ * @param value Value
+ * @returns Boxed RPCObject
+ */
 + (nonnull instancetype)initWithValue:(nullable id)value andType:(RPCType)type;
+
+/**
+ * Initializes a new RPCObject from a C-based @ref rpc_object_t handle.
+ *
+ * @param object And @ref rpc_object_t handle
+ * @returns Boxed RPCObject
+ */
 + (nonnull instancetype)initFromNativeObject:(nullable void *)object;
+
+/**
+ * Returns string description of the contained value.
+ *
+ * @returns RPCObject description
+ */
 - (nonnull NSString *)describe;
 - (nonnull NSObject *)value;
 - (nonnull void *)nativeValue;
@@ -52,22 +85,23 @@ typedef NS_ENUM(NSInteger, RPCType) {
 @end
 
 @interface RPCUnsignedInt : RPCObject
-+ (nonnull instancetype)init:(NSNumber *)value;
++ (nonnull instancetype)init:(nonnull NSNumber *)value;
 @end
 
 @interface RPCBool : RPCObject
-+ (nonnull instancetype)init:(NSNumber *)value;
++ (nonnull instancetype)init:(nonnull NSNumber *)value;
 @end
 
 @interface RPCDouble : RPCObject
-+ (nonnull instancetype)init:(NSNumber *)value;
++ (nonnull instancetype)init:(nonnull NSNumber *)value;
 @end
 
-@interface RPCException : NSException
+@interface RPCException : NSObject
++ (nonnull instancetype)initWithCode:(nonnull NSNumber *)code andMessage:(nonnull NSString *)message;
 @end
 
 @interface RPCCall : NSObject <NSFastEnumeration>
-+ (nonnull RPCCall *)initFromNativeObject:(nonnull void *)object;
++ (nonnull instancetype)initFromNativeObject:(nonnull void *)object;
 - (void)wait;
 - (void)resume;
 - (void)abort;
@@ -80,9 +114,30 @@ typedef NS_ENUM(NSInteger, RPCType) {
 typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull value);
 
 @interface RPCClient : NSObject
+/**
+ * Connects to an endpoint specified by @p uri.
+ *
+ * @param uri URI of the endpoint to connect to
+ */
 - (void)connect:(nonnull NSString *)uri;
+
+/**
+ * Terminates the current connection.
+ *
+ * If the instance is not connected, this call has no effect.
+ */
 - (void)disconnect;
+
+/**
+ * Returns a dictionary of instances found on the server.
+ */
 - (nonnull NSDictionary *)instances;
+
+- (void)setDispatchQueue:(nullable dispatch_queue_t)queue;
+
+/**
+ * Issues a call to the server.
+ */
 - (nonnull RPCCall *)call:(nonnull NSString *)method
                      path:(nullable NSString *)path
                 interface:(nullable NSString *)interface
