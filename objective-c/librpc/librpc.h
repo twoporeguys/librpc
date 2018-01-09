@@ -156,6 +156,7 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
 @interface RPCInstance : NSObject
 @property (readonly, nonnull) RPCClient *client;
 @property (readonly, nonnull) NSString *path;
+@property (readonly, nonnull) NSDictionary *interfaces;
 @end
 
 @interface RPCInterface : NSObject

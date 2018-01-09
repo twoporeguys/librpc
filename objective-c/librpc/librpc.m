@@ -319,9 +319,11 @@
             @throw [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)];
         
         case RPC_CALL_MORE_AVAILABLE:
-            return nil;
+        case RPC_CALL_ENDED:
+            @throw [NSException exceptionWithName:@"RPCException" reason:@"Streaming RPC called with non-streaming API" userInfo:nil];
         
         default:
+            NSAssert(true, @"Invalid RPC call state");
             return nil;
     }
 }
@@ -347,5 +349,40 @@
         cb([[RPCCall alloc] initFromNativeObject:call], [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)]);
         return (bool)true;
     });
+}
+@end
+
+@implementation RPCInstance {
+    RPCClient *client;
+    NSString *path;
+}
+
+- (RPCClient *)client {
+    return client;
+}
+
+- (NSString *)path {
+    return path;
+}
+
+- (NSDictionary *)interfaces {
+    return @{};
+}
+@end
+
+@implementation RPCInterface {
+
+}
+
+- (BOOL)respondsToSelector:(SEL)aSelector {
+    return YES;
+}
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
+    return nil;
+}
+
+- (void)forwardInvocation:(NSInvocation *)anInvocation {
+    
 }
 @end
