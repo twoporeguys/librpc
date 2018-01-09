@@ -28,7 +28,7 @@
 import Foundation
 import librpc
 
-var client = librpc.RPCClient();
+/*var client = librpc.RPCClient();
 client.connect("tcp://10.251.2.127:5001");
 var result = client.callSync("ping",path: "/server", interface: "com.twoporeguys.momd.Builtin", args: nil);
 
@@ -36,8 +36,8 @@ client.callAsync("ping", path: "/server", interface: "com.twoporeguys.momd.Built
     print("async result", value.describe());
 });
 sleep(2);
-print(result.describe());
-let args: [String: Any] = ["A":5, "b":RPCBool.init(value: true), "c":RPCDouble.init(value: 3.5), "d":"hau"];
-var a = librpc.RPCObject.initWithValue(args);
+print(result.describe());*/
+let args: [String: Any] = ["A":5, "b":RPCBool(true), "c":RPCDouble(3.5), "d":"hau"];
+var a = librpc.RPCObject(value: args);
 print(a.describe());
 

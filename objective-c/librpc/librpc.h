@@ -51,7 +51,7 @@ typedef NS_ENUM(NSInteger, RPCType) {
  * @param value Value
  * @returns Boxed RPCObject
  */
-+ (nonnull instancetype)initWithValue:(nullable id)value;
+- (nonnull instancetype)initWithValue:(nullable id)value;
 
 /**
  * Creates a new RPCObject from NSObject-based value with specific type.
@@ -63,7 +63,7 @@ typedef NS_ENUM(NSInteger, RPCType) {
  * @param value Value
  * @returns Boxed RPCObject
  */
-+ (nonnull instancetype)initWithValue:(nullable id)value andType:(RPCType)type;
+- (nonnull instancetype)initWithValue:(nullable id)value andType:(RPCType)type;
 
 /**
  * Initializes a new RPCObject from a C-based @ref rpc_object_t handle.
@@ -71,7 +71,7 @@ typedef NS_ENUM(NSInteger, RPCType) {
  * @param object And @ref rpc_object_t handle
  * @returns Boxed RPCObject
  */
-+ (nonnull instancetype)initFromNativeObject:(nullable void *)object;
+- (nonnull instancetype)initFromNativeObject:(nullable void *)object;
 
 /**
  * Returns string description of the contained value.
@@ -85,23 +85,23 @@ typedef NS_ENUM(NSInteger, RPCType) {
 @end
 
 @interface RPCUnsignedInt : RPCObject
-+ (nonnull instancetype)init:(nonnull NSNumber *)value;
+- (nonnull instancetype)init:(nonnull NSNumber *)value;
 @end
 
 @interface RPCBool : RPCObject
-+ (nonnull instancetype)init:(nonnull NSNumber *)value;
+- (nonnull instancetype)init:(BOOL)value;
 @end
 
 @interface RPCDouble : RPCObject
-+ (nonnull instancetype)init:(nonnull NSNumber *)value;
+- (nonnull instancetype)init:(nonnull NSNumber *)value;
 @end
 
 @interface RPCException : NSObject
-+ (nonnull instancetype)initWithCode:(nonnull NSNumber *)code andMessage:(nonnull NSString *)message;
+- (nonnull instancetype)initWithCode:(nonnull NSNumber *)code andMessage:(nonnull NSString *)message;
 @end
 
 @interface RPCCall : NSObject <NSFastEnumeration>
-+ (nonnull instancetype)initFromNativeObject:(nonnull void *)object;
+- (nonnull instancetype)initFromNativeObject:(nonnull void *)object;
 - (void)wait;
 - (void)resume;
 - (void)abort;
