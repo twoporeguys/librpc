@@ -617,6 +617,7 @@ usb_event_impl(void *arg)
 		}
 	}
 
+	g_free(log);
 	return (!conn->uc_state.uts_exit);
 
 disconnected:
