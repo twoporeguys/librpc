@@ -1061,6 +1061,7 @@ rpc_object_vpack(const char *fmt, va_list ap)
 				key = g_queue_pop_tail(keys);
 				rpc_dictionary_steal_value(container, key,
 				    current);
+				g_free(key);
 			}
 
 			if (rpc_get_type(container) == RPC_TYPE_ARRAY) {
