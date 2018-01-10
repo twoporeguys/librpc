@@ -1004,6 +1004,10 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			current = rpc_double_create(va_arg(ap, double));
 			break;
 
+		case 'D':
+			current = rpc_date_create(va_arg(ap, int64_t));
+			break;
+
 		case 's':
 			current = rpc_string_create(va_arg(ap, const char *));
 			break;
