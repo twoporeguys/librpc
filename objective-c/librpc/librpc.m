@@ -310,7 +310,9 @@
 
     for (RPCObject *value in call) {
         NSDictionary *item = (NSDictionary *)[value value];
-        [result setValue:[[NSNull alloc] init] forKey:[[item objectForKey:@"path"] value]];
+        NSString *path = [[item objectForKey:@"path"] value];
+        RPCInstance *instance = [[RPCInstance alloc] initWithClient:self andPath:path];
+        [result setValue:instance forKey:path];
     }
 
     return result;
@@ -350,7 +352,12 @@
              path:(NSString *)path
         interface:(NSString *)interface
              args:(RPCObject *)args {
-    return [[RPCCall alloc] initFromNativeObject:rpc_connection_call(conn, [path UTF8String], [interface UTF8String], [method UTF8String], NULL, NULL)];
+    rpc_call_t ret = rpc_connection_call(conn, [path UTF8String], [interface UTF8String], [method UTF8String], [args nativeValue], NULL);
+    if (ret == NULL) {
+        RPCObject *error = [[RPCObject alloc] initFromNativeObject:rpc_get_last_error()];
+        @throw [error value];
+    }
+    return [[RPCCall alloc] initFromNativeObject:ret];
     
 }
 
@@ -384,12 +391,36 @@
 }
 
 - (NSDictionary *)interfaces {
-    return @{};
+    NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
+    RPCCall *call = [client call:@"get_interfaces" path:path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:nil];
+
+    for (RPCObject *value in call) {
+        NSString *name = (NSString *)[value value];
+        RPCInterface *interface = [[RPCInterface alloc] initWithClient:client path:path andInterface:name];
+        [result setValue:interface forKey:name];
+    }
+
+    return result;
+}
+
+- (instancetype)initWithClient:(RPCClient *)client andPath:(NSString *)path {
+    self->client = client;
+    self->path = path;
+    return self;
 }
 @end
 
 @implementation RPCInterface {
+    RPCClient *client;
+    NSString *path;
+    NSString *interface;
+}
 
+- (instancetype)initWithClient:(RPCClient *)client path:(NSString *)path andInterface:(NSString *)interface {
+    client = client;
+    path = path;
+    interface = interface;
+    return self;
 }
 
 - (BOOL)respondsToSelector:(SEL)aSelector {
@@ -397,10 +428,14 @@
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
-    return nil;
+    return [NSMethodSignature signatureWithObjCTypes:"@@"];
 }
 
 - (void)forwardInvocation:(NSInvocation *)anInvocation {
-    
+    NSArray *args;
+    RPCCall *result;
+    [anInvocation getArgument:&args atIndex:0];
+    result = [client call:@"" path:path interface:interface args:[[RPCObject alloc] initWithValue:args]];
+    [anInvocation setReturnValue:(__bridge void *)result];
 }
 @end

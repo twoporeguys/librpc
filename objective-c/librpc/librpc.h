@@ -27,6 +27,9 @@
 
 #import <Foundation/Foundation.h>
 
+@class RPCInstance;
+@class RPCInterface;
+
 typedef NS_ENUM(NSInteger, RPCType) {
     RPCTypeNull,
     RPCTypeBoolean,
@@ -131,7 +134,7 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
 /**
  * Returns a dictionary of instances found on the server.
  */
-- (nonnull NSDictionary *)instances;
+- (nonnull NSDictionary<NSString *, RPCInstance *> *)instances;
 
 - (void)setDispatchQueue:(nullable dispatch_queue_t)queue;
 
@@ -142,10 +145,19 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
                      path:(nullable NSString *)path
                 interface:(nullable NSString *)interface
                      args:(nullable RPCObject *)args;
+
+/**
+ * Issues a call to the server and waits for the response.
+ */
 - (nonnull RPCObject *)callSync:(nonnull NSString *)method
                            path:(nullable NSString *)path
                       interface:(nullable NSString *)interface
                            args:(nullable RPCObject *)args;
+
+/**
+ * Issues a call to the server and runs @p callback when
+ * there's response available.
+ */
 - (void)callAsync:(nonnull NSString *)method
              path:(nullable NSString *)path
         interface:(nullable NSString *)interface
@@ -156,11 +168,15 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
 @interface RPCInstance : NSObject
 @property (readonly, nonnull) RPCClient *client;
 @property (readonly, nonnull) NSString *path;
-@property (readonly, nonnull) NSDictionary *interfaces;
+@property (readonly, nonnull) NSDictionary<NSString *, RPCInterface *> *interfaces;
+
+- (nonnull instancetype)initWithClient:(nonnull RPCClient *)client andPath:(nonnull NSString *)path;
 @end
 
 @interface RPCInterface : NSObject
 @property (readonly, nonnull) RPCInstance *instance;
 - (void)forwardInvocation:(nonnull NSInvocation *)anInvocation;
 - (nonnull NSMethodSignature *)methodSignatureForSelector:(nonnull SEL)aSelector;
+- (nonnull instancetype)initWithClient:(nonnull RPCClient *)client path:(nonnull NSString *)path andInterface:(nonnull NSString *)interface;
+- (nonnull RPCCall *)call:(
 @end
