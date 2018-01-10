@@ -435,6 +435,7 @@ int rpc_object_to_json(_Nonnull rpc_object_t object,
  * - i - Integer object - args: int value
  * - u - Unsigned integer object - args: unsigned int value
  * - d - Double object - args: double value
+ * - d - Date object - args: int interval
  * - s - String object - args: char *string
  * - { - Open dictionary - values inside of dictionary require additional
  *   char *key argument at the beginning of their usual argument list
