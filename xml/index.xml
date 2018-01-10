@@ -285,6 +285,7 @@
     <member refid="server_8h_1a1bf6070b1bb3b31d394f3862405eaf8c" kind="function"><name>rpc_server_close</name></member>
   </compound>
   <compound refid="service_8h" kind="file"><name>service.h</name>
+    <member refid="service_8h_1ae056c0203329d7432e0361c2f389bdec" kind="define"><name>__unsafe_unretained</name></member>
     <member refid="service_8h_1a4c7094875a0bd8cc87e7c1d24a4481a6" kind="define"><name>RPC_FUNCTION_STILL_RUNNING</name></member>
     <member refid="service_8h_1a4395f88fcaac71516f1fc2ba4d594c63" kind="define"><name>RPC_DISCOVERABLE_INTERFACE</name></member>
     <member refid="service_8h_1a29c88b53b39ac5d6e93a1285968db34b" kind="define"><name>RPC_INTROSPECTABLE_INTERFACE</name></member>
