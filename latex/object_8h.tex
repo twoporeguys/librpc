@@ -88,6 +88,8 @@ enum \hyperlink{object_8h_a40ea3143863f0a2b47446ccaf655638e}{rpc\+\_\+type\+\_\+
 \item 
 int \hyperlink{object_8h_aef96805793fdeeb98b88d03890d034ba}{rpc\+\_\+release\+\_\+impl} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
 \item 
+int \hyperlink{object_8h_a304648476e1f6a68cd9c2521a7703824}{rpc\+\_\+get\+\_\+refcount} (\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
+\item 
 size\+\_\+t \hyperlink{object_8h_a7cfb70b97eaa92aec1888ff177b3100d}{rpc\+\_\+get\+\_\+line\+\_\+number} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
 \item 
 size\+\_\+t \hyperlink{object_8h_ac2b74c41ca419b2daca6ffb7123a1fb7}{rpc\+\_\+get\+\_\+column\+\_\+number} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
@@ -352,7 +354,7 @@ Definition at line 158 of file object.\+h.
 
 R\+A\+II version of \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}. Automatically released when goes out of scope. 
 
-Definition at line 1669 of file object.\+h.
+Definition at line 1679 of file object.\+h.
 
 \mbox{\Hypertarget{object_8h_a470d0e93b159810ff425aec90f47c817}\label{object_8h_a470d0e93b159810ff425aec90f47c817}} 
 \index{object.\+h@{object.\+h}!R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR@{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}}
@@ -417,7 +419,7 @@ Checks if an object is of type R\+P\+C\+\_\+\+T\+Y\+P\+E\+\_\+\+E\+R\+R\+OR.
 \end{DoxyParams}
 
 
-Definition at line 303 of file object.\+h.
+Definition at line 313 of file object.\+h.
 
 \mbox{\Hypertarget{object_8h_aac19be935f72b35eeb2851bc509eabb2}\label{object_8h_aac19be935f72b35eeb2851bc509eabb2}} 
 \index{object.\+h@{object.\+h}!rpc\+\_\+release@{rpc\+\_\+release}}
@@ -443,7 +445,7 @@ Also sets it to N\+U\+LL if as a result of the operation reference count dropped
 \end{DoxyParams}
 
 
-Definition at line 313 of file object.\+h.
+Definition at line 323 of file object.\+h.
 
 \mbox{\Hypertarget{object_8h_a541e997e04e48fe86df08ae323516490}\label{object_8h_a541e997e04e48fe86df08ae323516490}} 
 \index{object.\+h@{object.\+h}!rpc\+\_\+swap@{rpc\+\_\+swap}}
@@ -462,7 +464,7 @@ Swaps {\ttfamily \+\_\+old} object with  object.
 
 Releases {\ttfamily \+\_\+old} before replacing it with {\ttfamily \+\_\+new}. 
 
-Definition at line 325 of file object.\+h.
+Definition at line 335 of file object.\+h.
 
 
 
@@ -2256,6 +2258,24 @@ If the object was read from a file using R\+PC serializer A\+PI, this function m
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 A line number in source file or 0 
+\end{DoxyReturn}
+\mbox{\Hypertarget{object_8h_a304648476e1f6a68cd9c2521a7703824}\label{object_8h_a304648476e1f6a68cd9c2521a7703824}} 
+\index{object.\+h@{object.\+h}!rpc\+\_\+get\+\_\+refcount@{rpc\+\_\+get\+\_\+refcount}}
+\index{rpc\+\_\+get\+\_\+refcount@{rpc\+\_\+get\+\_\+refcount}!object.\+h@{object.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+get\+\_\+refcount()}{rpc\_get\_refcount()}}
+{\footnotesize\ttfamily int rpc\+\_\+get\+\_\+refcount (\begin{DoxyParamCaption}\item[{\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{object }\end{DoxyParamCaption})}
+
+Returns reference count of an object.
+
+This function shall be usd only for debugging purposes.
+
+
+\begin{DoxyParams}{Parameters}
+{\em object} & Object to read reference count from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Reference count 
 \end{DoxyReturn}
 \mbox{\Hypertarget{object_8h_aa1f69b6cfaa4ae287272d76da16b005d}\label{object_8h_aa1f69b6cfaa4ae287272d76da16b005d}} 
 \index{object.\+h@{object.\+h}!rpc\+\_\+get\+\_\+type@{rpc\+\_\+get\+\_\+type}}

@@ -167,6 +167,8 @@ Functions</h2></td></tr>
 <tr class="separator:a38666db12609d1a1f5c856a7f3f0a03a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef96805793fdeeb98b88d03890d034ba"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aef96805793fdeeb98b88d03890d034ba">rpc_release_impl</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:aef96805793fdeeb98b88d03890d034ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a304648476e1f6a68cd9c2521a7703824"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a304648476e1f6a68cd9c2521a7703824">rpc_get_refcount</a> (_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
+<tr class="separator:a304648476e1f6a68cd9c2521a7703824"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7cfb70b97eaa92aec1888ff177b3100d"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a7cfb70b97eaa92aec1888ff177b3100d">rpc_get_line_number</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:a7cfb70b97eaa92aec1888ff177b3100d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2b74c41ca419b2daca6ffb7123a1fb7"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#ac2b74c41ca419b2daca6ffb7123a1fb7">rpc_get_column_number</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
@@ -468,7 +470,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>RAII version of <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>. Automatically released when goes out of scope. </p>
 
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l01669">1669</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l01679">1679</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -579,7 +581,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00303">303</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00313">313</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -608,7 +610,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00313">313</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00323">323</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -640,7 +642,7 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                \</div><div class="line">        rpc_release(_old);                  \</div><div class="line">        (_old) = (_new);                    \</div><div class="line">    } <span class="keywordflow">while</span> (0)</div></div><!-- fragment --><p>Swaps <code>_old</code> object with  object.</p>
 <p>Releases <code>_old</code> before replacing it with <code>_new</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00325">325</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00335">335</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -4061,6 +4063,33 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A line number in source file or 0 </dd></dl>
+
+</div>
+</div>
+<a id="a304648476e1f6a68cd9c2521a7703824"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a304648476e1f6a68cd9c2521a7703824">&#9670;&nbsp;</a></span>rpc_get_refcount()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_get_refcount </td>
+          <td>(</td>
+          <td class="paramtype">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>object</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns reference count of an object.</p>
+<p>This function shall be usd only for debugging purposes.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">object</td><td>Object to read reference count from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference count </dd></dl>
 
 </div>
 </div>
