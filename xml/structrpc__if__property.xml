@@ -4,9 +4,9 @@
     <compoundname>rpc_if_property</compoundname>
     <includes refid="service_8h" local="no">service.h</includes>
       <sectiondef kind="public-attrib">
-      <memberdef kind="variable" id="structrpc__if__property_1a2b294c7fed3665f1a58020040ec13aee" prot="public" static="no" mutable="no">
-        <type>_Nullable <ref refid="service_8h_1ab438f0c33f3f3876f1c9a23d62134f16" kindref="member">rpc_property_getter_t</ref></type>
-        <definition>_Nullable rpc_property_getter_t rpc_if_property::rp_getter</definition>
+      <memberdef kind="variable" id="structrpc__if__property_1ae19b459a98e396cb5f6f8e4938d6c018" prot="public" static="no" mutable="no">
+        <type>__unsafe_unretained _Nullable <ref refid="service_8h_1ab438f0c33f3f3876f1c9a23d62134f16" kindref="member">rpc_property_getter_t</ref></type>
+        <definition>__unsafe_unretained _Nullable rpc_property_getter_t rpc_if_property::rp_getter</definition>
         <argsstring></argsstring>
         <name>rp_getter</name>
         <briefdescription>
@@ -17,9 +17,9 @@
         </inbodydescription>
         <location file="/code/include/rpc/service.h" line="239" column="1" bodyfile="/code/include/rpc/service.h" bodystart="239" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structrpc__if__property_1a02e1f9e6e5680714278ed6dd67987d67" prot="public" static="no" mutable="no">
-        <type>_Nullable <ref refid="service_8h_1aa8b38d8ab3bafe79a96edaebafe13b8d" kindref="member">rpc_property_setter_t</ref></type>
-        <definition>_Nullable rpc_property_setter_t rpc_if_property::rp_setter</definition>
+      <memberdef kind="variable" id="structrpc__if__property_1a45fe384e6ad2355ba81781fe16b9d421" prot="public" static="no" mutable="no">
+        <type>__unsafe_unretained _Nullable <ref refid="service_8h_1aa8b38d8ab3bafe79a96edaebafe13b8d" kindref="member">rpc_property_setter_t</ref></type>
+        <definition>__unsafe_unretained _Nullable rpc_property_setter_t rpc_if_property::rp_setter</definition>
         <argsstring></argsstring>
         <name>rp_setter</name>
         <briefdescription>
@@ -51,8 +51,8 @@
     <location file="/code/include/rpc/service.h" line="238" column="1" bodyfile="/code/include/rpc/service.h" bodystart="237" bodyend="242"/>
     <listofallmembers>
       <member refid="structrpc__if__property_1a81d2953a7a4bdff1775330c29992546b" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_arg</name></member>
-      <member refid="structrpc__if__property_1a2b294c7fed3665f1a58020040ec13aee" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_getter</name></member>
-      <member refid="structrpc__if__property_1a02e1f9e6e5680714278ed6dd67987d67" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_setter</name></member>
+      <member refid="structrpc__if__property_1ae19b459a98e396cb5f6f8e4938d6c018" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_getter</name></member>
+      <member refid="structrpc__if__property_1a45fe384e6ad2355ba81781fe16b9d421" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_setter</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

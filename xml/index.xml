@@ -14,12 +14,12 @@
     <member refid="structrpc__if__member_1a7c950b405b6852b3038ae847d0b7e2e0" kind="variable"><name>@1</name></member>
   </compound>
   <compound refid="structrpc__if__method" kind="struct"><name>rpc_if_method</name>
-    <member refid="structrpc__if__method_1a5db192112740ed1adb36f74ff7c92a80" kind="variable"><name>rm_block</name></member>
+    <member refid="structrpc__if__method_1a479530c031d4da4fb1a3c6a38de19106" kind="variable"><name>rm_block</name></member>
     <member refid="structrpc__if__method_1a85a2f339a726ef4afb885cbf157c0998" kind="variable"><name>rm_arg</name></member>
   </compound>
   <compound refid="structrpc__if__property" kind="struct"><name>rpc_if_property</name>
-    <member refid="structrpc__if__property_1a2b294c7fed3665f1a58020040ec13aee" kind="variable"><name>rp_getter</name></member>
-    <member refid="structrpc__if__property_1a02e1f9e6e5680714278ed6dd67987d67" kind="variable"><name>rp_setter</name></member>
+    <member refid="structrpc__if__property_1ae19b459a98e396cb5f6f8e4938d6c018" kind="variable"><name>rp_getter</name></member>
+    <member refid="structrpc__if__property_1a45fe384e6ad2355ba81781fe16b9d421" kind="variable"><name>rp_setter</name></member>
     <member refid="structrpc__if__property_1a81d2953a7a4bdff1775330c29992546b" kind="variable"><name>rp_arg</name></member>
   </compound>
   <compound refid="structrpc__query__params" kind="struct"><name>rpc_query_params</name>

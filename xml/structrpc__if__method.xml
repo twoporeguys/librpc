@@ -4,9 +4,9 @@
     <compoundname>rpc_if_method</compoundname>
     <includes refid="service_8h" local="no">service.h</includes>
       <sectiondef kind="public-attrib">
-      <memberdef kind="variable" id="structrpc__if__method_1a5db192112740ed1adb36f74ff7c92a80" prot="public" static="no" mutable="no">
-        <type>_Nonnull <ref refid="service_8h_1ae49a22468cfcd4adfa558078e9e4e312" kindref="member">rpc_function_t</ref></type>
-        <definition>_Nonnull rpc_function_t rpc_if_method::rm_block</definition>
+      <memberdef kind="variable" id="structrpc__if__method_1a479530c031d4da4fb1a3c6a38de19106" prot="public" static="no" mutable="no">
+        <type>__unsafe_unretained _Nonnull <ref refid="service_8h_1ae49a22468cfcd4adfa558078e9e4e312" kindref="member">rpc_function_t</ref></type>
+        <definition>__unsafe_unretained _Nonnull rpc_function_t rpc_if_method::rm_block</definition>
         <argsstring></argsstring>
         <name>rm_block</name>
         <briefdescription>
@@ -38,7 +38,7 @@
     <location file="/code/include/rpc/service.h" line="229" column="1" bodyfile="/code/include/rpc/service.h" bodystart="228" bodyend="232"/>
     <listofallmembers>
       <member refid="structrpc__if__method_1a85a2f339a726ef4afb885cbf157c0998" prot="public" virt="non-virtual"><scope>rpc_if_method</scope><name>rm_arg</name></member>
-      <member refid="structrpc__if__method_1a5db192112740ed1adb36f74ff7c92a80" prot="public" virt="non-virtual"><scope>rpc_if_method</scope><name>rm_block</name></member>
+      <member refid="structrpc__if__method_1a479530c031d4da4fb1a3c6a38de19106" prot="public" virt="non-virtual"><scope>rpc_if_method</scope><name>rm_block</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>
