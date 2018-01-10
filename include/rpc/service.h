@@ -42,6 +42,10 @@
 extern "C" {
 #endif
 
+#ifndef __APPLE__
+#define	__unsafe_unretained
+#endif
+
 /**
  * Marks the function as "still running" even though the implementing
  * call returned.
