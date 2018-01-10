@@ -199,6 +199,16 @@ _Nonnull rpc_object_t rpc_retain(_Nonnull rpc_object_t object);
 int rpc_release_impl(_Nonnull rpc_object_t object);
 
 /**
+ * Returns reference count of an object.
+ *
+ * This function shall be usd only for debugging purposes.
+ *
+ * @param object Object to read reference count from
+ * @return Reference count
+ */
+int rpc_get_refcount(_Nullable rpc_object_t object);
+
+/**
  * Gets line number of object location in source file (if any).
  *
  * If the object was read from a file using RPC serializer API,

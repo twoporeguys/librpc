@@ -526,6 +526,15 @@ rpc_release_impl(rpc_object_t object)
 	return (object->ro_refcnt);
 }
 
+int
+rpc_get_refcount(rpc_object_t object)
+{
+	if (object == NULL)
+		return (0);
+
+	return (object->ro_refcnt);
+}
+
 inline size_t
 rpc_get_line_number(rpc_object_t object)
 {
