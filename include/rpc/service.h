@@ -227,8 +227,8 @@ enum rpc_property_rights
  */
 struct rpc_if_method
 {
-	_Nonnull rpc_function_t		rm_block;
-	void *_Nullable			rm_arg;
+	__unsafe_unretained _Nonnull rpc_function_t rm_block;
+	void *_Nullable	rm_arg;
 };
 
 /**
@@ -236,9 +236,9 @@ struct rpc_if_method
  */
 struct rpc_if_property
 {
-	_Nullable rpc_property_getter_t	rp_getter;
-	_Nullable rpc_property_setter_t	rp_setter;
-	void *_Nullable			rp_arg;
+	__unsafe_unretained _Nullable rpc_property_getter_t rp_getter;
+	__unsafe_unretained _Nullable rpc_property_setter_t rp_setter;
+	void *_Nullable rp_arg;
 };
 
 /**
