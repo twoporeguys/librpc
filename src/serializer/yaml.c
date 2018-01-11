@@ -154,6 +154,7 @@ rpc_yaml_read_scalar(yaml_event_t *event)
 	size_t len = event->data.scalar.length;
 	char *tag = (char *)event->data.scalar.tag;
 	int64_t intval;
+	uint64_t uintval;
 	rpc_object_t ret;
 	double doubleval;
 	char *endptr;
@@ -175,12 +176,14 @@ rpc_yaml_read_scalar(yaml_event_t *event)
 		goto done;
 	}
 
+	if (!g_strcmp0(tag, YAML_TAG_UINT64)) {
+		uintval = g_ascii_strtoull(value, &endptr, 10);
+		ret = rpc_uint64_create(uintval);
+		goto done;
+	}
+
 	intval = (int64_t)g_ascii_strtoll(value, &endptr, 10);
 	if (*endptr == '\0') {
-		if (!g_strcmp0(tag, YAML_TAG_UINT64)) {
-			ret = rpc_uint64_create((uint64_t)intval);
-			goto done;
-		}
 
 		if (!g_strcmp0(tag, YAML_TAG_DATE)) {
 			ret = rpc_date_create(intval);
