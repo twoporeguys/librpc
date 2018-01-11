@@ -25,4 +25,42 @@
  *
  */
 
-#include "../catch.hpp"
+#include "tests.h"
+#include "../src/linker_set.h"
+#include <glib.h>
+
+
+typedef struct {
+
+} transport_fixture;
+
+static void
+transport_test(transport_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+transport_test_single_set_up(transport_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+transport_test_tear_down(transport_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+transport_test_register()
+{
+
+}
+
+static struct librpc_test transport = {
+    .name = "transport",
+    .register_f = &transport_test_register
+};
+
+DECLARE_TEST(transport);

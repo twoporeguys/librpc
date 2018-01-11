@@ -25,8 +25,8 @@
  *
  */
 
-#include "tests.h"
-#include "../src/linker_set.h"
+#include "../tests.h"
+#include "../../src/linker_set.h"
 #include <glib.h>
 #include <string.h>
 #include <rpc/object.h>

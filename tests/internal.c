@@ -25,4 +25,42 @@
  *
  */
 
-#include "catch.hpp"
+#include "tests.h"
+#include "../src/linker_set.h"
+#include <glib.h>
+
+
+typedef struct {
+
+} internal_fixture;
+
+static void
+internal_test(internal_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+internal_test_single_set_up(internal_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+internal_test_tear_down(internal_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+internal_test_register()
+{
+
+}
+
+static struct librpc_test internal = {
+    .name = "internal",
+    .register_f = &internal_test_register
+};
+
+DECLARE_TEST(internal);

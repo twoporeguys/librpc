@@ -25,4 +25,42 @@
  *
  */
 
-#include "../catch.hpp"
+#include "../tests.h"
+#include "../../src/linker_set.h"
+#include <glib.h>
+
+
+typedef struct {
+
+} server_fixture;
+
+static void
+server_test(server_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+server_test_single_set_up(server_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+server_test_tear_down(server_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+server_test_register()
+{
+
+}
+
+static struct librpc_test server = {
+    .name = "server",
+    .register_f = &server_test_register
+};
+
+DECLARE_TEST(server);

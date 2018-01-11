@@ -25,4 +25,42 @@
  *
  */
 
-#include "../catch.hpp"
+#include "../tests.h"
+#include "../../src/linker_set.h"
+#include <glib.h>
+
+
+typedef struct {
+
+} bus_fixture;
+
+static void
+bus_test(bus_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+bus_test_single_set_up(bus_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+bus_test_tear_down(bus_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+bus_test_register()
+{
+
+}
+
+static struct librpc_test bus = {
+    .name = "bus",
+    .register_f = &bus_test_register
+};
+
+DECLARE_TEST(bus);
