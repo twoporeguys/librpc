@@ -228,30 +228,29 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc DESTINATION ${CMAKE_INSTALL_
 
 if(BUILD_TESTS)
     # Compile tests
-    set(CATCH_INCLUDE_DIR src/tests)
-    add_library(Catch INTERFACE)
 
     set(TEST_SOURCES
-            tests/tests_main.cpp
-            tests/serializer/json.cpp
-            tests/api/object.cpp
-            tests/api/client.cpp
-            tests/api/connection.cpp
-            tests/api/discovery.cpp
-            tests/api/server.cpp
-            tests/api/service.cpp
-            tests/serializer/msgpack.cpp
-            tests/transport/loopback.cpp
-            tests/transport/socket.cpp
-            tests/transport/ws.cpp
-            tests/internal.cpp
-            tests/method_stress.cpp
-            tests/api/query.cpp
-            tests/serializer/yaml.cpp)
+            tests/main.c
+            tests/serializer/json.c
+            #tests/api/object.cpp
+            #tests/api/client.cpp
+            #tests/api/connection.cpp
+            #tests/api/discovery.cpp
+            #tests/api/server.cpp
+            #tests/api/service.cpp
+            #tests/serializer/msgpack.cpp
+            #tests/transport/loopback.cpp
+            #tests/transport/socket.cpp
+            #tests/transport/ws.cpp
+            #tests/internal.cpp
+            #tests/method_stress.cpp
+            #tests/api/query.cpp
+            #tests/serializer/yaml.cpp
+            )
 
-    add_executable(catch_tests ${TEST_SOURCES})
-    target_link_libraries(catch_tests Catch)
-    target_link_libraries(catch_tests librpc)
+    add_executable(test_suite ${TEST_SOURCES})
+    target_link_libraries(test_suite ${GLIB_LIBRARIES})
+    target_link_libraries(test_suite librpc)
 endif()
 
 if(BUILD_EXAMPLES)

@@ -146,7 +146,7 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 		break;
 
 	case RPC_TYPE_INT64:
-		if (object->ro_value.rv_i > (1L << 32)) {
+		if (object->ro_value.rv_i > (1LL << 32)) {
 			be_int64.value = htobe64(object->ro_value.rv_i);
 			be_int64.tag = 0xd3;
 			mpack_write_object_bytes(writer,
@@ -160,7 +160,7 @@ rpc_msgpack_write_object(mpack_writer_t *writer, rpc_object_t object)
 		break;
 
 	case RPC_TYPE_UINT64:
-		if (object->ro_value.rv_i > (1L << 32)) {
+		if (object->ro_value.rv_ui > (1ULL << 32)) {
 			be_int64.value = htobe64(object->ro_value.rv_ui);
 			be_int64.tag = 0xcf;
 			mpack_write_object_bytes(writer,
