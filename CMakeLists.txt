@@ -230,22 +230,22 @@ if(BUILD_TESTS)
     # Compile tests
 
     set(TEST_SOURCES
+            src/linker_set.h
+            tests/tests.h
             tests/main.c
-            tests/serializer/json.c
+            tests/serializer.c
             #tests/api/object.cpp
             #tests/api/client.cpp
             #tests/api/connection.cpp
             #tests/api/discovery.cpp
             #tests/api/server.cpp
             #tests/api/service.cpp
-            #tests/serializer/msgpack.cpp
             #tests/transport/loopback.cpp
             #tests/transport/socket.cpp
             #tests/transport/ws.cpp
             #tests/internal.cpp
             #tests/method_stress.cpp
             #tests/api/query.cpp
-            #tests/serializer/yaml.cpp
             )
 
     add_executable(test_suite ${TEST_SOURCES})
