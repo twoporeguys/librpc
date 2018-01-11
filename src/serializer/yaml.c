@@ -303,7 +303,9 @@ rpc_yaml_write_object(yaml_emitter_t *emitter, rpc_object_t object)
 		break;
 
 	case RPC_TYPE_DOUBLE:
-		value = g_strdup_printf("%f", rpc_double_get_value(object));
+		value = (char *)g_malloc(G_ASCII_DTOSTR_BUF_SIZE);
+		value = g_ascii_dtostr(value, G_ASCII_DTOSTR_BUF_SIZE,
+		    rpc_double_get_value(object));
 		status = yaml_scalar_event_initialize(&event, NULL, NULL,
 		    (yaml_char_t *)value, (int)strlen(value), 1, 1,
 		    YAML_ANY_SCALAR_STYLE);
