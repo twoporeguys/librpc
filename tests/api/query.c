@@ -25,4 +25,42 @@
  *
  */
 
-#include "../catch.hpp"
+#include "../tests.h"
+#include "../../src/linker_set.h"
+#include <glib.h>
+
+
+typedef struct {
+
+} query_fixture;
+
+static void
+query_test(query_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+query_test_single_set_up(query_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+query_test_tear_down(query_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+query_test_register()
+{
+
+}
+
+static struct librpc_test query = {
+    .name = "query",
+    .register_f = &query_test_register
+};
+
+DECLARE_TEST(query);

@@ -25,4 +25,42 @@
  *
  */
 
-#include "../catch.hpp"
+#include "../tests.h"
+#include "../../src/linker_set.h"
+#include <glib.h>
+
+
+typedef struct {
+
+} typing_fixture;
+
+static void
+typing_test(typing_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+typing_test_single_set_up(typing_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+typing_test_tear_down(typing_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+typing_test_register()
+{
+
+}
+
+static struct librpc_test typing = {
+    .name = "typing",
+    .register_f = &typing_test_register
+};
+
+DECLARE_TEST(typing);

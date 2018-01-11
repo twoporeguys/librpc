@@ -25,4 +25,42 @@
  *
  */
 
-#include "../catch.hpp"
+#include "../tests.h"
+#include "../../src/linker_set.h"
+#include <glib.h>
+
+
+typedef struct {
+
+} connection_fixture;
+
+static void
+connection_test(connection_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+connection_test_single_set_up(connection_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+connection_test_tear_down(connection_fixture *fixture, gconstpointer user_data)
+{
+
+}
+
+static void
+connection_test_register()
+{
+
+}
+
+static struct librpc_test connection = {
+    .name = "connection",
+    .register_f = &connection_test_register
+};
+
+DECLARE_TEST(connection);

@@ -233,20 +233,17 @@ if(BUILD_TESTS)
             src/linker_set.h
             tests/tests.h
             tests/main.c
-            tests/serializer.c
-            #tests/api/object.cpp
-            #tests/api/client.cpp
-            #tests/api/connection.cpp
-            #tests/api/discovery.cpp
-            #tests/api/server.cpp
-            #tests/api/service.cpp
-            #tests/transport/loopback.cpp
-            #tests/transport/socket.cpp
-            #tests/transport/ws.cpp
-            #tests/internal.cpp
-            #tests/method_stress.cpp
-            #tests/api/query.cpp
-            )
+            tests/api/bus.c
+            tests/api/client.c
+            tests/api/connection.c
+            tests/api/object.c
+            tests/api/query.c
+            tests/api/serializer.c
+            tests/api/server.c
+            tests/api/service.c
+            tests/api/typing.c
+            tests/internal.c
+            tests/transport.c)
 
     add_executable(test_suite ${TEST_SOURCES})
     target_link_libraries(test_suite ${GLIB_LIBRARIES})
