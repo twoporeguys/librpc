@@ -25,8 +25,8 @@
  *
  */
 
-#include "../tests.h"
-#include "../../src/linker_set.h"
+#include "tests.h"
+#include "../src/linker_set.h"
 #include <glib.h>
 #include <string.h>
 #include <rpc/object.h>
@@ -50,10 +50,10 @@ serializer_test(serializer_fixture *fixture, gconstpointer user_data)
 	g_assert(rpc_serializer_dump(type, object, &buf, &buf_size) == 0);
 	object_mirror = rpc_serializer_load(type, buf, buf_size);
 	g_assert_nonnull(object_mirror);
-	g_assert(rpc_equal(object, object_mirror) == true);
+	g_assert_true(rpc_equal(object, object_mirror));
 
-	g_free(buf);
-	rpc_release(object_mirror);
+	g_test_queue_free(buf);
+	g_test_queue_destroy((GDestroyNotify)rpc_release_impl, object_mirror);
 }
 
 static void
@@ -61,22 +61,26 @@ serializer_test_dict_set_up(serializer_fixture *fixture,
     gconstpointer user_data)
 {
 	void *data;
-	size_t size = 1000;
+	size_t size = (size_t)g_test_rand_int_range(1024, 1024*1024);
+	uint64_t uint = (uint64_t)g_test_rand_int();
 
 	data = g_malloc0(size);
-	memset(data, 4, size);
+	memset(data, g_test_rand_int_range(0, 255), size);
 
 	fixture->object = rpc_object_pack("{n,b,i,u,D,B,f,d,s,[s,i,f]}",
 	    "null",
 	    "bool", true,
-	    "int", -123LL,
-	    "uint", 123ULL,
-	    "date", 456LL,
+	    "int", (int64_t)g_test_rand_int(),
+	    "uint", uint,
+	    "date", (int64_t)g_test_rand_int_range(0, 0xffff),
 	    "binary", data, size, RPC_BINARY_DESTRUCTOR(g_free),
 	    "fd", 1,
-	    "double", 12.0,
+	    "double", g_test_rand_double(),
 	    "string", "deadbeef",
-	    "array", "woopwoop", -1234LL, 2);
+	    "array",
+	    "woopwoop",
+	    (int64_t)g_test_rand_int(),
+	    1);
 
 	fixture->type = user_data;
 }
@@ -86,23 +90,23 @@ serializer_test_array_set_up(serializer_fixture *fixture,
     gconstpointer user_data)
 {
 	void *data;
-	size_t size = 1000;
+	size_t size = (size_t)g_test_rand_int_range(1024, 1024*1024);
 
 	data = g_malloc0(size);
-	memset(data, 4, size);
+	memset(data, g_test_rand_int_range(0, 255), size);
 
 	fixture->object = rpc_object_pack("[n,b,i,u,D,B,f,d,s,{s,i,f}]",
 	    true,
-	    -123LL,
-	    123ULL,
-	    456LL,
+	    (int64_t)g_test_rand_int(),
+	    (uint64_t)g_test_rand_int(),
+	    (int64_t)g_test_rand_int_range(0, 0xffff),
 	    data, size, RPC_BINARY_DESTRUCTOR(g_free),
 	    1,
-	    12.0,
+	    g_test_rand_double(),
 	    "deadbeef",
 	    "string", "woopwoop",
-	    "int", -1234LL,
-	    "fd", 2);
+	    "int", (int64_t)g_test_rand_int(),
+	    "fd", 1);
 
 	fixture->type = user_data;
 }
@@ -112,7 +116,7 @@ serializer_test_single_set_up(serializer_fixture *fixture,
     gconstpointer user_data)
 {
 
-	fixture->object = rpc_object_pack("u", 123ULL);
+	fixture->object = rpc_object_pack("u", (uint64_t)g_test_rand_int());
 
 	fixture->type = user_data;
 }
@@ -122,8 +126,9 @@ static void
 serializer_test_shmem_set_up(serializer_fixture *fixture,
     gconstpointer user_data)
 {
+	size_t size = (size_t)g_test_rand_int_range(1024, 1024*1024);
 
-	fixture->object = rpc_shmem_create(1024);
+	fixture->object = rpc_shmem_create(size);
 
 	fixture->type = user_data;
 }
@@ -185,9 +190,9 @@ serializer_test_register()
 	#endif
 }
 
-static struct librpc_test chuj_serializer = {
+static struct librpc_test serializer = {
     .name = "serializer",
     .register_f = &serializer_test_register
 };
 
-DECLARE_TEST(chuj_serializer);
+DECLARE_TEST(serializer);
