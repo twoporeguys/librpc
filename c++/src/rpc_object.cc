@@ -1,0 +1,218 @@
+/*
+ * Copyright 2015-2017 Two Pore Guys, Inc.
+ * All rights reserved
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted providing that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+#include "../include/librpc.hh"
+
+using namespace librpc;
+
+Object::Object()
+{
+	m_value = rpc_null_create();
+}
+
+Object::Object(const Object &other)
+{
+	m_value = rpc_retain(other.m_value);
+}
+
+Object::Object(Object &&other)
+{
+	m_value = other.m_value;
+	other.m_value = nullptr;
+}
+
+Object::Object(any value)
+{
+	if (value.type() == typeid(void)) {
+		Object::Object();
+		return;
+	}
+
+	/*if (value.type() == typeid(bool)) {
+		Object::Object(std::experimental::any_cast<int>(value));
+		return;
+	}
+
+	if (value.type() == typeid(uint64_t)) {
+		Object::Object(std::experimental::any_cast<int>(value));
+		return;
+	}*/
+}
+
+Object::Object(bool value)
+{
+	m_value = rpc_bool_create(value);
+}
+
+Object::Object(uint64_t value)
+{
+	m_value = rpc_uint64_create(value);
+}
+
+Object::Object(int64_t value)
+{
+	m_value = rpc_int64_create(value);
+}
+
+Object::Object(double value)
+{
+	m_value = rpc_double_create(value);
+}
+
+Object::Object(const char *value)
+{
+	m_value = rpc_string_create(value);
+}
+
+Object::Object(const std::string &value)
+{
+	m_value = rpc_string_create(value.c_str());
+}
+
+Object::Object(void *data, size_t len, rpc_binary_destructor_t dtor)
+{
+	m_value = rpc_data_create(data, len, dtor);
+}
+
+Object::Object(const std::map<std::string, any> &dict)
+{
+	m_value = rpc_dictionary_create();
+
+	for (auto &kv : dict) {
+		rpc_dictionary_steal_value(m_value, kv.first.c_str(),
+	            Object(kv.second).m_value);
+	}
+}
+
+Object::Object(const std::map<std::string, Object> &dict)
+{
+	m_value = rpc_dictionary_create();
+
+	for (auto &kv : dict) {
+		rpc_dictionary_steal_value(m_value, kv.first.c_str(),
+		    kv.second.m_value);
+	}
+}
+
+Object::Object(const std::vector<Object> &array)
+{
+	m_value = rpc_array_create();
+
+	for (auto &v : array) {
+		rpc_array_append_stolen_value(m_value, v.m_value);
+	}
+}
+
+Object::Object(std::initializer_list<Object> list)
+{
+	m_value = rpc_array_create();
+
+	for (auto &v : list) {
+		rpc_array_append_stolen_value(m_value, v.m_value);
+	}
+}
+
+Object::Object(std::initializer_list<std::pair<std::string, Object>> list)
+{
+	m_value = rpc_dictionary_create();
+
+	for (auto &kv : list) {
+		rpc_dictionary_steal_value(m_value, kv.first.c_str(),
+		    kv.second.m_value);
+	}
+}
+
+Object
+Object::wrap(rpc_object_t other)
+{
+	Object result;
+
+	result.m_value = rpc_retain(other);
+	return result;
+}
+
+Object
+Object::copy()
+{
+	return Object::wrap(rpc_copy(m_value));
+}
+
+void
+Object::retain()
+{
+	rpc_retain(m_value);
+}
+
+void
+Object::release()
+{
+	rpc_release(m_value);
+}
+
+rpc_object_t
+Object::unwrap()
+{
+	return m_value;
+}
+
+std::string &&
+Object::describe()
+{
+	std::string result;
+	char *descr;
+
+	descr = rpc_copy_description(m_value);
+	result = descr;
+	free(descr);
+
+	return std::move(result);
+}
+
+Object::operator int() const
+{
+	return ((int)rpc_int64_get_value(m_value));
+}
+
+Object::operator int64_t() const
+{
+	return (rpc_int64_get_value(m_value));
+}
+
+Object::operator uint64_t() const
+{
+	return (rpc_uint64_get_value(m_value));
+}
+
+Object::operator const char *() const
+{
+	return (rpc_string_get_string_ptr(m_value));
+}
+
+Object::operator std::string() const
+{
+	return (std::string(rpc_string_get_string_ptr(m_value)));
+}
