@@ -430,6 +430,8 @@
     <member refid="typing_8h_1ae36966ca7ca5448af0bb88d173036217" kind="function"><name>rpct_deserialize</name></member>
     <member refid="typing_8h_1a2f80e7ec74258ea0a5f739c61b5b623e" kind="function"><name>rpct_validate</name></member>
   </compound>
+  <compound refid="vtable_8h" kind="file"><name>vtable.h</name>
+  </compound>
   <compound refid="dir_d44c64559bbebec7f509842c48db8b23" kind="dir"><name>/code/include</name>
   </compound>
   <compound refid="dir_26df6c18271b4ec683b70d44ac22bed0" kind="dir"><name>/code/include/rpc</name>

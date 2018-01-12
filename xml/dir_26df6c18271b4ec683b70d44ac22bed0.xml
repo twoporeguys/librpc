@@ -11,6 +11,7 @@
     <innerfile refid="server_8h">server.h</innerfile>
     <innerfile refid="service_8h">service.h</innerfile>
     <innerfile refid="typing_8h">typing.h</innerfile>
+    <innerfile refid="vtable_8h">vtable.h</innerfile>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
