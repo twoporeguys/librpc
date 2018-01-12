@@ -284,9 +284,9 @@ if(BUILD_PYTHON)
     add_subdirectory(python)
 endif()
 
-if(BUILD_CPLUSPLUS)
-    add_subdirectory(c++)
-endif()
+# if(BUILD_CPLUSPLUS)
+#     add_subdirectory(c++)
+# endif()
 
 if(BUILD_DOC)
     find_package(Doxygen)
