@@ -810,9 +810,10 @@ rpc_get_objects(void *cookie, rpc_object_t args __unused)
 	char *prefix = NULL;
 	rpc_instance_t instance;
 	rpc_instance_t v;
-	rpc_object_t fragment;
+	rpc_object_t list;
 
 	instance = rpc_function_get_instance(cookie);
+	list = rpc_array_create();
 
 	if (strlen(rpc_instance_get_path(instance)) > 1)
 		prefix = g_strdup_printf("%s/", rpc_instance_get_path(instance));
@@ -824,18 +825,14 @@ rpc_get_objects(void *cookie, rpc_object_t args __unused)
 		if (prefix != NULL && !g_str_has_prefix(v->ri_path, prefix))
 			continue;
 
-		fragment = rpc_object_pack("{s,s}",
+		rpc_array_append_stolen_value(list, rpc_object_pack("{s,s}",
 		    "path", v->ri_path,
-		    "description", v->ri_descr);
-
-		if (rpc_function_yield(cookie, fragment) != 0)
-			goto done;
+		    "description", v->ri_descr));
 	}
 
-done:
 	g_rw_lock_reader_unlock(&context->rcx_rwlock);
 	g_free(prefix);
-	return ((rpc_object_t)NULL);
+	return (list);
 }
 
 static rpc_object_t
