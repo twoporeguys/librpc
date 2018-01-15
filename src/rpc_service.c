@@ -841,20 +841,17 @@ rpc_get_interfaces(void *cookie, rpc_object_t args __unused)
 	GHashTableIter iter;
 	const char *k;
 	void *v;
-	rpc_object_t fragment;
+	rpc_object_t list = rpc_array_create();
 	rpc_instance_t instance = rpc_function_get_instance(cookie);
 
 	g_rw_lock_reader_lock(&instance->ri_rwlock);
 	g_hash_table_iter_init(&iter, instance->ri_interfaces);
 	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
-		fragment = rpc_string_create(k);
-		if (rpc_function_yield(cookie, fragment) != 0)
-			goto done;
+		rpc_array_append_stolen_value(list, rpc_string_create(k));
 	}
 
-done:
 	g_rw_lock_reader_unlock(&instance->ri_rwlock);
-	return ((rpc_object_t)NULL);
+	return (list);
 }
 
 static rpc_object_t
