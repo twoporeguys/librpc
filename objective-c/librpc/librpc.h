@@ -178,5 +178,4 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
 - (void)forwardInvocation:(nonnull NSInvocation *)anInvocation;
 - (nonnull NSMethodSignature *)methodSignatureForSelector:(nonnull SEL)aSelector;
 - (nonnull instancetype)initWithClient:(nonnull RPCClient *)client path:(nonnull NSString *)path andInterface:(nonnull NSString *)interface;
-- (nonnull RPCCall *)call:(
 @end
