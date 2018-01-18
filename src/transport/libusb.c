@@ -346,6 +346,7 @@ usb_abort(void *arg)
 
 	conn->uc_state.uts_exit = true;
 	g_thread_join(conn->uc_libusb_thread);
+	g_source_destroy(conn->uc_event_source);
 	libusb_close(conn->uc_handle);
 	libusb_exit(conn->uc_libusb);
 	return (0);
@@ -597,6 +598,10 @@ usb_event_impl(void *arg)
 	struct usb_connection *conn = arg;
 	int ret;
 	struct librpc_usb_log *log;
+
+	if (g_source_is_destroyed(conn->uc_event_source))
+		return (false);
+
 
 	log = g_malloc(sizeof(*log) + conn->uc_logsize);
 
