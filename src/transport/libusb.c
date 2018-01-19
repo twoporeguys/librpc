@@ -139,6 +139,7 @@ struct usb_connection
 	libusb_device_handle *		uc_handle;
 	GThread *			uc_libusb_thread;
 	GSource *			uc_event_source;
+	GMutex				uc_mtx;
 	struct usb_thread_state		uc_state;
 	size_t 				uc_logsize;
 	int				uc_logfd;
@@ -272,6 +273,7 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 
 	conn = g_malloc0(sizeof(*conn));
 	conn->uc_logfd = -1;
+	g_mutex_init(&conn->uc_mtx);
 	libusb_init(&conn->uc_libusb);
 
 	rpc_object_unpack(args, "f", &conn->uc_logfd);
@@ -344,11 +346,13 @@ usb_abort(void *arg)
 {
 	struct usb_connection *conn = arg;
 
+	g_mutex_lock(&conn->uc_mtx);
 	conn->uc_state.uts_exit = true;
 	g_thread_join(conn->uc_libusb_thread);
 	g_source_destroy(conn->uc_event_source);
 	libusb_close(conn->uc_handle);
 	libusb_exit(conn->uc_libusb);
+	g_mutex_unlock(&conn->uc_mtx);
 	return (0);
 }
 
@@ -599,16 +603,19 @@ usb_event_impl(void *arg)
 	int ret;
 	struct librpc_usb_log *log;
 
-	if (g_source_is_destroyed(conn->uc_event_source))
-		return (false);
-
-
 	log = g_malloc(sizeof(*log) + conn->uc_logsize);
 
 	for (;;) {
+		g_mutex_lock(&conn->uc_mtx);
+
+		if (g_source_is_destroyed(conn->uc_event_source))
+			break;
+
 		memset(log, 0, sizeof(*log) + conn->uc_logsize);
 		ret = usb_xfer(conn->uc_handle, LIBRPC_USB_READ_LOG, log,
 		   sizeof(*log) + conn->uc_logsize, 500);
+
+		g_mutex_unlock(&conn->uc_mtx);
 
 		if (ret < 1)
 			goto disconnected;
