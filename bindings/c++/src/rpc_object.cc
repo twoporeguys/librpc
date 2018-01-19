@@ -48,7 +48,7 @@ Object::Object(Object &&other)
 Object::Object(any value)
 {
 	if (value.type() == typeid(void)) {
-		Object::Object();
+		m_value = rpc_null_create();
 		return;
 	}
 
