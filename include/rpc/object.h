@@ -1213,7 +1213,7 @@ int rpc_array_dup_fd(_Nonnull rpc_object_t array, size_t index);
  * @param size Size (in bytes) of a shared memory to be allocated.
  * @return Newly created object representing a shared memory.
  */
-_Nonnull rpc_object_t rpc_shmem_create(size_t size);
+_Nullable rpc_object_t rpc_shmem_create(size_t size);
 
 /**
  * Maps a given shared memory object to an actual address.
