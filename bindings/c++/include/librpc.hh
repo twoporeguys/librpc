@@ -49,9 +49,8 @@ namespace librpc {
 	{
 	public:
 		Object(const Object &other);
-		Object(Object &&other);
+		Object(Object &&other) noexcept;
 		Object();
-		Object(any value);
 		Object(bool value);
 		Object(uint64_t value);
 		Object(int64_t value);
@@ -59,9 +58,7 @@ namespace librpc {
 		Object(const char *value);
 		Object(const std::string &value);
 		Object(void *data, size_t len, rpc_binary_destructor_t dtor);
-		Object(const std::map<std::string, any> &dict);
 		Object(const std::map<std::string, Object> &dict);
-		Object(const std::vector<any> &array);
 		Object(const std::vector<Object> &array);
 		Object(std::initializer_list<Object> list);
 		Object(std::initializer_list<std::pair<std::string, Object>> list);

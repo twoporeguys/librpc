@@ -39,28 +39,10 @@ Object::Object(const Object &other)
 	m_value = rpc_retain(other.m_value);
 }
 
-Object::Object(Object &&other)
+Object::Object(Object &&other) noexcept
 {
 	m_value = other.m_value;
 	other.m_value = nullptr;
-}
-
-Object::Object(any value)
-{
-	if (value.type() == typeid(void)) {
-		m_value = rpc_null_create();
-		return;
-	}
-
-	/*if (value.type() == typeid(bool)) {
-		Object::Object(std::experimental::any_cast<int>(value));
-		return;
-	}
-
-	if (value.type() == typeid(uint64_t)) {
-		Object::Object(std::experimental::any_cast<int>(value));
-		return;
-	}*/
 }
 
 Object::Object(bool value)
@@ -96,16 +78,6 @@ Object::Object(const std::string &value)
 Object::Object(void *data, size_t len, rpc_binary_destructor_t dtor)
 {
 	m_value = rpc_data_create(data, len, dtor);
-}
-
-Object::Object(const std::map<std::string, any> &dict)
-{
-	m_value = rpc_dictionary_create();
-
-	for (auto &kv : dict) {
-		rpc_dictionary_steal_value(m_value, kv.first.c_str(),
-	            Object(kv.second).m_value);
-	}
 }
 
 Object::Object(const std::map<std::string, Object> &dict)
