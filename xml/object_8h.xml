@@ -4856,7 +4856,7 @@
 <codeline lineno="1208"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1209"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>defined(__linux__)</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="1210"><highlight class="normal"></highlight></codeline>
-<codeline lineno="1216"><highlight class="normal">_Nonnull<sp/>rpc_object_t<sp/>rpc_shmem_create(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>size);</highlight></codeline>
+<codeline lineno="1216"><highlight class="normal">_Nullable<sp/>rpc_object_t<sp/>rpc_shmem_create(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>size);</highlight></codeline>
 <codeline lineno="1217"><highlight class="normal"></highlight></codeline>
 <codeline lineno="1224"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>rpc_shmem_map(_Nonnull<sp/>rpc_object_t<sp/>shmem);</highlight></codeline>
 <codeline lineno="1225"><highlight class="normal"></highlight></codeline>
