@@ -350,9 +350,9 @@ usb_abort(void *arg)
 	conn->uc_state.uts_exit = true;
 	g_source_destroy(conn->uc_event_source);
 	g_mutex_unlock(&conn->uc_mtx);
-	g_thread_join(conn->uc_libusb_thread);
 	libusb_close(conn->uc_handle);
-	libusb_exit(conn->uc_libusb);;
+	libusb_exit(conn->uc_libusb);
+	g_thread_join(conn->uc_libusb_thread);
 	return (0);
 }
 
