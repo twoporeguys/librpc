@@ -281,12 +281,12 @@ if(BUILD_RPCTOOL)
 endif()
 
 if(BUILD_PYTHON)
-    add_subdirectory(python)
+    add_subdirectory(bindings/python)
 endif()
 
-# if(BUILD_CPLUSPLUS)
-#     add_subdirectory(c++)
-# endif()
+if(BUILD_CPLUSPLUS)
+    add_subdirectory(bindings/c++)
+endif()
 
 if(BUILD_DOC)
     find_package(Doxygen)
