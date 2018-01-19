@@ -102,7 +102,7 @@ typedef void (^rpc_error_handler_t)(rpc_error_code_t code,
 /**
  * Definition of RPC callback block type.
  */
-typedef bool (^rpc_callback_t)(_Nullable rpc_object_t args, rpc_call_status_t status);
+typedef bool (^rpc_callback_t)(_Nonnull rpc_call_t call);
 
 /**
  * Converts function pointer to a @ref rpc_handler_t block type.
