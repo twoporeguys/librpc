@@ -43,7 +43,7 @@ typedef void($^\wedge$ \hyperlink{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aa
 \item 
 typedef void($^\wedge$ \hyperlink{connection_8h_ad84e18a0f030d415f1ac06697fe93525}{rpc\+\_\+error\+\_\+handler\+\_\+t}) (\hyperlink{connection_8h_a043170f29cb25827a88be4dab2313a91}{rpc\+\_\+error\+\_\+code\+\_\+t} code, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
-typedef bool($^\wedge$ \hyperlink{connection_8h_a46a9d83415588d615d554fdc3455c969}{rpc\+\_\+callback\+\_\+t}) (\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args, \hyperlink{connection_8h_a5e44285dc90be1f6bc541504a3f6d929}{rpc\+\_\+call\+\_\+status\+\_\+t} status)
+typedef bool($^\wedge$ \hyperlink{connection_8h_a43904e9a96b10734529cdde29be58784}{rpc\+\_\+callback\+\_\+t}) (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
 \end{DoxyCompactItemize}
 \subsection*{Enumerations}
 \begin{DoxyCompactItemize}
@@ -95,7 +95,7 @@ void \hyperlink{connection_8h_a102ad5fd1ab895a56319a25f43060a20}{rpc\+\_\+connec
 \item 
 \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_aa1c70b3f09c29885ffee12215669562d}{rpc\+\_\+connection\+\_\+call\+\_\+simple} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nonnull name, const char $\ast$\+\_\+\+Nullable fmt,...)
 \item 
-\+\_\+\+Nullable \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} \hyperlink{connection_8h_ad5e74986e0e4bcd402fbc1f565a7dd3d}{rpc\+\_\+connection\+\_\+call} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args, \+\_\+\+Nullable \hyperlink{connection_8h_a46a9d83415588d615d554fdc3455c969}{rpc\+\_\+callback\+\_\+t} callback)
+\+\_\+\+Nullable \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} \hyperlink{connection_8h_ad5e74986e0e4bcd402fbc1f565a7dd3d}{rpc\+\_\+connection\+\_\+call} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args, \+\_\+\+Nullable \hyperlink{connection_8h_a43904e9a96b10734529cdde29be58784}{rpc\+\_\+callback\+\_\+t} callback)
 \item 
 \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a5332b87fc6add76392bdc17d0db2e982}{rpc\+\_\+connection\+\_\+get\+\_\+property} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name)
 \item 
@@ -157,7 +157,7 @@ R\+PC connection A\+PI.
         return ((\textcolor{keywordtype}{bool})\_fn(\_arg, \_args, \_status));       \(\backslash\)
     \}
 \end{DoxyCode}
-Converts function pointer to a \hyperlink{connection_8h_a46a9d83415588d615d554fdc3455c969}{rpc\+\_\+callback\+\_\+t} block type. 
+Converts function pointer to a \hyperlink{connection_8h_a43904e9a96b10734529cdde29be58784}{rpc\+\_\+callback\+\_\+t} block type. 
 
 Definition at line 127 of file connection.\+h.
 
@@ -213,11 +213,11 @@ Definition of R\+PC call pointer.
 
 Definition at line 87 of file connection.\+h.
 
-\mbox{\Hypertarget{connection_8h_a46a9d83415588d615d554fdc3455c969}\label{connection_8h_a46a9d83415588d615d554fdc3455c969}} 
+\mbox{\Hypertarget{connection_8h_a43904e9a96b10734529cdde29be58784}\label{connection_8h_a43904e9a96b10734529cdde29be58784}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+callback\+\_\+t@{rpc\+\_\+callback\+\_\+t}}
 \index{rpc\+\_\+callback\+\_\+t@{rpc\+\_\+callback\+\_\+t}!connection.\+h@{connection.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+callback\+\_\+t}{rpc\_callback\_t}}
-{\footnotesize\ttfamily typedef bool($^\wedge$ rpc\+\_\+callback\+\_\+t) (\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args, \hyperlink{connection_8h_a5e44285dc90be1f6bc541504a3f6d929}{rpc\+\_\+call\+\_\+status\+\_\+t} status)}
+{\footnotesize\ttfamily typedef bool($^\wedge$ rpc\+\_\+callback\+\_\+t) (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)}
 
 Definition of R\+PC callback block type. 
 
@@ -482,7 +482,7 @@ Waits for a call to change status.
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call@{rpc\+\_\+connection\+\_\+call}}
 \index{rpc\+\_\+connection\+\_\+call@{rpc\+\_\+connection\+\_\+call}!connection.\+h@{connection.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+call()}{rpc\_connection\_call()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} rpc\+\_\+connection\+\_\+call (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{args,  }\item[{\+\_\+\+Nullable \hyperlink{connection_8h_a46a9d83415588d615d554fdc3455c969}{rpc\+\_\+callback\+\_\+t}}]{callback }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} rpc\+\_\+connection\+\_\+call (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{args,  }\item[{\+\_\+\+Nullable \hyperlink{connection_8h_a43904e9a96b10734529cdde29be58784}{rpc\+\_\+callback\+\_\+t}}]{callback }\end{DoxyParamCaption})}
 
 Performs a R\+PC method call using a given connection.
 

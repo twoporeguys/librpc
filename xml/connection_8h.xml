@@ -123,7 +123,7 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Converts function pointer to a <ref refid="connection_8h_1a46a9d83415588d615d554fdc3455c969" kindref="member">rpc_callback_t</ref> block type. </para>        </detaileddescription>
+<para>Converts function pointer to a <ref refid="connection_8h_1a43904e9a96b10734529cdde29be58784" kindref="member">rpc_callback_t</ref> block type. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="/code/include/rpc/connection.h" line="127" column="9" bodyfile="/code/include/rpc/connection.h" bodystart="127" bodyend="-1"/>
@@ -329,10 +329,10 @@
         </inbodydescription>
         <location file="/code/include/rpc/connection.h" line="99" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="99" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="connection_8h_1a46a9d83415588d615d554fdc3455c969" prot="public" static="no">
+      <memberdef kind="typedef" id="connection_8h_1a43904e9a96b10734529cdde29be58784" prot="public" static="no">
         <type>bool(^</type>
-        <definition>typedef bool(^ rpc_callback_t) (_Nullable rpc_object_t args, rpc_call_status_t status)</definition>
-        <argsstring>)(_Nullable rpc_object_t args, rpc_call_status_t status)</argsstring>
+        <definition>typedef bool(^ rpc_callback_t) (_Nonnull rpc_call_t call)</definition>
+        <argsstring>)(_Nonnull rpc_call_t call)</argsstring>
         <name>rpc_callback_t</name>
         <briefdescription>
         </briefdescription>
@@ -925,7 +925,7 @@
           <declname>args</declname>
         </param>
         <param>
-          <type>_Nullable <ref refid="connection_8h_1a46a9d83415588d615d554fdc3455c969" kindref="member">rpc_callback_t</ref></type>
+          <type>_Nullable <ref refid="connection_8h_1a43904e9a96b10734529cdde29be58784" kindref="member">rpc_callback_t</ref></type>
           <declname>callback</declname>
         </param>
         <briefdescription>
@@ -1843,7 +1843,7 @@
 <codeline lineno="99" refid="connection_8h_1ad84e18a0f030d415f1ac06697fe93525" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void<sp/>(^<ref refid="connection_8h_1ad84e18a0f030d415f1ac06697fe93525" kindref="member">rpc_error_handler_t</ref>)(rpc_error_code_t<sp/>code,</highlight></codeline>
 <codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
 <codeline lineno="101"><highlight class="normal"></highlight></codeline>
-<codeline lineno="105" refid="connection_8h_1a46a9d83415588d615d554fdc3455c969" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>bool<sp/>(^<ref refid="connection_8h_1a46a9d83415588d615d554fdc3455c969" kindref="member">rpc_callback_t</ref>)(_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args,<sp/>rpc_call_status_t<sp/>status);</highlight></codeline>
+<codeline lineno="105" refid="connection_8h_1a43904e9a96b10734529cdde29be58784" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>bool<sp/>(^<ref refid="connection_8h_1a43904e9a96b10734529cdde29be58784" kindref="member">rpc_callback_t</ref>)(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
 <codeline lineno="106"><highlight class="normal"></highlight></codeline>
 <codeline lineno="110" refid="connection_8h_1a4f7704822a76a6f293f6abbb59bf41f3" refkind="member"><highlight class="preprocessor">#define<sp/>RPC_HANDLER(_fn,<sp/>_arg)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
 <codeline lineno="111"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>^(const<sp/>char<sp/>*_path,<sp/>const<sp/>char<sp/>*_iface,<sp/>const<sp/>char<sp/>*_name,<sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
@@ -1912,7 +1912,7 @@
 <codeline lineno="331"><highlight class="normal">_Nullable<sp/>rpc_call_t<sp/><ref refid="connection_8h_1ad5e74986e0e4bcd402fbc1f565a7dd3d" kindref="member">rpc_connection_call</ref>(_Nonnull<sp/>rpc_connection_t<sp/>conn,</highlight></codeline>
 <codeline lineno="332"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>path,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>interface,</highlight></codeline>
 <codeline lineno="333"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,<sp/>_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args,</highlight></codeline>
-<codeline lineno="334"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="connection_8h_1a46a9d83415588d615d554fdc3455c969" kindref="member">rpc_callback_t</ref><sp/>callback);</highlight></codeline>
+<codeline lineno="334"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="connection_8h_1a43904e9a96b10734529cdde29be58784" kindref="member">rpc_callback_t</ref><sp/>callback);</highlight></codeline>
 <codeline lineno="335"><highlight class="normal"></highlight></codeline>
 <codeline lineno="344"><highlight class="normal">_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="connection_8h_1a5332b87fc6add76392bdc17d0db2e982" kindref="member">rpc_connection_get_property</ref>(</highlight></codeline>
 <codeline lineno="345"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/>rpc_connection_t<sp/>conn,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>path,</highlight></codeline>
