@@ -217,7 +217,7 @@ rpc_callback_worker(void *arg, void *data)
 		if (call->rc_callback == NULL)
 			goto done;
 
-		ret = call->rc_callback(call->rc_result, call->rc_status);
+		ret = call->rc_callback(call);
 
 		if (call->rc_status == RPC_CALL_MORE_AVAILABLE) {
 			if (ret)
