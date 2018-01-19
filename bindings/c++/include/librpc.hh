@@ -39,7 +39,14 @@
 namespace librpc {
 	typedef std::experimental::any any;
 
-	class Object {
+	class Exception: public std::runtime_error
+	{
+	public:
+	    	Exception(int code, const std::string &message);
+	};
+
+	class Object
+	{
 	public:
 		Object(const Object &other);
 		Object(Object &&other);
@@ -71,11 +78,13 @@ namespace librpc {
 		explicit operator int() const;
 		explicit operator const char *() const;
 	    	explicit operator std::string() const;
+
 	private:
 	    	rpc_object_t m_value;
 	};
 
-	class Call {
+	class Call
+	{
 	public:
 		Object result() const;
 		enum rpc_call_status status() const;
@@ -90,14 +99,19 @@ namespace librpc {
 	    	rpc_call_t m_call;
 	};
 
-	class Connection {
+	class Connection
+	{
 	public:
 		Call call(const std::string &name,
 		    const std::vector<Object> &args,
 		    const std::string &path = "/",
 		    const std::string &interface = RPC_DEFAULT_INTERFACE);
 
-		Object call_sync(const std::vector<Object> &args);
+		Object call_sync(const std::string &name,
+		    const std::vector<Object> &args,
+		    const std::string &path = "/",
+		    const std::string &interface = RPC_DEFAULT_INTERFACE);
+
 		Object call_async(const std::vector<Object> &args);
 
 	private:
