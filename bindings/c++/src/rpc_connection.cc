@@ -84,7 +84,8 @@ Connection::call(const std::string &name, const std::vector<Object> &args,
 }
 
 Object
-Connection::call_sync(const std::vector<Object> &args)
+Connection::call_sync(const std::string &name, const std::vector<Object> &args,
+    const std::string &path, const std::string &interface)
 {
 
 }
