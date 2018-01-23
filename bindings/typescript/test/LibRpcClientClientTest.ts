@@ -22,7 +22,7 @@ describe('LibRpcClient', () => {
                 sentMessage = message;
                 return Observable.from([]);
             };
-            const client = new LibRpcClient(connectorMock);
+            const client = new LibRpcClient('', false, connectorMock);
 
             client.listObjectsInPath('/', 'foo');
 
@@ -46,22 +46,12 @@ describe('LibRpcClient', () => {
                 {path: '/bar/1', description: 'Bar 1'},
                 {path: '/foo',   description: 'Foo'},
             ];
-            connectorMock.send = (message: {id: string, name: string, args: any}) => {
-                return message.name === 'call' ?
-                    Observable.create((observer: Observer<any>) => {
-                        observer.next({id: message.id, name: 'fragment', args: {seqno: 0, fragment: objects[0]}});
-                    }).observeOn(Scheduler.asap) :
-                    message.args < objects.length ?
-                        Observable.create((observer: Observer<any>) => {
-                            observer.next({id: message.id, name: 'fragment', args: {
-                                seqno: message.args, fragment: objects[message.args]}
-                            });
-                        }).observeOn(Scheduler.asap) :
-                        Observable.create((observer: Observer<any>) => {
-                            observer.next({id: message.id, name: 'end'});
-                        }).observeOn(Scheduler.asap);
-            };
-            const client = new LibRpcClient(connectorMock);
+            connectorMock.send = (message: {id: string}) => Observable.of({
+                id: message.id,
+                name: 'response',
+                args: objects
+            }).observeOn(Scheduler.asap);
+            const client = new LibRpcClient('', false, connectorMock);
             const resultPath: string[] = [];
 
             client.listObjectsInPath('/foo').subscribe(
@@ -87,7 +77,7 @@ describe('LibRpcClient', () => {
                 sentMessage = message;
                 return Observable.from([]);
             };
-            const client = new LibRpcClient(connectorMock);
+            const client = new LibRpcClient('', false, connectorMock);
 
             client.getObject('/foo', 'bar', '1234');
 
@@ -117,7 +107,7 @@ describe('LibRpcClient', () => {
                     ]
                 })
             ).observeOn(Scheduler.asap);
-            const client = new LibRpcClient(connectorMock);
+            const client = new LibRpcClient('', false, connectorMock);
 
             client.getObject('/foo', 'bar').subscribe((object: any) => {
                 expect(object).to.not.be.null;
@@ -137,7 +127,7 @@ describe('LibRpcClient', () => {
                 sentMessage = message;
                 return Observable.of();
             };
-            const client = new LibRpcClient(connectorMock);
+            const client = new LibRpcClient('', false, connectorMock);
 
             client.getProperty('/foo', 'bar', 'baz', '1234');
 
@@ -164,7 +154,7 @@ describe('LibRpcClient', () => {
                     sentMessage = message;
                     return Observable.of();
                 };
-                const client = new LibRpcClient(connectorMock);
+                const client = new LibRpcClient('', false, connectorMock);
 
                 client.setProperty('/foo', 'bar', 'baz', 'qux', '1234');
 
@@ -189,7 +179,7 @@ describe('LibRpcClient', () => {
                 sentMessage = message;
                 return Observable.of();
             };
-            const client = new LibRpcClient(connectorMock);
+            const client = new LibRpcClient('', false, connectorMock);
 
             client.callMethod(
                 '/foo',
@@ -222,7 +212,7 @@ describe('LibRpcClient', () => {
                     observer.next({id: message.id, name: 'end'});
                 }).observeOn(Scheduler.asap)
             );
-            const client = new LibRpcClient(connectorMock);
+            const client = new LibRpcClient('', false, connectorMock);
 
             client.callMethod('/foo', 'bar', 'bar').subscribe(
                 noop,
@@ -239,7 +229,7 @@ describe('LibRpcClient', () => {
                     observer.next({id: message.id, name: 'error', args: 'FOO'});
                 }).observeOn(Scheduler.asap)
             );
-            const client = new LibRpcClient(connectorMock);
+            const client = new LibRpcClient('', false, connectorMock);
 
             client.callMethod('/foo', 'bar', 'bar').subscribe(
                 noop,
@@ -259,7 +249,7 @@ describe('LibRpcClient', () => {
                 sentMessage = message;
                 return Observable.of();
             };
-            const client = new LibRpcClient(connectorMock);
+            const client = new LibRpcClient('', false, connectorMock);
 
             client.subscribe('/foo', '1234');
 
@@ -298,7 +288,7 @@ describe('LibRpcClient', () => {
                     observer.complete();
                 }).observeOn(Scheduler.asap)
             );
-            const client = new LibRpcClient(connectorMock);
+            const client = new LibRpcClient('', false, connectorMock);
             const relevantChanges: any[] = [];
 
             client.subscribe('/foo').subscribe(
