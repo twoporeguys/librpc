@@ -1,11 +1,10 @@
 const packageInfo = require('./package.json');
 const path = require('path');
-const fs = require('fs');
 const _ = require('lodash');
 
 module.exports = {
     entry: {
-        'index': './src/LibRpcClient.ts',
+        'index': './src/index.ts',
     },
     output: {
         path: path.join(__dirname, './dist'),
