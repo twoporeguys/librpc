@@ -2,8 +2,10 @@ import {assign, fromPairs, map, startsWith} from 'lodash';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/observable/interval';
+import 'rxjs/add/observable/from';
 import {Subject} from 'rxjs/Subject';
 import {LibRpcConnector} from './LibRpcConnector';
 import {v4} from './uuidv4';
@@ -35,7 +37,10 @@ export class LibRpcClient {
 
     public listObjectsInPath(path: string, id?: string): Observable<string> {
         return this
-            .callMethod<DiscoverableInstance>('/', 'com.twoporeguys.librpc.Discoverable', 'get_instances', [], id)
+            .callMethod<DiscoverableInstance[]>('/', 'com.twoporeguys.librpc.Discoverable', 'get_instances', [], id)
+            .switchMap<DiscoverableInstance[], DiscoverableInstance>(
+                (instances: DiscoverableInstance[]) => Observable.from(instances)
+            )
             .filter((instance: DiscoverableInstance) => startsWith(instance.path, path))
             .map<DiscoverableInstance, string>((instance: DiscoverableInstance) => instance.path);
     }
