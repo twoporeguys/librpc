@@ -1,7 +1,7 @@
 ---
 meta:
   version: 1
-  realm: "*"
+  namespace: com.twoporeguys.librpc
   description: Discovery interface definition
 
 struct DiscoveryMethodArgument:
@@ -23,6 +23,6 @@ struct DiscoveryMethod:
       type: List<DiscoveryMethodArgument>
       description: List of arguments the function takes
 
-function discovery.get_methods:
+interface Discoverable:
   returns:
     type: Iter<DiscoveryMethod>

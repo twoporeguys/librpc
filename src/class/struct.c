@@ -45,7 +45,7 @@ struct_read_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
 	member->name = g_strdup(decl);
 	member->description = description != NULL ? g_strdup(description) : NULL;
 	member->origin = type;
-	member->type = rpct_instantiate_type(typedecl, type->realm, NULL, type);
+	member->type = rpct_instantiate_type(typedecl, NULL, type);
 	member->constraints = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    g_free, (GDestroyNotify)rpc_release_impl);
 
@@ -100,8 +100,6 @@ struct_serialize(rpc_object_t obj)
 	assert(obj->ro_typei != NULL);
 	assert(rpc_get_type(obj) == RPC_TYPE_DICTIONARY);
 
-	rpc_dictionary_set_string(obj, RPCT_REALM_FIELD,
-	    obj->ro_typei->type->realm);
 	rpc_dictionary_set_string(obj, RPCT_TYPE_FIELD,
 	    obj->ro_typei->canonical_form);
 

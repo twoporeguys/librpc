@@ -33,14 +33,14 @@
  * @file typing.h
  */
 
-#define	RPCT_REALM_FIELD	"%realm"
 #define	RPCT_TYPE_FIELD		"%type"
 #define	RPCT_VALUE_FIELD	"%value"
 
 struct rpct_type;
 struct rpct_typei;
 struct rpct_member;
-struct rpct_function;
+struct rpct_interface;
+struct rpct_if_member;
 struct rpct_argument;
 
 /**
@@ -90,6 +90,11 @@ typedef struct rpct_typei *rpct_typei_t;
 typedef struct rpct_member *rpct_member_t;
 
 /**
+ * Represents an interface.
+ */
+typedef struct rpct_interface *rpct_interface_t;
+
+/**
  * Represents a function.
  */
 typedef struct rpct_function *rpct_function_t;
@@ -98,6 +103,11 @@ typedef struct rpct_function *rpct_function_t;
  * Represents a function argument.
  */
 typedef struct rpct_argument *rpct_argument_t;
+
+/**
+ * Represents an interface member (method, property or event).
+ */
+typedef struct rpct_if_member *rpct_if_member_t;
 
 /**
  * A type class.
@@ -112,7 +122,8 @@ typedef enum {
 
 typedef bool (^rpct_type_applier_t)(rpct_type_t);
 typedef bool (^rpct_member_applier_t)(rpct_member_t);
-typedef bool (^rpct_function_applier_t)(rpct_function_t);
+typedef bool (^rpct_interface_applier_t)(rpct_interface_t);
+typedef bool (^rpct_if_member_applier_t)(rpct_if_member_t);
 
 #define	RPCT_TYPE_APPLIER(_fn, _arg)					\
 	^(rpct_type_t _type) {						\
@@ -152,37 +163,12 @@ int rpct_load_types(const char *path);
 int rpct_load_types_stream(int fd);
 
 /**
- * Returns the current realm name.
- *
- * @return Realm name or NULL if not set
- */
-const char *rpct_get_realm(void);
-
-/**
- * Sets the current realm name.
- *
- * Returns -1 and sets errno to ENOENT if given realm cannot be found.
- *
- * @param realm Realm name
- * @return 0 on success, -1 on error
- */
-int rpct_set_realm(const char *realm);
-
-/**
  * Returns the type name.
  *
  * @param type Type handle
  * @return Type name
  */
 const char *rpct_type_get_name(rpct_type_t type);
-
-/**
- * Returns the name of the realm type belongs to.
- *
- * @param type Type handle
- * @return Realm name
- */
-const char *rpct_type_get_realm(rpct_type_t type);
 
 /**
  * Returns the module name type belongs to.
@@ -314,20 +300,41 @@ const char *rpct_member_get_description(rpct_member_t member);
 rpct_typei_t rpct_member_get_typei(rpct_member_t member);
 
 /**
- * Returns the function name.
+ * Returns the interface name.
  *
- * @param func Function handle
- * @return Function name
+ * @param iface Interface handle
+ * @return
  */
-const char *rpct_function_get_name(rpct_function_t func);
+const char *rpct_interface_get_name(rpct_interface_t iface);
 
 /**
- * Returns the function description text.
+ * Returns the interface description.
  *
- * @param func Function handle
- * @return Function description or NULL
+ * @param iface Interface handle
+ * @return
  */
-const char *rpct_function_get_description(rpct_function_t func);
+const char *rpct_interface_get_description(rpct_interface_t iface);
+
+/**
+ *
+ * @param member
+ * @return
+ */
+enum rpc_if_member_type rpct_if_member_get_type(rpct_if_member_t member);
+
+/**
+ *
+ * @param member
+ * @return
+ */
+const char *rpct_if_member_get_name(rpct_if_member_t member);
+
+/**
+ *
+ * @param member
+ * @return
+ */
+const char *rpct_if_member_get_description(rpct_if_member_t member);
 
 /**
  * Returns the type instance handle representing return type of a function.
@@ -335,7 +342,7 @@ const char *rpct_function_get_description(rpct_function_t func);
  * @param func Function handle
  * @return Return type instance handle
  */
-rpct_typei_t rpct_function_get_return_type(rpct_function_t func);
+rpct_typei_t rpct_method_get_return_type(rpct_if_member_t method);
 
 /**
  * Returns number of arguments a function takes.
@@ -343,7 +350,7 @@ rpct_typei_t rpct_function_get_return_type(rpct_function_t func);
  * @param func Function handle
  * @return Number of arguments
  */
-int rpct_function_get_arguments_count(rpct_function_t func);
+int rpct_method_get_arguments_count(rpct_if_member_t method);
 
 /**
  * Returns argument handle for n-th argument of a function.
@@ -352,7 +359,14 @@ int rpct_function_get_arguments_count(rpct_function_t func);
  * @param index Argument index
  * @return Argument handle or NULL if index is out of bounds
  */
-rpct_argument_t rpct_function_get_argument(rpct_function_t func, int index);
+rpct_argument_t rpct_method_get_argument(rpct_if_member_t method, int index);
+
+/**
+ *
+ * @param prop
+ * @return
+ */
+rpct_typei_t rpct_property_get_type(rpct_if_member_t prop);
 
 /**
  * Returns description string associated with the argument.
@@ -391,7 +405,15 @@ bool rpct_members_apply(rpct_type_t type, rpct_member_applier_t applier);
  * @param applier
  * @return
  */
-bool rpct_functions_apply(rpct_function_applier_t applier);
+bool rpct_interface_apply(rpct_interface_applier_t applier);
+
+/**
+ * Iterates over members of an interface.
+ *
+ * @param applier Callback function
+ * @return
+ */
+bool rpct_if_member_apply(rpct_if_member_applier_t applier);
 
 /**
  * Creates a new type instance from provided declaration.
@@ -400,7 +422,7 @@ bool rpct_functions_apply(rpct_function_applier_t applier);
  * @return Type instance handle or NULL in case of error
  */
 rpct_typei_t rpct_new_typei(const char *decl);
-rpc_object_t rpct_new(const char *decl, const char *realm, rpc_object_t object);
+rpc_object_t rpct_new(const char *decl, rpc_object_t object);
 rpc_object_t rpct_newi(rpct_typei_t typei, rpc_object_t object);
 
 /**

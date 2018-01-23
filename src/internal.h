@@ -65,6 +65,7 @@
 #endif
 
 #define	TYPE_REGEX	"(struct|union|type|enum) (\\w+)(<(.*)>)?"
+#define	INTERFACE_REGEX	"interface (\\w+)"
 #define	INSTANCE_REGEX	"(\\w+)(<(.*)>)?"
 #define	FUNC_REGEX	"function (\\w+)"
 
@@ -349,27 +350,20 @@ struct rpc_serializer
 
 struct rpct_context
 {
-	char *			global_realm;
 	GHashTable *		files;
-	GHashTable *		realms;
+	GHashTable *		types;
+	GHashTable *		interfaces;
 	rpc_function_t		pre_call_hook;
 	rpc_function_t 		post_call_hook;
-};
-
-struct rpct_realm
-{
-	char *			name;
-	GHashTable *		types;
-	GHashTable *		functions;
 };
 
 struct rpct_file
 {
 	char *			path;
-	char *			realm;
 	char *			description;
 	int64_t			version;
 	GHashTable *		types;
+	GHashTable *		interfaces;
 	rpc_object_t 		body;
 };
 
@@ -379,7 +373,6 @@ struct rpct_file
 struct rpct_type
 {
 	rpct_class_t		clazz;
-	char *			realm;
 	char *			name;
 	char *			description;
 	struct rpct_file *	file;
@@ -389,6 +382,13 @@ struct rpct_type
 	GPtrArray *		generic_vars;
 	GHashTable *		members;
 	GHashTable *		constraints;
+};
+
+struct rpct_interface
+{
+	char *			name;
+	char *			description;
+	GHashTable *		members;
 };
 
 /**
@@ -408,9 +408,6 @@ struct rpct_typei
 	int 			refcount;
 };
 
-/**
- *
- */
 struct rpct_member
 {
 	char *			name;
@@ -420,14 +417,12 @@ struct rpct_member
 	GHashTable *		constraints;
 };
 
-struct rpct_function
+struct rpct_if_member
 {
-	char *			name;
-	char *			realm;
+	struct rpc_if_member *	member;
 	char *			description;
 	GPtrArray *		arguments;
 	struct rpct_typei *	result;
-
 };
 
 struct rpct_argument
@@ -465,10 +460,6 @@ struct rpct_validator
 	const char * 		name;
 	bool (*validate)(rpc_object_t, rpc_object_t, struct rpct_typei *, struct rpct_error_context *);
 };
-
-
-typedef struct rpct_realm *rpct_realm_t;
-typedef bool (^rpct_realm_applier_t)(rpct_realm_t);
 
 rpc_object_t rpc_prim_create(rpc_type_t type, union rpc_value val);
 
@@ -518,6 +509,6 @@ bool rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
 bool rpct_run_validators(struct rpct_typei *typei, rpc_object_t obj,
     struct rpct_error_context *errctx);
 struct rpct_typei *rpct_instantiate_type(const char *decl,
-    const char *realm, struct rpct_typei *parent, struct rpct_type *ptype);
+    struct rpct_typei *parent, struct rpct_type *ptype);
 
 #endif /* LIBRPC_INTERNAL_H */
