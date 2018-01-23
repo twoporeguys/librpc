@@ -26,11 +26,11 @@ export class LibRpcClient {
     private connector: LibRpcConnector;
     private askedFragments: Map<string, number>;
 
-    public constructor(url: string, isDebugEnabled: boolean = false) {
+    public constructor(url: string, isDebugEnabled: boolean = false, connector?: LibRpcConnector) {
         if (LibRpcClient.connector) {
             this.connector = LibRpcClient.connector;
         } else {
-            LibRpcClient.connector = this.connector = new LibRpcConnector(url, isDebugEnabled);
+            LibRpcClient.connector = this.connector = (connector || new LibRpcConnector(url, isDebugEnabled));
         }
         this.askedFragments = new Map<string, number>();
     }
