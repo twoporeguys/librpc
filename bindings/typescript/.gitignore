@@ -1,0 +1,10 @@
+.idea/
+.awcache/
+node_modules/
+/dist/
+/package/
+.nyc_output/
+/coverage/
+
+/stats.json
+/test-result.xml

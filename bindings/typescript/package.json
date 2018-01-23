@@ -1,0 +1,52 @@
+{
+  "name": "@2pg/librpc-client",
+  "version": "1.0.0",
+  "author": "Pierre Chausalet <pierre.chaussalet@twoporeguys.com>",
+  "description": "LibRPC client",
+  "homepage": "http://www.twoporeguys.com",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "devDependencies": {
+    "@types/chai": "^4.0.4",
+    "@types/lodash": "^4.14.93",
+    "@types/mocha": "^2.2.42",
+    "@types/msgpack-lite": "^0.1.5",
+    "@types/node": "^8.0.24",
+    "@types/uuid": "^3.4.3",
+    "chai": "^4.1.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.5.0",
+    "nyc": "^11.4.1",
+    "source-map-loader": "^0.2.1",
+    "source-map-support": "^0.5.0",
+    "ts-loader": "^3.3.0",
+    "ts-node": "^3.3.0",
+    "tslint": "^5.8.0",
+    "typescript": "^2.5.1",
+    "uuid": "^3.2.1",
+    "webpack": "^3.5.5"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "msgpack-lite": "^0.1.26",
+    "rxjs": "^5.5.1"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx"
+    ],
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text"
+    ],
+    "sourceMap": true,
+    "instrument": true
+  }
+}
