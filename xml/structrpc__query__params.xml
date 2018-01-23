@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
   <compounddef id="structrpc__query__params" kind="struct" language="C++" prot="public">
     <compoundname>rpc_query_params</compoundname>
     <includes refid="query_8h" local="no">query.h</includes>
@@ -56,19 +56,6 @@
         </inbodydescription>
         <location file="/code/include/rpc/query.h" line="101" column="1" bodyfile="/code/include/rpc/query.h" bodystart="101" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structrpc__query__params_1a661d864b8637b469fd99f3b7392aa507" prot="public" static="no" mutable="no">
-        <type><ref refid="object_8h_1a37160a10fb9baee827063f3db977315d" kindref="member">rpc_array_cmp_t</ref></type>
-        <definition>rpc_array_cmp_t rpc_query_params::sort</definition>
-        <argsstring></argsstring>
-        <name>sort</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/code/include/rpc/query.h" line="102" column="1" bodyfile="/code/include/rpc/query.h" bodystart="102" bodyend="-1"/>
-      </memberdef>
       <memberdef kind="variable" id="structrpc__query__params_1ad50d1e6e25322f5562ec1793647c1618" prot="public" static="no" mutable="no">
         <type>bool</type>
         <definition>bool rpc_query_params::reverse</definition>
@@ -80,11 +67,24 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
+        <location file="/code/include/rpc/query.h" line="102" column="1" bodyfile="/code/include/rpc/query.h" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__query__params_1a39c5b870500ba92953fa1794510223e8" prot="public" static="no" mutable="no">
+        <type>_Nullable <ref refid="object_8h_1a29f4de14614637dc5848764170dcd186" kindref="member">rpc_array_cmp_t</ref></type>
+        <definition>_Nullable rpc_array_cmp_t rpc_query_params::sort</definition>
+        <argsstring></argsstring>
+        <name>sort</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
         <location file="/code/include/rpc/query.h" line="103" column="1" bodyfile="/code/include/rpc/query.h" bodystart="103" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structrpc__query__params_1ab8b50541840d07c084797048d22d589a" prot="public" static="no" mutable="no">
-        <type><ref refid="query_8h_1a3dd3753b86199ebdc48d1cb3ab4cf985" kindref="member">rpc_query_cb_t</ref></type>
-        <definition>rpc_query_cb_t rpc_query_params::callback</definition>
+      <memberdef kind="variable" id="structrpc__query__params_1ad0cf32046078f82f707dc9d656bcfe01" prot="public" static="no" mutable="no">
+        <type>_Nullable <ref refid="query_8h_1a2e4187b74c3bd970f9e41bb2d02d09a0" kindref="member">rpc_query_cb_t</ref></type>
+        <definition>_Nullable rpc_query_cb_t rpc_query_params::callback</definition>
         <argsstring></argsstring>
         <name>callback</name>
         <briefdescription>
@@ -104,13 +104,13 @@
 </para>    </detaileddescription>
     <location file="/code/include/rpc/query.h" line="97" column="1" bodyfile="/code/include/rpc/query.h" bodystart="97" bodyend="105"/>
     <listofallmembers>
-      <member refid="structrpc__query__params_1ab8b50541840d07c084797048d22d589a" prot="public" virt="non-virtual"><scope>rpc_query_params</scope><name>callback</name></member>
+      <member refid="structrpc__query__params_1ad0cf32046078f82f707dc9d656bcfe01" prot="public" virt="non-virtual"><scope>rpc_query_params</scope><name>callback</name></member>
       <member refid="structrpc__query__params_1a7b488114aeb262c508dd28acc1a7fc95" prot="public" virt="non-virtual"><scope>rpc_query_params</scope><name>count</name></member>
       <member refid="structrpc__query__params_1a89ee7bc896675c8c2ef148436430ba0a" prot="public" virt="non-virtual"><scope>rpc_query_params</scope><name>limit</name></member>
       <member refid="structrpc__query__params_1a4e33edf4295472adcc84d6d1ccee2ddd" prot="public" virt="non-virtual"><scope>rpc_query_params</scope><name>offset</name></member>
       <member refid="structrpc__query__params_1ad50d1e6e25322f5562ec1793647c1618" prot="public" virt="non-virtual"><scope>rpc_query_params</scope><name>reverse</name></member>
       <member refid="structrpc__query__params_1a6e4eafac062b7f7490a4983d56296385" prot="public" virt="non-virtual"><scope>rpc_query_params</scope><name>single</name></member>
-      <member refid="structrpc__query__params_1a661d864b8637b469fd99f3b7392aa507" prot="public" virt="non-virtual"><scope>rpc_query_params</scope><name>sort</name></member>
+      <member refid="structrpc__query__params_1a39c5b870500ba92953fa1794510223e8" prot="public" virt="non-virtual"><scope>rpc_query_params</scope><name>sort</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

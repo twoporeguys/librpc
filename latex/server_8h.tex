@@ -1,8 +1,8 @@
 \hypertarget{server_8h}{}\section{/code/include/rpc/server.h File Reference}
 \label{server_8h}\index{/code/include/rpc/server.\+h@{/code/include/rpc/server.\+h}}
-{\ttfamily \#include $<$stdbool.\+h$>$}\\*
-{\ttfamily \#include $<$rpc/service.\+h$>$}\\*
-{\ttfamily \#include $<$rpc/connection.\+h$>$}\\*
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$rpc/service.\+h$>$}\newline
+{\ttfamily \#include $<$rpc/connection.\+h$>$}\newline
 Include dependency graph for server.\+h\+:
 \nopagebreak
 \begin{figure}[H]
@@ -21,18 +21,18 @@ Include dependency graph for server.\+h\+:
 \item 
 typedef struct rpc\+\_\+server $\ast$ \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t}
 \item 
-typedef void($^\wedge$ \hyperlink{server_8h_af1a4a4bd63cb415ee40b34cec2df2a80}{rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t}) (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} source, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
+typedef void($^\wedge$ \hyperlink{server_8h_a2d9a540637c63449db9ac5882cb5f7ab}{rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t}) (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} source, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \end{DoxyCompactItemize}
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} \hyperlink{server_8h_ae2bd5e162ef71bc3290aac40f35503a6}{rpc\+\_\+server\+\_\+create} (const char $\ast$uri, \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
+\+\_\+\+Nullable \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} \hyperlink{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}{rpc\+\_\+server\+\_\+create} (const char $\ast$\+\_\+\+Nonnull uri, \+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
 \item 
-void \hyperlink{server_8h_a0e814a8f197e512de11c7d9cde131a84}{rpc\+\_\+server\+\_\+broadcast\+\_\+event} (\hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} server, const char $\ast$path, const char $\ast$interface, const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
+void \hyperlink{server_8h_a28eeff2b8ec73f31f1af9feff11cb698}{rpc\+\_\+server\+\_\+broadcast\+\_\+event} (\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} server, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
-void \hyperlink{server_8h_a35bdfe6cc50c1e83a569fb05a85a7082}{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler} (\hyperlink{server_8h_af1a4a4bd63cb415ee40b34cec2df2a80}{rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t} handler)
+void \hyperlink{server_8h_ac6bfcd59fe8ec8386b1e3d312705e786}{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler} (\+\_\+\+Nullable \hyperlink{server_8h_a2d9a540637c63449db9ac5882cb5f7ab}{rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t} handler)
 \item 
-int \hyperlink{server_8h_aecd13196295690cff8a48b90b9467c1d}{rpc\+\_\+server\+\_\+close} (\hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} server)
+int \hyperlink{server_8h_a1bf6070b1bb3b31d394f3862405eaf8c}{rpc\+\_\+server\+\_\+close} (\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} server)
 \end{DoxyCompactItemize}
 
 
@@ -40,37 +40,41 @@ int \hyperlink{server_8h_aecd13196295690cff8a48b90b9467c1d}{rpc\+\_\+server\+\_\
 R\+PC server A\+PI. 
 
 \subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{server_8h_a34749fc2472ddb06c6d36006e2a948c3}\label{server_8h_a34749fc2472ddb06c6d36006e2a948c3}} 
 \index{server.\+h@{server.\+h}!R\+P\+C\+\_\+\+S\+E\+R\+V\+E\+R\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+S\+E\+R\+V\+E\+R\+\_\+\+H\+A\+N\+D\+L\+ER}}
 \index{R\+P\+C\+\_\+\+S\+E\+R\+V\+E\+R\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+S\+E\+R\+V\+E\+R\+\_\+\+H\+A\+N\+D\+L\+ER}!server.\+h@{server.\+h}}
-\subsubsection[{\texorpdfstring{R\+P\+C\+\_\+\+S\+E\+R\+V\+E\+R\+\_\+\+H\+A\+N\+D\+L\+ER}{RPC_SERVER_HANDLER}}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\+P\+C\+\_\+\+S\+E\+R\+V\+E\+R\+\_\+\+H\+A\+N\+D\+L\+ER(
-\begin{DoxyParamCaption}
-\item[{}]{\+\_\+fn, }
-\item[{}]{\+\_\+arg}
-\end{DoxyParamCaption}
-)}\hypertarget{server_8h_a34749fc2472ddb06c6d36006e2a948c3}{}\label{server_8h_a34749fc2472ddb06c6d36006e2a948c3}
+\subsubsection{\texorpdfstring{R\+P\+C\+\_\+\+S\+E\+R\+V\+E\+R\+\_\+\+H\+A\+N\+D\+L\+ER}{RPC\_SERVER\_HANDLER}}
+{\footnotesize\ttfamily \#define R\+P\+C\+\_\+\+S\+E\+R\+V\+E\+R\+\_\+\+H\+A\+N\+D\+L\+ER(\begin{DoxyParamCaption}\item[{}]{\+\_\+fn,  }\item[{}]{\+\_\+arg }\end{DoxyParamCaption})}
+
 {\bfseries Value\+:}
 \begin{DoxyCode}
 ^(\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\_connection\_t} \_source, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} \_args) \{    \(\backslash\)
         \_fn(\_arg, \_source, \_name, \_args);               \(\backslash\)
     \}
 \end{DoxyCode}
-Converts function pointer to a \hyperlink{server_8h_af1a4a4bd63cb415ee40b34cec2df2a80}{rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t} block type. 
+Converts function pointer to a \hyperlink{server_8h_a2d9a540637c63449db9ac5882cb5f7ab}{rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t} block type. 
 
 Definition at line 64 of file server.\+h.
 
 
 
 \subsection{Typedef Documentation}
+\mbox{\Hypertarget{server_8h_a2d9a540637c63449db9ac5882cb5f7ab}\label{server_8h_a2d9a540637c63449db9ac5882cb5f7ab}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t@{rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t}}
 \index{rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t@{rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t}!server.\+h@{server.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t}{rpc_server_event_handler_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef void($^\wedge$ rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t) ({\bf rpc\+\_\+connection\+\_\+t} source, const char $\ast$name, {\bf rpc\+\_\+object\+\_\+t} args)}\hypertarget{server_8h_af1a4a4bd63cb415ee40b34cec2df2a80}{}\label{server_8h_af1a4a4bd63cb415ee40b34cec2df2a80}
+\subsubsection{\texorpdfstring{rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t}{rpc\_server\_event\_handler\_t}}
+{\footnotesize\ttfamily typedef void($^\wedge$ rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t) (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} source, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)}
+
 Definition of R\+PC server event handler block type. 
 
 Definition at line 58 of file server.\+h.
 
+\mbox{\Hypertarget{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}\label{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+t@{rpc\+\_\+server\+\_\+t}}
 \index{rpc\+\_\+server\+\_\+t@{rpc\+\_\+server\+\_\+t}!server.\+h@{server.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+server\+\_\+t}{rpc_server_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct rpc\+\_\+server$\ast$ {\bf rpc\+\_\+server\+\_\+t}}\hypertarget{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{}\label{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}
+\subsubsection{\texorpdfstring{rpc\+\_\+server\+\_\+t}{rpc\_server\_t}}
+{\footnotesize\ttfamily typedef struct rpc\+\_\+server$\ast$ \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t}}
+
 R\+PC server pointer structure definition. 
 
 Definition at line 53 of file server.\+h.
@@ -78,17 +82,12 @@ Definition at line 53 of file server.\+h.
 
 
 \subsection{Function Documentation}
+\mbox{\Hypertarget{server_8h_a28eeff2b8ec73f31f1af9feff11cb698}\label{server_8h_a28eeff2b8ec73f31f1af9feff11cb698}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+broadcast\+\_\+event@{rpc\+\_\+server\+\_\+broadcast\+\_\+event}}
 \index{rpc\+\_\+server\+\_\+broadcast\+\_\+event@{rpc\+\_\+server\+\_\+broadcast\+\_\+event}!server.\+h@{server.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+server\+\_\+broadcast\+\_\+event(rpc\+\_\+server\+\_\+t server, const char $\ast$path, const char $\ast$interface, const char $\ast$name, rpc\+\_\+object\+\_\+t args)}{rpc_server_broadcast_event(rpc_server_t server, const char *path, const char *interface, const char *name, rpc_object_t args)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+server\+\_\+broadcast\+\_\+event (
-\begin{DoxyParamCaption}
-\item[{{\bf rpc\+\_\+server\+\_\+t}}]{server, }
-\item[{const char $\ast$}]{path, }
-\item[{const char $\ast$}]{interface, }
-\item[{const char $\ast$}]{name, }
-\item[{{\bf rpc\+\_\+object\+\_\+t}}]{args}
-\end{DoxyParamCaption}
-)}\hypertarget{server_8h_a0e814a8f197e512de11c7d9cde131a84}{}\label{server_8h_a0e814a8f197e512de11c7d9cde131a84}
+\subsubsection{\texorpdfstring{rpc\+\_\+server\+\_\+broadcast\+\_\+event()}{rpc\_server\_broadcast\_event()}}
+{\footnotesize\ttfamily void rpc\+\_\+server\+\_\+broadcast\+\_\+event (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t}}]{server,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{args }\end{DoxyParamCaption})}
+
 Broadcasts an event of a given name among its subscribers.
 
 
@@ -100,13 +99,12 @@ Broadcasts an event of a given name among its subscribers.
 {\em args} & Event arguments. \\
 \hline
 \end{DoxyParams}
+\mbox{\Hypertarget{server_8h_a1bf6070b1bb3b31d394f3862405eaf8c}\label{server_8h_a1bf6070b1bb3b31d394f3862405eaf8c}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+close@{rpc\+\_\+server\+\_\+close}}
 \index{rpc\+\_\+server\+\_\+close@{rpc\+\_\+server\+\_\+close}!server.\+h@{server.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+server\+\_\+close(rpc\+\_\+server\+\_\+t server)}{rpc_server_close(rpc_server_t server)}}]{\setlength{\rightskip}{0pt plus 5cm}int rpc\+\_\+server\+\_\+close (
-\begin{DoxyParamCaption}
-\item[{{\bf rpc\+\_\+server\+\_\+t}}]{server}
-\end{DoxyParamCaption}
-)}\hypertarget{server_8h_aecd13196295690cff8a48b90b9467c1d}{}\label{server_8h_aecd13196295690cff8a48b90b9467c1d}
+\subsubsection{\texorpdfstring{rpc\+\_\+server\+\_\+close()}{rpc\_server\_close()}}
+{\footnotesize\ttfamily int rpc\+\_\+server\+\_\+close (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t}}]{server }\end{DoxyParamCaption})}
+
 Closes a given R\+PC server.
 
 
@@ -117,14 +115,12 @@ Closes a given R\+PC server.
 \begin{DoxyReturn}{Returns}
 0 on successful teardown. 
 \end{DoxyReturn}
+\mbox{\Hypertarget{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}\label{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+create@{rpc\+\_\+server\+\_\+create}}
 \index{rpc\+\_\+server\+\_\+create@{rpc\+\_\+server\+\_\+create}!server.\+h@{server.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+server\+\_\+create(const char $\ast$uri, rpc\+\_\+context\+\_\+t context)}{rpc_server_create(const char *uri, rpc_context_t context)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+server\+\_\+t} rpc\+\_\+server\+\_\+create (
-\begin{DoxyParamCaption}
-\item[{const char $\ast$}]{uri, }
-\item[{{\bf rpc\+\_\+context\+\_\+t}}]{context}
-\end{DoxyParamCaption}
-)}\hypertarget{server_8h_ae2bd5e162ef71bc3290aac40f35503a6}{}\label{server_8h_ae2bd5e162ef71bc3290aac40f35503a6}
+\subsubsection{\texorpdfstring{rpc\+\_\+server\+\_\+create()}{rpc\_server\_create()}}
+{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} rpc\+\_\+server\+\_\+create (\begin{DoxyParamCaption}\item[{const char $\ast$\+\_\+\+Nonnull}]{uri,  }\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context }\end{DoxyParamCaption})}
+
 Creates a server instance listening on a given U\+RI.
 
 
@@ -137,13 +133,12 @@ Creates a server instance listening on a given U\+RI.
 \begin{DoxyReturn}{Returns}
 Server structure. 
 \end{DoxyReturn}
+\mbox{\Hypertarget{server_8h_ac6bfcd59fe8ec8386b1e3d312705e786}\label{server_8h_ac6bfcd59fe8ec8386b1e3d312705e786}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler@{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler}}
 \index{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler@{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler}!server.\+h@{server.\+h}}
-\subsubsection[{\texorpdfstring{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler(rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t handler)}{rpc_server_set_event_handler(rpc_server_event_handler_t handler)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler (
-\begin{DoxyParamCaption}
-\item[{{\bf rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t}}]{handler}
-\end{DoxyParamCaption}
-)}\hypertarget{server_8h_a35bdfe6cc50c1e83a569fb05a85a7082}{}\label{server_8h_a35bdfe6cc50c1e83a569fb05a85a7082}
+\subsubsection{\texorpdfstring{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler()}{rpc\_server\_set\_event\_handler()}}
+{\footnotesize\ttfamily void rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler (\begin{DoxyParamCaption}\item[{\+\_\+\+Nullable \hyperlink{server_8h_a2d9a540637c63449db9ac5882cb5f7ab}{rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t}}]{handler }\end{DoxyParamCaption})}
+
 Creates an event handler internal to a server for an event of a given name.
 
 
