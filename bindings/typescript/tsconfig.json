@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es5",
+    "types": [],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "declaration": true,
+    "declarationDir": ".",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "skipLibCheck": false,
+    "strict": true
+  },
+  "include": [
+    "./src/**/*.ts"
+  ]
+}
