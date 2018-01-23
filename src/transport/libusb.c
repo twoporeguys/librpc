@@ -603,6 +603,9 @@ usb_event_impl(void *arg)
 	int ret;
 	struct librpc_usb_log *log;
 
+	if (conn->uc_logfd == -1)
+		return (false);
+
 	log = g_malloc(sizeof(*log) + conn->uc_logsize);
 
 	for (;;) {
@@ -623,10 +626,8 @@ usb_event_impl(void *arg)
 		if (log->status != LIBRPC_USB_OK)
 			break;
 
-		if (conn->uc_logfd != -1) {
-			dprintf(conn->uc_logfd, "%*s", ret - 1, log->buffer);
-			fsync(conn->uc_logfd);
-		}
+		dprintf(conn->uc_logfd, "%*s", ret - 1, log->buffer);
+		fsync(conn->uc_logfd);
 	}
 
 	g_free(log);
