@@ -120,9 +120,24 @@ typedef enum {
 	RPC_TYPING_BUILTIN		/**< A builtin type */
 } rpct_class_t;
 
+/**
+ * Block type used as a callback in @ref rpct_types_apply.
+ */
 typedef bool (^rpct_type_applier_t)(rpct_type_t);
+
+/**
+ * Block type used as a callback in @ref rpct_members_apply.
+ */
 typedef bool (^rpct_member_applier_t)(rpct_member_t);
+
+/**
+ * Block type used as a callback in @ref rpc_interface_apply.
+ */
 typedef bool (^rpct_interface_applier_t)(rpct_interface_t);
+
+/**
+ * Block type used as a callback in @ref rpc_if_member_apply.
+ */
 typedef bool (^rpct_if_member_applier_t)(rpct_if_member_t);
 
 #define	RPCT_TYPE_APPLIER(_fn, _arg)					\
@@ -252,17 +267,19 @@ const char *rpct_type_get_generic_var(rpct_type_t type, int index);
 rpct_member_t rpct_type_get_member(rpct_type_t type, const char *name);
 
 /**
+ * Returns base type of a type instance @p typei.
  *
- * @param typei
- * @return
+ * @param typei Type instance handle
+ * @return Type handle
  */
 rpct_type_t rpct_typei_get_type(rpct_typei_t typei);
 
 /**
+ * Returns the type instance passed as a generic variable to the @p typei.
  *
- * @param typei
- * @param name
- * @return
+ * @param typei Type instance handle
+ * @param name Generic variable name
+ * @return Type instance handle or @p NULL
  */
 rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, const char *name);
 
@@ -321,28 +338,31 @@ const char *rpct_interface_get_name(rpct_interface_t iface);
  * Returns the interface description.
  *
  * @param iface Interface handle
- * @return
+ * @return Interface description or @p NULL
  */
 const char *rpct_interface_get_description(rpct_interface_t iface);
 
 /**
+ * Returns the interface member type.
  *
- * @param member
- * @return
+ * @param member Interface member handle
+ * @return Interface member type
  */
 enum rpc_if_member_type rpct_if_member_get_type(rpct_if_member_t member);
 
 /**
+ * Returns the interface member name.
  *
- * @param member
- * @return
+ * @param member Interface member handle
+ * @return Interface member name
  */
 const char *rpct_if_member_get_name(rpct_if_member_t member);
 
 /**
+ * Returns the interface member description.
  *
- * @param member
- * @return
+ * @param member Interface member handle
+ * @return Interface member description or NULL
  */
 const char *rpct_if_member_get_description(rpct_if_member_t member);
 
@@ -372,9 +392,10 @@ int rpct_method_get_arguments_count(rpct_if_member_t method);
 rpct_argument_t rpct_method_get_argument(rpct_if_member_t method, int index);
 
 /**
+ * Returns type instance of the property.
  *
- * @param prop
- * @return
+ * @param prop Property handle
+ * @return Type instance handle of the property
  */
 rpct_typei_t rpct_property_get_type(rpct_if_member_t prop);
 
@@ -387,9 +408,10 @@ rpct_typei_t rpct_property_get_type(rpct_if_member_t prop);
 const char *rpct_argument_get_description(rpct_argument_t arg);
 
 /**
+ * Returns type instance of the argument.
  *
- * @param arg
- * @return
+ * @param arg Argument handle
+ * @return Type instance handle
  */
 rpct_typei_t rpct_argument_get_typei(rpct_argument_t arg);
 
@@ -450,14 +472,26 @@ rpct_type_t rpct_get_type(const char *name);
  * @return Type instance handle or NULL
  */
 rpct_typei_t rpct_get_typei(rpc_object_t instance);
+
+/**
+ *
+ * @param instance
+ * @return
+ */
 rpc_object_t rpct_get_value(rpc_object_t instance);
+
+/**
+ *
+ * @param object
+ * @param value
+ */
 void rpct_set_value(rpc_object_t object, const char *value);
 
 /**
  * Serializes object hierarchy preserving type information.
  *
- * @param object
- * @return
+ * @param object Object to serialize
+ * @return Object with encoded type information
  */
 rpc_object_t rpct_serialize(rpc_object_t object);
 
