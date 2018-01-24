@@ -1,11 +1,12 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
   <compounddef id="structrpc__if__property" kind="struct" language="C++" prot="public">
     <compoundname>rpc_if_property</compoundname>
+    <includes refid="service_8h" local="no">service.h</includes>
       <sectiondef kind="public-attrib">
-      <memberdef kind="variable" id="structrpc__if__property_1a6b88200bb991311dae3c05e92dc16fdc" prot="public" static="no" mutable="no">
-        <type>rpc_property_getter_t</type>
-        <definition>rpc_property_getter_t rpc_if_property::rp_getter</definition>
+      <memberdef kind="variable" id="structrpc__if__property_1ae19b459a98e396cb5f6f8e4938d6c018" prot="public" static="no" mutable="no">
+        <type>__unsafe_unretained _Nullable <ref refid="service_8h_1ab438f0c33f3f3876f1c9a23d62134f16" kindref="member">rpc_property_getter_t</ref></type>
+        <definition>__unsafe_unretained _Nullable rpc_property_getter_t rpc_if_property::rp_getter</definition>
         <argsstring></argsstring>
         <name>rp_getter</name>
         <briefdescription>
@@ -14,11 +15,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="185" column="1" bodyfile="/code/include/rpc/service.h" bodystart="185" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="243" column="1" bodyfile="/code/include/rpc/service.h" bodystart="243" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structrpc__if__property_1ab095fba7efd97b90f3440c2db5369f1e" prot="public" static="no" mutable="no">
-        <type>rpc_property_setter_t</type>
-        <definition>rpc_property_setter_t rpc_if_property::rp_setter</definition>
+      <memberdef kind="variable" id="structrpc__if__property_1a45fe384e6ad2355ba81781fe16b9d421" prot="public" static="no" mutable="no">
+        <type>__unsafe_unretained _Nullable <ref refid="service_8h_1aa8b38d8ab3bafe79a96edaebafe13b8d" kindref="member">rpc_property_setter_t</ref></type>
+        <definition>__unsafe_unretained _Nullable rpc_property_setter_t rpc_if_property::rp_setter</definition>
         <argsstring></argsstring>
         <name>rp_setter</name>
         <briefdescription>
@@ -27,11 +28,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="186" column="1" bodyfile="/code/include/rpc/service.h" bodystart="186" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="244" column="1" bodyfile="/code/include/rpc/service.h" bodystart="244" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structrpc__if__property_1a0171db6c0ee6ad206634d42de210ae52" prot="public" static="no" mutable="no">
-        <type>void *</type>
-        <definition>void* rpc_if_property::rp_arg</definition>
+      <memberdef kind="variable" id="structrpc__if__property_1a81d2953a7a4bdff1775330c29992546b" prot="public" static="no" mutable="no">
+        <type>void *_Nullable</type>
+        <definition>void* _Nullable rpc_if_property::rp_arg</definition>
         <argsstring></argsstring>
         <name>rp_arg</name>
         <briefdescription>
@@ -40,18 +41,18 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="187" column="1" bodyfile="/code/include/rpc/service.h" bodystart="187" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="245" column="1" bodyfile="/code/include/rpc/service.h" bodystart="245" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-    </detaileddescription>
-    <location file="/code/include/rpc/service.h" line="184" column="1" bodyfile="/code/include/rpc/service.h" bodystart="183" bodyend="188"/>
+<para>Property descriptor </para>    </detaileddescription>
+    <location file="/code/include/rpc/service.h" line="242" column="1" bodyfile="/code/include/rpc/service.h" bodystart="241" bodyend="246"/>
     <listofallmembers>
-      <member refid="structrpc__if__property_1a0171db6c0ee6ad206634d42de210ae52" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_arg</name></member>
-      <member refid="structrpc__if__property_1a6b88200bb991311dae3c05e92dc16fdc" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_getter</name></member>
-      <member refid="structrpc__if__property_1ab095fba7efd97b90f3440c2db5369f1e" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_setter</name></member>
+      <member refid="structrpc__if__property_1a81d2953a7a4bdff1775330c29992546b" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_arg</name></member>
+      <member refid="structrpc__if__property_1ae19b459a98e396cb5f6f8e4938d6c018" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_getter</name></member>
+      <member refid="structrpc__if__property_1a45fe384e6ad2355ba81781fe16b9d421" prot="public" virt="non-virtual"><scope>rpc_if_property</scope><name>rp_setter</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>
