@@ -35,14 +35,21 @@ Sent by a client to a server
 
 Normal response message
 -----------------------
-
+Sent by a server to a client
 
 Error response message
 ----------------------
-
+Sent by a server to a client, in case of error
 
 Streaming response fragment message
 -----------------------------------
+Sent by a server to a client, indicating that more responses will follow.
+
+Streaming response end message
+------------------------------
+
+Request abort message
+---------------------
 
 Event message
 -------------
