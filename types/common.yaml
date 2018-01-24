@@ -4,6 +4,7 @@ meta:
   namespace: com.twoporeguys.librpc.types
   description: Basic composite types library
 
+
 union Optional<T>:
   description: Can hold either a value of type T or null.
   members:
@@ -12,32 +13,38 @@ union Optional<T>:
     nothing:
       type: "\"null\""
 
+
 type List<T>:
   description: A list of elements of the same type
   type: array
 
+
 type Dict<T>:
   description: A dictionary of elements of the same type
   type: dictionary
+
 
 type Iter<T>:
   description: Same as list, but meant to denote a streaming response
   type: array
   value-type: T
 
+
 union IPAddress:
   description: Can hold an IP address (either v4 or v6)
   members:
     ipv4:
-      type: com.twoporeguys.librpc.types.IPv4Address
+      type: IPv4Address
     ipv6:
-      type: com.twoporeguys.librpc.types.IPv6Address
+      type: IPv6Address
+
 
 type IPv4Address:
   description: Can hold an IPv4 address
   type: string
   constraints:
     regex: ""
+
 
 type IPv6Address:
   description: Can hold an IPv6 address

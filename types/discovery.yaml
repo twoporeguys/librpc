@@ -49,10 +49,14 @@ interface Introspectable:
   method get_interfaces:
     description: |
       Returns a list of registered interfaces.
+    return:
+      type: List<string>
 
   method get_methods:
     description: |
-      Returns a list of interface members.
+      Returns a list of interface methods.
+    return:
+      type: List<string>
 
   method interface_exists:
     description: |
@@ -60,6 +64,7 @@ interface Introspectable:
       otherwise false.
     return:
       type: bool
+
 
 interface Observable:
   method get:
@@ -93,7 +98,7 @@ interface Observable:
         name: interface
         description: Interface name
       - type: string
-        name: properti
+        name: property
         description: Property name
       - type: any
         name: value
