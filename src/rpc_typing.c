@@ -344,8 +344,12 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 
 	if (type->generic) {
 		declvars = g_match_info_fetch(match, 3);
-		if (declvars == NULL)
+		if (declvars == NULL) {
+			rpc_set_last_errorf(EINVAL,
+			    "Invalid generic variable specification: %s",
+			    decl);
 			goto error;
+		}
 
 		splitvars = g_ptr_array_new();
 		rpct_parse_type(declvars, splitvars);
@@ -358,9 +362,12 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 			const char *vartype = g_ptr_array_index(splitvars, i);
 
 			subtype = rpct_instantiate_type(vartype, ret, ptype, origin);
-
-			if (subtype == NULL)
+			if (subtype == NULL) {
+				rpc_set_last_errorf(EINVAL,
+				    "Cannot instantiate generic type %s in %s",
+				    vartype, decltype);
 				goto error;
+			}
 
 			g_hash_table_insert(ret->specializations, g_strdup(var),
 			    subtype);
@@ -916,8 +923,12 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface, const cha
 	if (returns != NULL) {
 		returns_type = rpc_dictionary_get_string(returns, "type");
 		method->result = rpct_instantiate_type(returns_type, NULL, NULL, file);
-		if (method->result == NULL)
+		if (method->result == NULL) {
+			rpc_set_last_errorf(EINVAL,
+			    "Cannot instantiate return type %s of method %s",
+			    returns_type, name);
 			goto error;
+		}
 	}
 
 	method->description = g_strdup(description);
@@ -1024,8 +1035,11 @@ rpct_read_file(const char *path)
 	    NULL);
 	file->interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 
-	if (rpct_read_meta(file, rpc_dictionary_get_value(obj, "meta")) < 0)
+	if (rpct_read_meta(file, rpc_dictionary_get_value(obj, "meta")) < 0) {
+		rpc_set_last_errorf(EINVAL,
+		    "Cannot read meta section of file %s", file->path);
 		goto error;
+	}
 
 	g_hash_table_insert(context->files, g_strdup(path), file);
 

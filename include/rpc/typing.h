@@ -166,6 +166,10 @@ typedef bool (^rpct_if_member_applier_t)(rpct_if_member_t);
  * @return 0 on success, -1 on error
  */
 int rpct_init(void);
+
+/**
+ * Cleans up all the state associated with RPC type system.
+ */
 void rpct_free(void);
 
 /**

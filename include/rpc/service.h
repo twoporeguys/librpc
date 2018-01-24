@@ -461,9 +461,10 @@ void rpc_instance_set_description(rpc_instance_t, const char *fmt, ...);
 void *rpc_instance_get_arg(rpc_instance_t instance);
 
 /**
+ * Returns the object path associated with the instance.
  *
- * @param instance
- * @return
+ * @param instance Instance handle
+ * @return Object path
  */
 const char *rpc_instance_get_path(rpc_instance_t instance);
 
@@ -591,6 +592,7 @@ void rpc_instance_property_changed(rpc_instance_t instance, const char *interfac
 rpc_instance_t rpc_property_get_instance(void *cookie);
 
 /**
+ * Returns the user data pointer associated with the property.
  *
  * @param cookie
  * @return
