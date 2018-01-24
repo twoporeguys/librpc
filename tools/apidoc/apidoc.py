@@ -57,7 +57,8 @@ def generate_module(typing, name):
     t = lookup.get_template('module.mako')
     return t.render(
         typedefs=sorted(typedefs, key=lambda t: t.name),
-        structures=sorted(structures, key=lambda t: t.name)
+        structures=sorted(structures, key=lambda t: t.name),
+        interfaces=sorted(t.interfaces, key=lambda t: t.name)
     )
 
 

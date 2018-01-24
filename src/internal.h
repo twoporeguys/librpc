@@ -365,6 +365,7 @@ struct rpct_file
 	const char *		description;
 	const char *		ns;
 	int64_t			version;
+	GPtrArray *		uses;
 	GHashTable *		types;
 	GHashTable *		interfaces;
 	rpc_object_t 		body;
@@ -431,7 +432,8 @@ struct rpct_if_member
 struct rpct_argument
 {
 	struct rpct_typei *	type;
-	const char *		description;
+	char *			name;
+	char *			description;
 };
 
 struct rpct_error_context
@@ -513,6 +515,7 @@ bool rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
 bool rpct_run_validators(struct rpct_typei *typei, rpc_object_t obj,
     struct rpct_error_context *errctx);
 struct rpct_typei *rpct_instantiate_type(const char *decl,
-    struct rpct_typei *parent, struct rpct_type *ptype);
+    struct rpct_typei *parent, struct rpct_type *ptype,
+    struct rpct_file *origin);
 
 #endif /* LIBRPC_INTERNAL_H */

@@ -1646,12 +1646,14 @@ cdef class TypeInstance(object):
     property generic_variables:
         def __get__(self):
             cdef TypeInstance typei
+            cdef rpct_type_t base_type
 
             result = []
-            count = rpct_type_get_generic_vars_count(rpct_typei_get_type(self.rpctypei))
+            base_type = rpct_typei_get_type(self.rpctypei)
+            count = rpct_type_get_generic_vars_count(base_type)
             for i in range(count):
                 typei = TypeInstance.__new__(TypeInstance)
-                typei.rpctypei = rpct_typei_get_generic_var(self.rpctypei, i)
+                typei.rpctypei = rpct_typei_get_generic_var(self.rpctypei, rpct_type_get_generic_var(base_type, i))
                 result.append(typei)
 
             return result

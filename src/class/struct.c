@@ -45,7 +45,7 @@ struct_read_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
 	member->name = g_strdup(decl);
 	member->description = description != NULL ? g_strdup(description) : NULL;
 	member->origin = type;
-	member->type = rpct_instantiate_type(typedecl, NULL, type);
+	member->type = rpct_instantiate_type(typedecl, NULL, type, type->file);
 	member->constraints = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    g_free, (GDestroyNotify)rpc_release_impl);
 

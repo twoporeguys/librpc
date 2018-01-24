@@ -335,7 +335,7 @@ cdef extern from "rpc/typing.h" nogil:
 
     rpct_type_t rpct_typei_get_type(rpct_typei_t typei)
     const char *rpct_typei_get_canonical_form(rpct_typei_t typei)
-    rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, int index)
+    rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, const char *name)
 
     rpct_typei_t rpct_typei_get_member_type(rpct_typei_t typei, rpct_member_t member)
 

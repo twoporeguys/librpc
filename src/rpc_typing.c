@@ -35,6 +35,7 @@ static int rpct_read_meta(struct rpct_file *file, rpc_object_t obj);
 static int rpct_lookup_type(const char *name, const char **decl,
     rpc_object_t *result, struct rpct_file **filep);
 static struct rpct_type *rpct_find_type(const char *name);
+static struct rpct_type *rpct_find_type_fuzzy(const char *name, struct rpct_file *origin);
 static inline bool rpct_type_is_fully_specialized(struct rpct_typei *inst);
 static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *typei);
 static char *rpct_canonical_type(struct rpct_typei *typei);
@@ -70,7 +71,7 @@ rpct_typei_t
 rpct_new_typei(const char *decl)
 {
 
-	return (rpct_instantiate_type(decl, NULL, NULL));
+	return (rpct_instantiate_type(decl, NULL, NULL, NULL));
 }
 
 rpc_object_t
@@ -78,7 +79,7 @@ rpct_new(const char *decl, rpc_object_t object)
 {
 	struct rpct_typei *typei;
 
-	typei = rpct_instantiate_type(decl, NULL, NULL);
+	typei = rpct_instantiate_type(decl, NULL, NULL, NULL);
 	if (typei == NULL)
 		return (NULL);
 
@@ -145,6 +146,38 @@ rpct_struct_set_value(rpc_object_t instance, const char *value)
 }
 
 static struct rpct_type *
+rpct_find_type_fuzzy(const char *name, struct rpct_file *origin)
+{
+	struct rpct_type *result;
+	char *full_name;
+	guint i;
+
+	result = rpct_find_type(name);
+	if (result != NULL)
+		return (result);
+
+	if (origin == NULL)
+		return (NULL);
+
+	full_name = g_strdup_printf("%s.%s", origin->ns, name);
+	result = rpct_find_type(full_name);
+	g_free(full_name);
+	if (result != NULL)
+		return (result);
+
+	for (i = 0; i < origin->uses->len; i++) {
+		full_name = g_strdup_printf("%s.%s", (const char *)
+		    g_ptr_array_index(origin->uses, i), name);
+		result = rpct_find_type(full_name);
+		g_free(full_name);
+		if (result != NULL)
+			return (result);
+	}
+
+	return (NULL);
+}
+
+static struct rpct_type *
 rpct_find_type(const char *name)
 {
 	struct rpct_file *file;
@@ -175,6 +208,7 @@ rpct_find_type(const char *name)
 static int
 rpct_read_meta(struct rpct_file *file, rpc_object_t obj)
 {
+	rpc_object_t uses = NULL;
 	int ret;
 
 	if (obj == NULL) {
@@ -182,10 +216,18 @@ rpct_read_meta(struct rpct_file *file, rpc_object_t obj)
 		return (-1);
 	}
 
-	ret = rpc_object_unpack(obj, "{s,s,i}",
+	ret = rpc_object_unpack(obj, "{s,s,i,v}",
 	    "version", &file->version,
 	    "namespace", &file->ns,
-	    "description", &file->description);
+	    "description", &file->description,
+	    "use", &uses);
+
+	if (uses != NULL) {
+		rpc_array_apply(uses, ^(size_t idx, rpc_object_t value) {
+			g_ptr_array_add(file->uses, g_strdup(rpc_string_get_string_ptr(value)));
+			return ((bool)true);
+		});
+	}
 
 	return (ret > 0 ? 0 : -1);
 }
@@ -207,7 +249,7 @@ rpct_read_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
 	member->name = g_strdup(decl);
 	member->description = description != NULL ? g_strdup(description) : NULL;
 	member->origin = type;
-	member->type = rpct_instantiate_type(typedecl, NULL, type);
+	member->type = rpct_instantiate_type(typedecl, NULL, type, type->file);
 	member->constraints = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    g_free, (GDestroyNotify)rpc_release_impl);
 
@@ -224,7 +266,7 @@ rpct_read_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
 
 struct rpct_typei *
 rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
-    struct rpct_type *ptype)
+    struct rpct_type *ptype, struct rpct_file *origin)
 {
 	GError *err = NULL;
 	GRegex *regex;
@@ -255,7 +297,7 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 	}
 
 	decltype = g_match_info_fetch(match, 1);
-	type = rpct_find_type(decltype);
+	type = rpct_find_type_fuzzy(decltype, origin);
 	if (type == NULL) {
 		struct rpct_typei *cur = parent;
 
@@ -315,7 +357,7 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 			const char *var = g_ptr_array_index(type->generic_vars, i);
 			const char *vartype = g_ptr_array_index(splitvars, i);
 
-			subtype = rpct_instantiate_type(vartype, ret, ptype);
+			subtype = rpct_instantiate_type(vartype, ret, ptype, origin);
 
 			if (subtype == NULL)
 				goto error;
@@ -361,7 +403,7 @@ rpct_instantiate_member(struct rpct_member *member, struct rpct_typei *parent)
 	struct rpct_typei *ret;
 
 	ret = rpct_instantiate_type(member->type->canonical_form,
-	    parent, parent->type);
+	    parent, parent->type, parent->type->file);
 	ret->constraints = member->constraints;
 	return (ret);
 }
@@ -630,7 +672,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	    "members", &members);
 
 	if (inherits != NULL) {
-		parent = rpct_find_type(inherits);
+		parent = rpct_find_type_fuzzy(inherits, file);
 		if (parent == NULL)
 			return (-1);
 	}
@@ -716,7 +758,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 	if (type_def != NULL) {
 		type->clazz = RPC_TYPING_TYPEDEF;
-		type->definition = rpct_instantiate_type(type_def, NULL, type);
+		type->definition = rpct_instantiate_type(type_def, NULL, type, file);
 
 		g_assert_nonnull(type->definition);
 	}
@@ -727,7 +769,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 }
 
 static int
-rpct_read_property(struct rpct_interface *iface, const char *decl, rpc_object_t obj)
+rpct_read_property(struct rpct_file *file, struct rpct_interface *iface, const char *decl, rpc_object_t obj)
 {
 	struct rpct_if_member *prop;
 	GError *err = NULL;
@@ -773,7 +815,7 @@ rpct_read_property(struct rpct_interface *iface, const char *decl, rpc_object_t 
 	}
 
 	if (type)
-		prop->result = rpct_instantiate_type(type, NULL, NULL);
+		prop->result = rpct_instantiate_type(type, NULL, NULL, file);
 
 	g_hash_table_insert(iface->members, g_strdup(name), prop);
 	return (0);
@@ -787,14 +829,14 @@ error:
 }
 
 static int
-rpct_read_event(struct rpct_interface *iface, const char *decl, rpc_object_t obj)
+rpct_read_event(struct rpct_file *file, struct rpct_interface *iface, const char *decl, rpc_object_t obj)
 {
 
 	return (0);
 }
 
 static int
-rpct_read_method(struct rpct_interface *iface, const char *decl, rpc_object_t obj)
+rpct_read_method(struct rpct_file *file, struct rpct_interface *iface, const char *decl, rpc_object_t obj)
 {
 	int ret = -1;
 	struct rpct_if_member *method = NULL;
@@ -806,6 +848,8 @@ rpct_read_method(struct rpct_interface *iface, const char *decl, rpc_object_t ob
 	const char *returns_type;
 	rpc_object_t args = NULL;
 	rpc_object_t returns = NULL;
+
+	debugf("reading <%s> from file %s", decl, file->path);
 
 	rpc_object_unpack(obj, "{s,v,v}",
 	    "description", &description,
@@ -836,6 +880,7 @@ rpct_read_method(struct rpct_interface *iface, const char *decl, rpc_object_t ob
 		    rpc_object_t i) {
 			const char *arg_name;
 			const char* arg_type;
+			struct rpct_argument *arg;
 			struct rpct_typei *arg_inst;
 
 			arg_name = rpc_dictionary_get_string(i, "name");
@@ -854,11 +899,15 @@ rpct_read_method(struct rpct_interface *iface, const char *decl, rpc_object_t ob
 				return ((bool)false);
 			}
 
-			arg_inst = rpct_instantiate_type(arg_type, NULL, NULL);
+			arg_inst = rpct_instantiate_type(arg_type, NULL, NULL, file);
 			if (arg_inst == NULL)
 				return ((bool)false);
 
-			g_ptr_array_add(method->arguments, arg_inst);
+			arg = g_malloc0(sizeof(*arg));
+			arg->name = g_strdup(arg_name);
+			arg->description = g_strdup(rpc_dictionary_get_string(i, "description"));
+			arg->type = arg_inst;
+			g_ptr_array_add(method->arguments, arg);
 			return ((bool)true);
 		}))
 			goto error;
@@ -866,7 +915,7 @@ rpct_read_method(struct rpct_interface *iface, const char *decl, rpc_object_t ob
 
 	if (returns != NULL) {
 		returns_type = rpc_dictionary_get_string(returns, "type");
-		method->result = rpct_instantiate_type(returns_type, NULL, NULL);
+		method->result = rpct_instantiate_type(returns_type, NULL, NULL, file);
 		if (method->result == NULL)
 			goto error;
 	}
@@ -924,12 +973,12 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 	result = rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t v) {
 		if (g_str_has_prefix(key, "property")) {
-			if (rpct_read_property(iface, key, v) != 0)
+			if (rpct_read_property(file, iface, key, v) != 0)
 				return ((bool)false);
 		}
 
 		if (g_str_has_prefix(key, "method")) {
-			if (rpct_read_method(iface, key, v) != 0)
+			if (rpct_read_method(file, iface, key, v) != 0)
 				return ((bool)false);
 		}
 
@@ -970,6 +1019,7 @@ rpct_read_file(const char *path)
 	file = g_malloc0(sizeof(*file));
 	file->body = rpc_retain(obj);
 	file->path = g_strdup(path);
+	file->uses = g_ptr_array_new_with_free_func(g_free);
 	file->types = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 	    NULL);
 	file->interfaces = g_hash_table_new(g_str_hash, g_str_equal);
