@@ -1,10 +1,16 @@
 import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/observable/interval';
 import {Subject} from 'rxjs/Subject';
 import {v4} from './uuidv4';
 import {decode, encode, createCodec, Codec} from 'msgpack-lite';
 import {Subscription} from 'rxjs/Subscription';
 
 export class LibRpcConnector {
+    private EXT_UNPACKERS: Map<number, (buffer: Uint8Array) => any> = new Map([
+        [0x01, (buffer: Uint8Array) => new Date(new DataView(buffer.buffer, 0).getUint32(0, true) * 1000)],
+        [0x04, (buffer: Uint8Array) => decode(buffer, {codec: this.codec})],
+    ]);
+
     private ws: WebSocket;
     private messages$: Subject<any>;
     private messageBuffer: Buffer[];
@@ -13,9 +19,9 @@ export class LibRpcConnector {
 
     public constructor(private url: string, private isDebugEnabled: boolean = false) {
         this.codec = createCodec();
-        this.codec.addExtUnpacker(0x01, (buffer: Uint8Array) => {
-            return new Date(new DataView(buffer.buffer, 0).getUint32(0, true) * 1000);
-        });
+        this.EXT_UNPACKERS.forEach(
+            (unPacker: (buffer: Uint8Array) => any, eType: number) => this.codec.addExtUnpacker(eType, unPacker)
+        );
         this.messages$ = new Subject<any>();
         this.messageBuffer = [];
 
