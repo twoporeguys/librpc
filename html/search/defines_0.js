@@ -2,24 +2,14 @@ var searchData=
 [
   ['rpc_5farray_5fapplier',['RPC_ARRAY_APPLIER',['../object_8h.html#a33c2b5ad21d20059d031e6a390021822',1,'object.h']]],
   ['rpc_5farray_5fcmp',['RPC_ARRAY_CMP',['../object_8h.html#af7b40854202a0a6708b0611b4fdf9121',1,'object.h']]],
-  ['rpc_5fauto_5fobject_5ft',['rpc_auto_object_t',['../object_8h.html#aa2468583d15995a2451e3f2072631086',1,'object.h']]],
   ['rpc_5fbinary_5fdestructor',['RPC_BINARY_DESTRUCTOR',['../object_8h.html#a470d0e93b159810ff425aec90f47c817',1,'object.h']]],
-  ['rpc_5fbinary_5fdestructor_5farg',['RPC_BINARY_DESTRUCTOR_ARG',['../object_8h.html#a5b9fa1b598d399f5eacdbf2a8f86fd41',1,'object.h']]],
   ['rpc_5fbus_5fevent_5fhandler',['RPC_BUS_EVENT_HANDLER',['../bus_8h.html#aaa8f0d5a3405318f9df38fc2ae8dd587',1,'bus.h']]],
   ['rpc_5fcallback',['RPC_CALLBACK',['../connection_8h.html#a7512dc753949d75650bbec7527f9d0a6',1,'connection.h']]],
   ['rpc_5fdictionary_5fapplier',['RPC_DICTIONARY_APPLIER',['../object_8h.html#a814f85a172b4dae9c201063cad92514e',1,'object.h']]],
   ['rpc_5ferror_5fhandler',['RPC_ERROR_HANDLER',['../connection_8h.html#ac6630daf34229f9dd8a754b119e4a94d',1,'connection.h']]],
-  ['rpc_5ffunction',['RPC_FUNCTION',['../service_8h.html#a5484afe5b3f646a7989ad91e011cc5b1',1,'service.h']]],
-  ['rpc_5ffunction_5fstill_5frunning',['RPC_FUNCTION_STILL_RUNNING',['../service_8h.html#a4c7094875a0bd8cc87e7c1d24a4481a6',1,'service.h']]],
   ['rpc_5fhandler',['RPC_HANDLER',['../connection_8h.html#a4f7704822a76a6f293f6abbb59bf41f3',1,'connection.h']]],
   ['rpc_5fis_5ferror',['rpc_is_error',['../object_8h.html#aa125ec0a73c4c9953b07e5da1712573e',1,'object.h']]],
-  ['rpc_5fmethod',['RPC_METHOD',['../service_8h.html#a3b7ed0fba131ae55d90cbf5deb8cba5d',1,'service.h']]],
-  ['rpc_5fmethod_5fblock',['RPC_METHOD_BLOCK',['../service_8h.html#a1b9446e9faacdac7aae6e9e8601ebff3',1,'service.h']]],
-  ['rpc_5fproperty_5fro',['RPC_PROPERTY_RO',['../service_8h.html#acbb40848a04a99a67fa65f1a103af208',1,'service.h']]],
-  ['rpc_5fproperty_5frw',['RPC_PROPERTY_RW',['../service_8h.html#a6f39d78ec8fde43f05f7805fddc525d4',1,'service.h']]],
-  ['rpc_5fproperty_5fwo',['RPC_PROPERTY_WO',['../service_8h.html#a6ea5b0d468e84170d93e3afeaed4d5b6',1,'service.h']]],
   ['rpc_5fquery_5fcb',['RPC_QUERY_CB',['../query_8h.html#ac5142dc38666b2011833bab884b6af9d',1,'query.h']]],
   ['rpc_5frelease',['rpc_release',['../object_8h.html#aac19be935f72b35eeb2851bc509eabb2',1,'object.h']]],
-  ['rpc_5fserver_5fhandler',['RPC_SERVER_HANDLER',['../server_8h.html#a34749fc2472ddb06c6d36006e2a948c3',1,'server.h']]],
-  ['rpc_5fswap',['rpc_swap',['../object_8h.html#a541e997e04e48fe86df08ae323516490',1,'object.h']]]
+  ['rpc_5fserver_5fhandler',['RPC_SERVER_HANDLER',['../server_8h.html#a34749fc2472ddb06c6d36006e2a948c3',1,'server.h']]]
 ];

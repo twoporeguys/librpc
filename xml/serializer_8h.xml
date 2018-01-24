@@ -1,53 +1,53 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
   <compounddef id="serializer_8h" kind="file" language="C++">
     <compoundname>serializer.h</compoundname>
     <includes refid="object_8h" local="no">rpc/object.h</includes>
     <incdepgraph>
-      <node id="52">
+      <node id="141">
         <label>stdbool.h</label>
       </node>
-      <node id="53">
+      <node id="142">
         <label>stdarg.h</label>
       </node>
-      <node id="51">
+      <node id="140">
         <label>stdint.h</label>
       </node>
-      <node id="49">
+      <node id="138">
         <label>/code/include/rpc/serializer.h</label>
-        <link refid="serializer_8h"/>
-        <childnode refid="50" relation="include">
+        <link refid="serializer.h"/>
+        <childnode refid="139" relation="include">
         </childnode>
       </node>
-      <node id="55">
+      <node id="144">
         <label>sys/types.h</label>
       </node>
-      <node id="50">
+      <node id="139">
         <label>rpc/object.h</label>
         <link refid="object_8h"/>
-        <childnode refid="51" relation="include">
+        <childnode refid="140" relation="include">
         </childnode>
-        <childnode refid="52" relation="include">
+        <childnode refid="141" relation="include">
         </childnode>
-        <childnode refid="53" relation="include">
+        <childnode refid="142" relation="include">
         </childnode>
-        <childnode refid="54" relation="include">
+        <childnode refid="143" relation="include">
         </childnode>
-        <childnode refid="55" relation="include">
+        <childnode refid="144" relation="include">
         </childnode>
       </node>
-      <node id="54">
+      <node id="143">
         <label>sys/uio.h</label>
       </node>
     </incdepgraph>
       <sectiondef kind="func">
-      <memberdef kind="function" id="serializer_8h_1aab2daa65954ec29b20ac84a12946e154" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="serializer_8h_1aec43c3467d5931ec29b407aa6f010b61" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>bool</type>
         <definition>bool rpc_serializer_exists</definition>
-        <argsstring>(const char *_Nonnull serializer)</argsstring>
+        <argsstring>(const char *serializer)</argsstring>
         <name>rpc_serializer_exists</name>
         <param>
-          <type>const char *_Nonnull</type>
+          <type>const char *</type>
           <declname>serializer</declname>
         </param>
         <briefdescription>
@@ -67,17 +67,17 @@
         </inbodydescription>
         <location file="/code/include/rpc/serializer.h" line="43" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="serializer_8h_1a9797556d5c860ee04b86c3bb53d95f47" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>_Nullable <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
-        <definition>_Nullable rpc_object_t rpc_serializer_load</definition>
-        <argsstring>(const char *_Nonnull serializer, const void *_Nonnull frame, size_t len)</argsstring>
+      <memberdef kind="function" id="serializer_8h_1a41c887139710f0043a9109faa74c7ae7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+        <definition>rpc_object_t rpc_serializer_load</definition>
+        <argsstring>(const char *serializer, const void *frame, size_t len)</argsstring>
         <name>rpc_serializer_load</name>
         <param>
-          <type>const char *_Nonnull</type>
+          <type>const char *</type>
           <declname>serializer</declname>
         </param>
         <param>
-          <type>const void *_Nonnull</type>
+          <type>const void *</type>
           <declname>frame</declname>
         </param>
         <param>
@@ -115,25 +115,25 @@
         </inbodydescription>
         <location file="/code/include/rpc/serializer.h" line="53" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="serializer_8h_1a307b5202b7d8f3ef3a7c27815e002946" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="serializer_8h_1ae8d18b07cd3202e3c763e3a6c3afcc2e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
         <definition>int rpc_serializer_dump</definition>
-        <argsstring>(const char *_Nonnull serializer, _Nonnull rpc_object_t obj, void *_Nullable *_Nonnull framep, size_t *_Nullable lenp)</argsstring>
+        <argsstring>(const char *serializer, rpc_object_t obj, void **framep, size_t *lenp)</argsstring>
         <name>rpc_serializer_dump</name>
         <param>
-          <type>const char *_Nonnull</type>
+          <type>const char *</type>
           <declname>serializer</declname>
         </param>
         <param>
-          <type>_Nonnull <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
           <declname>obj</declname>
         </param>
         <param>
-          <type>void *_Nullable *_Nonnull</type>
+          <type>void **</type>
           <declname>framep</declname>
         </param>
         <param>
-          <type>size_t *_Nullable</type>
+          <type>size_t *</type>
           <declname>lenp</declname>
         </param>
         <briefdescription>
@@ -205,16 +205,15 @@
 <codeline lineno="30"><highlight class="normal"></highlight></codeline>
 <codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="object_8h" kindref="compound">rpc/object.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="32"><highlight class="normal"></highlight></codeline>
-<codeline lineno="43"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="serializer_8h_1aab2daa65954ec29b20ac84a12946e154" kindref="member">rpc_serializer_exists</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>serializer);</highlight></codeline>
+<codeline lineno="43"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="serializer_8h_1aec43c3467d5931ec29b407aa6f010b61" kindref="member">rpc_serializer_exists</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*serializer);</highlight></codeline>
 <codeline lineno="44"><highlight class="normal"></highlight></codeline>
-<codeline lineno="53"><highlight class="normal">_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="serializer_8h_1a9797556d5c860ee04b86c3bb53d95f47" kindref="member">rpc_serializer_load</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>serializer,</highlight></codeline>
-<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>frame,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>len);</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="serializer_8h_1a41c887139710f0043a9109faa74c7ae7" kindref="member">rpc_serializer_load</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*serializer,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*frame,</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>len);</highlight></codeline>
 <codeline lineno="55"><highlight class="normal"></highlight></codeline>
-<codeline lineno="63"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="serializer_8h_1a307b5202b7d8f3ef3a7c27815e002946" kindref="member">rpc_serializer_dump</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>serializer,</highlight></codeline>
-<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>obj,<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>*_Nonnull<sp/>framep,</highlight></codeline>
-<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>*_Nullable<sp/>lenp);</highlight></codeline>
-<codeline lineno="66"><highlight class="normal"></highlight></codeline>
-<codeline lineno="67"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//LIBRPC_SERIALIZER_H</highlight></codeline>
+<codeline lineno="63"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="serializer_8h_1ae8d18b07cd3202e3c763e3a6c3afcc2e" kindref="member">rpc_serializer_dump</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*serializer,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>obj,</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**framep,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>*lenp);</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//LIBRPC_SERIALIZER_H</highlight></codeline>
     </programlisting>
     <location file="/code/include/rpc/serializer.h"/>
   </compounddef>
