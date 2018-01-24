@@ -2,38 +2,44 @@
 \label{structrpc__if__member}\index{rpc\+\_\+if\+\_\+member@{rpc\+\_\+if\+\_\+member}}
 
 
+{\ttfamily \#include $<$service.\+h$>$}
+
+
+
 Collaboration diagram for rpc\+\_\+if\+\_\+member\+:
 \nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=260pt]{structrpc__if__member__coll__graph}
+\includegraphics[width=279pt]{structrpc__if__member__coll__graph}
 \end{center}
 \end{figure}
 \subsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
-const char $\ast$ {\bfseries rim\+\_\+name}\hypertarget{structrpc__if__member_ad98804e4fe5438a8c5823c7623c6dab4}{}\label{structrpc__if__member_ad98804e4fe5438a8c5823c7623c6dab4}
-
+\mbox{\Hypertarget{structrpc__if__member_a656607611d627c965972e4153523287e}\label{structrpc__if__member_a656607611d627c965972e4153523287e}} 
+const char $\ast$\+\_\+\+Nonnull {\bfseries rim\+\_\+name}
 \item 
-enum rpc\+\_\+if\+\_\+member\+\_\+type {\bfseries rim\+\_\+type}\hypertarget{structrpc__if__member_a0ffdb5e81a707932149376d01c716b10}{}\label{structrpc__if__member_a0ffdb5e81a707932149376d01c716b10}
-
+\mbox{\Hypertarget{structrpc__if__member_a0ffdb5e81a707932149376d01c716b10}\label{structrpc__if__member_a0ffdb5e81a707932149376d01c716b10}} 
+enum \hyperlink{service_8h_a543850b4e1fac65207114c51d9c3f1a4}{rpc\+\_\+if\+\_\+member\+\_\+type} {\bfseries rim\+\_\+type}
 \item 
+\mbox{\Hypertarget{structrpc__if__member_a7c950b405b6852b3038ae847d0b7e2e0}\label{structrpc__if__member_a7c950b405b6852b3038ae847d0b7e2e0}} 
 \begin{tabbing}
 xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
 union \{\\
 \>struct \hyperlink{structrpc__if__method}{rpc\_if\_method} {\bfseries rim\_method}\\
 \>struct \hyperlink{structrpc__if__property}{rpc\_if\_property} {\bfseries rim\_property}\\
-\}; \hypertarget{structrpc__if__member_a7c950b405b6852b3038ae847d0b7e2e0}{}\label{structrpc__if__member_a7c950b405b6852b3038ae847d0b7e2e0}
-\\
+\}; \\
 
 \end{tabbing}\end{DoxyCompactItemize}
 
 
 \subsection{Detailed Description}
+Interface member descriptor.
 
+Can be either a method, property or event. 
 
-Definition at line 190 of file service.\+h.
+Definition at line 253 of file service.\+h.
 
 
 
