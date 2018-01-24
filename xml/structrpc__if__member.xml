@@ -1,12 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
   <compounddef id="structrpc__if__member" kind="struct" language="C++" prot="public">
     <compoundname>rpc_if_member</compoundname>
-    <includes refid="service_8h" local="no">service.h</includes>
       <sectiondef kind="public-attrib">
-      <memberdef kind="variable" id="structrpc__if__member_1a656607611d627c965972e4153523287e" prot="public" static="no" mutable="no">
-        <type>const char *_Nonnull</type>
-        <definition>const char* _Nonnull rpc_if_member::rim_name</definition>
+      <memberdef kind="variable" id="structrpc__if__member_1ad98804e4fe5438a8c5823c7623c6dab4" prot="public" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* rpc_if_member::rim_name</definition>
         <argsstring></argsstring>
         <name>rim_name</name>
         <briefdescription>
@@ -15,10 +14,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="254" column="1" bodyfile="/code/include/rpc/service.h" bodystart="254" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="191" column="1" bodyfile="/code/include/rpc/service.h" bodystart="191" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__if__member_1a0ffdb5e81a707932149376d01c716b10" prot="public" static="no" mutable="no">
-        <type>enum <ref refid="service_8h_1a543850b4e1fac65207114c51d9c3f1a4" kindref="member">rpc_if_member_type</ref></type>
+        <type>enum rpc_if_member_type</type>
         <definition>enum rpc_if_member_type rpc_if_member::rim_type</definition>
         <argsstring></argsstring>
         <name>rim_type</name>
@@ -28,7 +27,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="254" column="1" bodyfile="/code/include/rpc/service.h" bodystart="255" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="191" column="1" bodyfile="/code/include/rpc/service.h" bodystart="192" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__if__member_1a89089595ce2e4eb41017e5aea463787c" prot="public" static="no" mutable="no">
         <type>struct <ref refid="structrpc__if__method" kindref="compound">rpc_if_method</ref></type>
@@ -41,7 +40,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="254" column="1" bodyfile="/code/include/rpc/service.h" bodystart="257" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="191" column="1" bodyfile="/code/include/rpc/service.h" bodystart="194" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__if__member_1ae82e990c08326140bb7a4dbd9f601296" prot="public" static="no" mutable="no">
         <type>struct <ref refid="structrpc__if__property" kindref="compound">rpc_if_property</ref></type>
@@ -54,7 +53,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="254" column="1" bodyfile="/code/include/rpc/service.h" bodystart="258" bodyend="-1"/>
+        <location file="/code/include/rpc/service.h" line="191" column="1" bodyfile="/code/include/rpc/service.h" bodystart="195" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structrpc__if__member_1a7c950b405b6852b3038ae847d0b7e2e0" prot="public" static="no" mutable="no">
         <type>union rpc_if_member::@0</type>
@@ -67,37 +66,37 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="259" column="1"/>
+        <location file="/code/include/rpc/service.h" line="196" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Interface member descriptor.</para><para>Can be either a method, property or event. </para>    </detaileddescription>
+    </detaileddescription>
     <collaborationgraph>
-      <node id="4">
+      <node id="16">
         <label>rpc_if_property</label>
         <link refid="structrpc__if__property"/>
       </node>
-      <node id="3">
+      <node id="15">
         <label>rpc_if_member</label>
         <link refid="structrpc__if__member"/>
-        <childnode refid="4" relation="usage">
+        <childnode refid="16" relation="usage">
           <edgelabel>rim_property</edgelabel>
         </childnode>
-        <childnode refid="5" relation="usage">
+        <childnode refid="17" relation="usage">
           <edgelabel>rim_method</edgelabel>
         </childnode>
       </node>
-      <node id="5">
+      <node id="17">
         <label>rpc_if_method</label>
         <link refid="structrpc__if__method"/>
       </node>
     </collaborationgraph>
-    <location file="/code/include/rpc/service.h" line="253" column="1" bodyfile="/code/include/rpc/service.h" bodystart="253" bodyend="260"/>
+    <location file="/code/include/rpc/service.h" line="190" column="1" bodyfile="/code/include/rpc/service.h" bodystart="190" bodyend="197"/>
     <listofallmembers>
       <member refid="structrpc__if__member_1a89089595ce2e4eb41017e5aea463787c" prot="public" virt="non-virtual"><scope>rpc_if_member</scope><name>rim_method</name></member>
-      <member refid="structrpc__if__member_1a656607611d627c965972e4153523287e" prot="public" virt="non-virtual"><scope>rpc_if_member</scope><name>rim_name</name></member>
+      <member refid="structrpc__if__member_1ad98804e4fe5438a8c5823c7623c6dab4" prot="public" virt="non-virtual"><scope>rpc_if_member</scope><name>rim_name</name></member>
       <member refid="structrpc__if__member_1ae82e990c08326140bb7a4dbd9f601296" prot="public" virt="non-virtual"><scope>rpc_if_member</scope><name>rim_property</name></member>
       <member refid="structrpc__if__member_1a0ffdb5e81a707932149376d01c716b10" prot="public" virt="non-virtual"><scope>rpc_if_member</scope><name>rim_type</name></member>
     </listofallmembers>

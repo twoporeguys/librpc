@@ -1,6 +1,6 @@
 \hypertarget{query_8h}{}\section{/code/include/rpc/query.h File Reference}
 \label{query_8h}\index{/code/include/rpc/query.\+h@{/code/include/rpc/query.\+h}}
-{\ttfamily \#include $<$rpc/object.\+h$>$}\newline
+{\ttfamily \#include $<$rpc/object.\+h$>$}\\*
 Include dependency graph for query.\+h\+:
 \nopagebreak
 \begin{figure}[H]
@@ -24,30 +24,30 @@ struct \hyperlink{structrpc__query__params}{rpc\+\_\+query\+\_\+params}
 \item 
 typedef struct rpc\+\_\+query\+\_\+iter $\ast$ \hyperlink{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}{rpc\+\_\+query\+\_\+iter\+\_\+t}
 \item 
-typedef \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}($^\wedge$ \hyperlink{query_8h_a2e4187b74c3bd970f9e41bb2d02d09a0}{rpc\+\_\+query\+\_\+cb\+\_\+t}) (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
+typedef \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}($^\wedge$ \hyperlink{query_8h_a3dd3753b86199ebdc48d1cb3ab4cf985}{rpc\+\_\+query\+\_\+cb\+\_\+t}) (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
 \item 
 typedef struct \hyperlink{structrpc__query__params}{rpc\+\_\+query\+\_\+params} $\ast$ \hyperlink{query_8h_a831694aa25fae9a6c3243911c3defb94}{rpc\+\_\+query\+\_\+params\+\_\+t}
 \end{DoxyCompactItemize}
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{query_8h_a6b66ceac8404c2581558e4fa3dfc048e}{rpc\+\_\+query\+\_\+get} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object, const char $\ast$\+\_\+\+Nonnull path, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} default\+\_\+val)
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{query_8h_a01933536bbe1cf312e19e164d16c5c39}{rpc\+\_\+query\+\_\+get} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object, const char $\ast$path, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} default\+\_\+val)
 \item 
-void \hyperlink{query_8h_a03159f0ef216c368c85ea63dd5a6cd64}{rpc\+\_\+query\+\_\+set} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object, const char $\ast$\+\_\+\+Nonnull path, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} value, bool steal)
+void \hyperlink{query_8h_a6d582b462dd592a3b22a2cf6748962eb}{rpc\+\_\+query\+\_\+set} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object, const char $\ast$path, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} value, bool steal)
 \item 
-void \hyperlink{query_8h_af59ef4e3522115f09116bf7048738de4}{rpc\+\_\+query\+\_\+delete} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object, const char $\ast$\+\_\+\+Nonnull path)
+void \hyperlink{query_8h_a303496386da1e129bdd3b67275d043f7}{rpc\+\_\+query\+\_\+delete} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object, const char $\ast$path)
 \item 
-bool \hyperlink{query_8h_a530296c952ff239de8b91371227d36ba}{rpc\+\_\+query\+\_\+contains} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object, const char $\ast$\+\_\+\+Nonnull path)
+bool \hyperlink{query_8h_aa2347f7c12f14c8290b0d9ab7efa7253}{rpc\+\_\+query\+\_\+contains} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object, const char $\ast$path)
 \item 
-\+\_\+\+Nullable \hyperlink{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}{rpc\+\_\+query\+\_\+iter\+\_\+t} \hyperlink{query_8h_a5e66848b79c142525768cfebfa9cf0e6}{rpc\+\_\+query} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object, \+\_\+\+Nullable \hyperlink{query_8h_a831694aa25fae9a6c3243911c3defb94}{rpc\+\_\+query\+\_\+params\+\_\+t} params, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rules)
+\hyperlink{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}{rpc\+\_\+query\+\_\+iter\+\_\+t} \hyperlink{query_8h_a1e8c03d1046fad3a029862adb64508f4}{rpc\+\_\+query} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object, \hyperlink{query_8h_a831694aa25fae9a6c3243911c3defb94}{rpc\+\_\+query\+\_\+params\+\_\+t} params, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rules)
 \item 
-\+\_\+\+Nullable \hyperlink{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}{rpc\+\_\+query\+\_\+iter\+\_\+t} \hyperlink{query_8h_a674e1f4b009fc26f19dd33d0c5d0b10d}{rpc\+\_\+query\+\_\+fmt} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object, \+\_\+\+Nonnull \hyperlink{query_8h_a831694aa25fae9a6c3243911c3defb94}{rpc\+\_\+query\+\_\+params\+\_\+t} params, const char $\ast$\+\_\+\+Nonnull rules\+\_\+fmt,...)
+\hyperlink{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}{rpc\+\_\+query\+\_\+iter\+\_\+t} \hyperlink{query_8h_aab26ee7cd5e504b2e066a74845738268}{rpc\+\_\+query\+\_\+fmt} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object, \hyperlink{query_8h_a831694aa25fae9a6c3243911c3defb94}{rpc\+\_\+query\+\_\+params\+\_\+t} params, const char $\ast$rules\+\_\+fmt,...)
 \item 
-\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{query_8h_ad32074f2b7671ae25b4076d085423a0f}{rpc\+\_\+query\+\_\+apply} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rules)
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{query_8h_aea5aa716ae6ccb562ad7a27ccffb5087}{rpc\+\_\+query\+\_\+apply} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rules)
 \item 
-bool \hyperlink{query_8h_a979b1dfd5f0fb3be66501ed3c7df3f78}{rpc\+\_\+query\+\_\+next} (\+\_\+\+Nonnull \hyperlink{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}{rpc\+\_\+query\+\_\+iter\+\_\+t} iter, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$\+\_\+\+Nullable chunk)
+bool \hyperlink{query_8h_a170e0ae1387522fc419565c13f7a611c}{rpc\+\_\+query\+\_\+next} (\hyperlink{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}{rpc\+\_\+query\+\_\+iter\+\_\+t} iter, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$chunk)
 \item 
-void \hyperlink{query_8h_acfa3a9a25b98a0acd3a64c7c222e5f99}{rpc\+\_\+query\+\_\+iter\+\_\+free} (\+\_\+\+Nonnull \hyperlink{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}{rpc\+\_\+query\+\_\+iter\+\_\+t} iter)
+void \hyperlink{query_8h_a004da45b366b82be1df7452e48103297}{rpc\+\_\+query\+\_\+iter\+\_\+free} (\hyperlink{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}{rpc\+\_\+query\+\_\+iter\+\_\+t} iter)
 \end{DoxyCompactItemize}
 
 
@@ -55,12 +55,14 @@ void \hyperlink{query_8h_acfa3a9a25b98a0acd3a64c7c222e5f99}{rpc\+\_\+query\+\_\+
 Object query A\+PI 
 
 \subsection{Macro Definition Documentation}
-\mbox{\Hypertarget{query_8h_ac5142dc38666b2011833bab884b6af9d}\label{query_8h_ac5142dc38666b2011833bab884b6af9d}} 
 \index{query.\+h@{query.\+h}!R\+P\+C\+\_\+\+Q\+U\+E\+R\+Y\+\_\+\+CB@{R\+P\+C\+\_\+\+Q\+U\+E\+R\+Y\+\_\+\+CB}}
 \index{R\+P\+C\+\_\+\+Q\+U\+E\+R\+Y\+\_\+\+CB@{R\+P\+C\+\_\+\+Q\+U\+E\+R\+Y\+\_\+\+CB}!query.\+h@{query.\+h}}
-\subsubsection{\texorpdfstring{R\+P\+C\+\_\+\+Q\+U\+E\+R\+Y\+\_\+\+CB}{RPC\_QUERY\_CB}}
-{\footnotesize\ttfamily \#define R\+P\+C\+\_\+\+Q\+U\+E\+R\+Y\+\_\+\+CB(\begin{DoxyParamCaption}\item[{}]{\+\_\+fn,  }\item[{}]{\+\_\+arg }\end{DoxyParamCaption})}
-
+\subsubsection[{\texorpdfstring{R\+P\+C\+\_\+\+Q\+U\+E\+R\+Y\+\_\+\+CB}{RPC_QUERY_CB}}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\+P\+C\+\_\+\+Q\+U\+E\+R\+Y\+\_\+\+CB(
+\begin{DoxyParamCaption}
+\item[{}]{\+\_\+fn, }
+\item[{}]{\+\_\+arg}
+\end{DoxyParamCaption}
+)}\hypertarget{query_8h_ac5142dc38666b2011833bab884b6af9d}{}\label{query_8h_ac5142dc38666b2011833bab884b6af9d}
 {\bfseries Value\+:}
 \begin{DoxyCode}
 ^(\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} \_object) \{                   \(\backslash\)
@@ -74,12 +76,9 @@ Definition at line 69 of file query.\+h.
 
 
 \subsection{Typedef Documentation}
-\mbox{\Hypertarget{query_8h_a2e4187b74c3bd970f9e41bb2d02d09a0}\label{query_8h_a2e4187b74c3bd970f9e41bb2d02d09a0}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+cb\+\_\+t@{rpc\+\_\+query\+\_\+cb\+\_\+t}}
 \index{rpc\+\_\+query\+\_\+cb\+\_\+t@{rpc\+\_\+query\+\_\+cb\+\_\+t}!query.\+h@{query.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+query\+\_\+cb\+\_\+t}{rpc\_query\_cb\_t}}
-{\footnotesize\ttfamily typedef \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}($^\wedge$ rpc\+\_\+query\+\_\+cb\+\_\+t) (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)}
-
+\subsubsection[{\texorpdfstring{rpc\+\_\+query\+\_\+cb\+\_\+t}{rpc_query_cb_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef {\bf rpc\+\_\+object\+\_\+t}($^\wedge$ rpc\+\_\+query\+\_\+cb\+\_\+t) ({\bf rpc\+\_\+object\+\_\+t} object)}\hypertarget{query_8h_a3dd3753b86199ebdc48d1cb3ab4cf985}{}\label{query_8h_a3dd3753b86199ebdc48d1cb3ab4cf985}
 Definition of query callback block type.
 
 Query functions are checking if that block is defined within \hyperlink{structrpc__query__params}{rpc\+\_\+query\+\_\+params} structure provided to the query function -\/ if so, then body of the callback is being executed for each of the elements matching query, before yielding them as results. Output of the callback block becomes effectively the output of a query function.
@@ -88,22 +87,16 @@ Keep in mind that returning N\+U\+LL from the callback block is considered as sk
 
 Definition at line 64 of file query.\+h.
 
-\mbox{\Hypertarget{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}\label{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+iter\+\_\+t@{rpc\+\_\+query\+\_\+iter\+\_\+t}}
 \index{rpc\+\_\+query\+\_\+iter\+\_\+t@{rpc\+\_\+query\+\_\+iter\+\_\+t}!query.\+h@{query.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+query\+\_\+iter\+\_\+t}{rpc\_query\_iter\_t}}
-{\footnotesize\ttfamily typedef struct rpc\+\_\+query\+\_\+iter$\ast$ \hyperlink{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}{rpc\+\_\+query\+\_\+iter\+\_\+t}}
-
+\subsubsection[{\texorpdfstring{rpc\+\_\+query\+\_\+iter\+\_\+t}{rpc_query_iter_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct rpc\+\_\+query\+\_\+iter$\ast$ {\bf rpc\+\_\+query\+\_\+iter\+\_\+t}}\hypertarget{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}{}\label{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}
 Definition of rpc\+\_\+query\+\_\+iter pointer type. 
 
 Definition at line 49 of file query.\+h.
 
-\mbox{\Hypertarget{query_8h_a831694aa25fae9a6c3243911c3defb94}\label{query_8h_a831694aa25fae9a6c3243911c3defb94}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+params\+\_\+t@{rpc\+\_\+query\+\_\+params\+\_\+t}}
 \index{rpc\+\_\+query\+\_\+params\+\_\+t@{rpc\+\_\+query\+\_\+params\+\_\+t}!query.\+h@{query.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+query\+\_\+params\+\_\+t}{rpc\_query\_params\_t}}
-{\footnotesize\ttfamily typedef struct \hyperlink{structrpc__query__params}{rpc\+\_\+query\+\_\+params}$\ast$ \hyperlink{query_8h_a831694aa25fae9a6c3243911c3defb94}{rpc\+\_\+query\+\_\+params\+\_\+t}}
-
+\subsubsection[{\texorpdfstring{rpc\+\_\+query\+\_\+params\+\_\+t}{rpc_query_params_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf rpc\+\_\+query\+\_\+params}$\ast$ {\bf rpc\+\_\+query\+\_\+params\+\_\+t}}\hypertarget{query_8h_a831694aa25fae9a6c3243911c3defb94}{}\label{query_8h_a831694aa25fae9a6c3243911c3defb94}
 Definition of \hyperlink{structrpc__query__params}{rpc\+\_\+query\+\_\+params} pointer type. 
 
 Definition at line 110 of file query.\+h.
@@ -111,12 +104,15 @@ Definition at line 110 of file query.\+h.
 
 
 \subsection{Function Documentation}
-\mbox{\Hypertarget{query_8h_a5e66848b79c142525768cfebfa9cf0e6}\label{query_8h_a5e66848b79c142525768cfebfa9cf0e6}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query@{rpc\+\_\+query}}
 \index{rpc\+\_\+query@{rpc\+\_\+query}!query.\+h@{query.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+query()}{rpc\_query()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}{rpc\+\_\+query\+\_\+iter\+\_\+t} rpc\+\_\+query (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{object,  }\item[{\+\_\+\+Nullable \hyperlink{query_8h_a831694aa25fae9a6c3243911c3defb94}{rpc\+\_\+query\+\_\+params\+\_\+t}}]{params,  }\item[{\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{rules }\end{DoxyParamCaption})}
-
+\subsubsection[{\texorpdfstring{rpc\+\_\+query(rpc\+\_\+object\+\_\+t object, rpc\+\_\+query\+\_\+params\+\_\+t params, rpc\+\_\+object\+\_\+t rules)}{rpc_query(rpc_object_t object, rpc_query_params_t params, rpc_object_t rules)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+query\+\_\+iter\+\_\+t} rpc\+\_\+query (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{object, }
+\item[{{\bf rpc\+\_\+query\+\_\+params\+\_\+t}}]{params, }
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{rules}
+\end{DoxyParamCaption}
+)}\hypertarget{query_8h_a1e8c03d1046fad3a029862adb64508f4}{}\label{query_8h_a1e8c03d1046fad3a029862adb64508f4}
 Performs a query operation on a given object. Source object has to be an R\+PC object of array type, but it can contain any sequence of internal data objects.
 
 The function immediately returns iterator object without performing any initial operations on the input data. To get actual data, user has to use the rpc\+\_\+query\+\_\+next function, providing iterator as an argument.
@@ -166,12 +162,14 @@ Example of a complex rule\+: \mbox{[}\char`\"{}or\char`\"{}, \mbox{[}\mbox{[}\ch
 \begin{DoxyReturn}{Returns}
 Query iterator. 
 \end{DoxyReturn}
-\mbox{\Hypertarget{query_8h_ad32074f2b7671ae25b4076d085423a0f}\label{query_8h_ad32074f2b7671ae25b4076d085423a0f}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+apply@{rpc\+\_\+query\+\_\+apply}}
 \index{rpc\+\_\+query\+\_\+apply@{rpc\+\_\+query\+\_\+apply}!query.\+h@{query.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+query\+\_\+apply()}{rpc\_query\_apply()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpc\+\_\+query\+\_\+apply (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{object,  }\item[{\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{rules }\end{DoxyParamCaption})}
-
+\subsubsection[{\texorpdfstring{rpc\+\_\+query\+\_\+apply(rpc\+\_\+object\+\_\+t object, rpc\+\_\+object\+\_\+t rules)}{rpc_query_apply(rpc_object_t object, rpc_object_t rules)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+query\+\_\+apply (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{object, }
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{rules}
+\end{DoxyParamCaption}
+)}\hypertarget{query_8h_aea5aa716ae6ccb562ad7a27ccffb5087}{}\label{query_8h_aea5aa716ae6ccb562ad7a27ccffb5087}
 Checks if a given R\+PC object does match a provided object representing query rules (the same format as in the rpc\+\_\+query function case).
 
 If so, then the function does return the object increasing its reference count, otherwise it returns N\+U\+LL.
@@ -186,12 +184,14 @@ If so, then the function does return the object increasing its reference count, 
 \begin{DoxyReturn}{Returns}
 The object itself if is matches the rules, otherwise N\+U\+LL. 
 \end{DoxyReturn}
-\mbox{\Hypertarget{query_8h_a530296c952ff239de8b91371227d36ba}\label{query_8h_a530296c952ff239de8b91371227d36ba}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+contains@{rpc\+\_\+query\+\_\+contains}}
 \index{rpc\+\_\+query\+\_\+contains@{rpc\+\_\+query\+\_\+contains}!query.\+h@{query.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+query\+\_\+contains()}{rpc\_query\_contains()}}
-{\footnotesize\ttfamily bool rpc\+\_\+query\+\_\+contains (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{object,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{path }\end{DoxyParamCaption})}
-
+\subsubsection[{\texorpdfstring{rpc\+\_\+query\+\_\+contains(rpc\+\_\+object\+\_\+t object, const char $\ast$path)}{rpc_query_contains(rpc_object_t object, const char *path)}}]{\setlength{\rightskip}{0pt plus 5cm}bool rpc\+\_\+query\+\_\+contains (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{object, }
+\item[{const char $\ast$}]{path}
+\end{DoxyParamCaption}
+)}\hypertarget{query_8h_aa2347f7c12f14c8290b0d9ab7efa7253}{}\label{query_8h_aa2347f7c12f14c8290b0d9ab7efa7253}
 The function follows a given \char`\"{}key1.\+key2.\+0.\+key3.\+1\char`\"{} like path to check whether or not a given object does have an object under a given path set.
 
 The function returns the boolean result of that check.
@@ -206,12 +206,14 @@ The function returns the boolean result of that check.
 \begin{DoxyReturn}{Returns}
 Boolean result of the check. 
 \end{DoxyReturn}
-\mbox{\Hypertarget{query_8h_af59ef4e3522115f09116bf7048738de4}\label{query_8h_af59ef4e3522115f09116bf7048738de4}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+delete@{rpc\+\_\+query\+\_\+delete}}
 \index{rpc\+\_\+query\+\_\+delete@{rpc\+\_\+query\+\_\+delete}!query.\+h@{query.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+query\+\_\+delete()}{rpc\_query\_delete()}}
-{\footnotesize\ttfamily void rpc\+\_\+query\+\_\+delete (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{object,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{path }\end{DoxyParamCaption})}
-
+\subsubsection[{\texorpdfstring{rpc\+\_\+query\+\_\+delete(rpc\+\_\+object\+\_\+t object, const char $\ast$path)}{rpc_query_delete(rpc_object_t object, const char *path)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+query\+\_\+delete (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{object, }
+\item[{const char $\ast$}]{path}
+\end{DoxyParamCaption}
+)}\hypertarget{query_8h_a303496386da1e129bdd3b67275d043f7}{}\label{query_8h_a303496386da1e129bdd3b67275d043f7}
 The function follows a given \char`\"{}key1.\+key2.\+0.\+key3.\+1\char`\"{} like path to find the last element in the path inside of the provided object and delete it.
 
 If the provided path does not match a given object, then library error is set.
@@ -223,12 +225,16 @@ If the provided path does not match a given object, then library error is set.
 {\em path} & Path to the object to be deleted -\/ \textquotesingle{}.\textquotesingle{} character is required between each key/idx pair. \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{query_8h_a674e1f4b009fc26f19dd33d0c5d0b10d}\label{query_8h_a674e1f4b009fc26f19dd33d0c5d0b10d}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+fmt@{rpc\+\_\+query\+\_\+fmt}}
 \index{rpc\+\_\+query\+\_\+fmt@{rpc\+\_\+query\+\_\+fmt}!query.\+h@{query.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+query\+\_\+fmt()}{rpc\_query\_fmt()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}{rpc\+\_\+query\+\_\+iter\+\_\+t} rpc\+\_\+query\+\_\+fmt (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{object,  }\item[{\+\_\+\+Nonnull \hyperlink{query_8h_a831694aa25fae9a6c3243911c3defb94}{rpc\+\_\+query\+\_\+params\+\_\+t}}]{params,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{rules\+\_\+fmt,  }\item[{}]{... }\end{DoxyParamCaption})}
-
+\subsubsection[{\texorpdfstring{rpc\+\_\+query\+\_\+fmt(rpc\+\_\+object\+\_\+t object, rpc\+\_\+query\+\_\+params\+\_\+t params, const char $\ast$rules\+\_\+fmt,...)}{rpc_query_fmt(rpc_object_t object, rpc_query_params_t params, const char *rules_fmt,...)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+query\+\_\+iter\+\_\+t} rpc\+\_\+query\+\_\+fmt (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{object, }
+\item[{{\bf rpc\+\_\+query\+\_\+params\+\_\+t}}]{params, }
+\item[{const char $\ast$}]{rules\+\_\+fmt, }
+\item[{}]{...}
+\end{DoxyParamCaption}
+)}\hypertarget{query_8h_aab26ee7cd5e504b2e066a74845738268}{}\label{query_8h_aab26ee7cd5e504b2e066a74845738268}
 Performs a query operation on a given object.
 
 The function works exactly the same as the rpc\+\_\+query function, but does not require the user to provide rules as an assembled R\+PC object. Instead it assembles query rules on the fly using the rpc\+\_\+object\+\_\+pack function syntax.
@@ -247,12 +253,15 @@ The function works exactly the same as the rpc\+\_\+query function, but does not
 \begin{DoxyReturn}{Returns}
 Query iterator. 
 \end{DoxyReturn}
-\mbox{\Hypertarget{query_8h_a6b66ceac8404c2581558e4fa3dfc048e}\label{query_8h_a6b66ceac8404c2581558e4fa3dfc048e}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+get@{rpc\+\_\+query\+\_\+get}}
 \index{rpc\+\_\+query\+\_\+get@{rpc\+\_\+query\+\_\+get}!query.\+h@{query.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+query\+\_\+get()}{rpc\_query\_get()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpc\+\_\+query\+\_\+get (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{object,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{path,  }\item[{\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{default\+\_\+val }\end{DoxyParamCaption})}
-
+\subsubsection[{\texorpdfstring{rpc\+\_\+query\+\_\+get(rpc\+\_\+object\+\_\+t object, const char $\ast$path, rpc\+\_\+object\+\_\+t default\+\_\+val)}{rpc_query_get(rpc_object_t object, const char *path, rpc_object_t default_val)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf rpc\+\_\+object\+\_\+t} rpc\+\_\+query\+\_\+get (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{object, }
+\item[{const char $\ast$}]{path, }
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{default\+\_\+val}
+\end{DoxyParamCaption}
+)}\hypertarget{query_8h_a01933536bbe1cf312e19e164d16c5c39}{}\label{query_8h_a01933536bbe1cf312e19e164d16c5c39}
 The function follows a given \char`\"{}key1.\+key2.\+0.\+key3.\+1\char`\"{} like path to find the last element in the path inside of the provided object and return it.
 
 If the function cannot resolve the whole path (i.\+e. some of intermediate container objects does not have the required key specified), then a provided default value is returned.
@@ -269,12 +278,13 @@ If the function cannot resolve the whole path (i.\+e. some of intermediate conta
 \begin{DoxyReturn}{Returns}
 Found R\+PC object or the default value. 
 \end{DoxyReturn}
-\mbox{\Hypertarget{query_8h_acfa3a9a25b98a0acd3a64c7c222e5f99}\label{query_8h_acfa3a9a25b98a0acd3a64c7c222e5f99}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+iter\+\_\+free@{rpc\+\_\+query\+\_\+iter\+\_\+free}}
 \index{rpc\+\_\+query\+\_\+iter\+\_\+free@{rpc\+\_\+query\+\_\+iter\+\_\+free}!query.\+h@{query.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+query\+\_\+iter\+\_\+free()}{rpc\_query\_iter\_free()}}
-{\footnotesize\ttfamily void rpc\+\_\+query\+\_\+iter\+\_\+free (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}{rpc\+\_\+query\+\_\+iter\+\_\+t}}]{iter }\end{DoxyParamCaption})}
-
+\subsubsection[{\texorpdfstring{rpc\+\_\+query\+\_\+iter\+\_\+free(rpc\+\_\+query\+\_\+iter\+\_\+t iter)}{rpc_query_iter_free(rpc_query_iter_t iter)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+query\+\_\+iter\+\_\+free (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+query\+\_\+iter\+\_\+t}}]{iter}
+\end{DoxyParamCaption}
+)}\hypertarget{query_8h_a004da45b366b82be1df7452e48103297}{}\label{query_8h_a004da45b366b82be1df7452e48103297}
 Releases internal contents of rpc query iterator structure and then the structure itself.
 
 
@@ -282,12 +292,14 @@ Releases internal contents of rpc query iterator structure and then the structur
 {\em iter} & Structure to be freed. \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{query_8h_a979b1dfd5f0fb3be66501ed3c7df3f78}\label{query_8h_a979b1dfd5f0fb3be66501ed3c7df3f78}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+next@{rpc\+\_\+query\+\_\+next}}
 \index{rpc\+\_\+query\+\_\+next@{rpc\+\_\+query\+\_\+next}!query.\+h@{query.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+query\+\_\+next()}{rpc\_query\_next()}}
-{\footnotesize\ttfamily bool rpc\+\_\+query\+\_\+next (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{query_8h_a927ba6540a1cd3a2f2cf5d20b39fdadd}{rpc\+\_\+query\+\_\+iter\+\_\+t}}]{iter,  }\item[{\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$\+\_\+\+Nullable}]{chunk }\end{DoxyParamCaption})}
-
+\subsubsection[{\texorpdfstring{rpc\+\_\+query\+\_\+next(rpc\+\_\+query\+\_\+iter\+\_\+t iter, rpc\+\_\+object\+\_\+t $\ast$chunk)}{rpc_query_next(rpc_query_iter_t iter, rpc_object_t *chunk)}}]{\setlength{\rightskip}{0pt plus 5cm}bool rpc\+\_\+query\+\_\+next (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+query\+\_\+iter\+\_\+t}}]{iter, }
+\item[{{\bf rpc\+\_\+object\+\_\+t} $\ast$}]{chunk}
+\end{DoxyParamCaption}
+)}\hypertarget{query_8h_a170e0ae1387522fc419565c13f7a611c}{}\label{query_8h_a170e0ae1387522fc419565c13f7a611c}
 Yields the next R\+PC object matching params and rules stored within iterator structure.
 
 If further iteration is still possible, returns true, otherwise false.
@@ -306,12 +318,16 @@ Function automatically increases reference count of the returned R\+PC object.
 \begin{DoxyReturn}{Returns}
 \char`\"{}\+Continue iteration\char`\"{} boolean flag. 
 \end{DoxyReturn}
-\mbox{\Hypertarget{query_8h_a03159f0ef216c368c85ea63dd5a6cd64}\label{query_8h_a03159f0ef216c368c85ea63dd5a6cd64}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+set@{rpc\+\_\+query\+\_\+set}}
 \index{rpc\+\_\+query\+\_\+set@{rpc\+\_\+query\+\_\+set}!query.\+h@{query.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+query\+\_\+set()}{rpc\_query\_set()}}
-{\footnotesize\ttfamily void rpc\+\_\+query\+\_\+set (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{object,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{path,  }\item[{\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{value,  }\item[{bool}]{steal }\end{DoxyParamCaption})}
-
+\subsubsection[{\texorpdfstring{rpc\+\_\+query\+\_\+set(rpc\+\_\+object\+\_\+t object, const char $\ast$path, rpc\+\_\+object\+\_\+t value, bool steal)}{rpc_query_set(rpc_object_t object, const char *path, rpc_object_t value, bool steal)}}]{\setlength{\rightskip}{0pt plus 5cm}void rpc\+\_\+query\+\_\+set (
+\begin{DoxyParamCaption}
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{object, }
+\item[{const char $\ast$}]{path, }
+\item[{{\bf rpc\+\_\+object\+\_\+t}}]{value, }
+\item[{bool}]{steal}
+\end{DoxyParamCaption}
+)}\hypertarget{query_8h_a6d582b462dd592a3b22a2cf6748962eb}{}\label{query_8h_a6d582b462dd592a3b22a2cf6748962eb}
 The function follows a given \char`\"{}key1.\+key2.\+0.\+key3.\+1\char`\"{} like path to find the last element in the path inside of the provided object and set it to a given value.
 
 If the provided path does not match a given object, then library error is set.
