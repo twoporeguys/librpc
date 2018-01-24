@@ -1,0 +1,17 @@
+[package]
+name = "librpc"
+version = "0.1.0"
+authors = ["Jakub Klama <jakub.klama@twoporeguys.com>"]
+
+[dependencies]
+libc = "0.2.36"
+block = "0.1.6"
+maplit = "1.0.1"
+
+[lib]
+name = "librpc"
+crate-type = ["rlib", "dylib"]
+
+[[bin]]
+name = "example-object"
+path = "src/examples/object/main.rs"
