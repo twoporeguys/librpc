@@ -64,10 +64,12 @@
 #define debugf(...)
 #endif
 
-#define	TYPE_REGEX	"(struct|union|type|enum) (\\w+)(<(.*)>)?"
+#define	TYPE_REGEX	"(struct|union|type|enum) ([\\w\.]+)(<(.*)>)?"
 #define	INTERFACE_REGEX	"interface (\\w+)"
-#define	INSTANCE_REGEX	"(\\w+)(<(.*)>)?"
-#define	FUNC_REGEX	"function (\\w+)"
+#define	INSTANCE_REGEX	"([\\w\.]+)(<(.*)>)?"
+#define	METHOD_REGEX	"method (\\w+)"
+#define	PROPERTY_REGEX	"property (\\w+)"
+#define	EVENT_REGEX	"event (\\w+)"
 
 #ifdef _WIN32
 typedef int uid_t;
@@ -360,7 +362,8 @@ struct rpct_context
 struct rpct_file
 {
 	char *			path;
-	char *			description;
+	const char *		description;
+	const char *		ns;
 	int64_t			version;
 	GHashTable *		types;
 	GHashTable *		interfaces;
@@ -419,7 +422,7 @@ struct rpct_member
 
 struct rpct_if_member
 {
-	struct rpc_if_member *	member;
+	struct rpc_if_member	member;
 	char *			description;
 	GPtrArray *		arguments;
 	struct rpct_typei *	result;
@@ -484,6 +487,7 @@ const struct rpct_class_handler *rpc_find_class_handler(const char *name,
 
 void rpc_set_last_error(int code, const char *msg, rpc_object_t extra);
 void rpc_set_last_gerror(GError *error);
+void rpc_set_last_errorf(int code, const char *fmt, ...);
 rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
 int rpc_context_dispatch(rpc_context_t, struct rpc_inbound_call *);

@@ -130,9 +130,19 @@ typedef bool (^rpct_if_member_applier_t)(rpct_if_member_t);
 		return ((bool)_fn(_arg, _type));			\
 	}
 
+#define	RPCT_INTERFACE_APPLIER(_fn, _arg)				\
+	^(rpct_interface_t _iface) {					\
+		return ((bool)_fn(_arg, _iface));			\
+	}
+
 #define	RPCT_MEMBER_APPLIER(_fn, _arg)					\
 	^(rpct_member_t _member) {					\
 		return ((bool)_fn(_arg, _member));			\
+	}
+
+#define	RPCT_IF_MEMBER_APPLIER(_fn, _arg)				\
+	^(rpct_if_member_t _if_member) {				\
+		return ((bool)_fn(_arg, _if_member));			\
 	}
 
 /**
@@ -413,7 +423,7 @@ bool rpct_interface_apply(rpct_interface_applier_t applier);
  * @param applier Callback function
  * @return
  */
-bool rpct_if_member_apply(rpct_if_member_applier_t applier);
+bool rpct_if_member_apply(rpct_interface_t iface, rpct_if_member_applier_t applier);
 
 /**
  * Creates a new type instance from provided declaration.

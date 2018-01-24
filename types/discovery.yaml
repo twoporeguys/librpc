@@ -3,6 +3,9 @@ meta:
   version: 1
   namespace: com.twoporeguys.librpc
   description: Discovery interface definition
+  use:
+    - com.twoporeguys.librpc.types
+
 
 struct DiscoveryMethodArgument:
   description: Represents a single function argument
@@ -11,6 +14,7 @@ struct DiscoveryMethodArgument:
       type: string
     description:
       type: string
+
 
 struct DiscoveryMethod:
   description: Represents a single defined function
@@ -23,6 +27,74 @@ struct DiscoveryMethod:
       type: List<DiscoveryMethodArgument>
       description: List of arguments the function takes
 
+
+struct PropertyDescriptor:
+  description: Describes a single property and its value
+  members:
+    name:
+      type: string
+    value:
+      type: any
+
+
 interface Discoverable:
-  returns:
-    type: Iter<DiscoveryMethod>
+  method get_instances:
+    description: |
+      Returns a list of objects registered on the server.
+    returns:
+      type: List<DiscoveryMethod>
+
+
+interface Introspectable:
+  method get_interfaces:
+    description: |
+      Returns a list of registered interfaces.
+
+  method get_methods:
+    description: |
+      Returns a list of interface members.
+
+  method interface_exists:
+    description: |
+      Returns true if specified interface is registered on the object,
+      otherwise false.
+    return:
+      type: bool
+
+interface Observable:
+  method get:
+    description: |
+      Returns value of a property.
+    args:
+      - type: string
+        name: interface
+        description: Interface name
+      - type: string
+        name: property
+        description: Property name
+    return:
+      type: any
+
+  method get_all:
+    description: |
+      Returns values of all properties of a given interface.
+    args:
+      - type: string
+        name: interface
+        description: Interface name
+    return:
+      type: List<PropertyDescriptor>
+
+  method set:
+    description: |
+      Sets a value of a property
+    args:
+      - type: string
+        name: interface
+        description: Interface name
+      - type: string
+        name: properti
+        description: Property name
+      - type: any
+        name: value
+        description: Property value

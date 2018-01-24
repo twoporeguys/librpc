@@ -6,7 +6,7 @@ if(UNIX AND NOT APPLE)
 endif()
 
 set(PYTHON_VERSION python3 CACHE STRING "Target Python version for py-librpc")
-option(RPC_DEBUG "Enable debug output")
+option(RPC_DEBUG "Enable debug output" ON)
 option(BUNDLED_BLOCKS_RUNTIME "Use bundled BlocksRuntime")
 option(BUILD_DOC "Create and install HTML API documentation")
 option(BUILD_TESTS "Build and install tests")

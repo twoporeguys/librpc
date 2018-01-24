@@ -1543,7 +1543,7 @@ cdef class Typing(object):
             rpct_init()
 
     @staticmethod
-    cdef bint c_iter(void *arg, rpct_type_t val):
+    cdef bint c_type_iter(void *arg, rpct_type_t val):
         cdef Type rpctype
         cdef object container
 
@@ -1551,6 +1551,17 @@ cdef class Typing(object):
         rpctype = Type.__new__(Type)
         rpctype.rpctype = val
         container.append(rpctype)
+        return True
+
+    @staticmethod
+    cdef bint c_iface_iter(void *arg, rpct_interface_t val):
+        cdef Interface iface
+        cdef object container
+
+        container = <object>arg
+        iface = Interface.__new__(Interface)
+        iface.c_iface = val
+        container.append(iface)
         return True
 
     def load_type(self, decl, type):
@@ -1575,23 +1586,18 @@ cdef class Typing(object):
     property types:
         def __get__(self):
             ret = []
-            rpct_types_apply(RPCT_TYPE_APPLIER(self.c_iter, <void *>ret))
+            rpct_types_apply(RPCT_TYPE_APPLIER(self.c_type_iter, <void *>ret))
             return ret
 
-    property functions:
+    property interfaces:
         def __get__(self):
-            pass
+            ret = []
+            rpct_interface_apply(RPCT_INTERFACE_APPLIER(self.c_iface_iter, <void *>ret))
+            return ret
 
     property files:
         def __get__(self):
             pass
-
-    property realm:
-        def __get__(self):
-            return rpct_get_realm().decode('utf-8')
-
-        def __set__(self, value):
-            rpct_set_realm(value.encode('utf-8'))
 
 
 cdef class TypeInstance(object):
@@ -1755,24 +1761,98 @@ cdef class Member(object):
             return rpct_member_get_description(self.rpcmem).decode('utf-8')
 
 
-cdef class Function(object):
-    cdef rpct_function_t c_func
+cdef class Interface(object):
+    cdef rpct_interface_t c_iface
 
     property name:
         def __get__(self):
-            return rpct_function_get_name(self.c_func).decode('utf-8')
+            return str_or_none(rpct_interface_get_name(self.c_iface))
 
     property description:
         def __get__(self):
-            return rpct_function_get_description(self.c_func).decode('utf-8')
+            return str_or_none(rpct_interface_get_description(self.c_iface))
+
+    property members:
+        def __get__(self):
+            ret = []
+            rpct_if_member_apply(self.c_iface, RPCT_IF_MEMBER_APPLIER(self.c_iter, <void *>ret))
+            return ret
+
+    def __str__(self):
+        return "<librpc.Interface name '{0}'>".format(self.name)
+
+    def __repr__(self):
+        return str(self)
+
+    @staticmethod
+    cdef bint c_iter(void *arg, rpct_if_member_t val):
+        cdef rpc_if_member_type c_type
+        cdef InterfaceMember result
+        cdef object container = <object>arg
+
+        c_type = rpct_if_member_get_type(val)
+
+        if c_type == RPC_MEMBER_METHOD:
+            result = Method.__new__(Method)
+
+        elif c_type == RPC_MEMBER_PROPERTY:
+            result = Property.__new__(Property)
+
+        result.c_member = val
+        container.append(result)
+        return True
+
+
+cdef class InterfaceMember(object):
+    cdef rpct_if_member_t c_member
+
+    property name:
+        def __get__(self):
+            return str_or_none(rpct_if_member_get_name(self.c_member))
+
+    property description:
+        def __get__(self):
+            return str_or_none(rpct_if_member_get_description(self.c_member))
+
+    property access_flags:
+        def __get__(self):
+            pass
+
+
+cdef class Method(InterfaceMember):
+    property arguments:
+        def __get__(self):
+            cdef FunctionArgument arg
+
+            result = []
+            for i in range(0, rpct_method_get_arguments_count(self.c_member)):
+                arg = FunctionArgument.__new__(FunctionArgument)
+                arg.c_arg = rpct_method_get_argument(self.c_member, i)
+                result.append(arg)
+
+            return result
 
     property return_type:
         def __get__(self):
-            pass
+            return TypeInstance.init_from_ptr(rpct_method_get_return_type(self.c_member))
 
-    property arguments:
+    def __str__(self):
+        return "<librpc.Method name '{0}'>".format(self.name)
+
+    def __repr__(self):
+        return str(self)
+
+
+cdef class Property(InterfaceMember):
+    property type:
         def __get__(self):
-            pass
+            return TypeInstance.init_from_ptr(rpct_property_get_type(self.c_member))
+
+    def __str__(self):
+        return "<librpc.Proprety name '{0}'>".format(self.name)
+
+    def __repr__(self):
+        return str(self)
 
 
 cdef class FunctionArgument(object):
@@ -1780,11 +1860,11 @@ cdef class FunctionArgument(object):
 
     property description:
         def __get__(self):
-            pass
+            return str_or_none(rpct_argument_get_description(self.c_arg))
 
     property type:
         def __get__(self):
-            pass
+            return TypeInstance.init_from_ptr(rpct_argument_get_typei(self.c_arg))
 
 
 cdef class StructUnionMember(Member):
@@ -1873,6 +1953,13 @@ cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil:
     rpc_obj = Object(output)
     rpc_retain(rpc_obj.obj)
     return rpc_obj.obj
+
+
+cdef str_or_none(const char *val):
+    if val == NULL:
+        return None
+
+    return val.decode('utf-8')
 
 
 cdef raise_internal_exc(rpc=False):

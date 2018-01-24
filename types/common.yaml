@@ -29,9 +29,9 @@ union IPAddress:
   description: Can hold an IP address (either v4 or v6)
   members:
     ipv4:
-      type: IPv4Address
+      type: com.twoporeguys.librpc.types.IPv4Address
     ipv6:
-      type: IPv6Address
+      type: com.twoporeguys.librpc.types.IPv6Address
 
 type IPv4Address:
   description: Can hold an IPv4 address

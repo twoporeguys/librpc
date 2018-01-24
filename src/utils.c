@@ -113,6 +113,23 @@ rpc_set_last_error(int code, const char *msg, rpc_object_t extra)
 }
 
 void
+rpc_set_last_errorf(int code, const char *fmt, ...)
+{
+	va_list ap;
+	rpc_object_t error;
+	char *msg;
+
+	va_start(ap, fmt);
+	msg = g_strdup_vprintf(fmt, ap);
+	va_end(ap);
+
+	error = rpc_error_create(code, msg, NULL);
+	g_free(msg);
+	g_private_replace(&rpc_last_error, error);
+}
+
+
+void
 rpc_set_last_gerror(GError *g_error)
 {
 	rpc_object_t error;
