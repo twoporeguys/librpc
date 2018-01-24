@@ -1040,7 +1040,7 @@ User data pointer
 \subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+get\+\_\+path()}{rpc\_instance\_get\_path()}}
 {\footnotesize\ttfamily const char$\ast$ \+\_\+\+Nonnull rpc\+\_\+instance\+\_\+get\+\_\+path (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance }\end{DoxyParamCaption})}
 
-Returns {\ttfamily instance} path.
+Returns the object path associated with the instance.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1048,7 +1048,7 @@ Returns {\ttfamily instance} path.
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Instance path 
+Object path 
 \end{DoxyReturn}
 \mbox{\Hypertarget{service_8h_a7224c3ccac52a67ec034c6cc06e7a8b7}\label{service_8h_a7224c3ccac52a67ec034c6cc06e7a8b7}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+get\+\_\+property\+\_\+rights@{rpc\+\_\+instance\+\_\+get\+\_\+property\+\_\+rights}}
@@ -1346,7 +1346,7 @@ After using this function, return value from the getter is ignored.
 \subsubsection{\texorpdfstring{rpc\+\_\+property\+\_\+get\+\_\+arg()}{rpc\_property\_get\_arg()}}
 {\footnotesize\ttfamily void$\ast$ \+\_\+\+Nullable rpc\+\_\+property\+\_\+get\+\_\+arg (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nonnull}]{cookie }\end{DoxyParamCaption})}
 
-Returns the user data pointer associated with the currently running getter/setter.
+Returns the user data pointer associated with the property.
 
 
 \begin{DoxyParams}{Parameters}
