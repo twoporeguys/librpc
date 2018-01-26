@@ -1017,8 +1017,14 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 		if (v->rim_type != RPC_MEMBER_PROPERTY)
 			continue;
 
-		if (v->rim_property.rp_getter == NULL)
+		if (v->rim_property.rp_getter == NULL) {
+			value = rpc_error_create(EPERM, "Not readable", NULL);
+			rpc_array_append_stolen_value(
+			    result, rpc_object_pack("{s,v}", "name",
+			    v->rim_name, "value", value));
+
 			continue;
+		}
 
 		prop.instance = inst;
 		prop.name = k;
