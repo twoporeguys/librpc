@@ -94,7 +94,12 @@ class CommandDispatcher(object):
             traceback.print_exc()
 
     def cmd_set(self, *args):
-        pass
+        iface = self.current.interfaces[args[0]]
+
+        try:
+            setattr(iface, args[1], eval(args[2]))
+        except Exception:
+            traceback.print_exc()
 
     def cmd_watch(self, *args):
         pass
