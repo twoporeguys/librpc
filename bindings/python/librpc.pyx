@@ -986,6 +986,17 @@ cdef class RemoteObject(object):
 
             return {i: RemoteInterface(self.client, self.path, i) for i in ifaces}
 
+    property children:
+        def __get__(self):
+            children = self.client.call_sync(
+                'get_instances',
+                path=self.path,
+                interface='com.twoporeguys.librpc.Discoverable',
+                unpack=True
+            )
+
+            return {i['path']: RemoteObject(self.client, i['path']) for i in children}
+
     def __str__(self):
         return "<librpc.RemoteObject at '{0}'>".format(self.path)
 
@@ -1302,18 +1313,16 @@ cdef class Connection(object):
         def iter_chunk():
             nonlocal call_status
 
-            while call_status == CallStatus.MORE_AVAILABLE:
-                try:
+            try:
+                while call_status == CallStatus.MORE_AVAILABLE:
                     yield get_chunk()
                     with nogil:
                         rpc_call_continue(call, True)
 
                     call_status = rpc_call_status(call)
-                except:
-                    with nogil:
-                        rpc_call_abort(call)
-
-                    break
+            finally:
+                with nogil:
+                    rpc_call_abort(call)
 
         if call_status == CallStatus.ERROR:
             raise self.do_unpack(get_chunk(), True)
