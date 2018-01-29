@@ -383,10 +383,22 @@ cmd_listen(int argc, char *argv[])
 	rpc_connection_t conn;
 
 	conn = connect();
-	rpc_connection_register_event_handler(conn, argv[0], argv[1], argv[2],
-	    ^(const char *path, const char *interface, const char *name, rpc_object_t args) {
-	    	output(args);
-	    });
+	rpc_connection_register_event_handler(conn, argv[0],
+	    RPC_OBSERVABLE_INTERFACE, "changed",
+	    ^(const char *p, const char *i, const char *n, rpc_object_t args) {
+		const char *prop_interface;
+		const char *prop_name;
+		rpc_object_t value;
+
+		if (rpc_object_unpack(args, "{s,s,v}",
+		    "interface", &prop_interface,
+		    "name", &prop_name,
+		    "value", &value) < 3)
+			return;
+
+		printf("New value of property %s.%s: ", prop_interface, prop_name);
+		output(value);
+	});
 
 	pause();
 	return (0);
