@@ -41,11 +41,6 @@ Both servers and clients can also send `events` to each other. Events are
 messages containing event name and event payload and are not acknowledged
 by the receiving end.
 
-Instances, interfaces and functions
------------------------------------
-Servers expose a number of `functions` to the clients. Functions are grouped
-in namespaces using dotted syntax: ``namespace1.namespace2.function``.
-
 Transports
 ----------
 Clients can talk to servers using multiple transports. A transport is an
