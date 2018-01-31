@@ -143,7 +143,7 @@
     return ([[NSString alloc] initWithUTF8String:rpc_copy_description(obj)]);
 }
 
-- (NSObject *)value {
+- (id)value {
     __block NSMutableArray *array;
     __block NSMutableDictionary *dict;
     
@@ -283,6 +283,7 @@
             @throw [[[RPCObject alloc] initFromNativeObject:rpc_call_result(call)] value];
 
         case RPC_CALL_ENDED:
+        case RPC_CALL_DONE:
             return (0);
     }
 
@@ -306,10 +307,10 @@
 
 - (NSDictionary *)instances {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-    RPCCall *call = [self call:@"get_instances" path:@"/" interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil];
+    RPCObject *d = [self callSync:@"get_instances" path:@"/" interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil];
 
-    for (RPCObject *value in call) {
-        NSDictionary *item = (NSDictionary *)[value value];
+    for (RPCObject *i in [d value]) {
+        NSDictionary *item = (NSDictionary *)[i value];
         NSString *path = [[item objectForKey:@"path"] value];
         RPCInstance *instance = [[RPCInstance alloc] initWithClient:self andPath:path];
         [result setValue:instance forKey:path];

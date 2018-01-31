@@ -32,9 +32,16 @@ int main(int argc, const char * argv[]) {
     
     NSNumber *b = [NSNumber numberWithUnsignedInteger:5];
     RPCObject *a = [[RPCObject alloc] initWithValue:b];
+    
+    RPCClient *cl = [[RPCClient alloc] init];
+    //
+    [cl connect:@"ws://localhost:5000/ws"];
+    
+    NSDictionary *d =  cl.instances;
+    
     @autoreleasepool {
         // insert code here...
-        NSLog(@"%@", [a describe]);
+        NSLog(@"%@", d);
     }
     return 0;
 }

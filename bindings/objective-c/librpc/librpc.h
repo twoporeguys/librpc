@@ -82,7 +82,7 @@ typedef NS_ENUM(NSInteger, RPCType) {
  * @returns RPCObject description
  */
 - (nonnull NSString *)describe;
-- (nonnull NSObject *)value;
+- (nonnull id)value;
 - (nonnull void *)nativeValue;
 - (RPCType)type;
 @end
