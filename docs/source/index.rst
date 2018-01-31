@@ -12,6 +12,7 @@ Welcome to librpc's documentation!
 
    guide
    advanced
+   object
    protocol
    debugging
    reference
