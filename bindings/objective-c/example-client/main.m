@@ -30,18 +30,22 @@
 
 int main(int argc, const char * argv[]) {
     
-    NSNumber *b = [NSNumber numberWithUnsignedInteger:5];
-    RPCObject *a = [[RPCObject alloc] initWithValue:b];
+    //NSNumber *b = [NSNumber numberWithUnsignedInteger:5];
+    //RPCObject *a = [[RPCObject alloc] initWithValue:b];
     
     RPCClient *cl = [[RPCClient alloc] init];
     //
     [cl connect:@"ws://localhost:5000/ws"];
     
-    NSDictionary *d =  cl.instances;
+    NSDictionary *d =  cl.spaInstances;
+    //RPCInstance *spa = [[RPCInstance alloc] initWithClient:cl andPath:@"/spa/CharlieAssembly139"];
+    RPCInstance *spa = d[@"/spa/CharlieAssembly139"];
+    NSDictionary *sd = spa.interfaces;
+    
     
     @autoreleasepool {
         // insert code here...
-        NSLog(@"%@", d);
+        NSLog(@"%@\n%@", d, sd);
     }
     return 0;
 }

@@ -110,7 +110,7 @@ typedef NS_ENUM(NSInteger, RPCType) {
 - (void)abort;
 - (nullable RPCObject *)result;
 - (NSUInteger)countByEnumeratingWithState:(nonnull NSFastEnumerationState *)state
-                                  objects:(id _Nullable __unsafe_unretained [])buffer
+                                  objects:(id _Nullable __unsafe_unretained [_Nullable])buffer
                                     count:(NSUInteger)len;
 @end
 
@@ -135,7 +135,7 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
  * Returns a dictionary of instances found on the server.
  */
 - (nonnull NSDictionary<NSString *, RPCInstance *> *)instances;
-
+- (nonnull NSDictionary<NSString *, RPCInstance *> *)spaInstances;
 - (void)setDispatchQueue:(nullable dispatch_queue_t)queue;
 
 /**
@@ -175,6 +175,7 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
 
 @interface RPCInterface : NSObject
 @property (readonly, nonnull) RPCInstance *instance;
+@property (readonly, nonnull) RPCInstance *spaInstances;
 - (void)forwardInvocation:(nonnull NSInvocation *)anInvocation;
 - (nonnull NSMethodSignature *)methodSignatureForSelector:(nonnull SEL)aSelector;
 - (nonnull instancetype)initWithClient:(nonnull RPCClient *)client path:(nonnull NSString *)path andInterface:(nonnull NSString *)interface;

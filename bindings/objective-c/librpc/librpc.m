@@ -319,9 +319,23 @@
     return result;
 }
 
-- (void)setDispatchQueue:(nullable dispatch_queue_t)queue {
-    rpc_connection_set_dispatch_queue(conn, queue);
+- (NSDictionary *)spaInstances {
+    NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
+    RPCObject *d = [self callSync:@"get_instances" path:@"/spa" interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil];
+    
+    for (RPCObject *i in [d value]) {
+        NSDictionary *item = (NSDictionary *)[i value];
+        NSString *path = [[item objectForKey:@"path"] value];
+        RPCInstance *instance = [[RPCInstance alloc] initWithClient:self andPath:path];
+        [result setValue:instance forKey:path];
+    }
+    
+    return result;
 }
+
+//- (void)setDispatchQueue:(nullable dispatch_queue_t)queue {
+//    rpc_connection_set_dispatch_queue(conn, queue);
+//}
 
 - (RPCObject *)callSync:(NSString *)method
                    path:(NSString *)path
@@ -393,9 +407,9 @@
 
 - (NSDictionary *)interfaces {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-    RPCCall *call = [client call:@"get_interfaces" path:path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:nil];
-
-    for (RPCObject *value in call) {
+    RPCObject *call = [client callSync:@"get_interfaces" path:path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:nil];
+    NSLog(@"%@", call);
+    for (RPCObject *value in [call value]) {
         NSString *name = (NSString *)[value value];
         RPCInterface *interface = [[RPCInterface alloc] initWithClient:client path:path andInterface:name];
         [result setValue:interface forKey:name];
