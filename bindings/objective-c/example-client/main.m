@@ -42,11 +42,6 @@ int main(int argc, const char * argv[]) {
     RPCInstance *spa = d[@"/spa/CharlieAssembly139"];
     NSDictionary *sd = spa.interfaces;
     
-    
-    [cl callAsync:@"" path:@"/" interface:@"" args:nil callback:^(RPCCall * _Nonnull call, RPCObject * _Nonnull value) {
-        
-    }];
-    
     @autoreleasepool {
         // insert code here...
         NSLog(@"%@\n%@", d, sd);
