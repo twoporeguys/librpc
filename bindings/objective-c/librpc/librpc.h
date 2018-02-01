@@ -110,7 +110,7 @@ typedef NS_ENUM(NSInteger, RPCType) {
 - (void)abort;
 - (nullable RPCObject *)result;
 - (NSUInteger)countByEnumeratingWithState:(nonnull NSFastEnumerationState *)state
-                                  objects:(id _Nullable __unsafe_unretained [])buffer
+                                  objects:(id _Nullable __unsafe_unretained [_Nullable])buffer
                                     count:(NSUInteger)len;
 @end
 

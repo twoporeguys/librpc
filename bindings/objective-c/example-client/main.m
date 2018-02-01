@@ -39,6 +39,10 @@ int main(int argc, const char * argv[]) {
     
     NSDictionary *d =  cl.instances;
     
+    [cl callAsync:@"" path:@"/" interface:@"" args:nil callback:^(RPCCall * _Nonnull call, RPCObject * _Nonnull value) {
+        
+    }];
+    
     @autoreleasepool {
         // insert code here...
         NSLog(@"%@", d);
