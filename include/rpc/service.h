@@ -506,6 +506,16 @@ int rpc_function_yield(void *_Nonnull cookie, _Nonnull rpc_object_t fragment);
 void rpc_function_end(void *_Nonnull cookie);
 
 /**
+ * Asynchronously abort a running call on the server.
+ *
+ * This function makes @ref rpc_function_should_abort return @p true
+ * and a running @ref rpc_function_yield to return immediately with an error.
+ *
+ * @param cookie Running call handle
+ */
+void rpc_function_kill(void *_Nonnull cookie);
+
+/**
  * Returns the value of a flag saying whether or not a method should
  * immediately stop because it was aborted on the client side.
  *

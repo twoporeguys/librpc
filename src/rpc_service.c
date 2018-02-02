@@ -432,10 +432,23 @@ rpc_function_end(void *cookie)
 		return;
 	}
 
-	rpc_connection_send_end(call->ric_conn, call->ric_id, call->ric_producer_seqno);
+	if (!call->ric_ended)
+		rpc_connection_send_end(call->ric_conn, call->ric_id, call->ric_producer_seqno);
+
 	call->ric_producer_seqno++;
 	call->ric_streaming = true;
 	call->ric_ended = true;
+	g_mutex_unlock(&call->ric_mtx);
+}
+
+void
+rpc_function_kill(void *cookie)
+{
+	struct rpc_inbound_call *call = cookie;
+
+	g_mutex_lock(&call->ric_mtx);
+	call->ric_aborted = true;
+	g_cond_broadcast(&call->ric_cv);
 	g_mutex_unlock(&call->ric_mtx);
 }
 
