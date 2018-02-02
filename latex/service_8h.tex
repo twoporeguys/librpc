@@ -152,6 +152,8 @@ int \hyperlink{service_8h_ac8c50ecedc9e59086e1ab63e1dd6c425}{rpc\+\_\+function\+
 \item 
 void \hyperlink{service_8h_a5f0f3252a2c4e12050419519afe64e92}{rpc\+\_\+function\+\_\+end} (void $\ast$\+\_\+\+Nonnull cookie)
 \item 
+void \hyperlink{service_8h_a6018b6f71a3d1af7494125b8ba22f981}{rpc\+\_\+function\+\_\+kill} (void $\ast$\+\_\+\+Nonnull cookie)
+\item 
 bool \hyperlink{service_8h_ad0185b8a60875843d91ca00b3e8d4886}{rpc\+\_\+function\+\_\+should\+\_\+abort} (void $\ast$\+\_\+\+Nonnull cookie)
 \item 
 void \hyperlink{service_8h_a4b6ceb43e090fda8928a3a46e7da614a}{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler} (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nullable \hyperlink{service_8h_aebbaf8e39f128b6655d23aad6a8ab634}{rpc\+\_\+abort\+\_\+handler\+\_\+t} handler)
@@ -898,6 +900,21 @@ Returns the called method name.
 {\footnotesize\ttfamily const char$\ast$ \+\_\+\+Nonnull rpc\+\_\+function\+\_\+get\+\_\+path (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nonnull}]{cookie }\end{DoxyParamCaption})}
 
 Returns the path method was called on or N\+U\+LL.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cookie} & Running call handle \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{service_8h_a6018b6f71a3d1af7494125b8ba22f981}\label{service_8h_a6018b6f71a3d1af7494125b8ba22f981}} 
+\index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+kill@{rpc\+\_\+function\+\_\+kill}}
+\index{rpc\+\_\+function\+\_\+kill@{rpc\+\_\+function\+\_\+kill}!service.\+h@{service.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+function\+\_\+kill()}{rpc\_function\_kill()}}
+{\footnotesize\ttfamily void rpc\+\_\+function\+\_\+kill (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nonnull}]{cookie }\end{DoxyParamCaption})}
+
+Asynchronously abort a running call on the server.
+
+This function makes \hyperlink{service_8h_ad0185b8a60875843d91ca00b3e8d4886}{rpc\+\_\+function\+\_\+should\+\_\+abort} return {\ttfamily true} and a running \hyperlink{service_8h_ac8c50ecedc9e59086e1ab63e1dd6c425}{rpc\+\_\+function\+\_\+yield} to return immediately with an error.
 
 
 \begin{DoxyParams}{Parameters}

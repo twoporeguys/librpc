@@ -342,6 +342,7 @@
     <member refid="service_8h_1a89abe6ee2bcc59409eaccf1955ada0ad" kind="function"><name>rpc_function_error_ex</name></member>
     <member refid="service_8h_1ac8c50ecedc9e59086e1ab63e1dd6c425" kind="function"><name>rpc_function_yield</name></member>
     <member refid="service_8h_1a5f0f3252a2c4e12050419519afe64e92" kind="function"><name>rpc_function_end</name></member>
+    <member refid="service_8h_1a6018b6f71a3d1af7494125b8ba22f981" kind="function"><name>rpc_function_kill</name></member>
     <member refid="service_8h_1ad0185b8a60875843d91ca00b3e8d4886" kind="function"><name>rpc_function_should_abort</name></member>
     <member refid="service_8h_1a4b6ceb43e090fda8928a3a46e7da614a" kind="function"><name>rpc_function_set_async_abort_handler</name></member>
     <member refid="service_8h_1a805d705c1a9f94cf4aa04bb71a46a928" kind="function"><name>rpc_instance_new</name></member>
