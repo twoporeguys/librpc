@@ -22,6 +22,7 @@ Extension types
 Error format
 ~~~~~~~~~~~~
 Error dictionaries consist of the following fields:
+
 - ``code`` - integer errno code
 - ``message`` - error description
 - ``stacktrace`` - server stack trace (optional)
