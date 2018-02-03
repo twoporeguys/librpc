@@ -227,6 +227,8 @@ Functions</h2></td></tr>
 <tr class="separator:ac8c50ecedc9e59086e1ab63e1dd6c425"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f0f3252a2c4e12050419519afe64e92"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a5f0f3252a2c4e12050419519afe64e92">rpc_function_end</a> (void *_Nonnull cookie)</td></tr>
 <tr class="separator:a5f0f3252a2c4e12050419519afe64e92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6018b6f71a3d1af7494125b8ba22f981"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a6018b6f71a3d1af7494125b8ba22f981">rpc_function_kill</a> (void *_Nonnull cookie)</td></tr>
+<tr class="separator:a6018b6f71a3d1af7494125b8ba22f981"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0185b8a60875843d91ca00b3e8d4886"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ad0185b8a60875843d91ca00b3e8d4886">rpc_function_should_abort</a> (void *_Nonnull cookie)</td></tr>
 <tr class="separator:ad0185b8a60875843d91ca00b3e8d4886"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b6ceb43e090fda8928a3a46e7da614a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a4b6ceb43e090fda8928a3a46e7da614a">rpc_function_set_async_abort_handler</a> (void *_Nonnull cookie, _Nullable <a class="el" href="service_8h.html#aebbaf8e39f128b6655d23aad6a8ab634">rpc_abort_handler_t</a> handler)</td></tr>
@@ -1568,6 +1570,32 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a6018b6f71a3d1af7494125b8ba22f981"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6018b6f71a3d1af7494125b8ba22f981">&#9670;&nbsp;</a></span>rpc_function_kill()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rpc_function_kill </td>
+          <td>(</td>
+          <td class="paramtype">void *_Nonnull&#160;</td>
+          <td class="paramname"><em>cookie</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Asynchronously abort a running call on the server.</p>
+<p>This function makes <a class="el" href="service_8h.html#ad0185b8a60875843d91ca00b3e8d4886">rpc_function_should_abort</a> return <code>true</code> and a running <a class="el" href="service_8h.html#ac8c50ecedc9e59086e1ab63e1dd6c425">rpc_function_yield</a> to return immediately with an error.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cookie</td><td>Running call handle </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a1c8603d576553224db42579cb9180d8d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1c8603d576553224db42579cb9180d8d">&#9670;&nbsp;</a></span>rpc_function_respond()</h2>
 
@@ -1862,14 +1890,14 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns the object path associated with the instance.</p>
+<p>Returns <code>instance</code> path.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">instance</td><td>Instance handle </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Object path </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Instance path </dd></dl>
 
 </div>
 </div>
@@ -2561,7 +2589,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns the user data pointer associated with the property.</p>
+<p>Returns the user data pointer associated with the currently running getter/setter.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">cookie</td><td>Property call handle </td></tr>
