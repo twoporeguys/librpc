@@ -435,13 +435,13 @@ rpc_function_end(void *cookie)
 		g_cond_wait(&call->ric_cv, &call->ric_mtx);
 
 	if (call->ric_aborted) {
+		if (!call->ric_ended) {
+			rpc_connection_send_end(call->ric_conn, call->ric_id,
+			    call->ric_producer_seqno);
+		}
+
 		g_mutex_unlock(&call->ric_mtx);
 		return;
-	}
-
-	if (!call->ric_ended) {
-		rpc_connection_send_end(call->ric_conn, call->ric_id,
-		    call->ric_producer_seqno);
 	}
 
 	call->ric_producer_seqno++;
