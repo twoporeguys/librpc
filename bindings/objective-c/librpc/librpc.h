@@ -174,8 +174,7 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
 @end
 
 @interface RPCInterface : NSObject
-@property (readonly, nonnull) RPCInstance *instance;
-@property (readonly, nonnull) RPCInstance *spaInstances;
+@property (readonly, nonnull) NSDictionary<NSString *, NSString *> *methods;
 - (void)forwardInvocation:(nonnull NSInvocation *)anInvocation;
 - (nonnull NSMethodSignature *)methodSignatureForSelector:(nonnull SEL)aSelector;
 - (nonnull instancetype)initWithClient:(nonnull RPCClient *)client path:(nonnull NSString *)path andInterface:(nonnull NSString *)interface;

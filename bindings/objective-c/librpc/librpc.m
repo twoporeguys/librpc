@@ -58,10 +58,6 @@
         return (self);
     }
     
-    if ([value isKindOfClass:[NSDate class]]) {
-        
-    }
-    
     if ([value isKindOfClass:[NSData class]]) {
         obj = rpc_data_create([(NSData *)value bytes], [(NSData *)value length], NULL);
         return (self);
@@ -436,6 +432,18 @@
     path = path;
     interface = interface;
     return self;
+}
+
+- (NSDictionary *)methods {
+    NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
+    RPCObject *i = [client callSync:@"get_methods" path:path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:[[RPCObject alloc] initWithValue:@[interface]]];
+    //NSLog(@"%@", i);
+    for (RPCObject *value in [i value]) {
+        NSString *name = (NSString *)[value value];
+        [result setValue:name forKey:name];
+    }
+    
+    return result;
 }
 
 - (BOOL)respondsToSelector:(SEL)aSelector {

@@ -36,15 +36,42 @@ int main(int argc, const char * argv[]) {
     RPCClient *cl = [[RPCClient alloc] init];
     //
     [cl connect:@"ws://localhost:5000/ws"];
-    
+    NSDictionary *c = cl.instances;
     NSDictionary *d =  cl.spaInstances;
+    RPCInstance *e = c[@"/module/task"];
+    NSDictionary *ed = e.interfaces;
     //RPCInstance *spa = [[RPCInstance alloc] initWithClient:cl andPath:@"/spa/CharlieAssembly139"];
     RPCInstance *spa = d[@"/spa/CharlieAssembly139"];
     NSDictionary *sd = spa.interfaces;
     
+    for (id key in c) {
+        NSLog(@"Test 1: %@", key);
+        if ([key isKindOfClass:[NSString class]]) {
+            RPCInstance *inst = c[key];
+            for (id key2 in inst.interfaces) {
+                NSLog(@"________Test 2: %@", key2);
+//                if ([key2 isKindOfClass:NSString.class]) {
+//                    RPCInterface *interface = [[RPCInterface alloc] initWithClient:cl path:[NSString stringWithFormat:@"%@/%@", key, key2] andInterface:key2];
+//                    if (interface) {
+//                        NSDictionary *methods = interface.methods;
+//                        NSLog(@"___________________Test 3:%@", methods);
+//                    }
+//                }
+            }
+        }
+    }
+    
+    
+    
     @autoreleasepool {
         // insert code here...
-        NSLog(@"%@\n%@", d, sd);
+        //NSLog(@"%@\n%@", ed, sd);
+        
+//        [cl callAsync:@"query" path:@"/ds/CharlieAssembly139_adc" interface:@"com.twoporeguys.momd.DataSource" args:nil callback:^(RPCCall * _Nonnull call, RPCObject * _Nonnull value) {
+//
+//            NSLog(@"%@", [value value]);
+//        }];
+//        sleep(100000000);
     }
     return 0;
 }
