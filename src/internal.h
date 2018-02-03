@@ -67,9 +67,9 @@
 #define debugf(...)
 #endif
 
-#define	TYPE_REGEX	"(struct|union|type|enum) ([\\w\.]+)(<(.*)>)?"
+#define	TYPE_REGEX	"(struct|union|type|enum) ([\\w\\.]+)(<(.*)>)?"
 #define	INTERFACE_REGEX	"interface (\\w+)"
-#define	INSTANCE_REGEX	"([\\w\.]+)(<(.*)>)?"
+#define	INSTANCE_REGEX	"([\\w\\.]+)(<(.*)>)?"
 #define	METHOD_REGEX	"method (\\w+)"
 #define	PROPERTY_REGEX	"property (\\w+)"
 #define	EVENT_REGEX	"event (\\w+)"
