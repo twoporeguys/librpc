@@ -36,14 +36,14 @@
 #include <glib/gprintf.h>
 #include "internal.h"
 
-static bool rpc_context_path_is_valid(const char *path);
-static rpc_object_t rpc_get_objects(void *cookie, rpc_object_t args);
-static rpc_object_t rpc_get_interfaces(void *cookie, rpc_object_t args);
-static rpc_object_t rpc_get_methods(void *cookie, rpc_object_t args);
-static rpc_object_t rpc_interface_exists(void *cookie, rpc_object_t args);
-static rpc_object_t rpc_observable_property_get(void *cookie, rpc_object_t args);
-static rpc_object_t rpc_observable_property_get_all(void *cookie, rpc_object_t args);
-static rpc_object_t rpc_observable_property_set(void *cookie, rpc_object_t args);
+static bool rpc_context_path_is_valid(const char *);
+static rpc_object_t rpc_get_objects(void *, rpc_object_t);
+static rpc_object_t rpc_get_interfaces(void *, rpc_object_t);
+static rpc_object_t rpc_get_methods(void *, rpc_object_t);
+static rpc_object_t rpc_interface_exists(void *, rpc_object_t);
+static rpc_object_t rpc_observable_property_get(void *, rpc_object_t);
+static rpc_object_t rpc_observable_property_get_all(void *, rpc_object_t);
+static rpc_object_t rpc_observable_property_set(void *, rpc_object_t);
 
 static const struct rpc_if_member rpc_discoverable_vtable[] = {
 	RPC_EVENT(instance_added),
@@ -395,10 +395,16 @@ rpc_function_yield(void *cookie, rpc_object_t fragment)
 
 	g_mutex_lock(&call->ric_mtx);
 
-	while (call->ric_producer_seqno == call->ric_consumer_seqno && !call->ric_aborted)
+	while (call->ric_producer_seqno == call->ric_consumer_seqno &&
+	    !call->ric_aborted)
 		g_cond_wait(&call->ric_cv, &call->ric_mtx);
 
 	if (call->ric_aborted) {
+		if (!call->ric_ended) {
+			rpc_connection_send_end(call->ric_conn,
+			    call->ric_id, call->ric_producer_seqno);
+		}
+
 		g_mutex_unlock(&call->ric_mtx);
 		rpc_release(fragment);
 		return (-1);
@@ -424,7 +430,8 @@ rpc_function_end(void *cookie)
 
 	g_mutex_lock(&call->ric_mtx);
 
-	while (call->ric_producer_seqno == call->ric_consumer_seqno && !call->ric_aborted)
+	while (call->ric_producer_seqno == call->ric_consumer_seqno &&
+	    !call->ric_aborted)
 		g_cond_wait(&call->ric_cv, &call->ric_mtx);
 
 	if (call->ric_aborted) {
@@ -432,8 +439,10 @@ rpc_function_end(void *cookie)
 		return;
 	}
 
-	if (!call->ric_ended)
-		rpc_connection_send_end(call->ric_conn, call->ric_id, call->ric_producer_seqno);
+	if (!call->ric_ended) {
+		rpc_connection_send_end(call->ric_conn, call->ric_id,
+		    call->ric_producer_seqno);
+	}
 
 	call->ric_producer_seqno++;
 	call->ric_streaming = true;
