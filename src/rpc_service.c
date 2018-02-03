@@ -219,6 +219,10 @@ rpc_instance_register_property(rpc_instance_t instance, const char *interface,
 int
 rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
 {
+	GHashTableIter iter;
+	rpc_object_t payload;
+	rpc_object_t ifaces;
+	const char *key;
 
 	g_rw_lock_writer_lock(&context->rcx_rwlock);
 
@@ -228,9 +232,17 @@ rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
 		return (-1);
 	}
 
-	rpc_context_emit_event(context, "/",
-	    RPC_DISCOVERABLE_INTERFACE, "object_added",
-	    rpc_string_create(instance->ri_path));
+	ifaces = rpc_array_create();
+	g_hash_table_iter_init(&iter, instance->ri_interfaces);
+	while (g_hash_table_iter_next(&iter, (gpointer)&key, NULL))
+		rpc_array_append_stolen_value(ifaces, rpc_string_create(key));
+
+	payload = rpc_object_pack("{s,v}",
+	    "path", instance->ri_path,
+	    "interfaces", ifaces);
+
+	rpc_context_emit_event(context, "/", RPC_DISCOVERABLE_INTERFACE,
+	    "instance_added", payload);
 
 	instance->ri_context = context;
 
@@ -247,7 +259,7 @@ rpc_context_unregister_instance(rpc_context_t context, const char *path)
 
 	if (g_hash_table_remove(context->rcx_instances, path)) {
 		rpc_context_emit_event(context, "/",
-		    RPC_DISCOVERABLE_INTERFACE, "object_removed",
+		    RPC_DISCOVERABLE_INTERFACE, "instance_removed",
 		    rpc_string_create(path));
 	}
 
@@ -434,12 +446,12 @@ rpc_function_end(void *cookie)
 	    !call->ric_aborted)
 		g_cond_wait(&call->ric_cv, &call->ric_mtx);
 
-	if (call->ric_aborted) {
-		if (!call->ric_ended) {
-			rpc_connection_send_end(call->ric_conn, call->ric_id,
-			    call->ric_producer_seqno);
-		}
+	if (!call->ric_ended) {
+		rpc_connection_send_end(call->ric_conn, call->ric_id,
+		    call->ric_producer_seqno);
+	}
 
+	if (call->ric_aborted) {
 		g_mutex_unlock(&call->ric_mtx);
 		return;
 	}
