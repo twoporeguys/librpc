@@ -42,8 +42,8 @@ object handle - no externally managed data is referenced (with ``binary``
 type being an exception, see :ref:`binary-data-handling`.
 
 librpc objects are reference counted. Each newly created object has a
-reference count of 1. Reference count can be increased using `rpc_retain()`
-function or decreased using `rpc_release()` function. When reference count
+reference count of 1. Reference count can be increased using ``rpc_retain()``
+function or decreased using ``rpc_release()`` function. When reference count
 of an object drops to 0, object handle and the associated value is released.
 
 A number of functions exist to operate on object handles - that involves

@@ -10,9 +10,11 @@ Welcome to librpc's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   building
    guide
    advanced
    object
+   bindings
    protocol
    debugging
    reference
