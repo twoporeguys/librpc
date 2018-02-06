@@ -1,7 +1,8 @@
-import {expect} from 'chai';
 import 'mocha';
+import {expect} from 'chai';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/observable/timer';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/observeOn';
 import {Observable} from 'rxjs/Observable';
@@ -10,6 +11,7 @@ import {Observer} from 'rxjs/Observer';
 import {Scheduler} from 'rxjs/Rx';
 import {LibRpcClient} from '../src/LibRpcClient';
 import {LibRpcConnector} from '../src/LibRpcConnector';
+import {LibRpcRequest} from '../src/model/LibRpcRequest';
 
 describe('LibRpcClient', () => {
     const connectorMock: LibRpcConnector = {} as LibRpcConnector;
@@ -20,7 +22,7 @@ describe('LibRpcClient', () => {
             let sentMessage: any = null;
             connectorMock.send = (message: any) => {
                 sentMessage = message;
-                return Observable.from([]);
+                return Observable.of({id: 'foo'});
             };
             const client = new LibRpcClient('', false, connectorMock);
 
@@ -58,7 +60,6 @@ describe('LibRpcClient', () => {
                 (objectPath: string) => resultPath.push(objectPath),
                 noop,
                 () => {
-                    expect(resultPath.length).to.equal(3);
                     expect(resultPath).to.eql([
                         '/foo/1',
                         '/foo/2',
@@ -75,7 +76,7 @@ describe('LibRpcClient', () => {
             let sentMessage: any = null;
             connectorMock.send = (message: any) => {
                 sentMessage = message;
-                return Observable.from([]);
+                return Observable.of({id: '1234'});
             };
             const client = new LibRpcClient('', false, connectorMock);
 
@@ -125,7 +126,7 @@ describe('LibRpcClient', () => {
             let sentMessage: any = null;
             connectorMock.send = (message: any) => {
                 sentMessage = message;
-                return Observable.of();
+                return Observable.of({id: '1234'});
             };
             const client = new LibRpcClient('', false, connectorMock);
 
@@ -152,7 +153,7 @@ describe('LibRpcClient', () => {
                 let sentMessage: any = null;
                 connectorMock.send = (message: any) => {
                     sentMessage = message;
-                    return Observable.of();
+                    return Observable.of({id: '1234'});
                 };
                 const client = new LibRpcClient('', false, connectorMock);
 
@@ -177,7 +178,7 @@ describe('LibRpcClient', () => {
             let sentMessage: any = null;
             connectorMock.send = (message: any) => {
                 sentMessage = message;
-                return Observable.of();
+                return Observable.of({id: '1234'});
             };
             const client = new LibRpcClient('', false, connectorMock);
 
@@ -240,6 +241,121 @@ describe('LibRpcClient', () => {
                 noop
             );
         });
+
+        it('should iterate through fragments received', (done: () => void) => {
+            const fakeData = ['foo', 'bar', 'baz', 'qux', 'quux'];
+            const responses: string[] = [];
+            connectorMock.send = (message: LibRpcRequest) => Observable
+                .timer(100)
+                .map(() => {
+                    let result: any;
+                    switch (message.name) {
+                        case 'continue':
+                            result = message.args < fakeData.length ?
+                                {
+                                    id: message.id,
+                                    namespace: message.namespace,
+                                    name: 'fragment',
+                                    args: {
+                                        seqno: message.args,
+                                        fragment: fakeData[message.args],
+                                    },
+                                } :
+                                {
+                                    id: message.id,
+                                    namespace: message.namespace,
+                                    name: 'end',
+                                };
+                            break;
+                        default:
+                            result = {
+                                id: message.id,
+                                namespace: message.namespace,
+                                name: 'fragment',
+                                args: {
+                                    seqno: 0,
+                                    fragment: fakeData[0],
+                                },
+                            };
+                            break;
+                    }
+                    return result;
+                }).observeOn(Scheduler.asap)
+            const client = new LibRpcClient('', false, connectorMock);
+
+            client.callMethod('/foo', 'bar', 'bar').subscribe(
+                (response: string) => {
+                    responses.push(response);
+                },
+                noop,
+                () => {
+                    expect(responses).to.deep.equal(['foo', 'bar', 'baz', 'qux', 'quux']);
+                    done();
+                }
+            );
+        });
+
+        it('should stop iterating through fragments when there is no subscriber', (done: () => void) => {
+            const fakeData = ['foo', 'bar', 'baz', 'qux', 'quux'];
+            let callsCount: number = 0;
+            const responses: string[] = [];
+            connectorMock.send = (message: LibRpcRequest) => {
+                callsCount++;
+                return Observable
+                    .timer(100)
+                    .map(() => {
+                        let result: any;
+                        switch (message.name) {
+                            case 'continue':
+                                result = message.args < fakeData.length ?
+                                    {
+                                        id: message.id,
+                                        namespace: message.namespace,
+                                        name: 'fragment',
+                                        args: {
+                                            seqno: message.args,
+                                            fragment: fakeData[message.args],
+                                        },
+                                    } :
+                                    {
+                                        id: message.id,
+                                        namespace: message.namespace,
+                                        name: 'end',
+                                    };
+                                break;
+                            default:
+                                result = {
+                                    id: message.id,
+                                    namespace: message.namespace,
+                                    name: 'fragment',
+                                    args: {
+                                        seqno: 0,
+                                        fragment: fakeData[0],
+                                    },
+                                };
+                                break;
+                        }
+                        return result;
+                    }).observeOn(Scheduler.asap);
+            };
+            const client = new LibRpcClient('', false, connectorMock);
+
+            client.callMethod('/foo', 'bar', 'bar')
+                .take(2)
+                .subscribe(
+                (response: string) => {
+                    responses.push(response);
+                },
+                noop,
+                () => {
+                    expect(responses).to.deep.equal(['foo', 'bar']);
+                    setTimeout(() => {
+                        expect(callsCount).to.equal(3);
+                        done();
+                    }, 1000);
+                }
+            );
+        });
     });
 
     describe('subscribe', () => {
@@ -269,15 +385,30 @@ describe('LibRpcClient', () => {
             const events = [
                 {
                     id: null, namespace: 'events', name: 'event',
-                    args: {name: 'changed', path: '/foo', args: {name: 'key1', value: 1}}
+                    args: {
+                        interface: 'com.twoporeguys.librpc.Observable',
+                        name: 'changed',
+                        path: '/foo',
+                        args: {name: 'key1', value: 1},
+                    },
                 },
                 {
                     id: null, namespace: 'events', name: 'event',
-                    args: {name: 'changed', path: '/bar', args: {name: 'key1', value: 12}}
+                    args: {
+                        interface: 'com.twoporeguys.librpc.Observable',
+                        name: 'changed',
+                        path: '/bar',
+                        args: {name: 'key1', value: 12},
+                    },
                 },
                 {
                     id: null, namespace: 'events', name: 'event',
-                    args: {name: 'changed', path: '/foo', args: {name: 'key2', value: 321}}
+                    args: {
+                        interface: 'com.twoporeguys.librpc.Observable',
+                        name: 'changed',
+                        path: '/foo',
+                        args: {name: 'key2', value: 321},
+                    },
                 },
             ];
             connectorMock.send = () => (

@@ -896,7 +896,7 @@ rpc_get_methods(void *cookie, rpc_object_t args)
 	const char *interface;
 	const char *k;
 	struct rpc_if_member *v;
-	rpc_object_t fragment;
+	rpc_object_t result = rpc_array_create();
 	rpc_instance_t instance = rpc_function_get_instance(cookie);
 
 	if (rpc_object_unpack(args, "[s]", &interface) < 1) {
@@ -904,9 +904,11 @@ rpc_get_methods(void *cookie, rpc_object_t args)
 		return (NULL);
 	}
 
+	g_rw_lock_reader_lock(&instance->ri_rwlock);
 	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
 	if (priv == NULL) {
 		rpc_function_error(cookie, ENOENT, "Interface not found");
+		g_rw_lock_reader_unlock(&instance->ri_rwlock);
 		return (NULL);
 	}
 
@@ -915,13 +917,11 @@ rpc_get_methods(void *cookie, rpc_object_t args)
 		if (v->rim_type != RPC_MEMBER_METHOD)
 			continue;
 
-		fragment = rpc_string_create(k);
-		if (rpc_function_yield(cookie, fragment) != 0)
-			goto done;
+		rpc_array_append_stolen_value(result, rpc_string_create(k));
 	}
 
-done:
-	return ((rpc_object_t)NULL);
+	g_rw_lock_reader_unlock(&instance->ri_rwlock);
+	return (result);
 }
 
 static rpc_object_t
