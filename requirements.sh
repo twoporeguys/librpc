@@ -9,7 +9,7 @@ case "`uname -s`" in
         ;;
     Linux*)
         echo "I am some kind of Linux, hopefully Ubuntu."
-        apt-get -y install \
+        aptdcon -i \
             cmake clang libglib2.0-dev libsoup-gnome2.4-dev \
             libyajl-dev libblocksruntime-dev libyaml-dev libudev-dev \
             python3 cython3 python3-sphinx
