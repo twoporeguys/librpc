@@ -72,7 +72,7 @@
         obj = rpc_array_create();
         for (id object in (NSArray *)value) {
             RPCObject *robj = [[RPCObject alloc] initWithValue:object];
-            rpc_array_append_stolen_value(obj, robj->obj);
+            rpc_array_append_value(obj, robj->obj);
         }
         
         return (self);
@@ -339,7 +339,7 @@
                    args:(RPCObject *)args {
     rpc_call_t call;
     
-    call = rpc_connection_call(conn, [path UTF8String], [interface UTF8String], [method UTF8String], NULL, NULL);
+    call = rpc_connection_call(conn, [path UTF8String], [interface UTF8String], [method UTF8String], [args nativeValue], NULL);
     rpc_call_wait(call);
     
     switch (rpc_call_status(call)) {
@@ -421,22 +421,22 @@
 }
 @end
 
-@implementation RPCInterface {
-    RPCClient *client;
-    NSString *path;
-    NSString *interface;
-}
+@implementation RPCInterface
 
 - (instancetype)initWithClient:(RPCClient *)client path:(NSString *)path andInterface:(NSString *)interface {
-    client = client;
-    path = path;
-    interface = interface;
+    self = [super init];
+    if (self) {
+        _client = client;
+        _path = path;
+        _interface = interface;
+    }
     return self;
 }
 
 - (NSDictionary *)methods {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-    RPCObject *i = [client callSync:@"get_methods" path:path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:[[RPCObject alloc] initWithValue:@[interface]]];
+    RPCObject *args = [[RPCObject alloc] initWithValue:@[_interface]];
+    RPCObject *i = [_client callSync:@"get_methods" path:_path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:args];
     //NSLog(@"%@", i);
     for (RPCObject *value in [i value]) {
         NSString *name = (NSString *)[value value];
@@ -458,7 +458,7 @@
     NSArray *args;
     RPCCall *result;
     [anInvocation getArgument:&args atIndex:0];
-    result = [client call:@"" path:path interface:interface args:[[RPCObject alloc] initWithValue:args]];
+    result = [_client call:@"" path:_path interface:_interface args:[[RPCObject alloc] initWithValue:args]];
     [anInvocation setReturnValue:(__bridge void *)result];
 }
 @end

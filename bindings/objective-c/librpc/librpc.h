@@ -136,7 +136,7 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
  */
 - (nonnull NSDictionary<NSString *, RPCInstance *> *)instances;
 - (nonnull NSDictionary<NSString *, RPCInstance *> *)spaInstances;
-- (void)setDispatchQueue:(nullable dispatch_queue_t)queue;
+//- (void)setDispatchQueue:(nullable dispatch_queue_t)queue;
 
 /**
  * Issues a call to the server.
@@ -174,6 +174,9 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
 @end
 
 @interface RPCInterface : NSObject
+@property (readonly, nullable) RPCClient *client;
+@property (readonly, nullable) NSString *path;
+@property (readonly, nullable) NSString *interface;
 @property (readonly, nonnull) NSDictionary<NSString *, NSString *> *methods;
 - (void)forwardInvocation:(nonnull NSInvocation *)anInvocation;
 - (nonnull NSMethodSignature *)methodSignatureForSelector:(nonnull SEL)aSelector;

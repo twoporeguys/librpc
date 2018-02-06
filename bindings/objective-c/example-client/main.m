@@ -50,13 +50,13 @@ int main(int argc, const char * argv[]) {
             RPCInstance *inst = c[key];
             for (id key2 in inst.interfaces) {
                 NSLog(@"________Test 2: %@", key2);
-//                if ([key2 isKindOfClass:NSString.class]) {
-//                    RPCInterface *interface = [[RPCInterface alloc] initWithClient:cl path:[NSString stringWithFormat:@"%@/%@", key, key2] andInterface:key2];
-//                    if (interface) {
-//                        NSDictionary *methods = interface.methods;
-//                        NSLog(@"___________________Test 3:%@", methods);
-//                    }
-//                }
+                if ([key2 isKindOfClass:NSString.class]) {
+                    RPCInterface *interface = inst.interfaces[key2];
+                    if (interface) {
+                        NSDictionary *methods = interface.methods;
+                        NSLog(@"___________________Test 3:%@", methods);
+                    }
+                }
             }
         }
     }
