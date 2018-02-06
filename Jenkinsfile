@@ -7,9 +7,11 @@ pipeline {
     }
 
     stages {
-        stage('Bootstrap') {
-            steps {
-	        sh 'sudo make bootstrap'
+        lock('apt-get') {
+            stage('Bootstrap') {
+                steps {
+	            sh 'sudo make bootstrap'
+                }
             }
         }
 
