@@ -1,5 +1,6 @@
 Object model
 ============
+.. _object-model:
 
 Instances and interfaces
 ------------------------
