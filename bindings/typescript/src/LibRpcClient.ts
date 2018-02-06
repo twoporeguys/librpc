@@ -3,11 +3,14 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/take';
-import 'rxjs/add/observable/interval';
+import 'rxjs/add/operator/first';
 import 'rxjs/add/observable/from';
 import {Subject} from 'rxjs/Subject';
 import {LibRpcConnector} from './LibRpcConnector';
+import {LibRpcEvent} from './model/LibRpcEvent';
+import {LibRpcFragment} from './model/LibRpcFragment';
+import {LibRpcRequest} from './model/LibRpcRequest';
+import {LibRpcResponse} from './model/LibRpcResponse';
 import {v4} from './uuidv4';
 
 interface DiscoverableInstance {
@@ -80,7 +83,7 @@ export class LibRpcClient {
     }
 
     public subscribe<T = any>(path: string, id: string = v4()): Observable<T> {
-        const outMessage = {
+        const outMessage: LibRpcRequest = {
             id: id,
             namespace: 'events',
             name: 'subscribe',
@@ -91,70 +94,75 @@ export class LibRpcClient {
             }]
         };
         return this.connector.send(outMessage)
-            .filter((incomingMessage: any) => (
-                    incomingMessage.namespace === 'events' &&
-                    incomingMessage.name === 'event' &&
-                    incomingMessage.args &&
-                    incomingMessage.args.name === 'changed' &&
+            .filter((incomingMessage: LibRpcResponse<LibRpcEvent>) => (
+                    this.isEvent(incomingMessage) &&
+                    this.isObjectChangeEvent(incomingMessage.args) &&
                     incomingMessage.args.path === path
             ))
-            .map((incomingMessage: any) => fromPairs([[
+            .map((incomingMessage: LibRpcResponse) => fromPairs([[
                 incomingMessage.args.args.name,
                 incomingMessage.args.args.value,
             ]]) as T);
     }
 
     private send<T = any>(namespace: string, name: string, payload?: any, id: string = v4()): Observable<T> {
-        const outMessage = assign({
+        const request: LibRpcRequest = assign({
             id: id,
             namespace: namespace,
             name: name
         }, {args: payload || {}});
-        const results$ = new Subject<any>();
+        const responses$ = new Subject<LibRpcResponse<T>>();
 
-        this.connector.send(outMessage)
-            .filter((incomingMessage: any) => incomingMessage.id === id)
-            .take(1)
-            .subscribe((response: any) => {
-                switch (response.name) {
-                    case 'response':
-                        results$.next(response.args);
-                        results$.complete();
-                        break;
-                    case 'fragment':
-                        this.fetchFragments(response, results$);
-                        break;
-                    case 'end':
-                        results$.complete();
-                        break;
-                    case 'error':
-                        results$.error(response.args);
-                        break;
+        this.sendRequest<T>(request, responses$);
+
+        return responses$
+            .map((response: LibRpcResponse<T|LibRpcFragment<T>>) => {
+                let result: T;
+                if (response.name === 'fragment') {
+                    const fragmentWrapper = (response.args as LibRpcFragment<T>);
+                    this.sendRequest({
+                        id: response.id as string,
+                        namespace: response.namespace,
+                        name: 'continue',
+                        args: fragmentWrapper.seqno + 1
+                    }, responses$);
+                    result = fragmentWrapper.fragment;
+                } else {
+                    result = (response.args as T);
                 }
+                return result;
             });
-        return results$;
     }
 
-    private fetchFragments(previousResponse: any, results$: Subject<any>) {
-        switch (previousResponse.name) {
-            case 'fragment':
-                results$.next(previousResponse.args.fragment);
-                const nextSeqno = previousResponse.args.seqno + 1;
-                this.connector.send({
-                    id: previousResponse.id,
-                    namespace: previousResponse.namespace,
-                    name: 'continue',
-                    args: nextSeqno
-                })
-                    .filter((incomingMessage: any) => incomingMessage.id === previousResponse.id)
-                    .take(1)
-                    .subscribe((response: any) => {
-                        this.fetchFragments(response, results$);
-                    });
-                break;
-            case 'end':
-                results$.complete();
-                break;
-        }
+    private sendRequest<T>(request: LibRpcRequest, responses$: Subject<LibRpcResponse<T>>) {
+        this.connector.send(request)
+            .filter((response: LibRpcResponse<T>) => response.id === request.id)
+            .subscribe((response: LibRpcResponse<T>) => {
+                if (response.name === 'error') {
+                    responses$.error(response.args);
+                } else {
+                    if (response.name !== 'end') {
+                        responses$.next(response);
+                    }
+                    if (response.name === 'response' || response.name === 'end') {
+                        responses$.complete();
+                    }
+                }
+            });
+    }
+
+    private isEvent(message: LibRpcResponse): boolean {
+        return !!(message && message.namespace === 'events' && message.name === 'event');
+    }
+
+    private isInterfaceAddEvent(event: LibRpcEvent, interfaceName: string): boolean {
+        return event &&
+            event.interface === 'com.twoporeguys.librpc.Introspectable' &&
+            event.name === 'interface_added' &&
+            event.args === interfaceName;
+    }
+
+    private isObjectChangeEvent(event: LibRpcEvent): boolean {
+        return event && event.interface === 'com.twoporeguys.librpc.Observable' && event.name === 'changed';
     }
 }
