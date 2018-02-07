@@ -487,6 +487,9 @@ void rpc_function_set_async_abort_handler(void *_Nonnull cookie,
 {
 	struct rpc_inbound_call *call = cookie;
 
+	if (call->ric_abort_handler != NULL)
+		Block_release(call->ric_abort_handler);
+
 	call->ric_abort_handler = Block_copy(handler);
 }
 
