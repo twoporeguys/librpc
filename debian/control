@@ -2,16 +2,23 @@ Source: librpc
 Section: libs
 Priority: optional
 Maintainer: Jakub Klama <jakub.klama@twoporeguys.com>
-Build-Depends: debhelper (>=10), clang
+Build-Depends: debhelper (>=10), clang, dh-python, python3, python
 Standards-Version: 4.0.0
 Homepage: https://github.com/twoporeguys/librpc
 
 Package: librpc
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: RPC library
  A general-purpose IPC/RPC library supporting asynchronous 
  notifications, data streaming, exchange of file descriptors
  and WebSockets endpoint. Loosely based on Apple XPC interface.
 
+Package: librpc-dev
+Section: libdevel
+Architecture: any
+Depends: librpc(= ${binary:Version}), ${misc:Depends}
+Description:
+  Development files for librpc.
 
