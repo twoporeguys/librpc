@@ -135,7 +135,6 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
  * Returns a dictionary of instances found on the server.
  */
 - (nonnull NSDictionary<NSString *, RPCInstance *> *)instances;
-- (nonnull NSDictionary<NSString *, RPCInstance *> *)spaInstances;
 //- (void)setDispatchQueue:(nullable dispatch_queue_t)queue;
 
 /**
@@ -169,15 +168,13 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
 @property (readonly, nonnull) RPCClient *client;
 @property (readonly, nonnull) NSString *path;
 @property (readonly, nonnull) NSDictionary<NSString *, RPCInterface *> *interfaces;
+@property (readonly, nonnull) NSArray<NSString *> *properties;
 
 - (nonnull instancetype)initWithClient:(nonnull RPCClient *)client andPath:(nonnull NSString *)path;
 @end
 
 @interface RPCInterface : NSObject
-@property (readonly, nullable) RPCClient *client;
-@property (readonly, nullable) NSString *path;
-@property (readonly, nullable) NSString *interface;
-@property (readonly, nonnull) NSDictionary<NSString *, NSString *> *methods;
+@property (readonly, nonnull) RPCInstance *instance;
 - (void)forwardInvocation:(nonnull NSInvocation *)anInvocation;
 - (nonnull NSMethodSignature *)methodSignatureForSelector:(nonnull SEL)aSelector;
 - (nonnull instancetype)initWithClient:(nonnull RPCClient *)client path:(nonnull NSString *)path andInterface:(nonnull NSString *)interface;

@@ -58,6 +58,10 @@
         return (self);
     }
     
+    if ([value isKindOfClass:[NSDate class]]) {
+        
+    }
+    
     if ([value isKindOfClass:[NSData class]]) {
         obj = rpc_data_create([(NSData *)value bytes], [(NSData *)value length], NULL);
         return (self);
@@ -127,8 +131,10 @@
 }
 
 - (RPCObject *)initFromNativeObject:(void *)object {
-    obj = rpc_retain(object);
-    return self;
+    if (object) {
+        obj = rpc_retain(object);
+        return self;
+    } else return nil;
 }
 
 - (void)dealloc {
@@ -315,20 +321,6 @@
     return result;
 }
 
-- (NSDictionary *)spaInstances {
-    NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-    RPCObject *d = [self callSync:@"get_instances" path:@"/spa" interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil];
-    
-    for (RPCObject *i in [d value]) {
-        NSDictionary *item = (NSDictionary *)[i value];
-        NSString *path = [[item objectForKey:@"path"] value];
-        RPCInstance *instance = [[RPCInstance alloc] initWithClient:self andPath:path];
-        [result setValue:instance forKey:path];
-    }
-    
-    return result;
-}
-
 //- (void)setDispatchQueue:(nullable dispatch_queue_t)queue {
 //    rpc_connection_set_dispatch_queue(conn, queue);
 //}
@@ -404,7 +396,6 @@
 - (NSDictionary *)interfaces {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
     RPCObject *call = [client callSync:@"get_interfaces" path:path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:nil];
-    NSLog(@"%@", call);
     for (RPCObject *value in [call value]) {
         NSString *name = (NSString *)[value value];
         RPCInterface *interface = [[RPCInterface alloc] initWithClient:client path:path andInterface:name];
@@ -414,6 +405,17 @@
     return result;
 }
 
+- (NSArray *)loadProperties {
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    RPCObject *args = [[RPCObject alloc] initWithValue:@[@(RPC_INTROSPECTABLE_INTERFACE)]];
+    RPCObject *i = [client callSync:@"get_all" path:path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:args];
+    for (RPCObject *value in [i value]) {
+        NSString *name = (NSString *)[value value];
+        [result addObject:name];
+    }
+    return result.copy;
+}
+
 - (instancetype)initWithClient:(RPCClient *)client andPath:(NSString *)path {
     self->client = client;
     self->path = path;
@@ -421,29 +423,20 @@
 }
 @end
 
-@implementation RPCInterface
+@implementation RPCInterface {
+    RPCClient *client;
+    NSString *path;
+    NSString *interface;
+}
 
 - (instancetype)initWithClient:(RPCClient *)client path:(NSString *)path andInterface:(NSString *)interface {
     self = [super init];
     if (self) {
-        _client = client;
-        _path = path;
-        _interface = interface;
+        client = client;
+        path = path;
+        interface = interface;
     }
     return self;
-}
-
-- (NSDictionary *)methods {
-    NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-    RPCObject *args = [[RPCObject alloc] initWithValue:@[_interface]];
-    RPCObject *i = [_client callSync:@"get_methods" path:_path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:args];
-    //NSLog(@"%@", i);
-    for (RPCObject *value in [i value]) {
-        NSString *name = (NSString *)[value value];
-        [result setValue:name forKey:name];
-    }
-    
-    return result;
 }
 
 - (BOOL)respondsToSelector:(SEL)aSelector {
@@ -458,7 +451,7 @@
     NSArray *args;
     RPCCall *result;
     [anInvocation getArgument:&args atIndex:0];
-    result = [_client call:@"" path:_path interface:_interface args:[[RPCObject alloc] initWithValue:args]];
+    result = [client call:@"" path:path interface:interface args:[[RPCObject alloc] initWithValue:args]];
     [anInvocation setReturnValue:(__bridge void *)result];
 }
 @end
