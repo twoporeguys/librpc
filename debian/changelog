@@ -1,0 +1,5 @@
+librpc (0.3.6) artful; urgency=medium
+
+  * Initial release.
+
+ -- Jakub Klama <jakub.klama@twoporeguys.com>  Wed, 07 Feb 2018 19:29:00 +0100

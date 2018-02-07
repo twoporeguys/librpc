@@ -1,0 +1,7 @@
+#!/usr/bin/make -f
+export CC=clang
+export CXX=clang++
+
+%:
+	dh $@ --buildsystem=cmake
+
