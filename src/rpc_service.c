@@ -460,6 +460,7 @@ rpc_function_end(void *cookie)
 	call->ric_streaming = true;
 	call->ric_ended = true;
 	g_mutex_unlock(&call->ric_mtx);
+	rpc_connection_close_inbound_call(call);
 }
 
 void
