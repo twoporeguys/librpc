@@ -4,10 +4,10 @@ export CXX=clang++
 
 override_dh_auto_configure:
 	dh_auto_configure -- \
-	    -DBUILD_PYTHON=OFF \
 	    -DBUILD_KMOD=OFF \
 	    -DBUILD_LIBUSB=ON \
-	    -DBUILD_RPCTOOL=ON
+	    -DBUILD_RPCTOOL=ON \
+	    -DPYTHON_VERSION=python3
 
 %:
 	dh $@ --buildsystem=cmake

@@ -2,7 +2,7 @@ Source: librpc
 Section: libs
 Priority: optional
 Maintainer: Jakub Klama <jakub.klama@twoporeguys.com>
-Build-Depends: debhelper (>=10), clang, dh-python, python3, python
+Build-Depends: debhelper (>=10), clang, dh-python, python3
 Standards-Version: 4.0.0
 Homepage: https://github.com/twoporeguys/librpc
 
@@ -19,6 +19,10 @@ Package: librpc-dev
 Section: libdevel
 Architecture: any
 Depends: librpc(= ${binary:Version}), ${misc:Depends}
-Description:
-  Development files for librpc.
+Description: Development files for librpc.
 
+Package: python3-librpc
+Section: python
+Architecture: any
+Depends: librpc(= ${binary:Version}), ${misc:Depends}, python
+Description: Python 3 bindings for librpc
