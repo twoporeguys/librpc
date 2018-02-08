@@ -129,6 +129,7 @@ struct usb_context
 	GThread *			uc_thread;
 	GMainContext *			uc_main_context;
 	struct usb_thread_state		uc_state;
+	GHashTable *			uc_devices;
 };
 
 struct usb_connection
@@ -184,14 +185,21 @@ usb_hotplug_impl(void *arg)
 {
 	struct libusb_device_descriptor devdesc;
 	struct usb_hotplug_state *state = arg;
-	struct rpc_bus_node node = {};
+	struct rpc_bus_node *node = NULL;
+	uint32_t address;
 
 	switch (state->uss_event) {
 	case LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED:
-		if (usb_enumerate_one(state->uss_dev, &node) < 0)
-			break;
+		node = g_malloc0(sizeof(struct rpc_bus_node));
 
-		rpc_bus_event(RPC_BUS_ATTACHED, &node);
+		if (usb_enumerate_one(state->uss_dev, node) < 0) {
+			g_free(node);
+			break;
+		}
+
+		g_hash_table_insert(state->uss_ctx->uc_devices,
+		    &node->rbn_address, node);
+		rpc_bus_event(RPC_BUS_ATTACHED, node);
 		break;
 
 	case LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT:
@@ -202,8 +210,21 @@ usb_hotplug_impl(void *arg)
 		    devdesc.idProduct != LIBRPC_USB_PID)
 			break;
 
-		node.rbn_address = libusb_get_device_address(state->uss_dev);
-		rpc_bus_event(RPC_BUS_DETACHED, &node);
+		address = libusb_get_device_address(state->uss_dev);
+		node = g_hash_table_lookup(state->uss_ctx->uc_devices,
+		    &address);
+
+		if (node != NULL) {
+			rpc_bus_event(RPC_BUS_DETACHED, node);
+			g_hash_table_remove(state->uss_ctx->uc_devices,
+			    &address);
+			break;
+		}
+
+		node = g_malloc0(sizeof(struct rpc_bus_node));
+		node->rbn_address = address;
+		rpc_bus_event(RPC_BUS_DETACHED, node);
+		g_free(node);
 		break;
 
 	default:
@@ -212,6 +233,16 @@ usb_hotplug_impl(void *arg)
 
 	g_free(state);
 	return (false);
+}
+
+static void
+usb_free_node(struct rpc_bus_node *node)
+{
+
+	g_free((void *)node->rbn_name);
+	g_free((void *)node->rbn_description);
+	g_free((void *)node->rbn_serial);
+	g_free(node);
 }
 
 static void *
@@ -244,6 +275,8 @@ usb_open(GMainContext *main_context)
 		return (NULL);
 	}
 
+	ctx->uc_devices = g_hash_table_new_full(g_int_hash, g_int_equal, NULL,
+	    (GDestroyNotify)usb_free_node);
 	ctx->uc_thread = g_thread_new("libusb worker", usb_libusb_thread,
 	    &ctx->uc_state);
 	return (ctx);
@@ -257,6 +290,7 @@ usb_close(void *arg)
 	ctx->uc_state.uts_exit = true;
 	libusb_hotplug_deregister_callback(ctx->uc_libusb, ctx->uc_handle);
 	g_thread_join(ctx->uc_thread);
+	g_hash_table_unref(ctx->uc_devices);
 	libusb_exit(ctx->uc_libusb);
 	g_free(ctx);
 }
