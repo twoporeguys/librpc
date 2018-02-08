@@ -460,6 +460,7 @@ rpc_function_end(void *cookie)
 	call->ric_streaming = true;
 	call->ric_ended = true;
 	g_mutex_unlock(&call->ric_mtx);
+	rpc_connection_close_inbound_call(call);
 }
 
 void
@@ -485,6 +486,9 @@ void rpc_function_set_async_abort_handler(void *_Nonnull cookie,
     _Nullable rpc_abort_handler_t handler)
 {
 	struct rpc_inbound_call *call = cookie;
+
+	if (call->ric_abort_handler != NULL)
+		Block_release(call->ric_abort_handler);
 
 	call->ric_abort_handler = Block_copy(handler);
 }

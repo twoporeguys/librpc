@@ -1,9 +1,13 @@
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/interval';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/observable/never';
+import 'rxjs/add/operator/switchMap';
 import {Subject} from 'rxjs/Subject';
+import {LibRpcRequest} from './model/LibRpcRequest';
 import {v4} from './uuidv4';
 import {decode, encode, createCodec, Codec} from 'msgpack-lite';
-import {Subscription} from 'rxjs/Subscription';
+import {WebSocketFactory} from './WebSocketFactory';
 
 export class LibRpcConnector {
     private EXT_UNPACKERS: Map<number, (buffer: Uint8Array) => any> = new Map([
@@ -14,10 +18,14 @@ export class LibRpcConnector {
     private ws: WebSocket;
     private messages$: Subject<any>;
     private messageBuffer: Buffer[];
-    private keepAlive: Subscription;
     private codec: Codec;
+    private isConnected: boolean;
 
-    public constructor(private url: string, private isDebugEnabled: boolean = false) {
+    public constructor(
+        private url: string,
+        private isDebugEnabled: boolean = false,
+        private webSocketFactory: WebSocketFactory = new WebSocketFactory()
+    ) {
         this.codec = createCodec();
         this.EXT_UNPACKERS.forEach(
             (unPacker: (buffer: Uint8Array) => any, eType: number) => this.codec.addExtUnpacker(eType, unPacker)
@@ -27,57 +35,77 @@ export class LibRpcConnector {
 
         if (this.isDebugEnabled) {
             // tslint:disable-next-line:no-console
-            this.messages$.subscribe((message: any) => console.log('<-', JSON.stringify(message)));
+            this.messages$.subscribe((message: any) => console.log('RECV\n', JSON.stringify(message)));
         }
+        this.startKeepAlive();
         this.connect();
 
     }
 
-    public send(message: any): Observable<any> {
+    public send(message: LibRpcRequest): Observable<any> {
         if (this.isDebugEnabled) {
             // tslint:disable-next-line:no-console
-            console.log('->', JSON.stringify(message));
+            console.log('SEND\n', JSON.stringify(message));
         }
         const data = encode(message);
         switch (this.ws.readyState) {
-            case WebSocket.OPEN:
+            case this.webSocketFactory.OPEN:
                 this.ws.send(data);
                 break;
-            case WebSocket.CLOSED:
-            case WebSocket.CLOSING:
+            case this.webSocketFactory.CLOSED:
+            case this.webSocketFactory.CLOSING:
                 this.connect();
                 this.messageBuffer.push(data);
                 break;
-            case WebSocket.CONNECTING:
+            case this.webSocketFactory.CONNECTING:
                 this.messageBuffer.push(data);
                 break;
         }
         return this.messages$;
     }
 
+    public listen(): Observable<any> {
+        if (!this.ws ||
+            this.ws.readyState === this.webSocketFactory.CLOSED ||
+            this.ws.readyState === this.webSocketFactory.CLOSING
+        ) {
+            this.connect();
+        }
+        return this.messages$;
+    }
+
     private connect() {
-        this.ws = new WebSocket(this.url);
+        this.ws = this.webSocketFactory.get(this.url);
         this.ws.binaryType = 'arraybuffer';
         this.ws.onopen = () => {
-            let data = this.messageBuffer.shift();
-            while (data) {
-                this.ws.send(data);
-                data = this.messageBuffer.shift();
-            }
-            this.startKeepAlive();
+            this.isConnected = true;
+            this.emptyMessageQueue();
+
             this.ws.onclose = () => {
-                this.stopKeepAlive();
+                this.isConnected = false;
             };
+
             this.ws.onmessage = (message: MessageEvent) => {
-                this.messages$.next(decode(new Uint8Array(message.data), {codec: this.codec}));
+                this.messages$.next(
+                    typeof message.data === 'object' ?
+                        decode(new Uint8Array(message.data), {codec: this.codec}) : JSON.parse(message.data)
+                );
             };
         };
     }
 
+    private emptyMessageQueue() {
+        let data = this.messageBuffer.shift();
+        while (data) {
+            this.ws.send(data);
+            data = this.messageBuffer.shift();
+        }
+    }
+
     private startKeepAlive() {
-        this.stopKeepAlive();
-        this.keepAlive = Observable
+        Observable
             .interval(30000)
+            .switchMap<any, any>(() => (this.ws && this.isConnected) ? Observable.of(true) : Observable.never())
             .subscribe(() => {
                 this.ws.send(encode({
                     id: v4(),
@@ -91,11 +119,5 @@ export class LibRpcConnector {
                     }
                 }));
             });
-    }
-
-    private stopKeepAlive() {
-        if (this.keepAlive) {
-            this.keepAlive.unsubscribe();
-        }
     }
 }

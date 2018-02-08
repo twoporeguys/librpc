@@ -264,7 +264,7 @@ ws_error(SoupWebsocketConnection *ws __unused, GError *error, gpointer user_data
 {
 	struct ws_connection *conn = user_data;
 
-	conn->wc_last_err = error;
+	conn->wc_last_err = g_error_copy(error);
 }
 
 static void
@@ -274,8 +274,10 @@ ws_close(SoupWebsocketConnection *ws __unused, gpointer user_data)
 
 	debugf("closed: conn=%p", conn);
 
-	if (conn->wc_last_err != NULL)
+	if (conn->wc_last_err != NULL) {
 		rpc_set_last_gerror(conn->wc_last_err);
+		g_error_free(conn->wc_last_err);
+	}
 
 	conn->wc_parent->rco_close(conn->wc_parent);
 }

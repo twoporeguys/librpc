@@ -1,17 +1,20 @@
-import 'mocha';
 import {expect} from 'chai';
+import 'mocha';
+
 import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/observeOn';
 import {Observable} from 'rxjs/Observable';
-
 import {Observer} from 'rxjs/Observer';
 import {Scheduler} from 'rxjs/Rx';
-import {LibRpcClient} from '../src/LibRpcClient';
+
+import {LibRpcClient} from '../src';
 import {LibRpcConnector} from '../src/LibRpcConnector';
+import {LibRpcEvent} from '../src/model/LibRpcEvent';
 import {LibRpcRequest} from '../src/model/LibRpcRequest';
+import {LibRpcResponse} from '../src/model/LibRpcResponse';
 
 describe('LibRpcClient', () => {
     const connectorMock: LibRpcConnector = {} as LibRpcConnector;
@@ -280,7 +283,7 @@ describe('LibRpcClient', () => {
                             break;
                     }
                     return result;
-                }).observeOn(Scheduler.asap)
+                }).observeOn(Scheduler.asap);
             const client = new LibRpcClient('', false, connectorMock);
 
             client.callMethod('/foo', 'bar', 'bar').subscribe(
@@ -436,4 +439,132 @@ describe('LibRpcClient', () => {
             );
         });
     });
+
+    describe('subscribeToCreation', () => {
+        it('should send object creations matching given interface', (done: () => void) => {
+            const createdIds: string[] = [];
+            connectorMock.listen = () => Observable.from<LibRpcResponse<LibRpcEvent>>([
+                {
+                    id: null, namespace: 'events', name: 'event',
+                    args: {
+                        path: '/',
+                        interface: 'com.twoporeguys.librpc.Discoverable', name: 'instance_added',
+                        args: {
+                            path: '/foo/1',
+                            interfaces: ['foo', 'bar'],
+                        },
+                    },
+                },
+                {
+                    id: null, namespace: 'events', name: 'event',
+                    args: {
+                        path: '/',
+                        interface: 'com.twoporeguys.librpc.Discoverable', name: 'instance_added',
+                        args: {
+                            path: '/foo/2',
+                            interfaces: ['bar'],
+                        },
+                    },
+                },
+                {
+                    id: null,
+                    namespace: 'events',
+                    name: 'event',
+                    args: {
+                        path: '/',
+                        interface: 'com.twoporeguys.librpc.Discoverable', name: 'instance_added',
+                        args: {
+                            path: '/baz/2',
+                            interfaces: ['baz'],
+                        },
+                    },
+                },
+                {
+                    id: null, namespace: 'events', name: 'event',
+                    args: {
+                        path: '/foo/2',
+                        interface: 'com.twoporeguys.librpc.Introspectable', name: 'interface_added',
+                        args: 'foo',
+                    },
+                },
+            ]).observeOn(Scheduler.asap);
+            const client = new LibRpcClient('', false, connectorMock);
+
+            client.subscribeToCreation('foo')
+                .subscribe(
+                    (id: string) => createdIds.push(id),
+                    noop,
+                    () => {
+                        expect(createdIds).to.deep.equal([
+                            '/foo/1',
+                            '/foo/2'
+                        ]);
+                        done();
+                    }
+                )
+        });
+    });
+
+    describe('subscribeToChanges', () => {
+        it('should send object changes matching given path and interface', (done: () => void) => {
+            const changes: {[key: string]: any}[] = [];
+            connectorMock.listen = () => Observable.from<LibRpcResponse<LibRpcEvent>>([
+                {
+                    id: null, namespace: 'events', name: 'event',
+                    args: {
+                        path: '/foo/1',
+                        interface: 'com.twoporeguys.librpc.Observable', name: 'changed',
+                        args: {
+                            interface: 'bar', name: 'baz', value: 42,
+                        },
+                    },
+                },
+                {
+                    id: null, namespace: 'events', name: 'event',
+                    args: {
+                        path: '/foo/2',
+                        interface: 'com.twoporeguys.librpc.Observable', name: 'changed',
+                        args: {
+                            interface: 'bar', name: 'baz', value: 123,
+                        },
+                    },
+                },
+                {
+                    id: null, namespace: 'events', name: 'event',
+                    args: {
+                        path: '/foo/1',
+                        interface: 'com.twoporeguys.librpc.Observable', name: 'changed',
+                        args: {
+                            interface: 'bar', name: 'qux', value: 'quux',
+                        },
+                    },
+                },
+                {
+                    id: null, namespace: 'events', name: 'event',
+                    args: {
+                        path: '/foo/1',
+                        interface: 'com.twoporeguys.librpc.Observable', name: 'changed',
+                        args: {
+                            interface: 'quux', name: 'bar', value: -1,
+                        },
+                    },
+                },
+            ]).observeOn(Scheduler.asap);
+            const client = new LibRpcClient('', false, connectorMock);
+
+            client.subscribeToChange('/foo/1', 'bar')
+                .subscribe(
+                    (change: {[key: string]: any}) => changes.push(change),
+                    noop,
+                    () => {
+                        expect(changes).to.deep.equal([
+                            {baz: 42},
+                            {qux: 'quux'}
+                        ]);
+                        done();
+                    }
+                )
+        });
+    });
+
 });
