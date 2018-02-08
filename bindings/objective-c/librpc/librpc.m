@@ -59,7 +59,7 @@
     }
     
     if ([value isKindOfClass:[NSDate class]]) {
-        
+        obj = rpc_date_create([(NSNumber *)value integerValue]);
     }
     
     if ([value isKindOfClass:[NSData class]]) {
@@ -405,17 +405,6 @@
     return result;
 }
 
-- (NSArray *)loadProperties {
-    NSMutableArray *result = [[NSMutableArray alloc] init];
-    RPCObject *args = [[RPCObject alloc] initWithValue:@[@(RPC_INTROSPECTABLE_INTERFACE)]];
-    RPCObject *i = [client callSync:@"get_all" path:path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:args];
-    for (RPCObject *value in [i value]) {
-        NSString *name = (NSString *)[value value];
-        [result addObject:name];
-    }
-    return result.copy;
-}
-
 - (instancetype)initWithClient:(RPCClient *)client andPath:(NSString *)path {
     self->client = client;
     self->path = path;
@@ -423,20 +412,26 @@
 }
 @end
 
-@implementation RPCInterface {
-    RPCClient *client;
-    NSString *path;
-    NSString *interface;
-}
+@implementation RPCInterface
 
 - (instancetype)initWithClient:(RPCClient *)client path:(NSString *)path andInterface:(NSString *)interface {
     self = [super init];
     if (self) {
-        client = client;
-        path = path;
-        interface = interface;
+        _client = client;
+        _path = path;
+        _interface = interface;
     }
     return self;
+}
+
+- (NSArray *)properties {
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    RPCObject *args = [[RPCObject alloc] initWithValue:@[_interface]];
+    RPCObject *i = [_client callSync:@"get_all" path:_path interface:@(RPC_OBSERVABLE_INTERFACE) args:args];
+    for (RPCObject *value in [i value]) {
+        [result addObject:[value value]];
+    }
+    return result.copy;
 }
 
 - (BOOL)respondsToSelector:(SEL)aSelector {
@@ -451,7 +446,7 @@
     NSArray *args;
     RPCCall *result;
     [anInvocation getArgument:&args atIndex:0];
-    result = [client call:@"" path:path interface:interface args:[[RPCObject alloc] initWithValue:args]];
+    result = [_client call:@"" path:_path interface:_interface args:[[RPCObject alloc] initWithValue:args]];
     [anInvocation setReturnValue:(__bridge void *)result];
 }
 @end
