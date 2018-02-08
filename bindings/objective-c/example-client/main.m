@@ -35,7 +35,8 @@ int main(int argc, const char * argv[]) {
     
     RPCClient *cl = [[RPCClient alloc] init];
     [cl connect:@"ws://localhost:5000/ws"];
-
+    NSDictionary *instances = cl.instances;
+    
     NSMutableDictionary *mInterfaces = [[NSMutableDictionary alloc] init];
     for (id key in cl.instances) {
         if ([key isKindOfClass:[NSString class]]) {
@@ -55,20 +56,31 @@ int main(int argc, const char * argv[]) {
         if ([key isKindOfClass:[NSString class]]) {
             RPCInstance *inst = cl.instances[key];
             [mInterfaces setObject:inst.interfaces forKey:key];
-            //            for (id key in inst.interfaces) {
-            //
-            //            }
         }
     }
-    NSDictionary *instances = cl.instances;
-    RPCInterface *eventHandle = mInterfaces[@"/task/1"][@"com.twoporeguys.momd.Task"];
-    NSArray *properties = [eventHandle properties];
     
+    instances = cl.instances;
+    RPCInterface *eventHandle = mInterfaces[@"/task/1"][@"com.twoporeguys.momd.ProfileTask"];
+    NSArray *properties = [eventHandle properties];
+    NSDictionary *pathDict = properties[3];
+    NSString *path = [NSString stringWithFormat:@"/ds/%@", pathDict[@"value"][@"events"]];
+    if (path) {
+        [cl callAsync:@"query" path:path interface:@"com.twoporeguys.momd.DataSource" args:nil callback:^(RPCCall * _Nonnull call, RPCObject * _Nonnull value) {
+        
+            NSDictionary *dataDict = [value value];
+            NSLog(@"callback: %@", dataDict);
+//            NSData *data = [(RPCObject *)dataDict[@"samples"] value];
+//            for (int i = 0; i < data.length / 4; i++) {
+//                int32_t value = ((int32_t *)data.bytes)[i];
+//                NSLog(@"value: %d", value);
+//            }
+        }];
+    }
     
     @autoreleasepool {
         // insert code here...
 
-        sleep(100000000);
+        sleep(1000000000);
     }
     return 0;
 }

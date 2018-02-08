@@ -429,9 +429,42 @@
     RPCObject *args = [[RPCObject alloc] initWithValue:@[_interface]];
     RPCObject *i = [_client callSync:@"get_all" path:_path interface:@(RPC_OBSERVABLE_INTERFACE) args:args];
     for (RPCObject *value in [i value]) {
-        [result addObject:[value value]];
+        [result addObject:[self recursivelyUnpackProperties:value]];
     }
     return result.copy;
+}
+
+- (id)recursivelyUnpackProperties:(id)container {
+    
+    id tContainer = [container value];
+    if ([tContainer isKindOfClass:NSDictionary.class]) {
+        NSMutableDictionary *retDict = [NSMutableDictionary new];
+        for (id key in tContainer) {
+            id obj = [tContainer[key] value];
+            if ([obj isKindOfClass:NSDictionary.class] || [obj isKindOfClass:NSArray.class]) {
+                id uObj = [self recursivelyUnpackProperties:tContainer[key]];
+                [retDict setObject:uObj forKey:key];
+            } else {
+                [retDict setObject:obj forKey:key];
+            }
+            
+        }
+        return retDict;
+    } else if ([tContainer isKindOfClass:NSArray.class]) {
+        NSMutableArray *retArray = [NSMutableArray new];
+        for (id cObj in tContainer) {
+            id obj = [cObj value];
+            if ([obj isKindOfClass:NSDictionary.class] || [obj isKindOfClass:NSArray.class]) {
+                id uObj = [self recursivelyUnpackProperties:cObj];
+                [retArray addObject:uObj];
+            } else {
+                [retArray addObject:obj];
+            }
+        }
+        return retArray;
+    } else {
+        return [tContainer value];
+    }
 }
 
 - (BOOL)respondsToSelector:(SEL)aSelector {
