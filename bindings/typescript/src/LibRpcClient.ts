@@ -1,4 +1,4 @@
-import {assign, fromPairs, map, startsWith} from 'lodash';
+import {assign, fromPairs, startsWith} from 'lodash';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/do';
@@ -6,6 +6,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/observable/from';
+import {filter, map} from 'rxjs/operators';
 import {Subject} from 'rxjs/Subject';
 import {LibRpcConnector} from './LibRpcConnector';
 import {LibRpcEvent} from './model/LibRpcEvent';
@@ -28,8 +29,8 @@ export class LibRpcClient {
     private static connector: LibRpcConnector;
 
     private connector: LibRpcConnector;
-    private askedFragments: Map<string, number>;
 
+    private askedFragments: Map<string, number>;
     public constructor(url: string, isDebugEnabled: boolean = false, connector?: LibRpcConnector) {
         if (LibRpcClient.connector) {
             this.connector = LibRpcClient.connector;
@@ -37,6 +38,13 @@ export class LibRpcClient {
             LibRpcClient.connector = this.connector = (connector || new LibRpcConnector(url, isDebugEnabled));
         }
         this.askedFragments = new Map<string, number>();
+    }
+
+    public get events$(): Observable<LibRpcEvent> {
+        return this.connector.listen().pipe(
+            filter(this.isEvent),
+            map((message: LibRpcResponse<LibRpcEvent>) => message.args)
+        );
     }
 
     public listObjectsInPath(path: string, id?: string): Observable<string> {
@@ -52,7 +60,7 @@ export class LibRpcClient {
     public getObject<T = any>(path: string, interfaceName: string, id?: string): Observable<T> {
         return this.callMethod(path, 'com.twoporeguys.librpc.Observable', 'get_all', [interfaceName], id)
             .map((properties: Property[]) => fromPairs(
-                map(properties, (property: Property) => [property.name, property.value])
+                properties.map((property: Property) => [property.name, property.value])
             ) as T);
     }
 

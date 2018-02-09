@@ -501,13 +501,13 @@ describe('LibRpcClient', () => {
                         ]);
                         done();
                     }
-                )
+                );
         });
     });
 
     describe('subscribeToChanges', () => {
         it('should send object changes matching given path and interface', (done: () => void) => {
-            const changes: {[key: string]: any}[] = [];
+            const changes: Array<{[key: string]: any}> = [];
             connectorMock.listen = () => Observable.from<LibRpcResponse<LibRpcEvent>>([
                 {
                     id: null, namespace: 'events', name: 'event',
@@ -563,7 +563,41 @@ describe('LibRpcClient', () => {
                         ]);
                         done();
                     }
-                )
+                );
+        });
+    });
+
+    describe('events$', () => {
+        it('should send events', (done: () => void) => {
+            const receivedEvents: any[] = [];
+            connectorMock.listen = () => Observable.create((observer: Observer<LibRpcResponse>) => {
+                observer.next({
+                    id: null, namespace: 'events', name: 'event',
+                    args: 'foo',
+                });
+                observer.next({
+                    id: null, namespace: 'rpc', name: 'call',
+                    args: 'bar',
+                });
+                observer.next({
+                    id: null, namespace: 'events', name: 'event',
+                    args: 'baz',
+                });
+                observer.complete();
+            });
+            const client = new LibRpcClient('', false, connectorMock);
+
+            client.events$.subscribe(
+                (event: LibRpcEvent) => receivedEvents.push(event),
+                noop,
+                () => {
+                    expect(receivedEvents).to.deep.equal([
+                        'foo',
+                        'baz'
+                    ]);
+                    done();
+                }
+            );
         });
     });
 
