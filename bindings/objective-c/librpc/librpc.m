@@ -61,7 +61,7 @@
     }
     
     if ([value isKindOfClass:[NSDate class]]) {
-        obj = rpc_date_create([(NSNumber *)value integerValue]);
+        obj = rpc_date_create([(NSDate *)value timeIntervalSince1970]);
     }
     
     if ([value isKindOfClass:[NSData class]]) {
@@ -486,7 +486,6 @@
         NSString *name = (NSString *)[value value];
         [result addObject:name];
     }
-    
     return result;
 }
 
