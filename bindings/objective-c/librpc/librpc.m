@@ -478,6 +478,18 @@
     }
 }
 
+- (NSArray *)methods {
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    RPCObject *i = [_client callSync:@"get_methods" path:_path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:[[RPCObject alloc] initWithValue:@[_interface]]];
+    //NSLog(@"%@", i);
+    for (RPCObject *value in [i value]) {
+        NSString *name = (NSString *)[value value];
+        [result addObject:name];
+    }
+    
+    return result;
+}
+
 - (BOOL)respondsToSelector:(SEL)aSelector {
     return YES;
 }

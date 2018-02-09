@@ -62,6 +62,7 @@ int main(int argc, const char * argv[]) {
     instances = cl.instances;
     RPCInterface *eventHandle = mInterfaces[@"/task/1"][@"com.twoporeguys.momd.ProfileTask"];
     NSArray *properties = [eventHandle properties];
+    NSArray *methods = [eventHandle methods];
     NSDictionary *pathDict = properties[3];
     NSString *path = [NSString stringWithFormat:@"/ds/%@", pathDict[@"value"][@"events"]];
     if (pathDict[@"value"][@"events"]) {
