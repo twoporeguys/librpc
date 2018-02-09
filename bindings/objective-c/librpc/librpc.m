@@ -32,6 +32,8 @@
 #include <rpc/client.h>
 #include <rpc/service.h>
 
+#pragma mark - RPCObject
+
 @implementation RPCObject {
     rpc_object_t obj;
 }
@@ -209,6 +211,8 @@
 }
 @end
 
+#pragma mark - RPCTypes Exception UInt Double Bool
+
 @implementation RPCException
 - (nonnull instancetype)initWithCode:(NSNumber *)code andMessage:(NSString *)message {
     return (RPCException *)[NSException
@@ -239,6 +243,8 @@
     return [super initWithValue:@(value) andType:RPCTypeBoolean];
 }
 @end
+
+#pragma mark - RPCCall
 
 @implementation RPCCall {
     rpc_call_t call;
@@ -292,6 +298,8 @@
     return (0);
 }
 @end
+
+#pragma mark - RPCClient
 
 @implementation RPCClient {
     rpc_client_t client;
@@ -380,6 +388,8 @@
 }
 @end
 
+#pragma mark - RPCInstance
+
 @implementation RPCInstance {
     RPCClient *client;
     NSString *path;
@@ -411,6 +421,8 @@
     return self;
 }
 @end
+
+#pragma mark - RPCInterface
 
 @implementation RPCInterface
 
