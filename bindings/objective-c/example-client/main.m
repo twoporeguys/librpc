@@ -64,7 +64,7 @@ int main(int argc, const char * argv[]) {
     NSArray *properties = [eventHandle properties];
     NSDictionary *pathDict = properties[3];
     NSString *path = [NSString stringWithFormat:@"/ds/%@", pathDict[@"value"][@"events"]];
-    if (path) {
+    if (pathDict[@"value"][@"events"]) {
         [cl callAsync:@"query" path:path interface:@"com.twoporeguys.momd.DataSource" args:nil callback:^(RPCCall * _Nonnull call, RPCObject * _Nonnull value) {
         
             NSDictionary *dataDict = [value value];
