@@ -445,9 +445,8 @@
                 id uObj = [self recursivelyUnpackProperties:tContainer[key]];
                 [retDict setObject:uObj forKey:key];
             } else {
-                [retDict setObject:obj forKey:key];
+                if (obj) [retDict setObject:obj forKey:key];
             }
-            
         }
         return retDict;
     } else if ([tContainer isKindOfClass:NSArray.class]) {
@@ -458,7 +457,7 @@
                 id uObj = [self recursivelyUnpackProperties:cObj];
                 [retArray addObject:uObj];
             } else {
-                [retArray addObject:obj];
+                if (obj)[retArray addObject:obj];
             }
         }
         return retArray;
