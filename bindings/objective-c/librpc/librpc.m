@@ -329,6 +329,20 @@
     return result;
 }
 
+- (NSDictionary *)spaInstances {
+    NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
+    RPCObject *d = [self callSync:@"get_instances" path:@"/spa" interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil];
+    
+    for (RPCObject *i in [d value]) {
+        NSDictionary *item = (NSDictionary *)[i value];
+        NSString *path = [[item objectForKey:@"path"] value];
+        RPCInstance *instance = [[RPCInstance alloc] initWithClient:self andPath:path];
+        [result setValue:instance forKey:path];
+    }
+    
+    return result;
+}
+
 //- (void)setDispatchQueue:(nullable dispatch_queue_t)queue {
 //    rpc_connection_set_dispatch_queue(conn, queue);
 //}
