@@ -30,58 +30,11 @@
 
 int main(int argc, const char * argv[]) {
     
-    //NSNumber *b = [NSNumber numberWithUnsignedInteger:5];
-    //RPCObject *a = [[RPCObject alloc] initWithValue:b];
-    
-    RPCClient *cl = [[RPCClient alloc] init];
-    [cl connect:@"ws://localhost:5000/ws"];
-    NSDictionary *instances = cl.instances;
-    
-    NSMutableDictionary *mInterfaces = [[NSMutableDictionary alloc] init];
-    for (id key in cl.instances) {
-        if ([key isKindOfClass:[NSString class]]) {
-            RPCInstance *inst = cl.instances[key];
-            [mInterfaces setObject:inst.interfaces forKey:key];
-//            for (id key in inst.interfaces) {
-//                
-//            }
-        }
-    }
-    RPCInterface *taskManager = mInterfaces[@"/task"][@"com.twoporeguys.momd.TaskManager"];
-    RPCObject *nestedArgs = [[RPCObject alloc] initWithValue:@[@"/profile/generic", @"/spa/CharlieAssembly139"]];
-    RPCObject *args = [[RPCObject alloc] initWithValue:@[@"test", nestedArgs]];
-    RPCObject *node = [cl callSync:@"submit" path:taskManager.path interface:taskManager.interface args: args];
-    
-    for (id key in cl.instances) {
-        if ([key isKindOfClass:[NSString class]]) {
-            RPCInstance *inst = cl.instances[key];
-            [mInterfaces setObject:inst.interfaces forKey:key];
-        }
-    }
-    
-    instances = cl.instances;
-    RPCInterface *eventHandle = mInterfaces[@"/task/1"][@"com.twoporeguys.momd.ProfileTask"];
-    NSArray *properties = [eventHandle properties];
-    NSArray *methods = [eventHandle methods];
-    NSDictionary *pathDict = properties[3];
-    NSString *path = [NSString stringWithFormat:@"/ds/%@", pathDict[@"value"][@"events"]];
-    if (pathDict[@"value"][@"events"]) {
-        [cl callAsync:@"query" path:path interface:@"com.twoporeguys.momd.DataSource" args:nil callback:^(RPCCall * _Nonnull call, RPCObject * _Nonnull value) {
-        
-            NSDictionary *dataDict = [value value];
-            NSLog(@"callback: %@", dataDict);
-//            NSData *data = [(RPCObject *)dataDict[@"samples"] value];
-//            for (int i = 0; i < data.length / 4; i++) {
-//                int32_t value = ((int32_t *)data.bytes)[i];
-//                NSLog(@"value: %d", value);
-//            }
-        }];
-    }
+    NSNumber *b = [NSNumber numberWithUnsignedInteger:5];
+    RPCObject *a = [[RPCObject alloc] initWithValue:b];
     
     @autoreleasepool {
-        // insert code here...
-
-        sleep(1000000000);
+        
     }
     return 0;
 }
