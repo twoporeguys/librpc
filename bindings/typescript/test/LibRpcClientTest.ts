@@ -45,6 +45,7 @@ describe('LibRpcClient', () => {
         });
 
         it('should return all matching objects paths', (done: () => void) => {
+            let resultPaths: string[] = [];
             const objects = [
                 {path: '/foo/1', description: 'Foo 1'},
                 {path: '/foo/2', description: 'Foo 2'},
@@ -57,13 +58,12 @@ describe('LibRpcClient', () => {
                 args: objects
             }).observeOn(Scheduler.asap);
             const client = new LibRpcClient('', false, connectorMock);
-            const resultPath: string[] = [];
 
             client.listObjectsInPath('/foo').subscribe(
-                (objectPath: string) => resultPath.push(objectPath),
+                (objectPaths: string[]) => resultPaths = objectPaths,
                 noop,
                 () => {
-                    expect(resultPath).to.eql([
+                    expect(resultPaths).to.deep.equal([
                         '/foo/1',
                         '/foo/2',
                         '/foo',

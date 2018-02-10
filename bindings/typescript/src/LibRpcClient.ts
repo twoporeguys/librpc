@@ -28,33 +28,63 @@ interface Property {
 export class LibRpcClient {
     private static connector: LibRpcConnector;
 
+    private static isEvent(message: LibRpcResponse): boolean {
+        return !!(message && message.namespace === 'events' && message.name === 'event');
+    }
+
+    private static isInstanceAddedEvent(event: LibRpcEvent, interfaceName: string): boolean {
+        return event &&
+            event.interface === 'com.twoporeguys.librpc.Discoverable' &&
+            event.name === 'instance_added' &&
+            event.args &&
+            Array.isArray(event.args.interfaces) &&
+            event.args.interfaces.indexOf(interfaceName) !== -1;
+    }
+
+    private static isInterfaceAddedEvent(event: LibRpcEvent, interfaceName: string): boolean {
+        return event &&
+            event.interface === 'com.twoporeguys.librpc.Introspectable' &&
+            event.name === 'interface_added' &&
+            event.args === interfaceName;
+    }
+
+    private static isChangedEvent(event: LibRpcEvent, path: string, interfaceName: string): boolean {
+        return event &&
+            event.interface === 'com.twoporeguys.librpc.Observable' &&
+            event.name === 'changed' &&
+            event.path === path &&
+            event.args &&
+            event.args.interface === interfaceName;
+    }
+
+    private static isObjectChangeEvent(event: LibRpcEvent): boolean {
+        return event && event.interface === 'com.twoporeguys.librpc.Observable' && event.name === 'changed';
+    }
+
     private connector: LibRpcConnector;
 
-    private askedFragments: Map<string, number>;
     public constructor(url: string, isDebugEnabled: boolean = false, connector?: LibRpcConnector) {
         if (LibRpcClient.connector) {
             this.connector = LibRpcClient.connector;
         } else {
             LibRpcClient.connector = this.connector = (connector || new LibRpcConnector(url, isDebugEnabled));
         }
-        this.askedFragments = new Map<string, number>();
     }
 
     public get events$(): Observable<LibRpcEvent> {
         return this.connector.listen().pipe(
-            filter(this.isEvent),
+            filter(LibRpcClient.isEvent),
             map((message: LibRpcResponse<LibRpcEvent>) => message.args)
         );
     }
 
-    public listObjectsInPath(path: string, id?: string): Observable<string> {
+    public listObjectsInPath(path: string, id?: string): Observable<string[]> {
         return this
             .callMethod<DiscoverableInstance[]>('/', 'com.twoporeguys.librpc.Discoverable', 'get_instances', [], id)
-            .switchMap<DiscoverableInstance[], DiscoverableInstance>(
-                (instances: DiscoverableInstance[]) => Observable.from(instances)
-            )
-            .filter((instance: DiscoverableInstance) => startsWith(instance.path, path))
-            .map<DiscoverableInstance, string>((instance: DiscoverableInstance) => instance.path);
+            .map<DiscoverableInstance[], string[]>((instances: DiscoverableInstance[]) => instances
+                .filter((instance: DiscoverableInstance) => startsWith(instance.path, path))
+                .map((instance: DiscoverableInstance) => instance.path)
+            );
     }
 
     public getObject<T = any>(path: string, interfaceName: string, id?: string): Observable<T> {
@@ -90,13 +120,13 @@ export class LibRpcClient {
     public subscribeToCreation(interfaceName: string): Observable<string> {
         return this.connector.listen()
             .filter((message: LibRpcResponse<LibRpcEvent>) => (
-                this.isEvent(message) && (
-                    this.isInstanceAddedEvent(message.args, interfaceName) ||
-                    this.isInterfaceAddedEvent(message.args, interfaceName)
+                LibRpcClient.isEvent(message) && (
+                    LibRpcClient.isInstanceAddedEvent(message.args, interfaceName) ||
+                    LibRpcClient.isInterfaceAddedEvent(message.args, interfaceName)
                 )
             ))
             .map<LibRpcResponse, string>((message: LibRpcResponse) => (
-                this.isInstanceAddedEvent(message.args, interfaceName) ?
+                LibRpcClient.isInstanceAddedEvent(message.args, interfaceName) ?
                     message.args.args.path :
                     message.args.path
             ));
@@ -105,7 +135,7 @@ export class LibRpcClient {
     public subscribeToChange<T = any>(path: string, interfaceName: string): Observable<Partial<T>> {
         return this.connector.listen()
             .filter((message: LibRpcResponse<LibRpcEvent>) => (
-                this.isEvent(message) && this.isChangedEvent(message.args, path, interfaceName)
+                LibRpcClient.isEvent(message) && LibRpcClient.isChangedEvent(message.args, path, interfaceName)
             ))
             .map<LibRpcResponse, Partial<T>>((message: LibRpcResponse<LibRpcEvent>) => fromPairs([[
                 message.args.args.name,
@@ -126,8 +156,8 @@ export class LibRpcClient {
         };
         return this.connector.send(outMessage)
             .filter((incomingMessage: LibRpcResponse<LibRpcEvent>) => (
-                    this.isEvent(incomingMessage) &&
-                    this.isObjectChangeEvent(incomingMessage.args) &&
+                    LibRpcClient.isEvent(incomingMessage) &&
+                    LibRpcClient.isObjectChangeEvent(incomingMessage.args) &&
                     incomingMessage.args.path === path
             ))
             .map((incomingMessage: LibRpcResponse) => fromPairs([[
@@ -164,7 +194,6 @@ export class LibRpcClient {
                 return result;
             });
     }
-
     private sendRequest<T>(request: LibRpcRequest, responses$: Subject<LibRpcResponse<T>>) {
         this.connector.send(request)
             .filter((response: LibRpcResponse<T>) => response.id === request.id)
@@ -180,38 +209,5 @@ export class LibRpcClient {
                     }
                 }
             });
-    }
-
-    private isEvent(message: LibRpcResponse): boolean {
-        return !!(message && message.namespace === 'events' && message.name === 'event');
-    }
-
-    private isInstanceAddedEvent(event: LibRpcEvent, interfaceName: string): boolean {
-        return event &&
-            event.interface === 'com.twoporeguys.librpc.Discoverable' &&
-            event.name === 'instance_added' &&
-            event.args &&
-            Array.isArray(event.args.interfaces) &&
-            event.args.interfaces.indexOf(interfaceName) !== -1;
-    }
-
-    private isInterfaceAddedEvent(event: LibRpcEvent, interfaceName: string): boolean {
-        return event &&
-            event.interface === 'com.twoporeguys.librpc.Introspectable' &&
-            event.name === 'interface_added' &&
-            event.args === interfaceName;
-    }
-
-    private isChangedEvent(event: LibRpcEvent, path: string, interfaceName: string): boolean {
-        return event &&
-            event.interface === 'com.twoporeguys.librpc.Observable' &&
-            event.name === 'changed' &&
-            event.path === path &&
-            event.args &&
-            event.args.interface === interfaceName;
-    }
-
-    private isObjectChangeEvent(event: LibRpcEvent): boolean {
-        return event && event.interface === 'com.twoporeguys.librpc.Observable' && event.name === 'changed';
     }
 }
