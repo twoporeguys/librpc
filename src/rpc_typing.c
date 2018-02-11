@@ -41,7 +41,6 @@ static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *typei);
 static char *rpct_canonical_type(struct rpct_typei *typei);
 static int rpct_read_type(struct rpct_file *file, const char *decl,
     rpc_object_t obj);
-static int rpct_read_func(const char *decl, rpc_object_t obj);
 static int rpct_read_file(const char *path);
 static bool rpct_validate_args(struct rpct_function *func, rpc_object_t args);
 static bool rpct_validate_return(struct rpct_function *func,
@@ -230,38 +229,6 @@ rpct_read_meta(struct rpct_file *file, rpc_object_t obj)
 	}
 
 	return (ret > 0 ? 0 : -1);
-}
-
-static struct rpct_member *
-rpct_read_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
-{
-	struct rpct_member *member;
-	const char *typedecl = NULL;
-	const char *description = "";
-	rpc_object_t constraints = NULL;
-
-	rpc_object_unpack(obj, "{s,s,v}",
-	    "type", &typedecl,
-	    "description", &description,
-	    "constraints", &constraints);
-
-	member = g_malloc0(sizeof(*member));
-	member->name = g_strdup(decl);
-	member->description = description != NULL ? g_strdup(description) : NULL;
-	member->origin = type;
-	member->type = rpct_instantiate_type(typedecl, NULL, type, type->file);
-	member->constraints = g_hash_table_new_full(g_str_hash, g_str_equal,
-	    g_free, (GDestroyNotify)rpc_release_impl);
-
-	if (constraints != NULL) {
-		rpc_dictionary_apply(constraints, ^(const char *key, rpc_object_t value) {
-			g_hash_table_insert(member->constraints, g_strdup(key),
-			    value);
-			return ((bool)true);
-		});
-	}
-
-	return (member);
 }
 
 struct rpct_typei *
