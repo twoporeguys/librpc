@@ -152,8 +152,6 @@ int \hyperlink{service_8h_ac8c50ecedc9e59086e1ab63e1dd6c425}{rpc\+\_\+function\+
 \item 
 void \hyperlink{service_8h_a5f0f3252a2c4e12050419519afe64e92}{rpc\+\_\+function\+\_\+end} (void $\ast$\+\_\+\+Nonnull cookie)
 \item 
-void \hyperlink{service_8h_a6018b6f71a3d1af7494125b8ba22f981}{rpc\+\_\+function\+\_\+kill} (void $\ast$\+\_\+\+Nonnull cookie)
-\item 
 bool \hyperlink{service_8h_ad0185b8a60875843d91ca00b3e8d4886}{rpc\+\_\+function\+\_\+should\+\_\+abort} (void $\ast$\+\_\+\+Nonnull cookie)
 \item 
 void \hyperlink{service_8h_a4b6ceb43e090fda8928a3a46e7da614a}{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler} (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nullable \hyperlink{service_8h_aebbaf8e39f128b6655d23aad6a8ab634}{rpc\+\_\+abort\+\_\+handler\+\_\+t} handler)
@@ -906,21 +904,6 @@ Returns the path method was called on or N\+U\+LL.
 {\em cookie} & Running call handle \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{service_8h_a6018b6f71a3d1af7494125b8ba22f981}\label{service_8h_a6018b6f71a3d1af7494125b8ba22f981}} 
-\index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+kill@{rpc\+\_\+function\+\_\+kill}}
-\index{rpc\+\_\+function\+\_\+kill@{rpc\+\_\+function\+\_\+kill}!service.\+h@{service.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+function\+\_\+kill()}{rpc\_function\_kill()}}
-{\footnotesize\ttfamily void rpc\+\_\+function\+\_\+kill (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nonnull}]{cookie }\end{DoxyParamCaption})}
-
-Asynchronously abort a running call on the server.
-
-This function makes \hyperlink{service_8h_ad0185b8a60875843d91ca00b3e8d4886}{rpc\+\_\+function\+\_\+should\+\_\+abort} return {\ttfamily true} and a running \hyperlink{service_8h_ac8c50ecedc9e59086e1ab63e1dd6c425}{rpc\+\_\+function\+\_\+yield} to return immediately with an error.
-
-
-\begin{DoxyParams}{Parameters}
-{\em cookie} & Running call handle \\
-\hline
-\end{DoxyParams}
 \mbox{\Hypertarget{service_8h_a1c8603d576553224db42579cb9180d8d}\label{service_8h_a1c8603d576553224db42579cb9180d8d}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+respond@{rpc\+\_\+function\+\_\+respond}}
 \index{rpc\+\_\+function\+\_\+respond@{rpc\+\_\+function\+\_\+respond}!service.\+h@{service.\+h}}
@@ -1057,7 +1040,7 @@ User data pointer
 \subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+get\+\_\+path()}{rpc\_instance\_get\_path()}}
 {\footnotesize\ttfamily const char$\ast$ \+\_\+\+Nonnull rpc\+\_\+instance\+\_\+get\+\_\+path (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance }\end{DoxyParamCaption})}
 
-Returns {\ttfamily instance} path.
+Returns the object path associated with the instance.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1065,7 +1048,7 @@ Returns {\ttfamily instance} path.
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Instance path 
+Object path 
 \end{DoxyReturn}
 \mbox{\Hypertarget{service_8h_a7224c3ccac52a67ec034c6cc06e7a8b7}\label{service_8h_a7224c3ccac52a67ec034c6cc06e7a8b7}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+get\+\_\+property\+\_\+rights@{rpc\+\_\+instance\+\_\+get\+\_\+property\+\_\+rights}}
@@ -1363,7 +1346,7 @@ After using this function, return value from the getter is ignored.
 \subsubsection{\texorpdfstring{rpc\+\_\+property\+\_\+get\+\_\+arg()}{rpc\_property\_get\_arg()}}
 {\footnotesize\ttfamily void$\ast$ \+\_\+\+Nullable rpc\+\_\+property\+\_\+get\+\_\+arg (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nonnull}]{cookie }\end{DoxyParamCaption})}
 
-Returns the user data pointer associated with the currently running getter/setter.
+Returns the user data pointer associated with the property.
 
 
 \begin{DoxyParams}{Parameters}
