@@ -789,7 +789,7 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface, const c
 	bool read_write = false;
 	bool write_only = false;
 
-	rpc_object_unpack(obj, "{s,s,v}",
+	rpc_object_unpack(obj, "{s,s,b,b,b}",
 	    "description", &description,
 	    "type", &type,
 	    "read-only", &read_only,
