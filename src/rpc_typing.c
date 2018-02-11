@@ -1472,9 +1472,7 @@ rpc_object_t
 rpct_serialize(rpc_object_t object)
 {
 	const struct rpct_class_handler *handler;
-	rpc_type_t objtype = rpc_get_type(object);
 	rpct_class_t clazz = object->ro_typei->type->clazz;
-	rpc_object_t result;
 
 	if (object->ro_typei == NULL)
 		return (object);
