@@ -50,19 +50,6 @@ CLASS_NAMES = {
 }
 
 
-def generate_module(typing, name):
-    entries = typing.types
-    typedefs = (t for t in entries if t.is_builtin or t.is_typedef)
-    structures = (t for t in entries if t.is_struct or t.is_union or t.is_enum)
-
-    t = lookup.get_template('module.mako')
-    return t.render(
-        typedefs=sorted(typedefs, key=lambda t: t.name),
-        structures=sorted(structures, key=lambda t: t.name),
-        interfaces=sorted(t.interfaces, key=lambda t: t.name)
-    )
-
-
 def generate_index(typing):
     entries = typing.types
     types = (t for t in entries if t.is_builtin)
@@ -71,7 +58,7 @@ def generate_index(typing):
 
     t = lookup.get_template('index.mako')
     return t.render(
-        interfaces=typing.interfaces,
+        interfaces=sorted(typing.interfaces, key=lambda t: t.name),
         types=sorted(types, key=lambda t: t.name),
         typedefs=sorted(typedefs, key=lambda t: t.name),
         structs=sorted(structures, key=lambda t: t.name)

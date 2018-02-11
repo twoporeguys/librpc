@@ -3,7 +3,11 @@
 
 <h1>Interface ${iface.name}</h1>
 <p>
-    ${iface.description}
+    %if iface.description:
+        ${iface.description}
+    %else:
+        <i>No description</i>
+    %endif
 </p>
 
 <h3>Methods:</h3>
@@ -22,7 +26,7 @@
 
 <h3>Properties:</h3>
 % for p in properties:
-    <h5>${p.name}</h5>
+    <h5>${partials.type(p.type)} ${p.name}</h5>
 % endfor
 
 <h3>Events:</h3>

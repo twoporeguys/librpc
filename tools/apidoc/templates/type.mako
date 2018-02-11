@@ -3,4 +3,6 @@
 
 % if t.is_struct:
     ${partials.struct(t)}
-% endif
+% elif t.is_typedef:
+    ${partials.typedef(t)}
+%endif
