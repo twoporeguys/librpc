@@ -1,7 +1,7 @@
 <%inherit file="base.mako"/>
 <%namespace name="partials" file="partials.mako"/>
 
-<h1>API documentation</h1>
+<h1>${name} API documentation</h1>
 <h3>Types:</h3>
 <ul>
     % for i in types:

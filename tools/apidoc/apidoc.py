@@ -50,7 +50,7 @@ CLASS_NAMES = {
 }
 
 
-def generate_index(typing):
+def generate_index(name, typing):
     entries = typing.types
     types = (t for t in entries if t.is_builtin)
     typedefs = (t for t in entries if t.is_typedef)
@@ -58,6 +58,7 @@ def generate_index(typing):
 
     t = lookup.get_template('index.mako')
     return t.render(
+        name=name,
         interfaces=sorted(typing.interfaces, key=lambda t: t.name),
         types=sorted(types, key=lambda t: t.name),
         typedefs=sorted(typedefs, key=lambda t: t.name),
@@ -91,9 +92,10 @@ def generate_file(outdir, name, contents):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', action='append')
-    parser.add_argument('-d', action='append')
-    parser.add_argument('-o')
+    parser.add_argument('--name', metavar='NAME', help='Project name')
+    parser.add_argument('-f', metavar='FILE', action='append', help='IDL file')
+    parser.add_argument('-d', metavar='DIRECTORY', action='append', help='IDL directory')
+    parser.add_argument('-o', metavar='DIRECTORY', help='Output directory')
     args = parser.parse_args()
 
     typing = librpc.Typing()
@@ -122,7 +124,7 @@ def main():
     for i in typing.interfaces:
         generate_file(outdir, 'interface-{0}.html'.format(i.name), generate_interface(i))
 
-    generate_file(outdir, 'index.html', generate_index(typing))
+    generate_file(outdir, 'index.html', generate_index(args.name, typing))
 
 
 if __name__ == '__main__':
