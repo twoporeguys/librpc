@@ -1804,7 +1804,7 @@ cdef class Member(object):
 
     property description:
         def __get__(self):
-            return rpct_member_get_description(self.rpcmem).decode('utf-8')
+            return str_or_none(rpct_member_get_description(self.rpcmem))
 
 
 cdef class Interface(object):
