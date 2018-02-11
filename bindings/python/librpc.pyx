@@ -2018,10 +2018,7 @@ cdef raise_internal_exc(rpc=False):
         exc = RpcException
 
     if error != <rpc_object_t>NULL:
-        try:
-            raise exc(rpc_error_get_code(error), rpc_error_get_message(error).decode('utf-8'))
-        finally:
-            free(<void *>error)
+        raise exc(rpc_error_get_code(error), rpc_error_get_message(error).decode('utf-8'))
 
     raise exc(errno.EFAULT, "Unknown error")
 
