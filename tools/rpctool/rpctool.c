@@ -208,41 +208,21 @@ error:
 static int
 cmd_tree(int argc, char *argv[])
 {
-	rpc_call_t call;
 	rpc_object_t tree;
 	rpc_connection_t conn;
 	int ret = 0;
 
-	tree = rpc_array_create();
 	conn = connect();
-	call = rpc_connection_call(conn, argv[0], RPC_DISCOVERABLE_INTERFACE,
-	    "get_instances", NULL, NULL);
+	tree = rpc_connection_call_syncp(conn, argv[0], RPC_DISCOVERABLE_INTERFACE,
+	    "get_instances", "[]");
 
-	for (;;) {
-		rpc_call_wait(call);
-
-		switch (rpc_call_status(call)) {
-		case RPC_CALL_MORE_AVAILABLE:
-			rpc_array_append_stolen_value(tree, rpc_call_result(call));
-			rpc_call_continue(call, false);
-			break;
-
-		case RPC_CALL_DONE:
-		case RPC_CALL_ENDED:
-			goto done;
-
-		case RPC_CALL_ERROR:
-			ret = 1;
-			fprintf(stderr, "Cannot get instances: %s\n",
-			    rpc_error_get_message(rpc_call_result(call)));
-			goto error;
-
-		default:
-			g_assert_not_reached();
-		}
+	if (rpc_is_error(tree)) {
+		ret = 1;
+		fprintf(stderr, "Cannot get instances: %s\n",
+		    rpc_error_get_message(tree));
+		goto error;
 	}
 
-done:
 	rpc_array_sort(tree, ^(rpc_object_t o1, rpc_object_t o2) {
 		return (g_strcmp0(
 		    rpc_dictionary_get_string(o1, "path"),
@@ -263,7 +243,6 @@ done:
 
 error:
 	rpc_release(tree);
-	rpc_call_free(call);
 	return (ret);
 }
 
@@ -271,40 +250,31 @@ static int
 cmd_inspect(int argc, char *argv[])
 {
 	rpc_connection_t conn;
-	rpc_call_t call;
-	const char *interface;
+	rpc_object_t result;
 	int ret = 0;
 
 	conn = connect();
-	call = rpc_connection_call(conn, argv[0], RPC_INTROSPECTABLE_INTERFACE,
-	    "get_interfaces", NULL, NULL);
+	result = rpc_connection_call_syncp(conn, argv[0],
+	    RPC_INTROSPECTABLE_INTERFACE, "get_interfaces", "[]");
 
-	for (;;) {
-		rpc_call_wait(call);
-
-		switch (rpc_call_status(call)) {
-		case RPC_CALL_MORE_AVAILABLE:
-			interface = rpc_string_get_string_ptr(rpc_call_result(call));
-			printf("Interface %s:\n", interface);
-			inspect_interface(conn, argv[0], interface);
-			rpc_call_continue(call, false);
-			break;
-
-		case RPC_CALL_DONE:
-		case RPC_CALL_ENDED:
-			goto done;
-
-		case RPC_CALL_ERROR:
-			ret = 1;
-			goto error;
-
-		default:
-			g_assert_not_reached();
-		}
+	if (rpc_is_error(result)) {
+		ret = 1;
+		fprintf(stderr, "Cannot inspect instance: %s\n",
+		    rpc_error_get_message(result));
+		goto error;
 	}
 
-done:
+	rpc_array_apply(result, ^bool(size_t idx, rpc_object_t value) {
+		const char *interface;
+
+		interface = rpc_string_get_string_ptr(value);
+		printf("Interface %s:\n", interface);
+		inspect_interface(conn, argv[0], interface);
+		return (true);
+	});
+
 error:
+	rpc_release(result);
 	return (ret);
 }
 
@@ -413,10 +383,22 @@ cmd_listen(int argc, char *argv[])
 	rpc_connection_t conn;
 
 	conn = connect();
-	rpc_connection_register_event_handler(conn, argv[0], argv[1], argv[2],
-	    ^(const char *path, const char *interface, const char *name, rpc_object_t args) {
-	    	output(args);
-	    });
+	rpc_connection_register_event_handler(conn, argv[0],
+	    RPC_OBSERVABLE_INTERFACE, "changed",
+	    ^(const char *p, const char *i, const char *n, rpc_object_t args) {
+		const char *prop_interface;
+		const char *prop_name;
+		rpc_object_t value;
+
+		if (rpc_object_unpack(args, "{s,s,v}",
+		    "interface", &prop_interface,
+		    "name", &prop_name,
+		    "value", &value) < 3)
+			return;
+
+		printf("New value of property %s.%s: ", prop_interface, prop_name);
+		output(value);
+	});
 
 	pause();
 	return (0);

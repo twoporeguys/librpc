@@ -2,5 +2,6 @@
 --require source-map-support/register
 --full-trace
 --bail
+--watch-extensions ts
 --reporter xunit
 ./test/**/*Test.ts

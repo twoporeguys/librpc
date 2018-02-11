@@ -426,6 +426,7 @@ on_rpc_abort(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 	}
 
 	g_mutex_lock(&call->ric_mtx);
+	call->ric_ended = true;
 	call->ric_aborted = true;
 	g_cond_broadcast(&call->ric_cv);
 	g_mutex_unlock(&call->ric_mtx);

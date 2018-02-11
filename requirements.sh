@@ -4,7 +4,7 @@ case "`uname -s`" in
     Darwin*)
         echo "I am a Mac.  Brew installing stuff."
         echo "Don't worry about warnings of things already installed."
-        brew install glib libsoup yajl libusb libyaml yajl python3
+        brew install glib libsoup yajl libusb libyaml yajl python3 cmake
         pip3 install cython
         ;;
     Linux*)

@@ -4,6 +4,9 @@ librpc messages are dictionary objects serialized using MessagePack format.
 There are several extension types defined for data types not available
 in the MessagePack specification.
 
+For the sake of readability, examples shown below use JSON format that
+represents the desired structure of the message.
+
 Extension types
 ---------------
 
@@ -31,7 +34,6 @@ Error dictionaries consist of the following fields:
 Request message
 ---------------
 Sent by a client to a server
-
 
 Normal response message
 -----------------------

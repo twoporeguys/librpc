@@ -370,7 +370,7 @@
     
     call = rpc_connection_call(conn, [path UTF8String], [interface UTF8String],
                                [method UTF8String], [args nativeValue],
-                               ^bool(rpc_object_t args, rpc_call_status_t status) {
+                               ^bool(rpc_call_t call) {
         cb([[RPCCall alloc] initFromNativeObject:call], [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)]);
         return (bool)true;
     });

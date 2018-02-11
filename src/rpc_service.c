@@ -36,14 +36,14 @@
 #include <glib/gprintf.h>
 #include "internal.h"
 
-static bool rpc_context_path_is_valid(const char *path);
-static rpc_object_t rpc_get_objects(void *cookie, rpc_object_t args);
-static rpc_object_t rpc_get_interfaces(void *cookie, rpc_object_t args);
-static rpc_object_t rpc_get_methods(void *cookie, rpc_object_t args);
-static rpc_object_t rpc_interface_exists(void *cookie, rpc_object_t args);
-static rpc_object_t rpc_observable_property_get(void *cookie, rpc_object_t args);
-static rpc_object_t rpc_observable_property_get_all(void *cookie, rpc_object_t args);
-static rpc_object_t rpc_observable_property_set(void *cookie, rpc_object_t args);
+static bool rpc_context_path_is_valid(const char *);
+static rpc_object_t rpc_get_objects(void *, rpc_object_t);
+static rpc_object_t rpc_get_interfaces(void *, rpc_object_t);
+static rpc_object_t rpc_get_methods(void *, rpc_object_t);
+static rpc_object_t rpc_interface_exists(void *, rpc_object_t);
+static rpc_object_t rpc_observable_property_get(void *, rpc_object_t);
+static rpc_object_t rpc_observable_property_get_all(void *, rpc_object_t);
+static rpc_object_t rpc_observable_property_set(void *, rpc_object_t);
 
 static const struct rpc_if_member rpc_discoverable_vtable[] = {
 	RPC_EVENT(instance_added),
@@ -219,6 +219,10 @@ rpc_instance_register_property(rpc_instance_t instance, const char *interface,
 int
 rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
 {
+	GHashTableIter iter;
+	rpc_object_t payload;
+	rpc_object_t ifaces;
+	const char *key;
 
 	g_rw_lock_writer_lock(&context->rcx_rwlock);
 
@@ -228,9 +232,17 @@ rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
 		return (-1);
 	}
 
-	rpc_context_emit_event(context, "/",
-	    RPC_DISCOVERABLE_INTERFACE, "object_added",
-	    rpc_string_create(instance->ri_path));
+	ifaces = rpc_array_create();
+	g_hash_table_iter_init(&iter, instance->ri_interfaces);
+	while (g_hash_table_iter_next(&iter, (gpointer)&key, NULL))
+		rpc_array_append_stolen_value(ifaces, rpc_string_create(key));
+
+	payload = rpc_object_pack("{s,v}",
+	    "path", instance->ri_path,
+	    "interfaces", ifaces);
+
+	rpc_context_emit_event(context, "/", RPC_DISCOVERABLE_INTERFACE,
+	    "instance_added", payload);
 
 	instance->ri_context = context;
 
@@ -247,7 +259,7 @@ rpc_context_unregister_instance(rpc_context_t context, const char *path)
 
 	if (g_hash_table_remove(context->rcx_instances, path)) {
 		rpc_context_emit_event(context, "/",
-		    RPC_DISCOVERABLE_INTERFACE, "object_removed",
+		    RPC_DISCOVERABLE_INTERFACE, "instance_removed",
 		    rpc_string_create(path));
 	}
 
@@ -395,10 +407,16 @@ rpc_function_yield(void *cookie, rpc_object_t fragment)
 
 	g_mutex_lock(&call->ric_mtx);
 
-	while (call->ric_producer_seqno == call->ric_consumer_seqno && !call->ric_aborted)
+	while (call->ric_producer_seqno == call->ric_consumer_seqno &&
+	    !call->ric_aborted)
 		g_cond_wait(&call->ric_cv, &call->ric_mtx);
 
 	if (call->ric_aborted) {
+		if (!call->ric_ended) {
+			rpc_connection_send_end(call->ric_conn,
+			    call->ric_id, call->ric_producer_seqno);
+		}
+
 		g_mutex_unlock(&call->ric_mtx);
 		rpc_release(fragment);
 		return (-1);
@@ -424,18 +442,35 @@ rpc_function_end(void *cookie)
 
 	g_mutex_lock(&call->ric_mtx);
 
-	while (call->ric_producer_seqno == call->ric_consumer_seqno && !call->ric_aborted)
+	while (call->ric_producer_seqno == call->ric_consumer_seqno &&
+	    !call->ric_aborted)
 		g_cond_wait(&call->ric_cv, &call->ric_mtx);
+
+	if (!call->ric_ended) {
+		rpc_connection_send_end(call->ric_conn, call->ric_id,
+		    call->ric_producer_seqno);
+	}
 
 	if (call->ric_aborted) {
 		g_mutex_unlock(&call->ric_mtx);
 		return;
 	}
 
-	rpc_connection_send_end(call->ric_conn, call->ric_id, call->ric_producer_seqno);
 	call->ric_producer_seqno++;
 	call->ric_streaming = true;
 	call->ric_ended = true;
+	g_mutex_unlock(&call->ric_mtx);
+	rpc_connection_close_inbound_call(call);
+}
+
+void
+rpc_function_kill(void *cookie)
+{
+	struct rpc_inbound_call *call = cookie;
+
+	g_mutex_lock(&call->ric_mtx);
+	call->ric_aborted = true;
+	g_cond_broadcast(&call->ric_cv);
 	g_mutex_unlock(&call->ric_mtx);
 }
 
@@ -451,6 +486,9 @@ void rpc_function_set_async_abort_handler(void *_Nonnull cookie,
     _Nullable rpc_abort_handler_t handler)
 {
 	struct rpc_inbound_call *call = cookie;
+
+	if (call->ric_abort_handler != NULL)
+		Block_release(call->ric_abort_handler);
 
 	call->ric_abort_handler = Block_copy(handler);
 }
@@ -862,7 +900,7 @@ rpc_get_methods(void *cookie, rpc_object_t args)
 	const char *interface;
 	const char *k;
 	struct rpc_if_member *v;
-	rpc_object_t fragment;
+	rpc_object_t result = rpc_array_create();
 	rpc_instance_t instance = rpc_function_get_instance(cookie);
 
 	if (rpc_object_unpack(args, "[s]", &interface) < 1) {
@@ -870,9 +908,11 @@ rpc_get_methods(void *cookie, rpc_object_t args)
 		return (NULL);
 	}
 
+	g_rw_lock_reader_lock(&instance->ri_rwlock);
 	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
 	if (priv == NULL) {
 		rpc_function_error(cookie, ENOENT, "Interface not found");
+		g_rw_lock_reader_unlock(&instance->ri_rwlock);
 		return (NULL);
 	}
 
@@ -881,13 +921,11 @@ rpc_get_methods(void *cookie, rpc_object_t args)
 		if (v->rim_type != RPC_MEMBER_METHOD)
 			continue;
 
-		fragment = rpc_string_create(k);
-		if (rpc_function_yield(cookie, fragment) != 0)
-			goto done;
+		rpc_array_append_stolen_value(result, rpc_string_create(k));
 	}
 
-done:
-	return ((rpc_object_t)NULL);
+	g_rw_lock_reader_unlock(&instance->ri_rwlock);
+	return (result);
 }
 
 static rpc_object_t
@@ -1017,8 +1055,14 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 		if (v->rim_type != RPC_MEMBER_PROPERTY)
 			continue;
 
-		if (v->rim_property.rp_getter == NULL)
+		if (v->rim_property.rp_getter == NULL) {
+			value = rpc_error_create(EPERM, "Not readable", NULL);
+			rpc_array_append_stolen_value(
+			    result, rpc_object_pack("{s,v}", "name",
+			    v->rim_name, "value", value));
+
 			continue;
+		}
 
 		prop.instance = inst;
 		prop.name = k;

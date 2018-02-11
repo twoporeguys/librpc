@@ -506,6 +506,16 @@ int rpc_function_yield(void *_Nonnull cookie, _Nonnull rpc_object_t fragment);
 void rpc_function_end(void *_Nonnull cookie);
 
 /**
+ * Asynchronously abort a running call on the server.
+ *
+ * This function makes @ref rpc_function_should_abort return @p true
+ * and a running @ref rpc_function_yield to return immediately with an error.
+ *
+ * @param cookie Running call handle
+ */
+void rpc_function_kill(void *_Nonnull cookie);
+
+/**
  * Returns the value of a flag saying whether or not a method should
  * immediately stop because it was aborted on the client side.
  *
@@ -553,10 +563,10 @@ void rpc_instance_set_description(_Nonnull rpc_instance_t instance,
 void *_Nullable rpc_instance_get_arg(_Nonnull rpc_instance_t instance);
 
 /**
- * Returns the object path associated with the instance.
+ * Returns @p instance path.
  *
  * @param instance Instance handle
- * @return Object path
+ * @return Instance path
  */
 const char *_Nonnull rpc_instance_get_path(_Nonnull rpc_instance_t instance);
 
@@ -739,7 +749,8 @@ void rpc_instance_property_changed(_Nonnull rpc_instance_t instance,
 _Nonnull rpc_instance_t rpc_property_get_instance(void *_Nonnull cookie);
 
 /**
- * Returns the user data pointer associated with the property.
+ * Returns the user data pointer associated with the currently running
+ * getter/setter.
  *
  * @param cookie Property call handle
  * @return User data pointer
