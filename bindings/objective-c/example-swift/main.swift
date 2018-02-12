@@ -26,7 +26,6 @@
  */
 
 import Foundation
-import librpc
 
 /*var client = librpc.RPCClient();
 client.connect("tcp://10.251.2.127:5001");

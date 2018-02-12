@@ -32,9 +32,9 @@ int main(int argc, const char * argv[]) {
     
     NSNumber *b = [NSNumber numberWithUnsignedInteger:5];
     RPCObject *a = [[RPCObject alloc] initWithValue:b];
+    
     @autoreleasepool {
-        // insert code here...
-        NSLog(@"%@", [a describe]);
+        
     }
     return 0;
 }

@@ -32,6 +32,8 @@
 #include <rpc/client.h>
 #include <rpc/service.h>
 
+#pragma mark - RPCObject
+
 @implementation RPCObject {
     rpc_object_t obj;
 }
@@ -59,7 +61,7 @@
     }
     
     if ([value isKindOfClass:[NSDate class]]) {
-        
+        obj = rpc_date_create([(NSDate *)value timeIntervalSince1970]);
     }
     
     if ([value isKindOfClass:[NSData class]]) {
@@ -76,7 +78,7 @@
         obj = rpc_array_create();
         for (id object in (NSArray *)value) {
             RPCObject *robj = [[RPCObject alloc] initWithValue:object];
-            rpc_array_append_stolen_value(obj, robj->obj);
+            rpc_array_append_value(obj, robj->obj);
         }
         
         return (self);
@@ -131,8 +133,10 @@
 }
 
 - (RPCObject *)initFromNativeObject:(void *)object {
-    obj = rpc_retain(object);
-    return self;
+    if (object) {
+        obj = rpc_retain(object);
+        return self;
+    } else return nil;
 }
 
 - (void)dealloc {
@@ -143,7 +147,7 @@
     return ([[NSString alloc] initWithUTF8String:rpc_copy_description(obj)]);
 }
 
-- (NSObject *)value {
+- (id)value {
     __block NSMutableArray *array;
     __block NSMutableDictionary *dict;
     
@@ -207,6 +211,8 @@
 }
 @end
 
+#pragma mark - RPCTypes Exception UInt Double Bool
+
 @implementation RPCException
 - (nonnull instancetype)initWithCode:(NSNumber *)code andMessage:(NSString *)message {
     return (RPCException *)[NSException
@@ -237,6 +243,8 @@
     return [super initWithValue:@(value) andType:RPCTypeBoolean];
 }
 @end
+
+#pragma mark - RPCCall
 
 @implementation RPCCall {
     rpc_call_t call;
@@ -283,12 +291,15 @@
             @throw [[[RPCObject alloc] initFromNativeObject:rpc_call_result(call)] value];
 
         case RPC_CALL_ENDED:
+        case RPC_CALL_DONE:
             return (0);
     }
 
     return (0);
 }
 @end
+
+#pragma mark - RPCClient
 
 @implementation RPCClient {
     rpc_client_t client;
@@ -305,22 +316,25 @@
 }
 
 - (NSDictionary *)instances {
+    return [self instancesForPath:@"/"];
+}
+
+- (NSDictionary *)instancesForPath:(NSString *)path {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-    RPCCall *call = [self call:@"get_instances" path:@"/" interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil];
-
-    for (RPCObject *value in call) {
-        NSDictionary *item = (NSDictionary *)[value value];
-        NSString *path = [[item objectForKey:@"path"] value];
-        RPCInstance *instance = [[RPCInstance alloc] initWithClient:self andPath:path];
-        [result setValue:instance forKey:path];
+    RPCObject *d = [self callSync:@"get_instances" path:path interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil];
+    
+    for (RPCObject *i in [d value]) {
+        NSDictionary *item = (NSDictionary *)[i value];
+        NSString *iPath = [[item objectForKey:@"path"] value];
+        RPCInstance *instance = [[RPCInstance alloc] initWithClient:self andPath:iPath];
+        [result setValue:instance forKey:iPath];
     }
-
     return result;
 }
 
-- (void)setDispatchQueue:(nullable dispatch_queue_t)queue {
-    rpc_connection_set_dispatch_queue(conn, queue);
-}
+//- (void)setDispatchQueue:(nullable dispatch_queue_t)queue {
+//    rpc_connection_set_dispatch_queue(conn, queue);
+//}
 
 - (RPCObject *)callSync:(NSString *)method
                    path:(NSString *)path
@@ -328,7 +342,7 @@
                    args:(RPCObject *)args {
     rpc_call_t call;
     
-    call = rpc_connection_call(conn, [path UTF8String], [interface UTF8String], [method UTF8String], NULL, NULL);
+    call = rpc_connection_call(conn, [path UTF8String], [interface UTF8String], [method UTF8String], [args nativeValue], NULL);
     rpc_call_wait(call);
     
     switch (rpc_call_status(call)) {
@@ -377,6 +391,8 @@
 }
 @end
 
+#pragma mark - RPCInstance
+
 @implementation RPCInstance {
     RPCClient *client;
     NSString *path;
@@ -392,9 +408,8 @@
 
 - (NSDictionary *)interfaces {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-    RPCCall *call = [client call:@"get_interfaces" path:path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:nil];
-
-    for (RPCObject *value in call) {
+    RPCObject *call = [client callSync:@"get_interfaces" path:path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:nil];
+    for (RPCObject *value in [call value]) {
         NSString *name = (NSString *)[value value];
         RPCInterface *interface = [[RPCInterface alloc] initWithClient:client path:path andInterface:name];
         [result setValue:interface forKey:name];
@@ -410,17 +425,70 @@
 }
 @end
 
-@implementation RPCInterface {
-    RPCClient *client;
-    NSString *path;
-    NSString *interface;
-}
+#pragma mark - RPCInterface
+
+@implementation RPCInterface
 
 - (instancetype)initWithClient:(RPCClient *)client path:(NSString *)path andInterface:(NSString *)interface {
-    client = client;
-    path = path;
-    interface = interface;
+    self = [super init];
+    if (self) {
+        _client = client;
+        _path = path;
+        _interface = interface;
+    }
     return self;
+}
+
+- (NSArray *)properties {
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    RPCObject *args = [[RPCObject alloc] initWithValue:@[_interface]];
+    RPCObject *i = [_client callSync:@"get_all" path:_path interface:@(RPC_OBSERVABLE_INTERFACE) args:args];
+    for (RPCObject *value in [i value]) {
+        [result addObject:[self recursivelyUnpackProperties:value]];
+    }
+    return result.copy;
+}
+
+- (id)recursivelyUnpackProperties:(id)container {
+    
+    id tContainer = [container value];
+    if ([tContainer isKindOfClass:NSDictionary.class]) {
+        NSMutableDictionary *retDict = [NSMutableDictionary new];
+        for (id key in tContainer) {
+            id obj = [tContainer[key] value];
+            if ([obj isKindOfClass:NSDictionary.class] || [obj isKindOfClass:NSArray.class]) {
+                id uObj = [self recursivelyUnpackProperties:tContainer[key]];
+                [retDict setObject:uObj forKey:key];
+            } else {
+                if (obj) [retDict setObject:obj forKey:key];
+            }
+        }
+        return retDict;
+    } else if ([tContainer isKindOfClass:NSArray.class]) {
+        NSMutableArray *retArray = [NSMutableArray new];
+        for (id cObj in tContainer) {
+            id obj = [cObj value];
+            if ([obj isKindOfClass:NSDictionary.class] || [obj isKindOfClass:NSArray.class]) {
+                id uObj = [self recursivelyUnpackProperties:cObj];
+                [retArray addObject:uObj];
+            } else {
+                if (obj)[retArray addObject:obj];
+            }
+        }
+        return retArray;
+    } else {
+        return [tContainer value];
+    }
+}
+
+- (NSArray *)methods {
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    RPCObject *i = [_client callSync:@"get_methods" path:_path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:[[RPCObject alloc] initWithValue:@[_interface]]];
+    for (RPCObject *value in [i value]) {
+        NSString *name = (NSString *)[value value];
+        [result addObject:name];
+    }
+    return result;
 }
 
 - (BOOL)respondsToSelector:(SEL)aSelector {
@@ -435,7 +503,7 @@
     NSArray *args;
     RPCCall *result;
     [anInvocation getArgument:&args atIndex:0];
-    result = [client call:@"" path:path interface:interface args:[[RPCObject alloc] initWithValue:args]];
+    result = [_client call:@"" path:_path interface:_interface args:[[RPCObject alloc] initWithValue:args]];
     [anInvocation setReturnValue:(__bridge void *)result];
 }
 @end
