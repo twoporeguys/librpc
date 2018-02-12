@@ -33,6 +33,7 @@ import mako
 import mako.template
 import mako.lookup
 import librpc
+from pkg_resources import resource_string
 
 
 curdir = os.path.abspath(os.path.dirname(__file__))

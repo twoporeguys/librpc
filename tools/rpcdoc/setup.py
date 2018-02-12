@@ -34,7 +34,8 @@ setup(
     author='Jakub Klama',
     author_email='jakub.klama@twoporeguys.com',
     url='https://github.com/twoporeguys/librpc',
-    py_modules=['rpcdoc'],
+    include_package_data=True,
+    packages=['rpcdoc'],
     entry_points={
         'console_scripts': [
             'rpcdoc=rpcdoc:main'
