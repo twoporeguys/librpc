@@ -44,3 +44,5 @@ cmake-build-debug
 *.xcuserdatad
 xcuserdata
 
+# Python stuff
+__pycache__
