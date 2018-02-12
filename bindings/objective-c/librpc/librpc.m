@@ -319,10 +319,6 @@
     return [self instancesForPath:@"/"];
 }
 
-- (NSDictionary *)spaInstances {
-    return [self instancesForPath:@"/spa"];
-}
-
 - (NSDictionary *)instancesForPath:(NSString *)path {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
     RPCObject *d = [self callSync:@"get_instances" path:path interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil];

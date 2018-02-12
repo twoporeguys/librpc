@@ -135,7 +135,6 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
  * Returns a dictionary of instances found on the server.
  */
 - (nonnull NSDictionary<NSString *, RPCInstance *> *)instances;
-- (nonnull NSDictionary<NSString *, RPCInstance *> *)spaInstances;
 //- (void)setDispatchQueue:(nullable dispatch_queue_t)queue;
 
 /**
