@@ -35,7 +35,8 @@ static int rpct_read_meta(struct rpct_file *file, rpc_object_t obj);
 static int rpct_lookup_type(const char *name, const char **decl,
     rpc_object_t *result, struct rpct_file **filep);
 static struct rpct_type *rpct_find_type(const char *name);
-static struct rpct_type *rpct_find_type_fuzzy(const char *name, struct rpct_file *origin);
+static struct rpct_type *rpct_find_type_fuzzy(const char *name,
+    struct rpct_file *origin);
 static inline bool rpct_type_is_fully_specialized(struct rpct_typei *inst);
 static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *typei);
 static char *rpct_canonical_type(struct rpct_typei *typei);
@@ -223,7 +224,8 @@ rpct_read_meta(struct rpct_file *file, rpc_object_t obj)
 
 	if (uses != NULL) {
 		rpc_array_apply(uses, ^(size_t idx, rpc_object_t value) {
-			g_ptr_array_add(file->uses, g_strdup(rpc_string_get_string_ptr(value)));
+			g_ptr_array_add(file->uses, g_strdup(
+			    rpc_string_get_string_ptr(value)));
 			return ((bool)true);
 		});
 	}
@@ -274,7 +276,9 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 		while (cur != NULL) {
 			/* Maybe it's a type variable? */
 			if (cur->type->generic) {
-				subtype = g_hash_table_lookup(cur->specializations, decltype);
+				subtype = g_hash_table_lookup(
+				    cur->specializations, decltype);
+
 				if (subtype)
 					return (subtype);
 			}
@@ -672,7 +676,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	declname = g_match_info_fetch(match, 2);
 	declvars = g_match_info_fetch(match, 4);
 
-	/* If type already exists in given realm, do nothing */
+	/* If type already exists, do nothing */
 	if (g_hash_table_contains(context->types, declname))
 		return (0);
 
@@ -743,7 +747,8 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 }
 
 static int
-rpct_read_property(struct rpct_file *file, struct rpct_interface *iface, const char *decl, rpc_object_t obj)
+rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
+    const char *decl, rpc_object_t obj)
 {
 	struct rpct_if_member *prop;
 	GError *err = NULL;
@@ -803,14 +808,16 @@ error:
 }
 
 static int
-rpct_read_event(struct rpct_file *file, struct rpct_interface *iface, const char *decl, rpc_object_t obj)
+rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
+    const char *decl, rpc_object_t obj)
 {
 
 	return (0);
 }
 
 static int
-rpct_read_method(struct rpct_file *file, struct rpct_interface *iface, const char *decl, rpc_object_t obj)
+rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
+    const char *decl, rpc_object_t obj)
 {
 	int ret = -1;
 	struct rpct_if_member *method = NULL;
