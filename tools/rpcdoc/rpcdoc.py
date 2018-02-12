@@ -28,7 +28,6 @@
 import os
 import argparse
 import glob
-import itertools
 import shutil
 import mako
 import mako.template
