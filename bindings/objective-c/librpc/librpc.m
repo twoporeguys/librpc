@@ -325,9 +325,9 @@
     
     for (RPCObject *i in [d value]) {
         NSDictionary *item = (NSDictionary *)[i value];
-        NSString *path = [[item objectForKey:@"path"] value];
-        RPCInstance *instance = [[RPCInstance alloc] initWithClient:self andPath:path];
-        [result setValue:instance forKey:path];
+        NSString *iPath = [[item objectForKey:@"path"] value];
+        RPCInstance *instance = [[RPCInstance alloc] initWithClient:self andPath:iPath];
+        [result setValue:instance forKey:iPath];
     }
     return result;
 }
@@ -484,7 +484,6 @@
 - (NSArray *)methods {
     NSMutableArray *result = [[NSMutableArray alloc] init];
     RPCObject *i = [_client callSync:@"get_methods" path:_path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:[[RPCObject alloc] initWithValue:@[_interface]]];
-    //NSLog(@"%@", i);
     for (RPCObject *value in [i value]) {
         NSString *name = (NSString *)[value value];
         [result addObject:name];
