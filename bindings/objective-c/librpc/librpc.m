@@ -316,22 +316,16 @@
 }
 
 - (NSDictionary *)instances {
-    NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-    RPCObject *d = [self callSync:@"get_instances" path:@"/" interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil];
-
-    for (RPCObject *i in [d value]) {
-        NSDictionary *item = (NSDictionary *)[i value];
-        NSString *path = [[item objectForKey:@"path"] value];
-        RPCInstance *instance = [[RPCInstance alloc] initWithClient:self andPath:path];
-        [result setValue:instance forKey:path];
-    }
-
-    return result;
+    return [self instancesForPath:@"/"];
 }
 
 - (NSDictionary *)spaInstances {
+    return [self instancesForPath:@"/spa"];
+}
+
+- (NSDictionary *)instancesForPath:(NSString *)path {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-    RPCObject *d = [self callSync:@"get_instances" path:@"/spa" interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil];
+    RPCObject *d = [self callSync:@"get_instances" path:path interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil];
     
     for (RPCObject *i in [d value]) {
         NSDictionary *item = (NSDictionary *)[i value];
@@ -339,7 +333,6 @@
         RPCInstance *instance = [[RPCInstance alloc] initWithClient:self andPath:path];
         [result setValue:instance forKey:path];
     }
-    
     return result;
 }
 
