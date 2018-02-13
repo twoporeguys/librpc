@@ -69,8 +69,7 @@ enum_serialize(rpc_object_t obj)
 	assert(obj->ro_typei != NULL);
 	assert(rpc_get_type(obj) == RPC_TYPE_STRING);
 
-	return (rpc_object_pack("{s,s,v}",
-	    RPCT_REALM_FIELD, obj->ro_typei->type->realm,
+	return (rpc_object_pack("{s,v}",
 	    RPCT_TYPE_FIELD, obj->ro_typei->canonical_form,
 	    RPCT_VALUE_FIELD, obj));
 }

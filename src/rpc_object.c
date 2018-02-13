@@ -120,9 +120,7 @@ rpc_create_description(GString *description, rpc_object_t object,
 		    rpc_types[object->ro_type]);
 	}
 
-#ifdef LIBRPC_DEBUG_REFCOUNTS
 	g_string_append_printf(description, "(refcnt %d) ", object->ro_refcnt);
-#endif
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
@@ -1048,7 +1046,7 @@ rpc_object_vpack(const char *fmt, va_list ap)
 		}
 
 		if (type != NULL) {
-			current = rpct_new(type, NULL, current);
+			current = rpct_new(type, current);
 			if (current == NULL)
 				goto error;
 

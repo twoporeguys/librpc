@@ -10,7 +10,7 @@ pipeline {
         stage('Bootstrap') {
             steps {
                 lock('apt-get') {
-	            sh 'sudo make bootstrap'
+	                sh 'sudo make bootstrap'
                 }
             }
         }

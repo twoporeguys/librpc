@@ -36,8 +36,9 @@ ctypedef void (*rpc_error_handler_f)(void *arg, rpc_error_code_t code, rpc_objec
 ctypedef bint (*rpc_callback_f)(void *arg, rpc_call_t call, rpc_call_status_t status)
 ctypedef void (*rpc_bus_event_handler_f)(void *arg, rpc_bus_event_t, rpc_bus_node *)
 ctypedef bint (*rpct_type_applier_f)(void *arg, rpct_type_t type)
+ctypedef bint (*rpct_interface_applier_f)(void *arg, rpct_interface_t iface)
 ctypedef bint (*rpct_member_applier_f)(void *arg, rpct_member_t member)
-ctypedef bint (*rpct_function_applier_f)(void *arg, rpct_function_t func)
+ctypedef bint (*rpct_if_member_applier_f)(void *arg, rpct_if_member_t if_member)
 ctypedef rpc_object_t (*rpc_property_getter_f)(void *cookie)
 ctypedef void (*rpc_property_setter_f)(void *cookie, rpc_object_t value)
 
@@ -189,6 +190,11 @@ cdef extern from "rpc/service.h" nogil:
     cdef struct rpc_if_member:
         const char *rim_name
 
+    cdef enum rpc_if_member_type:
+        RPC_MEMBER_EVENT
+        RPC_MEMBER_PROPERTY
+        RPC_MEMBER_METHOD
+
     ctypedef struct rpc_context_t:
         pass
 
@@ -293,7 +299,10 @@ cdef extern from "rpc/typing.h" nogil:
     ctypedef struct rpct_member_t:
         pass
 
-    ctypedef struct rpct_function_t:
+    ctypedef struct rpct_interface_t:
+        pass
+
+    ctypedef struct rpct_if_member_t:
         pass
 
     ctypedef struct rpct_argument_t:
@@ -308,19 +317,18 @@ cdef extern from "rpc/typing.h" nogil:
 
     void *RPCT_TYPE_APPLIER(rpct_type_applier_f fn, void *arg)
     void *RPCT_MEMBER_APPLIER(rpct_member_applier_f fn, void *arg)
-    void *RPCT_FUNCTION_APPLIER(rpct_function_applier_f fn, void *args)
+    void *RPCT_INTERFACE_APPLIER(rpct_interface_applier_f fn, void *arg)
+    void *RPCT_IF_MEMBER_APPLIER(rpct_if_member_applier_f fn, void *args)
 
     void rpct_init()
     int rpct_load_types(const char *path)
 
-    const char *rpct_get_realm()
-    void rpct_set_realm(const char *realm)
-
-    void rpct_types_apply(void *applier)
-    void rpct_members_apply(rpct_type_t type, void *applier)
+    bint rpct_types_apply(void *applier)
+    bint rpct_members_apply(rpct_type_t type, void *applier)
+    bint rpct_interface_apply(void *applier)
+    bint rpct_if_member_apply(rpct_interface_t iface, void *applier)
 
     const char *rpct_type_get_name(rpct_type_t type)
-    const char *rpct_type_get_realm(rpct_type_t type)
     const char *rpct_type_get_module(rpct_type_t type)
     const char *rpct_type_get_description(rpct_type_t type)
     rpct_type_t rpct_type_get_parent(rpct_type_t type)
@@ -332,7 +340,7 @@ cdef extern from "rpc/typing.h" nogil:
 
     rpct_type_t rpct_typei_get_type(rpct_typei_t typei)
     const char *rpct_typei_get_canonical_form(rpct_typei_t typei)
-    rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, int index)
+    rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, const char *name)
 
     rpct_typei_t rpct_typei_get_member_type(rpct_typei_t typei, rpct_member_t member)
 
@@ -340,20 +348,25 @@ cdef extern from "rpc/typing.h" nogil:
     const char *rpct_member_get_description(rpct_member_t member)
     rpct_typei_t rpct_member_get_typei(rpct_member_t member)
 
-    const char *rpct_function_get_name(rpct_function_t func)
-    const char *rpct_function_get_description(rpct_function_t func)
-    rpct_typei_t rpct_function_get_return_type(rpct_function_t func)
-    int rpct_function_get_arguments_count(rpct_function_t func)
-    rpct_argument_t rpct_function_get_argument(rpct_function_t func, int index)
+    const char *rpct_interface_get_name(rpct_interface_t member)
+    const char *rpct_interface_get_description(rpct_interface_t member)
+
+    const char *rpct_if_member_get_name(rpct_if_member_t member)
+    const char *rpct_if_member_get_description(rpct_if_member_t member)
+    rpc_if_member_type rpct_if_member_get_type(rpct_if_member_t member)
+    rpct_typei_t rpct_method_get_return_type(rpct_if_member_t method)
+    int rpct_method_get_arguments_count(rpct_if_member_t method)
+    rpct_argument_t rpct_method_get_argument(rpct_if_member_t method, int index)
+    rpct_typei_t rpct_property_get_type(rpct_if_member_t prop)
 
     const char *rpct_argument_get_description(rpct_argument_t arg)
-    rpct_typei_t rpct_argument_get_type(rpct_argument_t arg)
+    rpct_typei_t rpct_argument_get_typei(rpct_argument_t arg)
 
     rpct_typei_t rpct_get_typei(rpc_object_t instance)
     rpc_object_t rpct_get_value(rpc_object_t instance)
 
     rpct_typei_t rpct_new_typei(const char *decl)
-    rpc_object_t rpct_new(const char *decl, const char *realm, rpc_object_t object)
+    rpc_object_t rpct_new(const char *decl, rpc_object_t object)
     rpc_object_t rpct_newi(rpct_typei_t typei, rpc_object_t object)
 
     rpc_object_t rpct_serialize(rpc_object_t object)
