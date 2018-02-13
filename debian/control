@@ -2,7 +2,9 @@ Source: librpc
 Section: libs
 Priority: optional
 Maintainer: Jakub Klama <jakub.klama@twoporeguys.com>
-Build-Depends: debhelper (>=10), clang, dh-python, python3
+Build-Depends: debhelper (>=10), cmake, clang, dh-python, pkg-config,
+ libglib2.0-dev, libsoup2.4-dev, libblocksruntime-dev, libyaml-dev,
+ libyajl-dev, libudev-dev, libusb-1.0-0-dev, python3-dev, cython3
 Standards-Version: 4.0.0
 Homepage: https://github.com/twoporeguys/librpc
 
