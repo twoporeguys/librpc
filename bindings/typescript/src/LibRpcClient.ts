@@ -1,12 +1,6 @@
 import {assign, fromPairs, startsWith} from 'lodash';
 import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/observable/from';
-import {filter, map} from 'rxjs/operators';
+import {filter, map, take} from 'rxjs/operators';
 import {Subject} from 'rxjs/Subject';
 import {LibRpcConnector} from './LibRpcConnector';
 import {LibRpcEvent} from './model/LibRpcEvent';
@@ -79,19 +73,22 @@ export class LibRpcClient {
     }
 
     public listObjectsInPath(path: string, id?: string): Observable<string[]> {
-        return this
-            .callMethod<DiscoverableInstance[]>('/', 'com.twoporeguys.librpc.Discoverable', 'get_instances', [], id)
-            .map<DiscoverableInstance[], string[]>((instances: DiscoverableInstance[]) => instances
+        return this.callMethod<DiscoverableInstance[]>(
+            '/', 'com.twoporeguys.librpc.Discoverable', 'get_instances', [], id
+        ).pipe(
+            map<DiscoverableInstance[], string[]>((instances: DiscoverableInstance[]) => instances
                 .filter((instance: DiscoverableInstance) => startsWith(instance.path, path))
                 .map((instance: DiscoverableInstance) => instance.path)
-            );
+            )
+        );
     }
 
     public getObject<T = any>(path: string, interfaceName: string, id?: string): Observable<T> {
-        return this.callMethod(path, 'com.twoporeguys.librpc.Observable', 'get_all', [interfaceName], id)
-            .map((properties: Property[]) => fromPairs(
+        return this.callMethod(path, 'com.twoporeguys.librpc.Observable', 'get_all', [interfaceName], id).pipe(
+            map((properties: Property[]) => fromPairs(
                 properties.map((property: Property) => [property.name, property.value])
-            ) as T);
+            ) as T)
+        );
     }
 
     public getProperty<T = any>(path: string, interfaceName: string, property: string, id?: string): Observable<T> {
@@ -118,29 +115,31 @@ export class LibRpcClient {
     }
 
     public subscribeToCreation(interfaceName: string): Observable<string> {
-        return this.connector.listen()
-            .filter((message: LibRpcResponse<LibRpcEvent>) => (
+        return this.connector.listen().pipe(
+            filter((message: LibRpcResponse<LibRpcEvent>) => (
                 LibRpcClient.isEvent(message) && (
                     LibRpcClient.isInstanceAddedEvent(message.args, interfaceName) ||
                     LibRpcClient.isInterfaceAddedEvent(message.args, interfaceName)
                 )
-            ))
-            .map<LibRpcResponse, string>((message: LibRpcResponse) => (
+            )),
+            map<LibRpcResponse, string>((message: LibRpcResponse) => (
                 LibRpcClient.isInstanceAddedEvent(message.args, interfaceName) ?
                     message.args.args.path :
                     message.args.path
-            ));
+            ))
+        );
     }
 
     public subscribeToChange<T = any>(path: string, interfaceName: string): Observable<Partial<T>> {
-        return this.connector.listen()
-            .filter((message: LibRpcResponse<LibRpcEvent>) => (
+        return this.connector.listen().pipe(
+            filter((message: LibRpcResponse<LibRpcEvent>) => (
                 LibRpcClient.isEvent(message) && LibRpcClient.isChangedEvent(message.args, path, interfaceName)
-            ))
-            .map<LibRpcResponse, Partial<T>>((message: LibRpcResponse<LibRpcEvent>) => fromPairs([[
+            )),
+            map<LibRpcResponse, Partial<T>>((message: LibRpcResponse<LibRpcEvent>) => fromPairs([[
                 message.args.args.name,
                 message.args.args.value,
-            ]]) as Partial<T>);
+            ]]) as Partial<T>)
+        );
     }
 
     public subscribe<T = any>(path: string, id: string = v4()): Observable<T> {
@@ -154,16 +153,17 @@ export class LibRpcClient {
                 name: 'changed'
             }]
         };
-        return this.connector.send(outMessage)
-            .filter((incomingMessage: LibRpcResponse<LibRpcEvent>) => (
+        return this.connector.send(outMessage).pipe(
+            filter((incomingMessage: LibRpcResponse<LibRpcEvent>) => (
                     LibRpcClient.isEvent(incomingMessage) &&
                     LibRpcClient.isObjectChangeEvent(incomingMessage.args) &&
                     incomingMessage.args.path === path
-            ))
-            .map((incomingMessage: LibRpcResponse) => fromPairs([[
+            )),
+            map((incomingMessage: LibRpcResponse) => fromPairs([[
                 incomingMessage.args.args.name,
                 incomingMessage.args.args.value,
-            ]]) as T);
+            ]]) as T)
+        );
     }
 
     private send<T = any>(namespace: string, name: string, payload?: any, id: string = v4()): Observable<T> {
@@ -176,8 +176,8 @@ export class LibRpcClient {
 
         this.sendRequest<T>(request, responses$);
 
-        return responses$
-            .map((response: LibRpcResponse<T|LibRpcFragment<T>>) => {
+        return responses$.pipe(
+            map((response: LibRpcResponse<T|LibRpcFragment<T>>) => {
                 let result: T;
                 if (response.name === 'fragment') {
                     const fragmentWrapper = (response.args as LibRpcFragment<T>);
@@ -192,12 +192,14 @@ export class LibRpcClient {
                     result = (response.args as T);
                 }
                 return result;
-            });
+            })
+        );
     }
     private sendRequest<T>(request: LibRpcRequest, responses$: Subject<LibRpcResponse<T>>) {
-        this.connector.send(request)
-            .filter((response: LibRpcResponse<T>) => response.id === request.id)
-            .subscribe((response: LibRpcResponse<T>) => {
+        this.connector.send(request).pipe(
+            filter((response: LibRpcResponse<T>) => response.id === request.id),
+            take(1)
+        ).subscribe((response: LibRpcResponse<T>) => {
                 if (response.name === 'error') {
                     responses$.error(response.args);
                 } else {
