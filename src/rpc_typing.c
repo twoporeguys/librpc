@@ -760,13 +760,15 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 	bool read_only = false;
 	bool read_write = false;
 	bool write_only = false;
+	bool notify = false;
 
-	rpc_object_unpack(obj, "{s,s,b,b,b}",
+	rpc_object_unpack(obj, "{s,s,b,b,b,b}",
 	    "description", &description,
 	    "type", &type,
 	    "read-only", &read_only,
 	    "read-write", &read_write,
-	    "write-only", &write_only);
+	    "write-only", &write_only,
+	    "notify", &notify);
 
 	regex = g_regex_new(PROPERTY_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
 	g_assert_no_error(err);
@@ -811,8 +813,49 @@ static int
 rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
     const char *decl, rpc_object_t obj)
 {
+	struct rpct_if_member *prop;
+	GError *err = NULL;
+	GRegex *regex = NULL;
+	GMatchInfo *match = NULL;
+	const char *name;
+	const char *description = NULL;
+	const char *type = NULL;
 
+	rpc_object_unpack(obj, "{s,s}",
+	    "description", &description,
+	    "type", &type);
+
+	regex = g_regex_new(EVENT_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
+	g_assert_no_error(err);
+
+	if (!g_regex_match(regex, decl, 0, &match)) {
+		rpc_set_last_errorf(EINVAL, "Cannot parse: %s", decl);
+		goto error;
+	}
+
+	if (g_match_info_get_match_count(match) < 1) {
+		rpc_set_last_errorf(EINVAL, "Cannot parse: %s", decl);
+		goto error;
+	}
+
+	name = g_match_info_fetch(match, 1);
+	prop = g_malloc0(sizeof(*prop));
+	prop->member.rim_name = name;
+	prop->member.rim_type = RPC_MEMBER_EVENT;
+	prop->description = g_strdup(description);
+
+	if (type)
+		prop->result = rpct_instantiate_type(type, NULL, NULL, file);
+
+	g_hash_table_insert(iface->members, g_strdup(name), prop);
 	return (0);
+
+error:
+	if (match != NULL)
+		g_match_info_free(match);
+
+	g_regex_unref(regex);
+	return (-1);
 }
 
 static int
@@ -951,7 +994,8 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	iface = g_malloc0(sizeof(*iface));
 	iface->name = g_match_info_fetch(match, 1);
 	iface->members = g_hash_table_new(g_str_hash, g_str_equal);
-	iface->description = g_strdup(rpc_dictionary_get_string(obj, "description"));
+	iface->description = g_strdup(rpc_dictionary_get_string(obj,
+	    "description"));
 
 	if (file->ns)
 		iface->name = g_strdup_printf("%s.%s", file->ns, iface->name);
@@ -964,6 +1008,11 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 		if (g_str_has_prefix(key, "method")) {
 			if (rpct_read_method(file, iface, key, v) != 0)
+				return ((bool)false);
+		}
+
+		if (g_str_has_prefix(key, "event")) {
+			if (rpct_read_event(file, iface, key, v) != 0)
 				return ((bool)false);
 		}
 
@@ -1104,15 +1153,17 @@ static bool
 rpct_validate_args(struct rpct_function *func, rpc_object_t args)
 {
 
-	rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
+	return (rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
 		return ((bool)true);
-	});
+	}));
 }
 
 static bool
 rpct_validate_return(struct rpct_function *func, rpc_object_t result)
 {
 
+	rpc_set_last_errorf(ENOTSUP, "Not implemented");
+	return (-1);
 }
 
 bool
@@ -1201,6 +1252,8 @@ int
 rpct_load_types_stream(int fd)
 {
 
+	rpc_set_last_errorf(ENOTSUP, "Not implemented");
+	return (-1);
 }
 
 const char *
