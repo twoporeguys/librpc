@@ -2,7 +2,7 @@ Source: librpc
 Section: libs
 Priority: optional
 Maintainer: Jakub Klama <jakub.klama@twoporeguys.com>
-Build-Depends: debhelper (>=10), cmake, clang, dh-python, pkg-config,
+Build-Depends: debhelper (>=10), cmake, clang, pkg-config,
  libglib2.0-dev, libsoup2.4-dev, libblocksruntime-dev, libyaml-dev,
  libyajl-dev, libudev-dev, libusb-1.0-0-dev, python3-dev, cython3
 Standards-Version: 4.0.0
@@ -22,9 +22,11 @@ Section: libdevel
 Architecture: any
 Depends: librpc(= ${binary:Version}), ${misc:Depends}
 Description: Development files for librpc.
+ Header files and a pkg-config manifest file for librpc.
 
 Package: python3-librpc
 Section: python
 Architecture: any
-Depends: librpc(= ${binary:Version}), ${misc:Depends}, python
+Depends: librpc(= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, python3
 Description: Python 3 bindings for librpc
+ Python 3 library wrapping librpc functionality.

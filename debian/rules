@@ -9,5 +9,9 @@ override_dh_auto_configure:
 	    -DBUILD_RPCTOOL=ON \
 	    -DPYTHON_VERSION=python3
 
+override_dh_auto_install:
+	dh_auto_install
+	dh_makeshlibs
+
 %:
 	dh $@ --buildsystem=cmake
