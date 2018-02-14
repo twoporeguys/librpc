@@ -1,2 +1,3 @@
+usr/lib/librpc.so
 usr/include/rpc/*.h
 usr/share/pkgconfig/librpc.pc
