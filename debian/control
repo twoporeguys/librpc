@@ -8,7 +8,7 @@ Build-Depends: debhelper (>=10), cmake, clang, pkg-config,
 Standards-Version: 4.0.0
 Homepage: https://github.com/twoporeguys/librpc
 
-Package: librpc
+Package: librpc0
 Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
