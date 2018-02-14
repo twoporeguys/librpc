@@ -1,0 +1,5 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: librpc
+Source: https://github.com/twoporeguys/librpc
+Files: *
+Copyright: Copyright 2015-2017 Jakub Klama <jakub.klama@gmail.com>, 2017-2018 Two Pore Guys, Inc.

@@ -1,0 +1,17 @@
+#!/usr/bin/make -f
+export CC=clang
+export CXX=clang++
+
+override_dh_auto_configure:
+	dh_auto_configure -- \
+	    -DBUILD_KMOD=OFF \
+	    -DBUILD_LIBUSB=ON \
+	    -DBUILD_RPCTOOL=ON \
+	    -DPYTHON_VERSION=python3
+
+override_dh_auto_install:
+	dh_auto_install
+	dh_makeshlibs
+
+%:
+	dh $@ --buildsystem=cmake
