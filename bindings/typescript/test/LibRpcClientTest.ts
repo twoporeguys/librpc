@@ -440,6 +440,85 @@ describe('LibRpcClient', () => {
         });
     });
 
+    describe('unsubscribe', () => {
+        it('should unsubscribe from com.twoporeguys.librpc.Observable.changed events on /foo', () => {
+            let sentMessage: any = null;
+            connectorMock.send = (message: any) => {
+                sentMessage = message;
+                return Observable.of();
+            };
+            const client = new LibRpcClient('', false, connectorMock);
+
+            client.unsubscribe('/foo', '1234');
+
+            expect(sentMessage).to.eql({
+                id: '1234',
+                namespace: 'events',
+                name: 'unsubscribe',
+                args: [{
+                    path: '/foo',
+                    interface: 'com.twoporeguys.librpc.Observable',
+                    name: 'changed'
+                }]
+            });
+        });
+
+        it('should return changes only for /foo', (done: () => void) => {
+            const events = [
+                {
+                    id: null, namespace: 'events', name: 'event',
+                    args: {
+                        interface: 'com.twoporeguys.librpc.Observable',
+                        name: 'changed',
+                        path: '/foo',
+                        args: {name: 'key1', value: 1},
+                    },
+                },
+                {
+                    id: null, namespace: 'events', name: 'event',
+                    args: {
+                        interface: 'com.twoporeguys.librpc.Observable',
+                        name: 'changed',
+                        path: '/bar',
+                        args: {name: 'key1', value: 12},
+                    },
+                },
+                {
+                    id: null, namespace: 'events', name: 'event',
+                    args: {
+                        interface: 'com.twoporeguys.librpc.Observable',
+                        name: 'changed',
+                        path: '/foo',
+                        args: {name: 'key2', value: 321},
+                    },
+                },
+            ];
+            connectorMock.send = () => (
+                Observable.create((observer: Observer<any>) => {
+                    observer.next(events[0]);
+                    observer.next(events[1]);
+                    observer.next(events[2]);
+                    observer.complete();
+                }).observeOn(Scheduler.asap)
+            );
+            const client = new LibRpcClient('', false, connectorMock);
+            const relevantChanges: any[] = [];
+
+            client.subscribe('/foo').subscribe(
+                (change: any) => relevantChanges.push(change),
+                noop,
+                () => {
+                    expect(relevantChanges.length).to.equal(2);
+                    expect(relevantChanges).to.eql([
+                        {key1: 1},
+                        {key2: 321},
+                    ]);
+                    done();
+                }
+            );
+        });
+    });
+
     describe('subscribeToCreation', () => {
         it('should send object creations matching given interface', (done: () => void) => {
             const createdIds: string[] = [];

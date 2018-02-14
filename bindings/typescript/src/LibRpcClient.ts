@@ -166,6 +166,20 @@ export class LibRpcClient {
         );
     }
 
+    public unsubscribe<T = any>(path: string, id: string = v4()): Observable<T> {
+        const outMessage: LibRpcRequest = {
+            id: id,
+            namespace: 'events',
+            name: 'unsubscribe',
+            args: [{
+                path: path,
+                interface: 'com.twoporeguys.librpc.Observable',
+                name: 'changed'
+            }]
+        };
+        return this.connector.send(outMessage);
+    }
+
     private send<T = any>(namespace: string, name: string, payload?: any, id: string = v4()): Observable<T> {
         const request: LibRpcRequest = assign({
             id: id,
