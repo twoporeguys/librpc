@@ -20,13 +20,13 @@ Description: RPC library
 Package: librpc-dev
 Section: libdevel
 Architecture: any
-Depends: librpc(= ${binary:Version}), ${misc:Depends}
+Depends: librpc1(= ${binary:Version}), ${misc:Depends}
 Description: Development files for librpc.
  Header files and a pkg-config manifest file for librpc.
 
 Package: python3-librpc
 Section: python
 Architecture: any
-Depends: librpc(= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, python3
+Depends: librpc1(= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, python3
 Description: Python 3 bindings for librpc
  Python 3 library wrapping librpc functionality.
