@@ -122,7 +122,7 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
  *
  * @param uri URI of the endpoint to connect to
  */
-- (void)connect:(nonnull NSString *)uri;
+- (BOOL)connect:(nonnull NSString *)uri;
 
 /**
  * Terminates the current connection.

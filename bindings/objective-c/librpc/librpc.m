@@ -306,9 +306,14 @@
     rpc_connection_t conn;
 }
 
-- (void)connect:(NSString *)uri {
+- (BOOL)connect:(NSString *)uri {
     client = rpc_client_create([uri UTF8String], NULL);
-    conn = rpc_client_get_connection(client);
+    if (client) {
+        conn = rpc_client_get_connection(client);
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 - (void)disconnect {
