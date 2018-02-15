@@ -1,6 +1,6 @@
 import {assign, fromPairs, startsWith} from 'lodash';
 import {Observable} from 'rxjs/Observable';
-import {filter, map, take} from 'rxjs/operators';
+import {distinctUntilChanged, filter, map, take} from 'rxjs/operators';
 import {Subject} from 'rxjs/Subject';
 import {LibRpcConnector} from './LibRpcConnector';
 import {LibRpcEvent} from './model/LibRpcEvent';
@@ -69,6 +69,12 @@ export class LibRpcClient {
         return this.connector.listen().pipe(
             filter(LibRpcClient.isEvent),
             map((message: LibRpcResponse<LibRpcEvent>) => message.args)
+        );
+    }
+
+    public get isConnected$(): Observable<boolean> {
+        return this.connector.isConnected$.pipe(
+            distinctUntilChanged()
         );
     }
 
@@ -167,7 +173,7 @@ export class LibRpcClient {
     }
 
     public unsubscribe<T = any>(path: string, id: string = v4()): Observable<T> {
-        const outMessage: LibRpcRequest = {
+        return this.connector.send({
             id: id,
             namespace: 'events',
             name: 'unsubscribe',
@@ -176,8 +182,7 @@ export class LibRpcClient {
                 interface: 'com.twoporeguys.librpc.Observable',
                 name: 'changed'
             }]
-        };
-        return this.connector.send(outMessage);
+        });
     }
 
     private send<T = any>(namespace: string, name: string, payload?: any, id: string = v4()): Observable<T> {
@@ -206,9 +211,10 @@ export class LibRpcClient {
                     result = (response.args as T);
                 }
                 return result;
-            })
+            }),
         );
     }
+
     private sendRequest<T>(request: LibRpcRequest, responses$: Subject<LibRpcResponse<T>>) {
         this.connector.send(request).pipe(
             filter((response: LibRpcResponse<T>) => response.id === request.id),
