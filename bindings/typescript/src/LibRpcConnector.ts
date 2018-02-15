@@ -6,6 +6,7 @@ import 'rxjs/add/operator/switchMap';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import {interval} from 'rxjs/observable/interval';
+import {switchMap} from 'rxjs/operators';
 import {Subject} from 'rxjs/Subject';
 import {LibRpcRequest} from './model/LibRpcRequest';
 import {v4} from './uuidv4';
@@ -45,7 +46,7 @@ export class LibRpcConnector {
 
     }
 
-    public send(message: LibRpcRequest): Observable<any> {
+    public send(message: LibRpcRequest, isBufferized: boolean = true): Observable<any> {
         if (this.isDebugEnabled) {
             // tslint:disable-next-line:no-console
             console.log('SEND\n', JSON.stringify(message));
@@ -58,10 +59,14 @@ export class LibRpcConnector {
             case this.webSocketFactory.CLOSED:
             case this.webSocketFactory.CLOSING:
                 this.connect();
-                this.messageBuffer.push(data);
+                if (isBufferized) {
+                    this.messageBuffer.push(data);
+                }
                 break;
             case this.webSocketFactory.CONNECTING:
-                this.messageBuffer.push(data);
+                if (isBufferized) {
+                    this.messageBuffer.push(data);
+                }
                 break;
         }
         return this.messages$;
@@ -107,7 +112,9 @@ export class LibRpcConnector {
     }
 
     private startKeepAlive() {
-        interval(30000).subscribe(() => this.send({
+        this.isConnected$.pipe(
+            switchMap((isConnected: boolean) => interval(isConnected ? 30000 : 1000))
+        ).subscribe(() => this.send({
             id: v4(),
             namespace: 'rpc',
             name: 'call',
@@ -117,6 +124,6 @@ export class LibRpcConnector {
                 method: 'ping',
                 args: [],
             },
-        }));
+        }, false));
     }
 }
