@@ -1,6 +1,6 @@
 {
   "name": "@2pg/librpc-client",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "author": "Pierre Chausalet <pierre.chaussalet@twoporeguys.com>",
   "description": "LibRPC client",
   "homepage": "http://www.twoporeguys.com",
