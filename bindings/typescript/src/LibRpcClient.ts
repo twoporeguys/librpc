@@ -80,7 +80,7 @@ export class LibRpcClient {
 
     public listObjectsInPath(path: string, id?: string): Observable<string[]> {
         return this.callMethod<DiscoverableInstance[]>(
-            '/', 'com.twoporeguys.librpc.Discoverable', 'get_instances', [], id
+            '/', 'com.twoporeguys.librpc.Discoverable', 'get_instances', [], true, id
         ).pipe(
             map<DiscoverableInstance[], string[]>((instances: DiscoverableInstance[]) => instances
                 .filter((instance: DiscoverableInstance) => startsWith(instance.path, path))
@@ -90,7 +90,7 @@ export class LibRpcClient {
     }
 
     public getObject<T = any>(path: string, interfaceName: string, id?: string): Observable<T> {
-        return this.callMethod(path, 'com.twoporeguys.librpc.Observable', 'get_all', [interfaceName], id).pipe(
+        return this.callMethod(path, 'com.twoporeguys.librpc.Observable', 'get_all', [interfaceName], true, id).pipe(
             map((properties: Property[]) => fromPairs(
                 properties.map((property: Property) => [property.name, property.value])
             ) as T)
@@ -98,11 +98,18 @@ export class LibRpcClient {
     }
 
     public getProperty<T = any>(path: string, interfaceName: string, property: string, id?: string): Observable<T> {
-        return this.callMethod(path, 'com.twoporeguys.librpc.Observable', 'get', [interfaceName, property], id);
+        return this.callMethod(path, 'com.twoporeguys.librpc.Observable', 'get', [interfaceName, property], true, id);
     }
 
     public setProperty<T = any>(path: string, interfaceName: string, property: string, value: T, id?: string) {
-        return this.callMethod(path, 'com.twoporeguys.librpc.Observable', 'set', [interfaceName, property, value], id);
+        return this.callMethod(
+            path,
+            'com.twoporeguys.librpc.Observable',
+            'set',
+            [interfaceName, property, value],
+            true,
+            id
+        );
     }
 
     public callMethod<T = any>(
@@ -110,6 +117,7 @@ export class LibRpcClient {
         interfaceName: string,
         method: string,
         args: any[] = [],
+        isBufferized: boolean = true,
         id?: string
     ): Observable<T> {
         return this.send('rpc', 'call', {
@@ -117,7 +125,7 @@ export class LibRpcClient {
             interface: interfaceName,
             method: method,
             args: args,
-        }, id);
+        }, isBufferized, id);
     }
 
     public subscribeToCreation(interfaceName: string): Observable<string> {
@@ -185,7 +193,13 @@ export class LibRpcClient {
         });
     }
 
-    private send<T = any>(namespace: string, name: string, payload?: any, id: string = v4()): Observable<T> {
+    private send<T = any>(
+        namespace: string,
+        name: string,
+        payload?: any,
+        isBufferized: boolean = true,
+        id: string = v4()
+    ): Observable<T> {
         const request: LibRpcRequest = assign({
             id: id,
             namespace: namespace,
@@ -193,7 +207,7 @@ export class LibRpcClient {
         }, {args: payload || {}});
         const responses$ = new Subject<LibRpcResponse<T>>();
 
-        this.sendRequest<T>(request, responses$);
+        this.sendRequest<T>(request, responses$, isBufferized);
 
         return responses$.pipe(
             map((response: LibRpcResponse<T|LibRpcFragment<T>>) => {
@@ -205,7 +219,7 @@ export class LibRpcClient {
                         namespace: response.namespace,
                         name: 'continue',
                         args: fragmentWrapper.seqno + 1
-                    }, responses$);
+                    }, responses$, isBufferized);
                     result = fragmentWrapper.fragment;
                 } else {
                     result = (response.args as T);
@@ -215,8 +229,12 @@ export class LibRpcClient {
         );
     }
 
-    private sendRequest<T>(request: LibRpcRequest, responses$: Subject<LibRpcResponse<T>>) {
-        this.connector.send(request).pipe(
+    private sendRequest<T>(
+        request: LibRpcRequest,
+        responses$: Subject<LibRpcResponse<T>>,
+        isBufferized: boolean = true
+    ) {
+        this.connector.send(request, isBufferized).pipe(
             filter((response: LibRpcResponse<T>) => response.id === request.id),
             take(1)
         ).subscribe((response: LibRpcResponse<T>) => {

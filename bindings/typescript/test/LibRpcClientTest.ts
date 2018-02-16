@@ -190,6 +190,7 @@ describe('LibRpcClient', () => {
                 'bar',
                 'baz',
                 ['qux', 'quux', 42],
+                true,
                 '1234'
             );
 

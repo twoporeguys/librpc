@@ -41,7 +41,6 @@ export class LibRpcConnector {
             // tslint:disable-next-line:no-console
             this.messages$.subscribe((message: any) => console.log('RECV\n', JSON.stringify(message)));
         }
-        this.startKeepAlive();
         this.connect();
 
     }
@@ -109,21 +108,5 @@ export class LibRpcConnector {
             this.ws.send(data);
             data = this.messageBuffer.shift();
         }
-    }
-
-    private startKeepAlive() {
-        this.isConnected$.pipe(
-            switchMap((isConnected: boolean) => interval(isConnected ? 30000 : 1000))
-        ).subscribe(() => this.send({
-            id: v4(),
-            namespace: 'rpc',
-            name: 'call',
-            args: {
-                path: '/server',
-                interface: 'com.twoporeguys.momd.Builtin',
-                method: 'ping',
-                args: [],
-            },
-        }, false));
     }
 }
