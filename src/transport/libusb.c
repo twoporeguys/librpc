@@ -323,6 +323,8 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	if (uri->port != 0)
 		conn->uc_handle = usb_find(conn->uc_libusb, NULL, uri->port);
 
+	soup_uri_free(uri);
+
 	if (conn->uc_handle == NULL) {
 		rpc_set_last_error(ENOENT, "Cannot find device", NULL);
 		goto error;
