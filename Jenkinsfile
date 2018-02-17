@@ -4,6 +4,8 @@ pipeline {
     environment {
         CC = 'clang'
         CXX = 'clang++'
+        http_proxy = "http://proxy.twoporeguys.com:3128"
+        npm_config_cache = "${pwd()}/.npm"
     }
 
     stages {
