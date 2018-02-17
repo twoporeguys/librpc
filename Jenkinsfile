@@ -40,7 +40,7 @@ pipeline {
             }
         }
 
-        stage('Deploy docs') {
+        stage('Deploy typescript docs') {
             when {
                 expression { "${env.DOCS_PATH}" != "" }
             }
