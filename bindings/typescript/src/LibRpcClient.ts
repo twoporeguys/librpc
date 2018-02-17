@@ -1,12 +1,14 @@
+/**
+ * @module LibRpcClient
+ * Client for librpc protocol.
+ * @see https://github.com/twoporeguys/librpc
+ */
 import {assign, fromPairs, startsWith} from 'lodash';
 import {Observable} from 'rxjs/Observable';
 import {distinctUntilChanged, filter, map, take} from 'rxjs/operators';
 import {Subject} from 'rxjs/Subject';
 import {LibRpcConnector} from './LibRpcConnector';
-import {LibRpcEvent} from './model/LibRpcEvent';
-import {LibRpcFragment} from './model/LibRpcFragment';
-import {LibRpcRequest} from './model/LibRpcRequest';
-import {LibRpcResponse} from './model/LibRpcResponse';
+import {LibRpcEvent, LibRpcFragment, LibRpcRequest, LibRpcResponse} from './model';
 import {v4} from './uuidv4';
 
 interface DiscoverableInstance {
@@ -20,8 +22,6 @@ interface Property {
 }
 
 export class LibRpcClient {
-    private static connector: LibRpcConnector;
-
     private static isEvent(message: LibRpcResponse): boolean {
         return !!(message && message.namespace === 'events' && message.name === 'event');
     }
@@ -57,14 +57,20 @@ export class LibRpcClient {
 
     private connector: LibRpcConnector;
 
+    /**
+     * Create a new LibRpcClient.
+     * @param {string} url librpc server's URL
+     * @param {boolean} isDebugEnabled Should messages sent and received be logged in the console?
+     * @param {LibRpcConnector} connector Override url and re-use provided LibRpcConnector instance
+     */
     public constructor(url: string, isDebugEnabled: boolean = false, connector?: LibRpcConnector) {
-        if (LibRpcClient.connector) {
-            this.connector = LibRpcClient.connector;
-        } else {
-            LibRpcClient.connector = this.connector = (connector || new LibRpcConnector(url, isDebugEnabled));
-        }
+        this.connector = (connector || new LibRpcConnector(url, isDebugEnabled));
     }
 
+    /**
+     * Streams payload of 'events.event' messages.
+     * @returns {Observable<LibRpcEvent>}
+     */
     public get events$(): Observable<LibRpcEvent> {
         return this.connector.listen().pipe(
             filter(LibRpcClient.isEvent),
@@ -72,15 +78,24 @@ export class LibRpcClient {
         );
     }
 
+    /**
+     * Streams connection status as a boolean value (true = connected, false = disconnected).
+     * @returns {Observable<boolean>}
+     */
     public get isConnected$(): Observable<boolean> {
         return this.connector.isConnected$.pipe(
             distinctUntilChanged()
         );
     }
 
-    public listObjectsInPath(path: string, id?: string): Observable<string[]> {
+    /**
+     * Return the list of ids under the given path.
+     * @param {string} path The root path of the objects
+     * @returns {Observable<string[]>}
+     */
+    public listObjectsInPath(path: string): Observable<string[]> {
         return this.callMethod<DiscoverableInstance[]>(
-            '/', 'com.twoporeguys.librpc.Discoverable', 'get_instances', [], true, id
+            '/', 'com.twoporeguys.librpc.Discoverable', 'get_instances', [], true
         ).pipe(
             map<DiscoverableInstance[], string[]>((instances: DiscoverableInstance[]) => instances
                 .filter((instance: DiscoverableInstance) => startsWith(instance.path, path))
@@ -89,76 +104,82 @@ export class LibRpcClient {
         );
     }
 
-    public getObject<T = any>(path: string, interfaceName: string, id?: string): Observable<T> {
-        return this.callMethod(path, 'com.twoporeguys.librpc.Observable', 'get_all', [interfaceName], true, id).pipe(
-            map((properties: Property[]) => fromPairs(
+    /**
+     * Returns the properties of an object.
+     * @param {string} path Path of the object
+     * @param {string} interfaceName Interface properties belong to
+     * @returns {Observable<T>}
+     */
+    public getObject<T = any>(path: string, interfaceName: string): Observable<T> {
+        return this.callMethod(path, 'com.twoporeguys.librpc.Observable', 'get_all', [interfaceName], true).pipe(
+            map<Property[], T>((properties: Property[]) => fromPairs(
                 properties.map((property: Property) => [property.name, property.value])
             ) as T)
         );
     }
 
-    public getProperty<T = any>(path: string, interfaceName: string, property: string, id?: string): Observable<T> {
-        return this.callMethod(path, 'com.twoporeguys.librpc.Observable', 'get', [interfaceName, property], true, id);
+    /**
+     * Returns the value of given property of an object.
+     * @param {string} path Path of the object
+     * @param {string} interfaceName Interface the property belongs to
+     * @param {string} property Property name
+     * @returns {Observable<T>}
+     */
+    public getProperty<T = any>(path: string, interfaceName: string, property: string): Observable<T> {
+        return this.callMethod(path, 'com.twoporeguys.librpc.Observable', 'get', [interfaceName, property], true);
     }
 
-    public setProperty<T = any>(path: string, interfaceName: string, property: string, value: T, id?: string) {
-        return this.callMethod(
+    /**
+     * Set the value of a property of an object.
+     * @param {string} path Path of the object
+     * @param {string} interfaceName Interface the property belongs to
+     * @param {string} property Property name
+     * @param {T} value New value to assign to the property
+     * @returns {Observable<T>}
+     */
+    public setProperty<T = any>(path: string, interfaceName: string, property: string, value: T) {
+        return this.callMethod<T>(
             path,
             'com.twoporeguys.librpc.Observable',
             'set',
             [interfaceName, property, value],
-            true,
-            id
+            true
         );
     }
 
+    /**
+     * Call a method of an interface on an object.
+     * @param {string} path Path of the object
+     * @param {string} interfaceName Interface the method belongs to
+     * @param {string} method Method name
+     * @param {any[]} args Positional arguments to pass to the method
+     * @param {boolean} isBufferized In case the server is currently disconnected, should the call be queued for
+     * execution when it reconnects?
+     * @returns {Observable<T>}
+     */
     public callMethod<T = any>(
         path: string,
         interfaceName: string,
         method: string,
         args: any[] = [],
         isBufferized: boolean = true,
-        id?: string
     ): Observable<T> {
         return this.send('rpc', 'call', {
             path: path,
             interface: interfaceName,
             method: method,
             args: args,
-        }, isBufferized, id);
+        }, isBufferized);
     }
 
-    public subscribeToCreation(interfaceName: string): Observable<string> {
-        return this.connector.listen().pipe(
-            filter((message: LibRpcResponse<LibRpcEvent>) => (
-                LibRpcClient.isEvent(message) && (
-                    LibRpcClient.isInstanceAddedEvent(message.args, interfaceName) ||
-                    LibRpcClient.isInterfaceAddedEvent(message.args, interfaceName)
-                )
-            )),
-            map<LibRpcResponse, string>((message: LibRpcResponse) => (
-                LibRpcClient.isInstanceAddedEvent(message.args, interfaceName) ?
-                    message.args.args.path :
-                    message.args.path
-            ))
-        );
-    }
-
-    public subscribeToChange<T = any>(path: string, interfaceName: string): Observable<Partial<T>> {
-        return this.connector.listen().pipe(
-            filter((message: LibRpcResponse<LibRpcEvent>) => (
-                LibRpcClient.isEvent(message) && LibRpcClient.isChangedEvent(message.args, path, interfaceName)
-            )),
-            map<LibRpcResponse, Partial<T>>((message: LibRpcResponse<LibRpcEvent>) => fromPairs([[
-                message.args.args.name,
-                message.args.args.value,
-            ]]) as Partial<T>)
-        );
-    }
-
-    public subscribe<T = any>(path: string, id: string = v4()): Observable<T> {
+    /**
+     * Subscribe to `com.twoporeguys.librpc.Observable.changed` events on object.
+     * @param {string} path Path of the object
+     * @returns {Observable<T>}
+     */
+    public subscribe<T = any>(path: string): Observable<T> {
         const outMessage: LibRpcRequest = {
-            id: id,
+            id: v4(),
             namespace: 'events',
             name: 'subscribe',
             args: [{
@@ -180,9 +201,14 @@ export class LibRpcClient {
         );
     }
 
-    public unsubscribe<T = any>(path: string, id: string = v4()): Observable<T> {
+    /**
+     * Subscribe from `com.twoporeguys.librpc.Observable.changed` events on object.
+     * @param {string} path Path of the object
+     * @returns {Observable<T>}
+     */
+    public unsubscribe<T = any>(path: string): Observable<T> {
         return this.connector.send({
-            id: id,
+            id: v4(),
             namespace: 'events',
             name: 'unsubscribe',
             args: [{
@@ -198,10 +224,9 @@ export class LibRpcClient {
         name: string,
         payload?: any,
         isBufferized: boolean = true,
-        id: string = v4()
     ): Observable<T> {
         const request: LibRpcRequest = assign({
-            id: id,
+            id: v4(),
             namespace: namespace,
             name: name
         }, {args: payload || {}});

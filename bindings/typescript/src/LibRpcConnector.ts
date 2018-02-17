@@ -1,15 +1,11 @@
+/**
+ * @module LibRpcClient
+ */
 import {Codec, createCodec, decode, encode} from 'msgpack-lite';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/observable/never';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/switchMap';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-import {interval} from 'rxjs/observable/interval';
-import {switchMap} from 'rxjs/operators';
 import {Subject} from 'rxjs/Subject';
-import {LibRpcRequest} from './model/LibRpcRequest';
-import {v4} from './uuidv4';
+import {LibRpcRequest} from './model';
 import {WebSocketFactory} from './WebSocketFactory';
 
 export class LibRpcConnector {
@@ -41,8 +37,8 @@ export class LibRpcConnector {
             // tslint:disable-next-line:no-console
             this.messages$.subscribe((message: any) => console.log('RECV\n', JSON.stringify(message)));
         }
+        this.ws = this.webSocketFactory.get(this.url);
         this.connect();
-
     }
 
     public send(message: LibRpcRequest, isBufferized: boolean = true): Observable<any> {
