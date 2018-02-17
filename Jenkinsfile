@@ -33,5 +33,22 @@ pipeline {
                 sh "cp -a build/docs/* ${DOCS_PATH}/librpc/"
             }
         }
+
+        stage('Generate typescript docs') {
+            steps {
+                sh 'cd bindings/typescript && make doc'
+            }
+        }
+
+        stage('Deploy docs') {
+            when {
+                expression { "${env.DOCS_PATH}" != "" }
+            }
+            steps {
+                sh "mkdir -p ${DOCS_PATH}/typescript/librpc-client"
+                sh "rm -rf ${DOCS_PATH}/typescript/librpc-client/*"
+                sh "cp -a bindings/typescript/doc/* ${DOCS_PATH}/typescript/librpc-client/"
+            }
+        }
     }
 }
