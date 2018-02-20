@@ -1,0 +1,32 @@
+Source: librpc
+Section: libs
+Priority: optional
+Maintainer: Jakub Klama <jakub.klama@twoporeguys.com>
+Build-Depends: debhelper (>=10), cmake, clang, pkg-config,
+ libglib2.0-dev, libsoup2.4-dev, libblocksruntime-dev, libyaml-dev,
+ libyajl-dev, libudev-dev, libusb-1.0-0-dev, python3-dev, cython3
+Standards-Version: 4.0.0
+Homepage: https://github.com/twoporeguys/librpc
+
+Package: librpc1
+Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: RPC library
+ A general-purpose IPC/RPC library supporting asynchronous 
+ notifications, data streaming, exchange of file descriptors
+ and WebSockets endpoint. Loosely based on Apple XPC interface.
+
+Package: librpc-dev
+Section: libdevel
+Architecture: any
+Depends: librpc1(= ${binary:Version}), ${misc:Depends}
+Description: Development files for librpc.
+ Header files and a pkg-config manifest file for librpc.
+
+Package: python3-librpc
+Section: python
+Architecture: any
+Depends: librpc1(= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, python3
+Description: Python 3 bindings for librpc
+ Python 3 library wrapping librpc functionality.

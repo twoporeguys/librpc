@@ -199,6 +199,7 @@ add_library(librpc SHARED
         ${CORE_FILES})
 
 set_target_properties(librpc PROPERTIES PREFIX "")
+set_target_properties(librpc PROPERTIES SOVERSION 1)
 #set_target_properties(librpc PROPERTIES MACOSX_RPATH ON)
 target_link_libraries(librpc ${GLIB_LIBRARIES})
 target_link_libraries(librpc ${GIO_LIBRARIES})

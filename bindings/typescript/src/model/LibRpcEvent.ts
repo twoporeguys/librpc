@@ -1,3 +1,6 @@
+/**
+ * @module LibRpcClient
+ */
 export interface LibRpcEvent {
     interface: string;
     name: string;

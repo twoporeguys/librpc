@@ -572,12 +572,17 @@ rpc_instance_find_member(rpc_instance_t instance, const char *interface,
     const char *name)
 {
 	struct rpc_interface_priv *iface;
+	struct rpc_if_member *result;
 
 	iface = g_hash_table_lookup(instance->ri_interfaces, interface);
 	if (iface == NULL)
 		return (NULL);
 
-	return (g_hash_table_lookup(iface->rip_members, name));
+	g_mutex_lock(&iface->rip_mtx);
+	result = g_hash_table_lookup(iface->rip_members, name);
+	g_mutex_unlock(&iface->rip_mtx);
+
+	return (result);
 }
 
 bool
@@ -691,7 +696,9 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 
 	}
 
+	g_mutex_lock(&priv->rip_mtx);
 	g_hash_table_insert(priv->rip_members, g_strdup(member->rim_name), copy);
+	g_mutex_unlock(&priv->rip_mtx);
 	return (0);
 }
 
@@ -1049,6 +1056,7 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 	}
 
 	result = rpc_array_create();
+	g_mutex_lock(&priv->rip_mtx);
 	g_hash_table_iter_init(&iter, priv->rip_members);
 
 	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
@@ -1078,6 +1086,7 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 		    "value", value));
 	}
 
+	g_mutex_unlock(&priv->rip_mtx);
 	return (result);
 }
 

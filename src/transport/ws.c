@@ -34,7 +34,7 @@
 #include "../linker_set.h"
 #include "../internal.h"
 
-#define	WS_MAX_MESSAGE_SIZE	(1024 * 1024) /* 1MB */
+#define	WS_MAX_MESSAGE_SIZE	(1024 * 2048) /* 2MB */
 
 static gboolean ws_do_connect(gpointer user_data);
 static int ws_connect(struct rpc_connection *, const char *, rpc_object_t);

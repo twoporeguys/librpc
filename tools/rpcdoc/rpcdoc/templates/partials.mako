@@ -1,14 +1,17 @@
+<%def name="type(t)">
+    %if t:
+        <span class="type"><a href="type-${t.canonical}.html">${t.canonical | h}</a></span>
+    %endif
+</%def>
 
 <%def name="struct(s)">
 <h3 id="${s.name}">struct <span class="type">${s.name}</span>${generic_vars(s)}</h3>
-<p>
-    ${s.description}
-</p>
+<p>${s.description}</p>
 <h4>Members:</h4>
 <ul>
     % for m in s.members:
     <li>
-        <span class="type">${m.type.canonical if m.type else "" | h}</span> ${m.name}
+        ${type(m.type)} ${m.name}
         <p>
             ${m.description}
         </p>

@@ -7,7 +7,6 @@ set(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/timestamp)
 set(DEPS
         ${CMAKE_SOURCE_DIR}/bindings/python/librpc.pyx
         ${CMAKE_SOURCE_DIR}/bindings/python/librpc.pxd)
-
 if(BUILD_CLIENT)
     add_subdirectory(examples/client)
 endif()
@@ -22,4 +21,24 @@ add_custom_command(OUTPUT ${OUTPUT}
 
 add_custom_target(py-librpc ALL DEPENDS ${OUTPUT})
 
-install(CODE "execute_process(COMMAND ${PYTHON} ${SETUP_PY} install --record python_manifest.txt --prefix=${CMAKE_INSTALL_PREFIX} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})")
+message("$ENV{DESTDIR}")
+message("${CMAKE_INSTALL_PREFIX}")
+
+if (EXISTS "$ENV{DESTDIR}/${CMAKE_INSTALL_PREFIX}/lib/${PYTHON_VERSION}/dist-packages")
+    install(CODE "
+        execute_process(
+            COMMAND ${PYTHON} ${SETUP_PY} install
+                --record python_manifest.txt
+                --root=/\$ENV{DESTDIR}
+                --install-lib=${CMAKE_INSTALL_PREFIX}/lib/${PYTHON_VERSION}/dist-packages
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        )")
+else()
+    install(CODE "
+        execute_process(
+            COMMAND ${PYTHON} ${SETUP_PY} install
+                --record python_manifest.txt
+                --root=/\$ENV{DESTDIR}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        )")
+endif()

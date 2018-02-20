@@ -234,7 +234,7 @@ void
 librpc_device_log(struct device *dev, const char *log, size_t len)
 {
 
-	printk("librpc_device_log: len=%ld, buf=%p\n", len, log);
+	dev_dbg(dev, "librpc_device_log: len=%ld, buf=%p\n", len, log);
 	dev_info(dev, "%*s\n", (int)len, log);
 }
 
@@ -485,7 +485,7 @@ static void __exit
 librpc_exit(void)
 {
 	cn_del_callback(&librpc_cb_id);
-	bus_for_each_dev(&librpc_bus_type, NULL, NULL, &librpc_device_destroy);
+	bus_for_each_dev(&librpc_bus_type, NULL, NULL, librpc_device_destroy);
 	device_destroy(librpc_class, MKDEV(0, 0));
 	class_destroy(librpc_class);
 	bus_unregister(&librpc_bus_type);
@@ -497,7 +497,7 @@ EXPORT_SYMBOL(librpc_device_answer);
 EXPORT_SYMBOL(librpc_device_error);
 EXPORT_SYMBOL(librpc_device_event);
 EXPORT_SYMBOL(librpc_device_log);
-MODULE_AUTHOR("Jakub Klama");
+MODULE_AUTHOR("Jakub Klama <jakub.klama@twoporeguys.com>");
 MODULE_LICENSE("Dual BSD/GPL");
 
 module_init(librpc_init);

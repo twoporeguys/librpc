@@ -51,7 +51,7 @@ static struct rpct_member *union_read_member(const char *decl,
 	member->name = g_strdup(decl);
 	member->description = description != NULL ? g_strdup(description) : NULL;
 	member->origin = type;
-	member->type = rpct_instantiate_type(typedecl, type->realm, NULL, type);
+	member->type = rpct_instantiate_type(typedecl, NULL, type, type->file);
 	member->constraints = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    g_free, (GDestroyNotify)rpc_release_impl);
 
@@ -73,8 +73,7 @@ union_serialize(rpc_object_t obj)
 	assert(obj != NULL);
 	assert(obj->ro_typei != NULL);
 
-	return (rpc_object_pack("{s,s,v}",
-	    RPCT_REALM_FIELD, obj->ro_typei->type->realm,
+	return (rpc_object_pack("{s,v}",
 	    RPCT_TYPE_FIELD, obj->ro_typei->canonical_form,
 	    RPCT_VALUE_FIELD, obj));
 }

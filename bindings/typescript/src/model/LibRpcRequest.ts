@@ -1,3 +1,6 @@
+/**
+ * @module LibRpcClient
+ */
 export interface LibRpcRequest<T = any> {
     id: string;
     namespace: string;

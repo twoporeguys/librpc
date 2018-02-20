@@ -1,15 +1,16 @@
+/**
+ * @module LibRpcClient
+ */
+import {Codec, createCodec, decode, encode} from 'msgpack-lite';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/never';
-import 'rxjs/add/operator/switchMap';
 import {Subject} from 'rxjs/Subject';
-import {LibRpcRequest} from './model/LibRpcRequest';
-import {v4} from './uuidv4';
-import {decode, encode, createCodec, Codec} from 'msgpack-lite';
+import {LibRpcRequest} from './model';
 import {WebSocketFactory} from './WebSocketFactory';
 
 export class LibRpcConnector {
+    public isConnected$ = new BehaviorSubject<boolean>(false);
+
     private EXT_UNPACKERS: Map<number, (buffer: Uint8Array) => any> = new Map([
         [0x01, (buffer: Uint8Array) => new Date(new DataView(buffer.buffer, 0).getUint32(0, true) * 1000)],
         [0x04, (buffer: Uint8Array) => decode(buffer, {codec: this.codec})],
@@ -19,7 +20,6 @@ export class LibRpcConnector {
     private messages$: Subject<any>;
     private messageBuffer: Buffer[];
     private codec: Codec;
-    private isConnected: boolean;
 
     public constructor(
         private url: string,
@@ -37,12 +37,11 @@ export class LibRpcConnector {
             // tslint:disable-next-line:no-console
             this.messages$.subscribe((message: any) => console.log('RECV\n', JSON.stringify(message)));
         }
-        this.startKeepAlive();
+        this.ws = this.webSocketFactory.get(this.url);
         this.connect();
-
     }
 
-    public send(message: LibRpcRequest): Observable<any> {
+    public send(message: LibRpcRequest, isBufferized: boolean = true): Observable<any> {
         if (this.isDebugEnabled) {
             // tslint:disable-next-line:no-console
             console.log('SEND\n', JSON.stringify(message));
@@ -55,10 +54,14 @@ export class LibRpcConnector {
             case this.webSocketFactory.CLOSED:
             case this.webSocketFactory.CLOSING:
                 this.connect();
-                this.messageBuffer.push(data);
+                if (isBufferized) {
+                    this.messageBuffer.push(data);
+                }
                 break;
             case this.webSocketFactory.CONNECTING:
-                this.messageBuffer.push(data);
+                if (isBufferized) {
+                    this.messageBuffer.push(data);
+                }
                 break;
         }
         return this.messages$;
@@ -76,13 +79,14 @@ export class LibRpcConnector {
 
     private connect() {
         this.ws = this.webSocketFactory.get(this.url);
+        this.isConnected$.next(this.ws.readyState === this.webSocketFactory.OPEN);
         this.ws.binaryType = 'arraybuffer';
         this.ws.onopen = () => {
-            this.isConnected = true;
+            this.isConnected$.next(true);
             this.emptyMessageQueue();
 
             this.ws.onclose = () => {
-                this.isConnected = false;
+                this.isConnected$.next(false);
             };
 
             this.ws.onmessage = (message: MessageEvent) => {
@@ -100,24 +104,5 @@ export class LibRpcConnector {
             this.ws.send(data);
             data = this.messageBuffer.shift();
         }
-    }
-
-    private startKeepAlive() {
-        Observable
-            .interval(30000)
-            .switchMap<any, any>(() => (this.ws && this.isConnected) ? Observable.of(true) : Observable.never())
-            .subscribe(() => {
-                this.ws.send(encode({
-                    id: v4(),
-                    namespace: 'rpc',
-                    name: 'call',
-                    args: {
-                        path: '/server',
-                        interface: 'com.twoporeguys.momd.Builtin',
-                        method: 'ping',
-                        args: []
-                    }
-                }));
-            });
     }
 }

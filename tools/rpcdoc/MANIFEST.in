@@ -1,0 +1,2 @@
+include rpcdoc/assets/*.css
+include rpcdoc/templates/*.mako

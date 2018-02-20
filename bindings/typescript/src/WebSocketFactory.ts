@@ -1,3 +1,6 @@
+/**
+ * @module LibRpcClient
+ */
 export class WebSocketFactory {
     public CLOSED = WebSocket.CLOSED;
     public CLOSING = WebSocket.CLOSING;

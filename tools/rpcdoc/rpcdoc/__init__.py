@@ -27,12 +27,13 @@
 
 import os
 import argparse
-import itertools
+import glob
 import shutil
 import mako
 import mako.template
 import mako.lookup
 import librpc
+from pkg_resources import resource_string
 
 
 curdir = os.path.abspath(os.path.dirname(__file__))
@@ -49,16 +50,39 @@ CLASS_NAMES = {
 }
 
 
-def generate_module(typing, name):
+def generate_index(name, typing):
     entries = typing.types
-    typedefs = (t for t in entries if t.is_builtin or t.is_typedef)
+    types = (t for t in entries if t.is_builtin)
+    typedefs = (t for t in entries if t.is_typedef)
     structures = (t for t in entries if t.is_struct or t.is_union or t.is_enum)
 
-    t = lookup.get_template('module.mako')
+    t = lookup.get_template('index.mako')
     return t.render(
+        name=name,
+        interfaces=sorted(typing.interfaces, key=lambda t: t.name),
+        types=sorted(types, key=lambda t: t.name),
         typedefs=sorted(typedefs, key=lambda t: t.name),
-        structures=sorted(structures, key=lambda t: t.name)
+        structs=sorted(structures, key=lambda t: t.name)
     )
+
+
+def generate_interface(iface):
+    methods = (m for m in iface.members if type(m) is librpc.Method)
+    properties = (m for m in iface.members if type(m) is librpc.Property)
+    events = []
+
+    t = lookup.get_template('interface.mako')
+    return t.render(
+        iface=iface,
+        methods=methods,
+        properties=properties,
+        events=events
+    )
+
+
+def generate_type(typ):
+    t = lookup.get_template('type.mako')
+    return t.render(t=typ)
 
 
 def generate_file(outdir, name, contents):
@@ -68,9 +92,10 @@ def generate_file(outdir, name, contents):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', action='append')
-    parser.add_argument('-d', action='append')
-    parser.add_argument('-o')
+    parser.add_argument('--name', metavar='NAME', help='Project name')
+    parser.add_argument('-f', metavar='FILE', action='append', help='IDL file')
+    parser.add_argument('-d', metavar='DIRECTORY', action='append', help='IDL directory')
+    parser.add_argument('-o', metavar='DIRECTORY', help='Output directory')
     args = parser.parse_args()
 
     typing = librpc.Typing()
@@ -80,8 +105,12 @@ def main():
         typing.load_types(f)
 
     for d in args.d or []:
-        for f in os.listdir(d):
-            typing.load_types(f)
+        for f in glob.iglob('{0}/**/*.yaml'.format(d), recursive=True):
+            try:
+                typing.load_types(f)
+            except librpc.LibException as err:
+                print('Processing {0} failed: {1}'.format(f, str(err)))
+                continue
 
     if not os.path.exists(args.o):
         os.makedirs(args.o, exist_ok=True)
@@ -89,7 +118,13 @@ def main():
     # Copy the CSS file
     shutil.copy(os.path.join(curdir, 'assets/main.css'), outdir)
 
-    generate_file(outdir, 'index.html', generate_module(typing, 'foo'))
+    for t in typing.types:
+        generate_file(outdir, 'type-{0}.html'.format(t.name), generate_type(t))
+
+    for i in typing.interfaces:
+        generate_file(outdir, 'interface-{0}.html'.format(i.name), generate_interface(i))
+
+    generate_file(outdir, 'index.html', generate_index(args.name, typing))
 
 
 if __name__ == '__main__':

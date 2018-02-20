@@ -23,3 +23,22 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
+
+from setuptools import setup
+
+
+setup(
+    name='rpcdoc',
+    version='1.0',
+    description='librpc API documentation generator',
+    author='Jakub Klama',
+    author_email='jakub.klama@twoporeguys.com',
+    url='https://github.com/twoporeguys/librpc',
+    include_package_data=True,
+    packages=['rpcdoc'],
+    entry_points={
+        'console_scripts': [
+            'rpcdoc=rpcdoc:main'
+        ]
+    }
+)
