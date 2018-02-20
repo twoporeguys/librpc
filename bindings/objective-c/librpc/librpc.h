@@ -44,6 +44,8 @@ typedef NS_ENUM(NSInteger, RPCType) {
     RPCTypeError
 };
 
+extern NSString * _Nullable const RPCErrorDomain;
+
 /**
  * A boxed type representing librpc value.
  */
@@ -54,7 +56,7 @@ typedef NS_ENUM(NSInteger, RPCType) {
  * @param value Value
  * @returns Boxed RPCObject
  */
-- (nonnull instancetype)initWithValue:(nullable id)value;
+- (nonnull instancetype)initWithValue:(nullable id)value error:(NSError * _Nullable *_Nullable)error;
 
 /**
  * Creates a new RPCObject from NSObject-based value with specific type.
@@ -99,7 +101,7 @@ typedef NS_ENUM(NSInteger, RPCType) {
 - (nonnull instancetype)init:(nonnull NSNumber *)value;
 @end
 
-@interface RPCException : NSObject
+@interface RPCError : NSObject
 - (nonnull instancetype)initWithCode:(nonnull NSNumber *)code andMessage:(nonnull NSString *)message;
 @end
 
@@ -122,7 +124,7 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
  *
  * @param uri URI of the endpoint to connect to
  */
-- (BOOL)connect:(nonnull NSString *)uri;
+- (BOOL)connect:(nonnull NSString *)uri error:(NSError * _Nullable *_Nullable)error;
 
 /**
  * Terminates the current connection.
@@ -151,7 +153,8 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
 - (nonnull RPCObject *)callSync:(nonnull NSString *)method
                            path:(nullable NSString *)path
                       interface:(nullable NSString *)interface
-                           args:(nullable RPCObject *)args;
+                           args:(nullable RPCObject *)args
+                          error:(NSError * _Nullable *_Nullable)error;
 
 /**
  * Issues a call to the server and runs @p callback when
