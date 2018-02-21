@@ -32,14 +32,16 @@
 #include <rpc/client.h>
 #include <rpc/service.h>
 
+NSString *const RPCErrorDomain = @"librpc.error.domain";
+
 #pragma mark - RPCObject
 
 @implementation RPCObject {
     rpc_object_t obj;
 }
 
-- (instancetype)initWithValue:(id)value {
-
+- (instancetype)initWithValue:(id)value error:(NSError **)error {
+    NSDictionary *errorDict = nil;
     if (value == nil) {
         obj = rpc_null_create();
         return (self);
@@ -77,7 +79,8 @@
     if ([value isKindOfClass:[NSArray class]]) {
         obj = rpc_array_create();
         for (id object in (NSArray *)value) {
-            RPCObject *robj = [[RPCObject alloc] initWithValue:object];
+            NSError *error = nil;
+            RPCObject *robj = [[RPCObject alloc] initWithValue:object error:&error];
             rpc_array_append_value(obj, robj->obj);
         }
         
@@ -87,18 +90,23 @@
     if ([value isKindOfClass:[NSDictionary class]]) {
         obj = rpc_dictionary_create();
         for (NSString *key in (NSDictionary *)value) {
+            NSError *error = nil;
             NSObject *val = [(NSDictionary *)value valueForKey:key];
-            RPCObject *robj = [[RPCObject alloc] initWithValue:val];
+            RPCObject *robj = [[RPCObject alloc] initWithValue:val error:&error];
             rpc_dictionary_set_value(obj, [key UTF8String], robj->obj);
         }
         
         return (self);
     }
-    
-    @throw [NSException exceptionWithName:@"foo" reason:nil userInfo:nil];
+    errorDict = @{NSLocalizedDescriptionKey: @"value does not correspond to any rpc_object classes"};
+    if (error != nil) {
+        *error = [NSError errorWithDomain:RPCErrorDomain code:-47 userInfo:errorDict];
+    }
+    return nil;
 }
 
 - (instancetype)initWithValue:(id)value andType:(RPCType)type {
+    NSError *error = nil;
     switch (type) {
         case RPCTypeBoolean:
             obj = rpc_bool_create([(NSNumber *)value boolValue]);
@@ -125,7 +133,7 @@
         case RPCTypeBinary:
         case RPCTypeArray:
         case RPCTypeDictionary:
-            return [[RPCObject alloc] initWithValue:value];
+            return [[RPCObject alloc] initWithValue:value error:&error];
 
         default:
             return nil;
@@ -198,7 +206,7 @@
             return [NSNumber numberWithInteger:rpc_fd_get_value(obj)];
             
         case RPC_TYPE_ERROR:
-            return [[RPCException alloc] initWithCode:@(rpc_error_get_code(obj)) andMessage:@(rpc_error_get_message(obj))];
+            return [[RPCError alloc] initWithCode:@(rpc_error_get_code(obj)) andMessage:@(rpc_error_get_message(obj))];
     }
 }
 
@@ -213,16 +221,14 @@
 
 #pragma mark - RPCTypes Exception UInt Double Bool
 
-@implementation RPCException
+@implementation RPCError
 - (nonnull instancetype)initWithCode:(NSNumber *)code andMessage:(NSString *)message {
-    return (RPCException *)[NSException
-            exceptionWithName:@"RPCException"
-            reason:message
-            userInfo:@{
-                @"code": code,
-                @"extra": [NSNull init],
-                @"stack": [NSNull init]
-            }];
+    return (RPCError *)[NSError errorWithDomain:RPCErrorDomain
+                                           code:code.integerValue
+                                       userInfo:@{
+                                                    @"code": code,
+                                                    @"message": message,
+                                                    }];
 }
 @end
 
@@ -306,9 +312,21 @@
     rpc_connection_t conn;
 }
 
-- (void)connect:(NSString *)uri {
+- (BOOL)connect:(NSString *)uri error:(NSError **)error {
     client = rpc_client_create([uri UTF8String], NULL);
-    conn = rpc_client_get_connection(client);
+    if (client) {
+        conn = rpc_client_get_connection(client);
+        return YES;
+    } else {
+        rpc_object_t er;
+        er = rpc_get_last_error();
+        NSString *message = [NSString stringWithFormat:@"%s", rpc_error_get_message(er)];
+        NSDictionary *errorDict = @{NSLocalizedDescriptionKey: message};
+        if (error != nil) {
+            *error = [NSError errorWithDomain:RPCErrorDomain code:-57 userInfo:errorDict];
+        }
+        return NO;
+    }
 }
 
 - (void)disconnect {
@@ -321,7 +339,8 @@
 
 - (NSDictionary *)instancesForPath:(NSString *)path {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-    RPCObject *d = [self callSync:@"get_instances" path:path interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil];
+    NSError *error = nil;
+    RPCObject *d = [self callSync:@"get_instances" path:path interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil error:&error];
     
     for (RPCObject *i in [d value]) {
         NSDictionary *item = (NSDictionary *)[i value];
@@ -339,22 +358,35 @@
 - (RPCObject *)callSync:(NSString *)method
                    path:(NSString *)path
               interface:(NSString *)interface
-                   args:(RPCObject *)args {
+                   args:(RPCObject *)args
+                  error:(NSError **)error{
     rpc_call_t call;
     
     call = rpc_connection_call(conn, [path UTF8String], [interface UTF8String], [method UTF8String], [args nativeValue], NULL);
     rpc_call_wait(call);
-    
+    NSDictionary *errorDict = nil;
     switch (rpc_call_status(call)) {
         case RPC_CALL_DONE:
             return [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)];
             
         case RPC_CALL_ERROR:
-            @throw [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)];
+            errorDict = @{NSLocalizedDescriptionKey: @"callSync failed with internal error",
+                          @"Call": [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)]
+                          };
+            if (error != nil) {
+                *error = [NSError errorWithDomain:RPCErrorDomain code:-31 userInfo:errorDict];
+            }
+            return nil;
         
         case RPC_CALL_MORE_AVAILABLE:
         case RPC_CALL_ENDED:
-            @throw [NSException exceptionWithName:@"RPCException" reason:@"Streaming RPC called with non-streaming API" userInfo:nil];
+            errorDict = @{NSLocalizedDescriptionKey: @"Streaming RPC called with non-streaming API",
+                          @"Call": [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)]
+                          };
+            if (error != nil) {
+                *error = [NSError errorWithDomain:RPCErrorDomain code:-31 userInfo:errorDict];
+            }
+            return nil;
         
         default:
             NSAssert(true, @"Invalid RPC call state");
@@ -408,7 +440,8 @@
 
 - (NSDictionary *)interfaces {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-    RPCObject *call = [client callSync:@"get_interfaces" path:path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:nil];
+    NSError *error = nil;
+    RPCObject *call = [client callSync:@"get_interfaces" path:path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:nil error:&error];
     for (RPCObject *value in [call value]) {
         NSString *name = (NSString *)[value value];
         RPCInterface *interface = [[RPCInterface alloc] initWithClient:client path:path andInterface:name];
@@ -440,9 +473,10 @@
 }
 
 - (NSArray *)properties {
+    NSError *error = nil;
     NSMutableArray *result = [[NSMutableArray alloc] init];
-    RPCObject *args = [[RPCObject alloc] initWithValue:@[_interface]];
-    RPCObject *i = [_client callSync:@"get_all" path:_path interface:@(RPC_OBSERVABLE_INTERFACE) args:args];
+    RPCObject *args = [[RPCObject alloc] initWithValue:@[_interface] error:&error];
+    RPCObject *i = [_client callSync:@"get_all" path:_path interface:@(RPC_OBSERVABLE_INTERFACE) args:args error:&error];
     for (RPCObject *value in [i value]) {
         [result addObject:[self recursivelyUnpackProperties:value]];
     }
@@ -483,7 +517,12 @@
 
 - (NSArray *)methods {
     NSMutableArray *result = [[NSMutableArray alloc] init];
-    RPCObject *i = [_client callSync:@"get_methods" path:_path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:[[RPCObject alloc] initWithValue:@[_interface]]];
+    NSError *error = nil;
+    NSError *callError = nil;
+    RPCObject *i = [_client callSync:@"get_methods" path:_path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:[[RPCObject alloc] initWithValue:@[_interface] error:&error] error:&callError];
+    if (!i) {
+        NSLog(@"objectError:%@ callError:%@",error.description, callError.description);
+    }
     for (RPCObject *value in [i value]) {
         NSString *name = (NSString *)[value value];
         [result addObject:name];
@@ -501,9 +540,10 @@
 
 - (void)forwardInvocation:(NSInvocation *)anInvocation {
     NSArray *args;
+    NSError *error = nil;
     RPCCall *result;
     [anInvocation getArgument:&args atIndex:0];
-    result = [_client call:@"" path:_path interface:_interface args:[[RPCObject alloc] initWithValue:args]];
+    result = [_client call:@"" path:_path interface:_interface args:[[RPCObject alloc] initWithValue:args error:&error]];
     [anInvocation setReturnValue:(__bridge void *)result];
 }
 @end
