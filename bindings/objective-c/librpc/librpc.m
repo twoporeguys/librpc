@@ -318,7 +318,10 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
         conn = rpc_client_get_connection(client);
         return YES;
     } else {
-        NSDictionary *errorDict = @{NSLocalizedDescriptionKey: @"service currently unavailable."};
+        rpc_object_t er;
+        er = rpc_get_last_error();
+        NSString *message = [NSString stringWithFormat:@"%s", rpc_error_get_message(er)];
+        NSDictionary *errorDict = @{NSLocalizedDescriptionKey: message};
         if (error != nil) {
             *error = [NSError errorWithDomain:RPCErrorDomain code:-57 userInfo:errorDict];
         }
