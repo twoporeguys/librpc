@@ -318,7 +318,7 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
         conn = rpc_client_get_connection(client);
         return YES;
     } else {
-        NSDictionary *errorDict = @{NSLocalizedDescriptionKey: @"momd service currently unavailable."};
+        NSDictionary *errorDict = @{NSLocalizedDescriptionKey: @"service currently unavailable."};
         if (error != nil) {
             *error = [NSError errorWithDomain:RPCErrorDomain code:-57 userInfo:errorDict];
         }
