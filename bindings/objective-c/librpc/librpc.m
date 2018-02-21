@@ -79,7 +79,7 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
     if ([value isKindOfClass:[NSArray class]]) {
         obj = rpc_array_create();
         for (id object in (NSArray *)value) {
-            NSError *error = [[NSError alloc] init];
+            NSError *error = nil;
             RPCObject *robj = [[RPCObject alloc] initWithValue:object error:&error];
             rpc_array_append_value(obj, robj->obj);
         }
@@ -90,7 +90,7 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
     if ([value isKindOfClass:[NSDictionary class]]) {
         obj = rpc_dictionary_create();
         for (NSString *key in (NSDictionary *)value) {
-            NSError *error = [[NSError alloc] init];
+            NSError *error = nil;
             NSObject *val = [(NSDictionary *)value valueForKey:key];
             RPCObject *robj = [[RPCObject alloc] initWithValue:val error:&error];
             rpc_dictionary_set_value(obj, [key UTF8String], robj->obj);
@@ -106,7 +106,7 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
 }
 
 - (instancetype)initWithValue:(id)value andType:(RPCType)type {
-    NSError *error = [[NSError alloc] init];
+    NSError *error = nil;
     switch (type) {
         case RPCTypeBoolean:
             obj = rpc_bool_create([(NSNumber *)value boolValue]);
@@ -336,7 +336,7 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
 
 - (NSDictionary *)instancesForPath:(NSString *)path {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-    NSError *error = [[NSError alloc] init];
+    NSError *error = nil;
     RPCObject *d = [self callSync:@"get_instances" path:path interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil error:&error];
     
     for (RPCObject *i in [d value]) {
@@ -437,7 +437,7 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
 
 - (NSDictionary *)interfaces {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-    NSError *error = [[NSError alloc] init];
+    NSError *error = nil;
     RPCObject *call = [client callSync:@"get_interfaces" path:path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:nil error:&error];
     for (RPCObject *value in [call value]) {
         NSString *name = (NSString *)[value value];
@@ -470,7 +470,7 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
 }
 
 - (NSArray *)properties {
-    NSError *error = [[NSError alloc] init];
+    NSError *error = nil;
     NSMutableArray *result = [[NSMutableArray alloc] init];
     RPCObject *args = [[RPCObject alloc] initWithValue:@[_interface] error:&error];
     RPCObject *i = [_client callSync:@"get_all" path:_path interface:@(RPC_OBSERVABLE_INTERFACE) args:args error:&error];
@@ -514,8 +514,8 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
 
 - (NSArray *)methods {
     NSMutableArray *result = [[NSMutableArray alloc] init];
-    NSError *error = [[NSError alloc] init];
-    NSError *callError = [[NSError alloc] init];
+    NSError *error = nil;
+    NSError *callError = nil;
     RPCObject *i = [_client callSync:@"get_methods" path:_path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:[[RPCObject alloc] initWithValue:@[_interface] error:&error] error:&callError];
     if (!i) {
         NSLog(@"objectError:%@ callError:%@",error.description, callError.description);
@@ -537,7 +537,7 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
 
 - (void)forwardInvocation:(NSInvocation *)anInvocation {
     NSArray *args;
-    NSError *error = [[NSError alloc] init];
+    NSError *error = nil;
     RPCCall *result;
     [anInvocation getArgument:&args atIndex:0];
     result = [_client call:@"" path:_path interface:_interface args:[[RPCObject alloc] initWithValue:args error:&error]];
