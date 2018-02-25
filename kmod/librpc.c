@@ -262,16 +262,17 @@ librpc_bus_match(struct device *dev, struct device_driver *drv)
 static int
 librpc_match_device(struct device *dev, void *data)
 {
-	uint32_t address = (uint32_t)data;
+	struct librpc_device *rpcdev = to_librpc_device(dev);
+	uint32_t *address = data;
 
-	return (1);
+	return (rpcdev->address == *address);
 }
 
 static struct device *
 librpc_find_device(uint32_t address)
 {
 
-	return (bus_find_device(&librpc_bus_type, NULL, (void *)address,
+	return (bus_find_device(&librpc_bus_type, NULL, &address,
 	    librpc_match_device));
 }
 
