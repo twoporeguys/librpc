@@ -41,7 +41,6 @@ static int librpc_usb_enumerate(struct device *, struct librpc_endpoint *);
 static int librpc_usb_ping(struct device *);
 static int librpc_usb_request(struct device *, void *, const void *, size_t);
 static int librpc_usb_xfer(struct usb_device *, int, void *, size_t, int);
-static void librpc_usb_read_events(struct librpc_usb_device *);
 static void librpc_usb_read_log(struct librpc_usb_device *);
 static int librpc_usb_thread(void *);
 
@@ -248,26 +247,6 @@ librpc_usb_xfer(struct usb_device *udev, int opcode, void *buf, size_t len,
 
         return (usb_control_msg(udev, rpipe, opcode,
             USB_TYPE_VENDOR | USB_DIR_IN, 0, 0, buf, len, timeout));
-}
-
-static void
-librpc_usb_read_events(struct librpc_usb_device *rpcusbdev)
-{
-	struct usb_device *udev = rpcusbdev->udev;
-	int rpipe = usb_rcvctrlpipe(udev, 0);
-	int ret;
-
-	for (;;) {
-		ret = usb_control_msg(udev, rpipe, LIBRPC_USB_READ_EVENT,
-		    USB_TYPE_VENDOR | USB_DIR_IN, 0, 0, rpcusbdev->event,
-		    sizeof(*rpcusbdev->event) + LIBRPC_MAX_MSGSIZE, 500);
-
-		if (ret < 0 || rpcusbdev->event->status != LIBRPC_USB_OK)
-			return;
-
-		librpc_device_event(&rpcusbdev->udev->dev,
-		    rpcusbdev->event->data, ret);
-	}
 }
 
 static void
