@@ -23,7 +23,7 @@ before_script:
 
 script:
 - ${EXEC} "cd /code && mkdir build"
-- ${EXEC} "cd /code/build && CC=clang CXX=clang++ cmake .. -DBUILD_BUS=OFF -DBUILD_LIBUSB=ON -DPYTHON_VERSION=python2"
+- ${EXEC} "cd /code/build && CC=clang CXX=clang++ cmake .. -DBUILD_BUS=OFF -DBUILD_LIBUSB=ON -DPYTHON_VERSION=python3"
 - ${EXEC} "cd /code/build && make"
 - ${EXEC} "cd /code && DOXYFILE_IN=${DOXYFILE_IN} TRAVIS_BUILD_DIR=/code TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER} TRAVIS_COMMIT=${TRAVIS_COMMIT} GH_REPO_TOKEN=${GH_REPO_TOKEN} sh -x tools/deploy-docs.sh"
 
