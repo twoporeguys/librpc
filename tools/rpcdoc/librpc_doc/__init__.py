@@ -92,10 +92,10 @@ def generate_file(outdir, name, contents):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--name', metavar='NAME', help='Project name')
+    parser.add_argument('--name', metavar='NAME', help='Project name', required=True)
     parser.add_argument('-f', metavar='FILE', action='append', help='IDL file')
     parser.add_argument('-d', metavar='DIRECTORY', action='append', help='IDL directory')
-    parser.add_argument('-o', metavar='DIRECTORY', help='Output directory')
+    parser.add_argument('-o', metavar='DIRECTORY', help='Output directory', required=True)
     args = parser.parse_args()
 
     typing = librpc.Typing()

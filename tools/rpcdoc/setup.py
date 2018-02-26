@@ -28,17 +28,17 @@ from setuptools import setup
 
 
 setup(
-    name='rpcdoc',
+    name='librpc_doc',
     version='1.0',
     description='librpc API documentation generator',
     author='Jakub Klama',
     author_email='jakub.klama@twoporeguys.com',
     url='https://github.com/twoporeguys/librpc',
     include_package_data=True,
-    packages=['rpcdoc'],
+    packages=['librpc_doc'],
     entry_points={
         'console_scripts': [
-            'rpcdoc=rpcdoc:main'
+            'rpcdoc=librpc_doc:main'
         ]
     }
 )
