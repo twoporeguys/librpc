@@ -668,13 +668,6 @@ rpc_call_alloc(rpc_connection_t conn, rpc_object_t id)
 	return (call);
 }
 
-static void
-rpc_call_destroy(struct rpc_call *call)
-{
-
-	g_free(call);
-}
-
 static int
 rpc_send_frame(rpc_connection_t conn, rpc_object_t frame)
 {
