@@ -1236,7 +1236,9 @@ void
 rpct_typei_free(struct rpct_typei *inst)
 {
 
-	g_hash_table_destroy(inst->specializations);
+	if (inst->specializations != NULL)
+		g_hash_table_destroy(inst->specializations);
+
 	g_free(inst->canonical_form);
 	g_free(inst);
 }

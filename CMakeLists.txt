@@ -226,6 +226,7 @@ endif()
 configure_file(librpc.pc.in ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc @ONLY)
 install(TARGETS librpc DESTINATION lib)
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+install(DIRECTORY idl/ DESTINATION ${CMAKE_INSTALL_PREFIX}/share/idl)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pkgconfig)
 
 if(BUILD_TESTS)
