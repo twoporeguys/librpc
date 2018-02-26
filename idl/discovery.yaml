@@ -41,7 +41,7 @@ interface Discoverable:
   method get_instances:
     description: |
       Returns a list of objects registered on the server.
-    returns:
+    return:
       type: List<DiscoveryMethod>
 
 

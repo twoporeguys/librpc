@@ -1749,7 +1749,7 @@ cdef class Type(object):
 
     property description:
         def __get__(self):
-            return rpct_type_get_description(self.rpctype).decode('utf-8')
+            return str_or_none(rpct_type_get_description(self.rpctype))
 
     property generic:
         def __get__(self):

@@ -1,2 +1,2 @@
-include rpcdoc/assets/*.css
-include rpcdoc/templates/*.mako
+include librpc_doc/assets/*.css
+include librpc_doc/templates/*.mako
