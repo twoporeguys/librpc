@@ -149,6 +149,7 @@ rpct_find_type_fuzzy(const char *name, struct rpct_file *origin)
 {
 	struct rpct_type *result;
 	char *full_name;
+	const char *prefix;
 	guint i;
 
 	result = rpct_find_type(name);
@@ -158,15 +159,17 @@ rpct_find_type_fuzzy(const char *name, struct rpct_file *origin)
 	if (origin == NULL)
 		return (NULL);
 
-	full_name = g_strdup_printf("%s.%s", origin->ns, name);
-	result = rpct_find_type(full_name);
-	g_free(full_name);
-	if (result != NULL)
-		return (result);
+	if (origin->ns != NULL) {
+		full_name = g_strdup_printf("%s.%s", origin->ns, name);
+		result = rpct_find_type(full_name);
+		g_free(full_name);
+		if (result != NULL)
+			return (result);
+	}
 
 	for (i = 0; i < origin->uses->len; i++) {
-		full_name = g_strdup_printf("%s.%s", (const char *)
-		    g_ptr_array_index(origin->uses, i), name);
+		prefix = g_ptr_array_index(origin->uses, i);
+		full_name = g_strdup_printf("%s.%s", prefix, name);
 		result = rpct_find_type(full_name);
 		g_free(full_name);
 		if (result != NULL)
