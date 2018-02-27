@@ -20,6 +20,11 @@
 </head>
 <body>
 <div class="container">
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link active" href="index.html">Home</a>
+      </li>
+    </ul>
     ${self.body()}
 </div>
 <!-- Including Bootstrap JS (with its jQuery dependency) so that dynamic components work -->

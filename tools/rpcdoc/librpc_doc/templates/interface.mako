@@ -12,12 +12,12 @@
 
 <h3>Methods:</h3>
 % for m in methods:
-    <h4>${m.name}</h4>
+    <h4><a name="${m.name}" href="#${m.name}">${m.name}</a></h4>
     <p>${m.description}</p>
     <ul>
         % for arg in m.arguments:
             <li>
-                <p>Type: ${arg.type.canonical}</p>
+                <p>Type: ${partials.type(arg.type)}</p>
                 <p>Description ${arg.description}</p>
             </li>
         % endfor

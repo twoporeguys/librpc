@@ -42,8 +42,8 @@ static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *typei);
 static char *rpct_canonical_type(struct rpct_typei *typei);
 static int rpct_read_type(struct rpct_file *file, const char *decl,
     rpc_object_t obj);
-static bool rpct_validate_args(struct rpct_function *func, rpc_object_t args);
-static bool rpct_validate_return(struct rpct_function *func,
+static bool rpct_validate_args(struct rpct_if_member *func, rpc_object_t args);
+static bool rpct_validate_return(struct rpct_if_member *func,
     rpc_object_t result);
 static int rpct_parse_type(const char *decl, GPtrArray *variables);
 
@@ -635,6 +635,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	struct rpct_type *type;
 	struct rpct_type *parent = NULL;
 	const struct rpct_class_handler *handler;
+	char *typename;
 	const char *inherits = NULL;
 	const char *description = "";
 	const char *decltype, *declname, *declvars, *type_def = NULL;
@@ -678,12 +679,16 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	declname = g_match_info_fetch(match, 2);
 	declvars = g_match_info_fetch(match, 4);
 
+	typename = file->ns != NULL
+	    ? g_strdup_printf("%s.%s", file->ns, declname)
+	    : g_strdup(declname);
+
 	/* If type already exists, do nothing */
-	if (g_hash_table_contains(context->types, declname))
+	if (g_hash_table_contains(context->types, typename))
 		return (0);
 
 	type = g_malloc0(sizeof(*type));
-	type->name = g_strdup(declname);
+	type->name = typename;
 	type->file = file;
 	type->parent = parent;
 	type->members = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
@@ -693,12 +698,12 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	type->description = g_strdup(description);
 	type->generic_vars = g_ptr_array_new_with_free_func(g_free);
 
-	if (file->ns)
-		type->name = g_strdup_printf("%s.%s", file->ns, type->name);
-
 	handler = rpc_find_class_handler(decltype, (rpct_class_t)-1);
 	if (handler == NULL) {
-		/* XXX error */
+		g_regex_unref(regex);
+		g_match_info_free(match);
+		rpct_type_free(type);
+		return (-1);
 	}
 
 	if (declvars) {
@@ -743,7 +748,9 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		g_assert_nonnull(type->definition);
 	}
 
-	g_hash_table_insert(context->types, g_strdup(type->name), type);
+	if (!g_hash_table_insert(context->types, g_strdup(type->name), type))
+		g_assert_not_reached();
+
 	debugf("inserted type %s", declname);
 	return (0);
 }
@@ -1132,16 +1139,18 @@ done:
 }
 
 static bool
-rpct_validate_args(struct rpct_function *func, rpc_object_t args)
+rpct_validate_args(struct rpct_if_member *func, rpc_object_t args)
 {
-
 	return (rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
-		return ((bool)true);
+		rpc_object_t errors;
+		rpct_typei_t typei = g_ptr_array_index(func->arguments, idx);
+
+		return (rpct_validate(typei, i, &errors));
 	}));
 }
 
 static bool
-rpct_validate_return(struct rpct_function *func, rpc_object_t result)
+rpct_validate_return(struct rpct_if_member *func, rpc_object_t result)
 {
 
 	rpc_set_last_errorf(ENOTSUP, "Not implemented");

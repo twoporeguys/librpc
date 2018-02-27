@@ -25,6 +25,7 @@
  */
 
 #include <assert.h>
+#include <errno.h>
 #include "../linker_set.h"
 #include "../internal.h"
 
@@ -40,6 +41,11 @@ struct_read_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
 	    "type", &typedecl,
 	    "description", &description,
 	    "constraints", &constraints);
+
+	if (typedecl == NULL) {
+		rpc_set_last_error(EINVAL, "type key not provided or invalid", NULL);
+		return (NULL);
+	}
 
 	member = g_malloc0(sizeof(*member));
 	member->name = g_strdup(decl);

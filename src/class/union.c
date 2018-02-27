@@ -34,7 +34,7 @@ static struct rpct_member *union_read_member(const char *decl,
 {
 	struct rpct_member *member;
 	const char *typedecl = NULL;
-	const char *description = "";
+	const char *description = NULL;
 	rpc_object_t constraints = NULL;
 
 	rpc_object_unpack(obj, "{s,s,v}",

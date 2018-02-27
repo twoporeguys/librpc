@@ -81,6 +81,7 @@ def generate_interface(iface):
 
 
 def generate_type(typ):
+    print('Generatinc type {0}'.format(typ.name))
     t = lookup.get_template('type.mako')
     return t.render(t=typ)
 
@@ -109,7 +110,6 @@ def main():
     for d in args.d or []:
         for f in glob.iglob('{0}/**/*.yaml'.format(d), recursive=True):
             try:
-                print('Reading file {0}'.format(f))
                 typing.read_file(f)
                 paths.append(f)
             except librpc.LibException as err:
@@ -117,7 +117,6 @@ def main():
                 continue
 
     for p in paths:
-        print('Loading types from {0}'.format(p))
         typing.load_types(p)
 
     if not os.path.exists(args.o):

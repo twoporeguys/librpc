@@ -5,10 +5,10 @@
 <h3>Types:</h3>
 <ul>
     % for i in types:
-        <li><a href="type-${i.name}.html">${i.name}${partials.generic_vars(i)}</a></li>
+        <li><a href="type-${i.name}.html">${i.name}${partials.generic_vars_type(i)}</a></li>
     % endfor
     % for i in typedefs:
-        <li><a href="type-${i.name}.html">${i.name}${partials.generic_vars(i)}</a></li>
+        <li><a href="type-${i.name}.html">${i.name}${partials.generic_vars_type(i)}</a></li>
     % endfor
 </ul>
 
