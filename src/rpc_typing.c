@@ -42,7 +42,6 @@ static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *typei);
 static char *rpct_canonical_type(struct rpct_typei *typei);
 static int rpct_read_type(struct rpct_file *file, const char *decl,
     rpc_object_t obj);
-static int rpct_read_file(const char *path);
 static bool rpct_validate_args(struct rpct_function *func, rpc_object_t args);
 static bool rpct_validate_return(struct rpct_function *func,
     rpc_object_t result);
@@ -1027,7 +1026,7 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	return (0);
 }
 
-static int
+int
 rpct_read_file(const char *path)
 {
 	struct rpct_file *file;
@@ -1035,9 +1034,13 @@ rpct_read_file(const char *path)
 	size_t length;
 	rpc_object_t obj;
 	GError *err = NULL;
-	int ret = 0;
 
 	debugf("trying to read %s", path);
+
+	if (g_hash_table_contains(context->files, path)) {
+		debugf("file %s already loaded", path);
+		return (0);
+	}
 
 	if (!g_file_get_contents(path, &contents, &length, &err)) {
 		rpc_set_last_gerror(err);
@@ -1061,35 +1064,11 @@ rpct_read_file(const char *path)
 	if (rpct_read_meta(file, rpc_dictionary_get_value(obj, "meta")) < 0) {
 		rpc_set_last_errorf(EINVAL,
 		    "Cannot read meta section of file %s", file->path);
-		goto error;
+		return (-1);
 	}
 
 	g_hash_table_insert(context->files, g_strdup(path), file);
-
-	if (rpc_dictionary_apply(obj, ^(const char *key,
-	    rpc_object_t v) {
-		if (g_strcmp0(key, "meta") == 0)
-			return ((bool)true);
-
-		if (g_str_has_prefix(key, "interface")) {
-			if (rpct_read_interface(file, key, v) != 0)
-				return ((bool)false);
-			return ((bool)true);
-		}
-
-	    	rpct_read_type(file, key, v);
-		return ((bool)true);
-	}))
-
-	ret = -1;
-	rpc_release(obj);
-	return (ret);
-
-error:
-	g_hash_table_destroy(file->types);
-	g_free(file->path);
-	g_free(file);
-	return (-1);
+	return (0);
 }
 
 bool
@@ -1246,8 +1225,32 @@ rpct_typei_free(struct rpct_typei *inst)
 int
 rpct_load_types(const char *path)
 {
+	struct rpct_file *file;
 
-	return (rpct_read_file(path));
+	if (rpct_read_file(path) != 0)
+		return (-1);
+
+	file = g_hash_table_lookup(context->files, path);
+	g_assert_nonnull(file);
+
+	if (rpc_dictionary_apply(file->body, ^(const char *key,
+		rpc_object_t v) {
+		if (g_strcmp0(key, "meta") == 0)
+			return ((bool)true);
+
+		if (g_str_has_prefix(key, "interface")) {
+			if (rpct_read_interface(file, key, v) != 0)
+				return ((bool)false);
+
+			return ((bool)true);
+	    }
+
+		rpct_read_type(file, key, v);
+		return ((bool)true);
+	}))
+		return (-1);
+
+	return (0);
 }
 
 int

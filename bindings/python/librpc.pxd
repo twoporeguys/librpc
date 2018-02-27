@@ -321,6 +321,7 @@ cdef extern from "rpc/typing.h" nogil:
     void *RPCT_IF_MEMBER_APPLIER(rpct_if_member_applier_f fn, void *args)
 
     void rpct_init()
+    int rpct_read_file(const char *path)
     int rpct_load_types(const char *path)
 
     bint rpct_types_apply(void *applier)

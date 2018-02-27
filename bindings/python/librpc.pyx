@@ -1620,6 +1620,10 @@ cdef class Typing(object):
     def load_type(self, decl, type):
         pass
 
+    def read_file(self, path):
+        if rpct_read_file(path.encode('utf-8')) != 0:
+            raise_internal_exc()
+
     def load_types(self, path):
         if rpct_load_types(path.encode('utf-8')) != 0:
             raise_internal_exc()

@@ -100,17 +100,25 @@ def main():
 
     typing = librpc.Typing()
     outdir = args.o
+    paths = []
 
     for f in args.f or []:
-        typing.load_types(f)
+        typing.read_file(f)
+        paths.append(f)
 
     for d in args.d or []:
         for f in glob.iglob('{0}/**/*.yaml'.format(d), recursive=True):
             try:
-                typing.load_types(f)
+                print('Reading file {0}'.format(f))
+                typing.read_file(f)
+                paths.append(f)
             except librpc.LibException as err:
                 print('Processing {0} failed: {1}'.format(f, str(err)))
                 continue
+
+    for p in paths:
+        print('Loading types from {0}'.format(p))
+        typing.load_types(p)
 
     if not os.path.exists(args.o):
         os.makedirs(args.o, exist_ok=True)

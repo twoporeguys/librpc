@@ -173,6 +173,15 @@ int rpct_init(void);
 void rpct_free(void);
 
 /**
+ * Reads IDL file without parsing it. @ref rpc_load_types must be called
+ * on the same path again to load the associated types.
+ *
+ * @param path Paths to the IDL file
+ * @return 0 on success, -1 on error
+ */
+int rpct_read_file(const char *path);
+
+/**
  * Loads type information from an interface definition file.
  *
  * @param path Path of the IDL file
