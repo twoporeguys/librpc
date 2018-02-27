@@ -78,6 +78,7 @@ var searchData=
   ['rpc_5fconnection_5fsubscribe_5fevent',['rpc_connection_subscribe_event',['../connection_8h.html#ae62dee58a622eb6e1501c8c3342a1530',1,'connection.h']]],
   ['rpc_5fconnection_5funregister_5fevent_5fhandler',['rpc_connection_unregister_event_handler',['../connection_8h.html#a102ad5fd1ab895a56319a25f43060a20',1,'connection.h']]],
   ['rpc_5fconnection_5funsubscribe_5fevent',['rpc_connection_unsubscribe_event',['../connection_8h.html#afb42640760f64e1c56d2e09808b04769',1,'connection.h']]],
+  ['rpc_5fconnection_5fwatch_5fproperty',['rpc_connection_watch_property',['../connection_8h.html#a9e3dfaa2449183321ee5b7011f20cf30',1,'connection.h']]],
   ['rpc_5fcontext_5fcreate',['rpc_context_create',['../service_8h.html#aa53a346b1f60759fabc2f047e75fdb90',1,'service.h']]],
   ['rpc_5fcontext_5fdispatch_5fcall',['rpc_context_dispatch_call',['../service_8h.html#adf89ac4a7b3a1e436b03a482eb366639',1,'service.h']]],
   ['rpc_5fcontext_5femit_5fevent',['rpc_context_emit_event',['../service_8h.html#a1665198f8dc86a0775adef55c01d843e',1,'service.h']]],
