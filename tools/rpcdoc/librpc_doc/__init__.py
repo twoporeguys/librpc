@@ -66,13 +66,14 @@ def generate_index(name, typing):
     )
 
 
-def generate_interface(iface):
+def generate_interface(name, iface):
     methods = (m for m in iface.members if type(m) is librpc.Method)
     properties = (m for m in iface.members if type(m) is librpc.Property)
     events = []
 
     t = lookup.get_template('interface.mako')
     return t.render(
+        name=name,
         iface=iface,
         methods=methods,
         properties=properties,
@@ -80,10 +81,9 @@ def generate_interface(iface):
     )
 
 
-def generate_type(typ):
-    print('Generatinc type {0}'.format(typ.name))
+def generate_type(name, typ):
     t = lookup.get_template('type.mako')
-    return t.render(t=typ)
+    return t.render(name=name, t=typ)
 
 
 def generate_file(outdir, name, contents):
@@ -126,10 +126,10 @@ def main():
     shutil.copy(os.path.join(curdir, 'assets/main.css'), outdir)
 
     for t in typing.types:
-        generate_file(outdir, 'type-{0}.html'.format(t.name), generate_type(t))
+        generate_file(outdir, 'type-{0}.html'.format(t.name), generate_type(args.name, t))
 
     for i in typing.interfaces:
-        generate_file(outdir, 'interface-{0}.html'.format(i.name), generate_interface(i))
+        generate_file(outdir, 'interface-{0}.html'.format(i.name), generate_interface(args.name, i))
 
     generate_file(outdir, 'index.html', generate_index(args.name, typing))
 
