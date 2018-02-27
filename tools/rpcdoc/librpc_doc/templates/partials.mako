@@ -1,9 +1,17 @@
+<%! import librpc %>
 <%def name="type(t)">
     %if t:
-        <span class="type">
-            <a href="type-${t.type.name}.html">${t.type.name}</a>
-            ${generic_vars(t)}
-        </span>
+        %if isinstance(t, librpc.Type):
+            <span class="type">
+                <a href="type-${t.name}.html">${t.name}</a>
+                ${generic_vars_type(t)}
+            </span>
+        %else:
+            <span class="type">
+                <a href="type-${t.type.name}.html">${t.type.name}</a>
+                ${generic_vars(t)}
+            </span>
+        %endif
     %endif
 </%def>
 
@@ -27,7 +35,7 @@
     %if t.is_builtin:
         <h3>builtin <span class="type">${t.name}</span></h3>
     %else:
-        <h3>type <span class="type">${t.name}</span>= <span class="type">${t.definition.canonical | h}</span></h3>
+        <h3>type ${type(t)} = <span class="type">${t.definition.canonical | h}</span></h3>
     %endif
     <p>
         ${t.description}
