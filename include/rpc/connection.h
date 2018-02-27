@@ -94,6 +94,11 @@ typedef void (^rpc_handler_t)(const char *_Nullable path,
     _Nonnull rpc_object_t args);
 
 /**
+ * Definition of RPC property change handler block type.
+ */
+typedef void (^rpc_property_handler_t)(_Nonnull rpc_object_t value);
+
+/**
  * Definition of RPC error handler block type.
  */
 typedef void (^rpc_error_handler_t)(rpc_error_code_t code,
@@ -111,6 +116,14 @@ typedef bool (^rpc_callback_t)(_Nonnull rpc_call_t call);
 	^(const char *_path, const char *_iface, const char *_name, 	\
 	    rpc_object_t _args) {					\
 		_fn(_arg, _path, _iface, _name, _args);			\
+	}
+
+/**
+ * Converts function pointer to a @ref rpc_property_handler_t block type.
+ */
+#define	RPC_PROPERTY_HANDLER(_fn, _arg)					\
+	^(rpc_object_t _value) {					\
+		_fn(_arg, _value);					\
 	}
 
 /**
@@ -390,6 +403,19 @@ _Nullable rpc_object_t rpc_connection_set_propertypv(
     const char *_Nonnull interface, const char *_Nonnull name,
     const char *_Nonnull fmt, va_list ap);
 
+/**
+ *
+ * @param conn
+ * @param path
+ * @param interface
+ * @param property
+ * @param handler
+ * @return
+ */
+void *_Nullable rpc_connection_watch_property(
+    _Nonnull rpc_connection_t conn, const char *_Nonnull path,
+    const char *_Nonnull interface, const char *_Nonnull property,
+    _Nonnull rpc_property_handler_t handler);
 
 /**
  * Sends an event.

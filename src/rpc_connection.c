@@ -1254,6 +1254,34 @@ rpc_connection_set_propertypv(rpc_connection_t conn, const char *path,
 	return (rpc_connection_set_property(conn, path, interface, name, value));
 }
 
+void *rpc_connection_watch_property(rpc_connection_t conn, const char *path,
+    const char *interface, const char *property, rpc_property_handler_t handler)
+{
+	rpc_handler_t block = ^(const char *_p __unused, const char *_i __unused,
+	    const char *_n __unused, rpc_object_t args) {
+		const char *ev_iface;
+		const char *ev_name;
+		rpc_object_t ev_value;
+
+		if (rpc_object_unpack(args, "{s,s,V}",
+		    "interface", &ev_iface,
+		    "name", &ev_name,
+		    "value", &ev_value) < 3)
+			return;
+
+		if (g_strcmp0(interface, ev_iface) != 0)
+			return;
+
+		if (g_strcmp0(property, ev_name) != 0)
+			return;
+
+		handler(ev_value);
+	};
+
+	return (rpc_connection_register_event_handler(conn, path,
+	    RPC_OBSERVABLE_INTERFACE, "changed", block));
+}
+
 int
 rpc_connection_send_event(rpc_connection_t conn, const char *path,
     const char *interface, const char *name, rpc_object_t args)
