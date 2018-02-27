@@ -94,6 +94,7 @@ def generate_file(outdir, name, contents):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--name', metavar='NAME', help='Project name', required=True)
+    parser.add_argument('--system', action='store_true', help='Use system types')
     parser.add_argument('-f', metavar='FILE', action='append', help='IDL file')
     parser.add_argument('-d', metavar='DIRECTORY', action='append', help='IDL directory')
     parser.add_argument('-o', metavar='DIRECTORY', help='Output directory', required=True)
@@ -102,6 +103,12 @@ def main():
     typing = librpc.Typing()
     outdir = args.o
     paths = []
+
+    if args.system:
+        for p in ('/usr/share/idl', '/usr/local/share/idl'):
+            for f in glob.iglob('{0}/*.yaml'.format(p)):
+                typing.read_file(f)
+                paths.append(f)
 
     for f in args.f or []:
         typing.read_file(f)
