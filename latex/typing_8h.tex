@@ -70,6 +70,8 @@ int \hyperlink{typing_8h_a2b9f8ae8a387369f22146612228f1d0a}{rpct\+\_\+init} (voi
 \item 
 void \hyperlink{typing_8h_a6dabfe4b5d8fbc841f0af797716c7b64}{rpct\+\_\+free} (void)
 \item 
+int \hyperlink{typing_8h_abd806217eb0710e56261f7165117f3c9}{rpct\+\_\+read\+\_\+file} (const char $\ast$path)
+\item 
 int \hyperlink{typing_8h_a614a4cc99f03ed23893a73d097f26bdc}{rpct\+\_\+load\+\_\+types} (const char $\ast$path)
 \item 
 int \hyperlink{typing_8h_acbc6974bab6dc69be04a901688cfcbca}{rpct\+\_\+load\+\_\+types\+\_\+stream} (int fd)
@@ -811,6 +813,22 @@ Returns type instance of the property.
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 Type instance handle of the property 
+\end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_abd806217eb0710e56261f7165117f3c9}\label{typing_8h_abd806217eb0710e56261f7165117f3c9}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+read\+\_\+file@{rpct\+\_\+read\+\_\+file}}
+\index{rpct\+\_\+read\+\_\+file@{rpct\+\_\+read\+\_\+file}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+read\+\_\+file()}{rpct\_read\_file()}}
+{\footnotesize\ttfamily int rpct\+\_\+read\+\_\+file (\begin{DoxyParamCaption}\item[{const char $\ast$}]{path }\end{DoxyParamCaption})}
+
+Reads I\+DL file without parsing it. rpc\+\_\+load\+\_\+types must be called on the same path again to load the associated types.
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Paths to the I\+DL file \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on error 
 \end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_ab69f7ee39db3ab938d331c2877815d80}\label{typing_8h_ab69f7ee39db3ab938d331c2877815d80}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+serialize@{rpct\+\_\+serialize}}

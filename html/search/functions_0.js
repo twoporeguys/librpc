@@ -246,6 +246,7 @@ var searchData=
   ['rpct_5fmethod_5fget_5freturn_5ftype',['rpct_method_get_return_type',['../typing_8h.html#ab4babf2995143eb9ccf496caa84e8351',1,'typing.h']]],
   ['rpct_5fnew_5ftypei',['rpct_new_typei',['../typing_8h.html#a607ecfa5cfa13782fafd4d8da6fbd3d8',1,'typing.h']]],
   ['rpct_5fproperty_5fget_5ftype',['rpct_property_get_type',['../typing_8h.html#abce3ba70902e15fe331cec0b12aa3e38',1,'typing.h']]],
+  ['rpct_5fread_5ffile',['rpct_read_file',['../typing_8h.html#abd806217eb0710e56261f7165117f3c9',1,'typing.h']]],
   ['rpct_5fserialize',['rpct_serialize',['../typing_8h.html#ab69f7ee39db3ab938d331c2877815d80',1,'typing.h']]],
   ['rpct_5fset_5fvalue',['rpct_set_value',['../typing_8h.html#a5e40e2afc72e2eb1ab1bcf77cfb36cc9',1,'typing.h']]],
   ['rpct_5ftype_5fget_5fclass',['rpct_type_get_class',['../typing_8h.html#ad634c7c71e9da96f4375f2a6cbe5e1fb',1,'typing.h']]],
