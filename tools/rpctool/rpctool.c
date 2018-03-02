@@ -380,8 +380,10 @@ cmd_set(int argc, char *argv[])
 static int
 cmd_listen(int argc, char *argv[])
 {
+	GMutex mtx;
 	rpc_connection_t conn;
 
+	g_mutex_init(&mtx);
 	conn = connect();
 	rpc_connection_register_event_handler(conn, argv[0],
 	    RPC_OBSERVABLE_INTERFACE, "changed",
@@ -396,7 +398,9 @@ cmd_listen(int argc, char *argv[])
 		    "value", &value) < 3)
 			return;
 
+		g_mutex_lock(&mtx);
 		printf("New value of property %s.%s: ", prop_interface, prop_name);
+		g_mutex_unlock(&mtx);
 		output(value);
 	});
 

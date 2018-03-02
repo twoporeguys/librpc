@@ -1254,8 +1254,10 @@ rpc_connection_set_propertypv(rpc_connection_t conn, const char *path,
 	return (rpc_connection_set_property(conn, path, interface, name, value));
 }
 
-void *rpc_connection_watch_property(rpc_connection_t conn, const char *path,
-    const char *interface, const char *property, rpc_property_handler_t handler)
+void *
+rpc_connection_watch_property(rpc_connection_t conn, const char *path,
+    const char *interface, const char *property,
+    rpc_property_handler_t handler)
 {
 	rpc_handler_t block = ^(const char *_p __unused, const char *_i __unused,
 	    const char *_n __unused, rpc_object_t args) {
