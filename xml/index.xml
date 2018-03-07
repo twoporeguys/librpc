@@ -53,6 +53,7 @@
   </compound>
   <compound refid="connection_8h" kind="file"><name>connection.h</name>
     <member refid="connection_8h_1a4f7704822a76a6f293f6abbb59bf41f3" kind="define"><name>RPC_HANDLER</name></member>
+    <member refid="connection_8h_1acb61d20219377e2bd2a4727367222ec2" kind="define"><name>RPC_PROPERTY_HANDLER</name></member>
     <member refid="connection_8h_1ac6630daf34229f9dd8a754b119e4a94d" kind="define"><name>RPC_ERROR_HANDLER</name></member>
     <member refid="connection_8h_1a7512dc753949d75650bbec7527f9d0a6" kind="define"><name>RPC_CALLBACK</name></member>
     <member refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccd" kind="enum"><name>rpc_error_code</name></member>
@@ -76,6 +77,7 @@
     <member refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kind="typedef"><name>rpc_connection_t</name></member>
     <member refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" kind="typedef"><name>rpc_call_t</name></member>
     <member refid="connection_8h_1abd97c34e4cc24dce96eb2944a3cf5aad" kind="typedef"><name>rpc_handler_t</name></member>
+    <member refid="connection_8h_1af9b1dc56a631c67a830ceb096d1a16ac" kind="typedef"><name>rpc_property_handler_t</name></member>
     <member refid="connection_8h_1ad84e18a0f030d415f1ac06697fe93525" kind="typedef"><name>rpc_error_handler_t</name></member>
     <member refid="connection_8h_1a43904e9a96b10734529cdde29be58784" kind="typedef"><name>rpc_callback_t</name></member>
     <member refid="connection_8h_1a254ad98a921503f712a2adba41160a5f" kind="function"><name>rpc_connection_create</name></member>
@@ -94,6 +96,7 @@
     <member refid="connection_8h_1aacf709173844e2628bd6ada18d0497ca" kind="function"><name>rpc_connection_set_property</name></member>
     <member refid="connection_8h_1a1964b28aff2f749ab8aa8ae8fedcf9d5" kind="function"><name>rpc_connection_set_propertyp</name></member>
     <member refid="connection_8h_1a933ccba1b43865b6a634524c72e7d1ab" kind="function"><name>rpc_connection_set_propertypv</name></member>
+    <member refid="connection_8h_1a9e3dfaa2449183321ee5b7011f20cf30" kind="function"><name>rpc_connection_watch_property</name></member>
     <member refid="connection_8h_1abd699ca36e45ca40ff561c8243cbc99e" kind="function"><name>rpc_connection_send_event</name></member>
     <member refid="connection_8h_1abbce64346725655e72faa0bf1c479750" kind="function"><name>rpc_connection_ping</name></member>
     <member refid="connection_8h_1a08f27546613deb38559d3a8ced1a1104" kind="function"><name>rpc_connection_set_event_handler</name></member>
@@ -393,6 +396,7 @@
     <member refid="typing_8h_1acc5f290ad33114a3ea5ea8f6fdcef34a" kind="typedef"><name>rpct_if_member_applier_t</name></member>
     <member refid="typing_8h_1a2b9f8ae8a387369f22146612228f1d0a" kind="function"><name>rpct_init</name></member>
     <member refid="typing_8h_1a6dabfe4b5d8fbc841f0af797716c7b64" kind="function"><name>rpct_free</name></member>
+    <member refid="typing_8h_1abd806217eb0710e56261f7165117f3c9" kind="function"><name>rpct_read_file</name></member>
     <member refid="typing_8h_1a614a4cc99f03ed23893a73d097f26bdc" kind="function"><name>rpct_load_types</name></member>
     <member refid="typing_8h_1acbc6974bab6dc69be04a901688cfcbca" kind="function"><name>rpct_load_types_stream</name></member>
     <member refid="typing_8h_1ae54e088b78c7f0166d91fb95faf170d8" kind="function"><name>rpct_type_get_name</name></member>

@@ -99,6 +99,8 @@ This graph shows which files directly or indirectly include this file:</div>
 Macros</h2></td></tr>
 <tr class="memitem:a4f7704822a76a6f293f6abbb59bf41f3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a4f7704822a76a6f293f6abbb59bf41f3">RPC_HANDLER</a>(_fn,  _arg)</td></tr>
 <tr class="separator:a4f7704822a76a6f293f6abbb59bf41f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb61d20219377e2bd2a4727367222ec2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#acb61d20219377e2bd2a4727367222ec2">RPC_PROPERTY_HANDLER</a>(_fn,  _arg)</td></tr>
+<tr class="separator:acb61d20219377e2bd2a4727367222ec2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6630daf34229f9dd8a754b119e4a94d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ac6630daf34229f9dd8a754b119e4a94d">RPC_ERROR_HANDLER</a>(_fn,  _arg)</td></tr>
 <tr class="separator:ac6630daf34229f9dd8a754b119e4a94d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7512dc753949d75650bbec7527f9d0a6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a7512dc753949d75650bbec7527f9d0a6">RPC_CALLBACK</a>(_fn,  _arg)</td></tr>
@@ -116,6 +118,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:aeb6f25e395cc04930537960ef6b50106"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd97c34e4cc24dce96eb2944a3cf5aad"><td class="memItemLeft" align="right" valign="top">typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#abd97c34e4cc24dce96eb2944a3cf5aad">rpc_handler_t</a>) (const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:abd97c34e4cc24dce96eb2944a3cf5aad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9b1dc56a631c67a830ceb096d1a16ac"><td class="memItemLeft" align="right" valign="top">typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#af9b1dc56a631c67a830ceb096d1a16ac">rpc_property_handler_t</a>) (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
+<tr class="separator:af9b1dc56a631c67a830ceb096d1a16ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad84e18a0f030d415f1ac06697fe93525"><td class="memItemLeft" align="right" valign="top">typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ad84e18a0f030d415f1ac06697fe93525">rpc_error_handler_t</a>) (<a class="el" href="connection_8h.html#a043170f29cb25827a88be4dab2313a91">rpc_error_code_t</a> code, _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:ad84e18a0f030d415f1ac06697fe93525"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43904e9a96b10734529cdde29be58784"><td class="memItemLeft" align="right" valign="top">typedef bool(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a43904e9a96b10734529cdde29be58784">rpc_callback_t</a>) (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
@@ -182,6 +186,8 @@ Functions</h2></td></tr>
 <tr class="separator:a1964b28aff2f749ab8aa8ae8fedcf9d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a933ccba1b43865b6a634524c72e7d1ab"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a933ccba1b43865b6a634524c72e7d1ab">rpc_connection_set_propertypv</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nonnull interface, const char *_Nonnull name, const char *_Nonnull fmt, va_list ap)</td></tr>
 <tr class="separator:a933ccba1b43865b6a634524c72e7d1ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e3dfaa2449183321ee5b7011f20cf30"><td class="memItemLeft" align="right" valign="top">void *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a9e3dfaa2449183321ee5b7011f20cf30">rpc_connection_watch_property</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nonnull path, const char *_Nonnull interface, const char *_Nonnull property, _Nonnull <a class="el" href="connection_8h.html#af9b1dc56a631c67a830ceb096d1a16ac">rpc_property_handler_t</a> handler)</td></tr>
+<tr class="separator:a9e3dfaa2449183321ee5b7011f20cf30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd699ca36e45ca40ff561c8243cbc99e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#abd699ca36e45ca40ff561c8243cbc99e">rpc_connection_send_event</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:abd699ca36e45ca40ff561c8243cbc99e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbce64346725655e72faa0bf1c479750"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#abbce64346725655e72faa0bf1c479750">rpc_connection_ping</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
@@ -251,7 +257,7 @@ Functions</h2></td></tr>
 <div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00073">object.h:73</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#a43904e9a96b10734529cdde29be58784">rpc_callback_t</a> block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00127">127</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00140">140</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -284,7 +290,7 @@ Functions</h2></td></tr>
 <div class="ttc" id="connection_8h_html_a043170f29cb25827a88be4dab2313a91"><div class="ttname"><a href="connection_8h.html#a043170f29cb25827a88be4dab2313a91">rpc_error_code_t</a></div><div class="ttdeci">enum rpc_error_code rpc_error_code_t</div></div>
 </div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#ad84e18a0f030d415f1ac06697fe93525">rpc_error_handler_t</a> block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00119">119</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00132">132</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -315,7 +321,39 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">^(<span class="keyword">const</span> <span class="keywordtype">char</span> *_path, <span class="keyword">const</span> <span class="keywordtype">char</span> *_iface, <span class="keyword">const</span> <span class="keywordtype">char</span> *_name,     \</div><div class="line">        rpc_object_t _args) {                   \</div><div class="line">        _fn(_arg, _path, _iface, _name, _args);         \</div><div class="line">    }</div></div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#abd97c34e4cc24dce96eb2944a3cf5aad">rpc_handler_t</a> block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00110">110</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00115">115</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+
+</div>
+</div>
+<a id="acb61d20219377e2bd2a4727367222ec2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb61d20219377e2bd2a4727367222ec2">&#9670;&nbsp;</a></span>RPC_PROPERTY_HANDLER</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define RPC_PROPERTY_HANDLER</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_fn, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_arg&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">^(<a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _value) {                    \</div><div class="line">        _fn(_arg, _value);                  \</div><div class="line">    }</div><div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00073">object.h:73</a></div></div>
+</div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#af9b1dc56a631c67a830ceb096d1a16ac">rpc_property_handler_t</a> block type. </p>
+
+<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00124">124</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -365,7 +403,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Definition of RPC callback block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00105">105</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00110">110</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -414,7 +452,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Definition of RPC error handler block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00099">99</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00104">104</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -432,6 +470,23 @@ Functions</h2></td></tr>
 <p>Definition of RPC event handler block type. </p>
 
 <p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00092">92</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+
+</div>
+</div>
+<a id="af9b1dc56a631c67a830ceb096d1a16ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9b1dc56a631c67a830ceb096d1a16ac">&#9670;&nbsp;</a></span>rpc_property_handler_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(^ rpc_property_handler_t) (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Definition of RPC property change handler block type. </p>
+
+<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00099">99</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -1861,6 +1916,63 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure </dd></dl>
+
+</div>
+</div>
+<a id="a9e3dfaa2449183321ee5b7011f20cf30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e3dfaa2449183321ee5b7011f20cf30">&#9670;&nbsp;</a></span>rpc_connection_watch_property()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* _Nullable rpc_connection_watch_property </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *_Nonnull&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *_Nonnull&#160;</td>
+          <td class="paramname"><em>interface</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *_Nonnull&#160;</td>
+          <td class="paramname"><em>property</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#af9b1dc56a631c67a830ceb096d1a16ac">rpc_property_handler_t</a>&#160;</td>
+          <td class="paramname"><em>handler</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td></td></tr>
+    <tr><td class="paramname">path</td><td></td></tr>
+    <tr><td class="paramname">interface</td><td></td></tr>
+    <tr><td class="paramname">property</td><td></td></tr>
+    <tr><td class="paramname">handler</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>
