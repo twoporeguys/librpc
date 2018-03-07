@@ -20,7 +20,6 @@ var searchData=
   ['rpc_5finstance_5ft',['rpc_instance_t',['../service_8h.html#afd1294bd7ea02592ecc002e1576ef290',1,'service.h']]],
   ['rpc_5fobject_5ft',['rpc_object_t',['../object_8h.html#ab365f726b4975c0c8376b808d111d01b',1,'object.h']]],
   ['rpc_5fproperty_5fgetter_5ft',['rpc_property_getter_t',['../service_8h.html#ab438f0c33f3f3876f1c9a23d62134f16',1,'service.h']]],
-  ['rpc_5fproperty_5fhandler_5ft',['rpc_property_handler_t',['../connection_8h.html#af9b1dc56a631c67a830ceb096d1a16ac',1,'connection.h']]],
   ['rpc_5fproperty_5fsetter_5ft',['rpc_property_setter_t',['../service_8h.html#aa8b38d8ab3bafe79a96edaebafe13b8d',1,'service.h']]],
   ['rpc_5fquery_5fcb_5ft',['rpc_query_cb_t',['../query_8h.html#a2e4187b74c3bd970f9e41bb2d02d09a0',1,'query.h']]],
   ['rpc_5fquery_5fiter_5ft',['rpc_query_iter_t',['../query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd',1,'query.h']]],
