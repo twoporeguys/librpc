@@ -925,6 +925,20 @@ rpc_connection_close(rpc_connection_t conn)
 	return (0);
 }
 
+bool
+rpc_connection_is_open(_Nonnull rpc_connection_t conn)
+{
+
+	return (!conn->rco_closed);
+}
+
+void
+rpc_connection_free(_Nonnull rpc_connection_t conn)
+{
+
+	g_free(conn);
+}
+
 #ifdef LIBDISPATCH_SUPPORT
 int
 rpc_connection_set_dispatch_queue(rpc_connection_t conn, dispatch_queue_t queue)
@@ -1170,9 +1184,13 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
     rpc_callback_t callback)
 {
 	struct rpc_call *call;
-	rpc_object_t payload = rpc_dictionary_create();
+	rpc_object_t payload;
 	rpc_object_t frame;
 
+	if (conn->rco_closed)
+		return (NULL);
+
+	payload = rpc_dictionary_create();
 	call = rpc_call_alloc(conn, NULL);
 	call->rc_type = "call";
 	call->rc_path = path;

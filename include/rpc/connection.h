@@ -160,6 +160,21 @@ _Nullable rpc_connection_t rpc_connection_create(void *_Nonnull cookie,
  */
 int rpc_connection_close(_Nonnull rpc_connection_t conn);
 
+/**
+ * Returns @p true if connection is open, otherwise @p false.
+ *
+ * @param conn Connection handle
+ * @return @p true if connection is open, otherwise @p false
+ */
+bool rpc_connection_is_open(_Nonnull rpc_connection_t conn);
+
+/**
+ * Frees resources associated with @ref rpc_connection_t.
+ *
+ * @param conn Connection handle
+ */
+void rpc_connection_free(_Nonnull rpc_connection_t conn);
+
 #ifdef LIBDISPATCH_SUPPORT
 /**
  * Assigns a libdispatch queue to the connection.
