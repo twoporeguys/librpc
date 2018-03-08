@@ -590,11 +590,12 @@ usb_send_msg_impl(void *arg)
 	if (libusb_control_transfer(conn->uc_handle,
 	    LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_OUT,
 	    LIBRPC_USB_SEND_REQ, 0, 0, (uint8_t *)&packet,
-	    (uint16_t)state->uss_len, 500) < 0)
+	    (uint16_t)state->uss_len, 500) < 0) {
+		conn->uc_rco->rco_close(conn->uc_rco);
 		goto out;
+	}
 
 	for (;;) {
-
 		ret = libusb_control_transfer(conn->uc_handle,
 		    LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_IN,
 		    LIBRPC_USB_READ_RESP, 0, 0, (uint8_t *)&packet,
@@ -617,6 +618,7 @@ usb_send_msg_impl(void *arg)
 			break;
 
 		case LIBRPC_USB_ERROR:
+			conn->uc_rco->rco_close(conn->uc_rco);
 			break;
 
 		default:

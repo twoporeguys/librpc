@@ -651,6 +651,7 @@ rpc_close(rpc_connection_t conn)
 	}
 
 	g_mutex_unlock(&conn->rco_call_mtx);
+	conn->rco_closed = true;
 	return (0);
 }
 
