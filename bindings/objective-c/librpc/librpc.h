@@ -84,7 +84,7 @@ extern NSString * _Nullable const RPCErrorDomain;
  * @returns RPCObject description
  */
 - (nonnull NSString *)describe;
-- (nonnull id)value;
+- (nullable id)value;
 - (nonnull void *)nativeValue;
 - (RPCType)type;
 @end
@@ -150,7 +150,7 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
 /**
  * Issues a call to the server and waits for the response.
  */
-- (nonnull RPCObject *)callSync:(nonnull NSString *)method
+- (nullable RPCObject *)callSync:(nonnull NSString *)method
                            path:(nullable NSString *)path
                       interface:(nullable NSString *)interface
                            args:(nullable RPCObject *)args
