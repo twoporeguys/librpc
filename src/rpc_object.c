@@ -1508,6 +1508,7 @@ rpc_error_create(int code, const char *msg, rpc_object_t extra)
 rpc_object_t
 rpc_error_create_from_gerror(GError *g_error)
 {
+	
         return (rpc_error_create(g_error->code, g_error->message, NULL));
 }
 
