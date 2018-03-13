@@ -9,7 +9,7 @@ env:
   - DOCKER_IMAGE: ubuntu:17.10
   - PACKAGES: "'doxygen doxygen-doc doxygen-latex doxygen-gui graphviz build-essential
       ca-certificates git cmake clang cython libpython-dev libblocksruntime-dev libglib2.0-dev
-      libsoup2.4-dev libyajl-dev libyaml-dev libyaml-dev libusb-1.0-0-dev'"
+      libsoup2.4-dev libyajl-dev libyaml-dev libyaml-dev libusb-1.0-0-dev python3-setuptools'"
   - EXEC: "'docker exec builder /bin/bash -c'"
 
 before_install:
