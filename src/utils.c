@@ -134,9 +134,20 @@ rpc_set_last_gerror(GError *g_error)
 {
 	rpc_object_t error;
 
-	error = rpc_error_create(g_error->code, g_error->message, NULL);
+	error = rpc_error_create_from_gerror(g_error);
 	g_private_replace(&rpc_last_error, error);
 }
+
+
+void
+rpc_set_last_rpc_error(rpc_object_t rpc_error)
+{
+
+	if (rpc_get_type(rpc_error) != RPC_TYPE_ERROR)
+		return;
+        g_private_replace(&rpc_last_error, rpc_error);
+}
+
 
 rpc_object_t
 rpc_get_last_error(void)
