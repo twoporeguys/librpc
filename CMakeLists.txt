@@ -21,6 +21,7 @@ option(ENABLE_UBSAN "Enable undefined behavior sanitizer")
 option(ENABLE_UBSAN_NULLABILITY "Enable nullability sanitizer")
 option(ENABLE_ASAN "Enable address sanitizer")
 option(ENABLE_LIBDISPATCH "Enable libdispatch support")
+option(ENABLE_COVERAGE "Enable code coverage")
 
 if(LINUX)
     option(BUILD_BUS "Build and install bus transport" ON)
@@ -86,6 +87,10 @@ endif()
 
 if (ENABLE_ASAN)
     set(PKGCONFIG_C_FLAGS "${PKGCONFIG_C_FLAGS} -fsanitize=address")
+endif()
+
+if (ENABLE_COVERAGE)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
 endif()
 
 set(CMAKE_C_STANDARD 11)
