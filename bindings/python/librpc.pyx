@@ -752,11 +752,11 @@ cdef class Context(object):
             raise_internal_exc()
 
 
-    def register_method(self, name, fn, interface=''):
+    def register_method(self, name, fn, interface=None):
         self.methods[name] = fn
         if rpc_context_register_func(
             self.context,
-            interface.encode('utf-8'),
+            cstr_or_null(interface),
             name.encode('utf-8'),
             <void *>fn,
             <rpc_function_f>c_cb_function
@@ -2019,6 +2019,13 @@ cdef str_or_none(const char *val):
         return None
 
     return val.decode('utf-8')
+
+
+cdef const char *cstr_or_null(val):
+    if not val:
+        return NULL
+
+    return val.encode('utf-8')
 
 
 cdef raise_internal_exc(rpc=False):
