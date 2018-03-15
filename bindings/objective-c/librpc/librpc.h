@@ -118,6 +118,8 @@ extern NSString * _Nullable const RPCErrorDomain;
 
 typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull value);
 
+typedef void(^RPCEventCallback)(RPCObject* _Nonnull interface, NSString * _Nullable value);
+
 @interface RPCClient : NSObject
 /**
  * Connects to an endpoint specified by @p uri.
@@ -165,6 +167,12 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
         interface:(nullable NSString *)interface
              args:(nullable RPCObject *)args
          callback:(nonnull RPCFunctionCallback)cb;
+
+- (void)eventObserver:(nonnull NSString *)method
+                 path:(nonnull NSString *)path
+            interface:(nonnull NSString *)interface
+             callback:(nullable RPCEventCallback)cb;
+
 @end
 
 @interface RPCInstance : NSObject
