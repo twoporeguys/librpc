@@ -10,7 +10,7 @@ clean: _clean
 
 test: _test
 
-doc: _clean_doc node_modules _doc
+doc: _clean _doc
 
 deps: node_modules
 
@@ -47,7 +47,7 @@ _test:
 	$(TOOLS_PATH)/nyc --reporter=none $(TOOLS_PATH)/mocha --opts mocha.opts > test-result.xml
 	$(TOOLS_PATH)/nyc report
 
-_doc:
+_doc: node_modules
 	$(TOOLS_PATH)/typedoc --out ./doc --entryPoint 'LibRpcClient' src/index.ts
 
 _build: node_modules
