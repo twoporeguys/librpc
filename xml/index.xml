@@ -82,8 +82,6 @@
     <member refid="connection_8h_1a43904e9a96b10734529cdde29be58784" kind="typedef"><name>rpc_callback_t</name></member>
     <member refid="connection_8h_1a254ad98a921503f712a2adba41160a5f" kind="function"><name>rpc_connection_create</name></member>
     <member refid="connection_8h_1aa63689ba3875975bc8a1fd0177c1a228" kind="function"><name>rpc_connection_close</name></member>
-    <member refid="connection_8h_1a71699a40039ad05bd244713464cbee88" kind="function"><name>rpc_connection_is_open</name></member>
-    <member refid="connection_8h_1a07eb2a0e3655cb83222f5faa530e3bfd" kind="function"><name>rpc_connection_free</name></member>
     <member refid="connection_8h_1ae62dee58a622eb6e1501c8c3342a1530" kind="function"><name>rpc_connection_subscribe_event</name></member>
     <member refid="connection_8h_1afb42640760f64e1c56d2e09808b04769" kind="function"><name>rpc_connection_unsubscribe_event</name></member>
     <member refid="connection_8h_1ab223ffd9a03ab35ac0369f4fde934c49" kind="function"><name>rpc_connection_register_event_handler</name></member>

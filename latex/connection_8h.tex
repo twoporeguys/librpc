@@ -81,10 +81,6 @@ enum \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\+\_\+call\+
 \item 
 int \hyperlink{connection_8h_aa63689ba3875975bc8a1fd0177c1a228}{rpc\+\_\+connection\+\_\+close} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
-bool \hyperlink{connection_8h_a71699a40039ad05bd244713464cbee88}{rpc\+\_\+connection\+\_\+is\+\_\+open} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
-\item 
-void \hyperlink{connection_8h_a07eb2a0e3655cb83222f5faa530e3bfd}{rpc\+\_\+connection\+\_\+free} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
-\item 
 int \hyperlink{connection_8h_ae62dee58a622eb6e1501c8c3342a1530}{rpc\+\_\+connection\+\_\+subscribe\+\_\+event} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name)
 \item 
 int \hyperlink{connection_8h_afb42640760f64e1c56d2e09808b04769}{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name)
@@ -696,19 +692,6 @@ Creates a new connection from the provided opaque cookie.
 \begin{DoxyReturn}{Returns}
 Connection handle or N\+U\+LL on failure 
 \end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_a07eb2a0e3655cb83222f5faa530e3bfd}\label{connection_8h_a07eb2a0e3655cb83222f5faa530e3bfd}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+free@{rpc\+\_\+connection\+\_\+free}}
-\index{rpc\+\_\+connection\+\_\+free@{rpc\+\_\+connection\+\_\+free}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+free()}{rpc\_connection\_free()}}
-{\footnotesize\ttfamily void rpc\+\_\+connection\+\_\+free (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
-
-Frees resources associated with \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}.
-
-
-\begin{DoxyParams}{Parameters}
-{\em conn} & Connection handle \\
-\hline
-\end{DoxyParams}
 \mbox{\Hypertarget{connection_8h_a5332b87fc6add76392bdc17d0db2e982}\label{connection_8h_a5332b87fc6add76392bdc17d0db2e982}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+property@{rpc\+\_\+connection\+\_\+get\+\_\+property}}
 \index{rpc\+\_\+connection\+\_\+get\+\_\+property@{rpc\+\_\+connection\+\_\+get\+\_\+property}!connection.\+h@{connection.\+h}}
@@ -802,22 +785,6 @@ Returns true if a connection has associated remote credentials information.
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 true if credentials information is available, otherwise false 
-\end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_a71699a40039ad05bd244713464cbee88}\label{connection_8h_a71699a40039ad05bd244713464cbee88}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+is\+\_\+open@{rpc\+\_\+connection\+\_\+is\+\_\+open}}
-\index{rpc\+\_\+connection\+\_\+is\+\_\+open@{rpc\+\_\+connection\+\_\+is\+\_\+open}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+is\+\_\+open()}{rpc\_connection\_is\_open()}}
-{\footnotesize\ttfamily bool rpc\+\_\+connection\+\_\+is\+\_\+open (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
-
-Returns {\ttfamily true} if connection is open, otherwise {\ttfamily false}.
-
-
-\begin{DoxyParams}{Parameters}
-{\em conn} & Connection handle \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-{\ttfamily true} if connection is open, otherwise {\ttfamily false} 
 \end{DoxyReturn}
 \mbox{\Hypertarget{connection_8h_abbce64346725655e72faa0bf1c479750}\label{connection_8h_abbce64346725655e72faa0bf1c479750}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+ping@{rpc\+\_\+connection\+\_\+ping}}
