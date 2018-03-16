@@ -427,10 +427,9 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
             interface:(NSString *)interface
              callback:(RPCEventCallback)cb {
     rpc_connection_register_event_handler(conn, [path UTF8String], [interface UTF8String], [method UTF8String],
-            ^(const char *pathReturn, const char *interfaceReturn, const char *nameReturn, rpc_object_t args) {
-                RPCObject *newargs = [[RPCObject alloc] initFromNativeObject: args];
-                cb([[RPCObject alloc] initFromNativeObject: args], [[NSString alloc] initWithString:@(pathReturn)]);
-                NSLog(@"%@", newargs.value);
+            ^(const char *pathReturn, const char *interfaceReturn, const char *methodReturn, rpc_object_t args) {
+                cb([[RPCObject alloc] initFromNativeObject: args], [[NSString alloc] initWithString:@(pathReturn)],
+                   [[NSString alloc] initWithString:@(interfaceReturn)], [[NSString alloc] initWithString:@(methodReturn)]);
             });
 }
 @end
