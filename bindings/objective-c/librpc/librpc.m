@@ -329,10 +329,6 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
     }
 }
 
-- (void)disconnect {
-    
-}
-
 - (NSDictionary *)instances {
     return [self instancesForPath:@"/"];
 }
@@ -407,6 +403,10 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
     
 }
 
+- (void)disconnect {
+    
+}
+
 - (void)callAsync:(NSString *)method
              path:(NSString *)path
         interface:(NSString *)interface
@@ -420,6 +420,17 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
         cb([[RPCCall alloc] initFromNativeObject:call], [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)]);
         return (bool)true;
     });
+}
+
+- (void)eventObserver:(NSString *)method
+                 path:(NSString *)path
+            interface:(NSString *)interface
+             callback:(RPCEventCallback)cb {
+    rpc_connection_register_event_handler(conn, [path UTF8String], [interface UTF8String], [method UTF8String],
+            ^(const char *pathReturn, const char *interfaceReturn, const char *methodReturn, rpc_object_t args) {
+                cb([[RPCObject alloc] initFromNativeObject: args], [[NSString alloc] initWithString:@(pathReturn)],
+                   [[NSString alloc] initWithString:@(interfaceReturn)], [[NSString alloc] initWithString:@(methodReturn)]);
+            });
 }
 @end
 
