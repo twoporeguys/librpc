@@ -1028,11 +1028,29 @@ rpc_object_vpack(const char *fmt, va_list ap)
 		case '{':
 			container = rpc_dictionary_create();
 			g_queue_push_tail(stack, container);
+
+			if (type != NULL) {
+				container = rpct_new(type, container);
+				if (container == NULL)
+					goto error;
+
+				g_free(type);
+				type = NULL;
+			}
 			continue;
 
 		case '[':
 			container = rpc_array_create();
 			g_queue_push_tail(stack, container);
+
+			if (type != NULL) {
+				container = rpct_new(type, container);
+				if (container == NULL)
+					goto error;
+
+				g_free(type);
+				type = NULL;
+			}
 			continue;
 
 		case '}':
@@ -1075,7 +1093,8 @@ rpc_object_vpack(const char *fmt, va_list ap)
 		return (current);
 	}
 
-error:	rpc_release(current);
+error:
+	rpc_release(current);
 
 	g_queue_free(stack);
 	g_queue_free_full(keys, g_free);
