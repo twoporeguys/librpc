@@ -1549,11 +1549,12 @@ rpc_object_t
 rpct_serialize(rpc_object_t object)
 {
 	const struct rpct_class_handler *handler;
-	rpct_class_t clazz = object->ro_typei->type->clazz;
+	rpct_class_t clazz;
 
 	if (object->ro_typei == NULL)
 		return (object);
 
+	clazz = object->ro_typei->type->clazz;
 	handler = rpc_find_class_handler(NULL, clazz);
 	g_assert_nonnull(handler);
 
