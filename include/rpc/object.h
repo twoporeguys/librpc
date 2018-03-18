@@ -424,8 +424,8 @@ int rpc_object_to_json(_Nonnull rpc_object_t object,
  * the NULL RPC object below that index with UNSIGNED INT RPC object.
  *
  * Format string syntax:
- * - v - Librpc object - args: rpc_object_t object
- * - V - Librpc object (increases refcount) - args: rpc_object_t object
+ * - v - librpc object - args: rpc_object_t object
+ * - V - librpc object (increases refcount) - args: rpc_object_t object
  * - n - Null object
  * - b - Boolean object - args: bool value
  * - B - Binary object - args: void *buffer, size_t size, bool copy
