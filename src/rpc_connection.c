@@ -598,6 +598,14 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 		return (-1);
 	}
 
+	msg = rpct_deserialize(msg);
+	if (msg == NULL) {
+		if (conn->rco_error_handler != NULL)
+			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, NULL);
+
+		return (-1);
+	}
+
 	if (creds != NULL)
 		conn->rco_creds = *creds;
 
@@ -676,6 +684,9 @@ rpc_send_frame(rpc_connection_t conn, rpc_object_t frame)
 	int fds[MAX_FDS];
 	size_t len = 0, nfds = 0;
 	int ret;
+
+	if ((conn->rco_flags & RPC_TRANSPORT_NO_SERIALIZE) == 0)
+		frame = rpct_serialize(frame);
 
 #ifdef RPC_TRACE
 	rpc_trace("SEND", frame);

@@ -1551,8 +1551,26 @@ rpct_serialize(rpc_object_t object)
 	const struct rpct_class_handler *handler;
 	rpct_class_t clazz;
 
-	if (object->ro_typei == NULL)
+	if (context == NULL)
 		return (object);
+
+	if (object->ro_typei == NULL) {
+		/* Try recursively */
+		if (rpc_get_type(object) == RPC_TYPE_DICTIONARY) {
+			rpc_dictionary_map(object,
+			    ^(const char *key, rpc_object_t v) {
+				return (rpct_serialize(v));
+			});
+		}
+
+		if (rpc_get_type(object) == RPC_TYPE_ARRAY) {
+			rpc_array_map(object, ^(size_t idx, rpc_object_t v) {
+				return (rpct_serialize(v));
+			});
+		}
+
+		return (object);
+	}
 
 	clazz = object->ro_typei->type->clazz;
 	handler = rpc_find_class_handler(NULL, clazz);
@@ -1568,6 +1586,9 @@ rpct_deserialize(rpc_object_t object)
 	rpc_type_t objtype = rpc_get_type(object);
 	rpc_object_t type;
 	rpc_object_t result;
+
+	if (context == NULL)
+		return (object);
 
 	if (object->ro_typei != NULL)
 		return (object);
