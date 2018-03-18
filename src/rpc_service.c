@@ -1043,6 +1043,7 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 	struct rpc_interface_priv *priv;
 	rpc_object_t value;
 	rpc_object_t result;
+	rpc_object_t item;
 
 	if (rpc_object_unpack(args, "[s]", &interface) < 1) {
 		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
@@ -1081,9 +1082,11 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 		if (prop.error != NULL)
 			value = prop.error;
 
-		rpc_array_append_stolen_value(result, rpc_object_pack("{s,v}",
+		item = rpc_object_pack("<com.twoporeguys.librpc.PropertyDescriptor>{s,v}",
 		    "name", v->rim_name,
-		    "value", value));
+		    "value", value);
+
+		rpc_array_append_stolen_value(result, item);
 	}
 
 	g_mutex_unlock(&priv->rip_mtx);
