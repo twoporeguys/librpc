@@ -4319,8 +4319,8 @@ Functions</h2></td></tr>
 </ul>
 <p>Example: {[i,s,i],[10:b,s,1:d,u],{key:v,f,u}} Array in the middle of the example below is going to be created in the following order: indexes 0-9 are going to be padded with the NULL RPC objects, index 10 is going to contain BOOL RPC object, index 11 is going to contain a STRING RPC object, function jumps back to the index 1 and replaces NULL RPC object with the DOUBLE RPC object, function increments last index, that results in the index 2 and replaces the NULL RPC object below that index with UNSIGNED INT RPC object.</p>
 <p>Format string syntax:</p><ul>
-<li>v - Librpc object - args: rpc_object_t object</li>
-<li>V - Librpc object (increases refcount) - args: rpc_object_t object</li>
+<li>v - librpc object - args: rpc_object_t object</li>
+<li>V - librpc object (increases refcount) - args: rpc_object_t object</li>
 <li>n - Null object</li>
 <li>b - Boolean object - args: bool value</li>
 <li>B - Binary object - args: void *buffer, size_t size, bool copy</li>
