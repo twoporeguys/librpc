@@ -74,6 +74,8 @@ int \hyperlink{typing_8h_abd806217eb0710e56261f7165117f3c9}{rpct\+\_\+read\+\_\+
 \item 
 int \hyperlink{typing_8h_a614a4cc99f03ed23893a73d097f26bdc}{rpct\+\_\+load\+\_\+types} (const char $\ast$path)
 \item 
+int \hyperlink{typing_8h_a5bfb76b7035a0d74bfb415ffcfb5596c}{rpct\+\_\+load\+\_\+types\+\_\+dir} (const char $\ast$path)
+\item 
 int \hyperlink{typing_8h_acbc6974bab6dc69be04a901688cfcbca}{rpct\+\_\+load\+\_\+types\+\_\+stream} (int fd)
 \item 
 const char $\ast$ \hyperlink{typing_8h_ae54e088b78c7f0166d91fb95faf170d8}{rpct\+\_\+type\+\_\+get\+\_\+name} (\hyperlink{typing_8h_ab85403e2a616bb3728cd489bd0619cbb}{rpct\+\_\+type\+\_\+t} type)
@@ -140,11 +142,9 @@ bool \hyperlink{typing_8h_a1fe6427a1837bebcf1278d47b9a572f6}{rpct\+\_\+if\+\_\+m
 \item 
 \hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} \hyperlink{typing_8h_a607ecfa5cfa13782fafd4d8da6fbd3d8}{rpct\+\_\+new\+\_\+typei} (const char $\ast$decl)
 \item 
-\mbox{\Hypertarget{typing_8h_ae4eb9d801add10b3fd0f4a81c0941d79}\label{typing_8h_ae4eb9d801add10b3fd0f4a81c0941d79}} 
-\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} {\bfseries rpct\+\_\+new} (const char $\ast$decl, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{typing_8h_ae4eb9d801add10b3fd0f4a81c0941d79}{rpct\+\_\+new} (const char $\ast$decl, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
 \item 
-\mbox{\Hypertarget{typing_8h_afe7e442dfe3eb86ca20e33eb39090a32}\label{typing_8h_afe7e442dfe3eb86ca20e33eb39090a32}} 
-\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} {\bfseries rpct\+\_\+newi} (\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} typei, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{typing_8h_afe7e442dfe3eb86ca20e33eb39090a32}{rpct\+\_\+newi} (\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} typei, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
 \item 
 \hyperlink{typing_8h_ab85403e2a616bb3728cd489bd0619cbb}{rpct\+\_\+type\+\_\+t} \hyperlink{typing_8h_ad561bbc3570d840153fba0ac24d53792}{rpct\+\_\+get\+\_\+type} (const char $\ast$name)
 \item 
@@ -648,6 +648,20 @@ Loads type information from an interface definition file.
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on error 
 \end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_a5bfb76b7035a0d74bfb415ffcfb5596c}\label{typing_8h_a5bfb76b7035a0d74bfb415ffcfb5596c}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+load\+\_\+types\+\_\+dir@{rpct\+\_\+load\+\_\+types\+\_\+dir}}
+\index{rpct\+\_\+load\+\_\+types\+\_\+dir@{rpct\+\_\+load\+\_\+types\+\_\+dir}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+load\+\_\+types\+\_\+dir()}{rpct\_load\_types\_dir()}}
+{\footnotesize\ttfamily int rpct\+\_\+load\+\_\+types\+\_\+dir (\begin{DoxyParamCaption}\item[{const char $\ast$}]{path }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_acbc6974bab6dc69be04a901688cfcbca}\label{typing_8h_acbc6974bab6dc69be04a901688cfcbca}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+load\+\_\+types\+\_\+stream@{rpct\+\_\+load\+\_\+types\+\_\+stream}}
 \index{rpct\+\_\+load\+\_\+types\+\_\+stream@{rpct\+\_\+load\+\_\+types\+\_\+stream}!typing.\+h@{typing.\+h}}
@@ -782,6 +796,24 @@ Returns the type instance handle representing return type of a function.
 \begin{DoxyReturn}{Returns}
 Return type instance handle 
 \end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_ae4eb9d801add10b3fd0f4a81c0941d79}\label{typing_8h_ae4eb9d801add10b3fd0f4a81c0941d79}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+new@{rpct\+\_\+new}}
+\index{rpct\+\_\+new@{rpct\+\_\+new}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+new()}{rpct\_new()}}
+{\footnotesize\ttfamily \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpct\+\_\+new (\begin{DoxyParamCaption}\item[{const char $\ast$}]{decl,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{object }\end{DoxyParamCaption})}
+
+Creates a new object of the specified type.
+
+
+\begin{DoxyParams}{Parameters}
+{\em decl} & Type declaration \\
+\hline
+{\em object} & Contents \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_a607ecfa5cfa13782fafd4d8da6fbd3d8}\label{typing_8h_a607ecfa5cfa13782fafd4d8da6fbd3d8}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+new\+\_\+typei@{rpct\+\_\+new\+\_\+typei}}
 \index{rpct\+\_\+new\+\_\+typei@{rpct\+\_\+new\+\_\+typei}!typing.\+h@{typing.\+h}}
@@ -797,6 +829,22 @@ Creates a new type instance from provided declaration.
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 Type instance handle or N\+U\+LL in case of error 
+\end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_afe7e442dfe3eb86ca20e33eb39090a32}\label{typing_8h_afe7e442dfe3eb86ca20e33eb39090a32}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+newi@{rpct\+\_\+newi}}
+\index{rpct\+\_\+newi@{rpct\+\_\+newi}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+newi()}{rpct\_newi()}}
+{\footnotesize\ttfamily \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpct\+\_\+newi (\begin{DoxyParamCaption}\item[{\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t}}]{typei,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{object }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em typei} & \\
+\hline
+{\em object} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
 \end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_abce3ba70902e15fe331cec0b12aa3e38}\label{typing_8h_abce3ba70902e15fe331cec0b12aa3e38}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+property\+\_\+get\+\_\+type@{rpct\+\_\+property\+\_\+get\+\_\+type}}
