@@ -328,9 +328,8 @@ rpc_json_end_map(void *ctx_ptr)
 		return (0);
 
 	leaf_size = rpc_dictionary_get_count(leaf);
-	if (leaf_size == 1) {
+	if (leaf_size == 1)
 		rpc_json_try_unpack_ext(ctx_ptr, leaf);
-	}
 
 	return (1);
 }

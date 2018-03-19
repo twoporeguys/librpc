@@ -236,8 +236,6 @@ install(DIRECTORY idl/ DESTINATION ${CMAKE_INSTALL_PREFIX}/share/idl)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pkgconfig)
 
 if(BUILD_TESTS)
-    # Compile tests
-
     set(TEST_SOURCES
             src/linker_set.h
             tests/tests.h
