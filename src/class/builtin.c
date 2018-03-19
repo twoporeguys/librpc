@@ -65,7 +65,7 @@ builtin_validate(struct rpct_typei *typei, rpc_object_t obj,
 		break;
 	}
 
-	done:
+done:
 	return (rpct_run_validators(typei, obj, errctx));
 }
 

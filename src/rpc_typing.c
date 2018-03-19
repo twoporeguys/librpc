@@ -90,6 +90,8 @@ rpct_newi(rpct_typei_t typei, rpc_object_t object)
 {
 	if (object == NULL)
 		object = rpc_dictionary_create();
+	else
+		object = rpc_copy(object);
 
 	object->ro_typei = typei;
 	return (object);
@@ -1115,10 +1117,27 @@ rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
     struct rpct_error_context *errctx)
 {
 	const struct rpct_class_handler *handler;
+	struct rpct_typei *raw_typei;
 	bool valid;
 
-	/* Step 1: check type */
-	if (!rpct_type_is_compatible(typei, obj->ro_typei)) {
+	raw_typei = rpct_unwind_typei(typei);
+
+	/* Step 1: is it typed at all? */
+	if (obj->ro_typei == NULL) {
+		/* Can only be builtin type */
+		if (g_strcmp0(rpc_get_type_name(obj->ro_type),
+		    raw_typei->canonical_form) == 0)
+			goto step3;
+
+		rpct_add_error(errctx,
+		    "Incompatible type %s, should be %s",
+		    rpc_get_type_name(obj->ro_type),
+		    raw_typei->canonical_form, NULL);
+		return (false);
+	}
+
+	/* Step 2: check type */
+	if (!rpct_type_is_compatible(raw_typei, obj->ro_typei)) {
 		rpct_add_error(errctx,
 		    "Incompatible type %s, should be %s",
 		    obj->ro_typei->canonical_form,
@@ -1128,11 +1147,12 @@ rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
 		goto done;
 	}
 
-	handler = rpc_find_class_handler(NULL, typei->type->clazz);
+step3:
+	handler = rpc_find_class_handler(NULL, raw_typei->type->clazz);
 	g_assert_nonnull(handler);
 
 	/* Step 3: run per-class validator */
-	valid = handler->validate_fn(typei, obj, errctx);
+	valid = handler->validate_fn(raw_typei, obj, errctx);
 
 done:
 	return (valid);

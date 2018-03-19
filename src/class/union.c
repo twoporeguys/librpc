@@ -57,9 +57,9 @@ static struct rpct_member *union_read_member(const char *decl,
 
 	if (constraints != NULL) {
 		rpc_dictionary_apply(constraints, ^(const char *key, rpc_object_t value) {
-		    g_hash_table_insert(member->constraints, g_strdup(key),
-		        value);
-		    return ((bool)true);
+			g_hash_table_insert(member->constraints, g_strdup(key),
+			    value);
+			return ((bool)true);
 		});
 	}
 

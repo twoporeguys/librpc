@@ -27,6 +27,17 @@
 #include "../linker_set.h"
 #include "../internal.h"
 
+static bool
+typedef_validate(struct rpct_typei *typei, rpc_object_t obj,
+    struct rpct_error_context *errctx)
+{
+
+	if (!rpct_validate_instance(typei->type->definition, obj, errctx))
+		return (false);
+
+	return (rpct_run_validators(typei, obj, errctx));
+}
+
 static rpc_object_t
 typedef_serialize(rpc_object_t obj)
 {
@@ -38,7 +49,7 @@ static struct rpct_class_handler typedef_class_handler = {
 	.id = RPC_TYPING_TYPEDEF,
 	.name = "type",
 	.member_fn = NULL,
-	.validate_fn = NULL,
+	.validate_fn = typedef_validate,
 	.serialize_fn = typedef_serialize
 };
 
