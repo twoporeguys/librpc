@@ -380,7 +380,7 @@ cmd_set(int argc, char *argv[])
 static int
 cmd_listen(int argc, char *argv[])
 {
-	GMutex mtx;
+	__block GMutex mtx;
 	rpc_connection_t conn;
 
 	g_mutex_init(&mtx);
