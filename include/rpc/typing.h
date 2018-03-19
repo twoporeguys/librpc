@@ -190,6 +190,13 @@ int rpct_read_file(const char *path);
 int rpct_load_types(const char *path);
 
 /**
+ *
+ * @param path
+ * @return
+ */
+int rpct_load_types_dir(const char *path);
+
+/**
  * Loads type information from an interface definition stream.
  *
  * File descriptor is closed once all definitions have been
@@ -467,7 +474,22 @@ bool rpct_if_member_apply(rpct_interface_t iface, rpct_if_member_applier_t appli
  * @return Type instance handle or NULL in case of error
  */
 rpct_typei_t rpct_new_typei(const char *decl);
+
+/**
+ * Creates a new object of the specified type.
+ *
+ * @param decl Type declaration
+ * @param object Contents
+ * @return
+ */
 rpc_object_t rpct_new(const char *decl, rpc_object_t object);
+
+/**
+ *
+ * @param typei
+ * @param object
+ * @return
+ */
 rpc_object_t rpct_newi(rpct_typei_t typei, rpc_object_t object);
 
 /**

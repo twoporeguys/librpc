@@ -1212,6 +1212,8 @@ rpct_init(void)
 		g_hash_table_insert(context->types, g_strdup(type->name), type);
 	}
 
+	/* Load system-wide types */
+	rpct_load_types_dir("/usr/local/share/idl");
 	return (0);
 }
 
@@ -1262,6 +1264,50 @@ rpct_load_types(const char *path)
 	}))
 		return (-1);
 
+	return (0);
+}
+
+int
+rpct_load_types_dir(const char *path)
+{
+	GDir *dir;
+	GPtrArray *files;
+	GError *error = NULL;
+	const char *name;
+	char *s;
+	guint i;
+
+	dir = g_dir_open(path, 0, &error);
+	if (dir == NULL) {
+		rpc_set_last_gerror(error);
+		g_error_free(error);
+		return (-1);
+	}
+
+	files = g_ptr_array_new_with_free_func((GDestroyNotify)g_free);
+
+	for (;;) {
+		name = g_dir_read_name(dir);
+		if (name == NULL)
+			break;
+
+		s = g_strdup_printf("%s/%s", path, name);
+		if (rpct_read_file(s) != 0) {
+			g_free(s);
+			continue;
+		}
+
+		g_ptr_array_add(files, s);
+	}
+
+	g_dir_close(dir);
+
+	for (i = 0; i < files->len; i++) {
+		s = g_ptr_array_index(files, i);
+		rpct_load_types(s);
+	}
+
+	g_ptr_array_free(files, true);
 	return (0);
 }
 
