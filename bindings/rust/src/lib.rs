@@ -471,16 +471,21 @@ impl Client {
 
 
 impl<'a> Instance<'a> {
-    /*pub fn interfaces(&self) -> HashMap<String, Interface> {
-        self.connection.call_sync("get_interfaces", self.path.as_str(), "com.twoporeguys.momd.Introspectable", &[][..]).unwrap()
-    }*/
+    pub fn interfaces(&self) -> HashMap<String, Interface> {
+        self.connection.call_sync(
+            "get_interfaces",
+            self.path.as_str(),
+            "com.twoporeguys.librpc.Introspectable",
+            &[][..]
+        ).unwrap()
+    }
 
     pub fn interface(&self, name: &str) -> Interface {
         Interface { instance: self, name: String::from(name) }
     }
 }
 
-/*
+
 impl Interface {
     pub fn call(method: &str, args: &[&Value]) -> Call {
 
@@ -497,4 +502,4 @@ impl Interface {
     pub fn set(property: &str, value: &Value) -> Result<()> {
 
     }
-}*/
+}
