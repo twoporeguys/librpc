@@ -135,61 +135,49 @@ class RpcException(LibException):
 
 
 cdef class Object(object):
-    def __init__(self, value, force_type=None):
+    def __init__(self, value, force_type=None, typei=None):
         if value is None or force_type == ObjectType.NIL:
             self.obj = rpc_null_create()
-            return
 
-        if isinstance(value, bool) or force_type == ObjectType.BOOL:
+        elif isinstance(value, bool) or force_type == ObjectType.BOOL:
             self.obj = rpc_bool_create(value)
-            return
 
-        if isinstance(value, int) and force_type == ObjectType.UINT64:
+        elif isinstance(value, int) and force_type == ObjectType.UINT64:
             self.obj = rpc_uint64_create(value)
-            return
 
-        if isinstance(value, int) and force_type == ObjectType.FD:
+        elif isinstance(value, int) and force_type == ObjectType.FD:
             self.obj = rpc_fd_create(value)
-            return
 
-        if isinstance(value, int) or force_type == ObjectType.INT64:
+        elif isinstance(value, int) or force_type == ObjectType.INT64:
             self.obj = rpc_int64_create(value)
-            return
 
-        if isinstance(value, str) or force_type == ObjectType.STRING:
+        elif isinstance(value, str) or force_type == ObjectType.STRING:
             bstr = value.encode('utf-8')
             self.obj = rpc_string_create(bstr)
-            return
 
-        if isinstance(value, float) or force_type == ObjectType.DOUBLE:
+        elif isinstance(value, float) or force_type == ObjectType.DOUBLE:
             self.obj = rpc_double_create(value)
-            return
 
-        if isinstance(value, datetime.datetime) or force_type == ObjectType.DATE:
+        elif isinstance(value, datetime.datetime) or force_type == ObjectType.DATE:
             self.obj = rpc_date_create(int(value.timestamp()))
-            return
 
-        if isinstance(value, (bytearray, bytes)) or force_type == ObjectType.BINARY:
+        elif isinstance(value, (bytearray, bytes)) or force_type == ObjectType.BINARY:
             Py_INCREF(value)
             self.obj = rpc_data_create(<char *>value, <size_t>len(value), RPC_BINARY_DESTRUCTOR_ARG(destruct_bytes, <void *>value))
-            return
 
-        if isinstance(value, (RpcException, LibException)):
+        elif isinstance(value, (RpcException, LibException)):
             extra = Object(value.extra)
             stack = Object(value.stacktrace)
             self.obj = rpc_error_create_with_stack(value.code, value.message.encode('utf-8'), extra.obj, stack.obj)
-            return
 
-        if isinstance(value, (list, tuple)) or force_type == ObjectType.ARRAY:
+        elif isinstance(value, (list, tuple)) or force_type == ObjectType.ARRAY:
             self.obj = rpc_array_create()
 
             for v in value:
                 child = Object(v)
                 rpc_array_append_value(self.obj, child.obj)
 
-            return
-
-        if isinstance(value, dict) or force_type == ObjectType.DICTIONARY:
+        elif isinstance(value, dict) or force_type == ObjectType.DICTIONARY:
             self.obj = rpc_dictionary_create()
 
             for k, v in value.items():
@@ -197,36 +185,35 @@ cdef class Object(object):
                 child = Object(v)
                 rpc_dictionary_set_value(self.obj, bkey, child.obj)
 
-            return
-
-        if isinstance(value, uuid.UUID):
+        elif isinstance(value, uuid.UUID):
             bstr = str(value).encode('utf-8')
             self.obj = rpc_string_create(bstr)
-            return
 
-        if isinstance(value, Object):
+        elif isinstance(value, Object):
             self.obj = rpc_copy((<Object>value).obj)
-            return
 
-        if hasattr(value, '__getstate__'):
+        elif hasattr(value, '__getstate__'):
             try:
                 child = Object(value.__getstate__())
                 self.obj = rpc_retain(child.obj)
-                return
             except:
-                pass
+                raise LibException(errno.EFAULT, "__getstate__() raised an exception")
 
-        for typ, hook in type_hooks.items():
-            if isinstance(value, typ):
-                try:
-                    conv = hook(value)
-                    if type(conv) is Object:
-                        self.obj = rpc_copy((<Object>conv).obj)
-                        return
-                except:
-                    pass
+        else:
+            for typ, hook in type_hooks.items():
+                if isinstance(value, typ):
+                    try:
+                        conv = hook(value)
+                        if type(conv) is Object:
+                            self.obj = rpc_copy((<Object>conv).obj)
+                            break
+                    except:
+                        pass
+            else:
+                raise LibException(errno.EINVAL, "Unknown value type: {0}".format(type(value)))
 
-        raise LibException(errno.EINVAL, "Unknown value type: {0}".format(type(value)))
+        if typei:
+            self.obj = rpct_newi((<TypeInstance>typei).rpctypei, self.obj)
 
     def __repr__(self):
         bdescr = rpc_copy_description(self.obj)
@@ -269,6 +256,9 @@ cdef class Object(object):
         return ret
 
     def unpack(self):
+        if self.typei and self.typei.type.clazz != TypeClass.BUILTIN:
+            return self.typei.factory(self)
+
         if self.type == ObjectType.DICTIONARY:
             return {k: v.unpack() for k, v in self.value.items()}
 
@@ -349,6 +339,10 @@ cdef class Object(object):
     property type:
         def __get__(self):
             return ObjectType(rpc_get_type(self.obj))
+
+    property typei:
+        def __get__(self):
+            return TypeInstance.init_from_ptr(rpct_get_typei(self.obj))
 
 
 cdef class Array(Object):
@@ -1658,8 +1652,6 @@ cdef class Typing(object):
 
 
 cdef class TypeInstance(object):
-    cdef rpct_typei_t rpctypei
-
     def __init__(self, decl):
         self.rpctypei = rpct_new_typei(decl.encode('utf-8'))
         if self.rpctypei == <rpct_typei_t>NULL:
@@ -1684,9 +1676,13 @@ cdef class TypeInstance(object):
 
     property factory:
         def __get__(self):
-            return type(self.canonical, (BaseTypingObject,), {
-                'typei': self
-            })
+            if self.type.clazz == TypeClass.BUILTIN:
+                return lambda x: Object(x).unpack()
+
+            if self.type.clazz == TypeClass.STRUCT:
+                return type(self.canonical, (BaseStruct,), {
+                    'typei': self
+                })
 
     property type:
         def __get__(self):
@@ -1714,6 +1710,10 @@ cdef class TypeInstance(object):
                 result.append(typei)
 
             return result
+
+    def construct(self, Object obj):
+        obj.obj = rpct_newi(self.rpctypei, obj.obj)
+        return obj
 
     def validate(self, Object obj):
         cdef rpc_object_t errors
@@ -1806,6 +1806,9 @@ cdef class Type(object):
 
 cdef class Member(object):
     cdef rpct_member_t rpcmem
+
+    def __str__(self):
+        return "<{0} {1}>".format(self.__class__.__name__, self.name)
 
     property type:
         def __get__(self):
@@ -1931,41 +1934,35 @@ cdef class StructUnionMember(Member):
         return TypeInstance.init_from_ptr(rpct_typei_get_member_type(typei.rpctypei, self.rpcmem))
 
 
-cdef class BaseTypingObject(object):
-    typei = None
-    cdef rpc_object_t obj
-
-    def __init__(self, Object value):
-        cdef TypeInstance typei
-
-        typei = <TypeInstance>self.__class__.typei
-        self.obj = rpct_newi(typei.rpctypei, value.obj)
-
-    property type:
-        def __get__(self):
-            cdef TypeInstance typei
-
-            typei = TypeInstance.__new__(TypeInstance)
-            typei.rpctypei = rpct_get_typei(self.obj)
-            return typei
-
-    property value:
-        def __get__(self):
-            return Object.init_from_ptr(self.obj)
+cdef class BaseTypingObject(Object):
+    def __init__(self, value):
+        super(BaseTypingObject, self).__init__(value, self.__class__.typei)
 
 
 cdef class BaseStruct(BaseTypingObject):
     def __getattr__(self, item):
-        pass
+        return self.value.value[item].unpack()
 
     def __setattr__(self, key, value):
-        pass
+        self.value.value[key] = value
+
+    def __str__(self):
+        return "<struct {0}>".format(self.typei.type.name)
+
+    def __repr__(self):
+        return str(self)
+
+    property members:
+        def __get__(self):
+            return {m.name: m for m in self.typei.type.members}
 
 
 cdef class BaseUnion(BaseTypingObject):
-    property branch:
-        def __get__(self):
-            pass
+    def __str__(self):
+        return "<union {0}>".format(self.typei.type.name)
+
+    def __repr__(self):
+        return str(self)
 
     property value:
         def __get__(self):
@@ -1973,7 +1970,13 @@ cdef class BaseUnion(BaseTypingObject):
 
 
 cdef class BaseEnum(BaseTypingObject):
-    property value:
+    def __str__(self):
+        return "<enum {0}>".format(self.typei.type.name)
+
+    def __repr__(self):
+        return str(self)
+
+    property values:
         def __get__(self):
             pass
 
@@ -2119,6 +2122,10 @@ def description(name):
 def unpack(fn):
     fn.__librpc_unpack__ = True
     return fn
+
+
+def new(decl, value=None):
+    return TypeInstance(decl).factory(value)
 
 
 type_hooks = {}

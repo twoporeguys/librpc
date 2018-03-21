@@ -81,6 +81,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--uri', help='Server URI')
     args = parser.parse_args()
+    t = librpc.Typing()
     context = librpc.Context()
     server = librpc.Server(args.uri, context)
 

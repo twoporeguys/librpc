@@ -435,6 +435,12 @@ cdef class RemoteEvent(object):
     cdef emit(self, name, Object args)
 
 
+cdef class TypeInstance(object):
+    cdef rpct_typei_t rpctypei
+
+    @staticmethod
+    cdef TypeInstance init_from_ptr(rpct_typei_t typei)
+
 cdef class Call(object):
     cdef readonly Connection connection
     cdef rpc_call_t call
