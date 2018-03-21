@@ -89,11 +89,9 @@ rpc_object_t
 rpct_newi(rpct_typei_t typei, rpc_object_t object)
 {
 	if (object == NULL)
-		object = rpc_dictionary_create();
-	else
-		object = rpc_copy(object);
+		return (NULL);
 
-	object->ro_typei = typei;
+	object->ro_typei = rpct_unwind_typei(typei);
 	return (object);
 }
 
@@ -104,7 +102,8 @@ rpct_get_class(rpc_object_t instance)
 	return (instance->ro_typei->type->clazz);
 }
 
-rpct_type_t rpct_get_type(const char *name)
+rpct_type_t
+rpct_get_type(const char *name)
 {
 
 	return rpct_find_type(name);
@@ -1310,6 +1309,9 @@ rpct_load_types_dir(const char *path)
 		name = g_dir_read_name(dir);
 		if (name == NULL)
 			break;
+
+		if (!g_str_has_suffix(name, ".yaml"))
+			continue;
 
 		s = g_strdup_printf("%s/%s", path, name);
 		if (rpct_read_file(s) != 0) {
