@@ -219,7 +219,7 @@ rpct_read_meta(struct rpct_file *file, rpc_object_t obj)
 		return (-1);
 	}
 
-	ret = rpc_object_unpack(obj, "{s,s,i,v}",
+	ret = rpc_object_unpack(obj, "{i,s,s,v}",
 	    "version", &file->version,
 	    "namespace", &file->ns,
 	    "description", &file->description,
@@ -233,7 +233,7 @@ rpct_read_meta(struct rpct_file *file, rpc_object_t obj)
 		});
 	}
 
-	return (ret > 0 ? 0 : -1);
+	return (ret >= 3 ? 0 : -1);
 }
 
 struct rpct_typei *
