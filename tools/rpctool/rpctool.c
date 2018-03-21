@@ -36,6 +36,7 @@
 #include <rpc/client.h>
 #include <rpc/service.h>
 #include <rpc/serializer.h>
+#include <rpc/typing.h>
 
 static int cmd_tree(int argc, char *argv[]);
 static int cmd_inspect(int argc, char *argv[]);
@@ -84,6 +85,7 @@ connect(void)
 		exit(1);
 	}
 
+	rpct_init();
 	client = rpc_client_create(server, NULL);
 	if (client == NULL) {
 		error = rpc_get_last_error();
@@ -213,8 +215,8 @@ cmd_tree(int argc, char *argv[])
 	int ret = 0;
 
 	conn = connect();
-	tree = rpc_connection_call_syncp(conn, argv[0], RPC_DISCOVERABLE_INTERFACE,
-	    "get_instances", "[]");
+	tree = rpc_connection_call_syncp(conn, argv[0],
+	    RPC_DISCOVERABLE_INTERFACE, "get_instances", "[]");
 
 	if (rpc_is_error(tree)) {
 		ret = 1;
@@ -233,9 +235,10 @@ cmd_tree(int argc, char *argv[])
 		const char *path;
 		const char *descr;
 
-		rpc_object_unpack(i, "{s,s}",
+		if (rpc_object_unpack(i, "{s,s}",
 		    "path", &path,
-		    "description", &descr);
+		    "description", &descr) < 2)
+			return ((bool)true);
 
 		printf("%s (%s)\n", path, descr != NULL ? descr : "<none>");
 		return ((bool)true);
