@@ -77,6 +77,7 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	struct rpc_if_method *method = call->ric_method;
 	rpc_connection_t conn = call->ric_conn;
 	rpc_object_t result;
+	rpc_object_t error;
 
 	if (method == NULL) {
 		rpc_function_error(call, ENOENT, "Method not found");
@@ -90,7 +91,11 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	debugf("method=%p", method);
 
 	if (context->rcx_pre_call_hook != NULL) {
-
+		error = context->rcx_pre_call_hook(call, call->ric_args);
+		if (error != NULL) {
+			rpc_function_error_ex(call, error);
+			return;
+		}
 	}
 
 	result = method->rm_block((void *)call, call->ric_args);
@@ -99,7 +104,11 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 		return;
 
 	if (context->rcx_post_call_hook != NULL) {
-
+		error = context->rcx_post_call_hook(call, result);
+		if (error != NULL) {
+			rpc_function_error_ex(call, error);
+			return;
+		}
 	}
 
 	if (!call->ric_streaming && !call->ric_responded)
