@@ -158,6 +158,10 @@ void \hyperlink{typing_8h_a5e40e2afc72e2eb1ab1bcf77cfb36cc9}{rpct\+\_\+set\+\_\+
 \item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{typing_8h_ae36966ca7ca5448af0bb88d173036217}{rpct\+\_\+deserialize} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
 \item 
+bool \hyperlink{typing_8h_ae9b8420d29e1c63b07a060985c7ab55b}{rpct\+\_\+validate\+\_\+args} (struct rpct\+\_\+if\+\_\+member $\ast$func, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$errors)
+\item 
+bool \hyperlink{typing_8h_aa5b10fa1cb8c8cc46469abebb21026a0}{rpct\+\_\+validate\+\_\+return} (struct rpct\+\_\+if\+\_\+member $\ast$func, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} result, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$errors)
+\item 
 bool \hyperlink{typing_8h_a2f80e7ec74258ea0a5f739c61b5b623e}{rpct\+\_\+validate} (\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} typei, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} obj, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$errors)
 \end{DoxyCompactItemize}
 
@@ -1154,6 +1158,46 @@ Validates object against given type instance.
 {\em typei} & \\
 \hline
 {\em obj} & \\
+\hline
+{\em errors} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_ae9b8420d29e1c63b07a060985c7ab55b}\label{typing_8h_ae9b8420d29e1c63b07a060985c7ab55b}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+validate\+\_\+args@{rpct\+\_\+validate\+\_\+args}}
+\index{rpct\+\_\+validate\+\_\+args@{rpct\+\_\+validate\+\_\+args}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+validate\+\_\+args()}{rpct\_validate\_args()}}
+{\footnotesize\ttfamily bool rpct\+\_\+validate\+\_\+args (\begin{DoxyParamCaption}\item[{struct rpct\+\_\+if\+\_\+member $\ast$}]{func,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{args,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$}]{errors }\end{DoxyParamCaption})}
+
+Validates set of arguments for a given function.
+
+
+\begin{DoxyParams}{Parameters}
+{\em func} & \\
+\hline
+{\em args} & \\
+\hline
+{\em errors} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_aa5b10fa1cb8c8cc46469abebb21026a0}\label{typing_8h_aa5b10fa1cb8c8cc46469abebb21026a0}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+validate\+\_\+return@{rpct\+\_\+validate\+\_\+return}}
+\index{rpct\+\_\+validate\+\_\+return@{rpct\+\_\+validate\+\_\+return}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+validate\+\_\+return()}{rpct\_validate\_return()}}
+{\footnotesize\ttfamily bool rpct\+\_\+validate\+\_\+return (\begin{DoxyParamCaption}\item[{struct rpct\+\_\+if\+\_\+member $\ast$}]{func,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{result,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$}]{errors }\end{DoxyParamCaption})}
+
+Validates a return value from a given function.
+
+
+\begin{DoxyParams}{Parameters}
+{\em func} & \\
+\hline
+{\em result} & \\
 \hline
 {\em errors} & \\
 \hline
