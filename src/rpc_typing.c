@@ -42,9 +42,6 @@ static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *typei);
 static char *rpct_canonical_type(struct rpct_typei *typei);
 static int rpct_read_type(struct rpct_file *file, const char *decl,
     rpc_object_t obj);
-static bool rpct_validate_args(struct rpct_if_member *func, rpc_object_t args);
-static bool rpct_validate_return(struct rpct_if_member *func,
-    rpc_object_t result);
 static int rpct_parse_type(const char *decl, GPtrArray *variables);
 
 static struct rpct_context *context = NULL;
@@ -1162,23 +1159,50 @@ done:
 	return (valid);
 }
 
-static bool
-rpct_validate_args(struct rpct_if_member *func, rpc_object_t args)
+bool
+rpct_validate_args(struct rpct_if_member *func, rpc_object_t args,
+    rpc_object_t *errors)
 {
-	return (rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
-		rpc_object_t errors;
+	struct rpct_validation_error *err;
+	__block struct rpct_error_context errctx;
+	__block bool valid = true;
+	guint i;
+
+	errctx.path = "";
+	errctx.errors = g_ptr_array_new();
+
+	rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
+
 		rpct_typei_t typei = g_ptr_array_index(func->arguments, idx);
 
-		return (rpct_validate(typei, i, &errors));
-	}));
+		if (!rpct_validate_instance(typei, i, &errctx))
+			valid = false;
+
+		return ((bool)true);
+	});
+
+	if (errors != NULL) {
+		*errors = rpc_array_create();
+		for (i = 0; i < errctx.errors->len; i++) {
+			err = g_ptr_array_index(errctx.errors, i);
+			rpc_array_append_stolen_value(*errors,
+			    rpc_object_pack("{s,s,v}",
+				"path", err->path,
+				"message", err->message,
+				"extra", err->extra));
+		}
+	}
+
+	g_ptr_array_free(errctx.errors, false);
+	return (valid);
 }
 
-static bool
-rpct_validate_return(struct rpct_if_member *func, rpc_object_t result)
+bool
+rpct_validate_return(struct rpct_if_member *func, rpc_object_t result,
+    rpc_object_t *errors)
 {
 
-	rpc_set_last_errorf(ENOTSUP, "Not implemented");
-	return (-1);
+	return (rpct_validate(func->result, result, errors));
 }
 
 bool
@@ -1206,6 +1230,7 @@ rpct_validate(struct rpct_typei *typei, rpc_object_t obj, rpc_object_t *errors)
 		}
 	}
 
+	g_ptr_array_free(errctx.errors, false);
 	return (valid);
 }
 

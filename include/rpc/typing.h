@@ -539,6 +539,28 @@ rpc_object_t rpct_serialize(rpc_object_t object);
 rpc_object_t rpct_deserialize(rpc_object_t object);
 
 /**
+ * Validates set of arguments for a given function.
+ *
+ * @param func
+ * @param args
+ * @param errors
+ * @return
+ */
+bool rpct_validate_args(struct rpct_if_member *func, rpc_object_t args,
+    rpc_object_t *errors);
+
+/**
+ * Validates a return value from a given function.
+ *
+ * @param func
+ * @param result
+ * @param errors
+ * @return
+ */
+bool rpct_validate_return(struct rpct_if_member *func, rpc_object_t result,
+    rpc_object_t *errors);
+
+/**
  * Validates object against given type instance.
  *
  * @param typei
