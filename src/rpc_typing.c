@@ -1319,6 +1319,10 @@ rpct_load_types_dir(const char *path)
 			continue;
 
 		s = g_strdup_printf("%s/%s", path, name);
+
+		if (g_file_test(s, G_FILE_TEST_IS_DIR))
+			rpct_load_types_dir(s);
+
 		if (rpct_read_file(s) != 0) {
 			g_free(s);
 			continue;
