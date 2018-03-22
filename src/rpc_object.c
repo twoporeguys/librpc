@@ -514,8 +514,8 @@ rpc_release_impl(rpc_object_t object)
 			break;
 		}
 
-		if (object->ro_typei != NULL)
-			rpct_typei_free(object->ro_typei);
+		//if (object->ro_typei != NULL)
+		//	rpct_typei_free(object->ro_typei);
 
 		g_free(object);
 		return (0);
@@ -1027,8 +1027,6 @@ rpc_object_vpack(const char *fmt, va_list ap)
 
 		case '{':
 			container = rpc_dictionary_create();
-			g_queue_push_tail(stack, container);
-
 			if (type != NULL) {
 				container = rpct_new(type, container);
 				if (container == NULL)
@@ -1037,12 +1035,12 @@ rpc_object_vpack(const char *fmt, va_list ap)
 				g_free(type);
 				type = NULL;
 			}
+
+			g_queue_push_tail(stack, container);
 			continue;
 
 		case '[':
 			container = rpc_array_create();
-			g_queue_push_tail(stack, container);
-
 			if (type != NULL) {
 				container = rpct_new(type, container);
 				if (container == NULL)
@@ -1051,6 +1049,8 @@ rpc_object_vpack(const char *fmt, va_list ap)
 				g_free(type);
 				type = NULL;
 			}
+
+			g_queue_push_tail(stack, container);
 			continue;
 
 		case '}':

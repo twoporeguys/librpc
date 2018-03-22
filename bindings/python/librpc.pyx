@@ -1936,10 +1936,17 @@ cdef class StructUnionMember(Member):
 
 cdef class BaseTypingObject(Object):
     def __init__(self, value):
-        super(BaseTypingObject, self).__init__(value, self.__class__.typei)
+        super(BaseTypingObject, self).__init__(value, typei=self.__class__.typei)
 
 
 cdef class BaseStruct(BaseTypingObject):
+    def __init__(self, value, **kwargs):
+        if not value:
+            value = {}
+            value.update(kwargs)
+
+        super(BaseTypingObject, self).__init__(value or {}, typei=self.__class__.typei)
+
     def __getattr__(self, item):
         return self.value.value[item].unpack()
 
@@ -1958,6 +1965,9 @@ cdef class BaseStruct(BaseTypingObject):
 
 
 cdef class BaseUnion(BaseTypingObject):
+    def __init__(self, value):
+        pass
+
     def __str__(self):
         return "<union {0}>".format(self.typei.type.name)
 
@@ -1970,6 +1980,9 @@ cdef class BaseUnion(BaseTypingObject):
 
 
 cdef class BaseEnum(BaseTypingObject):
+    def __init__(self, value):
+        pass
+
     def __str__(self):
         return "<enum {0}>".format(self.typei.type.name)
 
