@@ -95,6 +95,9 @@ struct_validate(struct rpct_typei *typei, rpc_object_t obj,
 	    return ((bool)true);
 	});
 
+	if (!valid)
+		return (false);
+
 	return (rpct_run_validators(typei, obj, errctx));
 }
 

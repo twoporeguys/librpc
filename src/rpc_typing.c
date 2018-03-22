@@ -707,6 +707,8 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		return (-1);
 	}
 
+	type->clazz = handler->id;
+
 	if (declvars) {
 		type->generic = true;
 		rpct_parse_type(declvars, type->generic_vars);
@@ -1124,6 +1126,9 @@ rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
 	/* Step 1: is it typed at all? */
 	if (obj->ro_typei == NULL) {
 		/* Can only be builtin type */
+		if (g_strcmp0(raw_typei->canonical_form, "any") == 0)
+			goto step3;
+
 		if (g_strcmp0(rpc_get_type_name(obj->ro_type),
 		    raw_typei->canonical_form) == 0)
 			goto step3;
