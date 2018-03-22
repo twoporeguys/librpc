@@ -1622,6 +1622,9 @@ cdef class Typing(object):
         if rpct_load_types(path.encode('utf-8')) != 0:
             raise_internal_exc()
 
+    def load_types_dir(self, path):
+        pass
+
     def serialize(self, Object obj):
         cdef rpc_object_t result
 
@@ -1680,9 +1683,13 @@ cdef class TypeInstance(object):
                 return lambda x: Object(x).unpack()
 
             if self.type.clazz == TypeClass.STRUCT:
-                return type(self.canonical, (BaseStruct,), {
-                    'typei': self
-                })
+                return type(self.canonical, (BaseStruct,), {'typei': self})
+
+            if self.type.clazz == TypeClass.UNION:
+                return type(self.canonical, (BaseUnion,), {'typei': self})
+
+            if self.type.clazz == TypeClass.ENUM:
+                return type(self.canonical, (BaseEnum,), {'typei': self})
 
     property type:
         def __get__(self):
@@ -1937,15 +1944,23 @@ cdef class StructUnionMember(Member):
 cdef class BaseTypingObject(Object):
     def __init__(self, value):
         super(BaseTypingObject, self).__init__(value, typei=self.__class__.typei)
+        result, errors = self.typei.validate(self)
+        if not result:
+            raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
 
 cdef class BaseStruct(BaseTypingObject):
-    def __init__(self, value, **kwargs):
-        if not value:
-            value = {}
-            value.update(kwargs)
+    def __init__(self, __value=None, **kwargs):
+        if not __value:
+            __value = {}.update(kwargs)
 
-        super(BaseTypingObject, self).__init__(value or {}, typei=self.__class__.typei)
+        super(BaseStruct, self).__init__(__value)
+
+    def __getitem__(self, item):
+        return self.__getattr__(item)
+
+    def __setitem__(self, key, value):
+        self.__setattr__(key, value)
 
     def __getattr__(self, item):
         return self.value.value[item].unpack()
@@ -1981,7 +1996,7 @@ cdef class BaseUnion(BaseTypingObject):
 
 cdef class BaseEnum(BaseTypingObject):
     def __init__(self, value):
-        pass
+        super(BaseEnum, self).__init__(value)
 
     def __str__(self):
         return "<enum {0}>".format(self.typei.type.name)
@@ -2137,8 +2152,8 @@ def unpack(fn):
     return fn
 
 
-def new(decl, value=None):
-    return TypeInstance(decl).factory(value)
+def new(decl, *args, **kwargs):
+    return TypeInstance(decl).factory(*args, **kwargs)
 
 
 type_hooks = {}
