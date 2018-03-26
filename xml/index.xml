@@ -442,8 +442,6 @@
     <member refid="typing_8h_1a5e40e2afc72e2eb1ab1bcf77cfb36cc9" kind="function"><name>rpct_set_value</name></member>
     <member refid="typing_8h_1ab69f7ee39db3ab938d331c2877815d80" kind="function"><name>rpct_serialize</name></member>
     <member refid="typing_8h_1ae36966ca7ca5448af0bb88d173036217" kind="function"><name>rpct_deserialize</name></member>
-    <member refid="typing_8h_1ae9b8420d29e1c63b07a060985c7ab55b" kind="function"><name>rpct_validate_args</name></member>
-    <member refid="typing_8h_1aa5b10fa1cb8c8cc46469abebb21026a0" kind="function"><name>rpct_validate_return</name></member>
     <member refid="typing_8h_1a2f80e7ec74258ea0a5f739c61b5b623e" kind="function"><name>rpct_validate</name></member>
   </compound>
   <compound refid="vtable_8h" kind="file"><name>vtable.h</name>
