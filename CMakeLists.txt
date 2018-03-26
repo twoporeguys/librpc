@@ -15,6 +15,7 @@ option(BUILD_PYTHON "Build and install Python extension" ON)
 option(BUILD_CPLUSPLUS "Build and install C++ library" OFF)
 option(BUILD_JSON "Build and install JSON serializer" ON)
 option(BUILD_LIBUSB "Build and install libusb transport")
+option(BUILD_XPC "Build and install XPC transport")
 option(BUILD_RPCTOOL "Build and install rpctool" ON)
 option(BUILD_RPCDOC "Build and install rpcdoc" ON)
 option(ENABLE_UBSAN "Enable undefined behavior sanitizer")
@@ -196,6 +197,10 @@ if(BUILD_BUS AND LINUX)
     set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/bus.c)
 endif()
 
+if(BUILD_XPC)
+    set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/xpc.c)
+endif()
+
 add_library(librpc SHARED
         ${HEADERS}
         ${TRANSPORT_FILES}
@@ -265,18 +270,22 @@ if(BUILD_EXAMPLES)
     add_subdirectory(examples/server)
     add_subdirectory(examples/error-backtrace)
     add_subdirectory(examples/query)
+
     if(UNIX)
-    add_subdirectory(examples/fd-client)
-    add_subdirectory(examples/fd-server)
+        add_subdirectory(examples/fd-client)
+        add_subdirectory(examples/fd-server)
     endif()
+
     if(LINUX)
         add_subdirectory(examples/shm-client)
         add_subdirectory(examples/shm-server)
     endif()
+
     if (BUILD_BUS OR BUILD_LIBUSB)
         add_subdirectory(examples/bus)
         add_subdirectory(examples/log-reader)
     endif()
+
     if (ENABLE_LIBDISPATCH)
         add_subdirectory(examples/libdispatch)
     endif()

@@ -48,7 +48,7 @@ static int socket_get_fd(void *);
 static void socket_release(void *);
 static void *socket_reader(void *);
 
-struct rpc_transport socket_transport = {
+static const struct rpc_transport socket_transport = {
 	.name = "socket",
 	.schemas = {"unix", "tcp", NULL},
 	.connect = socket_connect,
@@ -123,7 +123,7 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 	conn->sc_ostream = g_io_stream_get_output_stream(G_IO_STREAM(gconn));
 
 	rco = rpc_connection_alloc(srv);
-	rco->rco_send_msg = &socket_send_msg;
+	rco->rco_send_msg = socket_send_msg;
 	rco->rco_abort = socket_abort;
 	rco->rco_get_fd = socket_get_fd;
 	rco->rco_arg = conn;

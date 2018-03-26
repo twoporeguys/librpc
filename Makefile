@@ -8,6 +8,7 @@ PREFIX := /usr/local
 BUILD_PYTHON ?= ON
 BUILD_CLIENT ?= OFF
 BUILD_TYPE ?= Release
+BUILD_XPC ?= OFF
 ENABLE_LIBDISPATCH ?= OFF
 
 .PHONY: build build-cov bootstrap clean install uninstall test
@@ -23,6 +24,7 @@ build:
 	    -DCMAKE_INSTALL_PREFIX=$(INSTALL_PREFIX) \
 	    -DBUILD_CLIENT=$(BUILD_CLIENT) \
 	    -DBUILD_PYTHON=$(BUILD_PYTHON) \
+	    -DBUILD_XPC=$(BUILD_XPC) \
 	    -DENABLE_LIBDISPATCH=$(ENABLE_LIBDISPATCH)
 	make -C build
 
@@ -36,6 +38,7 @@ build-cov:
 	    -DBUILD_PYTHON=ON \
 	    -DBUILD_TESTS=ON \
 	    -DENABLE_LIBDISPATCH=OFF \
+	    -DBUILD_XPC=$(BUILD_XPC) \
 	    -DENABLE_COVERAGE=ON
 	make -C build-cov
 
