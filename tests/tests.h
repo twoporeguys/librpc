@@ -29,6 +29,7 @@
 #define LIBRPC_TESTS_H
 
 #include "../src/linker_set.h"
+#include <glib.h>
 
 #define	DECLARE_TEST(_test)	DATA_SET(test_set, _test)
 
@@ -37,5 +38,9 @@ struct librpc_test
 	const char *name;
 	void (*register_f)();
 };
+
+#define	RAND_INT64 	\
+	(((int64_t)g_test_rand_int() << 32) | (int64_t)g_test_rand_int())
+#define	RAND_UINT64 (uint64_t)RAND_INT64
 
 #endif //LIBRPC_TESTS_H

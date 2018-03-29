@@ -1,786 +1,4 @@
 /*
- * Copyright 2015-2017 Two Pore Guys, Inc.
- * All rights reserved
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted providing that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- */
-/*
-#include "../catch.hpp"
-
-#include <string.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <rpc/object.h>
-#include "../../src/internal.h"
-
-static rpc_object_t create_string_with_arguments(const char *fmt, ...) {
-	rpc_object_t object;
-	va_list ap;
-
-	va_start(ap, fmt);
-	object = rpc_string_create_with_format_and_arguments("%s", ap);
-	va_end(ap);
-
-	return object;
-}
-
-SCENARIO("RPC_NULL_OBJECT", "Create a NULL RPC object and perform basic operations on it") {
-	GIVEN("BOOL object") {
-		rpc_object_t object = NULL;
-		rpc_object_t copy;
-		object = rpc_null_create();
-
-		THEN("Type is NULL") {
-			REQUIRE(rpc_get_type(object) == RPC_TYPE_NULL);
-		}
-
-		AND_THEN("Refcount equals 1") {
-			REQUIRE(object->ro_refcnt == 1);
-		}
-
-		WHEN("Object's copy is created") {
-			copy = rpc_copy(object);
-
-			THEN("Source and copy are equal"){
-				REQUIRE(rpc_equal(object, copy));
-			}
-
-			rpc_release(copy);
-		}
-
-		WHEN("reference count is incremented") {
-			rpc_retain(object);
-
-			THEN("reference count equals 2"){
-				REQUIRE(object->ro_refcnt == 2);
-				rpc_release(object);
-			}
-
-			AND_WHEN("reference count is decremented") {
-				rpc_release(object);
-
-				THEN("reference count equals 1") {
-					REQUIRE(object->ro_refcnt == 1);
-				}
-
-				AND_WHEN("reference count reaches 0") {
-					rpc_release(object);
-
-					THEN("RPC object pointer is NULL") {
-						REQUIRE(object == NULL);
-					}
-				}
-			}
-		}
-
-		rpc_release(object);
-	}
-}
-
-SCENARIO("RPC_BOOL_OBJECT", "Create a BOOL RPC object and perform basic operations on it") {
-	GIVEN("BOOL object") {
-		rpc_object_t object;
-		rpc_object_t different_object;
-		rpc_object_t copy;
-		bool value = true;
-		bool different_value = false;
-		object = rpc_bool_create(value);
-		different_object = rpc_bool_create(different_value);
-
-		THEN("Type is BOOL") {
-			REQUIRE(rpc_get_type(object) == RPC_TYPE_BOOL);
-		}
-
-		THEN("Refcount equals 1") {
-			REQUIRE(object->ro_refcnt == 1);
-		}
-
-		THEN("Extracted value matches") {
-			REQUIRE(rpc_bool_get_value(object) == value);
-		}
-
-		AND_THEN("Direct value matches") {
-			REQUIRE(object->ro_value.rv_b == value);
-		}
-
-		WHEN("Object's copy is created") {
-			copy = rpc_copy(object);
-
-			THEN("Source and copy are equal"){
-				REQUIRE(rpc_equal(object, copy));
-			}
-
-			AND_THEN("Object is different from object initialized with different value") {
-				REQUIRE(!rpc_equal(object, different_object));
-			}
-
-			rpc_release(copy);
-		}
-
-		WHEN("reference count is incremented") {
-			rpc_retain(object);
-
-			THEN("reference count equals 2"){
-				REQUIRE(object->ro_refcnt == 2);
-				rpc_release(object);
-			}
-
-			AND_WHEN("reference count is decremented") {
-				rpc_release(object);
-
-				THEN("reference count equals 1") {
-					REQUIRE(object->ro_refcnt == 1);
-				}
-
-				AND_WHEN("reference count reaches 0") {
-					rpc_release(object);
-
-					THEN("RPC object pointer is NULL") {
-						REQUIRE(object == NULL);
-					}
-				}
-			}
-		}
-
-		if (object != NULL)
-			rpc_release(object);
-
-		rpc_release(different_object);
-	}
-}
-
-SCENARIO("RPC_UINT64_OBJECT", "Create a UINT64 RPC object and perform basic operations on it") {
-	GIVEN("UINT64 object") {
-		rpc_object_t object;
-		rpc_object_t different_object;
-		rpc_object_t copy;
-		uint64_t value = 1234;
-		uint64_t different_value = 5678;
-		object = rpc_uint64_create(value);
-		different_object = rpc_uint64_create(different_value);
-
-		THEN("Type is UINT64") {
-			REQUIRE(rpc_get_type(object) == RPC_TYPE_UINT64);
-		}
-
-		THEN("Refcount equals 1") {
-			REQUIRE(object->ro_refcnt == 1);
-		}
-
-		THEN("Extracted value matches") {
-			REQUIRE(rpc_uint64_get_value(object) == value);
-		}
-
-		AND_THEN("Direct value matches") {
-			REQUIRE(object->ro_value.rv_ui == value);
-		}
-
-		WHEN("Object's copy is created") {
-			copy = rpc_copy(object);
-
-			THEN("Source and copy are equal"){
-				REQUIRE(rpc_equal(object, copy));
-			}
-
-			AND_THEN("Object is different from object initialized with different value") {
-				REQUIRE(!rpc_equal(object, different_object));
-			}
-
-			rpc_release(copy);
-		}
-
-		WHEN("reference count is incremented") {
-			rpc_retain(object);
-
-			THEN("reference count equals 2"){
-				REQUIRE(object->ro_refcnt == 2);
-				rpc_release(object);
-			}
-
-			AND_WHEN("reference count is decremented") {
-				rpc_release(object);
-
-				THEN("reference count equals 1") {
-					REQUIRE(object->ro_refcnt == 1);
-				}
-
-				AND_WHEN("reference count reaches 0") {
-					rpc_release(object);
-
-					THEN("RPC object pointer is NULL") {
-						REQUIRE(object == NULL);
-					}
-				}
-			}
-		}
-
-		if (object != NULL)
-			rpc_release(object);
-
-		rpc_release(different_object);
-	}
-}
-
-SCENARIO("RPC_INT64_OBJECT", "Create a INT64 RPC object and perform basic operations on it") {
-	GIVEN("INT64 object") {
-		rpc_object_t object;
-		rpc_object_t different_object;
-		rpc_object_t copy;
-		int64_t value = 1234;
-		int64_t different_value = -1234;
-		object = rpc_int64_create(value);
-		different_object = rpc_int64_create(different_value);
-
-		THEN("Type is INT64") {
-			REQUIRE(rpc_get_type(object) == RPC_TYPE_INT64);
-		}
-
-		THEN("Refcount equals 1") {
-			REQUIRE(object->ro_refcnt == 1);
-		}
-
-		THEN("Extracted value matches") {
-			REQUIRE(rpc_int64_get_value(object) == value);
-		}
-
-		AND_THEN("Direct value matches") {
-			REQUIRE(object->ro_value.rv_i == value);
-		}
-
-		WHEN("Object's copy is created") {
-			copy = rpc_copy(object);
-
-			THEN("Source and copy are equal"){
-				REQUIRE(rpc_equal(object, copy));
-			}
-
-			AND_THEN("Object is different from object initialized with different value") {
-				REQUIRE(!rpc_equal(object, different_object));
-			}
-
-			rpc_release(copy);
-		}
-
-		WHEN("reference count is incremented") {
-			rpc_retain(object);
-
-			THEN("reference count equals 2"){
-				REQUIRE(object->ro_refcnt == 2);
-				rpc_release(object);
-			}
-
-			AND_WHEN("reference count is decremented") {
-				rpc_release(object);
-
-				THEN("reference count equals 1") {
-					REQUIRE(object->ro_refcnt == 1);
-				}
-
-				AND_WHEN("reference count reaches 0") {
-					rpc_release(object);
-
-					THEN("RPC object pointer is NULL") {
-						REQUIRE(object == NULL);
-					}
-				}
-			}
-		}
-
-		if (object != NULL)
-			rpc_release(object);
-
-		rpc_release(different_object);
-	}
-}
-
-SCENARIO("RPC_DOUBLE_OBJECT", "Create a DOUBLE RPC object and perform basic operations on it") {
-	GIVEN("DOUBLE object") {
-		rpc_object_t object;
-		rpc_object_t different_object;
-		rpc_object_t copy;
-		double value = 12.34;
-		double different_value = -12.34;
-		object = rpc_double_create(value);
-		different_object = rpc_double_create(different_value);
-
-		THEN("Type is DOUBLE") {
-			REQUIRE(rpc_get_type(object) == RPC_TYPE_DOUBLE);
-		}
-
-		THEN("Refcount equals 1") {
-			REQUIRE(object->ro_refcnt == 1);
-		}
-
-		THEN("Extracted value matches") {
-			REQUIRE(rpc_double_get_value(object) == value);
-		}
-
-		AND_THEN("Direct value matches") {
-			REQUIRE(object->ro_value.rv_d == value);
-		}
-
-		WHEN("Object's copy is created") {
-			copy = rpc_copy(object);
-
-			THEN("Source and copy are equal"){
-				REQUIRE(rpc_equal(object, copy));
-			}
-
-			AND_THEN("Object is different from object initialized with different value") {
-				REQUIRE(!rpc_equal(object, different_object));
-			}
-
-			rpc_release(copy);
-		}
-
-		WHEN("reference count is incremented") {
-			rpc_retain(object);
-
-			THEN("reference count equals 2"){
-				REQUIRE(object->ro_refcnt == 2);
-				rpc_release(object);
-			}
-
-			AND_WHEN("reference count is decremented") {
-				rpc_release(object);
-
-				THEN("reference count equals 1") {
-					REQUIRE(object->ro_refcnt == 1);
-				}
-
-				AND_WHEN("reference count reaches 0") {
-					rpc_release(object);
-
-					THEN("RPC object pointer is NULL") {
-						REQUIRE(object == NULL);
-					}
-				}
-			}
-		}
-
-		if (object != NULL)
-			rpc_release(object);
-
-		rpc_release(different_object);
-	}
-}
-
-SCENARIO("RPC_DATE_OBJECT", "Create a DATE RPC object and perform basic operations on it") {
-	GIVEN("DATE object") {
-		rpc_object_t object = NULL;
-		rpc_object_t different_object;
-		rpc_object_t copy;
-		int value = 0;
-		object = rpc_date_create(value);
-		different_object = rpc_date_create_from_current();
-
-		THEN("Type is DATE") {
-			REQUIRE(rpc_get_type(object) == RPC_TYPE_DATE);
-		}
-
-		THEN("Refcount equals 1") {
-			REQUIRE(object->ro_refcnt == 1);
-		}
-
-		THEN("Extracted value matches") {
-			REQUIRE(rpc_date_get_value(object) == value);
-		}
-
-		WHEN("Object's copy is created") {
-			copy = rpc_copy(object);
-
-			THEN("Source and copy are equal"){
-				REQUIRE(rpc_equal(object, copy));
-			}
-
-			AND_THEN("Object is different from object initialized with different value") {
-				REQUIRE(!rpc_equal(object, different_object));
-			}
-
-			rpc_release(copy);
-		}
-
-		WHEN("reference count is incremented") {
-			rpc_retain(object);
-
-			THEN("reference count equals 2"){
-				REQUIRE(object->ro_refcnt == 2);
-				rpc_release(object);
-			}
-
-			AND_WHEN("reference count is decremented") {
-				rpc_release(object);
-
-				THEN("reference count equals 1") {
-					REQUIRE(object->ro_refcnt == 1);
-				}
-
-				AND_WHEN("reference count reaches 0") {
-					rpc_release(object);
-
-					THEN("RPC object pointer is NULL") {
-						REQUIRE(object == NULL);
-					}
-				}
-			}
-		}
-
-		rpc_release(object);
-		rpc_release(different_object);
-	}
-}
-
-SCENARIO("RPC_STRING_OBJECT", "Create a STRING RPC object and perform basic operations on it") {
-	GIVEN("STRING object") {
-		rpc_object_t object = NULL;
-		rpc_object_t different_object = NULL;
-		rpc_object_t copy = NULL;
-		static const char *value = "first test string";
-		static const char *different_value = "second test string";
-
-
-		WHEN("Objects are created with formatting") {
-			object = rpc_string_create_with_format("%s", value);
-			different_object = rpc_string_create_with_format("%s", different_value);
-
-			THEN("Length of object and original string are the same") {
-				REQUIRE(strlen(value) == rpc_string_get_length(object));
-			}
-
-			THEN("Extracted value matches") {
-				REQUIRE(g_strcmp0(rpc_string_get_string_ptr(object), value) == 0);
-			}
-
-			AND_WHEN("Object's copy is created") {
-				copy = rpc_copy(object);
-
-				THEN("Source and copy are equal") {
-					REQUIRE(rpc_equal(object, copy));
-				}
-
-				AND_THEN("Object is different from object initialized with different value") {
-					REQUIRE(!rpc_equal(object, different_object));
-				}
-			}
-		}
-
-		WHEN("Objects are created with formatting and arguments") {
-			object = create_string_with_arguments("%s", value);
-			different_object = create_string_with_arguments("%s", different_value);
-
-			THEN("Length of object and original string are the same") {
-				REQUIRE(strlen(value) == rpc_string_get_length(object));
-			}
-
-			THEN("Extracted value matches") {
-				REQUIRE(g_strcmp0(rpc_string_get_string_ptr(object), value) == 0);
-			}
-
-			AND_WHEN("Object's copy is created") {
-				copy = rpc_copy(object);
-
-				THEN("Source and copy are equal") {
-					REQUIRE(rpc_equal(object, copy));
-				}
-
-				AND_THEN("Object is different from object initialized with different value") {
-					REQUIRE(!rpc_equal(object, different_object));
-				}
-
-				rpc_release(copy);
-			}
-		}
-
-		WHEN("Objects are created from value") {
-			object = rpc_string_create(value);
-			different_object = rpc_string_create(different_value);
-
-
-			THEN("Type is STRING") {
-				REQUIRE(rpc_get_type(object) == RPC_TYPE_STRING);
-			}
-
-			THEN("Refcount equals 1") {
-				REQUIRE(object->ro_refcnt == 1);
-			}
-
-			THEN("Length of object and original string are the same") {
-				REQUIRE(strlen(value) == rpc_string_get_length(object));
-			}
-
-			THEN("Extracted value matches") {
-				REQUIRE(g_strcmp0(rpc_string_get_string_ptr(object), value) == 0);
-			}
-
-			AND_WHEN("Object's copy is created") {
-				copy = rpc_copy(object);
-
-				THEN("Source and copy are equal") {
-					REQUIRE(rpc_equal(object, copy));
-				}
-
-				AND_THEN("Object is different from object initialized with different value") {
-					REQUIRE(!rpc_equal(object, different_object));
-				}
-
-			}
-
-			AND_WHEN("reference count is incremented") {
-				rpc_retain(object);
-
-				THEN("reference count equals 2") {
-					REQUIRE(object->ro_refcnt == 2);
-					rpc_release(object);
-				}
-
-				AND_WHEN("reference count is decremented") {
-					rpc_release(object);
-
-					THEN("reference count equals 1") {
-						REQUIRE(object->ro_refcnt == 1);
-					}
-
-					AND_WHEN("reference count reaches 0") {
-						rpc_release(object);
-
-						THEN("RPC object pointer is NULL") {
-							REQUIRE(object == NULL);
-						}
-					}
-				}
-			}
-		}
-
-		rpc_release(object);
-		rpc_release(different_object);
-		rpc_release(copy);
-	}
-}
-
-SCENARIO("RPC_BINARY_OBJECT", "Create a BINARY RPC object and perform basic operations on it") {
-	GIVEN("BINARY object") {
-		rpc_object_t object;
-		rpc_object_t different_object;
-		rpc_object_t copy;
-		int value = 0xff00ff00;
-		int different_value = 0xabcdef00;
-		int *buffer = (int *)malloc(sizeof(value));
-		object = rpc_data_create(&value, sizeof(value), NULL);
-		different_object = rpc_data_create(&different_value, sizeof(different_value), NULL);
-
-		THEN("Type is BINARY") {
-			REQUIRE(rpc_get_type(object) == RPC_TYPE_BINARY);
-		}
-
-		THEN("Refcount equals 1") {
-			REQUIRE(object->ro_refcnt == 1);
-		}
-
-		THEN("Object is referencing inital data") {
-			REQUIRE(rpc_data_get_bytes_ptr(object) == &value);
-		}
-
-		THEN("Length of data inside of the object is the same as length of initial data") {
-			REQUIRE(object->ro_value.rv_bin.rbv_length == sizeof(value));
-		}
-
-		THEN("Extracted value matches") {
-			rpc_data_get_bytes(object, (void *)buffer, 0, sizeof(value));
-			REQUIRE(buffer[0] == value);
-		}
-
-		WHEN("Object's copy is created") {
-			copy = rpc_copy(object);
-
-			THEN("Source and copy are equal"){
-				REQUIRE(rpc_equal(object, copy));
-			}
-
-			AND_THEN("Object and its copy are referencing different buffers") {
-				REQUIRE(rpc_data_get_bytes_ptr(object) != rpc_data_get_bytes_ptr(copy));
-			}
-
-			AND_THEN("Object is different from object initialized with different value") {
-				REQUIRE(!rpc_equal(object, different_object));
-			}
-
-			rpc_release(copy);
-		}
-
-		WHEN("reference count is incremented") {
-			rpc_retain(object);
-
-			THEN("reference count equals 2"){
-				REQUIRE(object->ro_refcnt == 2);
-				rpc_release(object);
-			}
-
-			AND_WHEN("reference count is decremented") {
-				rpc_release(object);
-
-				THEN("reference count equals 1") {
-					REQUIRE(object->ro_refcnt == 1);
-				}
-
-				AND_WHEN("reference count reaches 0") {
-					rpc_release(object);
-
-					THEN("RPC object pointer is NULL") {
-						REQUIRE(object == NULL);
-					}
-				}
-			}
-		}
-
-		WHEN("Object is reinitialized as a reference to initial data") {
-			rpc_release(object);
-			object = rpc_data_create(&value, sizeof(value), false);
-
-			THEN("Refcount equals 1") {
-				REQUIRE(object->ro_refcnt == 1);
-			}
-
-			THEN("Object is referencing inital data") {
-				REQUIRE(rpc_data_get_bytes_ptr(object) == &value);
-			}
-
-			THEN("Length of data inside of the object is the same as length of initial data") {
-				REQUIRE(object->ro_value.rv_bin.rbv_length == sizeof(value));
-			}
-
-			THEN("Extracted value matches") {
-				rpc_data_get_bytes(object, (void *)buffer, 0, sizeof(value));
-				REQUIRE(buffer[0] == value);
-			}
-
-			AND_WHEN("reference count reaches 0") {
-				rpc_release(object);
-
-				THEN("RPC object pointer is NULL") {
-					REQUIRE(object == NULL);
-				}
-			}
-		}
-
-		if (object != NULL)
-			rpc_release(object);
-
-		rpc_release(different_object);
-		g_free(buffer);
-	}
-}
-
-SCENARIO("RPC_FD_OBJECT", "Create a FD RPC object and perform basic operations on it") {
-	GIVEN("FD object") {
-		rpc_object_t object = NULL;
-		rpc_object_t different_object = NULL;
-		rpc_object_t copy = NULL;
-		int fds[2];
-		int dup_fd = 0;
-		struct stat stat1, stat2;
-
-		pipe(fds);
-
-		object = rpc_fd_create(fds[0]);
-		different_object = rpc_fd_create(fds[1]);
-
-		THEN("Type is FD") {
-			REQUIRE(rpc_get_type(object) == RPC_TYPE_FD);
-		}
-
-		THEN("Refcount equals 1") {
-			REQUIRE(object->ro_refcnt == 1);
-		}
-
-		THEN("Extracted value matches") {
-			REQUIRE(rpc_fd_get_value(object) == fds[0]);
-		}
-
-		AND_THEN("Direct value matches") {
-			REQUIRE(object->ro_value.rv_fd == fds[0]);
-		}
-
-		WHEN("Object's copy is created") {
-			copy = rpc_copy(object);
-
-			THEN("Source and copy are equal"){
-				REQUIRE(rpc_equal(object, copy));
-			}
-#if defined(__linux__)
-			AND_THEN("Both sides of a pipe are referencing the same file") {
-				REQUIRE(rpc_equal(object, different_object));
-			}
-#endif
-		}
-
-		WHEN("File descriptor is duplicated") {
-			dup_fd = rpc_fd_dup(object);
-
-			THEN("Both RPC object and duplicate file descriptor are pointing to the same file") {
-				REQUIRE(fstat(rpc_fd_get_value(object), &stat1) >= 0);
-				REQUIRE(fstat(dup_fd, &stat2) >= 0);
-				REQUIRE(stat1.st_dev == stat2.st_dev);
-				REQUIRE(stat1.st_ino == stat2.st_ino);
-			}
-		}
-
-		WHEN("reference count is incremented") {
-			rpc_retain(object);
-
-			THEN("reference count equals 2"){
-				REQUIRE(object->ro_refcnt == 2);
-				rpc_release(object);
-			}
-
-			AND_WHEN("reference count is decremented") {
-				rpc_release(object);
-
-				THEN("reference count equals 1") {
-					REQUIRE(object->ro_refcnt == 1);
-				}
-
-				AND_WHEN("reference count reaches 0") {
-					rpc_release(object);
-
-					THEN("RPC object pointer is NULL") {
-						REQUIRE(object == NULL);
-					}
-				}
-			}
-		}
-
-		close(fds[0]);
-		close(fds[1]);
-
-		if (dup_fd != 0)
-			close(dup_fd);
-
-		rpc_release(object);
-		rpc_release(copy);
-		rpc_release(different_object);
-	}
-}
-
 SCENARIO("RPC_DICTIONARY_OBJECT", "Create a DICTIONARY RPC object and perform basic operations on it") {
 	GIVEN("DICTIONARY object") {
 		rpc_object_t object;
@@ -1432,34 +650,239 @@ SCENARIO("RPC_DESCRIPTION_TEST", "Create a tree of RPC objects and print their d
 
 #include "../tests.h"
 #include "../../src/linker_set.h"
+#include <rpc/object.h>
+#include "../src/internal.h"
 #include <glib.h>
 
 
-typedef struct {
-
-} object_fixture;
+struct {
+	rpc_type_t		type;
+	rpc_object_t 		object;
+	rpc_object_t 		different_object;
+	rpc_object_t 		different_type_object;
+} generic_object_fixture;
 
 static void
-object_test(object_fixture *fixture, gconstpointer user_data)
+object_generic_test(object_fixture *fixture, gconstpointer user_data)
+{
+	GIVEN("BOOL object") {
+		rpc_object_t object;
+		rpc_object_t different_object;
+		rpc_object_t copy;
+		bool value = true;
+		bool different_value = false;
+		object = rpc_bool_create(value);
+		different_object = rpc_bool_create(different_value);
+
+		THEN("Type is BOOL") {
+			REQUIRE(rpc_get_type(object) == RPC_TYPE_BOOL);
+		}
+
+		THEN("Refcount equals 1") {
+			REQUIRE(object->ro_refcnt == 1);
+		}
+
+		THEN("Extracted value matches") {
+			REQUIRE(rpc_bool_get_value(object) == value);
+		}
+
+		AND_THEN("Direct value matches") {
+			REQUIRE(object->ro_value.rv_b == value);
+		}
+
+		WHEN("Object's copy is created") {
+			copy = rpc_copy(object);
+
+			THEN("Source and copy are equal"){
+				REQUIRE(rpc_equal(object, copy));
+			}
+
+			AND_THEN("Object is different from object initialized with different value") {
+				REQUIRE(!rpc_equal(object, different_object));
+			}
+
+			rpc_release(copy);
+		}
+
+		WHEN("reference count is incremented") {
+			rpc_retain(object);
+
+			THEN("reference count equals 2"){
+				REQUIRE(object->ro_refcnt == 2);
+				rpc_release(object);
+			}
+
+			AND_WHEN("reference count is decremented") {
+				rpc_release(object);
+
+				THEN("reference count equals 1") {
+					REQUIRE(object->ro_refcnt == 1);
+				}
+
+				AND_WHEN("reference count reaches 0") {
+					rpc_release(object);
+
+					THEN("RPC object pointer is NULL") {
+						REQUIRE(object == NULL);
+					}
+				}
+			}
+		}
+
+		if (object != NULL)
+			rpc_release(object);
+
+		rpc_release(different_object);
+	}
+}
+
+static rpc_object_t
+object_test_generate_single(rpc_type_t type)
 {
 
 }
 
-static void
-object_test_single_set_up(object_fixture *fixture, gconstpointer user_data)
+static rpc_object_t
+object_test_generate_nonequal(rpc_object_t object)
 {
+	uint64_t u_val;
+	int64_t i_val;
+	double d_val;
+	char *s_val;
+	size_t s_len;
 
+	switch (object->ro_type) {
+	case RPC_TYPE_NULL:
+		return object_test_generate_single(RPC_TYPE_INT64);
+	case RPC_TYPE_BOOL:
+		return rpc_bool_create(~object->ro_value.rv_b);
+	case RPC_TYPE_UINT64:
+		do
+			u_val = RAND_UINT64;
+		while (u_val == object->ro_value.rv_ui);
+		return rpc_uint64_create(u_val);
+	case RPC_TYPE_INT64:
+		do
+			i_val = RAND_INT64;
+		while (i_val == object->ro_value.rv_i);
+		return rpc_int64_create(i_val);
+	case RPC_TYPE_DOUBLE:
+		do
+			d_val = g_test_rand_double();
+		while (d_val == object->ro_value.rv_d);
+		return rpc_double_create(d_val);
+	case RPC_TYPE_DATE:
+		do
+			i_val = RAND_INT64;
+		while (i_val == rpc_date_get_value(object));
+		return rpc_date_create(i_val);
+	case RPC_TYPE_STRING:
+		s_len = (size_t)g_test_rand_int_range(1, 100);
+		for (int i = 0; i < s_len)
+		do
+			u_val = RAND_UINT64;
+		while (u_val == object->ro_value.rv_ui);
+			return rpc_uint64_create(u_val);
+	case 'n':
+		do
+			u_val = RAND_UINT64;
+		while (u_val == object->ro_value.rv_ui);
+			return rpc_uint64_create(u_val);
+	case 'n':
+		do
+			u_val = RAND_UINT64;
+		while (u_val == object->ro_value.rv_ui);
+			return rpc_uint64_create(u_val);
+	case 'n':
+		do
+			u_val = RAND_UINT64;
+		while (u_val == object->ro_value.rv_ui);
+			return rpc_uint64_create(u_val);
+	case 'n':
+		do
+			u_val = RAND_UINT64;
+		while (u_val == object->ro_value.rv_ui);
+			return rpc_uint64_create(u_val);
+	default:
+		break;
+	}
+
+
+
+
+
+
+
+
+
+
+
+	size_t size = (size_t)g_test_rand_int_range(1024, 1024*1024);
+	uint64_t uint = (uint64_t)g_test_rand_int();
+
+	data = g_malloc0(size);
+	memset(data, g_test_rand_int_range(0, 255), size);
+
+	fixture->object = rpc_object_pack("{n,b,i,u,D,B,f,d,s,[s,i,f]}",
+					  "null",
+					  "bool", true,
+					  "int", (int64_t)g_test_rand_int(),
+					  "uint", uint,
+					  "date", (int64_t)g_test_rand_int_range(0, 0xffff),
+					  "binary", data, size, RPC_BINARY_DESTRUCTOR(g_free),
+					  "fd", 1,
+					  "double", g_test_rand_double(),
+					  "string", "deadbeef",
+					  "array",
+					  "woopwoop",
+					  (int64_t)g_test_rand_int(),
+					  1);
+
+	fixture->type = user_data;
 }
 
 static void
-object_test_tear_down(object_fixture *fixture, gconstpointer user_data)
+object_test_single_set_up(struct generic_object_fixture *fixture,
+    gconstpointer user_data)
+{
+	rpc_type_t type = *(rpc_type_t *)user_data;
+	rpc_type_t rand_type;
+
+	fixture->type = type;
+
+	do
+		#if defined(__linux__)
+		rand_type = (rpc_type_t)g_test_rand_int_range(RPC_TYPE_NULL,
+		    RPC_TYPE_SHMEM);
+		#else
+		rand_type = (rpc_type_t)g_test_rand_int_range(RPC_TYPE_NULL,
+	    	    RPC_TYPE_ERROR);
+		#endif
+	while (rand_type == type);
+
+	fixture->different_type_object = object_test_generate_single(rand_type);
+	fixture->object = object_test_generate_single(type);
+	fixture->different_object = object_test_generate_nonequal(
+	    fixture->object);
+}
+
+static void
+object_test_single_tear_down(struct generic_object_fixture *fixture,
+    gconstpointer user_data)
 {
 
+	rpc_release(fixture->object);
+	rpc_release(fixture->different_object);
+	rpc_release(fixture->different_type_object);
 }
 
 static void
 object_test_register()
 {
+
+	g_test_add("/api/object/generic/null", struct generic_object_fixture, "json",
+	    object_test_single_set_up, serializer_test,
+	    object_test_single_tear_down);
 
 }
 

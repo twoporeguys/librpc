@@ -33,13 +33,13 @@
 #include <rpc/serializer.h>
 
 
-typedef struct {
+struct serializer_fixture{
 	rpc_object_t object;
 	const char *type;
-} serializer_fixture;
+};
 
 static void
-serializer_test(serializer_fixture *fixture, gconstpointer user_data)
+serializer_test(struct serializer_fixture *fixture, gconstpointer user_data)
 {
 	rpc_object_t object = fixture->object;
 	const char *type = fixture->type;
@@ -57,36 +57,35 @@ serializer_test(serializer_fixture *fixture, gconstpointer user_data)
 }
 
 static void
-serializer_test_dict_set_up(serializer_fixture *fixture,
+serializer_test_dict_set_up(struct serializer_fixture *fixture,
     gconstpointer user_data)
 {
 	void *data;
 	size_t size = (size_t)g_test_rand_int_range(1024, 1024*1024);
-	uint64_t uint = (uint64_t)g_test_rand_int();
 
 	data = g_malloc0(size);
 	memset(data, g_test_rand_int_range(0, 255), size);
 
 	fixture->object = rpc_object_pack("{n,b,i,u,D,B,f,d,s,[s,i,f]}",
 	    "null",
-	    "bool", true,
-	    "int", (int64_t)g_test_rand_int(),
-	    "uint", uint,
-	    "date", (int64_t)g_test_rand_int_range(0, 0xffff),
+	    "bool", g_test_rand_bit(),
+	    "int", RAND_INT64,
+	    "uint", RAND_UINT64,
+	    "date", RAND_INT64,
 	    "binary", data, size, RPC_BINARY_DESTRUCTOR(g_free),
 	    "fd", 1,
 	    "double", g_test_rand_double(),
 	    "string", "deadbeef",
 	    "array",
 	    "woopwoop",
-	    (int64_t)g_test_rand_int(),
+	    RAND_INT64,
 	    1);
 
 	fixture->type = user_data;
 }
 
 static void
-serializer_test_array_set_up(serializer_fixture *fixture,
+serializer_test_array_set_up(struct serializer_fixture *fixture,
     gconstpointer user_data)
 {
 	void *data;
@@ -96,34 +95,34 @@ serializer_test_array_set_up(serializer_fixture *fixture,
 	memset(data, g_test_rand_int_range(0, 255), size);
 
 	fixture->object = rpc_object_pack("[n,b,i,u,D,B,f,d,s,{s,i,f}]",
-	    true,
-	    (int64_t)g_test_rand_int(),
-	    (uint64_t)g_test_rand_int(),
-	    (int64_t)g_test_rand_int_range(0, 0xffff),
+	    g_test_rand_bit(),
+	    RAND_INT64,
+	    RAND_UINT64,
+	    RAND_INT64,
 	    data, size, RPC_BINARY_DESTRUCTOR(g_free),
 	    1,
 	    g_test_rand_double(),
 	    "deadbeef",
 	    "string", "woopwoop",
-	    "int", (int64_t)g_test_rand_int(),
+	    "int", RAND_INT64,
 	    "fd", 1);
 
 	fixture->type = user_data;
 }
 
 static void
-serializer_test_single_set_up(serializer_fixture *fixture,
+serializer_test_single_set_up(struct serializer_fixture *fixture,
     gconstpointer user_data)
 {
 
-	fixture->object = rpc_object_pack("u", (uint64_t)g_test_rand_int());
+	fixture->object = rpc_object_pack("u", RAND_UINT64);
 
 	fixture->type = user_data;
 }
 
 #if defined(__linux__)
 static void
-serializer_test_shmem_set_up(serializer_fixture *fixture,
+serializer_test_shmem_set_up(struct serializer_fixture *fixture,
     gconstpointer user_data)
 {
 	size_t size = (size_t)g_test_rand_int_range(1024, 1024*1024);
@@ -135,7 +134,7 @@ serializer_test_shmem_set_up(serializer_fixture *fixture,
 #endif
 
 static void
-serializer_test_tear_down(serializer_fixture *fixture,
+serializer_test_tear_down(struct serializer_fixture *fixture,
     gconstpointer user_data)
 {
 
@@ -146,46 +145,46 @@ static void
 serializer_test_register()
 {
 
-	g_test_add("/serializer/json/dict", serializer_fixture, "json",
-	    serializer_test_dict_set_up, serializer_test,
+	g_test_add("/api/serializer/json/dict", struct serializer_fixture,
+	   "json", serializer_test_dict_set_up, serializer_test,
 	    serializer_test_tear_down);
-	g_test_add("/serializer/json/array", serializer_fixture, "json",
-	    serializer_test_array_set_up, serializer_test,
+	g_test_add("/api/serializer/json/array", struct serializer_fixture,
+	   "json", serializer_test_array_set_up, serializer_test,
 	    serializer_test_tear_down);
-	g_test_add("/serializer/json/single", serializer_fixture, "json",
-	    serializer_test_single_set_up, serializer_test,
-	    serializer_test_tear_down);
-
-	g_test_add("/serializer/msgpack/dict", serializer_fixture, "msgpack",
-	    serializer_test_dict_set_up, serializer_test,
-	    serializer_test_tear_down);
-	g_test_add("/serializer/msgpack/array", serializer_fixture, "msgpack",
-	    serializer_test_array_set_up, serializer_test,
-	    serializer_test_tear_down);
-	g_test_add("/serializer/msgpack/single", serializer_fixture, "msgpack",
-	    serializer_test_single_set_up, serializer_test,
+	g_test_add("/api/serializer/json/single", struct serializer_fixture,
+	   "json", serializer_test_single_set_up, serializer_test,
 	    serializer_test_tear_down);
 
-	g_test_add("/serializer/yaml/dict", serializer_fixture, "yaml",
-	    serializer_test_dict_set_up, serializer_test,
+	g_test_add("/api/serializer/msgpack/dict", struct serializer_fixture,
+	   "msgpack", serializer_test_dict_set_up, serializer_test,
 	    serializer_test_tear_down);
-	g_test_add("/serializer/yaml/array", serializer_fixture, "yaml",
-	    serializer_test_array_set_up, serializer_test,
+	g_test_add("/api/serializer/msgpack/array", struct serializer_fixture,
+	   "msgpack", serializer_test_array_set_up, serializer_test,
 	    serializer_test_tear_down);
-	g_test_add("/serializer/yaml/single", serializer_fixture, "yaml",
-	    serializer_test_single_set_up, serializer_test,
+	g_test_add("/api/serializer/msgpack/single", struct serializer_fixture,
+	   "msgpack", serializer_test_single_set_up, serializer_test,
+	    serializer_test_tear_down);
+
+	g_test_add("/api/serializer/yaml/dict", struct serializer_fixture,
+	   "yaml", serializer_test_dict_set_up, serializer_test,
+	    serializer_test_tear_down);
+	g_test_add("/api/serializer/yaml/array", struct serializer_fixture,
+	   "yaml", serializer_test_array_set_up, serializer_test,
+	    serializer_test_tear_down);
+	g_test_add("/api/serializer/yaml/single", struct serializer_fixture,
+	   "yaml", serializer_test_single_set_up, serializer_test,
 	    serializer_test_tear_down);
 
 
 	#if defined(__linux__)
-	g_test_add("/serializer/json/shmem", serializer_fixture, "json",
-	    serializer_test_shmem_set_up, serializer_test,
+	g_test_add("/api/serializer/json/shmem", struct serializer_fixture,
+	   "json", serializer_test_shmem_set_up, serializer_test,
 	    serializer_test_tear_down);
-	g_test_add("/serializer/msgpack/shmem", serializer_fixture, "msgpack",
-	    serializer_test_shmem_set_up, serializer_test,
+	g_test_add("/api/serializer/msgpack/shmem", struct serializer_fixture,
+	   "msgpack", serializer_test_shmem_set_up, serializer_test,
 	    serializer_test_tear_down);
-	g_test_add("/serializer/yaml/shmem", serializer_fixture, "yaml",
-	    serializer_test_shmem_set_up, serializer_test,
+	g_test_add("/api/serializer/yaml/shmem", struct serializer_fixture,
+	   "yaml", serializer_test_shmem_set_up, serializer_test,
 	    serializer_test_tear_down);
 	#endif
 }
