@@ -44,6 +44,12 @@ static rpc_object_t rpc_interface_exists(void *, rpc_object_t);
 static rpc_object_t rpc_observable_property_get(void *, rpc_object_t);
 static rpc_object_t rpc_observable_property_get_all(void *, rpc_object_t);
 static rpc_object_t rpc_observable_property_set(void *, rpc_object_t);
+static bool rpc_instance_has_interface_locked(rpc_instance_t instance,
+    const char *interface);
+static struct rpc_if_member *rpc_instance_find_member_lock_interface(
+        rpc_instance_t instance, const char *interface, const char *name);
+static void interface_member_free(struct rpc_if_member *member);
+staic gboolean purge_member(gpointer key, gpointer value, gpointer user_data);
 
 static const struct rpc_if_member rpc_discoverable_vtable[] = {
 	RPC_EVENT(instance_added),
@@ -103,7 +109,7 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	}
 
 	if (!call->ric_streaming && !call->ric_responded)
-		rpc_connection_send_response(conn, call->ric_id, result);
+                rpc_function_respond(call, result);
 
 	if (call->ric_streaming && !call->ric_ended)
 		rpc_function_end(data);
@@ -145,14 +151,10 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 
 	debugf("call=%p, name=%s", call, call->ric_name);
 
-	if (call->ric_path == NULL)
-		instance = context->rcx_root;
-
 	if (call->ric_interface == NULL)
 		call->ric_interface = RPC_DEFAULT_INTERFACE;
 
-	if (instance == NULL)
-		instance = rpc_context_find_instance(context, call->ric_path);
+	instance = rpc_context_find_instance(context, call->ric_path);
 
 	if (instance == NULL) {
 		rpc_function_error(call, ENOENT, "Instance not found");
@@ -182,7 +184,8 @@ rpc_instance_t
 rpc_context_find_instance(rpc_context_t context, const char *path)
 {
 
-	return (g_hash_table_lookup(context->rcx_instances, path));
+	return ((path == NULL) ? context->rcx_root : \
+                           (g_hash_table_lookup(context->rcx_instances, path));
 }
 
 void
@@ -190,6 +193,9 @@ rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
     const char *name, rpc_object_t args)
 {
 	g_mutex_lock(&instance->ri_mtx);
+
+        g_assrt_nonnull(name);
+        g_assert_nonnull(args);
 
 	if (instance->ri_context) {
 		rpc_context_emit_event(instance->ri_context, instance->ri_path,
@@ -206,6 +212,8 @@ rpc_instance_register_property(rpc_instance_t instance, const char *interface,
     rpc_property_setter_t setter)
 {
 	struct rpc_if_member member;
+
+        g_assert_nonnull(name);
 
 	member.rim_name = name;
 	member.rim_type = RPC_MEMBER_PROPERTY;
@@ -271,6 +279,8 @@ rpc_context_register_member(rpc_context_t context, const char *interface,
     struct rpc_if_member *m)
 {
 
+        g_assert_nonnull(m);
+
 	return (rpc_instance_register_member(context->rcx_root, interface, m));
 }
 
@@ -278,6 +288,9 @@ int
 rpc_context_register_block(rpc_context_t context, const char *interface,
     const char *name, void *arg, rpc_function_t func)
 {
+
+        g_assert_nonnull(name);
+        g_assert_nonnull(func);
 
 	return (rpc_instance_register_block(context->rcx_root, interface,
 	    name, arg, func));
@@ -287,6 +300,9 @@ int
 rpc_context_register_func(rpc_context_t context, const char *interface,
     const char *name, void *arg, rpc_function_f func)
 {
+        g_assert_nonnull(name);
+        g_assert_nonnull(func);
+
 	rpc_function_t fn = ^(void *cookie, rpc_object_t args) {
 		return (func(cookie, args));
 	};
@@ -299,6 +315,8 @@ rpc_context_unregister_member(rpc_context_t context, const char *interface,
     const char *name)
 {
 
+        g_assert_nonnull(name);
+
 	return (rpc_instance_unregister_member(context->rcx_root, interface,
 	    name));
 }
@@ -308,6 +326,9 @@ rpc_context_emit_event(rpc_context_t context, const char *path,
     const char *interface, const char *name, rpc_object_t args)
 {
 	rpc_server_t server;
+
+        g_assert_nonnull(name);
+        g_assert_nonnull(args);
 
 	for (guint i = 0; i < context->rcx_servers->len; i++) {
 		server = g_ptr_array_index(context->rcx_servers, i);
@@ -381,6 +402,8 @@ rpc_function_error(void *cookie, int code, const char *message, ...)
 	struct rpc_inbound_call *call = cookie;
 	char *msg;
 	va_list ap;
+
+        g_assert_nonnull(message);
 
 	va_start(ap, message);
 	g_vasprintf(&msg, message, ap);
@@ -500,6 +523,8 @@ rpc_instance_new(void *arg, const char *fmt, ...)
 	rpc_instance_t result;
 	char *path;
 
+        g_assert_nonnull(fmt);
+
 	va_start(ap, fmt);
 	path = g_strdup_vprintf(fmt, ap);
 	va_end(ap);
@@ -531,6 +556,8 @@ rpc_instance_set_description(rpc_instance_t instance, const char *fmt, ...)
 {
 	va_list ap;
 	char *description;
+
+        g_assert_nonnull(fmt);
 
 	va_start(ap, fmt);
 	description = g_strdup_vprintf(fmt, ap);
@@ -571,16 +598,37 @@ struct rpc_if_member *
 rpc_instance_find_member(rpc_instance_t instance, const char *interface,
     const char *name)
 {
+	struct rpc_if_member *result = 
+                rpc_instance_find_member_lock_interface(instance, interface, name);
+
+        if (result != NULL)
+                g_rw_lock_reader_unlock(result->rim_interface->rip_rwlock;
+
+        return (result);
+}
+
+static struct rpc_if_member *
+rpc_instance_find_member_lock_interface(rpc_instance_t instance, const char *interface,
+    const char *name)
+{
 	struct rpc_interface_priv *iface;
 	struct rpc_if_member *result;
 
-	iface = g_hash_table_lookup(instance->ri_interfaces, interface);
-	if (iface == NULL)
-		return (NULL);
+	if (name == NULL)
+                return (NULL);
+        if (interface == NULL)
+                interface = RPC_DEFAULT_INTERFACE;
+        
+        g_rw_lock_reader_lock(&instance->ri_rwlock);
+        iface = g_hash_table_lookup(instance->ri_interfaces, interface);
+	if (iface == NULL) {
+                g_rw_lock_reader_unlock(&instance->ri_rwlock);
+	        return (NULL);
+        }
 
-	g_mutex_lock(&iface->rip_mtx);
+	g_rw_lock_reader_lock(&iface->rip_mtx);
 	result = g_hash_table_lookup(iface->rip_members, name);
-	g_mutex_unlock(&iface->rip_mtx);
+        g_rw_lock_reader_unlock(&instance->ri_rwlock);
 
 	return (result);
 }
@@ -588,6 +636,23 @@ rpc_instance_find_member(rpc_instance_t instance, const char *interface,
 bool
 rpc_instance_has_interface(rpc_instance_t instance, const char *interface)
 {
+        bool res;
+
+        g_assert_nonnull(interface);
+
+        g_rw_lock_reader_lock(&instance->ri_rwlock);
+	res = ((bool)g_hash_table_contains(instance->ri_interfaces, interface));
+        g_rw_lock_reader_unlock(&instance->ri_rwlock);
+
+        return (res);
+}
+
+static bool
+rpc_instance_has_interface_locked(rpc_instance_t instance, 
+    const char *interface)
+{
+
+        g_assert_nonnull(interface);
 
 	return ((bool)g_hash_table_contains(instance->ri_interfaces, interface));
 }
@@ -599,16 +664,18 @@ rpc_instance_register_interface(rpc_instance_t instance,
 	struct rpc_interface_priv *priv;
 	const struct rpc_if_member *member;
 
-	if (rpc_instance_has_interface(instance, interface))
+        g_assert_nonnull(interface);
+
+        g_rw_lock_writer_lock(&instance->ri_rwlock);
+	if (rpc_instance_has_interface_locked(instance, interface)) {
+                g_rw_lock_writer_unlock(&instance->ri_rwlock);
 		return (0);
 
 	priv = g_malloc0(sizeof(*priv));
-	g_mutex_init(&priv->rip_mtx);
 	priv->rip_members = g_hash_table_new(g_str_hash, g_str_equal);
 	priv->rip_arg = arg;
 	priv->rip_name = g_strdup(interface);
 
-	g_rw_lock_writer_lock(&instance->ri_rwlock);
 	g_hash_table_insert(instance->ri_interfaces, priv->rip_name, priv);
 	g_rw_lock_writer_unlock(&instance->ri_rwlock);
 
@@ -624,16 +691,54 @@ rpc_instance_register_interface(rpc_instance_t instance,
 	return (0);
 }
 
+staic gboolean 
+purge_member(gpointer key, gpointer value, gpointer user_data)
+{
+        struct rpc_if_member *member = (struct rpc_if_member *)value;
+
+        if (member->rim_type == RPC_MEMBER_PROPERTY) {
+                rpc_array_append_stolen_value((rpc_object_t)user_data, 
+                    rpc_object_pack("{s}", "name", member->rim_name));
+        interface_member_free(member);
+        return true;
+}
+
 void
 rpc_instance_unregister_interface(rpc_instance_t instance,
     const char *interface)
 {
+        struct rpc_interface_priv priv;
+        rpc_object_t list;
+
+        g_assert_nonnull(interface);
+
 	g_rw_lock_writer_lock(&instance->ri_rwlock);
+	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
+        if (priv == NULL) {
+                g_rw_lock_writer_unlock(&instance->ri_rwlock);
+                return;
+                
+        g_rw_lock_writer_lock(&priv->rip_rwlock);
 	g_hash_table_remove(instance->ri_interfaces, interface);
 	g_rw_lock_writer_unlock(&instance->ri_rwlock);
 
+        list = rpc_array_create();
+        g_hash_table_foreach_remove(priv->rip_members, purge_member, list);
+        g_rw_lock_writer_unlock(&priv->rip_rwlock);
+
+        rpc_array_apply(list, ^(size_t idx __unused, rpc_object_t v) {
+                rpc_instance_emit_event(instance, "librpc.Observable",
+                    "property_removed", v)
+                return((bool)true;
+        });
+        rpc_release(list);
+
 	rpc_instance_emit_event(instance, RPC_INTROSPECTABLE_INTERFACE,
 	    "interface_removed", rpc_string_create(interface));
+        
+        g_free(priv->rip_name);
+        g_hash_table_destroy(priv->rip_members);
+        g_free(priv);
 }
 
 int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
@@ -641,6 +746,11 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 {
 	struct rpc_interface_priv *priv;
 	struct rpc_if_member *copy;
+        void *iarg;
+        rpc_object_t emitobj = NULL;
+
+        g_assert_nonnull(member);
+        g_assert_nonnull(member->rim_name);
 
 	if (interface == NULL) {
 		interface = RPC_DEFAULT_INTERFACE;
@@ -648,14 +758,18 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 		    interface, NULL, NULL);
 	}
 
+        g_rw_lock_reader_lock(&instance->ri_rwlock);
 	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
 	if (priv == NULL) {
+                g_rw_lock_reader_unlock(&instance->ri_rwlock);
 		rpc_set_last_error(ENOENT, "Interface not found", NULL);
 		return (-1);
 	}
+        iarg = priv->rip_arg;
+        g_rw_lock_reader_unlock(&instance->ri_rwlock);
 
 	copy = g_memdup(member, sizeof(*member));
-	copy->rim_name = g_strdup(member->rim_name);
+        copy->rim_name = g_strdup(member->rim_name);
 
 	if (copy->rim_type == RPC_MEMBER_METHOD) {
 		copy->rim_method.rm_block = Block_copy(
@@ -679,27 +793,62 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 		if (copy->rim_property.rp_arg == NULL)
 			copy->rim_property.rp_arg = priv->rip_arg;
 
-		/* Install Observable interface if needed */
-		if (!rpc_instance_has_interface(instance,
-		    RPC_OBSERVABLE_INTERFACE)) {
-			rpc_instance_register_interface(instance,
-			    RPC_OBSERVABLE_INTERFACE, rpc_observable_vtable,
-			    NULL);
+		rpc_instance_register_interface(instance,
+		    RPC_OBSERVABLE_INTERFACE, rpc_observable_vtable, NULL);
 		}
 
-		/* Emit property added event */
-		rpc_instance_emit_event(instance, RPC_OBSERVABLE_INTERFACE,
-		    "property_added", rpc_object_pack("{s,b,b}",
-		        "name", member->rim_name,
-		        "readable", member->rim_property.rp_getter != NULL,
-		        "writable", member->rim_property.rp_setter != NULL));
+		/* Build property added event */
+                emitobj = rpc_object_pack("{s,b,b}", "name", member->rim_name,
+                    "readable", member->rim_property.rp_getter != NULL,
+                    "writable", member->rim_property.rp_setter != NULL);
 
+        } else if copy->rim_type != RPC_MEMBER_EVENT {
+                rpc_set_last_error(EINVAL, "Invalid member type", NULL);
+                goto err;
+        }
+
+        g_rw_lock_reader_lock(&instance->ri_rwlock);
+	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
+	if (priv == NULL) {
+                g_rw_lock_reader_unlock(&instance->ri_rwlock);
+		rpc_set_last_error(ENOENT, "Interface removed", NULL);
+		goto error;
 	}
 
-	g_mutex_lock(&priv->rip_mtx);
+	g_rw_lock_writer_lock(&priv->rip_rwlock);
+        g_rw_lock_reader_unlock(&instance->ri_rwlock);
+        if (g_hash_table_contains(priv->rip_members, member->rim_name)) {
+                g_rw_lock_writer_unlock(&priv->rip_rwlock);
+                rpc_set_last_error(EEXIST, "Member already exists", NULL);
+                goto error;
+        }       
+        copy->rim_interface = priv;
 	g_hash_table_insert(priv->rip_members, g_strdup(member->rim_name), copy);
-	g_mutex_unlock(&priv->rip_mtx);
+	g_rw_lock_writer_unlock(&priv->rip_rwlock);
+        if (emitobj != NULL)
+	        rpc_instance_emit_event(instance, RPC_OBSERVABLE_INTERFACE,
+                    "property_added", emitobj); 
 	return (0);
+error:
+        if (emitobj != NULL)
+                rpc_release(emitobj);
+        interface_member_free(copy);
+        return -1;
+}
+
+static void
+interface_member_free(struct rpc_if_member *member)
+{
+
+        if (member == NULL)
+                return;
+  
+        g_free(member->rim_name);
+
+        Block_release(member->rim_method.rm_block);
+        Block_release(member->rim_property.rp_getter);
+        Block_release(member->rim_property.rp_getter);
+        g_free(member);
 }
 
 int
@@ -731,26 +880,37 @@ rpc_instance_unregister_member(rpc_instance_t instance, const char *interface,
 	struct rpc_interface_priv *priv;
 	struct rpc_if_member *member;
 
+        g_assert_nonnull(name);
+
+	if (interface == NULL) {
+		interface = RPC_DEFAULT_INTERFACE;
+
+        g_rw_lock_reader_lock(&instance->ri_rwlock);
 	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
 	if (priv == NULL) {
+                g_rw_lock_reader_unlock(&instance->ri_rwlock);
 		rpc_set_last_error(ENOENT, "Interface not found", NULL);
 		return (-1);
 	}
-
 	g_mutex_lock(&priv->rip_mtx);
+        g_rw_lock_reader_unlock(&instance->ri_rwlock);
+
 	member = g_hash_table_lookup(priv->rip_members, name);
 	if (member == NULL) {
+	        g_mutex_unlock(&priv->rip_mtx);
 		rpc_set_last_error(ENOENT, "Member not found", NULL);
 		return (-1);
 	}
+
+	g_hash_table_remove(priv->rip_members, name);
+	g_mutex_unlock(&priv->rip_mtx);
 
 	if (member->rim_type == RPC_MEMBER_PROPERTY) {
 		rpc_instance_emit_event(instance, "librpc.Observable",
 		    "property_removed", rpc_object_pack("{s}", "name", name));
 	}
 
-	g_hash_table_remove(priv->rip_members, name);
-	g_mutex_unlock(&priv->rip_mtx);
+        interface_member_free(member);
 	return (0);
 }
 
@@ -760,6 +920,8 @@ rpc_instance_get_property_rights(rpc_instance_t instance, const char *interface,
 {
 	struct rpc_if_member *member;
 	int rights = 0;
+
+        g_assert_nonnull(name);
 
 	member = rpc_instance_find_member(instance, interface, name);
 	if (member == NULL || member->rim_type != RPC_MEMBER_PROPERTY) {
@@ -836,6 +998,8 @@ rpc_property_error(void *cookie, int code, const char *fmt, ...)
 	struct rpc_property_cookie *prop = cookie;
 	char *msg;
 	va_list ap;
+
+        g_assert_nonnull(fmt);
 
 	va_start(ap, fmt);
 	msg = g_strdup_vprintf(fmt, ap);

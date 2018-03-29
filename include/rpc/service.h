@@ -252,6 +252,7 @@ struct rpc_if_property
  * */
 struct rpc_if_member {
 	const char *_Nonnull		rim_name;
+        void *                          rim_interface;
 	enum rpc_if_member_type		rim_type;
 	union {
 		struct rpc_if_method 	rim_method;
@@ -274,14 +275,16 @@ _Nonnull rpc_context_t rpc_context_create(void);
 void rpc_context_free(_Nonnull rpc_context_t context);
 
 /**
- * Finds an instance registered in @p context.
+ * Finds an instance registered in @p context. 
+ *
+ * If no path is given, returns the context default instance.
  *
  * @param context RPC context handle
  * @param path Instance path
  * @return RPC instance handle or NULL if not found
  */
 _Nullable rpc_instance_t rpc_context_find_instance(
-    _Nonnull rpc_context_t context, const char *_Nonnull path);
+    _Nonnull rpc_context_t context, const char *_Nullable path);
 
 /**
  * Returns root instance associated with @p context.
@@ -355,7 +358,7 @@ int rpc_context_register_func(_Nonnull rpc_context_t context,
  * @return Status.
  */
 int rpc_context_unregister_member(_Nonnull rpc_context_t context,
-    const char *_Nonnull interface, const char *_Nonnull name);
+    const char *_Nullable interface, const char *_Nonnull name);
 
 /**
  * Installs a hook for every RPC function called.
@@ -392,11 +395,16 @@ _Nullable rpc_call_t rpc_context_dispatch_call(_Nonnull rpc_context_t context,
     const char *_Nonnull name, _Nullable rpc_object_t args);
 
 /**
+ * Notifies interested listeners of changes to the instance at @p path.
+ *
+ * If no path is specified the context default instance is assumed. If there is
+ * no interface specified, RPC_DEFAULT_INTERFACE will be used.
  *
  * @param context
  * @param path
  * @param interface
  * @param name
+ * @param args Data specific to the event
  */
 void rpc_context_emit_event(_Nonnull rpc_context_t context,
     const char *_Nullable path, const char *_Nullable interface,
@@ -596,31 +604,37 @@ void rpc_instance_unregister_interface(_Nonnull rpc_instance_t instance,
 /**
  * Registers a single member of interface @p interface under @p instance.
  *
+ * If no interface is specified, RPC_DEFAULT_INTERFACE will be assumed.
+ * 
  * @param instance Intance handle
  * @param interface Interface name
  * @param member Member descriptor
  * @return 0 on success, -1 on error
  */
 int rpc_instance_register_member(_Nonnull rpc_instance_t instance,
-    const char *_Nonnull interface,
+    const char *_Nullable interface,
     const struct rpc_if_member *_Nonnull member);
 
 /**
  * Unregisters a previously registered member named @p name from interface
  * @p interface on @p instance.
  *
+ * If no interface is specified, RPC_DEFAULT_INTERFACE will be assumed.
+ * 
  * @param instance Instance handle
  * @param interface Interface name
  * @param name Member name
  * @return 0 on success, -1 on error
  */
 int rpc_instance_unregister_member(_Nonnull rpc_instance_t instance,
-    const char *_Nonnull interface, const char *_Nonnull name);
+    const char *_Nullable interface, const char *_Nonnull name);
 
 /**
  * Registers a new method called @p name on interface @p interface under
  * instance @p instance.
  *
+ * If no interface is specified, RPC_DEFAULT_INTERFACE will be assumed.
+ * 
  * @param instance Instance handle
  * @param interface Interface name
  * @param name Method name
@@ -629,7 +643,7 @@ int rpc_instance_unregister_member(_Nonnull rpc_instance_t instance,
  * @return 0 on success, -1 on error
  */
 int rpc_instance_register_block(_Nonnull rpc_instance_t instance,
-    const char *_Nonnull interface, const char *_Nonnull name,
+    const char *_Nullable interface, const char *_Nonnull name,
     void *_Nullable arg, _Nonnull rpc_function_t fn);
 
 /**
@@ -643,12 +657,14 @@ int rpc_instance_register_block(_Nonnull rpc_instance_t instance,
  * @param fn Function pointer
  */
 int rpc_instance_register_func(_Nonnull rpc_instance_t instance,
-    const char *_Nonnull interface, const char *_Nonnull name,
+    const char *_Nullable interface, const char *_Nonnull name,
     void *_Nullable arg, _Nonnull rpc_function_f fn);
 
 /**
  * Finds member called @p name belonging to a @p interface in @p instance.
  *
+ * If no interface is specified, RPC_DEFAULT_INTERFACE will be assumed.
+ * 
  * @param instance Instance handle
  * @param interface Interface name
  * @param name Member name
@@ -669,18 +685,24 @@ bool rpc_instance_has_interface(_Nonnull rpc_instance_t instance,
     const char *_Nonnull interface);
 
 /**
+ * Notifies interested listeners of changes to the instance.
  *
+ * If no interface is specified, RPC_DEFAULT_INTERFACE will be assumed.
+ * 
  * @param instance Instance handle
  * @param interface Interface name
- * @param name
+ * @param name Event name
+ * @param args Data specific to the event
  */
 void rpc_instance_emit_event(_Nonnull rpc_instance_t instance,
-    const char *_Nonnull interface, const char *_Nonnull name,
+    const char *_Nullable interface, const char *_Nonnull name,
     _Nonnull rpc_object_t args);
 
 /**
  * Registers property named @p name on interface @p interface under instance
  * @p instance.
+ *
+ * If no interface is specified, RPC_DEFAULT_INTERFACE will be assumed.
  *
  * The property can be:
  * - read-only, when getter is non-NULL and setter is NULL
@@ -696,7 +718,7 @@ void rpc_instance_emit_event(_Nonnull rpc_instance_t instance,
  * @return 0 on success, -1 on error
  */
 int rpc_instance_register_property(_Nonnull rpc_instance_t instance,
-    const char *_Nonnull interface, const char *_Nonnull name,
+    const char *_Nullable interface, const char *_Nonnull name,
     void *_Nullable arg, _Nullable rpc_property_getter_t getter,
     _Nullable rpc_property_setter_t setter);
 
@@ -704,13 +726,15 @@ int rpc_instance_register_property(_Nonnull rpc_instance_t instance,
  * Returns access rights of property @p name of interface @p interface
  * implemented in instance @p instance.
  *
+ * If no interface is specified, RPC_DEFAULT_INTERFACE will be assumed.
+ * 
  * @param instance Instance handle
  * @param interface Interface name
  * @param name Property name
  * @return
  */
 int rpc_instance_get_property_rights(_Nonnull rpc_instance_t instance,
-    const char *_Nonnull interface, const char *_Nonnull name);
+    const char *_Nullable interface, const char *_Nonnull name);
 
 /**
  *
@@ -730,6 +754,8 @@ int rpc_instance_register_event(_Nonnull rpc_instance_t instance,
  *
  * If @p value is @p NULL, then librpc will internally query the getter
  * for the value.
+ *
+ * If no interface is specified, RPC_DEFAULT_INTERFACE will be assumed.
  *
  * @param instance Instance handle
  * @param interface Interface name
