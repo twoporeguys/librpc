@@ -56,7 +56,7 @@ extern NSString * _Nullable const RPCErrorDomain;
  * @param value Value
  * @returns Boxed RPCObject
  */
-- (nonnull instancetype)initWithValue:(nullable id)value error:(NSError * _Nullable *_Nullable)error;
+- (nonnull instancetype)initWithValue:(nullable id)value;
 
 /**
  * Creates a new RPCObject from NSObject-based value with specific type.
