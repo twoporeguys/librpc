@@ -426,6 +426,15 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
                    [[NSString alloc] initWithString:@(interfaceReturn)], [[NSString alloc] initWithString:@(methodReturn)]);
             });
 }
+
+- (void)observeProperty:(NSString *)name
+                   path:(NSString *)path
+              interface:(NSString *)interface
+               callback:(RPCPropertyCallback)cb {
+    rpc_connection_watch_property(conn, [path UTF8String], [interface UTF8String], [name UTF8String], ^(rpc_object_t v) {
+        cb([[RPCObject alloc] initFromNativeObject:v]);
+    });
+}
 @end
 
 #pragma mark - RPCInstance
@@ -486,6 +495,10 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
         [result addObject:[self recursivelyUnpackProperties:value]];
     }
     return result.copy;
+}
+
+- (void)observeProperty:(NSString *)name callback:(RPCPropertyCallback)cb {
+    [_client observeProperty:name path:_path interface:_interface callback:cb];
 }
 
 - (id)recursivelyUnpackProperties:(id)container {

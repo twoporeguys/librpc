@@ -121,6 +121,8 @@ typedef void(^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull
 typedef void(^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull path,
                                 NSString * _Nonnull interface, NSString * _Nonnull method);
 
+typedef void (^RPCPropertyCallback)(RPCObject *_Nonnull value);
+
 @interface RPCClient : NSObject
 /**
  * Connects to an endpoint specified by @p uri.
@@ -178,6 +180,11 @@ typedef void(^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull p
             interface:(nonnull NSString *)interface
              callback:(nullable RPCEventCallback)cb;
 
+- (void)observeProperty:(nonnull NSString *)name
+                   path:(nonnull NSString *)path
+              interface:(nonnull NSString *)interface
+               callback:(nullable RPCPropertyCallback)cb;
+
 @end
 
 @interface RPCInstance : NSObject
@@ -194,6 +201,7 @@ typedef void(^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull p
 @property (readonly, nullable) NSString *interface;
 @property (readonly, nullable) NSArray<NSDictionary *> *properties;
 @property (readonly, nullable) NSArray<NSString *> *methods;
+- (void)observeProperty:(nonnull NSString *)name callback:(nonnull RPCPropertyCallback)cb;
 - (void)forwardInvocation:(nonnull NSInvocation *)anInvocation;
 - (nonnull NSMethodSignature *)methodSignatureForSelector:(nonnull SEL)aSelector;
 - (nonnull instancetype)initWithClient:(nonnull RPCClient *)client path:(nonnull NSString *)path andInterface:(nonnull NSString *)interface;
