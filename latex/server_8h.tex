@@ -28,6 +28,8 @@ typedef void($^\wedge$ \hyperlink{server_8h_a2d9a540637c63449db9ac5882cb5f7ab}{r
 \item 
 \+\_\+\+Nullable \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} \hyperlink{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}{rpc\+\_\+server\+\_\+create} (const char $\ast$\+\_\+\+Nonnull uri, \+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
 \item 
+void \hyperlink{server_8h_a52667e1f1ad29521541c60aae34dcf02}{rpc\+\_\+server\+\_\+resume} (\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} server)
+\item 
 void \hyperlink{server_8h_a28eeff2b8ec73f31f1af9feff11cb698}{rpc\+\_\+server\+\_\+broadcast\+\_\+event} (\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} server, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
 void \hyperlink{server_8h_ac6bfcd59fe8ec8386b1e3d312705e786}{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler} (\+\_\+\+Nullable \hyperlink{server_8h_a2d9a540637c63449db9ac5882cb5f7ab}{rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t} handler)
@@ -92,11 +94,11 @@ Broadcasts an event of a given name among its subscribers.
 
 
 \begin{DoxyParams}{Parameters}
-{\em server} & Target server. \\
+{\em server} & Server handle \\
 \hline
-{\em name} & Name of an event to be broadcasted. \\
+{\em name} & Name of an event to be broadcasted \\
 \hline
-{\em args} & Event arguments. \\
+{\em args} & Event arguments \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{server_8h_a1bf6070b1bb3b31d394f3862405eaf8c}\label{server_8h_a1bf6070b1bb3b31d394f3862405eaf8c}} 
@@ -109,11 +111,11 @@ Closes a given R\+PC server.
 
 
 \begin{DoxyParams}{Parameters}
-{\em server} & Server to be closed. \\
+{\em server} & Server handle to be closed \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-0 on successful teardown. 
+0 on successful teardown 
 \end{DoxyReturn}
 \mbox{\Hypertarget{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}\label{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+create@{rpc\+\_\+server\+\_\+create}}
@@ -125,14 +127,29 @@ Creates a server instance listening on a given U\+RI.
 
 
 \begin{DoxyParams}{Parameters}
-{\em uri} & U\+RI to listen on. \\
+{\em uri} & U\+RI to listen on \\
 \hline
-{\em context} & R\+PC context for a server instance. \\
+{\em context} & R\+PC context for a server instance \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Server structure. 
+Server handle 
 \end{DoxyReturn}
+\mbox{\Hypertarget{server_8h_a52667e1f1ad29521541c60aae34dcf02}\label{server_8h_a52667e1f1ad29521541c60aae34dcf02}} 
+\index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+resume@{rpc\+\_\+server\+\_\+resume}}
+\index{rpc\+\_\+server\+\_\+resume@{rpc\+\_\+server\+\_\+resume}!server.\+h@{server.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+server\+\_\+resume()}{rpc\_server\_resume()}}
+{\footnotesize\ttfamily void rpc\+\_\+server\+\_\+resume (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t}}]{server }\end{DoxyParamCaption})}
+
+Starts accepting requests by the server.
+
+Server instance keeps all the incoming requests queued and on hold until this function is called.
+
+
+\begin{DoxyParams}{Parameters}
+{\em server} & Server handle \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{server_8h_ac6bfcd59fe8ec8386b1e3d312705e786}\label{server_8h_ac6bfcd59fe8ec8386b1e3d312705e786}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler@{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler}}
 \index{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler@{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler}!server.\+h@{server.\+h}}
