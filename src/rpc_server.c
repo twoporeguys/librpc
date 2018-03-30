@@ -90,6 +90,7 @@ rpc_server_create(const char *uri, rpc_context_t context)
 
 	server = g_malloc0(sizeof(*server));
 	server->rs_uri = uri;
+	server->rs_paused = true;
 	server->rs_context = context;
 	server->rs_accept = &rpc_server_accept;
 	server->rs_g_context = g_main_context_new();
@@ -127,8 +128,24 @@ rpc_server_broadcast_event(rpc_server_t server, const char *path,
 int
 rpc_server_dispatch(rpc_server_t server, struct rpc_inbound_call *call)
 {
+	int ret;
 
-	return (rpc_context_dispatch(server->rs_context, call));
+	g_mutex_lock(&server->rs_mtx);
+	while (server->rs_paused)
+		g_cond_wait(&server->rs_cv, &server->rs_mtx);
+
+	ret = rpc_context_dispatch(server->rs_context, call);
+	g_mutex_unlock(&server->rs_mtx);
+	return (ret);
+}
+
+void
+rpc_server_resume(rpc_server_t server)
+{
+	g_mutex_lock(&server->rs_mtx);
+	server->rs_paused = false;
+	g_cond_broadcast(&server->rs_cv);
+	g_mutex_unlock(&server->rs_mtx);
 }
 
 int
