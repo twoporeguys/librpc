@@ -44,15 +44,13 @@ static rpc_object_t rpc_interface_exists(void *, rpc_object_t);
 static rpc_object_t rpc_observable_property_get(void *, rpc_object_t);
 static rpc_object_t rpc_observable_property_get_all(void *, rpc_object_t);
 static rpc_object_t rpc_observable_property_set(void *, rpc_object_t);
-static bool rpc_instance_has_interface_locked(rpc_instance_t instance,
-    const char *interface);
 static void interface_member_free(struct rpc_if_member *member);
 static gboolean purge_member(gpointer key, gpointer value, gpointer user_data);
+static struct rpc_interface_priv *get_interface_and_lock(
+    rpc_instance_t instance, const char *interface);
 static void unlock_member_interface(struct rpc_if_member *member);
 static struct rpc_if_member *get_valid_property(rpc_instance_t instance, 
     const char *interface, const char *name); 
-static struct rpc_interface_priv *get_interface_and_lock(
-    rpc_instance_t instance, const char *interface);
 
 static const struct rpc_if_member rpc_discoverable_vtable[] = {
 	RPC_EVENT(instance_added),
@@ -198,10 +196,10 @@ void
 rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
     const char *name, rpc_object_t args)
 {
-	g_mutex_lock(&instance->ri_mtx);
-
         g_assert_nonnull(name);
         g_assert_nonnull(args);
+
+	g_mutex_lock(&instance->ri_mtx);
 
 	if (instance->ri_context) {
 		rpc_context_emit_event(instance->ri_context, instance->ri_path,
@@ -238,6 +236,10 @@ rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
 	rpc_object_t ifaces;
 	const char *key;
 
+        g_assert_nonnull(context);
+        g_assert_nonnull(instance);
+        g_assert_nonnull(instance->ri_path);
+
 	g_rw_lock_writer_lock(&context->rcx_rwlock);
 
 	if (g_hash_table_contains(context->rcx_instances, instance->ri_path)) {
@@ -268,6 +270,8 @@ rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
 void
 rpc_context_unregister_instance(rpc_context_t context, const char *path)
 {
+
+	g_assert_nonnull(path);
 
 	g_rw_lock_writer_lock(&context->rcx_rwlock);
 
@@ -650,16 +654,6 @@ rpc_instance_has_interface(rpc_instance_t instance, const char *interface)
         return (res);
 }
 
-static bool
-rpc_instance_has_interface_locked(rpc_instance_t instance, 
-    const char *interface)
-{
-
-        g_assert_nonnull(interface);
-
-	return ((bool)g_hash_table_contains(instance->ri_interfaces, interface));
-}
-
 int
 rpc_instance_register_interface(rpc_instance_t instance,
     const char *interface, const struct rpc_if_member *vtable, void *arg)
@@ -670,7 +664,7 @@ rpc_instance_register_interface(rpc_instance_t instance,
         g_assert_nonnull(interface);
 
         g_rw_lock_writer_lock(&instance->ri_rwlock);
-	if (rpc_instance_has_interface_locked(instance, interface)) {
+        if ((bool)g_hash_table_contains(instance->ri_interfaces, interface)) {
                 g_rw_lock_writer_unlock(&instance->ri_rwlock);
 		return (0);
         }
