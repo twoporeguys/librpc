@@ -434,10 +434,8 @@ on_rpc_abort(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 	if (call->ric_abort_handler) {
 		call->ric_abort_handler();
 		Block_release(call->ric_abort_handler);
+                call->ric_abort_handler = NULL;
 	}
-
-	g_hash_table_remove(conn->rco_inbound_calls,
-	    rpc_string_get_string_ptr(id));
 }
 
 static void
@@ -515,8 +513,11 @@ on_events_subscribe(rpc_connection_t conn, rpc_object_t args,
 		    "path", &path) <1)
 	    		return ((bool)true);
 
-	    	instance = rpc_context_find_instance(
-		    conn->rco_server->rs_context, path);
+                if (path == NULL)
+                        instance = conn->rco_server->rs_context->rcx_root;
+                else
+                        instance = rpc_context_find_instance(
+                            conn->rco_server->rs_context, path);
 
 		if (instance == NULL)
 			return ((bool)true);
@@ -554,8 +555,11 @@ on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args,
 		    "path", &path) <1)
 			return ((bool)true);
 
-		instance = rpc_context_find_instance(
-		    conn->rco_server->rs_context, path);
+                if (path == NULL)
+                        instance = conn->rco_server->rs_context->rcx_root;
+                else
+                        instance = rpc_context_find_instance(
+                            conn->rco_server->rs_context, path);
 
 		if (instance == NULL)
 			return ((bool)true);
@@ -1095,7 +1099,11 @@ rpc_connection_unregister_event_handler(rpc_connection_t conn, void *cookie)
 	struct rpc_subscription_handler *rsh = cookie;
 
 	g_mutex_lock(&conn->rco_subscription_mtx);
-	g_ptr_array_remove(rsh->rsh_parent->rsu_handlers, cookie);
+        if (rsh->rsh_handler) {
+                g_ptr_array_remove(rsh->rsh_parent->rsu_handlers, cookie);
+                Block_release(rsh->rsh_handler);
+                rsh->rsh_handler = NULL;
+        }
 	g_mutex_unlock(&conn->rco_subscription_mtx);
 
 }
@@ -1108,6 +1116,8 @@ rpc_connection_call_syncv(rpc_connection_t conn, const char *path,
 	rpc_object_t args;
 	rpc_object_t result;
 	rpc_object_t i;
+
+        g_assert_nonnull(method);
 
 	args = rpc_array_create();
 
@@ -1135,6 +1145,8 @@ rpc_connection_call_sync(rpc_connection_t conn, const char *path,
 	rpc_object_t result;
 	va_list ap;
 
+        g_assert_nonnull(method);
+
 	va_start(ap, method);
 	result = rpc_connection_call_syncv(conn, path, interface, method, ap);
 	va_end(ap);
@@ -1148,6 +1160,9 @@ rpc_connection_call_syncp(rpc_connection_t conn, const char *path,
 {
 	rpc_object_t result;
 	va_list ap;
+
+        g_assert_nonnull(method);
+        g_assert_nonnull(fmt);
 
 	va_start(ap, fmt);
 	result = rpc_connection_call_syncpv(conn, path, interface, method, fmt, ap);
@@ -1163,6 +1178,9 @@ rpc_object_t rpc_connection_call_syncpv(rpc_connection_t conn,
 	rpc_call_t call;
 	rpc_object_t args;
 	rpc_object_t result;
+
+        g_assert_nonnull(method);
+        g_assert_nonnull(fmt);
 
 	args = rpc_object_vpack(fmt, ap);
 	call = rpc_connection_call(conn, path, interface, method, args, NULL);
@@ -1182,6 +1200,9 @@ rpc_connection_call_simple(rpc_connection_t conn, const char *name,
 {
 	va_list ap;
 	rpc_object_t result;
+
+        g_assert_nonnull(name);
+        g_assert_nonnull(fmt);
 
 	va_start(ap, fmt);
 	result = rpc_connection_call_syncpv(conn, NULL, NULL, name, fmt, ap);
@@ -1339,6 +1360,9 @@ void
 rpc_connection_set_event_handler(rpc_connection_t conn, rpc_handler_t h)
 {
 
+        if (conn->rco_event_handler != NULL)
+                Block_release(conn->rco_event_handler);
+
 	conn->rco_event_handler = Block_copy(h);
 }
 
@@ -1346,6 +1370,8 @@ void
 rpc_connection_set_error_handler(rpc_connection_t conn, rpc_error_handler_t h)
 {
 
+        if (conn->rco_error_handler != NULL)
+                Block_release(conn->rco_error_handler);
 	conn->rco_error_handler = Block_copy(h);
 }
 

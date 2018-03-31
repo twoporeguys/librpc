@@ -222,7 +222,7 @@ int rpc_connection_subscribe_event(_Nonnull rpc_connection_t conn,
  * @return 0 on success, -1 on failure
  */
 int rpc_connection_unsubscribe_event(_Nonnull rpc_connection_t conn,
-    const char *_Nullable path, const char *_Nonnull interface,
+    const char *_Nullable path, const char *_Nullable interface,
     const char *_Nonnull name);
 
 /**
@@ -296,13 +296,13 @@ _Nullable rpc_object_t rpc_connection_call_syncv(_Nonnull rpc_connection_t conn,
  *
  * @param conn Connection handle
  * @param method Name of a method to be called
- * @param fmt Format strin
+ * @param fmt Format string
  * @param ... Called method arguments
  * @return Result of the call
  */
 _Nullable rpc_object_t rpc_connection_call_syncp(_Nonnull rpc_connection_t conn,
     const char *_Nullable path, const char *_Nullable interface,
-    const char *_Nonnull method, const char *_Nullable fmt, ...);
+    const char *_Nonnull method, const char *_Nonnull fmt, ...);
 
 /**
  * A variation of @ref rpc_connection_call_syncp that takes a @p va_list
@@ -319,7 +319,7 @@ _Nullable rpc_object_t rpc_connection_call_syncp(_Nonnull rpc_connection_t conn,
 _Nullable rpc_object_t rpc_connection_call_syncpv(
     _Nonnull rpc_connection_t conn, const char *_Nullable path,
     const char *_Nullable interface, const char *_Nonnull method,
-    const char *_Nullable fmt, va_list ap);
+    const char *_Nonnull fmt, va_list ap);
 
 /**
  * Performs a synchronous RPC function call using a given connection.
@@ -329,7 +329,8 @@ _Nullable rpc_object_t rpc_connection_call_syncpv(
  *
  * This function can be only used to call pure functions (not operating
  * on objects, that is, like rpc_connection_call_syncp() but with path
- * and interface parameters set to NULL).
+ * and interface parameters set to NULL). Set fmt to  RPC_NULL_FORMAT
+ * if there are no arguments.
  *
  * @param name
  * @param fmt
@@ -338,7 +339,7 @@ _Nullable rpc_object_t rpc_connection_call_syncpv(
  */
 _Nullable rpc_object_t rpc_connection_call_simple(
     _Nonnull rpc_connection_t conn, const char *_Nonnull name,
-    const char *_Nullable fmt, ...);
+    const char *_Nonnull fmt, ...);
 
 /**
  * Performs a RPC method call using a given connection.
@@ -371,7 +372,7 @@ _Nullable rpc_call_t rpc_connection_call(_Nonnull rpc_connection_t conn,
  */
 _Nullable rpc_object_t rpc_connection_get_property(
     _Nonnull rpc_connection_t conn, const char *_Nullable path,
-    const char *_Nonnull interface, const char *_Nonnull name);
+    const char *_Nullable interface, const char *_Nonnull name);
 
 /**
  *
@@ -384,7 +385,7 @@ _Nullable rpc_object_t rpc_connection_get_property(
  */
 _Nullable rpc_object_t rpc_connection_set_property(
     _Nonnull rpc_connection_t conn, const char *_Nullable path,
-    const char *_Nonnull interface, const char *_Nonnull name,
+    const char *_Nullable interface, const char *_Nonnull name,
     rpc_object_t _Nonnull value);
 
 
@@ -428,8 +429,8 @@ _Nullable rpc_object_t rpc_connection_set_propertypv(
  * @return
  */
 void *_Nullable rpc_connection_watch_property(
-    _Nonnull rpc_connection_t conn, const char *_Nonnull path,
-    const char *_Nonnull interface, const char *_Nonnull property,
+    _Nonnull rpc_connection_t conn, const char *_Nullable path,
+    const char *_Nullable interface, const char *_Nonnull property,
     _Nonnull rpc_property_handler_t handler);
 
 /**

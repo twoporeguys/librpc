@@ -252,7 +252,7 @@ struct rpc_if_property
  * */
 struct rpc_if_member {
 	const char *_Nonnull		rim_name;
-        void *                          rim_interface;
+        void *_Nonnull                  rim_interface;
 	enum rpc_if_member_type		rim_type;
 	union {
 		struct rpc_if_method 	rim_method;
