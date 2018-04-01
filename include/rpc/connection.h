@@ -48,6 +48,8 @@ extern "C" {
 struct rpc_connection;
 struct rpc_call;
 
+#define RPC_NULL_FORMAT "[]"
+
 /**
  * Enumerates possible RPC error codes.
  */

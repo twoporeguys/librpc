@@ -775,9 +775,8 @@ rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 
 		if (copy->rim_method.rm_arg == NULL)
 			copy->rim_method.rm_arg = iarg;
-	}
 
-	if (copy->rim_type == RPC_MEMBER_PROPERTY) {
+	} else if (copy->rim_type == RPC_MEMBER_PROPERTY) {
 		if (copy->rim_property.rp_getter != NULL) {
 			copy->rim_property.rp_getter = Block_copy(
 			    copy->rim_property.rp_getter);
