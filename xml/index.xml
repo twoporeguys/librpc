@@ -53,6 +53,7 @@
     <member refid="client_8h_1ac4404bc6ff0f1d8be969acab48ba543b" kind="function"><name>rpc_client_close</name></member>
   </compound>
   <compound refid="connection_8h" kind="file"><name>connection.h</name>
+    <member refid="connection_8h_1aaf641fc7d6364f49c859701d678c8d49" kind="define"><name>RPC_NULL_FORMAT</name></member>
     <member refid="connection_8h_1a4f7704822a76a6f293f6abbb59bf41f3" kind="define"><name>RPC_HANDLER</name></member>
     <member refid="connection_8h_1acb61d20219377e2bd2a4727367222ec2" kind="define"><name>RPC_PROPERTY_HANDLER</name></member>
     <member refid="connection_8h_1ac6630daf34229f9dd8a754b119e4a94d" kind="define"><name>RPC_ERROR_HANDLER</name></member>
