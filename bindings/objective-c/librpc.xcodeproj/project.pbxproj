@@ -428,16 +428,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				HEADER_SEARCH_PATHS = (
-					/usr/local/include,
-					../../include,
-				);
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = ../../build;
-				OTHER_LDFLAGS = (
-					"-L/usr/local/lib",
-					"-lrpc",
-				);
+				HEADER_SEARCH_PATHS = ../../include;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks @loader_path/momd.xpc/Contents/Resources/usr/lib";
+				LIBRARY_SEARCH_PATHS = ../../../dest/usr/lib/;
+				OTHER_LDFLAGS = "-lrpc";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "librpc/librpc-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -456,16 +450,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				HEADER_SEARCH_PATHS = (
-					/usr/local/include,
-					../../include,
-				);
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = ../../build;
-				OTHER_LDFLAGS = (
-					"-L/usr/local/lib",
-					"-lrpc",
-				);
+				HEADER_SEARCH_PATHS = ../../include;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks @loader_path/momd.xpc/Contents/Resources/usr/lib";
+				LIBRARY_SEARCH_PATHS = ../../../dest/usr/lib/;
+				OTHER_LDFLAGS = "-lrpc";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "librpc/librpc-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
