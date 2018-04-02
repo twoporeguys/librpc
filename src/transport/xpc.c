@@ -254,7 +254,7 @@ xpc_connect(struct rpc_connection *conn, const char *uri_string,
 
 	xconn = g_malloc0(sizeof(*xconn));
 	xconn->queue = dispatch_queue_create("xpc client", DISPATCH_QUEUE_SERIAL);
-	xconn->xpc_handle = xpc_connection_create_mach_service(uri->host, xconn->queue, 0);
+	xconn->xpc_handle = xpc_connection_create(uri->host, xconn->queue);
 	conn->rco_send_msg = xpc_send_msg;
 	conn->rco_abort = xpc_abort;
 	conn->rco_release = xpc_conn_release;
