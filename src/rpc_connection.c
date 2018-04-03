@@ -346,7 +346,7 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	}
 
 	/* Cancel timeout source */
-	if (call->rc_timeout) {
+	if (call->rc_timeout != NULL) {
 		g_source_destroy(call->rc_timeout);
 		call->rc_timeout = NULL;
 	}
@@ -650,6 +650,10 @@ rpc_close(rpc_connection_t conn)
 	g_hash_table_iter_init(&iter, conn->rco_calls);
 	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&call)) {
 		g_mutex_lock(&call->rc_mtx);
+
+		if (call->rc_timeout != NULL)
+			g_source_destroy(call->rc_timeout);
+
 		call->rc_status = RPC_CALL_ERROR;
 		call->rc_result = rpc_error_create(ECONNABORTED,
 		    "Connection closed", NULL);
