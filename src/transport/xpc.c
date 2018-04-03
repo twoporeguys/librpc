@@ -318,7 +318,6 @@ xpc_listen(struct rpc_server *conn, const char *uri_string,
 	});
 
 	xpc_connection_resume(xserver->xpc_handle);
-	xpc_transaction_begin();
 	return (0);
 }
 

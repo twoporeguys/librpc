@@ -34,6 +34,11 @@ Object::Object()
 	m_value = rpc_null_create();
 }
 
+Object::Object(const std::nullptr_t value)
+{
+	m_value = rpc_null_create();
+}
+
 Object::Object(const Object &other)
 {
 	m_value = rpc_retain(other.m_value);
@@ -56,6 +61,16 @@ Object::Object(uint64_t value)
 }
 
 Object::Object(int64_t value)
+{
+	m_value = rpc_int64_create(value);
+}
+
+Object::Object(unsigned long value)
+{
+	m_value = rpc_uint64_create(value);
+}
+
+Object::Object(long value)
 {
 	m_value = rpc_int64_create(value);
 }

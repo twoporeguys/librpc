@@ -34,13 +34,13 @@ int
 main(int argc, const char *argv[])
 {
 	librpc::Object v("hello world");
-	librpc::Object a(2L);
+	librpc::Object a = 2L;
 	librpc::Object b(2L);
 	librpc::Object list = {1L, 2L, 3UL};
 	librpc::Object dict = {
-	    std::make_pair("foo", "bar"),
-	    std::make_pair("baz", -1L),
-	    std::make_pair("hello", true),
+	    {"foo", "bar"},
+	    {"baz", -1L},
+	    {"hello", true},
 	    std::make_pair(
 		"nested", librpc::Object {
 		    std::make_pair("somekey", nullptr),
