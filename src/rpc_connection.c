@@ -769,6 +769,9 @@ rpc_call_timeout(gpointer user_data)
 {
 	rpc_call_t call = user_data;
 
+	if (g_source_is_destroyed(g_main_current_source()))
+		return (false);
+
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_status = RPC_CALL_ERROR;
 	call->rc_result = rpc_error_create(ETIMEDOUT, "Call timed out", NULL);
