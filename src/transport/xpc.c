@@ -313,10 +313,12 @@ xpc_listen(struct rpc_server *conn, const char *uri_string,
 			xconn->conn->rco_recv_msg(xconn->conn, obj, 0, NULL, 0, NULL);
 		});
 
+		conn->rs_accept(conn, xconn->conn);
 		xpc_connection_resume(peer);
 	});
 
 	xpc_connection_resume(xserver->xpc_handle);
+	xpc_transaction_begin();
 	return (0);
 }
 
