@@ -32,8 +32,6 @@
 #include <rpc/client.h>
 #include <rpc/service.h>
 
-NSString *const RPCErrorDomain = @"librpc.error.domain";
-
 #pragma mark - RPCObject
 
 @implementation RPCObject
@@ -219,7 +217,7 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
                 @"extra": [[RPCObject alloc] initFromNativeObject:rpc_error_get_extra(obj)]
             };
 
-            return [NSError errorWithDomain:RPCErrorDomain
+            return [NSError errorWithDomain:NSPOSIXErrorDomain
                                        code:rpc_error_get_code(obj)
                                    userInfo:userInfo];
     }
@@ -402,7 +400,7 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
         case RPC_CALL_ENDED:
             if (error != nil) {
                 userInfo = @{NSLocalizedDescriptionKey: @"Streaming RPC called with non-streaming API"};
-                *error = [NSError errorWithDomain:RPCErrorDomain
+                *error = [NSError errorWithDomain:NSPOSIXErrorDomain
                                              code:EINVAL
                                          userInfo:userInfo];
             }
@@ -421,7 +419,10 @@ NSString *const RPCErrorDomain = @"librpc.error.domain";
              args:(RPCObject *)args
             error:(NSError **)error
 {
-    rpc_call_t ret = rpc_connection_call(conn, [path UTF8String], [interface UTF8String], [method UTF8String], [args nativeValue], NULL);
+    rpc_call_t ret = rpc_connection_call(
+        conn, [path UTF8String], [interface UTF8String], [method UTF8String],
+        [args nativeValue], NULL);
+
     if (ret == NULL) {
         if (error != nil)
             *error = [[RPCObject lastError] value];
