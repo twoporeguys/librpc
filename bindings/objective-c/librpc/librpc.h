@@ -78,6 +78,8 @@ extern NSString * _Nullable const RPCErrorDomain;
  */
 - (nonnull instancetype)initFromNativeObject:(nullable void *)object;
 
++ (nullable instancetype)lastError;
+
 /**
  * Returns string description of the contained value.
  *
@@ -99,10 +101,6 @@ extern NSString * _Nullable const RPCErrorDomain;
 
 @interface RPCDouble : RPCObject
 - (nonnull instancetype)init:(nonnull NSNumber *)value;
-@end
-
-@interface RPCError : NSObject
-- (nonnull instancetype)initWithCode:(nonnull NSNumber *)code andMessage:(nonnull NSString *)message;
 @end
 
 @interface RPCCall : NSObject <NSFastEnumeration>
@@ -144,13 +142,16 @@ typedef void (^RPCPropertyCallback)(RPCObject *_Nonnull value);
 - (nonnull NSDictionary<NSString *, RPCInstance *> *)instances;
 //- (void)setDispatchQueue:(nullable dispatch_queue_t)queue;
 
+- (nullable id)findInstance:(nonnull NSString *)name andInterface:(nonnull NSString *)interface;
+
 /**
  * Issues a call to the server.
  */
 - (nonnull RPCCall *)call:(nonnull NSString *)method
                      path:(nullable NSString *)path
                 interface:(nullable NSString *)interface
-                     args:(nullable RPCObject *)args;
+                     args:(nullable RPCObject *)args
+                    error:(NSError *_Nullable *_Nullable)error;
 
 /**
  * Issues a call to the server and waits for the response.
@@ -159,7 +160,7 @@ typedef void (^RPCPropertyCallback)(RPCObject *_Nonnull value);
                            path:(nullable NSString *)path
                       interface:(nullable NSString *)interface
                            args:(nullable RPCObject *)args
-                          error:(NSError * _Nullable *_Nullable)error;
+                          error:(NSError *_Nullable *_Nullable)error;
 
 /**
  * Issues a call to the server and runs @p callback when
@@ -202,7 +203,9 @@ typedef void (^RPCPropertyCallback)(RPCObject *_Nonnull value);
 @property (readonly, nullable) NSArray<NSDictionary *> *properties;
 @property (readonly, nullable) NSArray<NSString *> *methods;
 - (void)observeProperty:(nonnull NSString *)name callback:(nonnull RPCPropertyCallback)cb;
-- (void)forwardInvocation:(nonnull NSInvocation *)anInvocation;
-- (nonnull NSMethodSignature *)methodSignatureForSelector:(nonnull SEL)aSelector;
+- (nullable id)call:(nonnull NSString *)method error:(NSError *_Nullable *_Nullable)error;
+- (nullable id)call:(nonnull NSString *)method args:(nullable NSObject *)args error:(NSError *_Nullable *_Nullable)error;
+- (nullable id)get:(nonnull NSString *)property error:(NSError *_Nullable *_Nullable)error;
+- (nullable id)set:(nonnull NSString *)method value:(nullable NSObject *)value error:(NSError *_Nullable *_Nullable)error;
 - (nonnull instancetype)initWithClient:(nonnull RPCClient *)client path:(nonnull NSString *)path andInterface:(nonnull NSString *)interface;
 @end
