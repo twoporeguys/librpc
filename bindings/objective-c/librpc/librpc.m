@@ -188,7 +188,8 @@
             return [NSDate dateWithTimeIntervalSince1970:rpc_date_get_value(obj)];
             
         case RPC_TYPE_BINARY:
-            return [NSData dataWithBytes:rpc_data_get_bytes_ptr(obj) length:rpc_data_get_length(obj)];
+            return [NSData dataWithBytes:rpc_data_get_bytes_ptr(obj)
+                                  length:rpc_data_get_length(obj)];
             
         case RPC_TYPE_ARRAY:
             array = [[NSMutableArray alloc] init];
@@ -202,7 +203,8 @@
         case RPC_TYPE_DICTIONARY:
             dict = [[NSMutableDictionary alloc] init];
             rpc_dictionary_apply(obj, ^bool(const char *key, rpc_object_t value) {
-                [dict setObject:[[RPCObject alloc] initFromNativeObject:value] forKey:[NSString stringWithUTF8String:key]];
+                [dict setObject:[[RPCObject alloc] initFromNativeObject:value]
+                         forKey:[NSString stringWithUTF8String:key]];
                 return true;
             });
             
@@ -353,7 +355,11 @@
 {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
     NSError *error = nil;
-    RPCObject *d = [self callSync:@"get_instances" path:path interface:@(RPC_DISCOVERABLE_INTERFACE) args:nil error:&error];
+    RPCObject *d = [self callSync:@"get_instances"
+                             path:path
+                        interface:@(RPC_DISCOVERABLE_INTERFACE)
+                             args:nil
+                            error:&error];
     
     for (RPCObject *i in [d value]) {
         NSDictionary *item = (NSDictionary *)[i value];
@@ -378,7 +384,8 @@
     NSDictionary *userInfo;
     rpc_call_t call;
     
-    call = rpc_connection_call(conn, [path UTF8String], [interface UTF8String], [method UTF8String], [args nativeValue], NULL);
+    call = rpc_connection_call(conn, [path UTF8String], [interface UTF8String],
+                               [method UTF8String], [args nativeValue], NULL);
     if (call == NULL) {
         if (error != nil)
             *error = [[RPCObject lastError] value];
@@ -447,7 +454,8 @@
     call = rpc_connection_call(conn, [path UTF8String], [interface UTF8String],
                                [method UTF8String], [args nativeValue],
                                ^bool(rpc_call_t call) {
-        cb([[RPCCall alloc] initFromNativeObject:call], [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)]);
+        cb([[RPCCall alloc] initFromNativeObject:call],
+           [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)]);
         return (bool)true;
     });
 }
@@ -496,17 +504,26 @@
 - (NSDictionary *)interfaces {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
     NSError *error = nil;
-    RPCObject *call = [client callSync:@"get_interfaces" path:path interface:@(RPC_INTROSPECTABLE_INTERFACE) args:nil error:&error];
+    RPCObject *call = [client callSync:@"get_interfaces"
+                                  path:path
+                             interface:@(RPC_INTROSPECTABLE_INTERFACE)
+                                  args:nil
+                                 error:&error];
+
     for (RPCObject *value in [call value]) {
         NSString *name = (NSString *)[value value];
-        RPCInterface *interface = [[RPCInterface alloc] initWithClient:client path:path andInterface:name];
+        RPCInterface *interface = [[RPCInterface alloc] initWithClient:client
+                                                                  path:path
+                                                          andInterface:name];
+
         [result setValue:interface forKey:name];
     }
 
     return result;
 }
 
-- (instancetype)initWithClient:(RPCClient *)client andPath:(NSString *)path {
+- (instancetype)initWithClient:(RPCClient *)client andPath:(NSString *)path
+{
     self->client = client;
     self->path = path;
     return self;
@@ -517,7 +534,10 @@
 
 @implementation RPCInterface
 
-- (instancetype)initWithClient:(RPCClient *)client path:(NSString *)path andInterface:(NSString *)interface {
+- (instancetype)initWithClient:(RPCClient *)client
+                          path:(NSString *)path
+                  andInterface:(NSString *)interface
+{
     self = [super init];
     if (self) {
         _client = client;
@@ -527,22 +547,30 @@
     return self;
 }
 
-- (NSArray *)properties {
+- (NSArray *)properties
+{
     NSError *error = nil;
     NSMutableArray *result = [[NSMutableArray alloc] init];
     RPCObject *args = [[RPCObject alloc] initWithValue:@[_interface]];
-    RPCObject *i = [_client callSync:@"get_all" path:_path interface:@(RPC_OBSERVABLE_INTERFACE) args:args error:&error];
-    for (RPCObject *value in [i value]) {
+    RPCObject *i = [_client callSync:@"get_all"
+                                path:_path
+                           interface:@(RPC_OBSERVABLE_INTERFACE)
+                                args:args
+                               error:&error];
+
+    for (RPCObject *value in [i value])
         [result addObject:[self recursivelyUnpackProperties:value]];
-    }
+
     return result.copy;
 }
 
-- (void)observeProperty:(NSString *)name callback:(RPCPropertyCallback)cb {
+- (void)observeProperty:(NSString *)name callback:(RPCPropertyCallback)cb
+{
     [_client observeProperty:name path:_path interface:_interface callback:cb];
 }
 
-- (id)recursivelyUnpackProperties:(id)container {
+- (id)recursivelyUnpackProperties:(id)container
+{
     
     id tContainer = [container value];
     if ([tContainer isKindOfClass:NSDictionary.class]) {
@@ -574,7 +602,8 @@
     }
 }
 
-- (NSArray *)methods {
+- (NSArray *)methods
+{
     NSMutableArray *result = [[NSMutableArray alloc] init];
     NSError *callError = nil;
     RPCObject *obj;
@@ -595,7 +624,9 @@
     return result;
 }
 
-- (id)call:(NSString *)method args:(NSObject *)args error:(NSError *__autoreleasing  _Nullable *)error
+- (id)call:(NSString *)method
+      args:(NSObject *)args
+     error:(NSError *__autoreleasing  _Nullable *)error
 {
     return [_client callSync:method
                         path:_path
@@ -618,7 +649,9 @@
                        error:error];
 }
 
-- (id)set:(NSString *)property value:(NSObject *)value error:(NSError *__autoreleasing _Nullable *)error
+- (id)set:(NSString *)property
+    value:(NSObject *)value
+    error:(NSError *__autoreleasing _Nullable *)error
 {
     return [_client callSync:@"get"
                         path:_path
