@@ -406,7 +406,10 @@
         case RPC_CALL_MORE_AVAILABLE:
         case RPC_CALL_ENDED:
             if (error != nil) {
-                userInfo = @{NSLocalizedDescriptionKey: @"Streaming RPC called with non-streaming API"};
+                userInfo = @{
+                    NSLocalizedDescriptionKey: @"Streaming RPC called with non-streaming API"
+                };
+
                 *error = [NSError errorWithDomain:NSPOSIXErrorDomain
                                              code:EINVAL
                                          userInfo:userInfo];
@@ -465,10 +468,15 @@
             interface:(NSString *)interface
              callback:(RPCEventCallback)cb
 {
-    rpc_connection_register_event_handler(conn, [path UTF8String], [interface UTF8String], [method UTF8String],
-            ^(const char *pathReturn, const char *interfaceReturn, const char *methodReturn, rpc_object_t args) {
-                cb([[RPCObject alloc] initFromNativeObject: args], [[NSString alloc] initWithString:@(pathReturn)],
-                   [[NSString alloc] initWithString:@(interfaceReturn)], [[NSString alloc] initWithString:@(methodReturn)]);
+    rpc_connection_register_event_handler(conn, [path UTF8String], [interface UTF8String],
+                                          [method UTF8String], ^(const char *pathReturn,
+                                                                 const char *interfaceReturn,
+                                                                 const char *methodReturn,
+                                                                 rpc_object_t args) {
+                cb([[RPCObject alloc] initFromNativeObject: args],
+                   [[NSString alloc] initWithString:@(pathReturn)],
+                   [[NSString alloc] initWithString:@(interfaceReturn)],
+                   [[NSString alloc] initWithString:@(methodReturn)]);
             });
 }
 
@@ -477,7 +485,8 @@
               interface:(NSString *)interface
                callback:(RPCPropertyCallback)cb
 {
-    rpc_connection_watch_property(conn, [path UTF8String], [interface UTF8String], [name UTF8String], ^(rpc_object_t v) {
+    rpc_connection_watch_property(conn, [path UTF8String], [interface UTF8String],
+                                  [name UTF8String], ^(rpc_object_t v) {
         cb([[RPCObject alloc] initFromNativeObject:v]);
     });
 }
