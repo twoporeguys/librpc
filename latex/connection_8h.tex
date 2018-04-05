@@ -19,6 +19,11 @@ This graph shows which files directly or indirectly include this file\+:
 \includegraphics[width=350pt]{connection_8h__dep__incl}
 \end{center}
 \end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structrpc__connection__statistics}{rpc\+\_\+connection\+\_\+statistics}
+\end{DoxyCompactItemize}
 \subsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
@@ -40,6 +45,8 @@ typedef enum \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\+\_
 typedef struct rpc\+\_\+connection $\ast$ \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}
 \item 
 typedef struct rpc\+\_\+call $\ast$ \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}
+\item 
+typedef struct \hyperlink{structrpc__connection__statistics}{rpc\+\_\+connection\+\_\+statistics} $\ast$ \hyperlink{connection_8h_ad9e15301878a6b9e924754d95b96eec2}{rpc\+\_\+connection\+\_\+statistics\+\_\+t}
 \item 
 typedef void($^\wedge$ \hyperlink{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}{rpc\+\_\+handler\+\_\+t}) (const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
@@ -87,7 +94,7 @@ void \hyperlink{connection_8h_a07eb2a0e3655cb83222f5faa530e3bfd}{rpc\+\_\+connec
 \item 
 int \hyperlink{connection_8h_ae62dee58a622eb6e1501c8c3342a1530}{rpc\+\_\+connection\+\_\+subscribe\+\_\+event} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name)
 \item 
-int \hyperlink{connection_8h_afb42640760f64e1c56d2e09808b04769}{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name)
+int \hyperlink{connection_8h_a11876d99f4c813328cb3a4dbbbc8bab5}{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name)
 \item 
 void $\ast$\+\_\+\+Nonnull \hyperlink{connection_8h_ab223ffd9a03ab35ac0369f4fde934c49}{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nullable \hyperlink{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}{rpc\+\_\+handler\+\_\+t} handler)
 \item 
@@ -97,23 +104,23 @@ void \hyperlink{connection_8h_a102ad5fd1ab895a56319a25f43060a20}{rpc\+\_\+connec
 \item 
 \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_ac23facad7f27401980fcb21762368760}{rpc\+\_\+connection\+\_\+call\+\_\+syncv} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull method, va\+\_\+list ap)
 \item 
-\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_ac0f2ec46d7379ad838a2bcf4cc6ef7a9}{rpc\+\_\+connection\+\_\+call\+\_\+syncp} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull method, const char $\ast$\+\_\+\+Nullable fmt,...)
+\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_ac214ac69b1360a8d08d5ecc89d3013ee}{rpc\+\_\+connection\+\_\+call\+\_\+syncp} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull method, const char $\ast$\+\_\+\+Nonnull fmt,...)
 \item 
-\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a7f212d17eac02cd846041fccbd79d3c6}{rpc\+\_\+connection\+\_\+call\+\_\+syncpv} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull method, const char $\ast$\+\_\+\+Nullable fmt, va\+\_\+list ap)
+\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_afb5bd7c2255347aeb7b434490ac80035}{rpc\+\_\+connection\+\_\+call\+\_\+syncpv} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull method, const char $\ast$\+\_\+\+Nonnull fmt, va\+\_\+list ap)
 \item 
-\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_aa1c70b3f09c29885ffee12215669562d}{rpc\+\_\+connection\+\_\+call\+\_\+simple} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nonnull name, const char $\ast$\+\_\+\+Nullable fmt,...)
+\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_aa36b47feae14a4114bacf6f049fc1696}{rpc\+\_\+connection\+\_\+call\+\_\+simple} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nonnull name, const char $\ast$\+\_\+\+Nonnull fmt,...)
 \item 
 \+\_\+\+Nullable \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} \hyperlink{connection_8h_ad5e74986e0e4bcd402fbc1f565a7dd3d}{rpc\+\_\+connection\+\_\+call} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args, \+\_\+\+Nullable \hyperlink{connection_8h_a43904e9a96b10734529cdde29be58784}{rpc\+\_\+callback\+\_\+t} callback)
 \item 
 \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a5332b87fc6add76392bdc17d0db2e982}{rpc\+\_\+connection\+\_\+get\+\_\+property} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name)
 \item 
-\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_aacf709173844e2628bd6ada18d0497ca}{rpc\+\_\+connection\+\_\+set\+\_\+property} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \+\_\+\+Nonnull value)
+\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a0de16f3ede8e13283dbf7695563b4b9b}{rpc\+\_\+connection\+\_\+set\+\_\+property} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \+\_\+\+Nonnull value)
 \item 
 \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a1964b28aff2f749ab8aa8ae8fedcf9d5}{rpc\+\_\+connection\+\_\+set\+\_\+propertyp} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, const char $\ast$\+\_\+\+Nonnull fmt,...)
 \item 
 \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a933ccba1b43865b6a634524c72e7d1ab}{rpc\+\_\+connection\+\_\+set\+\_\+propertypv} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name, const char $\ast$\+\_\+\+Nonnull fmt, va\+\_\+list ap)
 \item 
-void $\ast$\+\_\+\+Nullable \hyperlink{connection_8h_a9e3dfaa2449183321ee5b7011f20cf30}{rpc\+\_\+connection\+\_\+watch\+\_\+property} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nonnull path, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull property, \+\_\+\+Nonnull \hyperlink{connection_8h_af9b1dc56a631c67a830ceb096d1a16ac}{rpc\+\_\+property\+\_\+handler\+\_\+t} handler)
+void $\ast$\+\_\+\+Nullable \hyperlink{connection_8h_a4560bfb571379ff9cdbb10f1de968e7a}{rpc\+\_\+connection\+\_\+watch\+\_\+property} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull property, \+\_\+\+Nonnull \hyperlink{connection_8h_af9b1dc56a631c67a830ceb096d1a16ac}{rpc\+\_\+property\+\_\+handler\+\_\+t} handler)
 \item 
 int \hyperlink{connection_8h_abd699ca36e45ca40ff561c8243cbc99e}{rpc\+\_\+connection\+\_\+send\+\_\+event} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
@@ -121,33 +128,7 @@ int \hyperlink{connection_8h_abbce64346725655e72faa0bf1c479750}{rpc\+\_\+connect
 \item 
 void \hyperlink{connection_8h_a08f27546613deb38559d3a8ced1a1104}{rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, \+\_\+\+Nullable \hyperlink{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}{rpc\+\_\+handler\+\_\+t} handler)
 \item 
-void \hyperlink{connection_8h_a08ccbcafd60ed5e2ebb7cf199dc9c574}{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, \+\_\+\+Nullable \hyperlink{connection_8h_ad84e18a0f030d415f1ac06697fe93525}{rpc\+\_\+error\+\_\+handler\+\_\+t} handler)
-\item 
-const char $\ast$\+\_\+\+Nullable \hyperlink{connection_8h_ab74f1419e8a907d1c99dbef5358b6dd2}{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
-\item 
-bool \hyperlink{connection_8h_a79e22944d8fb685f6378f9e5c10464f3}{rpc\+\_\+connection\+\_\+has\+\_\+credentials} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
-\item 
-uid\+\_\+t \hyperlink{connection_8h_a43855db9f044fdc830fc1370d84a4f4b}{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
-\item 
-gid\+\_\+t \hyperlink{connection_8h_adf5617e400a0a91ffefc45d19dda2531}{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
-\item 
-pid\+\_\+t \hyperlink{connection_8h_a3e2ec927f332c312dc187b6f38c81337}{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+pid} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
-\item 
-int \hyperlink{connection_8h_a55b86b7f9f1957a23b422837e9953dab}{rpc\+\_\+call\+\_\+wait} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
-\item 
-int \hyperlink{connection_8h_aaa5cabcf5efe1e9a94e97d63c0b4a388}{rpc\+\_\+call\+\_\+continue} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call, bool sync)
-\item 
-int \hyperlink{connection_8h_af99ba11c3cb8f36c112d39fcafb73c50}{rpc\+\_\+call\+\_\+abort} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
-\item 
-int \hyperlink{connection_8h_aadc9504fdc18875824385dea55cb7384}{rpc\+\_\+call\+\_\+timedwait} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call, const struct timeval $\ast$\+\_\+\+Nonnull ts)
-\item 
-int \hyperlink{connection_8h_a01a0d673bf8f756e5fb5e37e6564c431}{rpc\+\_\+call\+\_\+success} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
-\item 
-int \hyperlink{connection_8h_a2986b5ae174169a41b67855e72cfd42e}{rpc\+\_\+call\+\_\+status} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
-\item 
-\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_a0e64ae2b6592deff82999556318858dd}{rpc\+\_\+call\+\_\+result} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
-\item 
-void \hyperlink{connection_8h_aeba8ba3e9dc7e1310568709cbcae22da}{rpc\+\_\+call\+\_\+free} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
+\+\_\+\+Nullable \hyperlink{connection_8h_ad9e15301878a6b9e924754d95b96eec2}{rpc\+\_\+connection\+\_\+statistics\+\_\+t} \hyperlink{connection_8h_aea58dad3938feb53912e450697cf279c}{rpc\+\_\+connection\+\_\+get\+\_\+statistics} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \end{DoxyCompactItemize}
 
 
@@ -169,7 +150,7 @@ R\+PC connection A\+PI.
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_a43904e9a96b10734529cdde29be58784}{rpc\+\_\+callback\+\_\+t} block type. 
 
-Definition at line 140 of file connection.\+h.
+Definition at line 145 of file connection.\+h.
 
 \mbox{\Hypertarget{connection_8h_ac6630daf34229f9dd8a754b119e4a94d}\label{connection_8h_ac6630daf34229f9dd8a754b119e4a94d}} 
 \index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+E\+R\+R\+O\+R\+\_\+\+H\+A\+N\+D\+L\+ER}}
@@ -185,7 +166,7 @@ Definition at line 140 of file connection.\+h.
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_ad84e18a0f030d415f1ac06697fe93525}{rpc\+\_\+error\+\_\+handler\+\_\+t} block type. 
 
-Definition at line 132 of file connection.\+h.
+Definition at line 137 of file connection.\+h.
 
 \mbox{\Hypertarget{connection_8h_a4f7704822a76a6f293f6abbb59bf41f3}\label{connection_8h_a4f7704822a76a6f293f6abbb59bf41f3}} 
 \index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+H\+A\+N\+D\+L\+ER}}
@@ -202,7 +183,7 @@ Definition at line 132 of file connection.\+h.
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}{rpc\+\_\+handler\+\_\+t} block type. 
 
-Definition at line 115 of file connection.\+h.
+Definition at line 120 of file connection.\+h.
 
 \mbox{\Hypertarget{connection_8h_acb61d20219377e2bd2a4727367222ec2}\label{connection_8h_acb61d20219377e2bd2a4727367222ec2}} 
 \index{connection.\+h@{connection.\+h}!R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+H\+A\+N\+D\+L\+ER@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+H\+A\+N\+D\+L\+ER}}
@@ -218,7 +199,7 @@ Definition at line 115 of file connection.\+h.
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_af9b1dc56a631c67a830ceb096d1a16ac}{rpc\+\_\+property\+\_\+handler\+\_\+t} block type. 
 
-Definition at line 124 of file connection.\+h.
+Definition at line 129 of file connection.\+h.
 
 
 
@@ -247,7 +228,17 @@ Definition at line 87 of file connection.\+h.
 
 Definition of R\+PC callback block type. 
 
-Definition at line 110 of file connection.\+h.
+Definition at line 115 of file connection.\+h.
+
+\mbox{\Hypertarget{connection_8h_ad9e15301878a6b9e924754d95b96eec2}\label{connection_8h_ad9e15301878a6b9e924754d95b96eec2}} 
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+statistics\+\_\+t@{rpc\+\_\+connection\+\_\+statistics\+\_\+t}}
+\index{rpc\+\_\+connection\+\_\+statistics\+\_\+t@{rpc\+\_\+connection\+\_\+statistics\+\_\+t}!connection.\+h@{connection.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+statistics\+\_\+t}{rpc\_connection\_statistics\_t}}
+{\footnotesize\ttfamily typedef struct \hyperlink{structrpc__connection__statistics}{rpc\+\_\+connection\+\_\+statistics}$\ast$ \hyperlink{connection_8h_ad9e15301878a6b9e924754d95b96eec2}{rpc\+\_\+connection\+\_\+statistics\+\_\+t}}
+
+Definition of R\+PC connection statistics pointer. 
+
+Definition at line 92 of file connection.\+h.
 
 \mbox{\Hypertarget{connection_8h_a70838cb106c3464db299522c5fe2782d}\label{connection_8h_a70838cb106c3464db299522c5fe2782d}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+t@{rpc\+\_\+connection\+\_\+t}}
@@ -273,7 +264,7 @@ Enumerates possible R\+PC error codes. \mbox{\Hypertarget{connection_8h_ad84e18a
 
 Definition of R\+PC error handler block type. 
 
-Definition at line 104 of file connection.\+h.
+Definition at line 109 of file connection.\+h.
 
 \mbox{\Hypertarget{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}\label{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+handler\+\_\+t@{rpc\+\_\+handler\+\_\+t}}
@@ -283,7 +274,7 @@ Definition at line 104 of file connection.\+h.
 
 Definition of R\+PC event handler block type. 
 
-Definition at line 92 of file connection.\+h.
+Definition at line 97 of file connection.\+h.
 
 \mbox{\Hypertarget{connection_8h_af9b1dc56a631c67a830ceb096d1a16ac}\label{connection_8h_af9b1dc56a631c67a830ceb096d1a16ac}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+property\+\_\+handler\+\_\+t@{rpc\+\_\+property\+\_\+handler\+\_\+t}}
@@ -293,7 +284,7 @@ Definition at line 92 of file connection.\+h.
 
 Definition of R\+PC property change handler block type. 
 
-Definition at line 99 of file connection.\+h.
+Definition at line 104 of file connection.\+h.
 
 
 
@@ -381,139 +372,6 @@ Definition at line 54 of file connection.\+h.
 
 
 \subsection{Function Documentation}
-\mbox{\Hypertarget{connection_8h_af99ba11c3cb8f36c112d39fcafb73c50}\label{connection_8h_af99ba11c3cb8f36c112d39fcafb73c50}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+abort@{rpc\+\_\+call\+\_\+abort}}
-\index{rpc\+\_\+call\+\_\+abort@{rpc\+\_\+call\+\_\+abort}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+call\+\_\+abort()}{rpc\_call\_abort()}}
-{\footnotesize\ttfamily int rpc\+\_\+call\+\_\+abort (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}}]{call }\end{DoxyParamCaption})}
-
-Aborts a pending call.
-
-
-\begin{DoxyParams}{Parameters}
-{\em call} & Call to be aborted \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Function status -\/ success is being reported as 0 
-\end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_aaa5cabcf5efe1e9a94e97d63c0b4a388}\label{connection_8h_aaa5cabcf5efe1e9a94e97d63c0b4a388}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+continue@{rpc\+\_\+call\+\_\+continue}}
-\index{rpc\+\_\+call\+\_\+continue@{rpc\+\_\+call\+\_\+continue}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+call\+\_\+continue()}{rpc\_call\_continue()}}
-{\footnotesize\ttfamily int rpc\+\_\+call\+\_\+continue (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}}]{call,  }\item[{bool}]{sync }\end{DoxyParamCaption})}
-
-Requests a next chunk of a result from a call.
-
-When sync is set to true the function waits until the call finishes and returns 1 if it has completed successfully -\/ otherwise the function returns 0.
-
-
-\begin{DoxyParams}{Parameters}
-{\em call} & Call to be continued \\
-\hline
-{\em sync} & Synchronous continue flag \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-1 for successfully completed R\+PC when sync flag was set, otherwise 0 
-\end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_aeba8ba3e9dc7e1310568709cbcae22da}\label{connection_8h_aeba8ba3e9dc7e1310568709cbcae22da}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+free@{rpc\+\_\+call\+\_\+free}}
-\index{rpc\+\_\+call\+\_\+free@{rpc\+\_\+call\+\_\+free}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+call\+\_\+free()}{rpc\_call\_free()}}
-{\footnotesize\ttfamily void rpc\+\_\+call\+\_\+free (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}}]{call }\end{DoxyParamCaption})}
-
-Frees a rpc\+\_\+call\+\_\+t object.
-
-
-\begin{DoxyParams}{Parameters}
-{\em call} & Call to free \\
-\hline
-\end{DoxyParams}
-\mbox{\Hypertarget{connection_8h_a0e64ae2b6592deff82999556318858dd}\label{connection_8h_a0e64ae2b6592deff82999556318858dd}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+result@{rpc\+\_\+call\+\_\+result}}
-\index{rpc\+\_\+call\+\_\+result@{rpc\+\_\+call\+\_\+result}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+call\+\_\+result()}{rpc\_call\_result()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpc\+\_\+call\+\_\+result (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}}]{call }\end{DoxyParamCaption})}
-
-Returns a call result (or a current fragment).
-
-
-\begin{DoxyParams}{Parameters}
-{\em call} & Call to get result from \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Result 
-\end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_a2986b5ae174169a41b67855e72cfd42e}\label{connection_8h_a2986b5ae174169a41b67855e72cfd42e}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+status@{rpc\+\_\+call\+\_\+status}}
-\index{rpc\+\_\+call\+\_\+status@{rpc\+\_\+call\+\_\+status}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+call\+\_\+status()}{rpc\_call\_status()}}
-{\footnotesize\ttfamily int \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\+\_\+call\+\_\+status} (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}}]{call }\end{DoxyParamCaption})}
-
-Returns a current status of a given call as an integer value castable to rpc\+\_\+call\+\_\+status\+\_\+t.
-
-
-\begin{DoxyParams}{Parameters}
-{\em call} & Call to be checked \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Call status 
-\end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_a01a0d673bf8f756e5fb5e37e6564c431}\label{connection_8h_a01a0d673bf8f756e5fb5e37e6564c431}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+success@{rpc\+\_\+call\+\_\+success}}
-\index{rpc\+\_\+call\+\_\+success@{rpc\+\_\+call\+\_\+success}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+call\+\_\+success()}{rpc\_call\_success()}}
-{\footnotesize\ttfamily int rpc\+\_\+call\+\_\+success (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}}]{call }\end{DoxyParamCaption})}
-
-Checks whether a call has been completed successfully.
-
-
-\begin{DoxyParams}{Parameters}
-{\em call} & Call to be checked \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-1 when call was successfully completed, otherwise 0 
-\end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_aadc9504fdc18875824385dea55cb7384}\label{connection_8h_aadc9504fdc18875824385dea55cb7384}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+timedwait@{rpc\+\_\+call\+\_\+timedwait}}
-\index{rpc\+\_\+call\+\_\+timedwait@{rpc\+\_\+call\+\_\+timedwait}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+call\+\_\+timedwait()}{rpc\_call\_timedwait()}}
-{\footnotesize\ttfamily int rpc\+\_\+call\+\_\+timedwait (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}}]{call,  }\item[{const struct timeval $\ast$\+\_\+\+Nonnull}]{ts }\end{DoxyParamCaption})}
-
-Waits for a call to change status.
-
-If a timeout specified by a ts argument occurs, before a call changes its status, function returns -\/1 value.
-
-
-\begin{DoxyParams}{Parameters}
-{\em call} & Call to wait on \\
-\hline
-{\em ts} & Timeout value \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-0 on success, -\/1 on failure or timeout 
-\end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_a55b86b7f9f1957a23b422837e9953dab}\label{connection_8h_a55b86b7f9f1957a23b422837e9953dab}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+wait@{rpc\+\_\+call\+\_\+wait}}
-\index{rpc\+\_\+call\+\_\+wait@{rpc\+\_\+call\+\_\+wait}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+call\+\_\+wait()}{rpc\_call\_wait()}}
-{\footnotesize\ttfamily int rpc\+\_\+call\+\_\+wait (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}}]{call }\end{DoxyParamCaption})}
-
-Waits for a call to change status.
-
-
-\begin{DoxyParams}{Parameters}
-{\em call} & Call to wait on. \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-0 on success, -\/1 on failure. 
-\end{DoxyReturn}
 \mbox{\Hypertarget{connection_8h_ad5e74986e0e4bcd402fbc1f565a7dd3d}\label{connection_8h_ad5e74986e0e4bcd402fbc1f565a7dd3d}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call@{rpc\+\_\+connection\+\_\+call}}
 \index{rpc\+\_\+connection\+\_\+call@{rpc\+\_\+connection\+\_\+call}!connection.\+h@{connection.\+h}}
@@ -540,17 +398,17 @@ Function supports a callback argument of rpc\+\_\+callback\+\_\+t type, which is
 \begin{DoxyReturn}{Returns}
 R\+PC call object 
 \end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_aa1c70b3f09c29885ffee12215669562d}\label{connection_8h_aa1c70b3f09c29885ffee12215669562d}} 
+\mbox{\Hypertarget{connection_8h_aa36b47feae14a4114bacf6f049fc1696}\label{connection_8h_aa36b47feae14a4114bacf6f049fc1696}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+simple@{rpc\+\_\+connection\+\_\+call\+\_\+simple}}
 \index{rpc\+\_\+connection\+\_\+call\+\_\+simple@{rpc\+\_\+connection\+\_\+call\+\_\+simple}!connection.\+h@{connection.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+call\+\_\+simple()}{rpc\_connection\_call\_simple()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+simple (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{const char $\ast$\+\_\+\+Nullable}]{fmt,  }\item[{}]{... }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+simple (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{fmt,  }\item[{}]{... }\end{DoxyParamCaption})}
 
 Performs a synchronous R\+PC function call using a given connection.
 
 Function blocks until a result is ready and returns it, or cancels and returns a N\+U\+LL pointer if a timeout has occurred.
 
-This function can be only used to call pure functions (not operating on objects, that is, like \hyperlink{connection_8h_ac0f2ec46d7379ad838a2bcf4cc6ef7a9}{rpc\+\_\+connection\+\_\+call\+\_\+syncp()} but with path and interface parameters set to N\+U\+LL).
+This function can be only used to call pure functions (not operating on objects, that is, like \hyperlink{connection_8h_ac214ac69b1360a8d08d5ecc89d3013ee}{rpc\+\_\+connection\+\_\+call\+\_\+syncp()} but with path and interface parameters set to N\+U\+LL). Use R\+P\+C\+\_\+\+N\+U\+L\+L\+\_\+\+F\+O\+R\+M\+AT to indicate a null format string.
 
 
 \begin{DoxyParams}{Parameters}
@@ -588,11 +446,11 @@ Method call arguments need to be rpc\+\_\+object\+\_\+t instances, followed with
 \begin{DoxyReturn}{Returns}
 Result of the call 
 \end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_ac0f2ec46d7379ad838a2bcf4cc6ef7a9}\label{connection_8h_ac0f2ec46d7379ad838a2bcf4cc6ef7a9}} 
+\mbox{\Hypertarget{connection_8h_ac214ac69b1360a8d08d5ecc89d3013ee}\label{connection_8h_ac214ac69b1360a8d08d5ecc89d3013ee}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+syncp@{rpc\+\_\+connection\+\_\+call\+\_\+syncp}}
 \index{rpc\+\_\+connection\+\_\+call\+\_\+syncp@{rpc\+\_\+connection\+\_\+call\+\_\+syncp}!connection.\+h@{connection.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+call\+\_\+syncp()}{rpc\_connection\_call\_syncp()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+syncp (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{method,  }\item[{const char $\ast$\+\_\+\+Nullable}]{fmt,  }\item[{}]{... }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+syncp (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{method,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{fmt,  }\item[{}]{... }\end{DoxyParamCaption})}
 
 Performs a synchronous R\+PC method call using a given connection.
 
@@ -604,7 +462,7 @@ This function is similar to \hyperlink{connection_8h_af5e8d63da05fa221ac8bb51ff2
 \hline
 {\em method} & Name of a method to be called \\
 \hline
-{\em fmt} & Format strin \\
+{\em fmt} & Format string \\
 \hline
 {\em ...} & Called method arguments \\
 \hline
@@ -612,13 +470,13 @@ This function is similar to \hyperlink{connection_8h_af5e8d63da05fa221ac8bb51ff2
 \begin{DoxyReturn}{Returns}
 Result of the call 
 \end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_a7f212d17eac02cd846041fccbd79d3c6}\label{connection_8h_a7f212d17eac02cd846041fccbd79d3c6}} 
+\mbox{\Hypertarget{connection_8h_afb5bd7c2255347aeb7b434490ac80035}\label{connection_8h_afb5bd7c2255347aeb7b434490ac80035}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+syncpv@{rpc\+\_\+connection\+\_\+call\+\_\+syncpv}}
 \index{rpc\+\_\+connection\+\_\+call\+\_\+syncpv@{rpc\+\_\+connection\+\_\+call\+\_\+syncpv}!connection.\+h@{connection.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+call\+\_\+syncpv()}{rpc\_connection\_call\_syncpv()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+syncpv (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{method,  }\item[{const char $\ast$\+\_\+\+Nullable}]{fmt,  }\item[{va\+\_\+list}]{ap }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+call\+\_\+syncpv (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{method,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{fmt,  }\item[{va\+\_\+list}]{ap }\end{DoxyParamCaption})}
 
-A variation of \hyperlink{connection_8h_ac0f2ec46d7379ad838a2bcf4cc6ef7a9}{rpc\+\_\+connection\+\_\+call\+\_\+syncp} that takes a {\ttfamily va\+\_\+list} instead of the variable argument list.
+A variation of \hyperlink{connection_8h_ac214ac69b1360a8d08d5ecc89d3013ee}{rpc\+\_\+connection\+\_\+call\+\_\+syncp} that takes a {\ttfamily va\+\_\+list} instead of the variable argument list.
 
 
 \begin{DoxyParams}{Parameters}
@@ -729,79 +587,23 @@ Frees resources associated with \hyperlink{connection_8h_a70838cb106c3464db29952
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_ab74f1419e8a907d1c99dbef5358b6dd2}\label{connection_8h_ab74f1419e8a907d1c99dbef5358b6dd2}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address}}
-\index{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address()}{rpc\_connection\_get\_remote\_address()}}
-{\footnotesize\ttfamily const char$\ast$ \+\_\+\+Nullable rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
+\mbox{\Hypertarget{connection_8h_aea58dad3938feb53912e450697cf279c}\label{connection_8h_aea58dad3938feb53912e450697cf279c}} 
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+statistics@{rpc\+\_\+connection\+\_\+get\+\_\+statistics}}
+\index{rpc\+\_\+connection\+\_\+get\+\_\+statistics@{rpc\+\_\+connection\+\_\+get\+\_\+statistics}!connection.\+h@{connection.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+get\+\_\+statistics()}{rpc\_connection\_get\_statistics()}}
+{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{connection_8h_ad9e15301878a6b9e924754d95b96eec2}{rpc\+\_\+connection\+\_\+statistics\+\_\+t} rpc\+\_\+connection\+\_\+get\+\_\+statistics (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
+
+Returns statistics information for a connection.
+
+The caller is responsible for freeing the connections statistics structure returned.
 
 
 \begin{DoxyParams}{Parameters}
-{\em conn} & \\
+{\em conn} & Connection for which to retrieve statistics \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-
-\end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_adf5617e400a0a91ffefc45d19dda2531}\label{connection_8h_adf5617e400a0a91ffefc45d19dda2531}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid}}
-\index{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid()}{rpc\_connection\_get\_remote\_gid()}}
-{\footnotesize\ttfamily gid\+\_\+t rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
-
-
-\begin{DoxyParams}{Parameters}
-{\em conn} & Connection handle \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-
-\end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_a3e2ec927f332c312dc187b6f38c81337}\label{connection_8h_a3e2ec927f332c312dc187b6f38c81337}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+pid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+pid}}
-\index{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+pid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+pid}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+pid()}{rpc\_connection\_get\_remote\_pid()}}
-{\footnotesize\ttfamily pid\+\_\+t rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+pid (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
-
-
-\begin{DoxyParams}{Parameters}
-{\em conn} & Connection handle \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-
-\end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_a43855db9f044fdc830fc1370d84a4f4b}\label{connection_8h_a43855db9f044fdc830fc1370d84a4f4b}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid}}
-\index{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid()}{rpc\_connection\_get\_remote\_uid()}}
-{\footnotesize\ttfamily uid\+\_\+t rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
-
-Gets remote side U\+ID.
-
-
-\begin{DoxyParams}{Parameters}
-{\em conn} & Connection handle \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-
-\end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_a79e22944d8fb685f6378f9e5c10464f3}\label{connection_8h_a79e22944d8fb685f6378f9e5c10464f3}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+has\+\_\+credentials@{rpc\+\_\+connection\+\_\+has\+\_\+credentials}}
-\index{rpc\+\_\+connection\+\_\+has\+\_\+credentials@{rpc\+\_\+connection\+\_\+has\+\_\+credentials}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+has\+\_\+credentials()}{rpc\_connection\_has\_credentials()}}
-{\footnotesize\ttfamily bool rpc\+\_\+connection\+\_\+has\+\_\+credentials (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
-
-Returns true if a connection has associated remote credentials information.
-
-
-\begin{DoxyParams}{Parameters}
-{\em conn} & Connection handle \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-true if credentials information is available, otherwise false 
+An rpc\+\_\+connections\+\_\+statistics\+\_\+t on success, else N\+U\+LL 
 \end{DoxyReturn}
 \mbox{\Hypertarget{connection_8h_a71699a40039ad05bd244713464cbee88}\label{connection_8h_a71699a40039ad05bd244713464cbee88}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+is\+\_\+open@{rpc\+\_\+connection\+\_\+is\+\_\+open}}
@@ -864,21 +666,6 @@ Sends an event.
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on failure 
 \end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_a08ccbcafd60ed5e2ebb7cf199dc9c574}\label{connection_8h_a08ccbcafd60ed5e2ebb7cf199dc9c574}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler@{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler}}
-\index{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler@{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler()}{rpc\_connection\_set\_error\_handler()}}
-{\footnotesize\ttfamily void rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{\+\_\+\+Nullable \hyperlink{connection_8h_ad84e18a0f030d415f1ac06697fe93525}{rpc\+\_\+error\+\_\+handler\+\_\+t}}]{handler }\end{DoxyParamCaption})}
-
-Sets global error handler for a connection.
-
-
-\begin{DoxyParams}{Parameters}
-{\em conn} & Connection to set error handler for \\
-\hline
-{\em handler} & Error handler block \\
-\hline
-\end{DoxyParams}
 \mbox{\Hypertarget{connection_8h_a08f27546613deb38559d3a8ced1a1104}\label{connection_8h_a08f27546613deb38559d3a8ced1a1104}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler}}
 \index{rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+set\+\_\+event\+\_\+handler}!connection.\+h@{connection.\+h}}
@@ -894,11 +681,11 @@ Sets global event handler for a connection.
 {\em handler} & Handler block \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{connection_8h_aacf709173844e2628bd6ada18d0497ca}\label{connection_8h_aacf709173844e2628bd6ada18d0497ca}} 
+\mbox{\Hypertarget{connection_8h_a0de16f3ede8e13283dbf7695563b4b9b}\label{connection_8h_a0de16f3ede8e13283dbf7695563b4b9b}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+set\+\_\+property@{rpc\+\_\+connection\+\_\+set\+\_\+property}}
 \index{rpc\+\_\+connection\+\_\+set\+\_\+property@{rpc\+\_\+connection\+\_\+set\+\_\+property}!connection.\+h@{connection.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+set\+\_\+property()}{rpc\_connection\_set\_property()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+set\+\_\+property (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \+\_\+\+Nonnull}]{value }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpc\+\_\+connection\+\_\+set\+\_\+property (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \+\_\+\+Nonnull}]{value }\end{DoxyParamCaption})}
 
 
 \begin{DoxyParams}{Parameters}
@@ -974,7 +761,7 @@ Subscribes for an event.
 
 This function can be called multiple times on a single event name -\/ subsequent calls will not send a subscribe message to the server, but instead increment internal reference count for a subscription.
 
-Calls to \hyperlink{connection_8h_ae62dee58a622eb6e1501c8c3342a1530}{rpc\+\_\+connection\+\_\+subscribe\+\_\+event()} must be paired with \hyperlink{connection_8h_afb42640760f64e1c56d2e09808b04769}{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event()}.
+Calls to \hyperlink{connection_8h_ae62dee58a622eb6e1501c8c3342a1530}{rpc\+\_\+connection\+\_\+subscribe\+\_\+event()} must be paired with \hyperlink{connection_8h_a11876d99f4c813328cb3a4dbbbc8bab5}{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event()}.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1001,11 +788,11 @@ Cancels further execution of a given event handler block for ongoing events of a
 {\em cookie} & Void pointer to event handler itself \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{connection_8h_afb42640760f64e1c56d2e09808b04769}\label{connection_8h_afb42640760f64e1c56d2e09808b04769}} 
+\mbox{\Hypertarget{connection_8h_a11876d99f4c813328cb3a4dbbbc8bab5}\label{connection_8h_a11876d99f4c813328cb3a4dbbbc8bab5}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event@{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event}}
 \index{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event@{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event}!connection.\+h@{connection.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event()}{rpc\_connection\_unsubscribe\_event()}}
-{\footnotesize\ttfamily int rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
 
 Undoes previous event subscription.
 
@@ -1025,11 +812,11 @@ This function may either\+:
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on failure 
 \end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_a9e3dfaa2449183321ee5b7011f20cf30}\label{connection_8h_a9e3dfaa2449183321ee5b7011f20cf30}} 
+\mbox{\Hypertarget{connection_8h_a4560bfb571379ff9cdbb10f1de968e7a}\label{connection_8h_a4560bfb571379ff9cdbb10f1de968e7a}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+watch\+\_\+property@{rpc\+\_\+connection\+\_\+watch\+\_\+property}}
 \index{rpc\+\_\+connection\+\_\+watch\+\_\+property@{rpc\+\_\+connection\+\_\+watch\+\_\+property}!connection.\+h@{connection.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+watch\+\_\+property()}{rpc\_connection\_watch\_property()}}
-{\footnotesize\ttfamily void$\ast$ \+\_\+\+Nullable rpc\+\_\+connection\+\_\+watch\+\_\+property (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{path,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{property,  }\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_af9b1dc56a631c67a830ceb096d1a16ac}{rpc\+\_\+property\+\_\+handler\+\_\+t}}]{handler }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void$\ast$ \+\_\+\+Nullable rpc\+\_\+connection\+\_\+watch\+\_\+property (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{property,  }\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_af9b1dc56a631c67a830ceb096d1a16ac}{rpc\+\_\+property\+\_\+handler\+\_\+t}}]{handler }\end{DoxyParamCaption})}
 
 
 \begin{DoxyParams}{Parameters}
