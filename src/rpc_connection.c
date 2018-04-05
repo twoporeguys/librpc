@@ -269,6 +269,7 @@ static void
 on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 {
 	struct rpc_inbound_call *call;
+        int res;
 
 	if (conn->rco_server == NULL) {
 		rpc_connection_send_err(conn, id, ENOTSUP, "Not supported");
@@ -291,7 +292,12 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 
 	rpc_retain(call->ric_id);
 	rpc_retain(call->ric_args);
-	rpc_server_dispatch(conn->rco_server, call);
+        conn->rco_stats.rcs_received++;
+	res = rpc_server_dispatch(conn->rco_server, call);
+        if (res != 0) {
+                conn->rco_stats.rcs_dropped++;
+                rpc_connection_release_call(call);
+        }
 }
 
 static void
@@ -434,10 +440,9 @@ on_rpc_abort(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 	if (call->ric_abort_handler) {
 		call->ric_abort_handler();
 		Block_release(call->ric_abort_handler);
+                call->ric_abort_handler = NULL;
 	}
-
-	g_hash_table_remove(conn->rco_inbound_calls,
-	    rpc_string_get_string_ptr(id));
+        conn->rco_stats.rcs_aborted++;
 }
 
 static void
@@ -828,15 +833,22 @@ rpc_connection_send_end(rpc_connection_t conn, rpc_object_t id, int64_t seqno)
 }
 
 void
+rpc_connection_release_call(struct rpc_inbound_call *call)
+{
+
+        rpc_release(call->ric_id);
+        rpc_release(call->ric_args);
+        g_free(call);
+}
+
+void
 rpc_connection_close_inbound_call(struct rpc_inbound_call *call)
 {
 	rpc_connection_t conn = call->ric_conn;
 
 	g_hash_table_remove(conn->rco_inbound_calls, rpc_string_get_string_ptr(
 	    call->ric_id));
-	rpc_release(call->ric_args);
-	rpc_release(call->ric_id);
-	g_free(call);
+        rpc_connection_release_call(call);
 }
 
 static rpc_object_t
@@ -1232,8 +1244,12 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	g_source_set_callback(call->rc_timeout, &rpc_call_timeout, call, NULL);
 	g_source_attach(call->rc_timeout, conn->rco_client->rci_g_context);
 	g_mutex_unlock(&call->rc_mtx);
+        conn->rco_stats.rcs_made++;
 
-	if (rpc_send_frame(conn, frame) != 0)
+	if (rpc_send_frame(conn, frame) != 0) {
+                g_source_destroy(call->rc_timeout);
+                rpc_call_free(call);
+                conn->rco_stats.rcs_failed++;         
 		return (NULL);
 
 	return (call);
@@ -1339,6 +1355,7 @@ void
 rpc_connection_set_event_handler(rpc_connection_t conn, rpc_handler_t h)
 {
 
+        Block_release(conn->rco_event_handler);
 	conn->rco_event_handler = Block_copy(h);
 }
 
@@ -1346,6 +1363,7 @@ void
 rpc_connection_set_error_handler(rpc_connection_t conn, rpc_error_handler_t h)
 {
 
+        Block_release(conn->rco_error_handler);
 	conn->rco_error_handler = Block_copy(h);
 }
 
@@ -1379,6 +1397,27 @@ rpc_connection_get_remote_pid(rpc_connection_t conn)
 	return (conn->rco_creds.rcc_pid);
 }
 
+static void
+rpc_set_counters(rpc_call_t call)
+{
+
+        rpc_connection_t conn = call->rc_conn;
+
+        switch (call->rc_status) {
+                case RPC_CALL_ENDED:
+                case RPC_CALL_DONE:    conn->rco_stats.rcs_completed++;
+                                       break;
+
+                case RPC_CALL_ABORTED: conn->rco_stats.rcs_aborted++;
+                                       break;
+
+                case RPC_CALL_ERROR:   conn->rco_stats.rcs_failed++;
+                                       break;
+
+                default:               break;
+        }
+}
+
 int
 rpc_call_wait(rpc_call_t call)
 {
@@ -1389,11 +1428,13 @@ rpc_call_wait(rpc_call_t call)
 	if (call->rc_status != RPC_CALL_IN_PROGRESS &&
 	    call->rc_status != RPC_CALL_MORE_AVAILABLE) {
 		errno = EINVAL;
+                rpc_set_counters(call);
 		g_mutex_unlock(&call->rc_mtx);
 		return (-1);
 	}
 
 	ret = rpc_call_wait_locked(call);
+        rpc_set_counters(call);
 	g_mutex_unlock(&call->rc_mtx);
 
 	return (ret);

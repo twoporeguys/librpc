@@ -85,6 +85,12 @@ struct rpc_server;
 struct rpct_validator;
 struct rpct_error_context;
 
+typedef enum rpc_dispatch_types
+{
+        RPC_TYPE_CALL = 1,
+        RPC_TYPE_CONNECTION
+} rpc_dispatch_type_t;
+
 typedef int (*rpc_recv_msg_fn_t)(struct rpc_connection *, const void *, size_t,
     int *, size_t, struct rpc_credentials *);
 typedef int (*rpc_send_msg_fn_t)(void *, void *, size_t, const int *, size_t);
@@ -250,15 +256,7 @@ struct rpc_connection
 #if LIBDISPATCH_SUPPORT
 	dispatch_queue_t	rco_dispatch_queue;
 #endif
-
-    	/* Callbacks */
-	rpc_recv_msg_fn_t	rco_recv_msg;
-	rpc_send_msg_fn_t	rco_send_msg;
-	rpc_abort_fn_t 		rco_abort;
-	rpc_close_fn_t		rco_close;
-    	rpc_get_fd_fn_t 	rco_get_fd;
-	rpc_release_fn_t	rco_release;
-	void *			rco_arg;
+        struct rpc_connection_statistics  rco_stats;
 };
 
 struct rpc_server
@@ -278,7 +276,22 @@ struct rpc_server
     	/* Callbacks */
     	rpc_accept_fn_t		rs_accept;
     	rpc_teardown_fn_t	rs_teardown;
+        rpc_server_event_handler_t rs_event;
     	void *			rs_arg;
+};
+
+union rpc_dispatch
+{
+        rpc_connection_t rd_conn;
+        rpc_inbound_call rd_icall;
+};
+
+struct rpc_dispatch_item
+{
+        rpc_dispatch_type_t    rd_type;
+        union rpc_dispatch     rd_item;
+        int                    rd_code;
+        rpc_object_t           rd_args;
 };
 
 struct rpc_client
@@ -505,8 +518,9 @@ void rpc_set_last_gerror(GError *error);
 void rpc_set_last_errorf(int code, const char *fmt, ...);
 rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
-int rpc_context_dispatch(rpc_context_t, struct rpc_inbound_call *);
+int rpc_context_dispatch(rpc_context_t, struct rpc_dispatch_item *);
 int rpc_server_dispatch(rpc_server_t, struct rpc_inbound_call *);
+void rpc_server_connection_change(rpc_server_t server, struct rpc_dispatch_item *itm);
 void rpc_connection_send_err(rpc_connection_t, rpc_object_t, int,
     const char *descr, ...);
 void rpc_connection_send_errx(rpc_connection_t, rpc_object_t, rpc_object_t);
@@ -515,6 +529,7 @@ void rpc_connection_send_fragment(rpc_connection_t, rpc_object_t, int64_t,
     rpc_object_t);
 void rpc_connection_send_end(rpc_connection_t, rpc_object_t, int64_t);
 void rpc_connection_close_inbound_call(struct rpc_inbound_call *);
+void rpc_connection_release_call(struct rpc_inbound_call *);
 
 void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 

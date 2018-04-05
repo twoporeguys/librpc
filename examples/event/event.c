@@ -48,7 +48,7 @@ main(int argc, const char *argv[])
 		    rpc_copy_description(args));
 	    });
 
-	result = rpc_connection_call_simple(conn, "event", NULL);
+	result = rpc_connection_call_simple(conn, "event", RPC_NULL_FORMAT);
 
 	printf("result = %s\n", rpc_string_get_string_ptr(result));
 	rpc_client_close(client);

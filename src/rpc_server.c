@@ -36,8 +36,13 @@ static int rpc_server_accept(rpc_server_t, rpc_connection_t);
 static int
 rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 {
+        struct rpc_dispatch_item *itm = g_malloc0(sizeof(*itm));
 
 	server->rs_connections = g_list_append(server->rs_connections, conn);
+        itm->rd_type = RPC_TYPE_CONNECTION
+        itm->rd_item.rd_conn = conn;
+        itm->code = (int)RPC_CONNECTION_ARRIVED;
+        rpc_context_dispatch(server->rs_context, itm);
 	return (0);
 }
 
@@ -129,14 +134,45 @@ int
 rpc_server_dispatch(rpc_server_t server, struct rpc_inbound_call *call)
 {
 	int ret;
+        struct rpc_dispatch_item *itm = g_malloc0(sizeof(*itm));
 
+        itm->rd_type = RPC_TYPE_CALL;
+        itm->rd_item.rd_icall = call;
 	g_mutex_lock(&server->rs_mtx);
 	while (server->rs_paused)
 		g_cond_wait(&server->rs_cv, &server->rs_mtx);
 
-	ret = rpc_context_dispatch(server->rs_context, call);
+	ret = rpc_context_dispatch(server->rs_context, itm);
 	g_mutex_unlock(&server->rs_mtx);
 	return (ret);
+}
+
+rpc_server_t
+rpc_server_get_connection_server(rpc_connection_t conn)
+{
+
+        return(conn->rco_server);
+}
+
+void 
+rpc_server_set_event_handler(rpc_server_t server, 
+    rpc_server_event_handler_t handler)
+{
+
+        if (server->rs_event != NULL):
+                Block_release(server->rs_event);
+        server->rs_event = Block_copy(handler);
+} 
+
+void
+rpc_server_connection_change(rpc_server_t server, struct rpc_dispatch_item *itm)
+{
+        rpc_connection_t conn = itm->rd_item.rd_conn;
+
+        if (server->rs_handler != NULL) 
+                server->rs_handler(conn, (enum rpc_server_event_t)itm->rd_code, NULL);
+                
+        return;
 }
 
 void

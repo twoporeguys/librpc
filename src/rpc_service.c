@@ -73,13 +73,25 @@ static void
 rpc_context_tp_handler(gpointer data, gpointer user_data)
 {
 	struct rpc_context *context = user_data;
-	struct rpc_inbound_call *call = data;
+	struct rpc_inbound_call *call;
 	struct rpc_if_method *method = call->ric_method;
-	rpc_connection_t conn = call->ric_conn;
 	rpc_object_t result;
+        struct rpc_dispatch_item *item = data;
+        struct rpc_connection *conn;
+
+        if (item->rd_type == RPC_TYPE_CONNECTION) {
+                conn = item->rd_item.rd_conn;
+                g_assert_nonnull(conn->rco_server);
+                rpc_server_connection_change(conn->rco_server, item);          
+                return;
+        }
+
+        call = item->rd_item.rd_icall;
 
 	if (method == NULL) {
+                call->ric_conn->rco_calls_dropped++;
 		rpc_function_error(call, ENOENT, "Method not found");
+                rpc_connection_release_call;
 		return;
 	}
 
@@ -102,8 +114,12 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 
 	}
 
-	if (!call->ric_streaming && !call->ric_responded)
-		rpc_connection_send_response(conn, call->ric_id, result);
+        if (!call->ric_streaming) {
+                if (!call->ric_responded)
+                        rpc_function_respond(call, result);
+                else
+                        rpc_connection_close_inbound_call(call);
+        }
 
 	if (call->ric_streaming && !call->ric_ended)
 		rpc_function_end(data);
@@ -137,40 +153,46 @@ rpc_context_free(rpc_context_t context)
 }
 
 int
-rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
+rpc_context_dispatch(rpc_context_t context, struct rpc_dispatch_item *item)
 {
 	struct rpc_if_member *member;
 	GError *err = NULL;
 	rpc_instance_t instance = NULL;
+        struct rpc_inbound_call *call;
 
-	debugf("call=%p, name=%s", call, call->ric_name);
+        if (item->rd_type == RPC_TYPE_CALL) {
+                call = item->rd_item.rd_icall;
 
-	if (call->ric_path == NULL)
-		instance = context->rcx_root;
+		debugf("call=%p, name=%s", call, call->ric_name);
 
-	if (call->ric_interface == NULL)
-		call->ric_interface = RPC_DEFAULT_INTERFACE;
+		if (call->ric_path == NULL)
+			instance = context->rcx_root;
 
-	if (instance == NULL)
-		instance = rpc_context_find_instance(context, call->ric_path);
+		if (call->ric_interface == NULL)
+			call->ric_interface = RPC_DEFAULT_INTERFACE;
 
-	if (instance == NULL) {
-		rpc_function_error(call, ENOENT, "Instance not found");
-		return (-1);
-	}
+		if (instance == NULL)
+			instance = rpc_context_find_instance(context, call->ric_path);
 
-	call->ric_instance = instance;
-	member = rpc_instance_find_member(instance,
-	    call->ric_interface, call->ric_name);
+		if (instance == NULL) {
+			rpc_function_error(call, ENOENT, "Instance not found");
+			return (-1);
+		}
 
-	if (member == NULL || member->rim_type != RPC_MEMBER_METHOD) {
-		rpc_function_error(call, ENOENT, "Member not found");
-		return (-1);
-	}
+		call->ric_instance = instance;
+		member = rpc_instance_find_member(instance,
+		    call->ric_interface, call->ric_name);
 
-	call->ric_method = &member->rim_method;
-	g_thread_pool_push(context->rcx_threadpool, call, &err);
-	if (err != NULL) {
+		if (member == NULL || member->rim_type != RPC_MEMBER_METHOD) {
+			rpc_function_error(call, ENOENT, "Member not found");
+			return (-1);
+		}
+
+		call->ric_method = &member->rim_method;
+        }
+
+	g_thread_pool_push(context->rcx_threadpool, item, &err);
+	if (err != NULL && item->rd_type == RPC_TYPE_CALL) {
 		rpc_function_error(call, EFAULT, "Cannot submit call");
 		return (-1);
 	}
@@ -182,7 +204,8 @@ rpc_instance_t
 rpc_context_find_instance(rpc_context_t context, const char *path)
 {
 
-	return (g_hash_table_lookup(context->rcx_instances, path));
+        return ((path == NULL) ? context->rcx_root : \
+                           (g_hash_table_lookup(context->rcx_instances, path)));
 }
 
 void
@@ -193,7 +216,8 @@ rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
 
 	if (instance->ri_context) {
 		rpc_context_emit_event(instance->ri_context, instance->ri_path,
-		    interface, name, args);
+		    interface == NULL ? RPC_DEFAULT_INTERFACE : interface, 
+                    name, args);
 	} else
 		rpc_release(args);
 
@@ -574,6 +598,10 @@ rpc_instance_find_member(rpc_instance_t instance, const char *interface,
 	struct rpc_interface_priv *iface;
 	struct rpc_if_member *result;
 
+        g_assert_nonnull(name);
+
+        if (interface == NULL)
+                interface = RPC_DEFAULT_INTERFACE;
 	iface = g_hash_table_lookup(instance->ri_interfaces, interface);
 	if (iface == NULL)
 		return (NULL);
@@ -589,6 +617,8 @@ bool
 rpc_instance_has_interface(rpc_instance_t instance, const char *interface)
 {
 
+        if (interface == NULL)
+                interface = RPC_DEFAULT_INTERFACE;
 	return ((bool)g_hash_table_contains(instance->ri_interfaces, interface));
 }
 
@@ -601,6 +631,9 @@ rpc_instance_register_interface(rpc_instance_t instance,
 
 	if (rpc_instance_has_interface(instance, interface))
 		return (0);
+
+        if (interface == NULL)
+                interface = RPC_DEFAULT_INTERFACE;
 
 	priv = g_malloc0(sizeof(*priv));
 	g_mutex_init(&priv->rip_mtx);
@@ -628,6 +661,9 @@ void
 rpc_instance_unregister_interface(rpc_instance_t instance,
     const char *interface)
 {
+        
+        g_assert_nonnull(interface);
+
 	g_rw_lock_writer_lock(&instance->ri_rwlock);
 	g_hash_table_remove(instance->ri_interfaces, interface);
 	g_rw_lock_writer_unlock(&instance->ri_rwlock);
@@ -641,6 +677,8 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 {
 	struct rpc_interface_priv *priv;
 	struct rpc_if_member *copy;
+
+        g_assert_nonnull(member);
 
 	if (interface == NULL) {
 		interface = RPC_DEFAULT_INTERFACE;
@@ -731,6 +769,11 @@ rpc_instance_unregister_member(rpc_instance_t instance, const char *interface,
 	struct rpc_interface_priv *priv;
 	struct rpc_if_member *member;
 
+        g_assert_nonnull(name);
+
+        if (interface == NULL)
+                interface = RPC_DEFAULT_INTERFACE;
+
 	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
 	if (priv == NULL) {
 		rpc_set_last_error(ENOENT, "Interface not found", NULL);
@@ -761,6 +804,8 @@ rpc_instance_get_property_rights(rpc_instance_t instance, const char *interface,
 	struct rpc_if_member *member;
 	int rights = 0;
 
+        g_assert_nonnull(name);
+
 	member = rpc_instance_find_member(instance, interface, name);
 	if (member == NULL || member->rim_type != RPC_MEMBER_PROPERTY) {
 		rpc_set_last_error(ENOENT, "Property not found", NULL);
@@ -782,6 +827,8 @@ rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
 {
 	struct rpc_if_member *prop;
 	struct rpc_property_cookie cookie;
+
+        g_assert_nonnull(name);
 
 	prop = rpc_instance_find_member(instance, interface, name);
 	g_assert(prop != NULL);
@@ -915,6 +962,9 @@ rpc_get_methods(void *cookie, rpc_object_t args)
 		return (NULL);
 	}
 
+        if (interface == NULL)
+                interface = RPC_DEFAULT_INTERFACE;
+
 	g_rw_lock_reader_lock(&instance->ri_rwlock);
 	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
 	if (priv == NULL) {
@@ -945,6 +995,9 @@ rpc_interface_exists(void *cookie, rpc_object_t args)
 		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
 		return (NULL);
 	}
+
+        if (interface == NULL)
+                interface = RPC_DEFAULT_INTERFACE;
 
 	return (rpc_bool_create((bool)g_hash_table_contains(
 	    instance->ri_interfaces, interface)));
@@ -1049,6 +1102,9 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
 		return (NULL);
 	}
+
+        if (interface == NULL)
+                interface = RPC_DEFAULT_INTERFACE;
 
 	priv = g_hash_table_lookup(inst->ri_interfaces, interface);
 	if (priv == NULL) {
