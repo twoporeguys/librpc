@@ -323,6 +323,7 @@ cdef extern from "rpc/typing.h" nogil:
     void rpct_init()
     int rpct_read_file(const char *path)
     int rpct_load_types(const char *path)
+    int rpct_load_types_dir(const char *path)
 
     bint rpct_types_apply(void *applier)
     bint rpct_members_apply(rpct_type_t type, void *applier)

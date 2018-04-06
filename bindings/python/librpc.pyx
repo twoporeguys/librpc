@@ -270,6 +270,12 @@ cdef class Object(object):
 
         return self.value
 
+    def validate(self):
+        if not self.typei:
+            raise LibException(errno.ENOENT, 'No type information')
+
+        return self.typei.validate(self)
+
     property value:
         def __get__(self):
             cdef Array array
@@ -1623,7 +1629,8 @@ cdef class Typing(object):
             raise_internal_exc()
 
     def load_types_dir(self, path):
-        pass
+        if rpct_load_types_dir(path.encode('utf-8')) != 0:
+            raise_internal_exc()
 
     def serialize(self, Object obj):
         cdef rpc_object_t result
@@ -1814,8 +1821,11 @@ cdef class Type(object):
 cdef class Member(object):
     cdef rpct_member_t rpcmem
 
+    def __repr__(self):
+        return str(self)
+
     def __str__(self):
-        return "<{0} {1}>".format(self.__class__.__name__, self.name)
+        return "<{0} '{1}'>".format(self.__class__.__name__, self.name)
 
     property type:
         def __get__(self):
@@ -1848,7 +1858,7 @@ cdef class Interface(object):
             return ret
 
     def __str__(self):
-        return "<librpc.Interface name '{0}'>".format(self.name)
+        return "<{0} '{0}'>".format(self.__class__.__name__, self.name)
 
     def __repr__(self):
         return str(self)
@@ -1948,6 +1958,11 @@ cdef class BaseTypingObject(Object):
         if not result:
             raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
+    property members:
+        def __get__(self):
+            return {m.name: m for m in self.typei.type.members}
+
+
 
 cdef class BaseStruct(BaseTypingObject):
     def __init__(self, __value=None, **kwargs):
@@ -1966,6 +1981,15 @@ cdef class BaseStruct(BaseTypingObject):
         return self.value.value[item].unpack()
 
     def __setattr__(self, key, value):
+        value = Object(value)
+        member = self.members.get(key)
+        if not member:
+            raise LibException('Member {0} not found'.format(key))
+
+        result, errors = member.type.validate(value)
+        if not result:
+            raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
+
         self.value.value[key] = value
 
     def __str__(self):
@@ -1974,9 +1998,6 @@ cdef class BaseStruct(BaseTypingObject):
     def __repr__(self):
         return str(self)
 
-    property members:
-        def __get__(self):
-            return {m.name: m for m in self.typei.type.members}
 
 
 cdef class BaseUnion(BaseTypingObject):
@@ -1989,10 +2010,6 @@ cdef class BaseUnion(BaseTypingObject):
     def __repr__(self):
         return str(self)
 
-    property value:
-        def __get__(self):
-            pass
-
 
 cdef class BaseEnum(BaseTypingObject):
     def __init__(self, value):
@@ -2004,9 +2021,13 @@ cdef class BaseEnum(BaseTypingObject):
     def __repr__(self):
         return str(self)
 
-    property values:
+    property value:
         def __get__(self):
             pass
+
+    property values:
+        def __get__(self):
+            return [m.name for m in self.typei.type.members]
 
 
 cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil:
