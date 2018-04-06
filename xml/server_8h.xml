@@ -75,58 +75,16 @@
         <name>RPC_SERVER_HANDLER</name>
         <param><defname>_fn</defname></param>
         <param><defname>_arg</defname></param>
-        <initializer>^(void *_source, enum <ref refid="server_8h_1a5ce491dc0b073cd1e08b5ce332b731ec" kindref="member">rpc_server_event_t</ref> type, <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref> _args) { \
-		_fn(_arg, _source, _type, _args);			     \
-	}</initializer>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Converts function pointer to a <ref refid="server_8h_1a934d4eec5a957289e28f148a0f62e184" kindref="member">rpc_server_event_handler_t</ref> block type. </para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/code/include/rpc/server.h" line="80" column="9" bodyfile="/code/include/rpc/server.h" bodystart="80" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="define" id="server_8h_1a002c9a10ea82840f0f563d74b29d82c1" prot="public" static="no">
-        <name>RPC_SERVER_NAMED_EVENT_HANDLER</name>
-        <param><defname>_fn</defname></param>
-        <param><defname>_arg</defname></param>
         <initializer>^(<ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref> _source, const char *_name, <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref> _args) {	\
 		_fn(_arg, _source, _name, _args);				\
 	}</initializer>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Converts function pointer to a <ref refid="server_8h_1ab71c06c0ee6ddd0239014ca8c51db2a5" kindref="member">rpc_server_named_event_handler_t</ref> block type. </para>        </detaileddescription>
+<para>Converts function pointer to a <ref refid="server_8h_1a2d9a540637c63449db9ac5882cb5f7ab" kindref="member">rpc_server_event_handler_t</ref> block type. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/server.h" line="89" column="9" bodyfile="/code/include/rpc/server.h" bodystart="89" bodyend="-1"/>
-      </memberdef>
-      </sectiondef>
-      <sectiondef kind="enum">
-      <memberdef kind="enum" id="server_8h_1a6b010c38b7e844b63e172993dfe9c73d" prot="public" static="no">
-        <name>rpc_server_events</name>
-        <enumvalue id="server_8h_1a6b010c38b7e844b63e172993dfe9c73da204636e358ceac195cd4c372892246e6" prot="public">
-          <name>RPC_CONNECTION_ARRIVED</name>
-          <initializer>= 1</initializer>
-          <briefdescription>
-          </briefdescription>
-          <detaileddescription>
-<para>Connection to server made </para>          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="server_8h_1a6b010c38b7e844b63e172993dfe9c73daf08493c583ac77512728da6ba9716995" prot="public">
-          <name>RPC_CONNECTION_TERMINATED</name>
-          <briefdescription>
-          </briefdescription>
-          <detaileddescription>
-<para>Connection closed or aborted </para>          </detaileddescription>
-        </enumvalue>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Enumerates sources of server events. </para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/code/include/rpc/server.h" line="59" column="1" bodyfile="/code/include/rpc/server.h" bodystart="58" bodyend="62"/>
+        <location file="/code/include/rpc/server.h" line="64" column="9" bodyfile="/code/include/rpc/server.h" bodystart="64" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="typedef">
@@ -143,23 +101,10 @@
         </inbodydescription>
         <location file="/code/include/rpc/server.h" line="53" column="1" bodyfile="/code/include/rpc/server.h" bodystart="53" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="server_8h_1a5ce491dc0b073cd1e08b5ce332b731ec" prot="public" static="no">
-        <type>enum <ref refid="server_8h_1a6b010c38b7e844b63e172993dfe9c73d" kindref="member">rpc_server_events</ref></type>
-        <definition>typedef enum rpc_server_events  rpc_server_event_t</definition>
-        <argsstring></argsstring>
-        <name>rpc_server_event_t</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Enumerates sources of server events. </para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/code/include/rpc/server.h" line="62" column="1"/>
-      </memberdef>
-      <memberdef kind="typedef" id="server_8h_1a934d4eec5a957289e28f148a0f62e184" prot="public" static="no">
+      <memberdef kind="typedef" id="server_8h_1a2d9a540637c63449db9ac5882cb5f7ab" prot="public" static="no">
         <type>void(^</type>
-        <definition>typedef void(^ rpc_server_event_handler_t) (void *_Nonnull source, enum rpc_server_event_t type, _Nullable rpc_object_t args)</definition>
-        <argsstring>)(void *_Nonnull source, enum rpc_server_event_t type, _Nullable rpc_object_t args)</argsstring>
+        <definition>typedef void(^ rpc_server_event_handler_t) (_Nonnull rpc_connection_t source, const char *_Nonnull name, _Nonnull rpc_object_t args)</definition>
+        <argsstring>)(_Nonnull rpc_connection_t source, const char *_Nonnull name, _Nonnull rpc_object_t args)</argsstring>
         <name>rpc_server_event_handler_t</name>
         <briefdescription>
         </briefdescription>
@@ -167,20 +112,7 @@
 <para>Definition of RPC server event handler block type. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/server.h" line="67" column="1" bodyfile="/code/include/rpc/server.h" bodystart="67" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="typedef" id="server_8h_1ab71c06c0ee6ddd0239014ca8c51db2a5" prot="public" static="no">
-        <type>void(^</type>
-        <definition>typedef void(^ rpc_server_named_event_handler_t) (_Nonnull rpc_connection_t source, const char *_Nonnull name, _Nonnull rpc_object_t args)</definition>
-        <argsstring>)(_Nonnull rpc_connection_t source, const char *_Nonnull name, _Nonnull rpc_object_t args)</argsstring>
-        <name>rpc_server_named_event_handler_t</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Definition of RPC server named event handler block type. </para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/code/include/rpc/server.h" line="74" column="1" bodyfile="/code/include/rpc/server.h" bodystart="74" bodyend="-1"/>
+        <location file="/code/include/rpc/server.h" line="58" column="1" bodyfile="/code/include/rpc/server.h" bodystart="58" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
@@ -205,46 +137,21 @@
 <parametername>uri</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>URI to listen on </para></parameterdescription>
+<para>URI to listen on. </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>context</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>RPC context for a server instance </para></parameterdescription>
+<para>RPC context for a server instance. </para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>Server handle </para></simplesect>
+<simplesect kind="return"><para>Server structure. </para></simplesect>
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/server.h" line="101" column="1"/>
-      </memberdef>
-      <memberdef kind="function" id="server_8h_1a52667e1f1ad29521541c60aae34dcf02" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>void</type>
-        <definition>void rpc_server_resume</definition>
-        <argsstring>(_Nonnull rpc_server_t server)</argsstring>
-        <name>rpc_server_resume</name>
-        <param>
-          <type>_Nonnull <ref refid="server_8h_1a46fd27cbcf75a54103df9d51d90a7fca" kindref="member">rpc_server_t</ref></type>
-          <declname>server</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Starts accepting requests by the server.</para><para>Server instance keeps all the incoming requests queued and on hold until this function is called.</para><para><parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>server</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Server handle </para></parameterdescription>
-</parameteritem>
-</parameterlist>
-</para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/code/include/rpc/server.h" line="112" column="1"/>
+        <location file="/code/include/rpc/server.h" line="76" column="1"/>
       </memberdef>
       <memberdef kind="function" id="server_8h_1a28eeff2b8ec73f31f1af9feff11cb698" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -279,83 +186,35 @@
 <parametername>server</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Server handle </para></parameterdescription>
+<para>Target server. </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>name</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Name of an event to be broadcasted </para></parameterdescription>
+<para>Name of an event to be broadcasted. </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>args</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Event arguments </para></parameterdescription>
+<para>Event arguments. </para></parameterdescription>
 </parameteritem>
 </parameterlist>
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/server.h" line="121" column="1"/>
+        <location file="/code/include/rpc/server.h" line="86" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="server_8h_1a7f7be87ae4970d22b2a2c3a19057cdc4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="server_8h_1ac6bfcd59fe8ec8386b1e3d312705e786" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void rpc_server_set_event_handler</definition>
-        <argsstring>(_Nonnull rpc_server_t server, _Nullable rpc_server_event_handler_t handler)</argsstring>
+        <argsstring>(_Nullable rpc_server_event_handler_t handler)</argsstring>
         <name>rpc_server_set_event_handler</name>
         <param>
-          <type>_Nonnull <ref refid="server_8h_1a46fd27cbcf75a54103df9d51d90a7fca" kindref="member">rpc_server_t</ref></type>
-          <declname>server</declname>
-        </param>
-        <param>
-          <type>_Nullable <ref refid="server_8h_1a934d4eec5a957289e28f148a0f62e184" kindref="member">rpc_server_event_handler_t</ref></type>
-          <declname>handler</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Attaches a server event handler to process rpc_server_event_t events.</para><para><parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>server</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>server onto which to attach the handler </para></parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>handler</parametername>
-</parameternamelist>
-<parameterdescription>
-<para></para></parameterdescription>
-</parameteritem>
-</parameterlist>
-</para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/code/include/rpc/server.h" line="131" column="1"/>
-      </memberdef>
-      <memberdef kind="function" id="server_8h_1a26060f7aded1d3afb4b81ec7a9cd1e39" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>void</type>
-        <definition>void rpc_server_register_named_event_handler</definition>
-        <argsstring>(_Nonnull rpc_server_t server, const char *_Nonnull name, _Nullable rpc_object_t args, _Nullable rpc_server_named_event_handler_t handler)</argsstring>
-        <name>rpc_server_register_named_event_handler</name>
-        <param>
-          <type>_Nonnull <ref refid="server_8h_1a46fd27cbcf75a54103df9d51d90a7fca" kindref="member">rpc_server_t</ref></type>
-          <declname>server</declname>
-        </param>
-        <param>
-          <type>const char *_Nonnull</type>
-          <declname>name</declname>
-        </param>
-        <param>
-          <type>_Nullable <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
-          <declname>args</declname>
-        </param>
-        <param>
-          <type>_Nullable <ref refid="server_8h_1ab71c06c0ee6ddd0239014ca8c51db2a5" kindref="member">rpc_server_named_event_handler_t</ref></type>
+          <type>_Nullable <ref refid="server_8h_1a2d9a540637c63449db9ac5882cb5f7ab" kindref="member">rpc_server_event_handler_t</ref></type>
           <declname>handler</declname>
         </param>
         <briefdescription>
@@ -363,27 +222,6 @@
         <detaileddescription>
 <para>Creates an event handler internal to a server for an event of a given name.</para><para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
-<parametername>server</parametername>
-</parameternamelist>
-<parameterdescription>
-<para></para></parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>name</parametername>
-</parameternamelist>
-<parameterdescription>
-<para></para></parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>args</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Arguments to pass to the event handler </para></parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
 <parametername>handler</parametername>
 </parameternamelist>
 <parameterdescription>
@@ -393,7 +231,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/server.h" line="142" column="1"/>
+        <location file="/code/include/rpc/server.h" line="95" column="1"/>
       </memberdef>
       <memberdef kind="function" id="server_8h_1a1bf6070b1bb3b31d394f3862405eaf8c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -412,40 +250,14 @@
 <parametername>server</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Server handle to be closed </para></parameterdescription>
+<para>Server to be closed. </para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>0 on successful teardown </para></simplesect>
+<simplesect kind="return"><para>0 on successful teardown. </para></simplesect>
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/server.h" line="152" column="1"/>
-      </memberdef>
-      <memberdef kind="function" id="server_8h_1a95da73221725fbe28723537243cda8ee" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>_Nullable <ref refid="server_8h_1a46fd27cbcf75a54103df9d51d90a7fca" kindref="member">rpc_server_t</ref></type>
-        <definition>_Nullable rpc_server_t rpc_server_get_connection_server</definition>
-        <argsstring>(_Nonnull rpc_connection_t conn)</argsstring>
-        <name>rpc_server_get_connection_server</name>
-        <param>
-          <type>_Nonnull <ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref></type>
-          <declname>conn</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Get the RPC server associated with a listener-side connection.</para><para>May be used when receiving notification about the arrival/disconnect of a connection when the application has created multiple server objects.</para><para><parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>conn</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>The connection that has status change </para></parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>The server handle or NULL if the conn is not valid </para></simplesect>
-</para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/code/include/rpc/server.h" line="164" column="1"/>
+        <location file="/code/include/rpc/server.h" line="103" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -495,55 +307,30 @@
 <codeline lineno="49"><highlight class="normal"></highlight></codeline>
 <codeline lineno="53" refid="server_8h_1a46fd27cbcf75a54103df9d51d90a7fca" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">rpc_server<sp/>*<ref refid="server_8h_1a46fd27cbcf75a54103df9d51d90a7fca" kindref="member">rpc_server_t</ref>;</highlight></codeline>
 <codeline lineno="54"><highlight class="normal"></highlight></codeline>
-<codeline lineno="58" refid="server_8h_1a6b010c38b7e844b63e172993dfe9c73d" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><ref refid="server_8h_1a6b010c38b7e844b63e172993dfe9c73d" kindref="member">rpc_server_events</ref></highlight></codeline>
-<codeline lineno="59"><highlight class="normal">{</highlight></codeline>
-<codeline lineno="60" refid="server_8h_1a6b010c38b7e844b63e172993dfe9c73da204636e358ceac195cd4c372892246e6" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="server_8h_1a6b010c38b7e844b63e172993dfe9c73da204636e358ceac195cd4c372892246e6" kindref="member">RPC_CONNECTION_ARRIVED</ref><sp/>=<sp/>1,<sp/><sp/><sp/><sp/></highlight></codeline>
-<codeline lineno="61" refid="server_8h_1a6b010c38b7e844b63e172993dfe9c73daf08493c583ac77512728da6ba9716995" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="server_8h_1a6b010c38b7e844b63e172993dfe9c73daf08493c583ac77512728da6ba9716995" kindref="member">RPC_CONNECTION_TERMINATED</ref><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
-<codeline lineno="62"><highlight class="normal">}<sp/><ref refid="server_8h_1a5ce491dc0b073cd1e08b5ce332b731ec" kindref="member">rpc_server_event_t</ref>;</highlight></codeline>
-<codeline lineno="63"><highlight class="normal"></highlight></codeline>
-<codeline lineno="67" refid="server_8h_1a934d4eec5a957289e28f148a0f62e184" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void<sp/>(^<ref refid="server_8h_1a934d4eec5a957289e28f148a0f62e184" kindref="member">rpc_server_event_handler_t</ref>)(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>source,</highlight></codeline>
-<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>rpc_server_event_t<sp/>type,<sp/>_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
-<codeline lineno="69"><highlight class="normal"></highlight></codeline>
-<codeline lineno="73"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight></codeline>
-<codeline lineno="74" refid="server_8h_1ab71c06c0ee6ddd0239014ca8c51db2a5" refkind="member"><highlight class="normal">void<sp/>(^<ref refid="server_8h_1ab71c06c0ee6ddd0239014ca8c51db2a5" kindref="member">rpc_server_named_event_handler_t</ref>)(_Nonnull<sp/><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref><sp/>source,</highlight></codeline>
-<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,<sp/>_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
-<codeline lineno="76"><highlight class="normal"></highlight></codeline>
-<codeline lineno="80" refid="server_8h_1a34749fc2472ddb06c6d36006e2a948c3" refkind="member"><highlight class="preprocessor">#define<sp/>RPC_SERVER_HANDLER(_fn,<sp/>_arg)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
-<codeline lineno="81"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>^(void<sp/>*_source,<sp/>enum<sp/>rpc_server_event_t<sp/>type,<sp/>rpc_object_t<sp/>_args)<sp/>{<sp/>\</highlight></codeline>
-<codeline lineno="82"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>_fn(_arg,<sp/>_source,<sp/>_type,<sp/>_args);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
-<codeline lineno="83"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="84"><highlight class="normal"></highlight></codeline>
-<codeline lineno="89" refid="server_8h_1a002c9a10ea82840f0f563d74b29d82c1" refkind="member"><highlight class="preprocessor">#define<sp/>RPC_SERVER_NAMED_EVENT_HANDLER(_fn,<sp/>_arg)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
-<codeline lineno="90"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>^(rpc_connection_t<sp/>_source,<sp/>const<sp/>char<sp/>*_name,<sp/>rpc_object_t<sp/>_args)<sp/>{<sp/><sp/><sp/><sp/>\</highlight></codeline>
-<codeline lineno="91"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>_fn(_arg,<sp/>_source,<sp/>_name,<sp/>_args);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
-<codeline lineno="92"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="93"><highlight class="normal"></highlight></codeline>
-<codeline lineno="101"><highlight class="normal">_Nullable<sp/>rpc_server_t<sp/><ref refid="server_8h_1a2d524c3d5822d34b46f1d8552bf7ede0" kindref="member">rpc_server_create</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>uri,</highlight></codeline>
-<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/><ref refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kindref="member">rpc_context_t</ref><sp/>context);</highlight></codeline>
-<codeline lineno="103"><highlight class="normal"></highlight></codeline>
-<codeline lineno="112"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="server_8h_1a52667e1f1ad29521541c60aae34dcf02" kindref="member">rpc_server_resume</ref>(_Nonnull<sp/>rpc_server_t<sp/>server);</highlight></codeline>
-<codeline lineno="113"><highlight class="normal"></highlight></codeline>
-<codeline lineno="121"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="server_8h_1a28eeff2b8ec73f31f1af9feff11cb698" kindref="member">rpc_server_broadcast_event</ref>(_Nonnull<sp/>rpc_server_t<sp/>server,</highlight></codeline>
-<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>path,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>interface,</highlight></codeline>
-<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,<sp/>_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
-<codeline lineno="124"><highlight class="normal"></highlight></codeline>
-<codeline lineno="131"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="server_8h_1a7f7be87ae4970d22b2a2c3a19057cdc4" kindref="member">rpc_server_set_event_handler</ref>(_Nonnull<sp/>rpc_server_t<sp/>server,</highlight></codeline>
-<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="server_8h_1a934d4eec5a957289e28f148a0f62e184" kindref="member">rpc_server_event_handler_t</ref><sp/>handler);</highlight></codeline>
-<codeline lineno="133"><highlight class="normal"></highlight></codeline>
-<codeline lineno="142"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="server_8h_1a26060f7aded1d3afb4b81ec7a9cd1e39" kindref="member">rpc_server_register_named_event_handler</ref>(_Nonnull<sp/>rpc_server_t<sp/>server,</highlight></codeline>
-<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal">*_Nonnull<sp/>name,<sp/>_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args,<sp/></highlight></codeline>
-<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="server_8h_1ab71c06c0ee6ddd0239014ca8c51db2a5" kindref="member">rpc_server_named_event_handler_t</ref><sp/>handler);</highlight></codeline>
-<codeline lineno="145"><highlight class="normal"></highlight></codeline>
-<codeline lineno="152"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="server_8h_1a1bf6070b1bb3b31d394f3862405eaf8c" kindref="member">rpc_server_close</ref>(_Nonnull<sp/>rpc_server_t<sp/>server);</highlight></codeline>
-<codeline lineno="153"><highlight class="normal"></highlight></codeline>
-<codeline lineno="163"><highlight class="normal">_Nullable<sp/>rpc_server_t<sp/><sp/></highlight></codeline>
-<codeline lineno="164"><highlight class="normal"><ref refid="server_8h_1a95da73221725fbe28723537243cda8ee" kindref="member">rpc_server_get_connection_server</ref>(_Nonnull<sp/><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref><sp/>conn);</highlight></codeline>
-<codeline lineno="165"><highlight class="normal"></highlight></codeline>
-<codeline lineno="166"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="167"><highlight class="normal">}</highlight></codeline>
-<codeline lineno="168"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="169"><highlight class="normal"></highlight></codeline>
-<codeline lineno="170"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//LIBRPC_SERVER_H</highlight></codeline>
+<codeline lineno="58" refid="server_8h_1a2d9a540637c63449db9ac5882cb5f7ab" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void<sp/>(^<ref refid="server_8h_1a2d9a540637c63449db9ac5882cb5f7ab" kindref="member">rpc_server_event_handler_t</ref>)(_Nonnull<sp/><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref><sp/>source,</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,<sp/>_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight></codeline>
+<codeline lineno="64" refid="server_8h_1a34749fc2472ddb06c6d36006e2a948c3" refkind="member"><highlight class="preprocessor">#define<sp/>RPC_SERVER_HANDLER(_fn,<sp/>_arg)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="65"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>^(rpc_connection_t<sp/>_source,<sp/>const<sp/>char<sp/>*_name,<sp/>rpc_object_t<sp/>_args)<sp/>{<sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="66"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>_fn(_arg,<sp/>_source,<sp/>_name,<sp/>_args);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="67"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal">_Nullable<sp/>rpc_server_t<sp/><ref refid="server_8h_1a2d524c3d5822d34b46f1d8552bf7ede0" kindref="member">rpc_server_create</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>uri,</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/><ref refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kindref="member">rpc_context_t</ref><sp/>context);</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="server_8h_1a28eeff2b8ec73f31f1af9feff11cb698" kindref="member">rpc_server_broadcast_event</ref>(_Nonnull<sp/>rpc_server_t<sp/>server,</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>path,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>interface,</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,<sp/>_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"></highlight></codeline>
+<codeline lineno="95"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="server_8h_1ac6bfcd59fe8ec8386b1e3d312705e786" kindref="member">rpc_server_set_event_handler</ref>(_Nullable<sp/><ref refid="server_8h_1a2d9a540637c63449db9ac5882cb5f7ab" kindref="member">rpc_server_event_handler_t</ref><sp/>handler);</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"></highlight></codeline>
+<codeline lineno="103"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="server_8h_1a1bf6070b1bb3b31d394f3862405eaf8c" kindref="member">rpc_server_close</ref>(_Nonnull<sp/>rpc_server_t<sp/>server);</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"></highlight></codeline>
+<codeline lineno="105"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="108"><highlight class="normal"></highlight></codeline>
+<codeline lineno="109"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//LIBRPC_SERVER_H</highlight></codeline>
     </programlisting>
     <location file="/code/include/rpc/server.h"/>
   </compounddef>

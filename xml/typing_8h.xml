@@ -1602,6 +1602,102 @@
         </inbodydescription>
         <location file="/code/include/rpc/typing.h" line="539" column="1"/>
       </memberdef>
+      <memberdef kind="function" id="typing_8h_1ae9b8420d29e1c63b07a060985c7ab55b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool rpct_validate_args</definition>
+        <argsstring>(struct rpct_if_member *func, rpc_object_t args, rpc_object_t *errors)</argsstring>
+        <name>rpct_validate_args</name>
+        <param>
+          <type>struct rpct_if_member *</type>
+          <declname>func</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>args</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref> *</type>
+          <declname>errors</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Validates set of arguments for a given function.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>func</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>errors</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para></para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/typing.h" line="549" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="typing_8h_1aa5b10fa1cb8c8cc46469abebb21026a0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool rpct_validate_return</definition>
+        <argsstring>(struct rpct_if_member *func, rpc_object_t result, rpc_object_t *errors)</argsstring>
+        <name>rpct_validate_return</name>
+        <param>
+          <type>struct rpct_if_member *</type>
+          <declname>func</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>result</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref> *</type>
+          <declname>errors</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Validates a return value from a given function.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>func</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>result</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>errors</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para></para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/typing.h" line="560" column="1"/>
+      </memberdef>
       <memberdef kind="function" id="typing_8h_1a2f80e7ec74258ea0a5f739c61b5b623e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>bool</type>
         <definition>bool rpct_validate</definition>
@@ -1648,7 +1744,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/typing.h" line="549" column="1"/>
+        <location file="/code/include/rpc/typing.h" line="571" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -1840,9 +1936,15 @@
 <codeline lineno="532"><highlight class="normal"></highlight></codeline>
 <codeline lineno="539"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="typing_8h_1ae36966ca7ca5448af0bb88d173036217" kindref="member">rpct_deserialize</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">);</highlight></codeline>
 <codeline lineno="540"><highlight class="normal"></highlight></codeline>
-<codeline lineno="549"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a2f80e7ec74258ea0a5f739c61b5b623e" kindref="member">rpct_validate</ref>(<ref refid="typing_8h_1a0d718518624626887a65ead4f5cde3b9" kindref="member">rpct_typei_t</ref><sp/>typei,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>obj,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>*errors);</highlight></codeline>
-<codeline lineno="550"><highlight class="normal"></highlight></codeline>
-<codeline lineno="551"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>LIBRPC_TYPING_H<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+<codeline lineno="549"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1ae9b8420d29e1c63b07a060985c7ab55b" kindref="member">rpct_validate_args</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>rpct_if_member<sp/>*func,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args,</highlight></codeline>
+<codeline lineno="550"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>*errors);</highlight></codeline>
+<codeline lineno="551"><highlight class="normal"></highlight></codeline>
+<codeline lineno="560"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1aa5b10fa1cb8c8cc46469abebb21026a0" kindref="member">rpct_validate_return</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>rpct_if_member<sp/>*func,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>result,</highlight></codeline>
+<codeline lineno="561"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>*errors);</highlight></codeline>
+<codeline lineno="562"><highlight class="normal"></highlight></codeline>
+<codeline lineno="571"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a2f80e7ec74258ea0a5f739c61b5b623e" kindref="member">rpct_validate</ref>(<ref refid="typing_8h_1a0d718518624626887a65ead4f5cde3b9" kindref="member">rpct_typei_t</ref><sp/>typei,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>obj,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>*errors);</highlight></codeline>
+<codeline lineno="572"><highlight class="normal"></highlight></codeline>
+<codeline lineno="573"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>LIBRPC_TYPING_H<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
     </programlisting>
     <location file="/code/include/rpc/typing.h"/>
   </compounddef>

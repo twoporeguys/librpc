@@ -232,6 +232,10 @@ Functions</h2></td></tr>
 <tr class="separator:ab69f7ee39db3ab938d331c2877815d80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae36966ca7ca5448af0bb88d173036217"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#ae36966ca7ca5448af0bb88d173036217">rpct_deserialize</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:ae36966ca7ca5448af0bb88d173036217"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9b8420d29e1c63b07a060985c7ab55b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#ae9b8420d29e1c63b07a060985c7ab55b">rpct_validate_args</a> (struct rpct_if_member *func, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> *errors)</td></tr>
+<tr class="separator:ae9b8420d29e1c63b07a060985c7ab55b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5b10fa1cb8c8cc46469abebb21026a0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#aa5b10fa1cb8c8cc46469abebb21026a0">rpct_validate_return</a> (struct rpct_if_member *func, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> result, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> *errors)</td></tr>
+<tr class="separator:aa5b10fa1cb8c8cc46469abebb21026a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f80e7ec74258ea0a5f739c61b5b623e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a2f80e7ec74258ea0a5f739c61b5b623e">rpct_validate</a> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> typei, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> obj, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> *errors)</td></tr>
 <tr class="separator:a2f80e7ec74258ea0a5f739c61b5b623e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -1926,6 +1930,94 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">typei</td><td></td></tr>
     <tr><td class="paramname">obj</td><td></td></tr>
+    <tr><td class="paramname">errors</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="ae9b8420d29e1c63b07a060985c7ab55b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9b8420d29e1c63b07a060985c7ab55b">&#9670;&nbsp;</a></span>rpct_validate_args()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rpct_validate_args </td>
+          <td>(</td>
+          <td class="paramtype">struct rpct_if_member *&#160;</td>
+          <td class="paramname"><em>func</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>args</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> *&#160;</td>
+          <td class="paramname"><em>errors</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Validates set of arguments for a given function.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">func</td><td></td></tr>
+    <tr><td class="paramname">args</td><td></td></tr>
+    <tr><td class="paramname">errors</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="aa5b10fa1cb8c8cc46469abebb21026a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5b10fa1cb8c8cc46469abebb21026a0">&#9670;&nbsp;</a></span>rpct_validate_return()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rpct_validate_return </td>
+          <td>(</td>
+          <td class="paramtype">struct rpct_if_member *&#160;</td>
+          <td class="paramname"><em>func</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>result</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> *&#160;</td>
+          <td class="paramname"><em>errors</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Validates a return value from a given function.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">func</td><td></td></tr>
+    <tr><td class="paramname">result</td><td></td></tr>
     <tr><td class="paramname">errors</td><td></td></tr>
   </table>
   </dd>

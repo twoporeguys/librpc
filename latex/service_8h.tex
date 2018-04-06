@@ -106,7 +106,7 @@ enum \hyperlink{service_8h_ae93cefa938d7efd2095f73e9dcdf8926}{rpc\+\_\+property\
 \item 
 void \hyperlink{service_8h_a4f63ab83623a2f407eac2fe9b7f80023}{rpc\+\_\+context\+\_\+free} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
 \item 
-\+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_a6887149a7aecd3874cb19f24fc766d0f}{rpc\+\_\+context\+\_\+find\+\_\+instance} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nullable path)
+\+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_a125f2739087a2d4f89384d24fadb6cde}{rpc\+\_\+context\+\_\+find\+\_\+instance} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nonnull path)
 \item 
 \+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_a099a8fc4046be7999da0454548825513}{rpc\+\_\+context\+\_\+get\+\_\+root} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
 \item 
@@ -120,7 +120,7 @@ int \hyperlink{service_8h_ac0a7c2d5e6bb7464de61d346f97c0b04}{rpc\+\_\+context\+\
 \item 
 int \hyperlink{service_8h_a1aac077f97529f7c26834c139fefc2f5}{rpc\+\_\+context\+\_\+register\+\_\+func} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, void $\ast$\+\_\+\+Nullable arg, \+\_\+\+Nonnull \hyperlink{service_8h_add2d357ed7db564684628b3467048431}{rpc\+\_\+function\+\_\+f} func)
 \item 
-int \hyperlink{service_8h_a7ad6475e7ca46534421ce0c3245d0cb2}{rpc\+\_\+context\+\_\+unregister\+\_\+member} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name)
+int \hyperlink{service_8h_a982fcc47ab91486b508ca9cff5b7ed8f}{rpc\+\_\+context\+\_\+unregister\+\_\+member} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name)
 \item 
 void \hyperlink{service_8h_a5eb243586ec426274b93ad40f64f0ea5}{rpc\+\_\+context\+\_\+set\+\_\+pre\+\_\+call\+\_\+hook} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, \+\_\+\+Nonnull \hyperlink{service_8h_ae49a22468cfcd4adfa558078e9e4e312}{rpc\+\_\+function\+\_\+t} fn)
 \item 
@@ -170,27 +170,27 @@ int \hyperlink{service_8h_abca1b1b9d6d4a7ca012ca242e0adeafd}{rpc\+\_\+instance\+
 \item 
 void \hyperlink{service_8h_aab9955f657aeadeee70c6472300eb695}{rpc\+\_\+instance\+\_\+unregister\+\_\+interface} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface)
 \item 
-int \hyperlink{service_8h_ae0782034f1232a190e4564704d2ebf69}{rpc\+\_\+instance\+\_\+register\+\_\+member} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nullable interface, const struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member} $\ast$\+\_\+\+Nonnull member)
+int \hyperlink{service_8h_a2a53bb90b2a657abd5d5ce7b43134ca1}{rpc\+\_\+instance\+\_\+register\+\_\+member} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface, const struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member} $\ast$\+\_\+\+Nonnull member)
 \item 
-int \hyperlink{service_8h_aef405841a8e133586cc25dc794aa07d3}{rpc\+\_\+instance\+\_\+unregister\+\_\+member} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name)
+int \hyperlink{service_8h_af75d5ffb28bdd8ea72d2470ca29ad46a}{rpc\+\_\+instance\+\_\+unregister\+\_\+member} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name)
 \item 
-int \hyperlink{service_8h_aaa36ef0229d484da716697daaccd4863}{rpc\+\_\+instance\+\_\+register\+\_\+block} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, void $\ast$\+\_\+\+Nullable arg, \+\_\+\+Nonnull \hyperlink{service_8h_ae49a22468cfcd4adfa558078e9e4e312}{rpc\+\_\+function\+\_\+t} fn)
+int \hyperlink{service_8h_a2b399f37ac7a85287074efb1b3cec060}{rpc\+\_\+instance\+\_\+register\+\_\+block} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name, void $\ast$\+\_\+\+Nullable arg, \+\_\+\+Nonnull \hyperlink{service_8h_ae49a22468cfcd4adfa558078e9e4e312}{rpc\+\_\+function\+\_\+t} fn)
 \item 
-int \hyperlink{service_8h_aa8486642b6ff64df31c25ff5cd7ed566}{rpc\+\_\+instance\+\_\+register\+\_\+func} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, void $\ast$\+\_\+\+Nullable arg, \+\_\+\+Nonnull \hyperlink{service_8h_add2d357ed7db564684628b3467048431}{rpc\+\_\+function\+\_\+f} fn)
+int \hyperlink{service_8h_a1407f4e75b0d153d1692e4ba27489728}{rpc\+\_\+instance\+\_\+register\+\_\+func} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name, void $\ast$\+\_\+\+Nullable arg, \+\_\+\+Nonnull \hyperlink{service_8h_add2d357ed7db564684628b3467048431}{rpc\+\_\+function\+\_\+f} fn)
 \item 
 struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member} $\ast$\+\_\+\+Nullable \hyperlink{service_8h_ade5ebee7e5e8e06a3b41b667a6c2af6b}{rpc\+\_\+instance\+\_\+find\+\_\+member} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name)
 \item 
 bool \hyperlink{service_8h_a8ad4da2277db627163ebae9ddb55582c}{rpc\+\_\+instance\+\_\+has\+\_\+interface} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface)
 \item 
-void \hyperlink{service_8h_af01103a96f4381c370148f726faea9f5}{rpc\+\_\+instance\+\_\+emit\+\_\+event} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
+void \hyperlink{service_8h_adbf8b5a032c56514343d3ac6ece77db0}{rpc\+\_\+instance\+\_\+emit\+\_\+event} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
-int \hyperlink{service_8h_a1ff9720111598b3c51013771544970d0}{rpc\+\_\+instance\+\_\+register\+\_\+property} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, void $\ast$\+\_\+\+Nullable arg, \+\_\+\+Nullable \hyperlink{service_8h_ab438f0c33f3f3876f1c9a23d62134f16}{rpc\+\_\+property\+\_\+getter\+\_\+t} getter, \+\_\+\+Nullable \hyperlink{service_8h_aa8b38d8ab3bafe79a96edaebafe13b8d}{rpc\+\_\+property\+\_\+setter\+\_\+t} setter)
+int \hyperlink{service_8h_a31ae88657323ba7713051b80164eb061}{rpc\+\_\+instance\+\_\+register\+\_\+property} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name, void $\ast$\+\_\+\+Nullable arg, \+\_\+\+Nullable \hyperlink{service_8h_ab438f0c33f3f3876f1c9a23d62134f16}{rpc\+\_\+property\+\_\+getter\+\_\+t} getter, \+\_\+\+Nullable \hyperlink{service_8h_aa8b38d8ab3bafe79a96edaebafe13b8d}{rpc\+\_\+property\+\_\+setter\+\_\+t} setter)
 \item 
-int \hyperlink{service_8h_a03541c6ffc17212e8f3e5df7b75f9988}{rpc\+\_\+instance\+\_\+get\+\_\+property\+\_\+rights} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name)
+int \hyperlink{service_8h_a7224c3ccac52a67ec034c6cc06e7a8b7}{rpc\+\_\+instance\+\_\+get\+\_\+property\+\_\+rights} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name)
 \item 
-int \hyperlink{service_8h_afa7ccad8a9f76a69b893d4ed8668e40c}{rpc\+\_\+instance\+\_\+register\+\_\+event} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name)
+int \hyperlink{service_8h_ad35c5259de4e86303083623ac0e762b8}{rpc\+\_\+instance\+\_\+register\+\_\+event} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name)
 \item 
-void \hyperlink{service_8h_a693486a3b4444491bd4f6c75aa49f15b}{rpc\+\_\+instance\+\_\+property\+\_\+changed} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} value)
+void \hyperlink{service_8h_a28d100b9b918d120d3d8c07a0c938932}{rpc\+\_\+instance\+\_\+property\+\_\+changed} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} value)
 \item 
 \+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_abec6b729eadcc1b83dd99b764db53a54}{rpc\+\_\+property\+\_\+get\+\_\+instance} (void $\ast$\+\_\+\+Nonnull cookie)
 \item 
@@ -562,10 +562,6 @@ Newly created R\+PC context object.
 \subsubsection{\texorpdfstring{rpc\+\_\+context\+\_\+emit\+\_\+event()}{rpc\_context\_emit\_event()}}
 {\footnotesize\ttfamily void rpc\+\_\+context\+\_\+emit\+\_\+event (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{args }\end{DoxyParamCaption})}
 
-Notifies interested listeners of changes to the instance at {\ttfamily path}.
-
-If no path is specified the context default instance is assumed. If there is no interface specified, R\+P\+C\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+I\+N\+T\+E\+R\+F\+A\+CE will be used.
-
 
 \begin{DoxyParams}{Parameters}
 {\em context} & \\
@@ -576,18 +572,14 @@ If no path is specified the context default instance is assumed. If there is no 
 \hline
 {\em name} & \\
 \hline
-{\em args} & Data specific to the event \\
-\hline
 \end{DoxyParams}
-\mbox{\Hypertarget{service_8h_a6887149a7aecd3874cb19f24fc766d0f}\label{service_8h_a6887149a7aecd3874cb19f24fc766d0f}} 
+\mbox{\Hypertarget{service_8h_a125f2739087a2d4f89384d24fadb6cde}\label{service_8h_a125f2739087a2d4f89384d24fadb6cde}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+find\+\_\+instance@{rpc\+\_\+context\+\_\+find\+\_\+instance}}
 \index{rpc\+\_\+context\+\_\+find\+\_\+instance@{rpc\+\_\+context\+\_\+find\+\_\+instance}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+context\+\_\+find\+\_\+instance()}{rpc\_context\_find\_instance()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} rpc\+\_\+context\+\_\+find\+\_\+instance (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} rpc\+\_\+context\+\_\+find\+\_\+instance (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{path }\end{DoxyParamCaption})}
 
 Finds an instance registered in {\ttfamily context}.
-
-If no path is given, returns the context default instance.
 
 
 \begin{DoxyParams}{Parameters}
@@ -759,11 +751,11 @@ The hook will be called before an actual implementation of R\+PC function gets c
 {\em path} & \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{service_8h_a7ad6475e7ca46534421ce0c3245d0cb2}\label{service_8h_a7ad6475e7ca46534421ce0c3245d0cb2}} 
+\mbox{\Hypertarget{service_8h_a982fcc47ab91486b508ca9cff5b7ed8f}\label{service_8h_a982fcc47ab91486b508ca9cff5b7ed8f}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+unregister\+\_\+member@{rpc\+\_\+context\+\_\+unregister\+\_\+member}}
 \index{rpc\+\_\+context\+\_\+unregister\+\_\+member@{rpc\+\_\+context\+\_\+unregister\+\_\+member}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+context\+\_\+unregister\+\_\+member()}{rpc\_context\_unregister\_member()}}
-{\footnotesize\ttfamily int rpc\+\_\+context\+\_\+unregister\+\_\+member (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int rpc\+\_\+context\+\_\+unregister\+\_\+member (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
 
 Unregisters a given R\+PC method.
 
@@ -995,15 +987,11 @@ Generates a new value in a streaming response.
 \begin{DoxyReturn}{Returns}
 Status. Success is reported by returning 0 
 \end{DoxyReturn}
-\mbox{\Hypertarget{service_8h_af01103a96f4381c370148f726faea9f5}\label{service_8h_af01103a96f4381c370148f726faea9f5}} 
+\mbox{\Hypertarget{service_8h_adbf8b5a032c56514343d3ac6ece77db0}\label{service_8h_adbf8b5a032c56514343d3ac6ece77db0}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+emit\+\_\+event@{rpc\+\_\+instance\+\_\+emit\+\_\+event}}
 \index{rpc\+\_\+instance\+\_\+emit\+\_\+event@{rpc\+\_\+instance\+\_\+emit\+\_\+event}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+emit\+\_\+event()}{rpc\_instance\_emit\_event()}}
-{\footnotesize\ttfamily void rpc\+\_\+instance\+\_\+emit\+\_\+event (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{args }\end{DoxyParamCaption})}
-
-Notifies interested listeners of changes to the interface {\ttfamily interface}.
-
-If there is no interface specified, R\+P\+C\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+I\+N\+T\+E\+R\+F\+A\+CE will be used.
+{\footnotesize\ttfamily void rpc\+\_\+instance\+\_\+emit\+\_\+event (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{args }\end{DoxyParamCaption})}
 
 
 \begin{DoxyParams}{Parameters}
@@ -1021,8 +1009,6 @@ If there is no interface specified, R\+P\+C\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+I\
 {\footnotesize\ttfamily struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member}$\ast$ \+\_\+\+Nullable rpc\+\_\+instance\+\_\+find\+\_\+member (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
 
 Finds member called {\ttfamily name} belonging to a {\ttfamily interface} in {\ttfamily instance}.
-
-If no interface is specified, R\+P\+C\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+I\+N\+T\+E\+R\+F\+A\+CE will be assumed.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1081,15 +1067,13 @@ Returns {\ttfamily instance} path.
 \begin{DoxyReturn}{Returns}
 Instance path 
 \end{DoxyReturn}
-\mbox{\Hypertarget{service_8h_a03541c6ffc17212e8f3e5df7b75f9988}\label{service_8h_a03541c6ffc17212e8f3e5df7b75f9988}} 
+\mbox{\Hypertarget{service_8h_a7224c3ccac52a67ec034c6cc06e7a8b7}\label{service_8h_a7224c3ccac52a67ec034c6cc06e7a8b7}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+get\+\_\+property\+\_\+rights@{rpc\+\_\+instance\+\_\+get\+\_\+property\+\_\+rights}}
 \index{rpc\+\_\+instance\+\_\+get\+\_\+property\+\_\+rights@{rpc\+\_\+instance\+\_\+get\+\_\+property\+\_\+rights}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+get\+\_\+property\+\_\+rights()}{rpc\_instance\_get\_property\_rights()}}
-{\footnotesize\ttfamily int rpc\+\_\+instance\+\_\+get\+\_\+property\+\_\+rights (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int rpc\+\_\+instance\+\_\+get\+\_\+property\+\_\+rights (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
 
 Returns access rights of property {\ttfamily name} of interface {\ttfamily interface} implemented in instance {\ttfamily instance}.
-
-If there is no interface specified, R\+P\+C\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+I\+N\+T\+E\+R\+F\+A\+CE will be used.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1139,19 +1123,17 @@ Creates a new instance handle.
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
-\mbox{\Hypertarget{service_8h_a693486a3b4444491bd4f6c75aa49f15b}\label{service_8h_a693486a3b4444491bd4f6c75aa49f15b}} 
+\mbox{\Hypertarget{service_8h_a28d100b9b918d120d3d8c07a0c938932}\label{service_8h_a28d100b9b918d120d3d8c07a0c938932}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+property\+\_\+changed@{rpc\+\_\+instance\+\_\+property\+\_\+changed}}
 \index{rpc\+\_\+instance\+\_\+property\+\_\+changed@{rpc\+\_\+instance\+\_\+property\+\_\+changed}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+property\+\_\+changed()}{rpc\_instance\_property\_changed()}}
-{\footnotesize\ttfamily void rpc\+\_\+instance\+\_\+property\+\_\+changed (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{value }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void rpc\+\_\+instance\+\_\+property\+\_\+changed (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{value }\end{DoxyParamCaption})}
 
 Notifies the librpc layer that property value has changed.
 
 This function is used to notify remote property listeners that the value might have changed.
 
 If {\ttfamily value} is {\ttfamily N\+U\+LL}, then librpc will internally query the getter for the value.
-
-If there is no interface specified, R\+P\+C\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+I\+N\+T\+E\+R\+F\+A\+CE will be used.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1164,15 +1146,13 @@ If there is no interface specified, R\+P\+C\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+I\
 {\em value} & New property value \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{service_8h_aaa36ef0229d484da716697daaccd4863}\label{service_8h_aaa36ef0229d484da716697daaccd4863}} 
+\mbox{\Hypertarget{service_8h_a2b399f37ac7a85287074efb1b3cec060}\label{service_8h_a2b399f37ac7a85287074efb1b3cec060}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+register\+\_\+block@{rpc\+\_\+instance\+\_\+register\+\_\+block}}
 \index{rpc\+\_\+instance\+\_\+register\+\_\+block@{rpc\+\_\+instance\+\_\+register\+\_\+block}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+register\+\_\+block()}{rpc\_instance\_register\_block()}}
-{\footnotesize\ttfamily int rpc\+\_\+instance\+\_\+register\+\_\+block (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{void $\ast$\+\_\+\+Nullable}]{arg,  }\item[{\+\_\+\+Nonnull \hyperlink{service_8h_ae49a22468cfcd4adfa558078e9e4e312}{rpc\+\_\+function\+\_\+t}}]{fn }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int rpc\+\_\+instance\+\_\+register\+\_\+block (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{void $\ast$\+\_\+\+Nullable}]{arg,  }\item[{\+\_\+\+Nonnull \hyperlink{service_8h_ae49a22468cfcd4adfa558078e9e4e312}{rpc\+\_\+function\+\_\+t}}]{fn }\end{DoxyParamCaption})}
 
 Registers a new method called {\ttfamily name} on interface {\ttfamily interface} under instance {\ttfamily instance}.
-
-If no interface is specified, R\+P\+C\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+I\+N\+T\+E\+R\+F\+A\+CE will be assumed.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1190,15 +1170,11 @@ If no interface is specified, R\+P\+C\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+I\+N\+T\
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on error 
 \end{DoxyReturn}
-\mbox{\Hypertarget{service_8h_afa7ccad8a9f76a69b893d4ed8668e40c}\label{service_8h_afa7ccad8a9f76a69b893d4ed8668e40c}} 
+\mbox{\Hypertarget{service_8h_ad35c5259de4e86303083623ac0e762b8}\label{service_8h_ad35c5259de4e86303083623ac0e762b8}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+register\+\_\+event@{rpc\+\_\+instance\+\_\+register\+\_\+event}}
 \index{rpc\+\_\+instance\+\_\+register\+\_\+event@{rpc\+\_\+instance\+\_\+register\+\_\+event}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+register\+\_\+event()}{rpc\_instance\_register\_event()}}
-{\footnotesize\ttfamily int rpc\+\_\+instance\+\_\+register\+\_\+event (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
-
-Adds a named event {\ttfamily name} to {\ttfamily interface}.
-
-If there is no interface specified, the event will be added to the default interface R\+P\+C\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+I\+N\+T\+E\+R\+F\+A\+CE.
+{\footnotesize\ttfamily int rpc\+\_\+instance\+\_\+register\+\_\+event (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
 
 
 \begin{DoxyParams}{Parameters}
@@ -1212,13 +1188,13 @@ If there is no interface specified, the event will be added to the default inter
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
-\mbox{\Hypertarget{service_8h_aa8486642b6ff64df31c25ff5cd7ed566}\label{service_8h_aa8486642b6ff64df31c25ff5cd7ed566}} 
+\mbox{\Hypertarget{service_8h_a1407f4e75b0d153d1692e4ba27489728}\label{service_8h_a1407f4e75b0d153d1692e4ba27489728}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+register\+\_\+func@{rpc\+\_\+instance\+\_\+register\+\_\+func}}
 \index{rpc\+\_\+instance\+\_\+register\+\_\+func@{rpc\+\_\+instance\+\_\+register\+\_\+func}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+register\+\_\+func()}{rpc\_instance\_register\_func()}}
-{\footnotesize\ttfamily int rpc\+\_\+instance\+\_\+register\+\_\+func (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{void $\ast$\+\_\+\+Nullable}]{arg,  }\item[{\+\_\+\+Nonnull \hyperlink{service_8h_add2d357ed7db564684628b3467048431}{rpc\+\_\+function\+\_\+f}}]{fn }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int rpc\+\_\+instance\+\_\+register\+\_\+func (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{void $\ast$\+\_\+\+Nullable}]{arg,  }\item[{\+\_\+\+Nonnull \hyperlink{service_8h_add2d357ed7db564684628b3467048431}{rpc\+\_\+function\+\_\+f}}]{fn }\end{DoxyParamCaption})}
 
-Same as \hyperlink{service_8h_aaa36ef0229d484da716697daaccd4863}{rpc\+\_\+instance\+\_\+register\+\_\+block}, but takes a function pointer instead.
+Same as \hyperlink{service_8h_a2b399f37ac7a85287074efb1b3cec060}{rpc\+\_\+instance\+\_\+register\+\_\+block}, but takes a function pointer instead.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1255,15 +1231,13 @@ Registers interface {\ttfamily interface} under {\ttfamily instance}.
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on error 
 \end{DoxyReturn}
-\mbox{\Hypertarget{service_8h_ae0782034f1232a190e4564704d2ebf69}\label{service_8h_ae0782034f1232a190e4564704d2ebf69}} 
+\mbox{\Hypertarget{service_8h_a2a53bb90b2a657abd5d5ce7b43134ca1}\label{service_8h_a2a53bb90b2a657abd5d5ce7b43134ca1}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+register\+\_\+member@{rpc\+\_\+instance\+\_\+register\+\_\+member}}
 \index{rpc\+\_\+instance\+\_\+register\+\_\+member@{rpc\+\_\+instance\+\_\+register\+\_\+member}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+register\+\_\+member()}{rpc\_instance\_register\_member()}}
-{\footnotesize\ttfamily int rpc\+\_\+instance\+\_\+register\+\_\+member (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member} $\ast$\+\_\+\+Nonnull}]{member }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int rpc\+\_\+instance\+\_\+register\+\_\+member (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member} $\ast$\+\_\+\+Nonnull}]{member }\end{DoxyParamCaption})}
 
 Registers a single member of interface {\ttfamily interface} under {\ttfamily instance}.
-
-If no interface is specified, R\+P\+C\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+I\+N\+T\+E\+R\+F\+A\+CE will be assumed.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1277,15 +1251,13 @@ If no interface is specified, R\+P\+C\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+I\+N\+T\
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on error 
 \end{DoxyReturn}
-\mbox{\Hypertarget{service_8h_a1ff9720111598b3c51013771544970d0}\label{service_8h_a1ff9720111598b3c51013771544970d0}} 
+\mbox{\Hypertarget{service_8h_a31ae88657323ba7713051b80164eb061}\label{service_8h_a31ae88657323ba7713051b80164eb061}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+register\+\_\+property@{rpc\+\_\+instance\+\_\+register\+\_\+property}}
 \index{rpc\+\_\+instance\+\_\+register\+\_\+property@{rpc\+\_\+instance\+\_\+register\+\_\+property}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+register\+\_\+property()}{rpc\_instance\_register\_property()}}
-{\footnotesize\ttfamily int rpc\+\_\+instance\+\_\+register\+\_\+property (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{void $\ast$\+\_\+\+Nullable}]{arg,  }\item[{\+\_\+\+Nullable \hyperlink{service_8h_ab438f0c33f3f3876f1c9a23d62134f16}{rpc\+\_\+property\+\_\+getter\+\_\+t}}]{getter,  }\item[{\+\_\+\+Nullable \hyperlink{service_8h_aa8b38d8ab3bafe79a96edaebafe13b8d}{rpc\+\_\+property\+\_\+setter\+\_\+t}}]{setter }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int rpc\+\_\+instance\+\_\+register\+\_\+property (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{void $\ast$\+\_\+\+Nullable}]{arg,  }\item[{\+\_\+\+Nullable \hyperlink{service_8h_ab438f0c33f3f3876f1c9a23d62134f16}{rpc\+\_\+property\+\_\+getter\+\_\+t}}]{getter,  }\item[{\+\_\+\+Nullable \hyperlink{service_8h_aa8b38d8ab3bafe79a96edaebafe13b8d}{rpc\+\_\+property\+\_\+setter\+\_\+t}}]{setter }\end{DoxyParamCaption})}
 
 Registers property named {\ttfamily name} on interface {\ttfamily interface} under instance {\ttfamily instance}.
-
-If there is no interface specified, R\+P\+C\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+I\+N\+T\+E\+R\+F\+A\+CE will be used.
 
 The property can be\+:
 \begin{DoxyItemize}
@@ -1344,15 +1316,13 @@ Unregisters interface {\ttfamily interface} from {\ttfamily instance} along with
 {\em interface} & Interface name \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{service_8h_aef405841a8e133586cc25dc794aa07d3}\label{service_8h_aef405841a8e133586cc25dc794aa07d3}} 
+\mbox{\Hypertarget{service_8h_af75d5ffb28bdd8ea72d2470ca29ad46a}\label{service_8h_af75d5ffb28bdd8ea72d2470ca29ad46a}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+unregister\+\_\+member@{rpc\+\_\+instance\+\_\+unregister\+\_\+member}}
 \index{rpc\+\_\+instance\+\_\+unregister\+\_\+member@{rpc\+\_\+instance\+\_\+unregister\+\_\+member}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+unregister\+\_\+member()}{rpc\_instance\_unregister\_member()}}
-{\footnotesize\ttfamily int rpc\+\_\+instance\+\_\+unregister\+\_\+member (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int rpc\+\_\+instance\+\_\+unregister\+\_\+member (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
 
 Unregisters a previously registered member named {\ttfamily name} from interface {\ttfamily interface} on {\ttfamily instance}.
-
-If no interface is specified, R\+P\+C\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+\+I\+N\+T\+E\+R\+F\+A\+CE will be assumed.
 
 
 \begin{DoxyParams}{Parameters}

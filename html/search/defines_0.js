@@ -22,6 +22,5 @@ var searchData=
   ['rpc_5fquery_5fcb',['RPC_QUERY_CB',['../query_8h.html#ac5142dc38666b2011833bab884b6af9d',1,'query.h']]],
   ['rpc_5frelease',['rpc_release',['../object_8h.html#aac19be935f72b35eeb2851bc509eabb2',1,'object.h']]],
   ['rpc_5fserver_5fhandler',['RPC_SERVER_HANDLER',['../server_8h.html#a34749fc2472ddb06c6d36006e2a948c3',1,'server.h']]],
-  ['rpc_5fserver_5fnamed_5fevent_5fhandler',['RPC_SERVER_NAMED_EVENT_HANDLER',['../server_8h.html#a002c9a10ea82840f0f563d74b29d82c1',1,'server.h']]],
   ['rpc_5fswap',['rpc_swap',['../object_8h.html#a541e997e04e48fe86df08ae323516490',1,'object.h']]]
 ];

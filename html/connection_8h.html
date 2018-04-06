@@ -63,7 +63,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
@@ -96,11 +95,6 @@ This graph shows which files directly or indirectly include this file:</div>
 </div>
 <p><a href="connection_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structrpc__connection__statistics.html">rpc_connection_statistics</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a4f7704822a76a6f293f6abbb59bf41f3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a4f7704822a76a6f293f6abbb59bf41f3">RPC_HANDLER</a>(_fn,  _arg)</td></tr>
@@ -122,8 +116,6 @@ Typedefs</h2></td></tr>
 <tr class="separator:a70838cb106c3464db299522c5fe2782d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb6f25e395cc04930537960ef6b50106"><td class="memItemLeft" align="right" valign="top">typedef struct rpc_call *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a></td></tr>
 <tr class="separator:aeb6f25e395cc04930537960ef6b50106"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9e15301878a6b9e924754d95b96eec2"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structrpc__connection__statistics.html">rpc_connection_statistics</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ad9e15301878a6b9e924754d95b96eec2">rpc_connection_statistics_t</a></td></tr>
-<tr class="separator:ad9e15301878a6b9e924754d95b96eec2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd97c34e4cc24dce96eb2944a3cf5aad"><td class="memItemLeft" align="right" valign="top">typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#abd97c34e4cc24dce96eb2944a3cf5aad">rpc_handler_t</a>) (const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:abd97c34e4cc24dce96eb2944a3cf5aad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9b1dc56a631c67a830ceb096d1a16ac"><td class="memItemLeft" align="right" valign="top">typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#af9b1dc56a631c67a830ceb096d1a16ac">rpc_property_handler_t</a>) (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
@@ -172,8 +164,8 @@ Functions</h2></td></tr>
 <tr class="separator:a07eb2a0e3655cb83222f5faa530e3bfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae62dee58a622eb6e1501c8c3342a1530"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ae62dee58a622eb6e1501c8c3342a1530">rpc_connection_subscribe_event</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name)</td></tr>
 <tr class="separator:ae62dee58a622eb6e1501c8c3342a1530"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11876d99f4c813328cb3a4dbbbc8bab5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a11876d99f4c813328cb3a4dbbbc8bab5">rpc_connection_unsubscribe_event</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name)</td></tr>
-<tr class="separator:a11876d99f4c813328cb3a4dbbbc8bab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb42640760f64e1c56d2e09808b04769"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#afb42640760f64e1c56d2e09808b04769">rpc_connection_unsubscribe_event</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nonnull interface, const char *_Nonnull name)</td></tr>
+<tr class="separator:afb42640760f64e1c56d2e09808b04769"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab223ffd9a03ab35ac0369f4fde934c49"><td class="memItemLeft" align="right" valign="top">void *_Nonnull&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ab223ffd9a03ab35ac0369f4fde934c49">rpc_connection_register_event_handler</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name, _Nullable <a class="el" href="connection_8h.html#abd97c34e4cc24dce96eb2944a3cf5aad">rpc_handler_t</a> handler)</td></tr>
 <tr class="separator:ab223ffd9a03ab35ac0369f4fde934c49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a102ad5fd1ab895a56319a25f43060a20"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a102ad5fd1ab895a56319a25f43060a20">rpc_connection_unregister_event_handler</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, void *_Nonnull cookie)</td></tr>
@@ -182,32 +174,58 @@ Functions</h2></td></tr>
 <tr class="separator:af5e8d63da05fa221ac8bb51ff22e7f3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac23facad7f27401980fcb21762368760"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ac23facad7f27401980fcb21762368760">rpc_connection_call_syncv</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull method, va_list ap)</td></tr>
 <tr class="separator:ac23facad7f27401980fcb21762368760"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac214ac69b1360a8d08d5ecc89d3013ee"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ac214ac69b1360a8d08d5ecc89d3013ee">rpc_connection_call_syncp</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull method, const char *_Nonnull fmt,...)</td></tr>
-<tr class="separator:ac214ac69b1360a8d08d5ecc89d3013ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb5bd7c2255347aeb7b434490ac80035"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#afb5bd7c2255347aeb7b434490ac80035">rpc_connection_call_syncpv</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull method, const char *_Nonnull fmt, va_list ap)</td></tr>
-<tr class="separator:afb5bd7c2255347aeb7b434490ac80035"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa36b47feae14a4114bacf6f049fc1696"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aa36b47feae14a4114bacf6f049fc1696">rpc_connection_call_simple</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nonnull name, const char *_Nonnull fmt,...)</td></tr>
-<tr class="separator:aa36b47feae14a4114bacf6f049fc1696"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0f2ec46d7379ad838a2bcf4cc6ef7a9"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ac0f2ec46d7379ad838a2bcf4cc6ef7a9">rpc_connection_call_syncp</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull method, const char *_Nullable fmt,...)</td></tr>
+<tr class="separator:ac0f2ec46d7379ad838a2bcf4cc6ef7a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f212d17eac02cd846041fccbd79d3c6"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a7f212d17eac02cd846041fccbd79d3c6">rpc_connection_call_syncpv</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull method, const char *_Nullable fmt, va_list ap)</td></tr>
+<tr class="separator:a7f212d17eac02cd846041fccbd79d3c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1c70b3f09c29885ffee12215669562d"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aa1c70b3f09c29885ffee12215669562d">rpc_connection_call_simple</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nonnull name, const char *_Nullable fmt,...)</td></tr>
+<tr class="separator:aa1c70b3f09c29885ffee12215669562d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5e74986e0e4bcd402fbc1f565a7dd3d"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ad5e74986e0e4bcd402fbc1f565a7dd3d">rpc_connection_call</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name, _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args, _Nullable <a class="el" href="connection_8h.html#a43904e9a96b10734529cdde29be58784">rpc_callback_t</a> callback)</td></tr>
 <tr class="separator:ad5e74986e0e4bcd402fbc1f565a7dd3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5332b87fc6add76392bdc17d0db2e982"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a5332b87fc6add76392bdc17d0db2e982">rpc_connection_get_property</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nonnull interface, const char *_Nonnull name)</td></tr>
 <tr class="separator:a5332b87fc6add76392bdc17d0db2e982"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0de16f3ede8e13283dbf7695563b4b9b"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a0de16f3ede8e13283dbf7695563b4b9b">rpc_connection_set_property</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _Nonnull value)</td></tr>
-<tr class="separator:a0de16f3ede8e13283dbf7695563b4b9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aacf709173844e2628bd6ada18d0497ca"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aacf709173844e2628bd6ada18d0497ca">rpc_connection_set_property</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nonnull interface, const char *_Nonnull name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _Nonnull value)</td></tr>
+<tr class="separator:aacf709173844e2628bd6ada18d0497ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1964b28aff2f749ab8aa8ae8fedcf9d5"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a1964b28aff2f749ab8aa8ae8fedcf9d5">rpc_connection_set_propertyp</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name, const char *_Nonnull fmt,...)</td></tr>
 <tr class="separator:a1964b28aff2f749ab8aa8ae8fedcf9d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a933ccba1b43865b6a634524c72e7d1ab"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a933ccba1b43865b6a634524c72e7d1ab">rpc_connection_set_propertypv</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nonnull interface, const char *_Nonnull name, const char *_Nonnull fmt, va_list ap)</td></tr>
 <tr class="separator:a933ccba1b43865b6a634524c72e7d1ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4560bfb571379ff9cdbb10f1de968e7a"><td class="memItemLeft" align="right" valign="top">void *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a4560bfb571379ff9cdbb10f1de968e7a">rpc_connection_watch_property</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull property, _Nonnull <a class="el" href="connection_8h.html#af9b1dc56a631c67a830ceb096d1a16ac">rpc_property_handler_t</a> handler)</td></tr>
-<tr class="separator:a4560bfb571379ff9cdbb10f1de968e7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e3dfaa2449183321ee5b7011f20cf30"><td class="memItemLeft" align="right" valign="top">void *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a9e3dfaa2449183321ee5b7011f20cf30">rpc_connection_watch_property</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nonnull path, const char *_Nonnull interface, const char *_Nonnull property, _Nonnull <a class="el" href="connection_8h.html#af9b1dc56a631c67a830ceb096d1a16ac">rpc_property_handler_t</a> handler)</td></tr>
+<tr class="separator:a9e3dfaa2449183321ee5b7011f20cf30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd699ca36e45ca40ff561c8243cbc99e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#abd699ca36e45ca40ff561c8243cbc99e">rpc_connection_send_event</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:abd699ca36e45ca40ff561c8243cbc99e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbce64346725655e72faa0bf1c479750"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#abbce64346725655e72faa0bf1c479750">rpc_connection_ping</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
 <tr class="separator:abbce64346725655e72faa0bf1c479750"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08f27546613deb38559d3a8ced1a1104"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a08f27546613deb38559d3a8ced1a1104">rpc_connection_set_event_handler</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, _Nullable <a class="el" href="connection_8h.html#abd97c34e4cc24dce96eb2944a3cf5aad">rpc_handler_t</a> handler)</td></tr>
 <tr class="separator:a08f27546613deb38559d3a8ced1a1104"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea58dad3938feb53912e450697cf279c"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="connection_8h.html#ad9e15301878a6b9e924754d95b96eec2">rpc_connection_statistics_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aea58dad3938feb53912e450697cf279c">rpc_connection_get_statistics</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
-<tr class="separator:aea58dad3938feb53912e450697cf279c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08ccbcafd60ed5e2ebb7cf199dc9c574"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a08ccbcafd60ed5e2ebb7cf199dc9c574">rpc_connection_set_error_handler</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, _Nullable <a class="el" href="connection_8h.html#ad84e18a0f030d415f1ac06697fe93525">rpc_error_handler_t</a> handler)</td></tr>
+<tr class="separator:a08ccbcafd60ed5e2ebb7cf199dc9c574"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab74f1419e8a907d1c99dbef5358b6dd2"><td class="memItemLeft" align="right" valign="top">const char *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ab74f1419e8a907d1c99dbef5358b6dd2">rpc_connection_get_remote_address</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="separator:ab74f1419e8a907d1c99dbef5358b6dd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79e22944d8fb685f6378f9e5c10464f3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a79e22944d8fb685f6378f9e5c10464f3">rpc_connection_has_credentials</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="separator:a79e22944d8fb685f6378f9e5c10464f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43855db9f044fdc830fc1370d84a4f4b"><td class="memItemLeft" align="right" valign="top">uid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a43855db9f044fdc830fc1370d84a4f4b">rpc_connection_get_remote_uid</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="separator:a43855db9f044fdc830fc1370d84a4f4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf5617e400a0a91ffefc45d19dda2531"><td class="memItemLeft" align="right" valign="top">gid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#adf5617e400a0a91ffefc45d19dda2531">rpc_connection_get_remote_gid</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="separator:adf5617e400a0a91ffefc45d19dda2531"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e2ec927f332c312dc187b6f38c81337"><td class="memItemLeft" align="right" valign="top">pid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a3e2ec927f332c312dc187b6f38c81337">rpc_connection_get_remote_pid</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="separator:a3e2ec927f332c312dc187b6f38c81337"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55b86b7f9f1957a23b422837e9953dab"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a55b86b7f9f1957a23b422837e9953dab">rpc_call_wait</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
+<tr class="separator:a55b86b7f9f1957a23b422837e9953dab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa5cabcf5efe1e9a94e97d63c0b4a388"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aaa5cabcf5efe1e9a94e97d63c0b4a388">rpc_call_continue</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call, bool sync)</td></tr>
+<tr class="separator:aaa5cabcf5efe1e9a94e97d63c0b4a388"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af99ba11c3cb8f36c112d39fcafb73c50"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#af99ba11c3cb8f36c112d39fcafb73c50">rpc_call_abort</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
+<tr class="separator:af99ba11c3cb8f36c112d39fcafb73c50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aadc9504fdc18875824385dea55cb7384"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aadc9504fdc18875824385dea55cb7384">rpc_call_timedwait</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call, const struct timeval *_Nonnull ts)</td></tr>
+<tr class="separator:aadc9504fdc18875824385dea55cb7384"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01a0d673bf8f756e5fb5e37e6564c431"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a01a0d673bf8f756e5fb5e37e6564c431">rpc_call_success</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
+<tr class="separator:a01a0d673bf8f756e5fb5e37e6564c431"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2986b5ae174169a41b67855e72cfd42e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a2986b5ae174169a41b67855e72cfd42e">rpc_call_status</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
+<tr class="separator:a2986b5ae174169a41b67855e72cfd42e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e64ae2b6592deff82999556318858dd"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a0e64ae2b6592deff82999556318858dd">rpc_call_result</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
+<tr class="separator:a0e64ae2b6592deff82999556318858dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeba8ba3e9dc7e1310568709cbcae22da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aeba8ba3e9dc7e1310568709cbcae22da">rpc_call_free</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
+<tr class="separator:aeba8ba3e9dc7e1310568709cbcae22da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>RPC connection API. </p>
@@ -243,7 +261,7 @@ Functions</h2></td></tr>
 <div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00073">object.h:73</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#a43904e9a96b10734529cdde29be58784">rpc_callback_t</a> block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00145">145</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00140">140</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -276,7 +294,7 @@ Functions</h2></td></tr>
 <div class="ttc" id="connection_8h_html_a043170f29cb25827a88be4dab2313a91"><div class="ttname"><a href="connection_8h.html#a043170f29cb25827a88be4dab2313a91">rpc_error_code_t</a></div><div class="ttdeci">enum rpc_error_code rpc_error_code_t</div></div>
 </div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#ad84e18a0f030d415f1ac06697fe93525">rpc_error_handler_t</a> block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00137">137</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00132">132</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -307,7 +325,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">^(<span class="keyword">const</span> <span class="keywordtype">char</span> *_path, <span class="keyword">const</span> <span class="keywordtype">char</span> *_iface, <span class="keyword">const</span> <span class="keywordtype">char</span> *_name,     \</div><div class="line">        rpc_object_t _args) {                   \</div><div class="line">        _fn(_arg, _path, _iface, _name, _args);         \</div><div class="line">    }</div></div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#abd97c34e4cc24dce96eb2944a3cf5aad">rpc_handler_t</a> block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00120">120</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00115">115</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -339,7 +357,7 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">^(<a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _value) {                    \</div><div class="line">        _fn(_arg, _value);                  \</div><div class="line">    }</div><div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00073">object.h:73</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#af9b1dc56a631c67a830ceb096d1a16ac">rpc_property_handler_t</a> block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00129">129</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00124">124</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -389,24 +407,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Definition of RPC callback block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00115">115</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
-
-</div>
-</div>
-<a id="ad9e15301878a6b9e924754d95b96eec2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad9e15301878a6b9e924754d95b96eec2">&#9670;&nbsp;</a></span>rpc_connection_statistics_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="structrpc__connection__statistics.html">rpc_connection_statistics</a>* <a class="el" href="connection_8h.html#ad9e15301878a6b9e924754d95b96eec2">rpc_connection_statistics_t</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Definition of RPC connection statistics pointer. </p>
-
-<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00092">92</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00110">110</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -455,7 +456,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Definition of RPC error handler block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00109">109</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00104">104</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -472,7 +473,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Definition of RPC event handler block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00097">97</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00092">92</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -489,7 +490,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Definition of RPC property change handler block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00104">104</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00099">99</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
 </div>
 </div>
@@ -561,6 +562,237 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="af99ba11c3cb8f36c112d39fcafb73c50"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af99ba11c3cb8f36c112d39fcafb73c50">&#9670;&nbsp;</a></span>rpc_call_abort()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_call_abort </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a>&#160;</td>
+          <td class="paramname"><em>call</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Aborts a pending call.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">call</td><td>Call to be aborted </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Function status - success is being reported as 0 </dd></dl>
+
+</div>
+</div>
+<a id="aaa5cabcf5efe1e9a94e97d63c0b4a388"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa5cabcf5efe1e9a94e97d63c0b4a388">&#9670;&nbsp;</a></span>rpc_call_continue()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_call_continue </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a>&#160;</td>
+          <td class="paramname"><em>call</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>sync</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Requests a next chunk of a result from a call.</p>
+<p>When sync is set to true the function waits until the call finishes and returns 1 if it has completed successfully - otherwise the function returns 0.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">call</td><td>Call to be continued </td></tr>
+    <tr><td class="paramname">sync</td><td>Synchronous continue flag </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>1 for successfully completed RPC when sync flag was set, otherwise 0 </dd></dl>
+
+</div>
+</div>
+<a id="aeba8ba3e9dc7e1310568709cbcae22da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeba8ba3e9dc7e1310568709cbcae22da">&#9670;&nbsp;</a></span>rpc_call_free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rpc_call_free </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a>&#160;</td>
+          <td class="paramname"><em>call</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Frees a rpc_call_t object.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">call</td><td>Call to free </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0e64ae2b6592deff82999556318858dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e64ae2b6592deff82999556318858dd">&#9670;&nbsp;</a></span>rpc_call_result()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> rpc_call_result </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a>&#160;</td>
+          <td class="paramname"><em>call</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns a call result (or a current fragment).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">call</td><td>Call to get result from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Result </dd></dl>
+
+</div>
+</div>
+<a id="a2986b5ae174169a41b67855e72cfd42e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2986b5ae174169a41b67855e72cfd42e">&#9670;&nbsp;</a></span>rpc_call_status()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="connection_8h.html#a22306445a7503bab94835382d07e0410">rpc_call_status</a> </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a>&#160;</td>
+          <td class="paramname"><em>call</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns a current status of a given call as an integer value castable to rpc_call_status_t.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">call</td><td>Call to be checked </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Call status </dd></dl>
+
+</div>
+</div>
+<a id="a01a0d673bf8f756e5fb5e37e6564c431"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01a0d673bf8f756e5fb5e37e6564c431">&#9670;&nbsp;</a></span>rpc_call_success()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_call_success </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a>&#160;</td>
+          <td class="paramname"><em>call</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Checks whether a call has been completed successfully.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">call</td><td>Call to be checked </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>1 when call was successfully completed, otherwise 0 </dd></dl>
+
+</div>
+</div>
+<a id="aadc9504fdc18875824385dea55cb7384"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aadc9504fdc18875824385dea55cb7384">&#9670;&nbsp;</a></span>rpc_call_timedwait()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_call_timedwait </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a>&#160;</td>
+          <td class="paramname"><em>call</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const struct timeval *_Nonnull&#160;</td>
+          <td class="paramname"><em>ts</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Waits for a call to change status.</p>
+<p>If a timeout specified by a ts argument occurs, before a call changes its status, function returns -1 value.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">call</td><td>Call to wait on </td></tr>
+    <tr><td class="paramname">ts</td><td>Timeout value </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure or timeout </dd></dl>
+
+</div>
+</div>
+<a id="a55b86b7f9f1957a23b422837e9953dab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55b86b7f9f1957a23b422837e9953dab">&#9670;&nbsp;</a></span>rpc_call_wait()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_call_wait </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a>&#160;</td>
+          <td class="paramname"><em>call</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Waits for a call to change status.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">call</td><td>Call to wait on. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure. </dd></dl>
+
+</div>
+</div>
 <a id="ad5e74986e0e4bcd402fbc1f565a7dd3d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad5e74986e0e4bcd402fbc1f565a7dd3d">&#9670;&nbsp;</a></span>rpc_connection_call()</h2>
 
@@ -626,8 +858,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa36b47feae14a4114bacf6f049fc1696"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa36b47feae14a4114bacf6f049fc1696">&#9670;&nbsp;</a></span>rpc_connection_call_simple()</h2>
+<a id="aa1c70b3f09c29885ffee12215669562d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1c70b3f09c29885ffee12215669562d">&#9670;&nbsp;</a></span>rpc_connection_call_simple()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -647,7 +879,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *_Nonnull&#160;</td>
+          <td class="paramtype">const char *_Nullable&#160;</td>
           <td class="paramname"><em>fmt</em>, </td>
         </tr>
         <tr>
@@ -665,7 +897,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Performs a synchronous RPC function call using a given connection.</p>
 <p>Function blocks until a result is ready and returns it, or cancels and returns a NULL pointer if a timeout has occurred.</p>
-<p>This function can be only used to call pure functions (not operating on objects, that is, like <a class="el" href="connection_8h.html#ac214ac69b1360a8d08d5ecc89d3013ee">rpc_connection_call_syncp()</a> but with path and interface parameters set to NULL). Use RPC_NULL_FORMAT to indicate a null format string.</p>
+<p>This function can be only used to call pure functions (not operating on objects, that is, like <a class="el" href="connection_8h.html#ac0f2ec46d7379ad838a2bcf4cc6ef7a9">rpc_connection_call_syncp()</a> but with path and interface parameters set to NULL).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">name</td><td></td></tr>
@@ -736,8 +968,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ac214ac69b1360a8d08d5ecc89d3013ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac214ac69b1360a8d08d5ecc89d3013ee">&#9670;&nbsp;</a></span>rpc_connection_call_syncp()</h2>
+<a id="ac0f2ec46d7379ad838a2bcf4cc6ef7a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0f2ec46d7379ad838a2bcf4cc6ef7a9">&#9670;&nbsp;</a></span>rpc_connection_call_syncp()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -769,7 +1001,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *_Nonnull&#160;</td>
+          <td class="paramtype">const char *_Nullable&#160;</td>
           <td class="paramname"><em>fmt</em>, </td>
         </tr>
         <tr>
@@ -791,7 +1023,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
     <tr><td class="paramname">method</td><td>Name of a method to be called </td></tr>
-    <tr><td class="paramname">fmt</td><td>Format string </td></tr>
+    <tr><td class="paramname">fmt</td><td>Format strin </td></tr>
     <tr><td class="paramname">...</td><td>Called method arguments </td></tr>
   </table>
   </dd>
@@ -800,8 +1032,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="afb5bd7c2255347aeb7b434490ac80035"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afb5bd7c2255347aeb7b434490ac80035">&#9670;&nbsp;</a></span>rpc_connection_call_syncpv()</h2>
+<a id="a7f212d17eac02cd846041fccbd79d3c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f212d17eac02cd846041fccbd79d3c6">&#9670;&nbsp;</a></span>rpc_connection_call_syncpv()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -833,7 +1065,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *_Nonnull&#160;</td>
+          <td class="paramtype">const char *_Nullable&#160;</td>
           <td class="paramname"><em>fmt</em>, </td>
         </tr>
         <tr>
@@ -849,7 +1081,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>A variation of <a class="el" href="connection_8h.html#ac214ac69b1360a8d08d5ecc89d3013ee">rpc_connection_call_syncp</a> that takes a <code>va_list</code> instead of the variable argument list.</p>
+<p>A variation of <a class="el" href="connection_8h.html#ac0f2ec46d7379ad838a2bcf4cc6ef7a9">rpc_connection_call_syncp</a> that takes a <code>va_list</code> instead of the variable argument list.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
@@ -1061,14 +1293,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aea58dad3938feb53912e450697cf279c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aea58dad3938feb53912e450697cf279c">&#9670;&nbsp;</a></span>rpc_connection_get_statistics()</h2>
+<a id="ab74f1419e8a907d1c99dbef5358b6dd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab74f1419e8a907d1c99dbef5358b6dd2">&#9670;&nbsp;</a></span>rpc_connection_get_remote_address()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">_Nullable <a class="el" href="connection_8h.html#ad9e15301878a6b9e924754d95b96eec2">rpc_connection_statistics_t</a> rpc_connection_get_statistics </td>
+          <td class="memname">const char* _Nullable rpc_connection_get_remote_address </td>
           <td>(</td>
           <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
           <td class="paramname"><em>conn</em></td><td>)</td>
@@ -1076,15 +1308,115 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns statistics information for a connection.</p>
-<p>The caller is responsible for freeing the connections statistics structure returned.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">conn</td><td>Connection for which to retrieve statistics </td></tr>
+    <tr><td class="paramname">conn</td><td></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>An rpc_connections_statistics_t on success, else NULL </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="adf5617e400a0a91ffefc45d19dda2531"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf5617e400a0a91ffefc45d19dda2531">&#9670;&nbsp;</a></span>rpc_connection_get_remote_gid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">gid_t rpc_connection_get_remote_gid </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a3e2ec927f332c312dc187b6f38c81337"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e2ec927f332c312dc187b6f38c81337">&#9670;&nbsp;</a></span>rpc_connection_get_remote_pid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">pid_t rpc_connection_get_remote_pid </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a43855db9f044fdc830fc1370d84a4f4b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43855db9f044fdc830fc1370d84a4f4b">&#9670;&nbsp;</a></span>rpc_connection_get_remote_uid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uid_t rpc_connection_get_remote_uid </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets remote side UID.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a79e22944d8fb685f6378f9e5c10464f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79e22944d8fb685f6378f9e5c10464f3">&#9670;&nbsp;</a></span>rpc_connection_has_credentials()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rpc_connection_has_credentials </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns true if a connection has associated remote credentials information.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if credentials information is available, otherwise false </dd></dl>
 
 </div>
 </div>
@@ -1245,6 +1577,42 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a08ccbcafd60ed5e2ebb7cf199dc9c574"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08ccbcafd60ed5e2ebb7cf199dc9c574">&#9670;&nbsp;</a></span>rpc_connection_set_error_handler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rpc_connection_set_error_handler </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">_Nullable <a class="el" href="connection_8h.html#ad84e18a0f030d415f1ac06697fe93525">rpc_error_handler_t</a>&#160;</td>
+          <td class="paramname"><em>handler</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets global error handler for a connection.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td>Connection to set error handler for </td></tr>
+    <tr><td class="paramname">handler</td><td>Error handler block </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a08f27546613deb38559d3a8ced1a1104"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a08f27546613deb38559d3a8ced1a1104">&#9670;&nbsp;</a></span>rpc_connection_set_event_handler()</h2>
 
@@ -1281,8 +1649,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a0de16f3ede8e13283dbf7695563b4b9b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0de16f3ede8e13283dbf7695563b4b9b">&#9670;&nbsp;</a></span>rpc_connection_set_property()</h2>
+<a id="aacf709173844e2628bd6ada18d0497ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aacf709173844e2628bd6ada18d0497ca">&#9670;&nbsp;</a></span>rpc_connection_set_property()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1302,7 +1670,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *_Nullable&#160;</td>
+          <td class="paramtype">const char *_Nonnull&#160;</td>
           <td class="paramname"><em>interface</em>, </td>
         </tr>
         <tr>
@@ -1505,7 +1873,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Subscribes for an event.</p>
 <p>This function can be called multiple times on a single event name - subsequent calls will not send a subscribe message to the server, but instead increment internal reference count for a subscription.</p>
-<p>Calls to <a class="el" href="connection_8h.html#ae62dee58a622eb6e1501c8c3342a1530">rpc_connection_subscribe_event()</a> must be paired with <a class="el" href="connection_8h.html#a11876d99f4c813328cb3a4dbbbc8bab5">rpc_connection_unsubscribe_event()</a>.</p>
+<p>Calls to <a class="el" href="connection_8h.html#ae62dee58a622eb6e1501c8c3342a1530">rpc_connection_subscribe_event()</a> must be paired with <a class="el" href="connection_8h.html#afb42640760f64e1c56d2e09808b04769">rpc_connection_unsubscribe_event()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">conn</td><td>Connection to subscribe on </td></tr>
@@ -1553,8 +1921,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a11876d99f4c813328cb3a4dbbbc8bab5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11876d99f4c813328cb3a4dbbbc8bab5">&#9670;&nbsp;</a></span>rpc_connection_unsubscribe_event()</h2>
+<a id="afb42640760f64e1c56d2e09808b04769"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb42640760f64e1c56d2e09808b04769">&#9670;&nbsp;</a></span>rpc_connection_unsubscribe_event()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1574,7 +1942,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *_Nullable&#160;</td>
+          <td class="paramtype">const char *_Nonnull&#160;</td>
           <td class="paramname"><em>interface</em>, </td>
         </tr>
         <tr>
@@ -1606,8 +1974,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a4560bfb571379ff9cdbb10f1de968e7a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4560bfb571379ff9cdbb10f1de968e7a">&#9670;&nbsp;</a></span>rpc_connection_watch_property()</h2>
+<a id="a9e3dfaa2449183321ee5b7011f20cf30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e3dfaa2449183321ee5b7011f20cf30">&#9670;&nbsp;</a></span>rpc_connection_watch_property()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1621,13 +1989,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *_Nullable&#160;</td>
+          <td class="paramtype">const char *_Nonnull&#160;</td>
           <td class="paramname"><em>path</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *_Nullable&#160;</td>
+          <td class="paramtype">const char *_Nonnull&#160;</td>
           <td class="paramname"><em>interface</em>, </td>
         </tr>
         <tr>
