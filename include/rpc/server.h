@@ -69,19 +69,29 @@ typedef void (^rpc_server_event_handler_t)(_Nonnull rpc_connection_t source,
 /**
  * Creates a server instance listening on a given URI.
  *
- * @param uri URI to listen on.
- * @param context RPC context for a server instance.
- * @return Server structure.
+ * @param uri URI to listen on
+ * @param context RPC context for a server instance
+ * @return Server handle
  */
 _Nullable rpc_server_t rpc_server_create(const char *_Nonnull uri,
     _Nonnull rpc_context_t context);
 
 /**
+ * Starts accepting requests by the server.
+ *
+ * Server instance keeps all the incoming requests queued and on hold
+ * until this function is called.
+ *
+ * @param server Server handle
+ */
+void rpc_server_resume(_Nonnull rpc_server_t server);
+
+/**
  * Broadcasts an event of a given name among its subscribers.
  *
- * @param server Target server.
- * @param name Name of an event to be broadcasted.
- * @param args Event arguments.
+ * @param server Server handle
+ * @param name Name of an event to be broadcasted
+ * @param args Event arguments
  */
 void rpc_server_broadcast_event(_Nonnull rpc_server_t server,
     const char *_Nullable path, const char *_Nullable interface,
@@ -97,8 +107,8 @@ void rpc_server_set_event_handler(_Nullable rpc_server_event_handler_t handler);
 /**
  * Closes a given RPC server.
  *
- * @param server Server to be closed.
- * @return 0 on successful teardown.
+ * @param server Server handle to be closed
+ * @return 0 on successful teardown
  */
 int rpc_server_close(_Nonnull rpc_server_t server);
 

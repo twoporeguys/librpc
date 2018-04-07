@@ -274,6 +274,7 @@ struct rpc_server
     	const char *		rs_uri;
     	int 			rs_flags;
     	bool			rs_operational;
+	bool			rs_paused;
 
     	/* Callbacks */
     	rpc_accept_fn_t		rs_accept;

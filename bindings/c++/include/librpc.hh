@@ -51,7 +51,10 @@ namespace librpc {
 		Object(const Object &other);
 		Object(Object &&other) noexcept;
 		Object();
+		Object(std::nullptr_t value);
 		Object(bool value);
+		Object(long value);
+		Object(unsigned long value);
 		Object(uint64_t value);
 		Object(int64_t value);
 		Object(double value);
