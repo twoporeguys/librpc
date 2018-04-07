@@ -373,6 +373,7 @@
     <member refid="service_8h_1aecd81447bced207f9d62b7fbf55cb4c1" kind="function"><name>rpc_instance_free</name></member>
   </compound>
   <compound refid="typing_8h" kind="file"><name>typing.h</name>
+    <member refid="typing_8h_1a9f52c34e595aa02ca85cf623c1ebe6c9" kind="define"><name>RPCT_TYPING_INTERFACE</name></member>
     <member refid="typing_8h_1af639f24835da7f0384e5bb0650bb52a6" kind="define"><name>RPCT_TYPE_FIELD</name></member>
     <member refid="typing_8h_1a301ed423ac251ab4f8468e471f011666" kind="define"><name>RPCT_VALUE_FIELD</name></member>
     <member refid="typing_8h_1ac7b83a7da323b0a26398b76f023b814a" kind="define"><name>RPCT_TYPE_APPLIER</name></member>
@@ -448,6 +449,7 @@
     <member refid="typing_8h_1a2f80e7ec74258ea0a5f739c61b5b623e" kind="function"><name>rpct_validate</name></member>
     <member refid="typing_8h_1a07cecc265f9dd575d5ff4904f13b5fac" kind="function"><name>rpct_pre_call_hook</name></member>
     <member refid="typing_8h_1afa62adf9fe6a415494c529254b030086" kind="function"><name>rpct_post_call_hook</name></member>
+    <member refid="typing_8h_1a4812f96b7d0bca64c415aa3aa99182be" kind="function"><name>rpct_allow_idl_download</name></member>
   </compound>
   <compound refid="vtable_8h" kind="file"><name>vtable.h</name>
   </compound>

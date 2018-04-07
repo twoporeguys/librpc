@@ -12,6 +12,9 @@ Include dependency graph for typing.\+h\+:
 \subsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
+\mbox{\Hypertarget{typing_8h_a9f52c34e595aa02ca85cf623c1ebe6c9}\label{typing_8h_a9f52c34e595aa02ca85cf623c1ebe6c9}} 
+\#define {\bfseries R\+P\+C\+T\+\_\+\+T\+Y\+P\+I\+N\+G\+\_\+\+I\+N\+T\+E\+R\+F\+A\+CE}~\char`\"{}com.\+twoporeguys.\+librpc.\+Typing\char`\"{}
+\item 
 \mbox{\Hypertarget{typing_8h_af639f24835da7f0384e5bb0650bb52a6}\label{typing_8h_af639f24835da7f0384e5bb0650bb52a6}} 
 \#define {\bfseries R\+P\+C\+T\+\_\+\+T\+Y\+P\+E\+\_\+\+F\+I\+E\+LD}~\char`\"{}\%type\char`\"{}
 \item 
@@ -169,6 +172,8 @@ bool \hyperlink{typing_8h_a2f80e7ec74258ea0a5f739c61b5b623e}{rpct\+\_\+validate}
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{typing_8h_a07cecc265f9dd575d5ff4904f13b5fac}{rpct\+\_\+pre\+\_\+call\+\_\+hook} (void $\ast$cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{typing_8h_afa62adf9fe6a415494c529254b030086}{rpct\+\_\+post\+\_\+call\+\_\+hook} (void $\ast$cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
+\item 
+void \hyperlink{typing_8h_a4812f96b7d0bca64c415aa3aa99182be}{rpct\+\_\+allow\+\_\+idl\+\_\+download} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
 \end{DoxyCompactItemize}
 
 
@@ -187,7 +192,7 @@ bool \hyperlink{typing_8h_a2f80e7ec74258ea0a5f739c61b5b623e}{rpct\+\_\+validate}
 \end{DoxyCode}
 
 
-Definition at line 158 of file typing.\+h.
+Definition at line 159 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_adc345b8b1922fea74cbbfb8e5e639f3b}\label{typing_8h_adc345b8b1922fea74cbbfb8e5e639f3b}} 
 \index{typing.\+h@{typing.\+h}!R\+P\+C\+T\+\_\+\+I\+N\+T\+E\+R\+F\+A\+C\+E\+\_\+\+A\+P\+P\+L\+I\+ER@{R\+P\+C\+T\+\_\+\+I\+N\+T\+E\+R\+F\+A\+C\+E\+\_\+\+A\+P\+P\+L\+I\+ER}}
@@ -203,7 +208,7 @@ Definition at line 158 of file typing.\+h.
 \end{DoxyCode}
 
 
-Definition at line 148 of file typing.\+h.
+Definition at line 149 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_a19cc98526407a16d32dcc0dd3c12188a}\label{typing_8h_a19cc98526407a16d32dcc0dd3c12188a}} 
 \index{typing.\+h@{typing.\+h}!R\+P\+C\+T\+\_\+\+M\+E\+M\+B\+E\+R\+\_\+\+A\+P\+P\+L\+I\+ER@{R\+P\+C\+T\+\_\+\+M\+E\+M\+B\+E\+R\+\_\+\+A\+P\+P\+L\+I\+ER}}
@@ -219,7 +224,7 @@ Definition at line 148 of file typing.\+h.
 \end{DoxyCode}
 
 
-Definition at line 153 of file typing.\+h.
+Definition at line 154 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_ac7b83a7da323b0a26398b76f023b814a}\label{typing_8h_ac7b83a7da323b0a26398b76f023b814a}} 
 \index{typing.\+h@{typing.\+h}!R\+P\+C\+T\+\_\+\+T\+Y\+P\+E\+\_\+\+A\+P\+P\+L\+I\+ER@{R\+P\+C\+T\+\_\+\+T\+Y\+P\+E\+\_\+\+A\+P\+P\+L\+I\+ER}}
@@ -235,7 +240,7 @@ Definition at line 153 of file typing.\+h.
 \end{DoxyCode}
 
 
-Definition at line 143 of file typing.\+h.
+Definition at line 144 of file typing.\+h.
 
 
 
@@ -248,7 +253,7 @@ Definition at line 143 of file typing.\+h.
 
 Represents a function argument. 
 
-Definition at line 105 of file typing.\+h.
+Definition at line 106 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_aeb4e0d4277d29db7ff524786d2a895ba}\label{typing_8h_aeb4e0d4277d29db7ff524786d2a895ba}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+function\+\_\+t@{rpct\+\_\+function\+\_\+t}}
@@ -258,7 +263,7 @@ Definition at line 105 of file typing.\+h.
 
 Represents a function. 
 
-Definition at line 100 of file typing.\+h.
+Definition at line 101 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_acc5f290ad33114a3ea5ea8f6fdcef34a}\label{typing_8h_acc5f290ad33114a3ea5ea8f6fdcef34a}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+if\+\_\+member\+\_\+applier\+\_\+t@{rpct\+\_\+if\+\_\+member\+\_\+applier\+\_\+t}}
@@ -268,7 +273,7 @@ Definition at line 100 of file typing.\+h.
 
 Block type used as a callback in rpc\+\_\+if\+\_\+member\+\_\+apply. 
 
-Definition at line 141 of file typing.\+h.
+Definition at line 142 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_aa2e55bcb066527416359bc5a5dde92b3}\label{typing_8h_aa2e55bcb066527416359bc5a5dde92b3}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+if\+\_\+member\+\_\+t@{rpct\+\_\+if\+\_\+member\+\_\+t}}
@@ -278,7 +283,7 @@ Definition at line 141 of file typing.\+h.
 
 Represents an interface member (method, property or event). 
 
-Definition at line 110 of file typing.\+h.
+Definition at line 111 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_a2b565c4384ebdd8e0749b1467eec94e3}\label{typing_8h_a2b565c4384ebdd8e0749b1467eec94e3}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+interface\+\_\+applier\+\_\+t@{rpct\+\_\+interface\+\_\+applier\+\_\+t}}
@@ -288,7 +293,7 @@ Definition at line 110 of file typing.\+h.
 
 Block type used as a callback in rpc\+\_\+interface\+\_\+apply. 
 
-Definition at line 136 of file typing.\+h.
+Definition at line 137 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_a38f857fb53c96e9aae9e02bd4996cc9f}\label{typing_8h_a38f857fb53c96e9aae9e02bd4996cc9f}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+interface\+\_\+t@{rpct\+\_\+interface\+\_\+t}}
@@ -298,7 +303,7 @@ Definition at line 136 of file typing.\+h.
 
 Represents an interface. 
 
-Definition at line 95 of file typing.\+h.
+Definition at line 96 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_a1b34b1728df4e41085d0ec7ecf5e8b7d}\label{typing_8h_a1b34b1728df4e41085d0ec7ecf5e8b7d}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+member\+\_\+applier\+\_\+t@{rpct\+\_\+member\+\_\+applier\+\_\+t}}
@@ -308,7 +313,7 @@ Definition at line 95 of file typing.\+h.
 
 Block type used as a callback in \hyperlink{typing_8h_a6fc3d79df9153b9c6b10d929f041c3b0}{rpct\+\_\+members\+\_\+apply}. 
 
-Definition at line 131 of file typing.\+h.
+Definition at line 132 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_a738ac0d076d329aece903bf1835bfcdd}\label{typing_8h_a738ac0d076d329aece903bf1835bfcdd}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+member\+\_\+t@{rpct\+\_\+member\+\_\+t}}
@@ -318,7 +323,7 @@ Definition at line 131 of file typing.\+h.
 
 Represents a structure member or a union branch. 
 
-Definition at line 90 of file typing.\+h.
+Definition at line 91 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_a6babf38d00cc719a3531ee959b1e5478}\label{typing_8h_a6babf38d00cc719a3531ee959b1e5478}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+type\+\_\+applier\+\_\+t@{rpct\+\_\+type\+\_\+applier\+\_\+t}}
@@ -328,7 +333,7 @@ Definition at line 90 of file typing.\+h.
 
 Block type used as a callback in \hyperlink{typing_8h_a1b6d6a2e631f2eefd83ec54b5f307282}{rpct\+\_\+types\+\_\+apply}. 
 
-Definition at line 126 of file typing.\+h.
+Definition at line 127 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_ab85403e2a616bb3728cd489bd0619cbb}\label{typing_8h_ab85403e2a616bb3728cd489bd0619cbb}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+type\+\_\+t@{rpct\+\_\+type\+\_\+t}}
@@ -349,7 +354,7 @@ Examples of unspecialized types\+:
 \item Hash\+Map$<$\+K, V$>$ 
 \end{DoxyItemize}
 
-Definition at line 60 of file typing.\+h.
+Definition at line 61 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_a0d718518624626887a65ead4f5cde3b9}\label{typing_8h_a0d718518624626887a65ead4f5cde3b9}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+typei\+\_\+t@{rpct\+\_\+typei\+\_\+t}}
@@ -379,7 +384,7 @@ Examples of partially specialized types\+:
 \item Hash\+Map$<$\+K, double$>$ 
 \end{DoxyItemize}
 
-Definition at line 85 of file typing.\+h.
+Definition at line 86 of file typing.\+h.
 
 
 
@@ -414,11 +419,22 @@ R\+P\+C\+\_\+\+T\+Y\+P\+I\+N\+G\+\_\+\+B\+U\+I\+L\+T\+IN&A builtin type \\
 \end{DoxyEnumFields}
 
 
-Definition at line 115 of file typing.\+h.
+Definition at line 116 of file typing.\+h.
 
 
 
 \subsection{Function Documentation}
+\mbox{\Hypertarget{typing_8h_a4812f96b7d0bca64c415aa3aa99182be}\label{typing_8h_a4812f96b7d0bca64c415aa3aa99182be}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+allow\+\_\+idl\+\_\+download@{rpct\+\_\+allow\+\_\+idl\+\_\+download}}
+\index{rpct\+\_\+allow\+\_\+idl\+\_\+download@{rpct\+\_\+allow\+\_\+idl\+\_\+download}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+allow\+\_\+idl\+\_\+download()}{rpct\_allow\_idl\_download()}}
+{\footnotesize\ttfamily void rpct\+\_\+allow\+\_\+idl\+\_\+download (\begin{DoxyParamCaption}\item[{\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em context} & \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{typing_8h_a0d547889f674d2b89dbfcc455ba1c1df}\label{typing_8h_a0d547889f674d2b89dbfcc455ba1c1df}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+argument\+\_\+get\+\_\+description@{rpct\+\_\+argument\+\_\+get\+\_\+description}}
 \index{rpct\+\_\+argument\+\_\+get\+\_\+description@{rpct\+\_\+argument\+\_\+get\+\_\+description}!typing.\+h@{typing.\+h}}
