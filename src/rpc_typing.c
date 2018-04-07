@@ -43,6 +43,7 @@ static char *rpct_canonical_type(struct rpct_typei *typei);
 static int rpct_read_type(struct rpct_file *file, const char *decl,
     rpc_object_t obj);
 static int rpct_parse_type(const char *decl, GPtrArray *variables);
+static void rpct_interface_free(struct rpct_interface *iface);
 
 static struct rpct_context *context = NULL;
 static const char *builtin_types[] = {
@@ -405,6 +406,15 @@ rpct_file_free(struct rpct_file *file)
 	g_free(file->path);
 	g_hash_table_destroy(file->types);
 	g_free(file);
+}
+
+static void
+rpct_interface_free(struct rpct_interface *iface)
+{
+
+	g_free(iface->name);
+	g_free(iface->description);
+	g_hash_table_destroy(iface->members);
 }
 
 static void
@@ -1002,7 +1012,8 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 	iface = g_malloc0(sizeof(*iface));
 	iface->name = g_match_info_fetch(match, 1);
-	iface->members = g_hash_table_new(g_str_hash, g_str_equal);
+	iface->members = g_hash_table_new_full(g_str_hash, g_str_equal,
+	    g_free, (GDestroyNotify)rpct_if_member_free);
 	iface->description = g_strdup(rpc_dictionary_get_string(obj,
 	    "description"));
 
@@ -1067,8 +1078,7 @@ rpct_read_file(const char *path)
 	file->body = rpc_retain(obj);
 	file->path = g_strdup(path);
 	file->uses = g_ptr_array_new_with_free_func(g_free);
-	file->types = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
-	    NULL);
+	file->types = g_hash_table_new(g_str_hash, g_str_equal);
 	file->interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 
 	if (rpct_read_meta(file, rpc_dictionary_get_value(obj, "meta")) < 0) {
@@ -1247,6 +1257,7 @@ rpct_pre_call_hook(void *cookie, rpc_object_t args)
 {
 	struct rpc_inbound_call *ic = cookie;
 	struct rpct_if_member *member;
+	char *msg;
 	rpc_object_t errors;
 
 	member = rpct_find_if_member(ic->ric_interface, ic->ric_name);
@@ -1254,8 +1265,11 @@ rpct_pre_call_hook(void *cookie, rpc_object_t args)
 		return (NULL);
 
 	if (!rpct_validate_args(member, args, &errors)) {
-		rpc_function_error_ex(cookie, rpc_error_create(EINVAL,
-		    "Validation failed", errors));
+		msg = g_strdup_printf("Validation failed: %jd errors",
+		    rpc_array_get_count(errors));
+
+		rpc_function_error_ex(cookie, rpc_error_create(EINVAL, msg, errors));
+		g_free(msg);
 	}
 
 	return (NULL);
@@ -1275,7 +1289,7 @@ rpct_post_call_hook(void *cookie, rpc_object_t result)
 
 	if (!rpct_validate_return(member, result, &errors)) {
 		rpc_function_error_ex(cookie, rpc_error_create(EINVAL,
-		    "Validation failed", errors));
+		    "Return value validation failed", errors));
 	}
 
 	return (NULL);
@@ -1293,7 +1307,7 @@ rpct_init(void)
 	context->types = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 	    (GDestroyNotify)rpct_type_free);
 	context->interfaces = g_hash_table_new_full(g_str_hash, g_str_equal,
-	    g_free, NULL);
+	    g_free, (GDestroyNotify)rpct_interface_free);
 
 	for (b = builtin_types; *b != NULL; b++) {
 		type = g_malloc0(sizeof(*type));
