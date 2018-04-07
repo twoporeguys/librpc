@@ -140,6 +140,8 @@ bool \hyperlink{typing_8h_a3df40500a9e56d03f6310af0dc40a5a0}{rpct\+\_\+interface
 \item 
 bool \hyperlink{typing_8h_a1fe6427a1837bebcf1278d47b9a572f6}{rpct\+\_\+if\+\_\+member\+\_\+apply} (\hyperlink{typing_8h_a38f857fb53c96e9aae9e02bd4996cc9f}{rpct\+\_\+interface\+\_\+t} iface, \hyperlink{typing_8h_acc5f290ad33114a3ea5ea8f6fdcef34a}{rpct\+\_\+if\+\_\+member\+\_\+applier\+\_\+t} applier)
 \item 
+\hyperlink{typing_8h_aa2e55bcb066527416359bc5a5dde92b3}{rpct\+\_\+if\+\_\+member\+\_\+t} \hyperlink{typing_8h_a4abbd4b37b9c85e3199721af771de323}{rpct\+\_\+find\+\_\+if\+\_\+member} (const char $\ast$interface, const char $\ast$member)
+\item 
 \hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} \hyperlink{typing_8h_a607ecfa5cfa13782fafd4d8da6fbd3d8}{rpct\+\_\+new\+\_\+typei} (const char $\ast$decl)
 \item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{typing_8h_ae4eb9d801add10b3fd0f4a81c0941d79}{rpct\+\_\+new} (const char $\ast$decl, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
@@ -163,6 +165,10 @@ bool \hyperlink{typing_8h_ae9b8420d29e1c63b07a060985c7ab55b}{rpct\+\_\+validate\
 bool \hyperlink{typing_8h_aa5b10fa1cb8c8cc46469abebb21026a0}{rpct\+\_\+validate\+\_\+return} (struct rpct\+\_\+if\+\_\+member $\ast$func, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} result, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$errors)
 \item 
 bool \hyperlink{typing_8h_a2f80e7ec74258ea0a5f739c61b5b623e}{rpct\+\_\+validate} (\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} typei, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} obj, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$errors)
+\item 
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{typing_8h_a07cecc265f9dd575d5ff4904f13b5fac}{rpct\+\_\+pre\+\_\+call\+\_\+hook} (void $\ast$cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
+\item 
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{typing_8h_afa62adf9fe6a415494c529254b030086}{rpct\+\_\+post\+\_\+call\+\_\+hook} (void $\ast$cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \end{DoxyCompactItemize}
 
 
@@ -456,6 +462,24 @@ Deserializes object hierarchy previously serialized with \hyperlink{typing_8h_ab
 
 \begin{DoxyParams}{Parameters}
 {\em object} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_a4abbd4b37b9c85e3199721af771de323}\label{typing_8h_a4abbd4b37b9c85e3199721af771de323}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+find\+\_\+if\+\_\+member@{rpct\+\_\+find\+\_\+if\+\_\+member}}
+\index{rpct\+\_\+find\+\_\+if\+\_\+member@{rpct\+\_\+find\+\_\+if\+\_\+member}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+find\+\_\+if\+\_\+member()}{rpct\_find\_if\_member()}}
+{\footnotesize\ttfamily \hyperlink{typing_8h_aa2e55bcb066527416359bc5a5dde92b3}{rpct\+\_\+if\+\_\+member\+\_\+t} rpct\+\_\+find\+\_\+if\+\_\+member (\begin{DoxyParamCaption}\item[{const char $\ast$}]{interface,  }\item[{const char $\ast$}]{member }\end{DoxyParamCaption})}
+
+Finds the member {\ttfamily member} of interface {\ttfamily interface}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em interface} & Interface name \\
+\hline
+{\em member} & Member name \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
@@ -845,6 +869,38 @@ Type instance handle or N\+U\+LL in case of error
 {\em typei} & \\
 \hline
 {\em object} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_afa62adf9fe6a415494c529254b030086}\label{typing_8h_afa62adf9fe6a415494c529254b030086}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+post\+\_\+call\+\_\+hook@{rpct\+\_\+post\+\_\+call\+\_\+hook}}
+\index{rpct\+\_\+post\+\_\+call\+\_\+hook@{rpct\+\_\+post\+\_\+call\+\_\+hook}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+post\+\_\+call\+\_\+hook()}{rpct\_post\_call\_hook()}}
+{\footnotesize\ttfamily \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpct\+\_\+post\+\_\+call\+\_\+hook (\begin{DoxyParamCaption}\item[{void $\ast$}]{cookie,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{args }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em cookie} & \\
+\hline
+{\em args} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_a07cecc265f9dd575d5ff4904f13b5fac}\label{typing_8h_a07cecc265f9dd575d5ff4904f13b5fac}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+pre\+\_\+call\+\_\+hook@{rpct\+\_\+pre\+\_\+call\+\_\+hook}}
+\index{rpct\+\_\+pre\+\_\+call\+\_\+hook@{rpct\+\_\+pre\+\_\+call\+\_\+hook}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+pre\+\_\+call\+\_\+hook()}{rpct\_pre\_call\_hook()}}
+{\footnotesize\ttfamily \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpct\+\_\+pre\+\_\+call\+\_\+hook (\begin{DoxyParamCaption}\item[{void $\ast$}]{cookie,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{args }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em cookie} & \\
+\hline
+{\em args} & \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
