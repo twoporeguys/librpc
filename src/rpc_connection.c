@@ -269,28 +269,51 @@ static void
 on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 {
 	struct rpc_inbound_call *call;
+	const char *method = NULL;
+	const char *interface = NULL;
+	const char *path = NULL;
+	rpc_object_t call_args = NULL;
 
 	if (conn->rco_server == NULL) {
 		rpc_connection_send_err(conn, id, ENOTSUP, "Not supported");
 		return;
 	}
 
+	rpc_object_unpack(args, "{s,s,s,v}",
+	    "method", &method,
+	    "interface", &interface,
+	    "path", &path,
+	    "args", &call_args);
+
+	if (method == NULL) {
+		rpc_connection_send_err(conn, id, EINVAL,
+		    "Method name not provided");
+		return;
+	}
+
+	call_args = call_args != NULL
+	    ? rpc_retain(call_args)
+	    : rpc_array_create();
+
+	if (rpc_get_type(call_args) != RPC_TYPE_ARRAY) {
+		rpc_connection_send_err(conn, id, EINVAL,
+		    "Method arguments must be an array");
+		return;
+	}
+
 	call = g_malloc0(sizeof(*call));
 	call->ric_conn = conn;
+	call->ric_frame = rpc_retain(args);
 	call->ric_id = id;
-	call->ric_args = rpc_dictionary_has_key(args, "args")
-	    ? rpc_dictionary_get_value(args, "args")
-	    : rpc_array_create();
-	call->ric_name = rpc_dictionary_get_string(args, "method");
-	call->ric_interface = rpc_dictionary_get_string(args, "interface");
-	call->ric_path = rpc_dictionary_get_string(args, "path");
+	call->ric_args = call_args;
+	call->ric_name = method;
+	call->ric_interface = interface;
+	call->ric_path = path;
 	g_mutex_init(&call->ric_mtx);
 	g_cond_init(&call->ric_cv);
 	g_hash_table_insert(conn->rco_inbound_calls,
 	    (gpointer)rpc_string_get_string_ptr(id), call);
 
-	rpc_retain(call->ric_id);
-	rpc_retain(call->ric_args);
 	rpc_server_dispatch(conn->rco_server, call);
 }
 
@@ -834,8 +857,7 @@ rpc_connection_close_inbound_call(struct rpc_inbound_call *call)
 
 	g_hash_table_remove(conn->rco_inbound_calls, rpc_string_get_string_ptr(
 	    call->ric_id));
-	rpc_release(call->ric_args);
-	rpc_release(call->ric_id);
+	rpc_release(call->ric_frame);
 	g_free(call);
 }
 
@@ -997,6 +1019,7 @@ rpc_connection_dispatch(rpc_connection_t conn, rpc_object_t frame)
 
 		args = rpc_dictionary_get_value(frame, "args");
 		h->handler(conn, args, id);
+		rpc_release(frame);
 		return;
 	}
 
