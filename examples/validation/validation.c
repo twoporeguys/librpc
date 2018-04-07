@@ -63,6 +63,7 @@ main(int argc __unused, const char *argv[] __unused)
 	rpct_load_types("validation.yaml");
 
 	ctx = rpc_context_create();
+	rpct_allow_idl_download(ctx);
 	rpc_context_set_pre_call_hook(ctx, RPC_FUNCTION(rpct_pre_call_hook));
 	rpc_context_set_post_call_hook(ctx, RPC_FUNCTION(rpct_post_call_hook));
 

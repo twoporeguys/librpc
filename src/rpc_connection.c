@@ -304,7 +304,7 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	call = g_malloc0(sizeof(*call));
 	call->ric_conn = conn;
 	call->ric_frame = rpc_retain(args);
-	call->ric_id = id;
+	call->ric_id = rpc_retain(id);
 	call->ric_args = call_args;
 	call->ric_name = method;
 	call->ric_interface = interface;
@@ -858,6 +858,7 @@ rpc_connection_close_inbound_call(struct rpc_inbound_call *call)
 	g_hash_table_remove(conn->rco_inbound_calls, rpc_string_get_string_ptr(
 	    call->ric_id));
 	rpc_release(call->ric_frame);
+	rpc_release(call->ric_id);
 	g_free(call);
 }
 

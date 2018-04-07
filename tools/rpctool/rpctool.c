@@ -90,8 +90,10 @@ connect(void)
 
 	rpct_init();
 
-	for (idl = idls; *idl != NULL; idl++)
-		rpct_load_types(*idl);
+	if (idls != NULL) {
+		for (idl = idls; *idl != NULL; idl++)
+			rpct_load_types(*idl);
+	}
 
 	client = rpc_client_create(server, NULL);
 	if (client == NULL) {

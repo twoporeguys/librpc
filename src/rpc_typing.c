@@ -37,6 +37,7 @@ static int rpct_lookup_type(const char *name, const char **decl,
 static struct rpct_type *rpct_find_type(const char *name);
 static struct rpct_type *rpct_find_type_fuzzy(const char *name,
     struct rpct_file *origin);
+static rpc_object_t rpct_download_idl(void *cookie, rpc_object_t args);
 static inline bool rpct_type_is_fully_specialized(struct rpct_typei *inst);
 static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *typei);
 static char *rpct_canonical_type(struct rpct_typei *typei);
@@ -62,6 +63,11 @@ static const char *builtin_types[] = {
 	"error",
 	"any",
 	NULL
+};
+
+static const struct rpc_if_member rpct_typing_vtable[] = {
+	RPC_METHOD(download, rpct_download_idl),
+	RPC_MEMBER_END
 };
 
 rpct_typei_t
@@ -204,6 +210,19 @@ rpct_find_type(const char *name)
 
 	return (type);
 
+}
+
+static rpc_object_t
+rpct_download_idl(void *cookie, rpc_object_t args __unused)
+{
+	GHashTableIter iter;
+	struct rpct_file *file;
+
+	g_hash_table_iter_init(&iter, context->files);
+	while (g_hash_table_iter_next(&iter, NULL, (gpointer)&file))
+		rpc_function_yield(cookie, rpc_retain(file->body));
+
+	return (NULL);
 }
 
 static int
@@ -1293,6 +1312,13 @@ rpct_post_call_hook(void *cookie, rpc_object_t result)
 	}
 
 	return (NULL);
+}
+
+void
+rpct_allow_idl_download(rpc_context_t context)
+{
+	rpc_instance_register_interface(context->rcx_root,
+	    RPCT_TYPING_INTERFACE, rpct_typing_vtable, NULL);
 }
 
 int

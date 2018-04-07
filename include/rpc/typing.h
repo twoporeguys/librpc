@@ -33,6 +33,7 @@
  * @file typing.h
  */
 
+#define	RPCT_TYPING_INTERFACE	"com.twoporeguys.librpc.Typing"
 #define	RPCT_TYPE_FIELD		"%type"
 #define	RPCT_VALUE_FIELD	"%value"
 
@@ -594,5 +595,11 @@ rpc_object_t rpct_pre_call_hook(void *cookie, rpc_object_t args);
  * @return
  */
 rpc_object_t rpct_post_call_hook(void *cookie, rpc_object_t args);
+
+/**
+ *
+ * @param context
+ */
+void rpct_allow_idl_download(rpc_context_t context);
 
 #endif /* LIBRPC_TYPING_H */
