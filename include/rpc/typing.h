@@ -468,6 +468,15 @@ bool rpct_interface_apply(rpct_interface_applier_t applier);
 bool rpct_if_member_apply(rpct_interface_t iface, rpct_if_member_applier_t applier);
 
 /**
+ * Finds the member @p member of interface @p interface.
+ *
+ * @param interface Interface name
+ * @param member Member name
+ * @return
+ */
+rpct_if_member_t rpct_find_if_member(const char *interface, const char *member);
+
+/**
  * Creates a new type instance from provided declaration.
  *
  * @param decl Type declaration
@@ -569,5 +578,21 @@ bool rpct_validate_return(struct rpct_if_member *func, rpc_object_t result,
  * @return
  */
 bool rpct_validate(rpct_typei_t typei, rpc_object_t obj, rpc_object_t *errors);
+
+/**
+ *
+ * @param cookie
+ * @param args
+ * @return
+ */
+rpc_object_t rpct_pre_call_hook(void *cookie, rpc_object_t args);
+
+/**
+ *
+ * @param cookie
+ * @param args
+ * @return
+ */
+rpc_object_t rpct_post_call_hook(void *cookie, rpc_object_t args);
 
 #endif /* LIBRPC_TYPING_H */

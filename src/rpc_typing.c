@@ -1172,7 +1172,6 @@ rpct_validate_args(struct rpct_if_member *func, rpc_object_t args,
 	errctx.errors = g_ptr_array_new();
 
 	rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
-
 		rpct_typei_t typei = g_ptr_array_index(func->arguments, idx);
 
 		if (!rpct_validate_instance(typei, i, &errctx))
@@ -1232,6 +1231,45 @@ rpct_validate(struct rpct_typei *typei, rpc_object_t obj, rpc_object_t *errors)
 
 	g_ptr_array_free(errctx.errors, false);
 	return (valid);
+}
+
+rpc_object_t
+rpct_pre_call_hook(void *cookie, rpc_object_t args)
+{
+	struct rpc_inbound_call *ic = cookie;
+	struct rpct_if_member *member;
+	rpc_object_t errors;
+
+	member = rpct_find_if_member(ic->ric_interface, ic->ric_name);
+	if (member == NULL)
+		return (NULL);
+
+	if (!rpct_validate_args(member, args, &errors)) {
+		rpc_function_error_ex(cookie, rpc_error_create(EINVAL,
+		    "Validation failed", errors));
+	}
+
+	return (NULL);
+}
+
+
+rpc_object_t
+rpct_post_call_hook(void *cookie, rpc_object_t result)
+{
+	struct rpc_inbound_call *ic = cookie;
+	struct rpct_if_member *member;
+	rpc_object_t errors;
+
+	member = rpct_find_if_member(ic->ric_interface, ic->ric_name);
+	if (member == NULL)
+		return (NULL);
+
+	if (!rpct_validate_return(member, result, &errors)) {
+		rpc_function_error_ex(cookie, rpc_error_create(EINVAL,
+		    "Validation failed", errors));
+	}
+
+	return (NULL);
 }
 
 int
@@ -1645,6 +1683,27 @@ rpct_if_member_apply(rpct_interface_t iface, rpct_if_member_applier_t applier)
 		}
 
 	return (flag);
+}
+
+rpct_if_member_t
+rpct_find_if_member(const char *interface, const char *member)
+{
+	struct rpct_if_member *ret;
+	struct rpct_interface *iface;
+
+	iface = g_hash_table_lookup(context->interfaces, interface);
+	if (iface == NULL) {
+		rpc_set_last_errorf(ENOENT, "Interface not found");
+		return (NULL);
+	}
+
+	ret = g_hash_table_lookup(iface->members, member);
+	if (ret == NULL) {
+		rpc_set_last_errorf(ENOENT, "Member not found");
+		return (NULL);
+	}
+
+	return (ret);
 }
 
 rpc_object_t
