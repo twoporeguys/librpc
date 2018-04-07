@@ -997,7 +997,6 @@ rpc_connection_dispatch(rpc_connection_t conn, rpc_object_t frame)
 
 		args = rpc_dictionary_get_value(frame, "args");
 		h->handler(conn, args, id);
-		rpc_release(frame);
 		return;
 	}
 

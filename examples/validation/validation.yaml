@@ -1,0 +1,41 @@
+---
+meta:
+  version: 1
+  namespace: com.twoporeguys.librpc.examples
+  description: Example server API
+
+
+struct Animal:
+  members:
+    name:
+      type: string
+
+    age:
+      type: uint64
+
+
+struct Dog:
+  inherits: Animal
+  members:
+    breed:
+      type: string
+
+
+struct Cat:
+  inherits: Animal
+  members:
+    breed:
+      type: string
+
+    strength:
+      type: double
+
+
+interface AnimalManager:
+  method create:
+    args:
+    - name: animal
+      type: Animal
+
+    return:
+      type: string

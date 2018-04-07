@@ -46,6 +46,7 @@ static int cmd_set(int argc, char *argv[]);
 static int cmd_listen(int argc, char *argv[]);
 
 static const char *server;
+static const char **idls;
 static char **args;
 static bool json;
 static bool yaml;
@@ -67,6 +68,7 @@ static GOptionEntry options[] = {
 	{ "server", 's', 0, G_OPTION_ARG_STRING, &server, "Server URI", NULL },
 	{ "json", 'j', 0, G_OPTION_ARG_NONE, &json, "JSON output", NULL },
 	{ "yaml", 'y', 0, G_OPTION_ARG_NONE, &yaml, "YAML output", NULL },
+	{ "idl", 'i', 0, G_OPTION_ARG_STRING_ARRAY, &idls, "IDL files to load", NULL },
 	{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args, "", NULL },
 	{ }
 };
@@ -76,6 +78,7 @@ connect(void)
 {
 	rpc_client_t client;
 	rpc_object_t error;
+	const char **idl;
 
 	if (server == NULL)
 		server = getenv("LIBRPC_SERVER");
@@ -86,6 +89,10 @@ connect(void)
 	}
 
 	rpct_init();
+
+	for (idl = idls; *idl != NULL; idl++)
+		rpct_load_types(*idl);
+
 	client = rpc_client_create(server, NULL);
 	if (client == NULL) {
 		error = rpc_get_last_error();

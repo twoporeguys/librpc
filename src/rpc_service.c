@@ -77,7 +77,6 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	struct rpc_if_method *method = call->ric_method;
 	rpc_connection_t conn = call->ric_conn;
 	rpc_object_t result;
-	rpc_object_t error;
 
 	if (method == NULL) {
 		rpc_function_error(call, ENOENT, "Method not found");
@@ -757,6 +756,21 @@ rpc_instance_unregister_member(rpc_instance_t instance, const char *interface,
 	g_hash_table_remove(priv->rip_members, name);
 	g_mutex_unlock(&priv->rip_mtx);
 	return (0);
+}
+
+void
+rpc_context_set_pre_call_hook(rpc_context_t context, rpc_function_t fn)
+{
+
+	context->rcx_pre_call_hook = fn;
+}
+
+
+void
+rpc_context_set_post_call_hook(rpc_context_t context, rpc_function_t fn)
+{
+
+	context->rcx_post_call_hook = fn;
 }
 
 int

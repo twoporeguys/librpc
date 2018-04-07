@@ -330,8 +330,8 @@ struct rpc_context
 	rpc_instance_t 		rcx_root;
 
 	/* Hooks */
-	rpc_function_f		rcx_pre_call_hook;
-	rpc_function_f		rcx_post_call_hook;
+	rpc_function_t		rcx_pre_call_hook;
+	rpc_function_t		rcx_post_call_hook;
 };
 
 struct rpc_bus_transport

@@ -1168,13 +1168,20 @@ rpct_validate_args(struct rpct_if_member *func, rpc_object_t args,
 	__block bool valid = true;
 	guint i;
 
+	if (func->arguments == NULL)
+		return (true);
+
 	errctx.path = "";
 	errctx.errors = g_ptr_array_new();
 
 	rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
-		rpct_typei_t typei = g_ptr_array_index(func->arguments, idx);
+		struct rpct_argument *arg;
 
-		if (!rpct_validate_instance(typei, i, &errctx))
+		if (idx >= func->arguments->len)
+			return ((bool)false);
+
+		arg = g_ptr_array_index(func->arguments, idx);
+		if (!rpct_validate_instance(arg->type, i, &errctx))
 			valid = false;
 
 		return ((bool)true);
@@ -1200,6 +1207,8 @@ bool
 rpct_validate_return(struct rpct_if_member *func, rpc_object_t result,
     rpc_object_t *errors)
 {
+	if (func->result == NULL)
+		return (true);
 
 	return (rpct_validate(func->result, result, errors));
 }
@@ -1284,7 +1293,7 @@ rpct_init(void)
 	context->types = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 	    (GDestroyNotify)rpct_type_free);
 	context->interfaces = g_hash_table_new_full(g_str_hash, g_str_equal,
-	    g_free, (GDestroyNotify)rpct_if_member_free);
+	    g_free, NULL);
 
 	for (b = builtin_types; *b != NULL; b++) {
 		type = g_malloc0(sizeof(*type));
