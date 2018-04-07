@@ -91,11 +91,9 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	debugf("method=%p", method);
 
 	if (context->rcx_pre_call_hook != NULL) {
-		error = context->rcx_pre_call_hook(call, call->ric_args);
-		if (error != NULL) {
-			rpc_function_error_ex(call, error);
+		context->rcx_pre_call_hook(call, call->ric_args);
+		if (call->ric_responded)
 			return;
-		}
 	}
 
 	result = method->rm_block((void *)call, call->ric_args);
@@ -104,11 +102,9 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 		return;
 
 	if (context->rcx_post_call_hook != NULL) {
-		error = context->rcx_post_call_hook(call, result);
-		if (error != NULL) {
-			rpc_function_error_ex(call, error);
+		context->rcx_post_call_hook(call, result);
+		if (call->ric_responded)
 			return;
-		}
 	}
 
 	if (!call->ric_streaming && !call->ric_responded)
