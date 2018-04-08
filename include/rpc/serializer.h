@@ -34,6 +34,10 @@
  * @file serializer.h
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * Checks whether specified serializer is available.
  *
@@ -64,4 +68,8 @@ int rpc_serializer_dump(const char *_Nonnull serializer,
     _Nonnull rpc_object_t obj, void *_Nullable *_Nonnull framep,
     size_t *_Nullable lenp);
 
-#endif //LIBRPC_SERIALIZER_H
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* LIBRPC_SERIALIZER_H */
