@@ -100,11 +100,6 @@ typedef struct rpct_member *rpct_member_t;
 typedef struct rpct_interface *rpct_interface_t;
 
 /**
- * Represents a function.
- */
-typedef struct rpct_function *rpct_function_t;
-
-/**
  * Represents a function argument.
  */
 typedef struct rpct_argument *rpct_argument_t;
