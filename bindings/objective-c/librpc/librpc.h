@@ -27,6 +27,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class RPCObject;
+@class RPCCall;
 @class RPCInstance;
 @class RPCInterface;
 
@@ -46,6 +48,11 @@ typedef NS_ENUM(NSInteger, RPCType) {
     RPCTypeArray,           /**< Array of values */
     RPCTypeError            /**< Error object */
 };
+
+typedef void (^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull value);
+typedef void (^RPCPropertyCallback)(RPCObject *_Nonnull value);
+typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull path,
+                                 NSString * _Nonnull interface, NSString * _Nonnull method);
 
 /**
  * A boxed type representing librpc value.
@@ -119,6 +126,11 @@ typedef NS_ENUM(NSInteger, RPCType) {
  * A boxed type representing librpc 64-bit unsigned integer.
  */
 @interface RPCUnsignedInt : RPCObject
+/**
+ * Initializes a new uint64 value.
+ *
+ * @param value Object value
+ */
 - (nonnull instancetype)init:(nonnull NSNumber *)value;
 @end
 
@@ -126,6 +138,11 @@ typedef NS_ENUM(NSInteger, RPCType) {
  * A boxed type representing librpc 64-bit bool.
  */
 @interface RPCBool : RPCObject
+/**
+ * Initializes a new boolean value.
+ *
+ * @param value Object value (YES or NO)
+ */
 - (nonnull instancetype)init:(BOOL)value;
 @end
 
@@ -133,6 +150,11 @@ typedef NS_ENUM(NSInteger, RPCType) {
  * A boxed type representing librpc double precision floating point number.
  */
 @interface RPCDouble : RPCObject
+/**
+ * Initializes a new double value.
+ *
+ * @param value Object value
+ */
 - (nonnull instancetype)init:(nonnull NSNumber *)value;
 @end
 
@@ -174,18 +196,20 @@ typedef NS_ENUM(NSInteger, RPCType) {
  * received from the server.
  */
 - (nullable RPCObject *)result;
+
+/**
+ * Interfaces with NSFastEnumeration interface.
+ *
+ * This function shouldn't be called directly, it is used by the Objective C runtime
+ * to allow using foreach loop on the call object.
+ */
 - (NSUInteger)countByEnumeratingWithState:(nonnull NSFastEnumerationState *)state
                                   objects:(id _Nullable __unsafe_unretained [_Nullable])buffer
                                     count:(NSUInteger)len;
 @end
 
-typedef void (^RPCFunctionCallback)(RPCCall * _Nonnull call, RPCObject * _Nonnull value);
-typedef void (^RPCPropertyCallback)(RPCObject *_Nonnull value);
-typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull path,
-                                NSString * _Nonnull interface, NSString * _Nonnull method);
-
 @interface RPCListenHandle : NSObject
-- (void)release;
+- (void)cancel;
 @end
 
 @interface RPCClient : NSObject
@@ -208,6 +232,14 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
  * Returns a dictionary of instances found on the server.
  */
 - (nonnull NSDictionary<NSString *, RPCInstance *> *)instances;
+
+/**
+ * Configures dispatch queue to be used by callbacks.
+ *
+ * Setting this to @p NULL switches back to internal librpc thread pool.
+ *
+ * @param queue Dispatch queue to use
+ */
 - (void)setDispatchQueue:(nullable dispatch_queue_t)queue;
 
 - (nullable id)findInstance:(nonnull NSString *)name
@@ -249,10 +281,10 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
  * @param path Path of the instance to watch
  * @param interface Interface name containing the @p event
  */
-- (void)eventObserver:(nonnull NSString *)event
-                 path:(nonnull NSString *)path
-            interface:(nonnull NSString *)interface
-             callback:(nullable RPCEventCallback)cb;
+- (nonnull RPCListenHandle *)eventObserver:(nonnull NSString *)event
+                                      path:(nonnull NSString *)path
+                                 interface:(nonnull NSString *)interface
+                                  callback:(nullable RPCEventCallback)cb;
 
 /**
  * Sets up a callback to be fired whenever property value changes.
@@ -264,10 +296,10 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
  * @param path Path of the instance to watch
  * @param interface Interface name containing the property
  */
-- (void)observeProperty:(nonnull NSString *)name
-                   path:(nonnull NSString *)path
-              interface:(nonnull NSString *)interface
-               callback:(nullable RPCPropertyCallback)cb;
+- (nonnull RPCListenHandle *)observeProperty:(nonnull NSString *)name
+                                        path:(nonnull NSString *)path
+                                   interface:(nonnull NSString *)interface
+                                    callback:(nullable RPCPropertyCallback)cb;
 
 @end
 
@@ -313,22 +345,61 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
  */
 @property (readonly, nullable) NSString *interface;
 @property (readonly, nullable) NSArray<NSDictionary *> *properties;
+
+/**
+ * List of methods offered by the interface.
+ */
 @property (readonly, nullable) NSArray<NSString *> *methods;
 
-- (void)observeProperty:(nonnull NSString *)name
-               callback:(nonnull RPCPropertyCallback)cb;
+/**
+ * Watches for property value changes.
+ *
+ * This function fires the callback @p cb whenever property @p name
+ * in the interface changes it's value.
+ *
+ * @param name Property name
+ * @param cb Callback to call whenever property value changes
+ */
+- (nonnull RPCListenHandle *)observeProperty:(nonnull NSString *)name
+                                    callback:(nonnull RPCPropertyCallback)cb;
 
+/**
+ * Issues a synchronous method call to the server.
+ *
+ * @param method Method name to call
+ * @param error Pointer to store error object in case of failure
+ */
 - (nullable id)call:(nonnull NSString *)method
               error:(NSError *_Nullable *_Nullable)error;
 
+/**
+ * Issues a synchronous method call to the server.
+ *
+ * @param method Method name to call
+ * @param args Method arguments list
+ * @param error Pointer to store error object in case of failure
+ */
 - (nullable id)call:(nonnull NSString *)method
                args:(nullable NSObject *)args
               error:(NSError *_Nullable *_Nullable)error;
 
+/**
+ * Retrieves a property value.
+ *
+ * @param property Property name
+ * @param error Pointer to store error object in case of failure
+ */
 - (nullable id)get:(nonnull NSString *)property
              error:(NSError *_Nullable *_Nullable)error;
 
-- (nullable id)set:(nonnull NSString *)method
+/**
+ * Sets a property value.
+ *
+ * @param property Property name
+ * @param value Property value
+ * @param error Pointer to store error object in case of failure
+ */
+- (nullable id)set:(nonnull NSString *)property
              value:(nullable NSObject *)value
              error:(NSError *_Nullable *_Nullable)error;
 

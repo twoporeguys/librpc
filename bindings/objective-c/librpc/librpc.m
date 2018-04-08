@@ -317,6 +317,29 @@
 }
 @end
 
+@interface RPCListenHandle (PrivateMethods)
+- (instancetype)initWithConn:(rpc_connection_t)conn andCookie:(void *)cookie;
+@end
+
+@implementation RPCListenHandle
+{
+    rpc_connection_t _conn;
+    void *_cookie;
+}
+
+- (instancetype)initWithConn:(rpc_connection_t)conn andCookie:(void *)cookie
+{
+    _conn = conn;
+    _cookie = cookie;
+    return self;
+}
+
+- (void)cancel
+{
+    rpc_connection_unregister_event_handler(_conn, _cookie);
+}
+@end
+
 #pragma mark - RPCClient
 
 @implementation RPCClient {
@@ -324,7 +347,8 @@
     rpc_connection_t conn;
 }
 
-- (BOOL)connect:(NSString *)uri error:(NSError **)error {
+- (BOOL)connect:(NSString *)uri error:(NSError **)error
+{
     client = rpc_client_create([uri UTF8String], NULL);
     if (client) {
         conn = rpc_client_get_connection(client);
@@ -463,32 +487,41 @@
     });
 }
 
-- (void)eventObserver:(NSString *)method
+- (nonnull RPCListenHandle *)eventObserver:(NSString *)method
                  path:(NSString *)path
             interface:(NSString *)interface
              callback:(RPCEventCallback)cb
 {
-    rpc_connection_register_event_handler(conn, [path UTF8String], [interface UTF8String],
-                                          [method UTF8String], ^(const char *pathReturn,
-                                                                 const char *interfaceReturn,
-                                                                 const char *methodReturn,
-                                                                 rpc_object_t args) {
-                cb([[RPCObject alloc] initFromNativeObject: args],
-                   [[NSString alloc] initWithString:@(pathReturn)],
-                   [[NSString alloc] initWithString:@(interfaceReturn)],
-                   [[NSString alloc] initWithString:@(methodReturn)]);
-            });
+    void *cookie;
+
+    cookie = rpc_connection_register_event_handler(conn,
+        [path UTF8String], [interface UTF8String], [method UTF8String],
+        ^(const char *pathReturn, const char *interfaceReturn,
+          const char *methodReturn, rpc_object_t args) {
+            cb([[RPCObject alloc] initFromNativeObject: args],
+               [[NSString alloc] initWithString:@(pathReturn)],
+               [[NSString alloc] initWithString:@(interfaceReturn)],
+               [[NSString alloc] initWithString:@(methodReturn)]);
+        });
+
+    NSAssert(cookie != NULL, @"rpc_connection_register_event_handler() failure");
+    return [[RPCListenHandle alloc] initWithConn:conn andCookie:cookie];
 }
 
-- (void)observeProperty:(NSString *)name
+- (nonnull RPCListenHandle *)observeProperty:(NSString *)name
                    path:(NSString *)path
               interface:(NSString *)interface
                callback:(RPCPropertyCallback)cb
 {
-    rpc_connection_watch_property(conn, [path UTF8String], [interface UTF8String],
-                                  [name UTF8String], ^(rpc_object_t v) {
+    void *cookie;
+
+    cookie = rpc_connection_watch_property(conn, [path UTF8String], [interface UTF8String],
+                                           [name UTF8String], ^(rpc_object_t v) {
         cb([[RPCObject alloc] initFromNativeObject:v]);
     });
+
+    NSAssert(cookie != NULL, @"rpc_connection_watch_property() failure");
+    return [[RPCListenHandle alloc] initWithConn:conn andCookie:cookie];
 }
 @end
 
@@ -573,9 +606,9 @@
     return result.copy;
 }
 
-- (void)observeProperty:(NSString *)name callback:(RPCPropertyCallback)cb
+- (nonnull RPCListenHandle *)observeProperty:(NSString *)name callback:(RPCPropertyCallback)cb
 {
-    [_client observeProperty:name path:_path interface:_interface callback:cb];
+    return [_client observeProperty:name path:_path interface:_interface callback:cb];
 }
 
 - (id)recursivelyUnpackProperties:(id)container
