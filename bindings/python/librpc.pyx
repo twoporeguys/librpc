@@ -1941,6 +1941,10 @@ cdef class FunctionArgument(object):
         def __get__(self):
             return str_or_none(rpct_argument_get_description(self.c_arg))
 
+    property name:
+        def __get__(self):
+            return str_or_none(rpct_argument_get_name(self.c_arg))
+
     property type:
         def __get__(self):
             return TypeInstance.init_from_ptr(rpct_argument_get_typei(self.c_arg))

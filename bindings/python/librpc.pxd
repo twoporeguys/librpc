@@ -361,6 +361,7 @@ cdef extern from "rpc/typing.h" nogil:
     rpct_argument_t rpct_method_get_argument(rpct_if_member_t method, int index)
     rpct_typei_t rpct_property_get_type(rpct_if_member_t prop)
 
+    const char *rpct_argument_get_name(rpct_argument_t arg)
     const char *rpct_argument_get_description(rpct_argument_t arg)
     rpct_typei_t rpct_argument_get_typei(rpct_argument_t arg)
 
