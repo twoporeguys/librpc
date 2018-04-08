@@ -189,6 +189,19 @@ rpc_trace(const char *msg, rpc_object_t frame)
 	g_free(descr);
 }
 
+void
+rpc_abort(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	fprintf(stderr, "librpc fatal error: ");
+	vfprintf(stderr, fmt, ap);
+	fprintf(stderr, "\n");
+	fflush(stderr);
+	abort();
+}
+
 #ifdef _WIN32
 char *
 rpc_get_backtrace(void)
