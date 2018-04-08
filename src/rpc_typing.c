@@ -48,7 +48,7 @@ static void rpct_interface_free(struct rpct_interface *iface);
 
 static struct rpct_context *context = NULL;
 static const char *builtin_types[] = {
-	"null",
+	"nulltype",
 	"bool",
 	"uint64",
 	"int64",
@@ -1154,6 +1154,11 @@ rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
 		/* Can only be builtin type */
 		if (g_strcmp0(raw_typei->canonical_form, "any") == 0)
 			goto step3;
+
+		if (g_strcmp0(raw_typei->canonical_form, "nullptr") == 0) {
+			if (obj->ro_type == RPC_TYPE_NULL)
+				goto step3;
+		}
 
 		if (g_strcmp0(rpc_get_type_name(obj->ro_type),
 		    raw_typei->canonical_form) == 0)
