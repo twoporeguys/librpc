@@ -44,7 +44,7 @@ struct_read_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
 	    "constraints", &constraints);
 
 	if (typedecl == NULL) {
-		rpc_set_last_error(EINVAL, "type key not provided or invalid", NULL);
+		rpc_set_last_errorf(EINVAL, "%s: type key not provided or invalid", decl);
 		return (NULL);
 	}
 

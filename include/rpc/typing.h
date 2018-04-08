@@ -425,6 +425,14 @@ rpct_argument_t rpct_method_get_argument(rpct_if_member_t method, int index);
 rpct_typei_t rpct_property_get_type(rpct_if_member_t prop);
 
 /**
+ * Returns name associated with the argument.
+ *
+ * @param arg Argument handle
+ * @return Argument name
+ */
+const char *rpct_argument_get_name(rpct_argument_t arg);
+
+/**
  * Returns description string associated with the argument.
  *
  * @param arg Argument handle

@@ -681,22 +681,24 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 	if (inherits != NULL) {
 		parent = rpct_find_type_fuzzy(inherits, file);
-		if (parent == NULL)
+		if (parent == NULL) {
+			rpc_set_last_errorf(ENOENT,
+			    "Cannot find parent type: %s", inherits);
 			return (-1);
+		}
 	}
 
 	regex = g_regex_new(TYPE_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
-	if (err != NULL) {
-		g_error_free(err);
-		return (-1);
-	}
+	g_assert_no_error(err);
 
 	if (!g_regex_match(regex, decl, 0, &match)) {
+		rpc_set_last_errorf(EINVAL, "Syntax error: %s", decl);
 		g_regex_unref(regex);
 		return (-1);
 	}
 
 	if (g_match_info_get_match_count(match) < 2) {
+		rpc_set_last_errorf(EINVAL, "Syntax error: %s", decl);
 		g_regex_unref(regex);
 		g_match_info_free(match);
 		return (-1);
@@ -727,6 +729,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 	handler = rpc_find_class_handler(decltype, (rpct_class_t)-1);
 	if (handler == NULL) {
+		rpc_set_last_errorf(EINVAL, "Unknown class handler: %s", decltype);
 		g_regex_unref(regex);
 		g_match_info_free(match);
 		rpct_type_free(type);
@@ -1381,6 +1384,9 @@ int
 rpct_load_types(const char *path)
 {
 	struct rpct_file *file;
+	rpc_object_t error;
+	char *errmsg;
+	bool fail;
 
 	if (rpct_read_file(path) != 0)
 		return (-1);
@@ -1388,22 +1394,30 @@ rpct_load_types(const char *path)
 	file = g_hash_table_lookup(context->files, path);
 	g_assert_nonnull(file);
 
-	if (rpc_dictionary_apply(file->body, ^(const char *key,
-		rpc_object_t v) {
+	fail = rpc_dictionary_apply(file->body, ^bool(const char *key,
+	    rpc_object_t v) {
 		if (g_strcmp0(key, "meta") == 0)
-			return ((bool)true);
+			return (true);
 
 		if (g_str_has_prefix(key, "interface")) {
 			if (rpct_read_interface(file, key, v) != 0)
 				return ((bool)false);
 
-			return ((bool)true);
-	    }
+			return (true);
+	    	}
 
-		rpct_read_type(file, key, v);
-		return ((bool)true);
-	}))
+		if (rpct_read_type(file, key, v) != 0)
+			return (false);
+
+		return (true);
+	});
+
+	if (fail) {
+		error = rpc_get_last_error();
+		errmsg = g_strdup_printf("%s: %s", path, rpc_error_get_message(error));
+		rpc_set_last_error(rpc_error_get_code(error), errmsg, rpc_error_get_extra(error));
 		return (-1);
+	}
 
 	return (0);
 }
