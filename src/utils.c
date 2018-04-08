@@ -199,7 +199,9 @@ rpc_abort(const char *fmt, ...)
 	vfprintf(stderr, fmt, ap);
 	fprintf(stderr, "\n");
 	fflush(stderr);
+#ifndef NDEBUG
 	abort();
+#endif
 }
 
 #ifdef _WIN32
