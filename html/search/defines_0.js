@@ -15,7 +15,6 @@ var searchData=
   ['rpc_5fis_5ferror',['rpc_is_error',['../object_8h.html#aa125ec0a73c4c9953b07e5da1712573e',1,'object.h']]],
   ['rpc_5fmethod',['RPC_METHOD',['../service_8h.html#a3b7ed0fba131ae55d90cbf5deb8cba5d',1,'service.h']]],
   ['rpc_5fmethod_5fblock',['RPC_METHOD_BLOCK',['../service_8h.html#a1b9446e9faacdac7aae6e9e8601ebff3',1,'service.h']]],
-  ['rpc_5fnull_5fformat',['RPC_NULL_FORMAT',['../connection_8h.html#aaf641fc7d6364f49c859701d678c8d49',1,'connection.h']]],
   ['rpc_5fproperty_5fhandler',['RPC_PROPERTY_HANDLER',['../connection_8h.html#acb61d20219377e2bd2a4727367222ec2',1,'connection.h']]],
   ['rpc_5fproperty_5fro',['RPC_PROPERTY_RO',['../service_8h.html#acbb40848a04a99a67fa65f1a103af208',1,'service.h']]],
   ['rpc_5fproperty_5frw',['RPC_PROPERTY_RW',['../service_8h.html#a6f39d78ec8fde43f05f7805fddc525d4',1,'service.h']]],
@@ -23,6 +22,5 @@ var searchData=
   ['rpc_5fquery_5fcb',['RPC_QUERY_CB',['../query_8h.html#ac5142dc38666b2011833bab884b6af9d',1,'query.h']]],
   ['rpc_5frelease',['rpc_release',['../object_8h.html#aac19be935f72b35eeb2851bc509eabb2',1,'object.h']]],
   ['rpc_5fserver_5fhandler',['RPC_SERVER_HANDLER',['../server_8h.html#a34749fc2472ddb06c6d36006e2a948c3',1,'server.h']]],
-  ['rpc_5fserver_5fnamed_5fevent_5fhandler',['RPC_SERVER_NAMED_EVENT_HANDLER',['../server_8h.html#a002c9a10ea82840f0f563d74b29d82c1',1,'server.h']]],
   ['rpc_5fswap',['rpc_swap',['../object_8h.html#a541e997e04e48fe86df08ae323516490',1,'object.h']]]
 ];

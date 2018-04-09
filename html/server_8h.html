@@ -65,7 +65,6 @@ $(function() {
   <div class="summary">
 <a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
-<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">server.h File Reference</div>  </div>
@@ -91,26 +90,13 @@ Include dependency graph for server.h:</div>
 Macros</h2></td></tr>
 <tr class="memitem:a34749fc2472ddb06c6d36006e2a948c3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a34749fc2472ddb06c6d36006e2a948c3">RPC_SERVER_HANDLER</a>(_fn,  _arg)</td></tr>
 <tr class="separator:a34749fc2472ddb06c6d36006e2a948c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a002c9a10ea82840f0f563d74b29d82c1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a002c9a10ea82840f0f563d74b29d82c1">RPC_SERVER_NAMED_EVENT_HANDLER</a>(_fn,  _arg)</td></tr>
-<tr class="separator:a002c9a10ea82840f0f563d74b29d82c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a46fd27cbcf75a54103df9d51d90a7fca"><td class="memItemLeft" align="right" valign="top">typedef struct rpc_server *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a></td></tr>
 <tr class="separator:a46fd27cbcf75a54103df9d51d90a7fca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ce491dc0b073cd1e08b5ce332b731ec"><td class="memItemLeft" align="right" valign="top">typedef enum <a class="el" href="server_8h.html#a6b010c38b7e844b63e172993dfe9c73d">rpc_server_events</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a5ce491dc0b073cd1e08b5ce332b731ec">rpc_server_event_t</a></td></tr>
-<tr class="separator:a5ce491dc0b073cd1e08b5ce332b731ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a934d4eec5a957289e28f148a0f62e184"><td class="memItemLeft" align="right" valign="top">typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a934d4eec5a957289e28f148a0f62e184">rpc_server_event_handler_t</a>) (void *_Nonnull source, enum <a class="el" href="server_8h.html#a5ce491dc0b073cd1e08b5ce332b731ec">rpc_server_event_t</a> type, _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
-<tr class="separator:a934d4eec5a957289e28f148a0f62e184"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab71c06c0ee6ddd0239014ca8c51db2a5"><td class="memItemLeft" align="right" valign="top">typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#ab71c06c0ee6ddd0239014ca8c51db2a5">rpc_server_named_event_handler_t</a>) (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> source, const char *_Nonnull name, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
-<tr class="separator:ab71c06c0ee6ddd0239014ca8c51db2a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:a6b010c38b7e844b63e172993dfe9c73d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a6b010c38b7e844b63e172993dfe9c73d">rpc_server_events</a> { <a class="el" href="server_8h.html#a6b010c38b7e844b63e172993dfe9c73da204636e358ceac195cd4c372892246e6">RPC_CONNECTION_ARRIVED</a> = 1, 
-<a class="el" href="server_8h.html#a6b010c38b7e844b63e172993dfe9c73daf08493c583ac77512728da6ba9716995">RPC_CONNECTION_TERMINATED</a>
- }</td></tr>
-<tr class="separator:a6b010c38b7e844b63e172993dfe9c73d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d9a540637c63449db9ac5882cb5f7ab"><td class="memItemLeft" align="right" valign="top">typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a2d9a540637c63449db9ac5882cb5f7ab">rpc_server_event_handler_t</a>) (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> source, const char *_Nonnull name, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
+<tr class="separator:a2d9a540637c63449db9ac5882cb5f7ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -120,14 +106,10 @@ Functions</h2></td></tr>
 <tr class="separator:a52667e1f1ad29521541c60aae34dcf02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28eeff2b8ec73f31f1af9feff11cb698"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a28eeff2b8ec73f31f1af9feff11cb698">rpc_server_broadcast_event</a> (_Nonnull <a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a> server, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name, _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
 <tr class="separator:a28eeff2b8ec73f31f1af9feff11cb698"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f7be87ae4970d22b2a2c3a19057cdc4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a7f7be87ae4970d22b2a2c3a19057cdc4">rpc_server_set_event_handler</a> (_Nonnull <a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a> server, _Nullable <a class="el" href="server_8h.html#a934d4eec5a957289e28f148a0f62e184">rpc_server_event_handler_t</a> handler)</td></tr>
-<tr class="separator:a7f7be87ae4970d22b2a2c3a19057cdc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26060f7aded1d3afb4b81ec7a9cd1e39"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a26060f7aded1d3afb4b81ec7a9cd1e39">rpc_server_register_named_event_handler</a> (_Nonnull <a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a> server, const char *_Nonnull name, _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args, _Nullable <a class="el" href="server_8h.html#ab71c06c0ee6ddd0239014ca8c51db2a5">rpc_server_named_event_handler_t</a> handler)</td></tr>
-<tr class="separator:a26060f7aded1d3afb4b81ec7a9cd1e39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6bfcd59fe8ec8386b1e3d312705e786"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#ac6bfcd59fe8ec8386b1e3d312705e786">rpc_server_set_event_handler</a> (_Nullable <a class="el" href="server_8h.html#a2d9a540637c63449db9ac5882cb5f7ab">rpc_server_event_handler_t</a> handler)</td></tr>
+<tr class="separator:ac6bfcd59fe8ec8386b1e3d312705e786"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1bf6070b1bb3b31d394f3862405eaf8c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a1bf6070b1bb3b31d394f3862405eaf8c">rpc_server_close</a> (_Nonnull <a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a> server)</td></tr>
 <tr class="separator:a1bf6070b1bb3b31d394f3862405eaf8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95da73221725fbe28723537243cda8ee"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a95da73221725fbe28723537243cda8ee">rpc_server_get_connection_server</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
-<tr class="separator:a95da73221725fbe28723537243cda8ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>RPC server API. </p>
@@ -159,94 +141,29 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">^(<span class="keywordtype">void</span> *_source, <span class="keyword">enum</span> <a class="code" href="server_8h.html#a5ce491dc0b073cd1e08b5ce332b731ec">rpc_server_event_t</a> type, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _args) { \</div><div class="line">        _fn(_arg, _source, _type, _args);                \</div><div class="line">    }</div><div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00073">object.h:73</a></div></div>
-<div class="ttc" id="server_8h_html_a5ce491dc0b073cd1e08b5ce332b731ec"><div class="ttname"><a href="server_8h.html#a5ce491dc0b073cd1e08b5ce332b731ec">rpc_server_event_t</a></div><div class="ttdeci">enum rpc_server_events rpc_server_event_t</div></div>
-</div><!-- fragment --><p>Converts function pointer to a <a class="el" href="server_8h.html#a934d4eec5a957289e28f148a0f62e184">rpc_server_event_handler_t</a> block type. </p>
-
-<p class="definition">Definition at line <a class="el" href="server_8h_source.html#l00080">80</a> of file <a class="el" href="server_8h_source.html">server.h</a>.</p>
-
-</div>
-</div>
-<a id="a002c9a10ea82840f0f563d74b29d82c1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a002c9a10ea82840f0f563d74b29d82c1">&#9670;&nbsp;</a></span>RPC_SERVER_NAMED_EVENT_HANDLER</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define RPC_SERVER_NAMED_EVENT_HANDLER</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_fn, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_arg&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">^(<a class="code" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> _source, <span class="keyword">const</span> <span class="keywordtype">char</span> *_name, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _args) {    \</div><div class="line">        _fn(_arg, _source, _name, _args);               \</div><div class="line">    }</div><div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00073">object.h:73</a></div></div>
 <div class="ttc" id="connection_8h_html_a70838cb106c3464db299522c5fe2782d"><div class="ttname"><a href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a></div><div class="ttdeci">struct rpc_connection * rpc_connection_t</div><div class="ttdef"><b>Definition:</b> <a href="connection_8h_source.html#l00082">connection.h:82</a></div></div>
-</div><!-- fragment --><p>Converts function pointer to a <a class="el" href="server_8h.html#ab71c06c0ee6ddd0239014ca8c51db2a5">rpc_server_named_event_handler_t</a> block type. </p>
+</div><!-- fragment --><p>Converts function pointer to a <a class="el" href="server_8h.html#a2d9a540637c63449db9ac5882cb5f7ab">rpc_server_event_handler_t</a> block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="server_8h_source.html#l00089">89</a> of file <a class="el" href="server_8h_source.html">server.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="server_8h_source.html#l00064">64</a> of file <a class="el" href="server_8h_source.html">server.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Typedef Documentation</h2>
-<a id="a934d4eec5a957289e28f148a0f62e184"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a934d4eec5a957289e28f148a0f62e184">&#9670;&nbsp;</a></span>rpc_server_event_handler_t</h2>
+<a id="a2d9a540637c63449db9ac5882cb5f7ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d9a540637c63449db9ac5882cb5f7ab">&#9670;&nbsp;</a></span>rpc_server_event_handler_t</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef void(^ rpc_server_event_handler_t) (void *_Nonnull source, enum <a class="el" href="server_8h.html#a5ce491dc0b073cd1e08b5ce332b731ec">rpc_server_event_t</a> type, _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td>
+          <td class="memname">typedef void(^ rpc_server_event_handler_t) (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> source, const char *_Nonnull name, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Definition of RPC server event handler block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="server_8h_source.html#l00067">67</a> of file <a class="el" href="server_8h_source.html">server.h</a>.</p>
-
-</div>
-</div>
-<a id="a5ce491dc0b073cd1e08b5ce332b731ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5ce491dc0b073cd1e08b5ce332b731ec">&#9670;&nbsp;</a></span>rpc_server_event_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef enum <a class="el" href="server_8h.html#a6b010c38b7e844b63e172993dfe9c73d">rpc_server_events</a>  <a class="el" href="server_8h.html#a5ce491dc0b073cd1e08b5ce332b731ec">rpc_server_event_t</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Enumerates sources of server events. </p>
-
-</div>
-</div>
-<a id="ab71c06c0ee6ddd0239014ca8c51db2a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab71c06c0ee6ddd0239014ca8c51db2a5">&#9670;&nbsp;</a></span>rpc_server_named_event_handler_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef void(^ rpc_server_named_event_handler_t) (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> source, const char *_Nonnull name, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Definition of RPC server named event handler block type. </p>
-
-<p class="definition">Definition at line <a class="el" href="server_8h_source.html#l00074">74</a> of file <a class="el" href="server_8h_source.html">server.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="server_8h_source.html#l00058">58</a> of file <a class="el" href="server_8h_source.html">server.h</a>.</p>
 
 </div>
 </div>
@@ -264,30 +181,6 @@ Functions</h2></td></tr>
 <p>RPC server pointer structure definition. </p>
 
 <p class="definition">Definition at line <a class="el" href="server_8h_source.html#l00053">53</a> of file <a class="el" href="server_8h_source.html">server.h</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a6b010c38b7e844b63e172993dfe9c73d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6b010c38b7e844b63e172993dfe9c73d">&#9670;&nbsp;</a></span>rpc_server_events</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="server_8h.html#a6b010c38b7e844b63e172993dfe9c73d">rpc_server_events</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Enumerates sources of server events. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a6b010c38b7e844b63e172993dfe9c73da204636e358ceac195cd4c372892246e6"></a>RPC_CONNECTION_ARRIVED&#160;</td><td class="fielddoc"><p>Connection to server made </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a6b010c38b7e844b63e172993dfe9c73daf08493c583ac77512728da6ba9716995"></a>RPC_CONNECTION_TERMINATED&#160;</td><td class="fielddoc"><p>Connection closed or aborted </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="server_8h_source.html#l00058">58</a> of file <a class="el" href="server_8h_source.html">server.h</a>.</p>
 
 </div>
 </div>
@@ -410,83 +303,6 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a95da73221725fbe28723537243cda8ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95da73221725fbe28723537243cda8ee">&#9670;&nbsp;</a></span>rpc_server_get_connection_server()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">_Nullable <a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a> rpc_server_get_connection_server </td>
-          <td>(</td>
-          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
-          <td class="paramname"><em>conn</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Get the RPC server associated with a listener-side connection.</p>
-<p>May be used when receiving notification about the arrival/disconnect of a connection when the application has created multiple server objects.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">conn</td><td>The connection that has status change </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The server handle or NULL if the conn is not valid </dd></dl>
-
-</div>
-</div>
-<a id="a26060f7aded1d3afb4b81ec7a9cd1e39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a26060f7aded1d3afb4b81ec7a9cd1e39">&#9670;&nbsp;</a></span>rpc_server_register_named_event_handler()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void rpc_server_register_named_event_handler </td>
-          <td>(</td>
-          <td class="paramtype">_Nonnull <a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a>&#160;</td>
-          <td class="paramname"><em>server</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *_Nonnull&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
-          <td class="paramname"><em>args</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">_Nullable <a class="el" href="server_8h.html#ab71c06c0ee6ddd0239014ca8c51db2a5">rpc_server_named_event_handler_t</a>&#160;</td>
-          <td class="paramname"><em>handler</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Creates an event handler internal to a server for an event of a given name.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">server</td><td></td></tr>
-    <tr><td class="paramname">name</td><td></td></tr>
-    <tr><td class="paramname">args</td><td>Arguments to pass to the event handler </td></tr>
-    <tr><td class="paramname">handler</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a52667e1f1ad29521541c60aae34dcf02"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a52667e1f1ad29521541c60aae34dcf02">&#9670;&nbsp;</a></span>rpc_server_resume()</h2>
 
@@ -513,8 +329,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a7f7be87ae4970d22b2a2c3a19057cdc4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7f7be87ae4970d22b2a2c3a19057cdc4">&#9670;&nbsp;</a></span>rpc_server_set_event_handler()</h2>
+<a id="ac6bfcd59fe8ec8386b1e3d312705e786"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6bfcd59fe8ec8386b1e3d312705e786">&#9670;&nbsp;</a></span>rpc_server_set_event_handler()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -522,26 +338,15 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void rpc_server_set_event_handler </td>
           <td>(</td>
-          <td class="paramtype">_Nonnull <a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a>&#160;</td>
-          <td class="paramname"><em>server</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">_Nullable <a class="el" href="server_8h.html#a2d9a540637c63449db9ac5882cb5f7ab">rpc_server_event_handler_t</a>&#160;</td>
+          <td class="paramname"><em>handler</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">_Nullable <a class="el" href="server_8h.html#a934d4eec5a957289e28f148a0f62e184">rpc_server_event_handler_t</a>&#160;</td>
-          <td class="paramname"><em>handler</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Attaches a server event handler to process rpc_server_event_t events.</p>
+<p>Creates an event handler internal to a server for an event of a given name.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">server</td><td>server onto which to attach the handler </td></tr>
     <tr><td class="paramname">handler</td><td></td></tr>
   </table>
   </dd>
