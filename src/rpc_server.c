@@ -36,12 +36,18 @@ static int rpc_server_accept(rpc_server_t, rpc_connection_t);
 static int
 rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 {
-        struct rpc_dispatch_item *itm = g_malloc0(sizeof(*itm));
+        struct rpc_dispatch_item *itm;
 
+        if (server->rs_closed)
+                return (-1);
+        itm = g_malloc0(sizeof(*itm));
+        q_rw_lock_writer_lock(&server->rs_connections_rwlock);
 	server->rs_connections = g_list_append(server->rs_connections, conn);
+        q_rw_lock_writer_unlock(&server->rs_connections_rwlock);
         itm->rd_type = RPC_TYPE_CONNECTION
         itm->rd_item.rd_conn = conn;
         itm->code = (int)RPC_CONNECTION_ARRIVED;
+        itm->args = server;
         rpc_context_dispatch(server->rs_context, itm);
 	return (0);
 }
@@ -111,7 +117,9 @@ rpc_server_create(const char *uri, rpc_context_t context)
 	while (!server->rs_operational)
 		g_cond_wait(&server->rs_cv, &server->rs_mtx);
 
+        g_rw_lock_writer_lock(&context->rcx_server_rwlock);
 	g_ptr_array_add(context->rcx_servers, server);
+        g_rw_lock_writer_unlock(&context->rcx_server_rwlock);
 	g_mutex_unlock(&server->rs_mtx);
 	return (server);
 }
@@ -122,6 +130,8 @@ rpc_server_broadcast_event(rpc_server_t server, const char *path,
 {
 	GList *item;
 
+        if (server->rs_closed)
+                return;
 	for (item = g_list_first(server->rs_connections); item;
 	     item = item->next) {
 		rpc_connection_t conn = item->data;
@@ -138,12 +148,7 @@ rpc_server_dispatch(rpc_server_t server, struct rpc_inbound_call *call)
 
         itm->rd_type = RPC_TYPE_CALL;
         itm->rd_item.rd_icall = call;
-	g_mutex_lock(&server->rs_mtx);
-	while (server->rs_paused)
-		g_cond_wait(&server->rs_cv, &server->rs_mtx);
-
 	ret = rpc_context_dispatch(server->rs_context, itm);
-	g_mutex_unlock(&server->rs_mtx);
 	return (ret);
 }
 
@@ -164,24 +169,48 @@ rpc_server_set_event_handler(rpc_server_t server,
         server->rs_event = Block_copy(handler);
 } 
 
-void
+int
 rpc_server_connection_change(rpc_server_t server, struct rpc_dispatch_item *itm)
 {
         rpc_connection_t conn = itm->rd_item.rd_conn;
 
         if (server->rs_handler != NULL) 
-                server->rs_handler(conn, (enum rpc_server_event_t)itm->rd_code, NULL);
-                
-        return;
+                server->rs_handler(conn, (enum rpc_server_event_t)itm->rd_code, 
+                    itm->args);
+        if (itm->code == (int)RPC_CONNECTION_TERMINATED)
+                return (rpc_server_remove_connection(server, conn));
+        return (0);
 }
 
-void
-rpc_server_resume(rpc_server_t server)
+int 
+rpc_server_remove_connection(rpc_server_t server, rpc_connection_t conn)
 {
-	g_mutex_lock(&server->rs_mtx);
-	server->rs_paused = false;
-	g_cond_broadcast(&server->rs_cv);
-	g_mutex_unlock(&server->rs_mtx);
+        GList *iter = NULL;
+        struct rpc_connection *comp = NULL;
+        int ret = -1;
+
+        q_rw_lock_writer_lock(&server->rs_connections_rwlock);
+        for (iter = server->rs_connections; iter != NULL; iter = iter->next) {
+                comp = iter->data;
+                if (comp == conn) {
+                        server->rs_connections = 
+                            g_list_remove_link(server->rs_connections, iter);
+                        ret = 0;
+                        g_mutex_lock(&server->rs_mtx);
+                        break;
+                }
+        }
+
+        if (ret == -1) {
+                q_rw_lock_writer_unlock(&server->rs_connections_rwlock);
+                return (ret);
+        }
+        if (server->rs_connections == NULL)
+                g_cond_signal(&server->rs_cv);
+        q_rw_lock_writer_unlock(&server->rs_connections_rwlock);
+        g_mutex_unlock(&server->rs_mtx);
+        
+        return (0);
 }
 
 int
@@ -189,12 +218,43 @@ rpc_server_close(rpc_server_t server)
 {
 	struct rpc_connection *conn;
 	GList *iter = NULL;
+        int ret = 0;
+        gboolean present; 
+
+        g_rw_lock_writer_lock(&context->rcx_server_rwlock);
+        present = g_ptr_array_remove(context->rcx_server, server);
+        g_rw_lock_writer_unlock(&context->rcx_server_rwlock);
+        if (!present )
+                return (-1);
+        server->rs_closed = true;
+
+        if (server->rs_teardown) {
+                /* teardown is expected to stop future connections */
+                ret = server->rs_teardown(server);
+        }
 
 	/* Drop all connections */
-	for (iter = server->rs_connections; iter != NULL; iter = iter->next) {
-		conn = iter->data;
-		conn->rco_abort(conn->rco_arg);
-	}
+        q_rw_lock_reader_lock(&server->rs_connections_rwlock);
+        if (server->rs_connections != NULL) {
+		for (iter = server->rs_connections; iter != NULL; 
+                    iter = iter->next) {
+			conn = iter->data;
+			if (conn->rco_abort)
+				conn->rco_abort(conn->rco_arg);
+		}
+                g_mutex_lock(&server->rs_mtx);
+                q_rw_lock_reader_unlock(&server->rs_connections_rwlock)
+                
+                while (server->rs_connections != NULL)
+                        g_cond_wait(&server->rs_cv, &server->rs_mtx);
+                g_mutex_unlock(&server->rs_mtx);
+        }
+        else 
+                q_rw_lock_reader_unlock(&server->rs_connections_rwlock);
+        
+        /* Now, its safe to stop the listener thread, kill the main loop,
+         * reclaim server resources. TODO
+         */
 
-	return (server->rs_teardown(server));
+	return (ret);
 }

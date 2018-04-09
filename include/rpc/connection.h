@@ -148,6 +148,11 @@ typedef bool (^rpc_callback_t)(_Nonnull rpc_call_t call);
 	}
 
 /**
+ * Definition of Null-argument fmt to pass to rpc_connection_call_simple()
+ */
+#define RPC_NULL_FORMAT "[]"
+
+/**
  * Connection statistics.
  *
  * Information collected during the existence of the connection.
@@ -398,7 +403,7 @@ _Nullable rpc_call_t rpc_connection_call(_Nonnull rpc_connection_t conn,
  */
 _Nullable rpc_object_t rpc_connection_get_property(
     _Nonnull rpc_connection_t conn, const char *_Nullable path,
-    const char *_Nonnull interface, const char *_Nonnull name);
+    const char *_Nullable interface, const char *_Nonnull name);
 
 /**
  *
@@ -497,8 +502,6 @@ void rpc_connection_set_event_handler(_Nonnull rpc_connection_t conn,
  */
 _Nullable rpc_connection_statistics_t 
 rpc_connection_get_statistics(_Nonnull rpc_connection_t conn);
-
-_Nullable rpc_call_t rpc_connection_call(_Nonnull rpc_connection_t conn,
 
 /**
  * Sets global error handler for a connection.

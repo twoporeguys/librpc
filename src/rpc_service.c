@@ -78,20 +78,31 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	rpc_object_t result;
         struct rpc_dispatch_item *item = data;
         struct rpc_connection *conn;
+        bool valid = false;
 
         if (item->rd_type == RPC_TYPE_CONNECTION) {
                 conn = item->rd_item.rd_conn;
-                g_assert_nonnull(conn->rco_server);
-                rpc_server_connection_change(conn->rco_server, item);          
+
+                g_rw_lock_reader_lock(&context->rcx_server_rwlock);
+                for (guint i = 0; i < context->rcx_servers->len; i++) {
+                        if  (g_ptr_array_index(context->rcx_servers, i) ==
+                            item->args) 
+                                valid = true;
+                }
+                g_rw_lock_reader_unlock(&context->rcx_server_rwlock);
+                if (valid)
+                        rpc_server_connection_change(conn->rco_server, item);          
+                g_free(item);
                 return;
         }
 
         call = item->rd_item.rd_icall;
-
+ 
+        g_assert_nonnull(member);     
 	if (method == NULL) {
                 call->ric_conn->rco_calls_dropped++;
 		rpc_function_error(call, ENOENT, "Method not found");
-                rpc_connection_release_call;
+                rpc_connection_close_inbound_call(call);
 		return;
 	}
 
@@ -167,9 +178,6 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_dispatch_item *item)
 
 		if (call->ric_path == NULL)
 			instance = context->rcx_root;
-
-		if (call->ric_interface == NULL)
-			call->ric_interface = RPC_DEFAULT_INTERFACE;
 
 		if (instance == NULL)
 			instance = rpc_context_find_instance(context, call->ric_path);
@@ -469,6 +477,12 @@ rpc_function_end(void *cookie)
 	while (call->ric_producer_seqno == call->ric_consumer_seqno &&
 	    !call->ric_aborted)
 		g_cond_wait(&call->ric_cv, &call->ric_mtx);
+
+        if (call->ric_aborted) {
+                if (!call->ric_ended) {
+                        rpc_function_error(call, ECONNRESET, 
+                            "Call aborted by receiver");
+
 
 	if (!call->ric_ended) {
 		rpc_connection_send_end(call->ric_conn, call->ric_id,

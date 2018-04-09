@@ -242,12 +242,14 @@ struct rpc_connection
 	rpc_error_handler_t 	rco_error_handler;
 	rpc_handler_t		rco_event_handler;
 	guint                 	rco_rpc_timeout;
+    	GMutex			rco_mtx;
 	GHashTable *		rco_calls;
 	GHashTable *		rco_inbound_calls;
     	GPtrArray *		rco_subscriptions;
     	GMutex			rco_subscription_mtx;
     	GMutex			rco_send_mtx;
-	GMutex			rco_call_mtx;
+	GRWLock  		rco_call_rwlock;
+	GRWLock  		rco_icall_rwlock;
     	GMainContext *		rco_mainloop;
     	GThreadPool *		rco_callback_pool;
 	rpc_object_t 		rco_params;
@@ -256,7 +258,7 @@ struct rpc_connection
 #if LIBDISPATCH_SUPPORT
 	dispatch_queue_t	rco_dispatch_queue;
 #endif
-        struct rpc_connection_statistics  rco_stats;
+        rpc_connection_statistics_t  rco_stats;
 };
 
 struct rpc_server
@@ -264,14 +266,15 @@ struct rpc_server
     	GMainContext *		rs_g_context;
     	GMainLoop *		rs_g_loop;
     	GThread *		rs_thread;
-    	GList *			rs_connections;
+    	GList *  		rs_connections;
+        DRWLock *               rs_connections_rwlock;
     	GMutex			rs_mtx;
     	GCond			rs_cv;
 	struct rpc_context *	rs_context;
     	const char *		rs_uri;
     	int 			rs_flags;
     	bool			rs_operational;
-	bool			rs_paused;
+	bool			rs_closed;
 
     	/* Callbacks */
     	rpc_accept_fn_t		rs_accept;
@@ -341,6 +344,7 @@ struct rpc_context
 	GHashTable *		rcx_instances;
 	GPtrArray * 		rcx_servers;
 	GRWLock			rcx_rwlock;
+	GRWLock			rcx_servers_rwlock;
 	rpc_instance_t 		rcx_root;
 
 	/* Hooks */
