@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structrpc__connection__statistics" kind="struct" language="C++" prot="public">
+    <compoundname>rpc_connection_statistics</compoundname>
+    <includes refid="connection_8h" local="no">connection.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structrpc__connection__statistics_1af103786616d6818d26916fde09f7378b" prot="public" static="no" mutable="no">
+        <type>int64_t</type>
+        <definition>volatile int64_t rpc_connection_statistics::rcs_made</definition>
+        <argsstring></argsstring>
+        <name>rcs_made</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Client calls sent </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="167" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="167" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__connection__statistics_1a0f504295a3ce46a549fd8d64b2bc756d" prot="public" static="no" mutable="no">
+        <type>int64_t</type>
+        <definition>volatile int64_t rpc_connection_statistics::rcs_completed</definition>
+        <argsstring></argsstring>
+        <name>rcs_completed</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Successfully completed </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="168" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="168" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__connection__statistics_1af6831aa1e5d7a3873f897e26b513f6f3" prot="public" static="no" mutable="no">
+        <type>int64_t</type>
+        <definition>volatile int64_t rpc_connection_statistics::rcs_failed</definition>
+        <argsstring></argsstring>
+        <name>rcs_failed</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Client call failures </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="169" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="169" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__connection__statistics_1a8041fd880d4d9b01ba6902883ce8e7f1" prot="public" static="no" mutable="no">
+        <type>int64_t</type>
+        <definition>volatile int64_t rpc_connection_statistics::rcs_received</definition>
+        <argsstring></argsstring>
+        <name>rcs_received</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Incoming calls </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="170" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="170" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__connection__statistics_1afb3a42144bcd33b86fbb2f1b1940cbdb" prot="public" static="no" mutable="no">
+        <type>int64_t</type>
+        <definition>volatile int64_t rpc_connection_statistics::rcs_dropped</definition>
+        <argsstring></argsstring>
+        <name>rcs_dropped</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>No receiving connection </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="171" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="171" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__connection__statistics_1a9c9cd982c4e9c548175e11e5a6a19401" prot="public" static="no" mutable="no">
+        <type>int64_t</type>
+        <definition>volatile int64_t rpc_connection_statistics::rcs_responded</definition>
+        <argsstring></argsstring>
+        <name>rcs_responded</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Receiver responded </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="172" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="172" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrpc__connection__statistics_1a7f08b926ae481841fb3085b329a37fef" prot="public" static="no" mutable="no">
+        <type>int64_t</type>
+        <definition>volatile int64_t rpc_connection_statistics::rcs_aborted</definition>
+        <argsstring></argsstring>
+        <name>rcs_aborted</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Aborted/uncompleted </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/connection.h" line="173" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="173" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Connection statistics.</para><para>Information collected during the existence of the connection.</para><para>Client and server connections generally have different counters. One exception is calls aborted, which may reflect either caller or listener-side actions or calls undelivered when the connection closes. </para>    </detaileddescription>
+    <location file="/code/include/rpc/connection.h" line="165" column="1" bodyfile="/code/include/rpc/connection.h" bodystart="164" bodyend="174"/>
+    <listofallmembers>
+      <member refid="structrpc__connection__statistics_1a7f08b926ae481841fb3085b329a37fef" prot="public" virt="non-virtual"><scope>rpc_connection_statistics</scope><name>rcs_aborted</name></member>
+      <member refid="structrpc__connection__statistics_1a0f504295a3ce46a549fd8d64b2bc756d" prot="public" virt="non-virtual"><scope>rpc_connection_statistics</scope><name>rcs_completed</name></member>
+      <member refid="structrpc__connection__statistics_1afb3a42144bcd33b86fbb2f1b1940cbdb" prot="public" virt="non-virtual"><scope>rpc_connection_statistics</scope><name>rcs_dropped</name></member>
+      <member refid="structrpc__connection__statistics_1af6831aa1e5d7a3873f897e26b513f6f3" prot="public" virt="non-virtual"><scope>rpc_connection_statistics</scope><name>rcs_failed</name></member>
+      <member refid="structrpc__connection__statistics_1af103786616d6818d26916fde09f7378b" prot="public" virt="non-virtual"><scope>rpc_connection_statistics</scope><name>rcs_made</name></member>
+      <member refid="structrpc__connection__statistics_1a8041fd880d4d9b01ba6902883ce8e7f1" prot="public" virt="non-virtual"><scope>rpc_connection_statistics</scope><name>rcs_received</name></member>
+      <member refid="structrpc__connection__statistics_1a9c9cd982c4e9c548175e11e5a6a19401" prot="public" virt="non-virtual"><scope>rpc_connection_statistics</scope><name>rcs_responded</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

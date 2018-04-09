@@ -1,0 +1,112 @@
+\hypertarget{structrpc__connection__statistics}{}\section{rpc\+\_\+connection\+\_\+statistics Struct Reference}
+\label{structrpc__connection__statistics}\index{rpc\+\_\+connection\+\_\+statistics@{rpc\+\_\+connection\+\_\+statistics}}
+
+
+{\ttfamily \#include $<$connection.\+h$>$}
+
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+volatile int64\+\_\+t \hyperlink{structrpc__connection__statistics_af103786616d6818d26916fde09f7378b}{rcs\+\_\+made}
+\item 
+volatile int64\+\_\+t \hyperlink{structrpc__connection__statistics_a0f504295a3ce46a549fd8d64b2bc756d}{rcs\+\_\+completed}
+\item 
+volatile int64\+\_\+t \hyperlink{structrpc__connection__statistics_af6831aa1e5d7a3873f897e26b513f6f3}{rcs\+\_\+failed}
+\item 
+volatile int64\+\_\+t \hyperlink{structrpc__connection__statistics_a8041fd880d4d9b01ba6902883ce8e7f1}{rcs\+\_\+received}
+\item 
+volatile int64\+\_\+t \hyperlink{structrpc__connection__statistics_afb3a42144bcd33b86fbb2f1b1940cbdb}{rcs\+\_\+dropped}
+\item 
+volatile int64\+\_\+t \hyperlink{structrpc__connection__statistics_a9c9cd982c4e9c548175e11e5a6a19401}{rcs\+\_\+responded}
+\item 
+volatile int64\+\_\+t \hyperlink{structrpc__connection__statistics_a7f08b926ae481841fb3085b329a37fef}{rcs\+\_\+aborted}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Connection statistics.
+
+Information collected during the existence of the connection.
+
+Client and server connections generally have different counters. One exception is calls aborted, which may reflect either caller or listener-\/side actions or calls undelivered when the connection closes. 
+
+Definition at line 164 of file connection.\+h.
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{structrpc__connection__statistics_a7f08b926ae481841fb3085b329a37fef}\label{structrpc__connection__statistics_a7f08b926ae481841fb3085b329a37fef}} 
+\index{rpc\+\_\+connection\+\_\+statistics@{rpc\+\_\+connection\+\_\+statistics}!rcs\+\_\+aborted@{rcs\+\_\+aborted}}
+\index{rcs\+\_\+aborted@{rcs\+\_\+aborted}!rpc\+\_\+connection\+\_\+statistics@{rpc\+\_\+connection\+\_\+statistics}}
+\subsubsection{\texorpdfstring{rcs\+\_\+aborted}{rcs\_aborted}}
+{\footnotesize\ttfamily volatile int64\+\_\+t rpc\+\_\+connection\+\_\+statistics\+::rcs\+\_\+aborted}
+
+Aborted/uncompleted 
+
+Definition at line 173 of file connection.\+h.
+
+\mbox{\Hypertarget{structrpc__connection__statistics_a0f504295a3ce46a549fd8d64b2bc756d}\label{structrpc__connection__statistics_a0f504295a3ce46a549fd8d64b2bc756d}} 
+\index{rpc\+\_\+connection\+\_\+statistics@{rpc\+\_\+connection\+\_\+statistics}!rcs\+\_\+completed@{rcs\+\_\+completed}}
+\index{rcs\+\_\+completed@{rcs\+\_\+completed}!rpc\+\_\+connection\+\_\+statistics@{rpc\+\_\+connection\+\_\+statistics}}
+\subsubsection{\texorpdfstring{rcs\+\_\+completed}{rcs\_completed}}
+{\footnotesize\ttfamily volatile int64\+\_\+t rpc\+\_\+connection\+\_\+statistics\+::rcs\+\_\+completed}
+
+Successfully completed 
+
+Definition at line 168 of file connection.\+h.
+
+\mbox{\Hypertarget{structrpc__connection__statistics_afb3a42144bcd33b86fbb2f1b1940cbdb}\label{structrpc__connection__statistics_afb3a42144bcd33b86fbb2f1b1940cbdb}} 
+\index{rpc\+\_\+connection\+\_\+statistics@{rpc\+\_\+connection\+\_\+statistics}!rcs\+\_\+dropped@{rcs\+\_\+dropped}}
+\index{rcs\+\_\+dropped@{rcs\+\_\+dropped}!rpc\+\_\+connection\+\_\+statistics@{rpc\+\_\+connection\+\_\+statistics}}
+\subsubsection{\texorpdfstring{rcs\+\_\+dropped}{rcs\_dropped}}
+{\footnotesize\ttfamily volatile int64\+\_\+t rpc\+\_\+connection\+\_\+statistics\+::rcs\+\_\+dropped}
+
+No receiving connection 
+
+Definition at line 171 of file connection.\+h.
+
+\mbox{\Hypertarget{structrpc__connection__statistics_af6831aa1e5d7a3873f897e26b513f6f3}\label{structrpc__connection__statistics_af6831aa1e5d7a3873f897e26b513f6f3}} 
+\index{rpc\+\_\+connection\+\_\+statistics@{rpc\+\_\+connection\+\_\+statistics}!rcs\+\_\+failed@{rcs\+\_\+failed}}
+\index{rcs\+\_\+failed@{rcs\+\_\+failed}!rpc\+\_\+connection\+\_\+statistics@{rpc\+\_\+connection\+\_\+statistics}}
+\subsubsection{\texorpdfstring{rcs\+\_\+failed}{rcs\_failed}}
+{\footnotesize\ttfamily volatile int64\+\_\+t rpc\+\_\+connection\+\_\+statistics\+::rcs\+\_\+failed}
+
+Client call failures 
+
+Definition at line 169 of file connection.\+h.
+
+\mbox{\Hypertarget{structrpc__connection__statistics_af103786616d6818d26916fde09f7378b}\label{structrpc__connection__statistics_af103786616d6818d26916fde09f7378b}} 
+\index{rpc\+\_\+connection\+\_\+statistics@{rpc\+\_\+connection\+\_\+statistics}!rcs\+\_\+made@{rcs\+\_\+made}}
+\index{rcs\+\_\+made@{rcs\+\_\+made}!rpc\+\_\+connection\+\_\+statistics@{rpc\+\_\+connection\+\_\+statistics}}
+\subsubsection{\texorpdfstring{rcs\+\_\+made}{rcs\_made}}
+{\footnotesize\ttfamily volatile int64\+\_\+t rpc\+\_\+connection\+\_\+statistics\+::rcs\+\_\+made}
+
+Client calls sent 
+
+Definition at line 167 of file connection.\+h.
+
+\mbox{\Hypertarget{structrpc__connection__statistics_a8041fd880d4d9b01ba6902883ce8e7f1}\label{structrpc__connection__statistics_a8041fd880d4d9b01ba6902883ce8e7f1}} 
+\index{rpc\+\_\+connection\+\_\+statistics@{rpc\+\_\+connection\+\_\+statistics}!rcs\+\_\+received@{rcs\+\_\+received}}
+\index{rcs\+\_\+received@{rcs\+\_\+received}!rpc\+\_\+connection\+\_\+statistics@{rpc\+\_\+connection\+\_\+statistics}}
+\subsubsection{\texorpdfstring{rcs\+\_\+received}{rcs\_received}}
+{\footnotesize\ttfamily volatile int64\+\_\+t rpc\+\_\+connection\+\_\+statistics\+::rcs\+\_\+received}
+
+Incoming calls 
+
+Definition at line 170 of file connection.\+h.
+
+\mbox{\Hypertarget{structrpc__connection__statistics_a9c9cd982c4e9c548175e11e5a6a19401}\label{structrpc__connection__statistics_a9c9cd982c4e9c548175e11e5a6a19401}} 
+\index{rpc\+\_\+connection\+\_\+statistics@{rpc\+\_\+connection\+\_\+statistics}!rcs\+\_\+responded@{rcs\+\_\+responded}}
+\index{rcs\+\_\+responded@{rcs\+\_\+responded}!rpc\+\_\+connection\+\_\+statistics@{rpc\+\_\+connection\+\_\+statistics}}
+\subsubsection{\texorpdfstring{rcs\+\_\+responded}{rcs\_responded}}
+{\footnotesize\ttfamily volatile int64\+\_\+t rpc\+\_\+connection\+\_\+statistics\+::rcs\+\_\+responded}
+
+Receiver responded 
+
+Definition at line 172 of file connection.\+h.
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/code/include/rpc/\hyperlink{connection_8h}{connection.\+h}\end{DoxyCompactItemize}

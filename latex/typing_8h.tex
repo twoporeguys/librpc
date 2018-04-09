@@ -12,9 +12,6 @@ Include dependency graph for typing.\+h\+:
 \subsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{typing_8h_a9f52c34e595aa02ca85cf623c1ebe6c9}\label{typing_8h_a9f52c34e595aa02ca85cf623c1ebe6c9}} 
-\#define {\bfseries R\+P\+C\+T\+\_\+\+T\+Y\+P\+I\+N\+G\+\_\+\+I\+N\+T\+E\+R\+F\+A\+CE}~\char`\"{}com.\+twoporeguys.\+librpc.\+Typing\char`\"{}
-\item 
 \mbox{\Hypertarget{typing_8h_af639f24835da7f0384e5bb0650bb52a6}\label{typing_8h_af639f24835da7f0384e5bb0650bb52a6}} 
 \#define {\bfseries R\+P\+C\+T\+\_\+\+T\+Y\+P\+E\+\_\+\+F\+I\+E\+LD}~\char`\"{}\%type\char`\"{}
 \item 
@@ -39,6 +36,8 @@ typedef struct rpct\+\_\+typei $\ast$ \hyperlink{typing_8h_a0d718518624626887a65
 typedef struct rpct\+\_\+member $\ast$ \hyperlink{typing_8h_a738ac0d076d329aece903bf1835bfcdd}{rpct\+\_\+member\+\_\+t}
 \item 
 typedef struct rpct\+\_\+interface $\ast$ \hyperlink{typing_8h_a38f857fb53c96e9aae9e02bd4996cc9f}{rpct\+\_\+interface\+\_\+t}
+\item 
+typedef struct rpct\+\_\+function $\ast$ \hyperlink{typing_8h_aeb4e0d4277d29db7ff524786d2a895ba}{rpct\+\_\+function\+\_\+t}
 \item 
 typedef struct rpct\+\_\+argument $\ast$ \hyperlink{typing_8h_a182f9a414fde2db9be9f83a78310f628}{rpct\+\_\+argument\+\_\+t}
 \item 
@@ -129,8 +128,6 @@ int \hyperlink{typing_8h_ab5c59fa479c7421f00b8c16e0d560f82}{rpct\+\_\+method\+\_
 \item 
 \hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} \hyperlink{typing_8h_abce3ba70902e15fe331cec0b12aa3e38}{rpct\+\_\+property\+\_\+get\+\_\+type} (\hyperlink{typing_8h_aa2e55bcb066527416359bc5a5dde92b3}{rpct\+\_\+if\+\_\+member\+\_\+t} prop)
 \item 
-const char $\ast$ \hyperlink{typing_8h_ad32d0c42cf2dee39984a9f3f1a186ff7}{rpct\+\_\+argument\+\_\+get\+\_\+name} (\hyperlink{typing_8h_a182f9a414fde2db9be9f83a78310f628}{rpct\+\_\+argument\+\_\+t} arg)
-\item 
 const char $\ast$ \hyperlink{typing_8h_a0d547889f674d2b89dbfcc455ba1c1df}{rpct\+\_\+argument\+\_\+get\+\_\+description} (\hyperlink{typing_8h_a182f9a414fde2db9be9f83a78310f628}{rpct\+\_\+argument\+\_\+t} arg)
 \item 
 \hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} \hyperlink{typing_8h_aabf561ff1e4a57cc7e7ad974f41b06d0}{rpct\+\_\+argument\+\_\+get\+\_\+typei} (\hyperlink{typing_8h_a182f9a414fde2db9be9f83a78310f628}{rpct\+\_\+argument\+\_\+t} arg)
@@ -142,8 +139,6 @@ bool \hyperlink{typing_8h_a6fc3d79df9153b9c6b10d929f041c3b0}{rpct\+\_\+members\+
 bool \hyperlink{typing_8h_a3df40500a9e56d03f6310af0dc40a5a0}{rpct\+\_\+interface\+\_\+apply} (\hyperlink{typing_8h_a2b565c4384ebdd8e0749b1467eec94e3}{rpct\+\_\+interface\+\_\+applier\+\_\+t} applier)
 \item 
 bool \hyperlink{typing_8h_a1fe6427a1837bebcf1278d47b9a572f6}{rpct\+\_\+if\+\_\+member\+\_\+apply} (\hyperlink{typing_8h_a38f857fb53c96e9aae9e02bd4996cc9f}{rpct\+\_\+interface\+\_\+t} iface, \hyperlink{typing_8h_acc5f290ad33114a3ea5ea8f6fdcef34a}{rpct\+\_\+if\+\_\+member\+\_\+applier\+\_\+t} applier)
-\item 
-\hyperlink{typing_8h_aa2e55bcb066527416359bc5a5dde92b3}{rpct\+\_\+if\+\_\+member\+\_\+t} \hyperlink{typing_8h_a4abbd4b37b9c85e3199721af771de323}{rpct\+\_\+find\+\_\+if\+\_\+member} (const char $\ast$interface, const char $\ast$member)
 \item 
 \hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} \hyperlink{typing_8h_a607ecfa5cfa13782fafd4d8da6fbd3d8}{rpct\+\_\+new\+\_\+typei} (const char $\ast$decl)
 \item 
@@ -163,17 +158,7 @@ void \hyperlink{typing_8h_a5e40e2afc72e2eb1ab1bcf77cfb36cc9}{rpct\+\_\+set\+\_\+
 \item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{typing_8h_ae36966ca7ca5448af0bb88d173036217}{rpct\+\_\+deserialize} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
 \item 
-bool \hyperlink{typing_8h_ae9b8420d29e1c63b07a060985c7ab55b}{rpct\+\_\+validate\+\_\+args} (struct rpct\+\_\+if\+\_\+member $\ast$func, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$errors)
-\item 
-bool \hyperlink{typing_8h_aa5b10fa1cb8c8cc46469abebb21026a0}{rpct\+\_\+validate\+\_\+return} (struct rpct\+\_\+if\+\_\+member $\ast$func, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} result, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$errors)
-\item 
 bool \hyperlink{typing_8h_a2f80e7ec74258ea0a5f739c61b5b623e}{rpct\+\_\+validate} (\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} typei, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} obj, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$errors)
-\item 
-\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{typing_8h_a07cecc265f9dd575d5ff4904f13b5fac}{rpct\+\_\+pre\+\_\+call\+\_\+hook} (void $\ast$cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
-\item 
-\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{typing_8h_afa62adf9fe6a415494c529254b030086}{rpct\+\_\+post\+\_\+call\+\_\+hook} (void $\ast$cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
-\item 
-void \hyperlink{typing_8h_a4812f96b7d0bca64c415aa3aa99182be}{rpct\+\_\+allow\+\_\+idl\+\_\+download} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
 \end{DoxyCompactItemize}
 
 
@@ -255,6 +240,16 @@ Represents a function argument.
 
 Definition at line 105 of file typing.\+h.
 
+\mbox{\Hypertarget{typing_8h_aeb4e0d4277d29db7ff524786d2a895ba}\label{typing_8h_aeb4e0d4277d29db7ff524786d2a895ba}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+function\+\_\+t@{rpct\+\_\+function\+\_\+t}}
+\index{rpct\+\_\+function\+\_\+t@{rpct\+\_\+function\+\_\+t}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+function\+\_\+t}{rpct\_function\_t}}
+{\footnotesize\ttfamily typedef struct rpct\+\_\+function$\ast$ \hyperlink{typing_8h_aeb4e0d4277d29db7ff524786d2a895ba}{rpct\+\_\+function\+\_\+t}}
+
+Represents a function. 
+
+Definition at line 100 of file typing.\+h.
+
 \mbox{\Hypertarget{typing_8h_acc5f290ad33114a3ea5ea8f6fdcef34a}\label{typing_8h_acc5f290ad33114a3ea5ea8f6fdcef34a}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+if\+\_\+member\+\_\+applier\+\_\+t@{rpct\+\_\+if\+\_\+member\+\_\+applier\+\_\+t}}
 \index{rpct\+\_\+if\+\_\+member\+\_\+applier\+\_\+t@{rpct\+\_\+if\+\_\+member\+\_\+applier\+\_\+t}!typing.\+h@{typing.\+h}}
@@ -293,7 +288,7 @@ Definition at line 136 of file typing.\+h.
 
 Represents an interface. 
 
-Definition at line 100 of file typing.\+h.
+Definition at line 95 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_a1b34b1728df4e41085d0ec7ecf5e8b7d}\label{typing_8h_a1b34b1728df4e41085d0ec7ecf5e8b7d}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+member\+\_\+applier\+\_\+t@{rpct\+\_\+member\+\_\+applier\+\_\+t}}
@@ -313,7 +308,7 @@ Definition at line 131 of file typing.\+h.
 
 Represents a structure member or a union branch. 
 
-Definition at line 95 of file typing.\+h.
+Definition at line 90 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_a6babf38d00cc719a3531ee959b1e5478}\label{typing_8h_a6babf38d00cc719a3531ee959b1e5478}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+type\+\_\+applier\+\_\+t@{rpct\+\_\+type\+\_\+applier\+\_\+t}}
@@ -344,7 +339,7 @@ Examples of unspecialized types\+:
 \item Hash\+Map$<$\+K, V$>$ 
 \end{DoxyItemize}
 
-Definition at line 65 of file typing.\+h.
+Definition at line 60 of file typing.\+h.
 
 \mbox{\Hypertarget{typing_8h_a0d718518624626887a65ead4f5cde3b9}\label{typing_8h_a0d718518624626887a65ead4f5cde3b9}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+typei\+\_\+t@{rpct\+\_\+typei\+\_\+t}}
@@ -374,7 +369,7 @@ Examples of partially specialized types\+:
 \item Hash\+Map$<$\+K, double$>$ 
 \end{DoxyItemize}
 
-Definition at line 90 of file typing.\+h.
+Definition at line 85 of file typing.\+h.
 
 
 
@@ -414,17 +409,6 @@ Definition at line 115 of file typing.\+h.
 
 
 \subsection{Function Documentation}
-\mbox{\Hypertarget{typing_8h_a4812f96b7d0bca64c415aa3aa99182be}\label{typing_8h_a4812f96b7d0bca64c415aa3aa99182be}} 
-\index{typing.\+h@{typing.\+h}!rpct\+\_\+allow\+\_\+idl\+\_\+download@{rpct\+\_\+allow\+\_\+idl\+\_\+download}}
-\index{rpct\+\_\+allow\+\_\+idl\+\_\+download@{rpct\+\_\+allow\+\_\+idl\+\_\+download}!typing.\+h@{typing.\+h}}
-\subsubsection{\texorpdfstring{rpct\+\_\+allow\+\_\+idl\+\_\+download()}{rpct\_allow\_idl\_download()}}
-{\footnotesize\ttfamily void rpct\+\_\+allow\+\_\+idl\+\_\+download (\begin{DoxyParamCaption}\item[{\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context }\end{DoxyParamCaption})}
-
-
-\begin{DoxyParams}{Parameters}
-{\em context} & \\
-\hline
-\end{DoxyParams}
 \mbox{\Hypertarget{typing_8h_a0d547889f674d2b89dbfcc455ba1c1df}\label{typing_8h_a0d547889f674d2b89dbfcc455ba1c1df}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+argument\+\_\+get\+\_\+description@{rpct\+\_\+argument\+\_\+get\+\_\+description}}
 \index{rpct\+\_\+argument\+\_\+get\+\_\+description@{rpct\+\_\+argument\+\_\+get\+\_\+description}!typing.\+h@{typing.\+h}}
@@ -440,22 +424,6 @@ Returns description string associated with the argument.
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 Description string or N\+U\+LL 
-\end{DoxyReturn}
-\mbox{\Hypertarget{typing_8h_ad32d0c42cf2dee39984a9f3f1a186ff7}\label{typing_8h_ad32d0c42cf2dee39984a9f3f1a186ff7}} 
-\index{typing.\+h@{typing.\+h}!rpct\+\_\+argument\+\_\+get\+\_\+name@{rpct\+\_\+argument\+\_\+get\+\_\+name}}
-\index{rpct\+\_\+argument\+\_\+get\+\_\+name@{rpct\+\_\+argument\+\_\+get\+\_\+name}!typing.\+h@{typing.\+h}}
-\subsubsection{\texorpdfstring{rpct\+\_\+argument\+\_\+get\+\_\+name()}{rpct\_argument\_get\_name()}}
-{\footnotesize\ttfamily const char$\ast$ rpct\+\_\+argument\+\_\+get\+\_\+name (\begin{DoxyParamCaption}\item[{\hyperlink{typing_8h_a182f9a414fde2db9be9f83a78310f628}{rpct\+\_\+argument\+\_\+t}}]{arg }\end{DoxyParamCaption})}
-
-Returns name associated with the argument.
-
-
-\begin{DoxyParams}{Parameters}
-{\em arg} & Argument handle \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Argument name 
 \end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_aabf561ff1e4a57cc7e7ad974f41b06d0}\label{typing_8h_aabf561ff1e4a57cc7e7ad974f41b06d0}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+argument\+\_\+get\+\_\+typei@{rpct\+\_\+argument\+\_\+get\+\_\+typei}}
@@ -484,24 +452,6 @@ Deserializes object hierarchy previously serialized with \hyperlink{typing_8h_ab
 
 \begin{DoxyParams}{Parameters}
 {\em object} & \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-
-\end{DoxyReturn}
-\mbox{\Hypertarget{typing_8h_a4abbd4b37b9c85e3199721af771de323}\label{typing_8h_a4abbd4b37b9c85e3199721af771de323}} 
-\index{typing.\+h@{typing.\+h}!rpct\+\_\+find\+\_\+if\+\_\+member@{rpct\+\_\+find\+\_\+if\+\_\+member}}
-\index{rpct\+\_\+find\+\_\+if\+\_\+member@{rpct\+\_\+find\+\_\+if\+\_\+member}!typing.\+h@{typing.\+h}}
-\subsubsection{\texorpdfstring{rpct\+\_\+find\+\_\+if\+\_\+member()}{rpct\_find\_if\_member()}}
-{\footnotesize\ttfamily \hyperlink{typing_8h_aa2e55bcb066527416359bc5a5dde92b3}{rpct\+\_\+if\+\_\+member\+\_\+t} rpct\+\_\+find\+\_\+if\+\_\+member (\begin{DoxyParamCaption}\item[{const char $\ast$}]{interface,  }\item[{const char $\ast$}]{member }\end{DoxyParamCaption})}
-
-Finds the member {\ttfamily member} of interface {\ttfamily interface}.
-
-
-\begin{DoxyParams}{Parameters}
-{\em interface} & Interface name \\
-\hline
-{\em member} & Member name \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
@@ -896,38 +846,6 @@ Type instance handle or N\+U\+LL in case of error
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
-\mbox{\Hypertarget{typing_8h_afa62adf9fe6a415494c529254b030086}\label{typing_8h_afa62adf9fe6a415494c529254b030086}} 
-\index{typing.\+h@{typing.\+h}!rpct\+\_\+post\+\_\+call\+\_\+hook@{rpct\+\_\+post\+\_\+call\+\_\+hook}}
-\index{rpct\+\_\+post\+\_\+call\+\_\+hook@{rpct\+\_\+post\+\_\+call\+\_\+hook}!typing.\+h@{typing.\+h}}
-\subsubsection{\texorpdfstring{rpct\+\_\+post\+\_\+call\+\_\+hook()}{rpct\_post\_call\_hook()}}
-{\footnotesize\ttfamily \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpct\+\_\+post\+\_\+call\+\_\+hook (\begin{DoxyParamCaption}\item[{void $\ast$}]{cookie,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{args }\end{DoxyParamCaption})}
-
-
-\begin{DoxyParams}{Parameters}
-{\em cookie} & \\
-\hline
-{\em args} & \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-
-\end{DoxyReturn}
-\mbox{\Hypertarget{typing_8h_a07cecc265f9dd575d5ff4904f13b5fac}\label{typing_8h_a07cecc265f9dd575d5ff4904f13b5fac}} 
-\index{typing.\+h@{typing.\+h}!rpct\+\_\+pre\+\_\+call\+\_\+hook@{rpct\+\_\+pre\+\_\+call\+\_\+hook}}
-\index{rpct\+\_\+pre\+\_\+call\+\_\+hook@{rpct\+\_\+pre\+\_\+call\+\_\+hook}!typing.\+h@{typing.\+h}}
-\subsubsection{\texorpdfstring{rpct\+\_\+pre\+\_\+call\+\_\+hook()}{rpct\_pre\_call\_hook()}}
-{\footnotesize\ttfamily \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpct\+\_\+pre\+\_\+call\+\_\+hook (\begin{DoxyParamCaption}\item[{void $\ast$}]{cookie,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{args }\end{DoxyParamCaption})}
-
-
-\begin{DoxyParams}{Parameters}
-{\em cookie} & \\
-\hline
-{\em args} & \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-
-\end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_abce3ba70902e15fe331cec0b12aa3e38}\label{typing_8h_abce3ba70902e15fe331cec0b12aa3e38}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+property\+\_\+get\+\_\+type@{rpct\+\_\+property\+\_\+get\+\_\+type}}
 \index{rpct\+\_\+property\+\_\+get\+\_\+type@{rpct\+\_\+property\+\_\+get\+\_\+type}!typing.\+h@{typing.\+h}}
@@ -1236,46 +1154,6 @@ Validates object against given type instance.
 {\em typei} & \\
 \hline
 {\em obj} & \\
-\hline
-{\em errors} & \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-
-\end{DoxyReturn}
-\mbox{\Hypertarget{typing_8h_ae9b8420d29e1c63b07a060985c7ab55b}\label{typing_8h_ae9b8420d29e1c63b07a060985c7ab55b}} 
-\index{typing.\+h@{typing.\+h}!rpct\+\_\+validate\+\_\+args@{rpct\+\_\+validate\+\_\+args}}
-\index{rpct\+\_\+validate\+\_\+args@{rpct\+\_\+validate\+\_\+args}!typing.\+h@{typing.\+h}}
-\subsubsection{\texorpdfstring{rpct\+\_\+validate\+\_\+args()}{rpct\_validate\_args()}}
-{\footnotesize\ttfamily bool rpct\+\_\+validate\+\_\+args (\begin{DoxyParamCaption}\item[{struct rpct\+\_\+if\+\_\+member $\ast$}]{func,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{args,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$}]{errors }\end{DoxyParamCaption})}
-
-Validates set of arguments for a given function.
-
-
-\begin{DoxyParams}{Parameters}
-{\em func} & \\
-\hline
-{\em args} & \\
-\hline
-{\em errors} & \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-
-\end{DoxyReturn}
-\mbox{\Hypertarget{typing_8h_aa5b10fa1cb8c8cc46469abebb21026a0}\label{typing_8h_aa5b10fa1cb8c8cc46469abebb21026a0}} 
-\index{typing.\+h@{typing.\+h}!rpct\+\_\+validate\+\_\+return@{rpct\+\_\+validate\+\_\+return}}
-\index{rpct\+\_\+validate\+\_\+return@{rpct\+\_\+validate\+\_\+return}!typing.\+h@{typing.\+h}}
-\subsubsection{\texorpdfstring{rpct\+\_\+validate\+\_\+return()}{rpct\_validate\_return()}}
-{\footnotesize\ttfamily bool rpct\+\_\+validate\+\_\+return (\begin{DoxyParamCaption}\item[{struct rpct\+\_\+if\+\_\+member $\ast$}]{func,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{result,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$}]{errors }\end{DoxyParamCaption})}
-
-Validates a return value from a given function.
-
-
-\begin{DoxyParams}{Parameters}
-{\em func} & \\
-\hline
-{\em result} & \\
 \hline
 {\em errors} & \\
 \hline

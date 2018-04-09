@@ -75,21 +75,21 @@
     <detaileddescription>
 <para>Interface member descriptor.</para><para>Can be either a method, property or event. </para>    </detaileddescription>
     <collaborationgraph>
-      <node id="4">
+      <node id="6">
         <label>rpc_if_property</label>
         <link refid="structrpc__if__property"/>
       </node>
-      <node id="3">
+      <node id="5">
         <label>rpc_if_member</label>
         <link refid="structrpc__if__member"/>
-        <childnode refid="4" relation="usage">
+        <childnode refid="6" relation="usage">
           <edgelabel>rim_property</edgelabel>
         </childnode>
-        <childnode refid="5" relation="usage">
+        <childnode refid="7" relation="usage">
           <edgelabel>rim_method</edgelabel>
         </childnode>
       </node>
-      <node id="5">
+      <node id="7">
         <label>rpc_if_method</label>
         <link refid="structrpc__if__method"/>
       </node>
