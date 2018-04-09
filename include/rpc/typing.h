@@ -216,6 +216,16 @@ int rpct_load_types_stream(int fd);
 const char *rpct_type_get_name(rpct_type_t type);
 
 /**
+ * Returns the place where type was defined.
+ *
+ * Returned string is in form `file.yaml:line_number`
+ *
+ * @param iface Interface handle
+ * @return Origin string
+ */
+const char *rpct_type_get_origin(rpct_type_t iface);
+
+/**
  * Returns the module name type belongs to.
  *
  * @param type Type handle
@@ -353,6 +363,16 @@ rpct_typei_t rpct_member_get_typei(rpct_member_t member);
  * @return
  */
 const char *rpct_interface_get_name(rpct_interface_t iface);
+
+/**
+ * Returns the place where interface was defined.
+ *
+ * Returned string is in form `file.yaml:line_number`
+ *
+ * @param iface Interface handle
+ * @return Origin string
+ */
+const char *rpct_interface_get_origin(rpct_interface_t iface);
 
 /**
  * Returns the interface description.

@@ -390,6 +390,7 @@ struct rpct_type
 	rpct_class_t		clazz;
 	char *			name;
 	char *			description;
+	char *			origin;
 	struct rpct_file *	file;
 	struct rpct_type *	parent;
 	struct rpct_typei *	definition;
@@ -403,6 +404,7 @@ struct rpct_interface
 {
 	char *			name;
 	char *			description;
+	char *			origin;
 	GHashTable *		members;
 };
 

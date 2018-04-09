@@ -717,6 +717,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		return (0);
 
 	type = g_malloc0(sizeof(*type));
+	type->origin = g_strdup_printf("%s:%jd", file->path, rpc_get_line_number(obj));
 	type->name = typename;
 	type->file = file;
 	type->parent = parent;
@@ -1033,6 +1034,7 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		return (-1);
 
 	iface = g_malloc0(sizeof(*iface));
+	iface->origin = g_strdup_printf("%s:%jd", file->path, rpc_get_line_number(obj));
 	iface->name = g_match_info_fetch(match, 1);
 	iface->members = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    g_free, (GDestroyNotify)rpct_if_member_free);
@@ -1496,6 +1498,13 @@ rpct_type_get_module(rpct_type_t type)
 }
 
 const char *
+rpct_type_get_origin(rpct_type_t type)
+{
+
+	return (type->origin);
+}
+
+const char *
 rpct_type_get_description(rpct_type_t type)
 {
 
@@ -1603,6 +1612,13 @@ rpct_interface_get_name(rpct_interface_t iface)
 {
 
 	return (iface->name);
+}
+
+const char *
+rpct_interface_get_origin(rpct_interface_t iface)
+{
+
+	return (iface->origin);
 }
 
 const char *
