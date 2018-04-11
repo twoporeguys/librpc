@@ -323,6 +323,7 @@ cdef extern from "rpc/typing.h" nogil:
     void rpct_init()
     int rpct_read_file(const char *path)
     int rpct_load_types(const char *path)
+    int rpct_load_types_dir(const char *path)
 
     bint rpct_types_apply(void *applier)
     bint rpct_members_apply(rpct_type_t type, void *applier)
@@ -360,6 +361,7 @@ cdef extern from "rpc/typing.h" nogil:
     rpct_argument_t rpct_method_get_argument(rpct_if_member_t method, int index)
     rpct_typei_t rpct_property_get_type(rpct_if_member_t prop)
 
+    const char *rpct_argument_get_name(rpct_argument_t arg)
     const char *rpct_argument_get_description(rpct_argument_t arg)
     rpct_typei_t rpct_argument_get_typei(rpct_argument_t arg)
 

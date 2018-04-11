@@ -87,4 +87,4 @@ void rpc_client_close(_Nonnull rpc_client_t client);
 }
 #endif
 
-#endif //LIBRPC_CLIENT_H
+#endif /* LIBRPC_CLIENT_H */

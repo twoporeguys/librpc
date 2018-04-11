@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Two Pore Guys, Inc.
+ * Copyright 2017 Two Pore Guys, Inc.
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,51 +25,54 @@
  *
  */
 
-#ifndef LIBRPC_SERIALIZER_H
-#define LIBRPC_SERIALIZER_H
-
+#include <stdio.h>
+#include <unistd.h>
 #include <rpc/object.h>
+#include <rpc/service.h>
+#include <rpc/server.h>
+#include <rpc/typing.h>
 
-/**
- * @file serializer.h
- */
-
-#ifdef __cplusplus
-extern "C" {
+#ifndef __unused
+#define __unused __attribute__((unused))
 #endif
 
-/**
- * Checks whether specified serializer is available.
- *
- * @param serializer Serializer name
- * @return true if specified serializer exists, otherwise false
- */
-bool rpc_serializer_exists(const char *_Nonnull serializer);
+static rpc_object_t animal_manager_create(void *, rpc_object_t);
 
-/**
- * Loads an RPC object from a serialized blob.
- *
- * @param serializer Serializer type (msgpack, json or yaml)
- * @param frame Blob pointer
- * @param len Blob length
- * @return RPC object or NULL in case of error.
- */
-_Nullable rpc_object_t rpc_serializer_load(const char *_Nonnull serializer,
-    const void *_Nonnull frame, size_t len);
+static const struct rpc_if_member animal_manager_vtable[] = {
+	RPC_METHOD(create, animal_manager_create),
+	RPC_MEMBER_END
+};
 
-/**
- * Dumps an RPC object into a serialized blob form.
- * @param serializer Serializer type (msgpack, json or yaml)
- * @param framep Pointer to a variable holding blob pointer
- * @param lenp Pointer to a variable holding resulting blob length
- * @return 0 on success, -1 on error
- */
-int rpc_serializer_dump(const char *_Nonnull serializer,
-    _Nonnull rpc_object_t obj, void *_Nullable *_Nonnull framep,
-    size_t *_Nullable lenp);
+static rpc_object_t
+animal_manager_create(void *cookie, rpc_object_t args)
+{
+	printf("Called with:\n");
+	printf("%s\n", rpc_copy_description(args));
 
-#ifdef __cplusplus
+	return (rpc_string_create("OK"));
 }
-#endif
 
-#endif /* LIBRPC_SERIALIZER_H */
+int
+main(int argc __unused, const char *argv[] __unused)
+{
+	rpc_server_t srv;
+	rpc_context_t ctx;
+	rpc_instance_t manager;
+
+	rpct_init();
+	rpct_load_types("validation.yaml");
+
+	ctx = rpc_context_create();
+	rpct_allow_idl_download(ctx);
+	rpc_context_set_pre_call_hook(ctx, RPC_FUNCTION(rpct_pre_call_hook));
+	rpc_context_set_post_call_hook(ctx, RPC_FUNCTION(rpct_post_call_hook));
+
+	manager = rpc_instance_new(NULL, "/animals");
+	rpc_instance_register_interface(manager,
+	    "com.twoporeguys.librpc.examples.AnimalManager",
+	    animal_manager_vtable, NULL);
+
+	rpc_context_register_instance(ctx, manager);
+	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
+	pause();
+}

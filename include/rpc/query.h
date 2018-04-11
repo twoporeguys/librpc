@@ -36,6 +36,10 @@
  * Object query API
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * Definition of the query iterator structure holding data about the state
  * of a query. Its contents are implementation detail, but the structure itself
@@ -289,4 +293,8 @@ bool rpc_query_next(_Nonnull rpc_query_iter_t iter,
  */
 void rpc_query_iter_free(_Nonnull rpc_query_iter_t iter);
 
-#endif //LIBRPC_QUERY_H
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* LIBRPC_QUERY_H */

@@ -33,6 +33,11 @@
  * @file typing.h
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define	RPCT_TYPING_INTERFACE	"com.twoporeguys.librpc.Typing"
 #define	RPCT_TYPE_FIELD		"%type"
 #define	RPCT_VALUE_FIELD	"%value"
 
@@ -93,11 +98,6 @@ typedef struct rpct_member *rpct_member_t;
  * Represents an interface.
  */
 typedef struct rpct_interface *rpct_interface_t;
-
-/**
- * Represents a function.
- */
-typedef struct rpct_function *rpct_function_t;
 
 /**
  * Represents a function argument.
@@ -214,6 +214,16 @@ int rpct_load_types_stream(int fd);
  * @return Type name
  */
 const char *rpct_type_get_name(rpct_type_t type);
+
+/**
+ * Returns the place where type was defined.
+ *
+ * Returned string is in form `file.yaml:line_number`
+ *
+ * @param iface Interface handle
+ * @return Origin string
+ */
+const char *rpct_type_get_origin(rpct_type_t iface);
 
 /**
  * Returns the module name type belongs to.
@@ -355,6 +365,16 @@ rpct_typei_t rpct_member_get_typei(rpct_member_t member);
 const char *rpct_interface_get_name(rpct_interface_t iface);
 
 /**
+ * Returns the place where interface was defined.
+ *
+ * Returned string is in form `file.yaml:line_number`
+ *
+ * @param iface Interface handle
+ * @return Origin string
+ */
+const char *rpct_interface_get_origin(rpct_interface_t iface);
+
+/**
  * Returns the interface description.
  *
  * @param iface Interface handle
@@ -420,6 +440,14 @@ rpct_argument_t rpct_method_get_argument(rpct_if_member_t method, int index);
 rpct_typei_t rpct_property_get_type(rpct_if_member_t prop);
 
 /**
+ * Returns name associated with the argument.
+ *
+ * @param arg Argument handle
+ * @return Argument name
+ */
+const char *rpct_argument_get_name(rpct_argument_t arg);
+
+/**
  * Returns description string associated with the argument.
  *
  * @param arg Argument handle
@@ -466,6 +494,15 @@ bool rpct_interface_apply(rpct_interface_applier_t applier);
  * @return
  */
 bool rpct_if_member_apply(rpct_interface_t iface, rpct_if_member_applier_t applier);
+
+/**
+ * Finds the member @p member of interface @p interface.
+ *
+ * @param interface Interface name
+ * @param member Member name
+ * @return
+ */
+rpct_if_member_t rpct_find_if_member(const char *interface, const char *member);
 
 /**
  * Creates a new type instance from provided declaration.
@@ -539,6 +576,28 @@ rpc_object_t rpct_serialize(rpc_object_t object);
 rpc_object_t rpct_deserialize(rpc_object_t object);
 
 /**
+ * Validates set of arguments for a given function.
+ *
+ * @param func
+ * @param args
+ * @param errors
+ * @return
+ */
+bool rpct_validate_args(struct rpct_if_member *func, rpc_object_t args,
+    rpc_object_t *errors);
+
+/**
+ * Validates a return value from a given function.
+ *
+ * @param func
+ * @param result
+ * @param errors
+ * @return
+ */
+bool rpct_validate_return(struct rpct_if_member *func, rpc_object_t result,
+    rpc_object_t *errors);
+
+/**
  * Validates object against given type instance.
  *
  * @param typei
@@ -547,5 +606,31 @@ rpc_object_t rpct_deserialize(rpc_object_t object);
  * @return
  */
 bool rpct_validate(rpct_typei_t typei, rpc_object_t obj, rpc_object_t *errors);
+
+/**
+ *
+ * @param cookie
+ * @param args
+ * @return
+ */
+rpc_object_t rpct_pre_call_hook(void *cookie, rpc_object_t args);
+
+/**
+ *
+ * @param cookie
+ * @param args
+ * @return
+ */
+rpc_object_t rpct_post_call_hook(void *cookie, rpc_object_t args);
+
+/**
+ *
+ * @param context
+ */
+void rpct_allow_idl_download(rpc_context_t context);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LIBRPC_TYPING_H */

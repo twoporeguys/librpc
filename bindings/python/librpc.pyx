@@ -270,6 +270,12 @@ cdef class Object(object):
 
         return self.value
 
+    def validate(self):
+        if not self.typei:
+            raise LibException(errno.ENOENT, 'No type information')
+
+        return self.typei.validate(self)
+
     property value:
         def __get__(self):
             cdef Array array
@@ -1622,6 +1628,10 @@ cdef class Typing(object):
         if rpct_load_types(path.encode('utf-8')) != 0:
             raise_internal_exc()
 
+    def load_types_dir(self, path):
+        if rpct_load_types_dir(path.encode('utf-8')) != 0:
+            raise_internal_exc()
+
     def serialize(self, Object obj):
         cdef rpc_object_t result
 
@@ -1680,9 +1690,13 @@ cdef class TypeInstance(object):
                 return lambda x: Object(x).unpack()
 
             if self.type.clazz == TypeClass.STRUCT:
-                return type(self.canonical, (BaseStruct,), {
-                    'typei': self
-                })
+                return type(self.canonical, (BaseStruct,), {'typei': self})
+
+            if self.type.clazz == TypeClass.UNION:
+                return type(self.canonical, (BaseUnion,), {'typei': self})
+
+            if self.type.clazz == TypeClass.ENUM:
+                return type(self.canonical, (BaseEnum,), {'typei': self})
 
     property type:
         def __get__(self):
@@ -1807,8 +1821,11 @@ cdef class Type(object):
 cdef class Member(object):
     cdef rpct_member_t rpcmem
 
+    def __repr__(self):
+        return str(self)
+
     def __str__(self):
-        return "<{0} {1}>".format(self.__class__.__name__, self.name)
+        return "<{0} '{1}'>".format(self.__class__.__name__, self.name)
 
     property type:
         def __get__(self):
@@ -1841,7 +1858,7 @@ cdef class Interface(object):
             return ret
 
     def __str__(self):
-        return "<librpc.Interface name '{0}'>".format(self.name)
+        return "<{0} '{0}'>".format(self.__class__.__name__, self.name)
 
     def __repr__(self):
         return str(self)
@@ -1924,6 +1941,10 @@ cdef class FunctionArgument(object):
         def __get__(self):
             return str_or_none(rpct_argument_get_description(self.c_arg))
 
+    property name:
+        def __get__(self):
+            return str_or_none(rpct_argument_get_name(self.c_arg))
+
     property type:
         def __get__(self):
             return TypeInstance.init_from_ptr(rpct_argument_get_typei(self.c_arg))
@@ -1936,14 +1957,43 @@ cdef class StructUnionMember(Member):
 
 cdef class BaseTypingObject(Object):
     def __init__(self, value):
-        super(BaseTypingObject, self).__init__(value, self.__class__.typei)
+        super(BaseTypingObject, self).__init__(value, typei=self.__class__.typei)
+        result, errors = self.typei.validate(self)
+        if not result:
+            raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
+
+    property members:
+        def __get__(self):
+            return {m.name: m for m in self.typei.type.members}
+
 
 
 cdef class BaseStruct(BaseTypingObject):
+    def __init__(self, __value=None, **kwargs):
+        if not __value:
+            __value = {}.update(kwargs)
+
+        super(BaseStruct, self).__init__(__value)
+
+    def __getitem__(self, item):
+        return self.__getattr__(item)
+
+    def __setitem__(self, key, value):
+        self.__setattr__(key, value)
+
     def __getattr__(self, item):
         return self.value.value[item].unpack()
 
     def __setattr__(self, key, value):
+        value = Object(value)
+        member = self.members.get(key)
+        if not member:
+            raise LibException('Member {0} not found'.format(key))
+
+        result, errors = member.type.validate(value)
+        if not result:
+            raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
+
         self.value.value[key] = value
 
     def __str__(self):
@@ -1952,14 +2002,25 @@ cdef class BaseStruct(BaseTypingObject):
     def __repr__(self):
         return str(self)
 
-    property members:
-        def __get__(self):
-            return {m.name: m for m in self.typei.type.members}
 
 
 cdef class BaseUnion(BaseTypingObject):
+    def __init__(self, value):
+        pass
+
     def __str__(self):
         return "<union {0}>".format(self.typei.type.name)
+
+    def __repr__(self):
+        return str(self)
+
+
+cdef class BaseEnum(BaseTypingObject):
+    def __init__(self, value):
+        super(BaseEnum, self).__init__(value)
+
+    def __str__(self):
+        return "<enum {0}>".format(self.typei.type.name)
 
     def __repr__(self):
         return str(self)
@@ -1968,17 +2029,9 @@ cdef class BaseUnion(BaseTypingObject):
         def __get__(self):
             pass
 
-
-cdef class BaseEnum(BaseTypingObject):
-    def __str__(self):
-        return "<enum {0}>".format(self.typei.type.name)
-
-    def __repr__(self):
-        return str(self)
-
     property values:
         def __get__(self):
-            pass
+            return [m.name for m in self.typei.type.members]
 
 
 cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil:
@@ -2124,8 +2177,8 @@ def unpack(fn):
     return fn
 
 
-def new(decl, value=None):
-    return TypeInstance(decl).factory(value)
+def new(decl, *args, **kwargs):
+    return TypeInstance(decl).factory(*args, **kwargs)
 
 
 type_hooks = {}

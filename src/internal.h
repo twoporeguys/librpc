@@ -201,6 +201,7 @@ struct rpc_inbound_call
 	rpc_context_t 		ric_context;
     	rpc_connection_t    	ric_conn;
 	rpc_instance_t 		ric_instance;
+	rpc_object_t 		ric_frame;
 	rpc_object_t        	ric_id;
 	rpc_object_t        	ric_args;
 	rpc_abort_handler_t	ric_abort_handler;
@@ -331,8 +332,8 @@ struct rpc_context
 	rpc_instance_t 		rcx_root;
 
 	/* Hooks */
-	rpc_function_f		rcx_pre_call_hook;
-	rpc_function_f		rcx_post_call_hook;
+	rpc_function_t		rcx_pre_call_hook;
+	rpc_function_t		rcx_post_call_hook;
 };
 
 struct rpc_bus_transport
@@ -389,6 +390,7 @@ struct rpct_type
 	rpct_class_t		clazz;
 	char *			name;
 	char *			description;
+	char *			origin;
 	struct rpct_file *	file;
 	struct rpct_type *	parent;
 	struct rpct_typei *	definition;
@@ -402,6 +404,7 @@ struct rpct_interface
 {
 	char *			name;
 	char *			description;
+	char *			origin;
 	GHashTable *		members;
 };
 
@@ -486,6 +489,7 @@ off_t rpc_shmem_get_offset(rpc_object_t shmem);
 
 rpc_object_t rpc_error_create_from_gerror(GError *g_error);
 
+void rpc_abort(const char *fmt, ...);
 void rpc_trace(const char *msg, rpc_object_t frame);
 char *rpc_get_backtrace(void);
 char *rpc_generate_v4_uuid(void);

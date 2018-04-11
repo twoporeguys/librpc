@@ -73,7 +73,7 @@ rpc_prim_create(rpc_type_t type, union rpc_value val)
 
 	ro = (rpc_object_t)g_malloc0(sizeof(*ro));
 	if (ro == NULL)
-		abort();
+		rpc_abort("malloc() returned NULL");
 
 	ro->ro_type = type;
 	ro->ro_value = val;
@@ -514,8 +514,8 @@ rpc_release_impl(rpc_object_t object)
 			break;
 		}
 
-		if (object->ro_typei != NULL)
-			rpct_typei_free(object->ro_typei);
+		//if (object->ro_typei != NULL)
+		//	rpct_typei_free(object->ro_typei);
 
 		g_free(object);
 		return (0);
@@ -1027,8 +1027,6 @@ rpc_object_vpack(const char *fmt, va_list ap)
 
 		case '{':
 			container = rpc_dictionary_create();
-			g_queue_push_tail(stack, container);
-
 			if (type != NULL) {
 				container = rpct_new(type, container);
 				if (container == NULL)
@@ -1037,12 +1035,12 @@ rpc_object_vpack(const char *fmt, va_list ap)
 				g_free(type);
 				type = NULL;
 			}
+
+			g_queue_push_tail(stack, container);
 			continue;
 
 		case '[':
 			container = rpc_array_create();
-			g_queue_push_tail(stack, container);
-
 			if (type != NULL) {
 				container = rpct_new(type, container);
 				if (container == NULL)
@@ -1051,6 +1049,8 @@ rpc_object_vpack(const char *fmt, va_list ap)
 				g_free(type);
 				type = NULL;
 			}
+
+			g_queue_push_tail(stack, container);
 			continue;
 
 		case '}':
@@ -1641,7 +1641,7 @@ rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value)
 	int i;
 
 	if (array->ro_type != RPC_TYPE_ARRAY)
-		abort();
+		rpc_abort("Trying array API on non-array object");
 
 	for (i = (int)(index - array->ro_value.rv_list->len); i > 0; i--) {
 		rpc_array_append_stolen_value(
@@ -1664,7 +1664,7 @@ inline void
 rpc_array_remove_index(rpc_object_t array, size_t index)
 {
 	if (array->ro_type != RPC_TYPE_ARRAY)
-		abort();
+		rpc_abort("Trying array API on non-array object");
 
 	if (index >= rpc_array_get_count(array))
 		return;
@@ -1686,7 +1686,7 @@ rpc_array_append_stolen_value(rpc_object_t array, rpc_object_t value)
 {
 
 	if (array->ro_type != RPC_TYPE_ARRAY)
-		abort();
+		rpc_abort("Trying array API on non-array object");
 
 	g_ptr_array_add(array->ro_value.rv_list, value);
 }
@@ -1787,7 +1787,7 @@ rpc_array_sort(rpc_object_t array, rpc_array_cmp_t comparator)
 {
 
 	if (array->ro_type != RPC_TYPE_ARRAY)
-		abort();
+		rpc_abort("Trying array API on non-array object");
 
 	g_ptr_array_sort_with_data(array->ro_value.rv_list,
 	    &rpc_array_comparator_converter, (void *)comparator);
@@ -2016,7 +2016,10 @@ rpc_dictionary_steal_value(rpc_object_t dictionary, const char *key,
 {
 
 	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
-		abort();
+		rpc_abort("Trying dictionary API on non-dictionary object");
+
+	if (key[0] == '$')
+		rpc_abort("Cannot use $ as the first character of the key");
 
 	g_hash_table_insert(dictionary->ro_value.rv_dict,
 	    (gpointer)g_strdup(key), value);
@@ -2026,7 +2029,7 @@ inline void
 rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key)
 {
 	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
-		abort();
+		rpc_abort("Trying dictionary API on non-dictionary object");
 
 	g_hash_table_remove(dictionary->ro_value.rv_dict, key);
 }
@@ -2037,7 +2040,7 @@ rpc_dictionary_detach_key(rpc_object_t dictionary, const char *key)
 	rpc_object_t result;
 
 	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
-		abort();
+		rpc_abort("Trying dictionary API on non-dictionary object");
 
 	result = rpc_dictionary_get_value(dictionary, key);
 	if (result == NULL)

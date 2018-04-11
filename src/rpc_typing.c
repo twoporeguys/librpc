@@ -37,19 +37,18 @@ static int rpct_lookup_type(const char *name, const char **decl,
 static struct rpct_type *rpct_find_type(const char *name);
 static struct rpct_type *rpct_find_type_fuzzy(const char *name,
     struct rpct_file *origin);
+static rpc_object_t rpct_download_idl(void *cookie, rpc_object_t args);
 static inline bool rpct_type_is_fully_specialized(struct rpct_typei *inst);
 static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *typei);
 static char *rpct_canonical_type(struct rpct_typei *typei);
 static int rpct_read_type(struct rpct_file *file, const char *decl,
     rpc_object_t obj);
-static bool rpct_validate_args(struct rpct_if_member *func, rpc_object_t args);
-static bool rpct_validate_return(struct rpct_if_member *func,
-    rpc_object_t result);
 static int rpct_parse_type(const char *decl, GPtrArray *variables);
+static void rpct_interface_free(struct rpct_interface *iface);
 
 static struct rpct_context *context = NULL;
 static const char *builtin_types[] = {
-	"null",
+	"nulltype",
 	"bool",
 	"uint64",
 	"int64",
@@ -64,6 +63,11 @@ static const char *builtin_types[] = {
 	"error",
 	"any",
 	NULL
+};
+
+static const struct rpc_if_member rpct_typing_vtable[] = {
+	RPC_METHOD(download, rpct_download_idl),
+	RPC_MEMBER_END
 };
 
 rpct_typei_t
@@ -206,6 +210,19 @@ rpct_find_type(const char *name)
 
 	return (type);
 
+}
+
+static rpc_object_t
+rpct_download_idl(void *cookie, rpc_object_t args __unused)
+{
+	GHashTableIter iter;
+	struct rpct_file *file;
+
+	g_hash_table_iter_init(&iter, context->files);
+	while (g_hash_table_iter_next(&iter, NULL, (gpointer)&file))
+		rpc_function_yield(cookie, rpc_retain(file->body));
+
+	return (NULL);
 }
 
 static int
@@ -408,6 +425,15 @@ rpct_file_free(struct rpct_file *file)
 	g_free(file->path);
 	g_hash_table_destroy(file->types);
 	g_free(file);
+}
+
+static void
+rpct_interface_free(struct rpct_interface *iface)
+{
+
+	g_free(iface->name);
+	g_free(iface->description);
+	g_hash_table_destroy(iface->members);
 }
 
 static void
@@ -655,22 +681,24 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 	if (inherits != NULL) {
 		parent = rpct_find_type_fuzzy(inherits, file);
-		if (parent == NULL)
+		if (parent == NULL) {
+			rpc_set_last_errorf(ENOENT,
+			    "Cannot find parent type: %s", inherits);
 			return (-1);
+		}
 	}
 
 	regex = g_regex_new(TYPE_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
-	if (err != NULL) {
-		g_error_free(err);
-		return (-1);
-	}
+	g_assert_no_error(err);
 
 	if (!g_regex_match(regex, decl, 0, &match)) {
+		rpc_set_last_errorf(EINVAL, "Syntax error: %s", decl);
 		g_regex_unref(regex);
 		return (-1);
 	}
 
 	if (g_match_info_get_match_count(match) < 2) {
+		rpc_set_last_errorf(EINVAL, "Syntax error: %s", decl);
 		g_regex_unref(regex);
 		g_match_info_free(match);
 		return (-1);
@@ -689,6 +717,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		return (0);
 
 	type = g_malloc0(sizeof(*type));
+	type->origin = g_strdup_printf("%s:%jd", file->path, rpc_get_line_number(obj));
 	type->name = typename;
 	type->file = file;
 	type->parent = parent;
@@ -701,11 +730,14 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 	handler = rpc_find_class_handler(decltype, (rpct_class_t)-1);
 	if (handler == NULL) {
+		rpc_set_last_errorf(EINVAL, "Unknown class handler: %s", decltype);
 		g_regex_unref(regex);
 		g_match_info_free(match);
 		rpct_type_free(type);
 		return (-1);
 	}
+
+	type->clazz = handler->id;
 
 	if (declvars) {
 		type->generic = true;
@@ -1002,8 +1034,10 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		return (-1);
 
 	iface = g_malloc0(sizeof(*iface));
+	iface->origin = g_strdup_printf("%s:%jd", file->path, rpc_get_line_number(obj));
 	iface->name = g_match_info_fetch(match, 1);
-	iface->members = g_hash_table_new(g_str_hash, g_str_equal);
+	iface->members = g_hash_table_new_full(g_str_hash, g_str_equal,
+	    g_free, (GDestroyNotify)rpct_if_member_free);
 	iface->description = g_strdup(rpc_dictionary_get_string(obj,
 	    "description"));
 
@@ -1068,8 +1102,7 @@ rpct_read_file(const char *path)
 	file->body = rpc_retain(obj);
 	file->path = g_strdup(path);
 	file->uses = g_ptr_array_new_with_free_func(g_free);
-	file->types = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
-	    NULL);
+	file->types = g_hash_table_new(g_str_hash, g_str_equal);
 	file->interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 
 	if (rpct_read_meta(file, rpc_dictionary_get_value(obj, "meta")) < 0) {
@@ -1124,6 +1157,14 @@ rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
 	/* Step 1: is it typed at all? */
 	if (obj->ro_typei == NULL) {
 		/* Can only be builtin type */
+		if (g_strcmp0(raw_typei->canonical_form, "any") == 0)
+			goto step3;
+
+		if (g_strcmp0(raw_typei->canonical_form, "nullptr") == 0) {
+			if (obj->ro_type == RPC_TYPE_NULL)
+				goto step3;
+		}
+
 		if (g_strcmp0(rpc_get_type_name(obj->ro_type),
 		    raw_typei->canonical_form) == 0)
 			goto step3;
@@ -1157,23 +1198,58 @@ done:
 	return (valid);
 }
 
-static bool
-rpct_validate_args(struct rpct_if_member *func, rpc_object_t args)
+bool
+rpct_validate_args(struct rpct_if_member *func, rpc_object_t args,
+    rpc_object_t *errors)
 {
-	return (rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
-		rpc_object_t errors;
-		rpct_typei_t typei = g_ptr_array_index(func->arguments, idx);
+	struct rpct_validation_error *err;
+	__block struct rpct_error_context errctx;
+	__block bool valid = true;
+	guint i;
 
-		return (rpct_validate(typei, i, &errors));
-	}));
+	if (func->arguments == NULL)
+		return (true);
+
+	errctx.path = "";
+	errctx.errors = g_ptr_array_new();
+
+	rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
+		struct rpct_argument *arg;
+
+		if (idx >= func->arguments->len)
+			return ((bool)false);
+
+		arg = g_ptr_array_index(func->arguments, idx);
+		if (!rpct_validate_instance(arg->type, i, &errctx))
+			valid = false;
+
+		return ((bool)true);
+	});
+
+	if (errors != NULL) {
+		*errors = rpc_array_create();
+		for (i = 0; i < errctx.errors->len; i++) {
+			err = g_ptr_array_index(errctx.errors, i);
+			rpc_array_append_stolen_value(*errors,
+			    rpc_object_pack("{s,s,v}",
+				"path", err->path,
+				"message", err->message,
+				"extra", err->extra));
+		}
+	}
+
+	g_ptr_array_free(errctx.errors, false);
+	return (valid);
 }
 
-static bool
-rpct_validate_return(struct rpct_if_member *func, rpc_object_t result)
+bool
+rpct_validate_return(struct rpct_if_member *func, rpc_object_t result,
+    rpc_object_t *errors)
 {
+	if (func->result == NULL)
+		return (true);
 
-	rpc_set_last_errorf(ENOTSUP, "Not implemented");
-	return (-1);
+	return (rpct_validate(func->result, result, errors));
 }
 
 bool
@@ -1201,7 +1277,58 @@ rpct_validate(struct rpct_typei *typei, rpc_object_t obj, rpc_object_t *errors)
 		}
 	}
 
+	g_ptr_array_free(errctx.errors, false);
 	return (valid);
+}
+
+rpc_object_t
+rpct_pre_call_hook(void *cookie, rpc_object_t args)
+{
+	struct rpc_inbound_call *ic = cookie;
+	struct rpct_if_member *member;
+	char *msg;
+	rpc_object_t errors;
+
+	member = rpct_find_if_member(ic->ric_interface, ic->ric_name);
+	if (member == NULL)
+		return (NULL);
+
+	if (!rpct_validate_args(member, args, &errors)) {
+		msg = g_strdup_printf("Validation failed: %jd errors",
+		    rpc_array_get_count(errors));
+
+		rpc_function_error_ex(cookie, rpc_error_create(EINVAL, msg, errors));
+		g_free(msg);
+	}
+
+	return (NULL);
+}
+
+
+rpc_object_t
+rpct_post_call_hook(void *cookie, rpc_object_t result)
+{
+	struct rpc_inbound_call *ic = cookie;
+	struct rpct_if_member *member;
+	rpc_object_t errors;
+
+	member = rpct_find_if_member(ic->ric_interface, ic->ric_name);
+	if (member == NULL)
+		return (NULL);
+
+	if (!rpct_validate_return(member, result, &errors)) {
+		rpc_function_error_ex(cookie, rpc_error_create(EINVAL,
+		    "Return value validation failed", errors));
+	}
+
+	return (NULL);
+}
+
+void
+rpct_allow_idl_download(rpc_context_t context)
+{
+	rpc_instance_register_interface(context->rcx_root,
+	    RPCT_TYPING_INTERFACE, rpct_typing_vtable, NULL);
 }
 
 int
@@ -1216,7 +1343,7 @@ rpct_init(void)
 	context->types = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 	    (GDestroyNotify)rpct_type_free);
 	context->interfaces = g_hash_table_new_full(g_str_hash, g_str_equal,
-	    g_free, (GDestroyNotify)rpct_if_member_free);
+	    g_free, (GDestroyNotify)rpct_interface_free);
 
 	for (b = builtin_types; *b != NULL; b++) {
 		type = g_malloc0(sizeof(*type));
@@ -1259,6 +1386,9 @@ int
 rpct_load_types(const char *path)
 {
 	struct rpct_file *file;
+	rpc_object_t error;
+	char *errmsg;
+	bool fail;
 
 	if (rpct_read_file(path) != 0)
 		return (-1);
@@ -1266,22 +1396,30 @@ rpct_load_types(const char *path)
 	file = g_hash_table_lookup(context->files, path);
 	g_assert_nonnull(file);
 
-	if (rpc_dictionary_apply(file->body, ^(const char *key,
-		rpc_object_t v) {
+	fail = rpc_dictionary_apply(file->body, ^bool(const char *key,
+	    rpc_object_t v) {
 		if (g_strcmp0(key, "meta") == 0)
-			return ((bool)true);
+			return (true);
 
 		if (g_str_has_prefix(key, "interface")) {
 			if (rpct_read_interface(file, key, v) != 0)
 				return ((bool)false);
 
-			return ((bool)true);
-	    }
+			return (true);
+	    	}
 
-		rpct_read_type(file, key, v);
-		return ((bool)true);
-	}))
+		if (rpct_read_type(file, key, v) != 0)
+			return (false);
+
+		return (true);
+	});
+
+	if (fail) {
+		error = rpc_get_last_error();
+		errmsg = g_strdup_printf("%s: %s", path, rpc_error_get_message(error));
+		rpc_set_last_error(rpc_error_get_code(error), errmsg, rpc_error_get_extra(error));
 		return (-1);
+	}
 
 	return (0);
 }
@@ -1314,6 +1452,10 @@ rpct_load_types_dir(const char *path)
 			continue;
 
 		s = g_strdup_printf("%s/%s", path, name);
+
+		if (g_file_test(s, G_FILE_TEST_IS_DIR))
+			rpct_load_types_dir(s);
+
 		if (rpct_read_file(s) != 0) {
 			g_free(s);
 			continue;
@@ -1353,6 +1495,13 @@ rpct_type_get_module(rpct_type_t type)
 {
 
 	return (type->file->path);
+}
+
+const char *
+rpct_type_get_origin(rpct_type_t type)
+{
+
+	return (type->origin);
 }
 
 const char *
@@ -1466,6 +1615,13 @@ rpct_interface_get_name(rpct_interface_t iface)
 }
 
 const char *
+rpct_interface_get_origin(rpct_interface_t iface)
+{
+
+	return (iface->origin);
+}
+
+const char *
 rpct_interface_get_description(rpct_interface_t iface)
 {
 
@@ -1524,6 +1680,12 @@ rpct_property_get_type(rpct_if_member_t prop)
 	return (prop->result);
 }
 
+const char *
+rpct_argument_get_name(rpct_argument_t arg)
+{
+
+	return (arg->name);
+}
 
 const char *
 rpct_argument_get_description(rpct_argument_t arg)
@@ -1613,6 +1775,27 @@ rpct_if_member_apply(rpct_interface_t iface, rpct_if_member_applier_t applier)
 	return (flag);
 }
 
+rpct_if_member_t
+rpct_find_if_member(const char *interface, const char *member)
+{
+	struct rpct_if_member *ret;
+	struct rpct_interface *iface;
+
+	iface = g_hash_table_lookup(context->interfaces, interface);
+	if (iface == NULL) {
+		rpc_set_last_errorf(ENOENT, "Interface not found");
+		return (NULL);
+	}
+
+	ret = g_hash_table_lookup(iface->members, member);
+	if (ret == NULL) {
+		rpc_set_last_errorf(ENOENT, "Member not found");
+		return (NULL);
+	}
+
+	return (ret);
+}
+
 rpc_object_t
 rpct_serialize(rpc_object_t object)
 {
@@ -1689,6 +1872,9 @@ rpct_deserialize(rpc_object_t object)
 
 trivial:
 	typename = rpc_get_type_name(rpc_get_type(object));
+	if (g_strcmp0(typename, "null") == 0)
+		typename = "nulltype";
+
 	return (rpct_new(typename, object));
 }
 

@@ -35,6 +35,7 @@ struct_read_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
 	struct rpct_member *member;
 	const char *typedecl = NULL;
 	const char *description = "";
+	struct rpct_typei *typei;
 	rpc_object_t constraints = NULL;
 
 	rpc_object_unpack(obj, "{s,s,v}",
@@ -43,7 +44,13 @@ struct_read_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
 	    "constraints", &constraints);
 
 	if (typedecl == NULL) {
-		rpc_set_last_error(EINVAL, "type key not provided or invalid", NULL);
+		rpc_set_last_errorf(EINVAL, "%s: type key not provided or invalid", decl);
+		return (NULL);
+	}
+
+	typei = rpct_instantiate_type(typedecl, NULL, type, type->file);
+	if (typei == NULL) {
+		rpc_set_last_errorf(EINVAL, "type %s not found", typedecl);
 		return (NULL);
 	}
 
@@ -51,7 +58,7 @@ struct_read_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
 	member->name = g_strdup(decl);
 	member->description = description != NULL ? g_strdup(description) : NULL;
 	member->origin = type;
-	member->type = rpct_instantiate_type(typedecl, NULL, type, type->file);
+	member->type = typei;
 	member->constraints = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    g_free, (GDestroyNotify)rpc_release_impl);
 
@@ -95,6 +102,9 @@ struct_validate(struct rpct_typei *typei, rpc_object_t obj,
 	    return ((bool)true);
 	});
 
+	if (!valid)
+		return (false);
+
 	return (rpct_run_validators(typei, obj, errctx));
 }
 
@@ -105,6 +115,11 @@ struct_serialize(rpc_object_t obj)
 	assert(obj != NULL);
 	assert(obj->ro_typei != NULL);
 	assert(rpc_get_type(obj) == RPC_TYPE_DICTIONARY);
+
+	/* Serialize every member */
+	rpc_dictionary_map(obj, ^(const char *key, rpc_object_t value) {
+		return (rpct_serialize(value));
+	});
 
 	rpc_dictionary_set_string(obj, RPCT_TYPE_FIELD,
 	    obj->ro_typei->canonical_form);

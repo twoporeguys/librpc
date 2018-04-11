@@ -177,100 +177,100 @@ set(VALIDATOR_FILES
         src/validator/int64_range.c)
 
 if(BUILD_JSON)
-    set(SERIALIZER_FILES
-            ${SERIALIZER_FILES}
-            src/serializer/json.c
-            src/serializer/json.h)
+	set(SERIALIZER_FILES
+			${SERIALIZER_FILES}
+			src/serializer/json.c
+			src/serializer/json.h)
 endif()
 
 if(BUNDLED_BLOCKS_RUNTIME)
-    set(CORE_FILES ${CORE_FILES}
-            contrib/BlocksRuntime/data.c
-            contrib/BlocksRuntime/runtime.c)
+	set(CORE_FILES ${CORE_FILES}
+			contrib/BlocksRuntime/data.c
+			contrib/BlocksRuntime/runtime.c)
 endif()
 
-if(BUILD_LIBUSB)
-    set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/libusb.c)
+	if(BUILD_LIBUSB)
+set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/libusb.c)
 endif()
 
-if(BUILD_BUS AND LINUX)
-    set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/bus.c)
+	if(BUILD_BUS AND LINUX)
+set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/bus.c)
 endif()
 
-if(BUILD_XPC)
-    set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/xpc.c)
+	if(BUILD_XPC)
+set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/xpc.c)
 endif()
 
-add_library(librpc SHARED
-        ${HEADERS}
-        ${TRANSPORT_FILES}
-        ${SERIALIZER_FILES}
-        ${TYPE_CLASS_FILES}
-        ${VALIDATOR_FILES}
-        ${CORE_FILES})
+	add_library(librpc SHARED
+			${HEADERS}
+			${TRANSPORT_FILES}
+			${SERIALIZER_FILES}
+			${TYPE_CLASS_FILES}
+			${VALIDATOR_FILES}
+			${CORE_FILES})
 
-set_target_properties(librpc PROPERTIES PREFIX "")
-set_target_properties(librpc PROPERTIES SOVERSION 1)
-set_target_properties(librpc PROPERTIES MACOSX_RPATH ON)
+	set_target_properties(librpc PROPERTIES PREFIX "")
+	set_target_properties(librpc PROPERTIES SOVERSION 1)
+	set_target_properties(librpc PROPERTIES MACOSX_RPATH ON)
 target_link_libraries(librpc ${GLIB_LIBRARIES})
 target_link_libraries(librpc ${GIO_LIBRARIES})
 target_link_libraries(librpc ${SOUP_LIBRARIES})
 target_link_libraries(librpc ${YAJL_LIBRARIES})
 target_link_libraries(librpc ${YAML_LIBRARIES})
 
-if(BUILD_LIBUSB)
-    target_link_libraries(librpc ${LIBUSB_LIBRARIES})
+	if(BUILD_LIBUSB)
+target_link_libraries(librpc ${LIBUSB_LIBRARIES})
 endif()
 
-if(BUILD_BUS AND LINUX)
-    target_link_libraries(librpc ${UDEV_LIBRARIES})
+	if(BUILD_BUS AND LINUX)
+target_link_libraries(librpc ${UDEV_LIBRARIES})
 endif()
 
-if(NOT APPLE)
-    target_link_libraries(librpc BlocksRuntime)
+	if(NOT APPLE)
+	target_link_libraries(librpc BlocksRuntime)
 endif()
 
-if(ENABLE_LIBDISPATCH AND NOT APPLE)
-    target_link_libraries(librpc dispatch)
+	if(ENABLE_LIBDISPATCH AND NOT APPLE)
+	target_link_libraries(librpc dispatch)
 endif()
 
 configure_file(librpc.pc.in ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc @ONLY)
-install(TARGETS librpc DESTINATION lib)
+	install(TARGETS librpc DESTINATION lib)
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
 install(DIRECTORY idl/ DESTINATION ${CMAKE_INSTALL_PREFIX}/share/idl)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pkgconfig)
 
 if(BUILD_TESTS)
-    set(TEST_SOURCES
-            src/linker_set.h
-            tests/tests.h
-            tests/main.c
-            tests/api/bus.c
-            tests/api/client.c
-            tests/api/connection.c
-            tests/api/object.c
-            tests/api/query.c
-            tests/api/serializer.c
-            tests/api/server.c
-            tests/api/service.c
-            tests/api/typing.c
-            tests/internal.c
-            tests/transport.c)
+	set(TEST_SOURCES
+			src/linker_set.h
+			tests/tests.h
+			tests/main.c
+			tests/api/bus.c
+			tests/api/client.c
+			tests/api/connection.c
+			tests/api/object.c
+			tests/api/query.c
+			tests/api/serializer.c
+			tests/api/server.c
+			tests/api/service.c
+			tests/api/typing.c
+			tests/internal.c
+			tests/transport.c)
 
-    add_executable(test_suite ${TEST_SOURCES})
-    target_link_libraries(test_suite ${GLIB_LIBRARIES})
-    target_link_libraries(test_suite librpc)
+add_executable(test_suite ${TEST_SOURCES})
+target_link_libraries(test_suite ${GLIB_LIBRARIES})
+	target_link_libraries(test_suite librpc)
 endif()
 
-if(BUILD_EXAMPLES)
-    add_subdirectory(examples/client)
-    add_subdirectory(examples/event)
-    add_subdirectory(examples/loopback)
-    add_subdirectory(examples/pack-unpack)
-    add_subdirectory(examples/server)
-    add_subdirectory(examples/error-backtrace)
-    add_subdirectory(examples/query)
-
+	if(BUILD_EXAMPLES)
+	add_subdirectory(examples/client)
+	add_subdirectory(examples/event)
+	add_subdirectory(examples/loopback)
+	add_subdirectory(examples/pack-unpack)
+	add_subdirectory(examples/server)
+	add_subdirectory(examples/error-backtrace)
+	add_subdirectory(examples/query)
+	add_subdirectory(examples/validation)
     if(UNIX)
         add_subdirectory(examples/fd-client)
         add_subdirectory(examples/fd-server)

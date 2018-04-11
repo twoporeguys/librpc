@@ -90,7 +90,9 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	debugf("method=%p", method);
 
 	if (context->rcx_pre_call_hook != NULL) {
-
+		context->rcx_pre_call_hook(call, call->ric_args);
+		if (call->ric_responded)
+			return;
 	}
 
 	result = method->rm_block((void *)call, call->ric_args);
@@ -99,7 +101,9 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 		return;
 
 	if (context->rcx_post_call_hook != NULL) {
-
+		context->rcx_post_call_hook(call, result);
+		if (call->ric_responded)
+			return;
 	}
 
 	if (!call->ric_streaming && !call->ric_responded)
@@ -754,6 +758,21 @@ rpc_instance_unregister_member(rpc_instance_t instance, const char *interface,
 	return (0);
 }
 
+void
+rpc_context_set_pre_call_hook(rpc_context_t context, rpc_function_t fn)
+{
+
+	context->rcx_pre_call_hook = fn;
+}
+
+
+void
+rpc_context_set_post_call_hook(rpc_context_t context, rpc_function_t fn)
+{
+
+	context->rcx_post_call_hook = fn;
+}
+
 int
 rpc_instance_get_property_rights(rpc_instance_t instance, const char *interface,
     const char *name)
@@ -1066,10 +1085,12 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 
 		if (v->rim_property.rp_getter == NULL) {
 			value = rpc_error_create(EPERM, "Not readable", NULL);
-			rpc_array_append_stolen_value(
-			    result, rpc_object_pack("{s,v}", "name",
-			    v->rim_name, "value", value));
+			item = rpc_object_pack(
+			    "<com.twoporeguys.librpc.PropertyDescriptor>{s,v}",
+			    "name", v->rim_name,
+			    "value", value);
 
+			rpc_array_append_stolen_value(result, item);
 			continue;
 		}
 
@@ -1082,7 +1103,8 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 		if (prop.error != NULL)
 			value = prop.error;
 
-		item = rpc_object_pack("<com.twoporeguys.librpc.PropertyDescriptor>{s,v}",
+		item = rpc_object_pack(
+		    "<com.twoporeguys.librpc.PropertyDescriptor>{s,v}",
 		    "name", v->rim_name,
 		    "value", value);
 
