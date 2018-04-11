@@ -181,6 +181,10 @@ Functions</h2></td></tr>
 <tr class="separator:aa53a346b1f60759fabc2f047e75fdb90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f63ab83623a2f407eac2fe9b7f80023"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a4f63ab83623a2f407eac2fe9b7f80023">rpc_context_free</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context)</td></tr>
 <tr class="separator:a4f63ab83623a2f407eac2fe9b7f80023"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0413ac7ffeea622df6e48327c01227e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ad0413ac7ffeea622df6e48327c01227e">rpc_context_resume</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context)</td></tr>
+<tr class="separator:ad0413ac7ffeea622df6e48327c01227e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87dd03ed495f441b984d5fdf1976d7af"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a87dd03ed495f441b984d5fdf1976d7af">rpc_context_pause</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context)</td></tr>
+<tr class="separator:a87dd03ed495f441b984d5fdf1976d7af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a125f2739087a2d4f89384d24fadb6cde"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a125f2739087a2d4f89384d24fadb6cde">rpc_context_find_instance</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *_Nonnull path)</td></tr>
 <tr class="separator:a125f2739087a2d4f89384d24fadb6cde"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a099a8fc4046be7999da0454548825513"><td class="memItemLeft" align="right" valign="top">_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a099a8fc4046be7999da0454548825513">rpc_context_get_root</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context)</td></tr>
@@ -195,8 +199,8 @@ Functions</h2></td></tr>
 <tr class="separator:ac0a7c2d5e6bb7464de61d346f97c0b04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1aac077f97529f7c26834c139fefc2f5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a1aac077f97529f7c26834c139fefc2f5">rpc_context_register_func</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *_Nullable interface, const char *_Nonnull name, void *_Nullable arg, _Nonnull <a class="el" href="service_8h.html#add2d357ed7db564684628b3467048431">rpc_function_f</a> func)</td></tr>
 <tr class="separator:a1aac077f97529f7c26834c139fefc2f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a982fcc47ab91486b508ca9cff5b7ed8f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a982fcc47ab91486b508ca9cff5b7ed8f">rpc_context_unregister_member</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *_Nonnull interface, const char *_Nonnull name)</td></tr>
-<tr class="separator:a982fcc47ab91486b508ca9cff5b7ed8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ad6475e7ca46534421ce0c3245d0cb2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a7ad6475e7ca46534421ce0c3245d0cb2">rpc_context_unregister_member</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, const char *_Nullable interface, const char *_Nonnull name)</td></tr>
+<tr class="separator:a7ad6475e7ca46534421ce0c3245d0cb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5eb243586ec426274b93ad40f64f0ea5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a5eb243586ec426274b93ad40f64f0ea5">rpc_context_set_pre_call_hook</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, _Nonnull <a class="el" href="service_8h.html#ae49a22468cfcd4adfa558078e9e4e312">rpc_function_t</a> fn)</td></tr>
 <tr class="separator:a5eb243586ec426274b93ad40f64f0ea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b62e56dbc71d17c4094d2cfec863712"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a6b62e56dbc71d17c4094d2cfec863712">rpc_context_set_post_call_hook</a> (_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context, _Nonnull <a class="el" href="service_8h.html#ae49a22468cfcd4adfa558078e9e4e312">rpc_function_t</a> fn)</td></tr>
@@ -956,6 +960,33 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a87dd03ed495f441b984d5fdf1976d7af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87dd03ed495f441b984d5fdf1976d7af">&#9670;&nbsp;</a></span>rpc_context_pause()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_context_pause </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a>&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Prevents incoming requests from being forwarded to servers created using the context.</p>
+<p>Incoming requests will be queued and on hold until <a class="el" href="service_8h.html#ad0413ac7ffeea622df6e48327c01227e">rpc_context_resume</a> is called.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">context</td><td>Context handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
+
+</div>
+</div>
 <a id="ac0a7c2d5e6bb7464de61d346f97c0b04"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac0a7c2d5e6bb7464de61d346f97c0b04">&#9670;&nbsp;</a></span>rpc_context_register_block()</h2>
 
@@ -1141,6 +1172,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Registers a given rpc_method structure as an RPC method in a given context.</p>
+<p>The method must have a non-null name.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">context</td><td>Target context. </td></tr>
@@ -1149,6 +1181,33 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Status. </dd></dl>
+
+</div>
+</div>
+<a id="ad0413ac7ffeea622df6e48327c01227e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0413ac7ffeea622df6e48327c01227e">&#9670;&nbsp;</a></span>rpc_context_resume()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_context_resume </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a>&#160;</td>
+          <td class="paramname"><em>context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Allows incoming requests to begin or resume being forwarded to servers created using the context.</p>
+<p>Incoming requests will be queued and on hold until this function is called.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">context</td><td>Context handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
 
 </div>
 </div>
@@ -1261,8 +1320,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a982fcc47ab91486b508ca9cff5b7ed8f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a982fcc47ab91486b508ca9cff5b7ed8f">&#9670;&nbsp;</a></span>rpc_context_unregister_member()</h2>
+<a id="a7ad6475e7ca46534421ce0c3245d0cb2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ad6475e7ca46534421ce0c3245d0cb2">&#9670;&nbsp;</a></span>rpc_context_unregister_member()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1276,7 +1335,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *_Nonnull&#160;</td>
+          <td class="paramtype">const char *_Nullable&#160;</td>
           <td class="paramname"><em>interface</em>, </td>
         </tr>
         <tr>
