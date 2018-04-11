@@ -32,11 +32,24 @@
 #include "internal.h"
 
 static int rpc_server_accept(rpc_server_t, rpc_connection_t);
+static void rpc_server_cleanup(rpc_server_t server);
+
+static void
+rpc_server_cleanup(rpc_server_t server)
+{
+        g_main_context_invoke(server->rs_g_context,
+            (GSourceFunc)rpc_kill_main_loop, server->rs_g_loop);
+        g_thread_join(server->rs_thread);
+        g_main_loop_unref(server->rs_g_loop);
+        g_main_context_unref(server->rs_g_context);
+}
 
 static int
 rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 {
 
+	if (server->rs_closed)
+		return (-1);
 	server->rs_connections = g_list_append(server->rs_connections, conn);
 	return (0);
 }
@@ -65,14 +78,16 @@ rpc_server_listen(void *arg)
 	g_free(scheme);
 
 	if (transport == NULL) {
-		errno = ENXIO;
+		debugf("No such transport");
+		server->rs_error = rpc_error_create(ENXIO, 
+		    "Error: Transport Not Found", NULL);
 		goto done;
 	}
 
 	debugf("selected transport %s", transport->name);
 	server->rs_flags = transport->flags;
-	transport->listen(server, server->rs_uri, NULL);
-	server->rs_operational = true;
+	if (transport->listen(server, server->rs_uri, NULL) == 0)
+	    server->rs_operational = true;
 
 done:
 	g_cond_signal(&server->rs_cv);
@@ -103,8 +118,15 @@ rpc_server_create(const char *uri, rpc_context_t context)
 	g_mutex_lock(&server->rs_mtx);
 	g_main_context_invoke(server->rs_g_context, rpc_server_listen, server);
 
-	while (!server->rs_operational)
+	while (server->rs_error == NULL && !server->rs_operational)
 		g_cond_wait(&server->rs_cv, &server->rs_mtx);
+
+	if (server->rs_error != NULL) {
+                debugf("failed server");
+		rpc_set_last_rpc_error(server->rs_error);
+                rpc_server_cleanup(server);
+                return(NULL);
+	}
 
 	g_ptr_array_add(context->rcx_servers, server);
 	g_mutex_unlock(&server->rs_mtx);
@@ -116,6 +138,9 @@ rpc_server_broadcast_event(rpc_server_t server, const char *path,
     const char *interface, const char *name, rpc_object_t args)
 {
 	GList *item;
+
+        if (server->rs_closed)
+		return;
 
 	for (item = g_list_first(server->rs_connections); item;
 	     item = item->next) {
@@ -153,12 +178,23 @@ rpc_server_close(rpc_server_t server)
 {
 	struct rpc_connection *conn;
 	GList *iter = NULL;
+	int ret = 0;
+
+	if (server->rs_teardown)
+		ret = server->rs_teardown(server);
+        else {
+		rpc_set_last_errorf(ENOTSUP, "Not supported by transport");	
+		return (-1);
+	}
 
 	/* Drop all connections */
 	for (iter = server->rs_connections; iter != NULL; iter = iter->next) {
 		conn = iter->data;
 		conn->rco_abort(conn->rco_arg);
 	}
+	/* stop listener thread. */
+	rpc_server_cleanup(server);
+        g_free(server);
 
-	return (server->rs_teardown(server));
+	return (ret);
 }

@@ -79,7 +79,8 @@ socket_parse_uri(const char *uri_string)
 	GSocketAddress *addr = NULL;
 	SoupURI *uri;
 
-	uri = soup_uri_new(uri_string);
+	if ((uri = soup_uri_new(uri_string)) == NULL)
+	    return NULL;
 
 	if (!g_strcmp0(uri->scheme, "tcp")) {
 		addr = g_inet_socket_address_new_from_string(uri->host,
@@ -111,8 +112,11 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 
 	gconn = g_socket_listener_accept_finish(server->ss_listener, result,
 	    NULL, &err);
-	if (err != NULL)
+	if (err != NULL) {
+		srv->rs_error = rpc_error_create_from_gerror(err);
+		debugf("accept failed");
 		goto done;
+	}
 
 	debugf("new connection");
 
@@ -128,15 +132,15 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 	rco->rco_get_fd = socket_get_fd;
 	rco->rco_arg = conn;
 	conn->sc_parent = rco;
-	srv->rs_accept(srv, rco);
-
-	conn->sc_reader_thread = g_thread_new("socket reader thread",
-	    socket_reader, (gpointer)conn);
+	if (srv->rs_accept(srv, rco) == 0)
+		conn->sc_reader_thread = g_thread_new("socket reader thread",
+		    socket_reader, (gpointer)conn);
 
 done:
-	/* Schedule next accept */
-	g_socket_listener_accept_async(server->ss_listener,  NULL,
-	    &socket_accept, data);
+	/* Schedule next accept if server isn't closing*/
+	if (!srv->rs_closed)
+		g_socket_listener_accept_async(server->ss_listener,  NULL,
+		    &socket_accept, data);
 }
 
 int
@@ -194,6 +198,7 @@ socket_listen(struct rpc_server *srv, const char *uri,
 
 	addr = socket_parse_uri(uri);
 	if (addr == NULL) {
+		srv->rs_error = rpc_error_create(ENXIO, "No Such Address", NULL);
 		g_object_unref(addr);
 		return (-1);
 	}
@@ -218,7 +223,8 @@ socket_listen(struct rpc_server *srv, const char *uri,
 		if (g_file_query_exists(file, NULL)) {
 			g_file_delete(file, NULL, &err);
 			if (err != NULL) {
-				rpc_set_last_gerror(err);
+				srv->rs_error = rpc_error_create(err->code, 
+				    err->message, NULL);
 				g_object_unref(addr);
 				g_error_free(err);
 				g_free(server->ss_uri);
@@ -232,7 +238,7 @@ socket_listen(struct rpc_server *srv, const char *uri,
 	g_socket_listener_add_address(server->ss_listener, addr,
 	    G_SOCKET_TYPE_STREAM, G_SOCKET_PROTOCOL_DEFAULT, NULL, NULL, &err);
 	if (err != NULL) {
-		rpc_set_last_gerror(err);
+		srv->rs_error = rpc_error_create(err->code, err->message, NULL);
 		g_object_unref(addr);
 		g_error_free(err);
 		g_free(server->ss_uri);

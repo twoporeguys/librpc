@@ -274,6 +274,29 @@ _Nonnull rpc_context_t rpc_context_create(void);
 void rpc_context_free(_Nonnull rpc_context_t context);
 
 /**
+ * Allows incoming requests to begin or resume being forwarded to servers 
+ * created using the context. 
+ *
+ * Incoming requests will be queued and on hold until this function is called.
+ *
+ * @param context Context handle
+ * @return 0 on success, -1 on error
+ */
+int rpc_context_resume(_Nonnull rpc_context_t context);
+
+/**
+ * Prevents incoming requests from being forwarded to servers 
+ * created using the context. 
+ *
+ * Incoming requests will be queued and on hold until @ref rpc_context_resume
+ * is called.
+ *
+ * @param context Context handle
+ * @return 0 on success, -1 on error
+ */
+int rpc_context_pause(_Nonnull rpc_context_t context);
+
+/**
  * Finds an instance registered in @p context.
  *
  * @param context RPC context handle
@@ -312,6 +335,8 @@ void rpc_context_unregister_instance(_Nonnull rpc_context_t context,
 /**
  * Registers a given rpc_method structure as an RPC method in a given context.
  *
+ * The method must have a non-null name.
+ * 
  * @param context Target context.
  * @param m RPC method structure.
  * @return Status.
@@ -355,7 +380,7 @@ int rpc_context_register_func(_Nonnull rpc_context_t context,
  * @return Status.
  */
 int rpc_context_unregister_member(_Nonnull rpc_context_t context,
-    const char *_Nonnull interface, const char *_Nonnull name);
+    const char *_Nullable interface, const char *_Nonnull name);
 
 /**
  * Installs a hook for every RPC function called.

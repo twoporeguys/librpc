@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <glib.h>
+#include <string.h>
 #include <libsoup/soup.h>
 #include "../../src/linker_set.h"
 #include "../../src/internal.h"
@@ -101,16 +102,23 @@ loopback_listen(struct rpc_server *srv, const char *uri_string,
 {
 	SoupURI *uri;
 	struct loopback_channel *chan;
+	int host;
 
 	uri = soup_uri_new(uri_string);
-	if (uri == NULL)
-		return (-1);
+
+        if ((uri == NULL) || (uri->host == NULL) || !strlen(uri->host) ||
+                (!(host = (int)strtoul(uri->host, NULL, 10)) && (uri->host[0] != '0'))
+                ) {
+                srv->rs_error = rpc_error_create(ENXIO, "No Such Address", NULL);
+                debugf("Invalid loopback uri %s", uri_string);
+                return (-1);
+        }
 
 	chan = g_malloc0(sizeof(*chan));
 	chan->lc_srv = srv;
 	chan->lc_connections = g_hash_table_new(NULL, NULL);
-	chan->lc_number = (int)strtoul(uri->host, NULL, 10);
-	srv->rs_teardown = &loopback_teardown;
+	chan->lc_number = host;
+	/*srv->rs_teardown = &loopback_teardown;*/
 	srv->rs_arg = chan;
 
 	if (loopback_channels == NULL)
