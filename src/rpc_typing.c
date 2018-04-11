@@ -1872,6 +1872,9 @@ rpct_deserialize(rpc_object_t object)
 
 trivial:
 	typename = rpc_get_type_name(rpc_get_type(object));
+	if (g_strcmp0(typename, "null") == 0)
+		typename = "nulltype";
+
 	return (rpct_new(typename, object));
 }
 

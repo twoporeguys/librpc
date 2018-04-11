@@ -2018,8 +2018,8 @@ rpc_dictionary_steal_value(rpc_object_t dictionary, const char *key,
 	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
 		rpc_abort("Trying dictionary API on non-dictionary object");
 
-	if (key[0] == '%' || key[0] == '$')
-		rpc_abort("Cannot use % or $ as the first character of the key");
+	if (key[0] == '$')
+		rpc_abort("Cannot use $ as the first character of the key");
 
 	g_hash_table_insert(dictionary->ro_value.rv_dict,
 	    (gpointer)g_strdup(key), value);
