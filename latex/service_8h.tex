@@ -106,10 +106,6 @@ enum \hyperlink{service_8h_ae93cefa938d7efd2095f73e9dcdf8926}{rpc\+\_\+property\
 \item 
 void \hyperlink{service_8h_a4f63ab83623a2f407eac2fe9b7f80023}{rpc\+\_\+context\+\_\+free} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
 \item 
-int \hyperlink{service_8h_ad0413ac7ffeea622df6e48327c01227e}{rpc\+\_\+context\+\_\+resume} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
-\item 
-int \hyperlink{service_8h_a87dd03ed495f441b984d5fdf1976d7af}{rpc\+\_\+context\+\_\+pause} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
-\item 
 \+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_a125f2739087a2d4f89384d24fadb6cde}{rpc\+\_\+context\+\_\+find\+\_\+instance} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nonnull path)
 \item 
 \+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_a099a8fc4046be7999da0454548825513}{rpc\+\_\+context\+\_\+get\+\_\+root} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
@@ -124,7 +120,7 @@ int \hyperlink{service_8h_ac0a7c2d5e6bb7464de61d346f97c0b04}{rpc\+\_\+context\+\
 \item 
 int \hyperlink{service_8h_a1aac077f97529f7c26834c139fefc2f5}{rpc\+\_\+context\+\_\+register\+\_\+func} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, void $\ast$\+\_\+\+Nullable arg, \+\_\+\+Nonnull \hyperlink{service_8h_add2d357ed7db564684628b3467048431}{rpc\+\_\+function\+\_\+f} func)
 \item 
-int \hyperlink{service_8h_a7ad6475e7ca46534421ce0c3245d0cb2}{rpc\+\_\+context\+\_\+unregister\+\_\+member} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name)
+int \hyperlink{service_8h_a982fcc47ab91486b508ca9cff5b7ed8f}{rpc\+\_\+context\+\_\+unregister\+\_\+member} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name)
 \item 
 void \hyperlink{service_8h_a5eb243586ec426274b93ad40f64f0ea5}{rpc\+\_\+context\+\_\+set\+\_\+pre\+\_\+call\+\_\+hook} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, \+\_\+\+Nonnull \hyperlink{service_8h_ae49a22468cfcd4adfa558078e9e4e312}{rpc\+\_\+function\+\_\+t} fn)
 \item 
@@ -624,24 +620,6 @@ Returns root instance associated with {\ttfamily context}.
 \begin{DoxyReturn}{Returns}
 R\+PC instance handle 
 \end{DoxyReturn}
-\mbox{\Hypertarget{service_8h_a87dd03ed495f441b984d5fdf1976d7af}\label{service_8h_a87dd03ed495f441b984d5fdf1976d7af}} 
-\index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+pause@{rpc\+\_\+context\+\_\+pause}}
-\index{rpc\+\_\+context\+\_\+pause@{rpc\+\_\+context\+\_\+pause}!service.\+h@{service.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+context\+\_\+pause()}{rpc\_context\_pause()}}
-{\footnotesize\ttfamily int rpc\+\_\+context\+\_\+pause (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context }\end{DoxyParamCaption})}
-
-Prevents incoming requests from being forwarded to servers created using the context.
-
-Incoming requests will be queued and on hold until \hyperlink{service_8h_ad0413ac7ffeea622df6e48327c01227e}{rpc\+\_\+context\+\_\+resume} is called.
-
-
-\begin{DoxyParams}{Parameters}
-{\em context} & Context handle \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-0 on success, -\/1 on error 
-\end{DoxyReturn}
 \mbox{\Hypertarget{service_8h_ac0a7c2d5e6bb7464de61d346f97c0b04}\label{service_8h_ac0a7c2d5e6bb7464de61d346f97c0b04}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+register\+\_\+block@{rpc\+\_\+context\+\_\+register\+\_\+block}}
 \index{rpc\+\_\+context\+\_\+register\+\_\+block@{rpc\+\_\+context\+\_\+register\+\_\+block}!service.\+h@{service.\+h}}
@@ -716,8 +694,6 @@ Registers a new instance in {\ttfamily context} instance tree.
 
 Registers a given rpc\+\_\+method structure as an R\+PC method in a given context.
 
-The method must have a non-\/null name.
-
 
 \begin{DoxyParams}{Parameters}
 {\em context} & Target context. \\
@@ -727,24 +703,6 @@ The method must have a non-\/null name.
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 Status. 
-\end{DoxyReturn}
-\mbox{\Hypertarget{service_8h_ad0413ac7ffeea622df6e48327c01227e}\label{service_8h_ad0413ac7ffeea622df6e48327c01227e}} 
-\index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+resume@{rpc\+\_\+context\+\_\+resume}}
-\index{rpc\+\_\+context\+\_\+resume@{rpc\+\_\+context\+\_\+resume}!service.\+h@{service.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+context\+\_\+resume()}{rpc\_context\_resume()}}
-{\footnotesize\ttfamily int rpc\+\_\+context\+\_\+resume (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context }\end{DoxyParamCaption})}
-
-Allows incoming requests to begin or resume being forwarded to servers created using the context.
-
-Incoming requests will be queued and on hold until this function is called.
-
-
-\begin{DoxyParams}{Parameters}
-{\em context} & Context handle \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-0 on success, -\/1 on error 
 \end{DoxyReturn}
 \mbox{\Hypertarget{service_8h_a6b62e56dbc71d17c4094d2cfec863712}\label{service_8h_a6b62e56dbc71d17c4094d2cfec863712}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+set\+\_\+post\+\_\+call\+\_\+hook@{rpc\+\_\+context\+\_\+set\+\_\+post\+\_\+call\+\_\+hook}}
@@ -793,11 +751,11 @@ The hook will be called before an actual implementation of R\+PC function gets c
 {\em path} & \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{service_8h_a7ad6475e7ca46534421ce0c3245d0cb2}\label{service_8h_a7ad6475e7ca46534421ce0c3245d0cb2}} 
+\mbox{\Hypertarget{service_8h_a982fcc47ab91486b508ca9cff5b7ed8f}\label{service_8h_a982fcc47ab91486b508ca9cff5b7ed8f}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+unregister\+\_\+member@{rpc\+\_\+context\+\_\+unregister\+\_\+member}}
 \index{rpc\+\_\+context\+\_\+unregister\+\_\+member@{rpc\+\_\+context\+\_\+unregister\+\_\+member}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+context\+\_\+unregister\+\_\+member()}{rpc\_context\_unregister\_member()}}
-{\footnotesize\ttfamily int rpc\+\_\+context\+\_\+unregister\+\_\+member (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int rpc\+\_\+context\+\_\+unregister\+\_\+member (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
 
 Unregisters a given R\+PC method.
 
