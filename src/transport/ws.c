@@ -172,6 +172,11 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 	int ret = 0;
 
 	uri = soup_uri_new(uri_str);
+        if (uri == NULL) {
+                srv->rs_error = rpc_error_create(ENXIO, "No Such Address", NULL);
+                ret = -1;
+        }
+
 	server = calloc(1, sizeof(*server));
 	server->ws_path = g_strdup(uri->path);
 	server->ws_server = srv;
@@ -187,18 +192,12 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 	addr = g_inet_socket_address_new_from_string(uri->host, uri->port);
 	soup_server_listen(server->ws_soupserver, addr, 0, &err);
 	if (err != NULL) {
-		errno = err->code;
-		ret = -1;
-		goto done;
-	}
-
-done:
-	g_object_unref(addr);
-	if (err != NULL) {
-		rpc_set_last_gerror(err);
+		srv->rs_error = rpc_error_create(err->code, err->message, NULL);
 		g_error_free(err);
+		ret = -1;
 	}
 
+	g_object_unref(addr);
 	return (ret);
 }
 
