@@ -42,6 +42,8 @@ rpc_server_cleanup(rpc_server_t server)
         g_thread_join(server->rs_thread);
         g_main_loop_unref(server->rs_g_loop);
         g_main_context_unref(server->rs_g_context);
+	g_queue_free(server->rs_calls);
+	
 }
 
 static int
@@ -106,6 +108,7 @@ rpc_server_create(const char *uri, rpc_context_t context)
 	server = g_malloc0(sizeof(*server));
 	server->rs_uri = uri;
 	server->rs_paused = true;
+	server->rs_calls = g_queue_new();
 	server->rs_context = context;
 	server->rs_accept = &rpc_server_accept;
 	server->rs_g_context = g_main_context_new();
@@ -155,22 +158,59 @@ rpc_server_dispatch(rpc_server_t server, struct rpc_inbound_call *call)
 {
 	int ret;
 
-	g_mutex_lock(&server->rs_mtx);
-	while (server->rs_paused)
-		g_cond_wait(&server->rs_cv, &server->rs_mtx);
+	if (server->rs_closed)
+		return (-1);
 
-	ret = rpc_context_dispatch(server->rs_context, call);
-	g_mutex_unlock(&server->rs_mtx);
+	g_mutex_lock(&server->rs_calls_mtx);
+
+	if (server->rs_paused || !g_queue_is_empty(server->rs_calls))  {
+		g_queue_push_tail(server->rs_calls, call);
+		g_mutex_unlock(&server->rs_calls_mtx);
+		return (0);
+	}
+	ret = server->rs_closed ? -1 : 
+	    rpc_context_dispatch(server->rs_context, call); 
+	g_mutex_unlock(&server->rs_calls_mtx);
 	return (ret);
 }
+
+static void
+server_queue_purge(rpc_server_t server)
+{
+	struct rpc_inbound_call *icall;
+
+	while (!g_queue_is_empty(server->rs_calls)) {
+		icall = g_queue_pop_head(server->rs_calls);
+		if (server->rs_closed ||
+		    (rpc_context_dispatch(server->rs_context, icall) != 0))
+			rpc_connection_close_inbound_call(icall);
+	}
+}
+
 
 void
 rpc_server_resume(rpc_server_t server)
 {
-	g_mutex_lock(&server->rs_mtx);
+
+	if (server->rs_closed)
+		return;
+
+	g_mutex_lock(&server->rs_calls_mtx);
 	server->rs_paused = false;
-	g_cond_broadcast(&server->rs_cv);
-	g_mutex_unlock(&server->rs_mtx);
+	server_queue_purge(server);
+	g_mutex_unlock(&server->rs_calls_mtx);
+}
+
+void
+rpc_server_pause(rpc_server_t server)
+{
+
+	if (server->rs_closed)
+		return;
+
+	g_mutex_lock(&server->rs_calls_mtx);
+	server->rs_paused = true;
+	g_mutex_unlock(&server->rs_calls_mtx);
 }
 
 int
@@ -186,6 +226,9 @@ rpc_server_close(rpc_server_t server)
 		rpc_set_last_errorf(ENOTSUP, "Not supported by transport");	
 		return (-1);
 	}
+	rpc_server_pause(server);
+	server->rs_closed = true;
+	server_queue_purge(server);
 
 	/* Drop all connections */
 	for (iter = server->rs_connections; iter != NULL; iter = iter->next) {

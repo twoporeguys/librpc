@@ -274,29 +274,6 @@ _Nonnull rpc_context_t rpc_context_create(void);
 void rpc_context_free(_Nonnull rpc_context_t context);
 
 /**
- * Allows incoming requests to begin or resume being forwarded to servers 
- * created using the context. 
- *
- * Incoming requests will be queued and on hold until this function is called.
- *
- * @param context Context handle
- * @return 0 on success, -1 on error
- */
-int rpc_context_resume(_Nonnull rpc_context_t context);
-
-/**
- * Prevents incoming requests from being forwarded to servers 
- * created using the context. 
- *
- * Incoming requests will be queued and on hold until @ref rpc_context_resume
- * is called.
- *
- * @param context Context handle
- * @return 0 on success, -1 on error
- */
-int rpc_context_pause(_Nonnull rpc_context_t context);
-
-/**
  * Finds an instance registered in @p context.
  *
  * @param context RPC context handle
