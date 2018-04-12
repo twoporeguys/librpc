@@ -268,7 +268,9 @@ struct rpc_server
     	GMainLoop *		rs_g_loop;
     	GThread *		rs_thread;
     	GList *			rs_connections;
+	GQueue *		rs_calls;
     	GMutex			rs_mtx;
+    	GMutex			rs_calls_mtx;
     	GCond			rs_cv;
 	struct rpc_context *	rs_context;
     	const char *		rs_uri;
