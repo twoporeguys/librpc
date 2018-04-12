@@ -156,7 +156,7 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">^(<a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _object) {                   \</div><div class="line">                return ((<a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>)_fn(_arg, _object));      \</div><div class="line">        }</div><div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00073">object.h:73</a></div></div>
 </div><!-- fragment --><p>Converts function pointer to an rpc_query_cb_t block type. </p>
 
-<p class="definition">Definition at line <a class="el" href="query_8h_source.html#l00073">73</a> of file <a class="el" href="query_8h_source.html">query.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="query_8h_source.html#l00069">69</a> of file <a class="el" href="query_8h_source.html">query.h</a>.</p>
 
 </div>
 </div>
@@ -176,7 +176,7 @@ Functions</h2></td></tr>
 <p>Query functions are checking if that block is defined within <a class="el" href="structrpc__query__params.html">rpc_query_params</a> structure provided to the query function - if so, then body of the callback is being executed for each of the elements matching query, before yielding them as results. Output of the callback block becomes effectively the output of a query function.</p>
 <p>Keep in mind that returning NULL from the callback block is considered as skipping currently processed chunk of the result - query function won't return NULL, but look for the next matching element instead. </p>
 
-<p class="definition">Definition at line <a class="el" href="query_8h_source.html#l00068">68</a> of file <a class="el" href="query_8h_source.html">query.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="query_8h_source.html#l00064">64</a> of file <a class="el" href="query_8h_source.html">query.h</a>.</p>
 
 </div>
 </div>
@@ -193,7 +193,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Definition of rpc_query_iter pointer type. </p>
 
-<p class="definition">Definition at line <a class="el" href="query_8h_source.html#l00053">53</a> of file <a class="el" href="query_8h_source.html">query.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="query_8h_source.html#l00049">49</a> of file <a class="el" href="query_8h_source.html">query.h</a>.</p>
 
 </div>
 </div>
@@ -210,7 +210,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Definition of <a class="el" href="structrpc__query__params.html">rpc_query_params</a> pointer type. </p>
 
-<p class="definition">Definition at line <a class="el" href="query_8h_source.html#l00114">114</a> of file <a class="el" href="query_8h_source.html">query.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="query_8h_source.html#l00110">110</a> of file <a class="el" href="query_8h_source.html">query.h</a>.</p>
 
 </div>
 </div>
