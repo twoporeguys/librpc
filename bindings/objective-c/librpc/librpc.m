@@ -414,9 +414,7 @@
         if (error != nil)
             *error = [[RPCObject lastError] value];
     }
-    
     rpc_call_wait(call);
-    
     switch (rpc_call_status(call)) {
         case RPC_CALL_DONE:
             return [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)];
@@ -465,9 +463,8 @@
     return [[RPCCall alloc] initFromNativeObject:ret];
 }
 
-- (void)disconnect
-{
-    
+- (void)disconnect{
+    rpc_client_close(client);
 }
 
 - (void)callAsync:(NSString *)method
