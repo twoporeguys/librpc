@@ -93,7 +93,7 @@ typedef int (*rpc_get_fd_fn_t)(void *);
 typedef void (*rpc_release_fn_t)(void *);
 typedef int (*rpc_close_fn_t)(struct rpc_connection *);
 typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
-typedef int (*rpc_valid_fn_t)(struct rpc_server *);
+typedef bool (*rpc_valid_fn_t)(struct rpc_server *);
 typedef int (*rpc_teardown_fn_t)(struct rpc_server *);
 
 typedef struct rpct_member *(*rpct_member_fn_t)(const char *, rpc_object_t,
