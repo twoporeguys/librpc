@@ -313,7 +313,7 @@ void rpc_context_unregister_instance(_Nonnull rpc_context_t context,
  * Registers a given rpc_method structure as an RPC method in a given context.
  *
  * The method must have a non-null name.
- * 
+ *
  * @param context Target context.
  * @param m RPC method structure.
  * @return Status.

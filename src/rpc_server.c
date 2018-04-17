@@ -33,6 +33,7 @@
 
 static int rpc_server_accept(rpc_server_t, rpc_connection_t);
 static void rpc_server_cleanup(rpc_server_t server);
+static bool rpc_server_valid(rpc_server_t server);
 
 static void
 rpc_server_cleanup(rpc_server_t server)
@@ -43,16 +44,33 @@ rpc_server_cleanup(rpc_server_t server)
         g_main_loop_unref(server->rs_g_loop);
         g_main_context_unref(server->rs_g_context);
 	g_queue_free(server->rs_calls);
-	
+}
+
+static bool
+rpc_server_valid(rpc_server_t server)
+{
+
+	g_mutex_lock(&server->rs_mtx);
+	if (server->rs_closed) {
+		g_mutex_unlock(&server->rs_mtx);
+		return (false);
+	}
+	g_mutex_unlock(&server->rs_mtx);
+	return (true);
 }
 
 static int
 rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 {
-
-	if (server->rs_closed)
+ 
+	g_mutex_lock(&server->rs_mtx);
+	if (server->rs_closed) {
+		g_mutex_unlock(&server->rs_mtx);
 		return (-1);
+	}
+
 	server->rs_connections = g_list_append(server->rs_connections, conn);
+	g_mutex_unlock(&server->rs_mtx);
 	return (0);
 }
 
@@ -81,7 +99,7 @@ rpc_server_listen(void *arg)
 
 	if (transport == NULL) {
 		debugf("No such transport");
-		server->rs_error = rpc_error_create(ENXIO, 
+		server->rs_error = rpc_error_create(ENXIO,
 		    "Error: Transport Not Found", NULL);
 		goto done;
 	}
@@ -111,12 +129,14 @@ rpc_server_create(const char *uri, rpc_context_t context)
 	server->rs_calls = g_queue_new();
 	server->rs_context = context;
 	server->rs_accept = &rpc_server_accept;
+	server->rs_valid = &rpc_server_valid;
 	server->rs_g_context = g_main_context_new();
 	server->rs_g_loop = g_main_loop_new(server->rs_g_context, false);
 	server->rs_thread = g_thread_new("librpc server", rpc_server_worker,
 	    server);
 	g_cond_init(&server->rs_cv);
 	g_mutex_init(&server->rs_mtx);
+	g_mutex_init(&server->rs_calls_mtx);
 
 	g_mutex_lock(&server->rs_mtx);
 	g_main_context_invoke(server->rs_g_context, rpc_server_listen, server);
@@ -131,7 +151,10 @@ rpc_server_create(const char *uri, rpc_context_t context)
                 return(NULL);
 	}
 
-	g_ptr_array_add(context->rcx_servers, server);
+        g_rw_lock_writer_lock(&context->rcx_server_rwlock);
+        g_ptr_array_add(context->rcx_servers, server);
+        g_rw_lock_writer_unlock(&context->rcx_server_rwlock);
+
 	g_mutex_unlock(&server->rs_mtx);
 	return (server);
 }
@@ -157,19 +180,32 @@ int
 rpc_server_dispatch(rpc_server_t server, struct rpc_inbound_call *call)
 {
 	int ret;
-
-	if (server->rs_closed)
-		return (-1);
+	rpc_object_t sdict;
 
 	g_mutex_lock(&server->rs_calls_mtx);
 
+	if (server->rs_closed) {
+		g_mutex_unlock(&server->rs_calls_mtx);
+		return (-1);
+	}
+
 	if (server->rs_paused || !g_queue_is_empty(server->rs_calls))  {
+		sdict = rpc_dictionary_create();
+		rpc_dictionary_set_string(sdict, "method", call->ric_name);
+		if (call->ric_path)
+			rpc_dictionary_set_string(sdict, "path",
+			    call->ric_path);
+		if (call->ric_interface)
+			rpc_dictionary_set_string(sdict, "interface",
+			    call->ric_interface);
+		call->ric_strings = sdict;
+
 		g_queue_push_tail(server->rs_calls, call);
 		g_mutex_unlock(&server->rs_calls_mtx);
 		return (0);
 	}
-	ret = server->rs_closed ? -1 : 
-	    rpc_context_dispatch(server->rs_context, call); 
+	ret = server->rs_closed ? -1 :
+	    rpc_context_dispatch(server->rs_context, call);
 	g_mutex_unlock(&server->rs_calls_mtx);
 	return (ret);
 }
@@ -181,6 +217,14 @@ server_queue_purge(rpc_server_t server)
 
 	while (!g_queue_is_empty(server->rs_calls)) {
 		icall = g_queue_pop_head(server->rs_calls);
+		if (icall->ric_strings != NULL) {
+			icall->ric_name = rpc_dictionary_get_string(
+			    icall->ric_strings, "method");
+			icall->ric_interface = rpc_dictionary_get_string(
+			    icall->ric_strings, "interface");
+			icall->ric_path = rpc_dictionary_get_string(
+			    icall->ric_strings, "path");
+		}
 		if (server->rs_closed ||
 		    (rpc_context_dispatch(server->rs_context, icall) != 0))
 			rpc_connection_close_inbound_call(icall);
@@ -220,23 +264,32 @@ rpc_server_close(rpc_server_t server)
 	GList *iter = NULL;
 	int ret = 0;
 
-	if (server->rs_teardown)
-		ret = server->rs_teardown(server);
-        else {
-		rpc_set_last_errorf(ENOTSUP, "Not supported by transport");	
+	if (server->rs_teardown == NULL) {
+		rpc_set_last_errorf(ENOTSUP, "Not supported by transport");
 		return (-1);
 	}
-	rpc_server_pause(server);
+	g_mutex_lock(&server->rs_mtx);
+	g_mutex_lock(&server->rs_calls_mtx);
 	server->rs_closed = true;
 	server_queue_purge(server);
+	g_mutex_unlock(&server->rs_calls_mtx);
+	g_mutex_unlock(&server->rs_mtx);
+
+        g_rw_lock_writer_lock(&server->rs_context->rcx_server_rwlock);
+        g_ptr_array_remove(server->rs_context->rcx_servers, server);
+        g_rw_lock_writer_unlock(&server->rs_context->rcx_server_rwlock);
+
+	/* stop listening. */
+	rpc_server_cleanup(server);
+	ret = server->rs_teardown(server);
 
 	/* Drop all connections */
-	for (iter = server->rs_connections; iter != NULL; iter = iter->next) {
-		conn = iter->data;
-		conn->rco_abort(conn->rco_arg);
+	if (server->rs_connections != NULL) {
+		for (iter = server->rs_connections; iter != NULL; iter = iter->next) {
+			conn = iter->data;
+			conn->rco_abort(conn->rco_arg);
+		}
 	}
-	/* stop listener thread. */
-	rpc_server_cleanup(server);
         g_free(server);
 
 	return (ret);

@@ -93,6 +93,7 @@ typedef int (*rpc_get_fd_fn_t)(void *);
 typedef void (*rpc_release_fn_t)(void *);
 typedef int (*rpc_close_fn_t)(struct rpc_connection *);
 typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
+typedef int (*rpc_valid_fn_t)(struct rpc_server *);
 typedef int (*rpc_teardown_fn_t)(struct rpc_server *);
 
 typedef struct rpct_member *(*rpct_member_fn_t)(const char *, rpc_object_t,
@@ -204,6 +205,7 @@ struct rpc_inbound_call
 	rpc_object_t 		ric_frame;
 	rpc_object_t        	ric_id;
 	rpc_object_t        	ric_args;
+	rpc_object_t        	ric_strings;
 	rpc_abort_handler_t	ric_abort_handler;
 	const char *        	ric_name;
 	const char *		ric_interface;
@@ -270,8 +272,9 @@ struct rpc_server
     	GList *			rs_connections;
 	GQueue *		rs_calls;
     	GMutex			rs_mtx;
-    	GMutex			rs_calls_mtx;
+	GMutex			rs_calls_mtx;
     	GCond			rs_cv;
+	GRWLock			rs_connections_rwlock;
 	struct rpc_context *	rs_context;
     	const char *		rs_uri;
     	int 			rs_flags;
@@ -281,6 +284,7 @@ struct rpc_server
         rpc_object_t            rs_error;
 
     	/* Callbacks */
+    	rpc_valid_fn_t		rs_valid;
     	rpc_accept_fn_t		rs_accept;
     	rpc_teardown_fn_t	rs_teardown;
     	void *			rs_arg;
@@ -333,6 +337,7 @@ struct rpc_context
 	GHashTable *		rcx_instances;
 	GPtrArray * 		rcx_servers;
 	GRWLock			rcx_rwlock;
+	GRWLock			rcx_server_rwlock;
 	rpc_instance_t 		rcx_root;
 
 	/* Hooks */

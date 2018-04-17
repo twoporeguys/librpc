@@ -866,6 +866,7 @@ rpc_connection_close_inbound_call(struct rpc_inbound_call *call)
 	    call->ric_id));
 	rpc_release(call->ric_frame);
 	rpc_release(call->ric_id);
+	rpc_release(call->ric_strings);
 	g_free(call);
 }
 
@@ -953,9 +954,15 @@ rpc_connection_close(rpc_connection_t conn)
 		return (0);
 
 	conn->rco_closed = true;
-	conn->rco_abort(conn->rco_arg);
-	conn->rco_release(conn->rco_arg);
+	if (conn->rco_abort)
+		conn->rco_abort(conn->rco_arg);
+	if (conn->rco_release)
+		conn->rco_release(conn->rco_arg);
+
 	g_mutex_lock(&conn->rco_call_mtx);
+
+	g_assert_cmpint(g_hash_table_size(conn->rco_calls), ==, 0);
+	g_assert_cmpint(g_hash_table_size(conn->rco_inbound_calls), ==, 0);
 	g_hash_table_destroy(conn->rco_calls);
 	g_hash_table_destroy(conn->rco_inbound_calls);
 	g_mutex_unlock(&conn->rco_call_mtx);
@@ -1229,8 +1236,11 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	rpc_object_t payload;
 	rpc_object_t frame;
 
-	if (conn->rco_closed)
+	if (conn->rco_closed) {
+		debugf("connection not open");
+		rpc_set_last_errorf(ENOTCONN, "Connection no longer valid");
 		return (NULL);
+	}
 
 	payload = rpc_dictionary_create();
 	call = rpc_call_alloc(conn, NULL);
@@ -1263,8 +1273,11 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	g_source_attach(call->rc_timeout, conn->rco_client->rci_g_context);
 	g_mutex_unlock(&call->rc_mtx);
 
-	if (rpc_send_frame(conn, frame) != 0)
+	if (rpc_send_frame(conn, frame) != 0) {
+		//debugf("Frame not sent\n");
+		rpc_call_free(call);
 		return (NULL);
+	}
 
 	return (call);
 }
@@ -1414,6 +1427,8 @@ rpc_call_wait(rpc_call_t call)
 {
 	int ret;
 
+	g_assert_nonnull(call);
+
 	g_mutex_lock(&call->rc_mtx);
 
 	if (call->rc_status != RPC_CALL_IN_PROGRESS &&
@@ -1542,6 +1557,7 @@ rpc_call_free(rpc_call_t call)
 	g_hash_table_remove(call->rc_conn->rco_calls,
 	    (gpointer)rpc_string_get_string_ptr(call->rc_id));
 	g_mutex_unlock(&call->rc_conn->rco_call_mtx);
+	Block_release(call->rc_callback);
 	rpc_release(call->rc_id);
 	rpc_release(call->rc_args);
 	g_free(call);
