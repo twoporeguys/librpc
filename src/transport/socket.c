@@ -60,6 +60,9 @@ struct socket_server
 	char *				ss_uri;
 	struct rpc_server *		ss_server;
 	GSocketListener *		ss_listener;
+	GCancellable *			ss_cancellable;
+	GMutex 				ss_mtx;
+	bool				ss_outstanding_accept;
 };
 
 struct socket_connection
@@ -104,18 +107,19 @@ static void
 socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 {
 	struct socket_server *server = data;
-	struct socket_connection *conn;
+	struct socket_connection *conn = NULL;
 	GError *err = NULL;
 	GSocketConnection *gconn;
-	rpc_connection_t rco;
+	rpc_connection_t rco = NULL;
 	rpc_server_t srv = server->ss_server;
 
 	gconn = g_socket_listener_accept_finish(server->ss_listener, result,
 	    NULL, &err);
 	if (err != NULL) {
-		srv->rs_error = rpc_error_create_from_gerror(err);
 		debugf("accept failed");
-		goto done;
+		if (srv->rs_valid(srv))
+			goto done;
+		return;
 	}
 
 	debugf("new connection");
@@ -123,24 +127,37 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 	conn = g_malloc0(sizeof(*conn));
 	conn->sc_client = g_socket_client_new();
 	conn->sc_conn = gconn;
-	conn->sc_istream = g_io_stream_get_input_stream(G_IO_STREAM(gconn));
-	conn->sc_ostream = g_io_stream_get_output_stream(G_IO_STREAM(gconn));
 
 	rco = rpc_connection_alloc(srv);
 	rco->rco_send_msg = socket_send_msg;
-	rco->rco_abort = socket_abort;
 	rco->rco_get_fd = socket_get_fd;
 	rco->rco_arg = conn;
 	conn->sc_parent = rco;
-	if (srv->rs_accept(srv, rco) == 0)
+done:
+	if (srv->rs_accept(srv, rco) == 0) {
+		rco->rco_abort = socket_abort;
+		conn->sc_istream = 
+		    g_io_stream_get_input_stream(G_IO_STREAM(gconn));
+		conn->sc_ostream = 
+		    g_io_stream_get_output_stream(G_IO_STREAM(gconn));
 		conn->sc_reader_thread = g_thread_new("socket reader thread",
 		    socket_reader, (gpointer)conn);
+	} else {
+		fprintf(stderr, "ABORTING AT ACCEPT\n");
+		g_object_unref(conn->sc_client);
+		socket_abort(conn);
+		rpc_connection_close(rco);
+		g_free(conn);
+		return;
+	}
 
-done:
 	/* Schedule next accept if server isn't closing*/
-	if (!srv->rs_closed)
-		g_socket_listener_accept_async(server->ss_listener,  NULL,
-		    &socket_accept, data);
+	g_mutex_lock(&server->ss_mtx);
+	g_cancellable_reset (server->ss_cancellable);
+	g_socket_listener_accept_async(server->ss_listener,  
+	    server->ss_cancellable, &socket_accept, data);
+	server->ss_outstanding_accept = true;
+	g_mutex_unlock(&server->ss_mtx);
 }
 
 int
@@ -210,6 +227,7 @@ socket_listen(struct rpc_server *srv, const char *uri,
 
 	srv->rs_teardown = socket_teardown;
 	srv->rs_arg = server;
+	g_mutex_init(&server->ss_mtx);
 
 #ifndef _WIN32
 	/*
@@ -223,7 +241,7 @@ socket_listen(struct rpc_server *srv, const char *uri,
 		if (g_file_query_exists(file, NULL)) {
 			g_file_delete(file, NULL, &err);
 			if (err != NULL) {
-				srv->rs_error = rpc_error_create(err->code, 
+				srv->rs_error = rpc_error_create(err->code,
 				    err->message, NULL);
 				g_object_unref(addr);
 				g_error_free(err);
@@ -247,8 +265,13 @@ socket_listen(struct rpc_server *srv, const char *uri,
 	}
 
 	/* Schedule first accept */
+	server->ss_cancellable = g_cancellable_new ();
+
+	g_mutex_lock(&server->ss_mtx);
 	g_socket_listener_accept_async(server->ss_listener,
-	    NULL, &socket_accept, server);
+	    server->ss_cancellable, &socket_accept, server);
+	server->ss_outstanding_accept = true;
+	g_mutex_unlock(&server->ss_mtx);
 
 	g_object_unref(addr);
 	return (0);
@@ -375,7 +398,8 @@ socket_abort(void *arg)
 
 	g_socket_shutdown(sock, true, true, NULL);
 	g_socket_close(sock, NULL);
-	g_thread_join(conn->sc_reader_thread);
+	if (conn->sc_reader_thread)
+		g_thread_join(conn->sc_reader_thread);
 
 	return (0);
 }
@@ -407,7 +431,12 @@ socket_teardown(struct rpc_server *srv)
 {
 	struct socket_server *socket_srv = srv->rs_arg;
 
+	g_mutex_lock(&socket_srv->ss_mtx);
+	if (socket_srv->ss_outstanding_accept)
+            g_cancellable_cancel (socket_srv->ss_cancellable);
 	g_socket_listener_close(socket_srv->ss_listener);
+	g_mutex_unlock(&socket_srv->ss_mtx);
+
 	return (0);
 }
 
