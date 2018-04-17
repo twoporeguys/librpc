@@ -28,6 +28,7 @@ var searchData=
   ['rpc_5fserver_5fevent_5fhandler_5ft',['rpc_server_event_handler_t',['../server_8h.html#a2d9a540637c63449db9ac5882cb5f7ab',1,'server.h']]],
   ['rpc_5fserver_5ft',['rpc_server_t',['../server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca',1,'server.h']]],
   ['rpct_5fargument_5ft',['rpct_argument_t',['../typing_8h.html#a182f9a414fde2db9be9f83a78310f628',1,'typing.h']]],
+  ['rpct_5ffunction_5ft',['rpct_function_t',['../typing_8h.html#aeb4e0d4277d29db7ff524786d2a895ba',1,'typing.h']]],
   ['rpct_5fif_5fmember_5fapplier_5ft',['rpct_if_member_applier_t',['../typing_8h.html#acc5f290ad33114a3ea5ea8f6fdcef34a',1,'typing.h']]],
   ['rpct_5fif_5fmember_5ft',['rpct_if_member_t',['../typing_8h.html#aa2e55bcb066527416359bc5a5dde92b3',1,'typing.h']]],
   ['rpct_5finterface_5fapplier_5ft',['rpct_interface_applier_t',['../typing_8h.html#a2b565c4384ebdd8e0749b1467eec94e3',1,'typing.h']]],
