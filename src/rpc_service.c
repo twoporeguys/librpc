@@ -75,7 +75,6 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	struct rpc_context *context = user_data;
 	struct rpc_inbound_call *call = data;
 	struct rpc_if_method *method = call->ric_method;
-	rpc_connection_t conn = call->ric_conn;
 	rpc_object_t result;
 
 	if (method == NULL) {
@@ -107,14 +106,9 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 			return;
 	}
 
-	if (!call->ric_streaming) {
-		if (!call->ric_responded)
-			rpc_function_respond(call, result);
-		else
-			rpc_connection_close_inbound_call(call);
-	}
-
-	if (call->ric_streaming && !call->ric_ended)
+	if (!call->ric_streaming)
+		rpc_function_respond(call, result);
+	else if (!call->ric_ended)
 		rpc_function_end(data);
 }
 
@@ -154,7 +148,7 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 
 	debugf("call=%p, name=%s", call, call->ric_name);
 
-	if (call->ric_path == NULL)
+	if (call->ric_path == NULL) 
 		instance = context->rcx_root;
 
 	if (instance == NULL)
@@ -380,7 +374,9 @@ rpc_function_respond(void *cookie, rpc_object_t object)
 {
 	struct rpc_inbound_call *call = cookie;
 
-	rpc_connection_send_response(call->ric_conn, call->ric_id, object);
+	if (!call->ric_responded)
+		rpc_connection_send_response(call->ric_conn,
+		    call->ric_id, object);
 	rpc_connection_close_inbound_call(call);
 }
 
@@ -463,11 +459,7 @@ rpc_function_end(void *cookie)
                         call->ric_ended = true;
                 }
 		g_mutex_unlock(&call->ric_mtx);
-
 	}
-
-
-
 
 	if (!call->ric_ended) {
 		rpc_connection_send_end(call->ric_conn, call->ric_id,
@@ -541,6 +533,10 @@ rpc_instance_new(void *arg, const char *fmt, ...)
 	rpc_instance_register_interface(result, RPC_INTROSPECTABLE_INTERFACE,
 	    rpc_introspectable_vtable, NULL);
 
+	rpc_instance_register_interface(result, RPC_DEFAULT_INTERFACE, 
+	    NULL, NULL);
+
+
 	return (result);
 }
 
@@ -595,12 +591,15 @@ rpc_instance_find_member(rpc_instance_t instance, const char *interface,
 	if (name == NULL)
 		return (NULL);
 
-        if (interface == NULL)
+        if (interface == NULL) 
                 interface = RPC_DEFAULT_INTERFACE;
 
 	iface = g_hash_table_lookup(instance->ri_interfaces, interface);
-	if (iface == NULL)
+	if (iface == NULL) {
+		fprintf(stderr, "member %s not found on %s\n", name,
+		    interface);
 		return (NULL);
+	}
 
 	g_mutex_lock(&iface->rip_mtx);
 	result = g_hash_table_lookup(iface->rip_members, name);
@@ -670,11 +669,8 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 	struct rpc_interface_priv *priv;
 	struct rpc_if_member *copy;
 
-	if (interface == NULL) {
+	if (interface == NULL)
 		interface = RPC_DEFAULT_INTERFACE;
-		rpc_instance_register_interface(instance,
-		    interface, NULL, NULL);
-	}
 
 	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
 	if (priv == NULL) {
@@ -923,7 +919,6 @@ rpc_get_objects(void *cookie, rpc_object_t args __unused)
 	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
 		if (prefix != NULL && !g_str_has_prefix(v->ri_path, prefix))
 			continue;
-
 		rpc_array_append_stolen_value(list, rpc_object_pack("{s,s}",
 		    "path", v->ri_path,
 		    "description", v->ri_descr));
@@ -984,7 +979,6 @@ rpc_get_methods(void *cookie, rpc_object_t args)
 	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
 		if (v->rim_type != RPC_MEMBER_METHOD)
 			continue;
-
 		rpc_array_append_stolen_value(result, rpc_string_create(k));
 	}
 

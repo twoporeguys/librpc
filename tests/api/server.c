@@ -29,44 +29,48 @@
 #include "../../src/linker_set.h"
 #include <glib.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <string.h>
 #include <rpc/object.h>
 #include <rpc/service.h>
 #include <rpc/server.h>
 #include <rpc/client.h>
+#include <rpc/connection.h>
 
-//static const int iuri_default = 0;
+#define THREADS 50
+
+struct b {
+	char *	path;
+	char *	interface;
+} args [] = 
+	{{NULL, NULL},
+	 {"/", RPC_DEFAULT_INTERFACE}};
+struct b base;
 
 struct u {
-	char *scheme;
-	char *srv;
-	char *cli;
-	bool good;
-	char *msg;
+	char *	scheme;
+	char *	srv;
+	char *	cli;
+	bool 	good;
 } uris[] =
-	{{"tcp", "tcp://0.0.0.0:5000", "tcp://127.0.0.1:5000", true, ""},
-	 {"tpp", "tpp://0.0.0.0:5000", "tcp://127.0.0.1:5000", false, 
-		"Transport Not Found"},
-	 {"tcp", "tcp://0.42.42.42:42", "tcp://127.0.0.1:5000", false, "binding"},
-	 {"unix", "unix://test.sock", "unix://test.sock", true, ""},
-	 {"loopback", "loopback://0", "loopback://0", true, ""},
-	 {"loopback", "loopback://a", "loopback://0", false, "foo"},
-	 {0, "", "", 0, ""}};
+	{{"tcp", "tcp://0.0.0.0:5000", "tcp://127.0.0.1:5000", true},
+	 {"tpp", "tpp://0.0.0.0:5000", "tcp://127.0.0.1:5000", false}, 
+	 {"tcp", "tcp://0.42.42.42:42", "tcp://127.0.0.1:5000", false}, 
+	 {"unix", "unix://test.sock", "unix://test.sock", true},
+	 {"loopback", "loopback://0", "loopback://0", true},
+	 {"loopback", "loopback://a", "loopback://0", false}, 
+	 {0, "", "", 0}};
 
 typedef struct {
-	rpc_context_t ctx;
-        int iuri;
-	int count;
-	rpc_server_t srv;
+	rpc_context_t	ctx;
+        int 		iuri;
+	int 		count;
+	rpc_server_t 	srv;
+	bool 		resume;
 } server_fixture;
 
 static void
-server_test(server_fixture *fixture, gconstpointer user_data)
-{
-
-}
-
-static void
-server_test_single_set_up(server_fixture *fixture, gconstpointer user_data)
+server_test_basic_set_up(server_fixture *fixture, gconstpointer user_data)
 {
 
 	fixture->ctx = rpc_context_create();
@@ -76,27 +80,44 @@ server_test_single_set_up(server_fixture *fixture, gconstpointer user_data)
 }
 
 static void
-server_test_valid_server_set_up(server_fixture *fixture, gconstpointer user_data)
+valid_server_set_up(server_fixture *fixture, gconstpointer u_data)
 {
 
 	fixture->ctx = rpc_context_create();
-        fixture->iuri = (int)user_data;
+        fixture->iuri = (int)u_data;
 	fixture->count = 0;
 
-        rpc_context_register_block(fixture->ctx, NULL, "hi",
+        rpc_context_register_block(fixture->ctx, base.interface, "hi",
             NULL, ^(void *cookie __unused, rpc_object_t args) {
 		fixture->count++;
                 return rpc_string_create_with_format("hello %s!",
                     rpc_array_get_string(args, 0));
             });
 
-        rpc_context_register_block(fixture->ctx, NULL, "block",
-            NULL, ^(void *cookie __unused, rpc_object_t args __unused) {
+        rpc_context_register_block(fixture->ctx, base.interface, "block",
+            NULL, ^(void *cookie __unused, 
+		rpc_object_t args __unused) {
 		fixture->count++;
                 return (rpc_string_create("haha lol"));
             });
 
 	fixture->srv = rpc_server_create(uris[fixture->iuri].srv, fixture->ctx);
+}
+
+static void
+server_test_valid_server_set_up(server_fixture *fixture, gconstpointer u_data)
+{
+
+	base = args[0];
+	valid_server_set_up(fixture, u_data);
+}
+
+static void
+server_test_alt_server_set_up(server_fixture *fixture, gconstpointer u_data)
+{
+
+	base = args[1];
+	valid_server_set_up(fixture, u_data);
 }
 
 static void
@@ -110,13 +131,11 @@ server_test_valid_server_tear_down(server_fixture *fixture, gconstpointer user_d
 }
 
 static void
-server_test_single_tear_down(server_fixture *fixture, gconstpointer user_data)
+server_test_basic_tear_down(server_fixture *fixture, gconstpointer user_data)
 {
 
 	rpc_context_free(fixture->ctx);
 }
-
-#define THREADS 50
 
 static gpointer
 thread_func (gpointer data)
@@ -124,62 +143,158 @@ thread_func (gpointer data)
 
 	rpc_client_t client;
 	rpc_connection_t conn;
-	rpc_object_t err;
+	/*rpc_object_t err;*/
 	rpc_object_t result;
 
 	client = rpc_client_create(data, 0);
 	if (client == NULL) {
-		fprintf(stderr, "CANT CREATE\n");
 		g_thread_exit (GINT_TO_POINTER (1));
 	}
 	conn = rpc_client_get_connection(client);
 	result = rpc_connection_call_simple(conn, "hi", "[s]", "world");
 	if (result == NULL) {
-		err = rpc_get_last_error();
+		/*err = rpc_get_last_error();
                 fprintf(stderr, "NULL RETURNED error: %s,code: %d\n",
 		    rpc_error_get_message(err),
-                    rpc_error_get_code(err)) ;
+                    rpc_error_get_code(err));*/
 		g_thread_exit (GINT_TO_POINTER (1));
 	} else if (rpc_is_error(result)) {
-                fprintf(stderr, "THREAD CALL error: %s,code: %d\n",
+                /*fprintf(stderr, "THREAD CALL error: %s,code: %d\n",
 		    rpc_error_get_message(result),
-                    rpc_error_get_code(result));
+                    rpc_error_get_code(result));*/
 		g_thread_exit (GINT_TO_POINTER (1));
 	}
 
 	rpc_client_close(client);
 	g_thread_exit (GINT_TO_POINTER (0));
+	return (NULL);
+}
+
+static int
+thread_test(int n, gpointer(*t_func)(gpointer), server_fixture *fx )
+{
+	int ret = 0;
+	GThread *threads[THREADS];
+
+	for (int i = 0; i < n; i++)
+		threads[i] = g_thread_new ("test", t_func, uris[fx->iuri].cli);
+
+	if (fx->resume)
+		rpc_server_resume(fx->srv);
+
+	for (int i = 0; i < n; i++)
+		ret += (int)g_thread_join (threads[i]);
+
+	return (ret);
 }
 
 static void
 server_test_resume(server_fixture *fixture, gconstpointer user_data)
 {
-	GThread *threads[THREADS];
 	GRand *rand = g_rand_new ();
 	gint n = g_rand_int_range (rand, 3, THREADS);
-	int ret = 0;
+	int ret;
 
 	g_rand_free(rand);
-
-	for (int i = 0; i < n; i++)
-		threads[i] = g_thread_new ("test", thread_func, uris[0].cli);
-
 	g_assert_cmpint(fixture->count, ==, 0);
-	rpc_server_resume(fixture->srv);
 
-	for (int i = 0; i < n; i++)
-		ret += (int)g_thread_join (threads[i]);
+	fixture->resume = true;
+	ret = thread_test(n, &thread_func, fixture);
 
-	fprintf(stderr, "Received %d/%d calls post-resume, ret=%d\n", fixture->count, n, ret);
+	/*fprintf(stderr, "Received %d/%d calls post-resume, ret=%d\n", 
+		fixture->count, n, ret);*/
+	g_assert_cmpint(fixture->count + ret, ==, n);
+
+	fixture->count = 0;
+	rpc_server_pause(fixture->srv);
+	ret = thread_test(n, &thread_func, fixture);
+
+	/*fprintf(stderr, "Received %d/%d calls post-pause-resume, ret=%d\n", 
+		fixture->count, n, ret);*/
 	g_assert_cmpint(fixture->count + ret, ==, n);
 }
 	
+static void
+server_test_failed_listen(server_fixture *fixture, gconstpointer user_data)
+{
+	rpc_object_t err;
+
+	fixture->srv = rpc_server_create(uris[fixture->iuri].srv, fixture->ctx);
+	g_assert_null(fixture->srv);
+	err = rpc_get_last_error();
+	
+	g_assert_cmpint(strlen(rpc_error_get_message(err)), >, 0);			
+}
+
+static void
+server_test_nullables(server_fixture *fixture, gconstpointer user_data)
+{
+	rpc_client_t client;
+	rpc_connection_t conn;
+	rpc_object_t result;
+	rpc_object_t call_args1;
+	rpc_object_t call_args2;
+	rpc_call_t call1;
+	rpc_call_t call2;
+
+	rpc_server_resume(fixture->srv);
+        client = rpc_client_create(uris[fixture->iuri].cli, 0);
+        if (client == NULL) {
+                g_thread_exit (GINT_TO_POINTER (1));
+        }
+        conn = rpc_client_get_connection(client);
+        result = rpc_connection_call_simple(conn, "hi", "[s]", "world");
+	g_assert(result != NULL && !(rpc_is_error(result)));
+	g_assert_cmpstr("hello world!", ==, rpc_string_get_string_ptr(result));
+
+	/*printf("result = %s\n", rpc_string_get_string_ptr(result));*/
+
+	rpc_release(result);
+
+	call_args1 = rpc_object_pack("[s]", args[0].interface);
+	call1 = rpc_connection_call(conn, args[0].path, RPC_INTROSPECTABLE_INTERFACE,
+            "get_methods", call_args1, NULL);
+	rpc_call_wait(call1);
+	g_assert(!rpc_is_error(rpc_call_result(call1)));
+	
+	call_args2 = rpc_object_pack("[s]", args[1].interface);
+	call2 = rpc_connection_call(conn, args[1].path, RPC_INTROSPECTABLE_INTERFACE,
+            "get_methods", call_args2, NULL);
+	rpc_call_wait(call2);
+
+	g_assert(!rpc_is_error(rpc_call_result(call2)));
+
+	g_assert(rpc_equal(rpc_call_result(call1), rpc_call_result(call2)));
+	rpc_call_free(call1);
+	rpc_call_free(call2);
+}
+
+/*
+static void
+server_test(server_fixture *fixture, gconstpointer user_data)
+{
+
+}
+*/
+
 static void
 server_test_register()
 {
 
 	g_test_add("/server/resume", server_fixture, (void *)0,
 	    server_test_valid_server_set_up, server_test_resume,
+	    server_test_valid_server_tear_down);
+
+	g_test_add("/server/listen/fail", server_fixture, (void *)1,
+	    server_test_basic_set_up, server_test_failed_listen,
+	    server_test_basic_tear_down);
+
+	g_test_add("/server/nullables/null", server_fixture, (void *)0,
+	    server_test_valid_server_set_up, server_test_nullables,
+	    server_test_valid_server_tear_down);
+
+	g_test_add("/server/nullables/notnull", server_fixture, (void *)0,
+	    server_test_alt_server_set_up, server_test_nullables,
 	    server_test_valid_server_tear_down);
 
 }

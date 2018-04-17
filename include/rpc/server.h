@@ -77,6 +77,16 @@ _Nullable rpc_server_t rpc_server_create(const char *_Nonnull uri,
     _Nonnull rpc_context_t context);
 
 /**
+ * Stops accepting requests for the server.
+ *
+ * Server instance keeps all the incoming requests queued and on hold
+ * until @ref rpc_server_resume is called.
+ *
+ * @param server Server handle
+ */
+void rpc_server_pause(_Nonnull rpc_server_t server);
+
+/**
  * Starts accepting requests by the server.
  *
  * Server instance keeps all the incoming requests queued and on hold
