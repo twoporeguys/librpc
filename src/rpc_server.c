@@ -249,10 +249,12 @@ void
 rpc_server_pause(rpc_server_t server)
 {
 
-	if (server->rs_closed)
-		return;
-
 	g_mutex_lock(&server->rs_calls_mtx);
+	if (server->rs_closed) {
+		g_mutex_unlock(&server->rs_calls_mtx);
+		return;
+	}
+
 	server->rs_paused = true;
 	g_mutex_unlock(&server->rs_calls_mtx);
 }
