@@ -296,6 +296,9 @@ rpc_json_map_key(void *ctx_ptr, const unsigned char *key, size_t key_len)
 	if (ctx->key_buf != NULL)
 		return (0);
 
+	if (key[0] == '\\')
+		key += sizeof(char);
+
 	key_copy = g_string_new_len((const char *)key, key_len);
 	ctx->key_buf = g_string_free(key_copy, false);
 	return 1;
@@ -546,8 +549,18 @@ rpc_json_write_object(yajl_gen gen, rpc_object_t object)
 			return (status);
 
 		rpc_dictionary_apply(object, ^(const char *k, rpc_object_t v) {
-			status = yajl_gen_string(gen, (const uint8_t *)k,
-			    strlen(k));
+			char *esc_key;
+
+			if ((k[0] == '\\') || (k[0] == '$')) {
+				esc_key = g_strdup_printf("\\%s", k);
+				status = yajl_gen_string(gen,
+				    (const uint8_t *) esc_key, strlen(esc_key));
+				g_free(esc_key);
+			} else {
+				status = yajl_gen_string(gen,
+				    (const uint8_t *) k, strlen(k));
+			}
+
 			if (status != yajl_gen_status_ok)
 				return ((bool)false);
 
