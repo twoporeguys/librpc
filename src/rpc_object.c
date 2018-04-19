@@ -1339,8 +1339,8 @@ rpc_string_create_len(const char *string, size_t length)
 	union rpc_value val;
 	const char *null_b;
 
-	null_b = strchr(string, '\0');
-	if ((null_b != NULL) && (null_b < (string + length)))
+	null_b = memchr(string, '\0', length);
+	if ((null_b != NULL) && (null_b != string + length))
 		return (rpc_null_create());
 
 	val.rv_str = g_string_new_len(string, length);
