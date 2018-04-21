@@ -120,7 +120,7 @@ int \hyperlink{service_8h_ac0a7c2d5e6bb7464de61d346f97c0b04}{rpc\+\_\+context\+\
 \item 
 int \hyperlink{service_8h_a1aac077f97529f7c26834c139fefc2f5}{rpc\+\_\+context\+\_\+register\+\_\+func} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, void $\ast$\+\_\+\+Nullable arg, \+\_\+\+Nonnull \hyperlink{service_8h_add2d357ed7db564684628b3467048431}{rpc\+\_\+function\+\_\+f} func)
 \item 
-int \hyperlink{service_8h_a982fcc47ab91486b508ca9cff5b7ed8f}{rpc\+\_\+context\+\_\+unregister\+\_\+member} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name)
+int \hyperlink{service_8h_a7ad6475e7ca46534421ce0c3245d0cb2}{rpc\+\_\+context\+\_\+unregister\+\_\+member} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name)
 \item 
 void \hyperlink{service_8h_a5eb243586ec426274b93ad40f64f0ea5}{rpc\+\_\+context\+\_\+set\+\_\+pre\+\_\+call\+\_\+hook} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, \+\_\+\+Nonnull \hyperlink{service_8h_ae49a22468cfcd4adfa558078e9e4e312}{rpc\+\_\+function\+\_\+t} fn)
 \item 
@@ -694,6 +694,8 @@ Registers a new instance in {\ttfamily context} instance tree.
 
 Registers a given rpc\+\_\+method structure as an R\+PC method in a given context.
 
+The method must have a non-\/null name.
+
 
 \begin{DoxyParams}{Parameters}
 {\em context} & Target context. \\
@@ -751,11 +753,11 @@ The hook will be called before an actual implementation of R\+PC function gets c
 {\em path} & \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{service_8h_a982fcc47ab91486b508ca9cff5b7ed8f}\label{service_8h_a982fcc47ab91486b508ca9cff5b7ed8f}} 
+\mbox{\Hypertarget{service_8h_a7ad6475e7ca46534421ce0c3245d0cb2}\label{service_8h_a7ad6475e7ca46534421ce0c3245d0cb2}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+unregister\+\_\+member@{rpc\+\_\+context\+\_\+unregister\+\_\+member}}
 \index{rpc\+\_\+context\+\_\+unregister\+\_\+member@{rpc\+\_\+context\+\_\+unregister\+\_\+member}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+context\+\_\+unregister\+\_\+member()}{rpc\_context\_unregister\_member()}}
-{\footnotesize\ttfamily int rpc\+\_\+context\+\_\+unregister\+\_\+member (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int rpc\+\_\+context\+\_\+unregister\+\_\+member (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
 
 Unregisters a given R\+PC method.
 
