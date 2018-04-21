@@ -489,6 +489,8 @@ struct rpct_validator
 };
 
 rpc_object_t rpc_prim_create(rpc_type_t type, union rpc_value val);
+void rpc_dictionary_steal_value_internal(rpc_object_t dictionary,
+    const char * key, rpc_object_t value);
 
 #if defined(__linux__)
 rpc_object_t rpc_shmem_recreate(int fd, off_t offset, size_t size);

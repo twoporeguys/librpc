@@ -26,6 +26,7 @@
  */
 
 #include <errno.h>
+#include <string.h>
 #include <glib.h>
 #include <rpc/object.h>
 #include <rpc/server.h>
@@ -68,8 +69,10 @@ rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 		g_mutex_unlock(&server->rs_mtx);
 		return (-1);
 	}
-
+	g_rw_lock_writer_lock(&server->rs_connections_rwlock);
 	server->rs_connections = g_list_append(server->rs_connections, conn);
+	g_rw_lock_writer_unlock(&server->rs_connections_rwlock);
+
 	g_mutex_unlock(&server->rs_mtx);
 	return (0);
 }
@@ -116,10 +119,35 @@ done:
 }
 
 rpc_server_t
+rpc_server_find(const char *uri, rpc_context_t context)
+{
+        rpc_server_t server;
+
+	g_assert_nonnull(uri);
+	g_assert_nonnull(context);
+
+        g_rw_lock_reader_lock(&context->rcx_server_rwlock);
+        for (guint i = 0; i < context->rcx_servers->len; i++) {
+                server = g_ptr_array_index(context->rcx_servers, i);
+		if (!strcmp(server->rs_uri, uri)) {
+			g_rw_lock_reader_unlock(&context->rcx_server_rwlock);
+			return (server);
+		}
+	}
+	g_rw_lock_reader_unlock(&context->rcx_server_rwlock);
+	return (NULL);
+}
+
+rpc_server_t
 rpc_server_create(const char *uri, rpc_context_t context)
 {
 
 	rpc_server_t server;
+
+	if (rpc_server_find(uri, context) != NULL) {
+		debugf("duplicate server");
+		return NULL;
+	}
 
 	debugf("creating server");
 
@@ -145,7 +173,8 @@ rpc_server_create(const char *uri, rpc_context_t context)
 		g_cond_wait(&server->rs_cv, &server->rs_mtx);
 
 	if (server->rs_error != NULL) {
-                debugf("failed server");
+                debugf("failed server create for %s with %s", uri, 
+		    rpc_error_get_message(server->rs_error));
 		rpc_set_last_rpc_error(server->rs_error);
                 rpc_server_cleanup(server);
                 return(NULL);
@@ -165,8 +194,11 @@ rpc_server_broadcast_event(rpc_server_t server, const char *path,
 {
 	GList *item;
 
-        if (server->rs_closed)
+	g_rw_lock_reader_lock(&server->rs_connections_rwlock);
+        if (server->rs_closed) {
+		g_rw_lock_reader_unlock(&server->rs_connections_rwlock);
 		return;
+	}
 
 	for (item = g_list_first(server->rs_connections); item;
 	     item = item->next) {
@@ -174,6 +206,7 @@ rpc_server_broadcast_event(rpc_server_t server, const char *path,
 		rpc_connection_send_event(conn, path, interface, name,
 		    rpc_retain(args));
 	}
+	g_rw_lock_reader_unlock(&server->rs_connections_rwlock);
 }
 
 int
@@ -236,10 +269,12 @@ void
 rpc_server_resume(rpc_server_t server)
 {
 
-	if (server->rs_closed)
-		return;
-
 	g_mutex_lock(&server->rs_calls_mtx);
+	if (server->rs_closed) {
+		return;
+		g_mutex_unlock(&server->rs_calls_mtx);
+	}
+
 	server->rs_paused = false;
 	server_queue_purge(server);
 	g_mutex_unlock(&server->rs_calls_mtx);
@@ -292,6 +327,7 @@ rpc_server_close(rpc_server_t server)
 			conn->rco_abort(conn->rco_arg);
 		}
 	}
+	g_list_free(server->rs_connections); /*abort cleanup frees connections*/
         g_free(server);
 
 	return (ret);

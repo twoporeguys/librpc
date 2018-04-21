@@ -38,6 +38,7 @@
 #include "../linker_set.h"
 #include "../internal.h"
 
+//static void *socket_parse_uri(const char *);
 static GSocketAddress *socket_parse_uri(const char *);
 static int socket_connect(struct rpc_connection *, const char *, rpc_object_t);
 static int socket_listen(struct rpc_server *, const char *, rpc_object_t);
@@ -81,6 +82,8 @@ socket_parse_uri(const char *uri_string)
 {
 	GSocketAddress *addr = NULL;
 	SoupURI *uri;
+	int len = 0;
+	char *upath;
 
 	if ((uri = soup_uri_new(uri_string)) == NULL)
 	    return NULL;
@@ -93,7 +96,17 @@ socket_parse_uri(const char *uri_string)
 
 #ifndef _WIN32
 	if (!g_strcmp0(uri->scheme, "unix")) {
-		addr = g_unix_socket_address_new(uri->path);
+		if (uri->host == NULL || uri->path ==NULL)
+			return NULL;
+		len = strlen(uri->host) + strlen(uri->path);
+		if (len == 0)
+			return (NULL);
+		upath = g_malloc0(len + 1);
+		strcpy(upath, uri->host);
+		strcat(upath, uri->path);
+
+		addr = g_unix_socket_address_new(upath);
+		g_free(upath);
 		goto done;
 	}
 #endif
@@ -211,12 +224,12 @@ socket_listen(struct rpc_server *srv, const char *uri,
 	GError *err = NULL;
 	GFile *file;
 	GSocketAddress *addr;
+	GUnixSocketAddress *uaddr;
 	struct socket_server *server;
 
 	addr = socket_parse_uri(uri);
 	if (addr == NULL) {
 		srv->rs_error = rpc_error_create(ENXIO, "No Such Address", NULL);
-		g_object_unref(addr);
 		return (-1);
 	}
 
@@ -235,8 +248,9 @@ socket_listen(struct rpc_server *srv, const char *uri,
 	 * file on the filesystem.
 	 */
 	if (g_socket_address_get_family(addr) == G_SOCKET_FAMILY_UNIX) {
-		file = g_file_new_for_path(g_unix_socket_address_get_path(
-		    G_UNIX_SOCKET_ADDRESS(addr)));
+		uaddr = G_UNIX_SOCKET_ADDRESS (addr);
+		file = 
+		    g_file_new_for_path(g_unix_socket_address_get_path(uaddr));
 
 		if (g_file_query_exists(file, NULL)) {
 			g_file_delete(file, NULL, &err);

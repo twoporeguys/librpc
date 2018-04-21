@@ -122,7 +122,7 @@ rpc_json_context_insert_value(void *ctx_ptr, rpc_object_t value)
 		if (ctx->key_buf == NULL)
 			return (0);
 
-		rpc_dictionary_steal_value(leaf, ctx->key_buf, value);
+		rpc_dictionary_steal_value_internal(leaf, ctx->key_buf, value);
 		g_free(ctx->key_buf);
 		ctx->key_buf = NULL;
 		break;

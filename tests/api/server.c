@@ -57,8 +57,11 @@ struct u {
 	 {"tpp", "tpp://0.0.0.0:5000", "tcp://127.0.0.1:5000", false}, 
 	 {"tcp", "tcp://0.42.42.42:42", "tcp://127.0.0.1:5000", false}, 
 	 {"unix", "unix://test.sock", "unix://test.sock", true},
-	 {"loopback", "loopback://0", "loopback://0", true},
-	 {"loopback", "loopback://a", "loopback://0", false}, 
+	 {"unix", "unix:/", "unix://test.sock", false},
+//	 {"ws", "ws://0.0.0.0:6000/ws", "ws://127.0.0.1:6000/ws", true}, 
+//	 {"ws", "ws://w0.0.0.0:6000/ws", "ws://127.0.0.1:6000/ws", false}, 
+//	 {"loopback", "loopback://0", "loopback://0", true},
+//	 {"loopback", "loopback://a", "loopback://0", false}, 
 	 {0, "", "", 0}};
 
 typedef struct {
@@ -201,16 +204,16 @@ server_test_resume(server_fixture *fixture, gconstpointer user_data)
 	fixture->resume = true;
 	ret = thread_test(n, &thread_func, fixture);
 
-	/*fprintf(stderr, "Received %d/%d calls post-resume, ret=%d\n", 
-		fixture->count, n, ret);*/
+	fprintf(stderr, "Received %d/%d calls post-resume, ret=%d\n", 
+		fixture->count, n, ret);
 	g_assert_cmpint(fixture->count + ret, ==, n);
 
 	fixture->count = 0;
 	rpc_server_pause(fixture->srv);
 	ret = thread_test(n, &thread_func, fixture);
 
-	/*fprintf(stderr, "Received %d/%d calls post-pause-resume, ret=%d\n", 
-		fixture->count, n, ret);*/
+	fprintf(stderr, "Received %d/%d calls post-pause-resume, ret=%d\n", 
+		fixture->count, n, ret);
 	g_assert_cmpint(fixture->count + ret, ==, n);
 }
 	
@@ -278,6 +281,23 @@ server_test(server_fixture *fixture, gconstpointer user_data)
 */
 
 static void
+server_test_all_listen(void)
+{
+	rpc_object_t err;
+	rpc_context_t ctx;
+	rpc_server_t srv;
+	
+	ctx = rpc_context_create();
+	for (int i = 0; uris[i].scheme != NULL; i++) {
+		srv = rpc_server_create(uris[i].srv, ctx);
+		g_assert((srv != NULL) == uris[i].good);
+		if (srv != NULL)
+			rpc_server_close(srv);
+	}
+	rpc_context_free(ctx);
+}
+
+static void
 server_test_register()
 {
 
@@ -296,6 +316,8 @@ server_test_register()
 	g_test_add("/server/nullables/notnull", server_fixture, (void *)0,
 	    server_test_alt_server_set_up, server_test_nullables,
 	    server_test_valid_server_tear_down);
+
+	g_test_add_func("/server/listen/all", server_test_all_listen);
 
 }
 

@@ -118,7 +118,7 @@ loopback_listen(struct rpc_server *srv, const char *uri_string,
 	chan->lc_srv = srv;
 	chan->lc_connections = g_hash_table_new(NULL, NULL);
 	chan->lc_number = host;
-	/*srv->rs_teardown = &loopback_teardown;*/
+	srv->rs_teardown = &loopback_teardown;
 	srv->rs_arg = chan;
 
 	if (loopback_channels == NULL)
