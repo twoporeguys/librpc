@@ -76,8 +76,15 @@ main(int argc, const char *argv[])
 		return (rpc_null_create());
 	    });
 
-	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
+	//srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
+	//srv = rpc_server_create("unix:///Users/kathryn/test.sock", ctx);
+	//srv = rpc_server_create("unix://../test.sock", ctx);
+	//srv = rpc_server_create("loopback://0", ctx);
+	srv = rpc_server_create("ws://0.0.0.0:5005/ws", ctx);
         rpc_server_resume(srv);
+	sleep(30);
+	rpc_server_close(srv);
+	return(0);
 #ifdef _WIN32
 	for (;;)
 		sleep(1);

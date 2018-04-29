@@ -75,6 +75,8 @@ struct socket_connection
 	GOutputStream *			sc_ostream;
 	GThread *			sc_reader_thread;
 	struct rpc_connection *		sc_parent;
+	GMutex 				sc_abort_mtx;
+	bool				sc_aborted;
 };
 
 static GSocketAddress *
@@ -135,20 +137,22 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 		return;
 	}
 
-	debugf("new connection");
-
 	conn = g_malloc0(sizeof(*conn));
+
+	debugf("new connection %p", conn);
 	conn->sc_client = g_socket_client_new();
 	conn->sc_conn = gconn;
+	g_mutex_init(&conn->sc_abort_mtx);
 
 	rco = rpc_connection_alloc(srv);
 	rco->rco_send_msg = socket_send_msg;
 	rco->rco_get_fd = socket_get_fd;
 	rco->rco_arg = conn;
 	conn->sc_parent = rco;
+	rco->rco_release = socket_release;
+	rco->rco_abort = socket_abort;
 done:
 	if (srv->rs_accept(srv, rco) == 0) {
-		rco->rco_abort = socket_abort;
 		conn->sc_istream = 
 		    g_io_stream_get_input_stream(G_IO_STREAM(gconn));
 		conn->sc_ostream = 
@@ -157,10 +161,7 @@ done:
 		    socket_reader, (gpointer)conn);
 	} else {
 		fprintf(stderr, "ABORTING AT ACCEPT\n");
-		g_object_unref(conn->sc_client);
-		socket_abort(conn);
-		rpc_connection_close(rco);
-		g_free(conn);
+		rpc_connection_close(rco); /* will rco_abort, rco_release */
 		return;
 	}
 
@@ -189,13 +190,18 @@ socket_connect(struct rpc_connection *rco, const char *uri,
 	conn->sc_parent = rco;
 	conn->sc_uri = strdup(uri);
 	conn->sc_client = g_socket_client_new();
+	g_mutex_init(&conn->sc_abort_mtx);
+
+	rco->rco_release = socket_release;
+	rco->rco_abort = socket_abort;
+	rco->rco_arg = conn;
+
 	conn->sc_conn = g_socket_client_connect(conn->sc_client,
 	    G_SOCKET_CONNECTABLE(addr), NULL, &err);
 	if (err != NULL) {
-		g_object_unref(conn->sc_client);
+		rco->rco_aborted = true;
+		rpc_connection_close(rco);
 		g_object_unref(addr);
-		g_free((gpointer)conn->sc_uri);
-		g_free(conn);
 		rpc_set_last_gerror(err);
 		g_error_free(err);
 		return (-1);
@@ -206,10 +212,7 @@ socket_connect(struct rpc_connection *rco, const char *uri,
 	conn->sc_ostream = g_io_stream_get_output_stream(
 	    G_IO_STREAM(conn->sc_conn));
 	rco->rco_send_msg = socket_send_msg;
-	rco->rco_abort = socket_abort;
 	rco->rco_get_fd = socket_get_fd;
-	rco->rco_release = socket_release;
-	rco->rco_arg = conn;
 	conn->sc_reader_thread = g_thread_new("socket reader thread",
 	    socket_reader, (gpointer)conn);
 
@@ -409,12 +412,23 @@ socket_abort(void *arg)
 {
 	struct socket_connection *conn = arg;
 	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
+	bool srv = (conn->sc_parent->rco_client == NULL);
 
-	g_socket_shutdown(sock, true, true, NULL);
-	g_socket_close(sock, NULL);
-	if (conn->sc_reader_thread)
-		g_thread_join(conn->sc_reader_thread);
+	fprintf(stderr, "s_ABORTING %p @ %p (%D)\n",conn->sc_parent, 
+		g_get_monotonic_time (), conn->sc_parent->rco_aborted); 
 
+	g_mutex_lock(&conn->sc_abort_mtx);
+	if (!conn->sc_aborted) {
+		conn->sc_aborted = true;	
+		g_socket_shutdown(sock, true, true, NULL);
+		g_socket_close(sock, NULL);
+
+		if (conn->sc_reader_thread) {
+			g_thread_join(conn->sc_reader_thread);
+			fprintf(stderr, "s_a joined  %p\n",conn->sc_parent); 
+		}
+	}
+	g_mutex_unlock(&conn->sc_abort_mtx);
 	return (0);
 }
 
@@ -427,18 +441,19 @@ socket_get_fd(void *arg)
 	return (g_socket_get_fd(sock));
 }
 
-
 static void
 socket_release(void *arg)
 {
 	struct socket_connection *conn = arg;
 
-	g_object_unref(conn->sc_conn);
-	g_object_unref(conn->sc_client);
-	g_free(conn->sc_uri);
+	if (conn->sc_conn)
+		g_object_unref(conn->sc_conn);
+	if (conn->sc_client)
+		g_object_unref(conn->sc_client);
+	if (conn->sc_uri)
+		g_free(conn->sc_uri);
 	g_free(conn);
 }
-
 
 static int
 socket_teardown(struct rpc_server *srv)

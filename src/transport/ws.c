@@ -52,6 +52,8 @@ static void ws_close(SoupWebsocketConnection *, gpointer);
 static int ws_abort(void *);
 static int ws_get_fd(void *);
 static void ws_release(void *);
+static int ws_teardown(struct rpc_server *);
+static int ws_teardown_end(struct rpc_server *);
 
 struct rpc_transport ws_transport = {
 	.name = "websocket",
@@ -64,6 +66,7 @@ struct ws_connection
 {
     	GMutex				wc_mtx;
     	GCond				wc_cv;
+    	GMutex				wc_abort_mtx;
     	GError *			wc_connect_err;
 	GError *			wc_last_err;
 	GSocketClient *			wc_client;
@@ -72,13 +75,18 @@ struct ws_connection
 	SoupURI *			wc_uri;
 	SoupWebsocketConnection *	wc_ws;
 	struct rpc_connection *		wc_parent;
+	bool				wc_aborted;
 };
 
 struct ws_server
 {
 	struct rpc_server *		ws_server;
 	SoupServer *			ws_soupserver;
-    	const char *			ws_path;
+	SoupURI *			ws_uri;
+	bool				ws_done;
+	bool				ws_aborted;
+    	GMutex				ws_mtx;
+    	GCond				ws_cv;
 };
 
 static gboolean
@@ -105,6 +113,7 @@ ws_connect(struct rpc_connection *rco, const char *uri_string,
 	conn = g_malloc0(sizeof(*conn));
 	g_mutex_init(&conn->wc_mtx);
 	g_cond_init(&conn->wc_cv);
+	g_mutex_init(&conn->wc_abort_mtx);
 	conn->wc_uri = soup_uri_new(uri_string);
 	conn->wc_parent = rco;
 
@@ -120,8 +129,7 @@ ws_connect(struct rpc_connection *rco, const char *uri_string,
 	return (0);
 err:
 	rpc_set_last_gerror(conn->wc_connect_err);
-	g_object_unref(conn->wc_session);
-	g_free(conn);
+	ws_release(conn);
 	return (-1);
 }
 
@@ -171,6 +179,7 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 	struct ws_server *server;
 	int ret = 0;
 
+	//fprintf(stderr, "listening thread %p\n", g_thread_self());
 	uri = soup_uri_new(uri_str);
         if (uri == NULL) {
                 srv->rs_error = rpc_error_create(ENXIO, "No Such Address", NULL);
@@ -178,8 +187,15 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
         }
 
 	server = calloc(1, sizeof(*server));
-	server->ws_path = g_strdup(uri->path);
+	server->ws_uri = uri;
 	server->ws_server = srv;
+	g_mutex_init(&server->ws_mtx);
+	g_cond_init(&server->ws_cv);
+        srv->rs_teardown = &ws_teardown;
+        srv->rs_teardown_end = &ws_teardown_end;
+	srv->rs_threaded_teardown = true;
+        srv->rs_arg = server;
+
 	server->ws_soupserver = soup_server_new(
 	    SOUP_SERVER_SERVER_HEADER, "librpc",
 	    NULL);
@@ -187,9 +203,11 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 	soup_server_add_handler(server->ws_soupserver, "/", ws_process_banner,
 	    server, NULL);
 	soup_server_add_websocket_handler(server->ws_soupserver,
-	    server->ws_path, NULL, NULL, ws_process_connection, server, NULL);
+	    server->ws_uri->path, NULL, NULL, ws_process_connection, server, 
+	    NULL);
 
-	addr = g_inet_socket_address_new_from_string(uri->host, uri->port);
+	addr = g_inet_socket_address_new_from_string(server->ws_uri->host, 
+	    server->ws_uri->port);
 	soup_server_listen(server->ws_soupserver, addr, 0, &err);
 	if (err != NULL) {
 		srv->rs_error = rpc_error_create(err->code, err->message, NULL);
@@ -201,6 +219,61 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 	return (ret);
 }
 
+static gboolean
+done_waiting (gpointer user_data)
+{
+	struct ws_server *server = user_data;
+
+	g_mutex_lock(&server->ws_mtx);
+	server->ws_done = true;
+	g_cond_broadcast(&server->ws_cv);
+	g_mutex_unlock(&server->ws_mtx);
+	fprintf(stderr, "WS server thread DONE WAITING ithread %p\n", g_thread_self());
+
+	g_main_loop_quit(server->ws_server->rs_g_loop);
+        return false;
+}
+
+static int
+ws_teardown (struct rpc_server *srv)
+{
+	struct ws_server *server = srv->rs_arg;
+
+	fprintf(stderr, "WS server thread TEARDOWN START thread %pn",g_thread_self() );
+
+	soup_server_remove_handler(server->ws_soupserver, "/");
+	soup_server_remove_handler(server->ws_soupserver, server->ws_uri->path);
+	return (0);
+}	
+
+
+static int
+ws_teardown_end (struct rpc_server *srv)
+{
+	struct ws_server *server = srv->rs_arg;
+        GSource *source = g_idle_source_new ();
+
+	fprintf(stderr, "WS server thread TEARDOWN END thread %pn",g_thread_self() );
+	
+        g_source_set_priority (source, G_PRIORITY_LOW);
+        g_source_set_callback (source, done_waiting, server, NULL);
+        g_source_attach (source, srv->rs_g_context);
+        g_source_unref (source);	
+
+	g_mutex_lock(&server->ws_mtx);
+	while (!server->ws_done)
+		g_cond_wait(&server->ws_cv, &server->ws_mtx);
+	g_mutex_unlock(&server->ws_mtx);
+
+        soup_server_disconnect (server->ws_soupserver);
+	soup_uri_free(server->ws_uri);
+	g_object_unref(server->ws_soupserver);
+	fprintf(stderr, "server thread TEARDOWN DONE\n");
+	g_free(server);
+        return (0);
+}
+
+
 static void
 ws_process_banner(SoupServer *ss __unused, SoupMessage *msg,
     const char *path __unused, GHashTable *query __unused,
@@ -210,7 +283,7 @@ ws_process_banner(SoupServer *ss __unused, SoupMessage *msg,
 	const char *resp = g_strdup_printf(
 	    "<h1>Hello from librpc</h1>"
 	    "<p>Please use WebSockets endpoint located at %s</p>",
-	    server->ws_path);
+	    server->ws_uri->path);
 
 	soup_message_set_status(msg, 200);
 	soup_message_body_append(msg->response_body, SOUP_MEMORY_STATIC, resp, strlen(resp));
@@ -229,6 +302,7 @@ ws_process_connection(SoupServer *ss __unused,
 
 	conn = g_malloc0(sizeof(*conn));
 	conn->wc_ws = connection;
+	g_mutex_init(&conn->wc_abort_mtx);
 
 	rco = rpc_connection_alloc(server->ws_server);
 	rco->rco_send_msg = &ws_send_message;
@@ -236,7 +310,13 @@ ws_process_connection(SoupServer *ss __unused,
 	rco->rco_get_fd = &ws_get_fd;
 	rco->rco_arg = conn;
 	conn->wc_parent = rco;
-	server->ws_server->rs_accept(server->ws_server, rco);
+	rco->rco_release = ws_release;
+	fprintf(stderr, "WS accepting CONN  %p\n", rco);
+	if (server->ws_server->rs_accept(server->ws_server, rco) != 0) {
+		ws_abort(conn);
+		rpc_connection_close(rco);
+		return;
+	}
 
 	g_object_ref(conn->wc_ws);
 	g_signal_connect(conn->wc_ws, "closed", G_CALLBACK(ws_close), conn);
@@ -263,6 +343,7 @@ ws_error(SoupWebsocketConnection *ws __unused, GError *error, gpointer user_data
 {
 	struct ws_connection *conn = user_data;
 
+	debugf("err");
 	conn->wc_last_err = g_error_copy(error);
 }
 
@@ -299,7 +380,15 @@ ws_abort(void *arg)
 {
 	struct ws_connection *conn = arg;
 
-	soup_websocket_connection_close(conn->wc_ws, 1000, "Going away");
+	debugf("ws abort %p", conn->wc_parent);
+	g_mutex_lock(&conn->wc_abort_mtx);	
+	if (!conn->wc_aborted) {
+		fprintf(stderr, "WS aborting CONN  %p\n", conn->wc_parent);
+		soup_websocket_connection_close(conn->wc_ws, 1000, 
+		    "Going away");
+		conn->wc_aborted = true;
+	}
+	g_mutex_unlock(&conn->wc_abort_mtx);
 	return (0);
 }
 
@@ -308,9 +397,12 @@ ws_release(void *arg)
 {
 	struct ws_connection *conn = arg;
 
-	soup_uri_free(conn->wc_uri);
-	g_object_unref(conn->wc_ws);
-	g_object_unref(conn->wc_session);
+	if (conn->wc_uri)
+		soup_uri_free(conn->wc_uri);
+	if (conn->wc_session)
+		g_object_unref(conn->wc_session);
+	if (conn->wc_ws)
+		g_object_unref(conn->wc_ws);
 	g_free(conn);
 }
 

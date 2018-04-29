@@ -92,7 +92,9 @@ typedef int (*rpc_abort_fn_t)(void *);
 typedef int (*rpc_get_fd_fn_t)(void *);
 typedef void (*rpc_release_fn_t)(void *);
 typedef int (*rpc_close_fn_t)(struct rpc_connection *);
+typedef void (*rpc_ref_fn_t)(struct rpc_connection *, bool);
 typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
+typedef void (*rpc_disconnect_fn_t)(struct rpc_server *, struct rpc_connection *);
 typedef bool (*rpc_valid_fn_t)(struct rpc_server *);
 typedef int (*rpc_teardown_fn_t)(struct rpc_server *);
 
@@ -231,7 +233,7 @@ struct rpc_credentials
 
 struct rpc_connection
 {
-	struct rpc_server *	rco_server;
+    	struct rpc_server *	rco_server;
     	struct rpc_client *	rco_client;
     	struct rpc_credentials	rco_creds;
 	bool			rco_has_creds;
@@ -243,13 +245,19 @@ struct rpc_connection
 	GHashTable *		rco_inbound_calls;
     	GPtrArray *		rco_subscriptions;
     	GMutex			rco_subscription_mtx;
+    	GMutex			rco_mtx;
     	GMutex			rco_send_mtx;
-	GMutex			rco_call_mtx;
+	GRWLock			rco_icall_rwlock;
+	GRWLock			rco_call_rwlock;
     	GMainContext *		rco_mainloop;
+	rpc_object_t            rco_error;
     	GThreadPool *		rco_callback_pool;
 	rpc_object_t 		rco_params;
     	int			rco_flags;
 	bool			rco_closed;
+	bool			rco_aborted;
+	bool			rco_server_released;
+	int			rco_refcnt;			
 #if LIBDISPATCH_SUPPORT
 	dispatch_queue_t	rco_dispatch_queue;
 #endif
@@ -259,6 +267,7 @@ struct rpc_connection
 	rpc_send_msg_fn_t	rco_send_msg;
 	rpc_abort_fn_t 		rco_abort;
 	rpc_close_fn_t		rco_close;
+	rpc_ref_fn_t		rco_conn_ref;
     	rpc_get_fd_fn_t 	rco_get_fd;
 	rpc_release_fn_t	rco_release;
 	void *			rco_arg;
@@ -281,12 +290,21 @@ struct rpc_server
     	bool			rs_operational;
 	bool			rs_paused;
 	bool			rs_closed;
+	bool			rs_threaded_teardown;
         rpc_object_t            rs_error;
+	uint			rs_refcnt;
+	uint			rs_conn_made;
+	uint			rs_conn_refused;
+	uint			rs_conn_closed;
+	uint			rs_conn_freed;
+	uint			rs_conn_aborted;
 
     	/* Callbacks */
     	rpc_valid_fn_t		rs_valid;
     	rpc_accept_fn_t		rs_accept;
+    	rpc_disconnect_fn_t	rs_disconnect;
     	rpc_teardown_fn_t	rs_teardown;
+    	rpc_teardown_fn_t	rs_teardown_end;
     	void *			rs_arg;
 };
 
@@ -522,6 +540,7 @@ rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
 int rpc_context_dispatch(rpc_context_t, struct rpc_inbound_call *);
 int rpc_server_dispatch(rpc_server_t, struct rpc_inbound_call *);
+void rpc_server_release(rpc_server_t);
 void rpc_connection_send_err(rpc_connection_t, rpc_object_t, int,
     const char *descr, ...);
 void rpc_connection_send_errx(rpc_connection_t, rpc_object_t, rpc_object_t);

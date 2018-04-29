@@ -41,7 +41,9 @@ main(int argc, const char *argv[])
 	(void)argc;
 	(void)argv;
 
-	client = rpc_client_create("tcp://127.0.0.1:5000", 0);
+	//client = rpc_client_create("tcp://127.0.0.1:5000", 0);
+	//client = rpc_client_create("unix://../test.sock", 0);
+	client = rpc_client_create("ws://127.0.0.1:5005/ws", 0);
 	if (client == NULL) {
 		fprintf(stderr, "cannot connect: %s", strerror(errno));
 		return (1);

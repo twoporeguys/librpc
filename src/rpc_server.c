@@ -33,15 +33,22 @@
 #include "internal.h"
 
 static int rpc_server_accept(rpc_server_t, rpc_connection_t);
-static void rpc_server_cleanup(rpc_server_t server);
-static bool rpc_server_valid(rpc_server_t server);
+static void rpc_server_cleanup(rpc_server_t);
+static bool rpc_server_valid(rpc_server_t);
+static void rpc_server_disconnect(rpc_server_t, rpc_connection_t);
+static void * rpc_server_worker(void *);
+static gboolean rpc_server_listen(void *);
+static void server_queue_purge(rpc_server_t);
 
 static void
 rpc_server_cleanup(rpc_server_t server)
 {
-        g_main_context_invoke(server->rs_g_context,
-            (GSourceFunc)rpc_kill_main_loop, server->rs_g_loop);
+
+	if (server->rs_teardown_end == NULL)
+	        g_main_context_invoke(server->rs_g_context,
+        	    (GSourceFunc)rpc_kill_main_loop, server->rs_g_loop);
         g_thread_join(server->rs_thread);
+	/*fprintf(stderr, "server thread JOINED\n");*/
         g_main_loop_unref(server->rs_g_loop);
         g_main_context_unref(server->rs_g_context);
 	g_queue_free(server->rs_calls);
@@ -66,15 +73,58 @@ rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
  
 	g_mutex_lock(&server->rs_mtx);
 	if (server->rs_closed) {
+		server->rs_conn_refused++;
 		g_mutex_unlock(&server->rs_mtx);
+		fprintf(stderr, "NOT accepting %p\n", conn);
 		return (-1);
 	}
+	server->rs_refcnt++; /* conn has reference */
+
 	g_rw_lock_writer_lock(&server->rs_connections_rwlock);
 	server->rs_connections = g_list_append(server->rs_connections, conn);
+	conn->rco_conn_ref(conn,true);
 	g_rw_lock_writer_unlock(&server->rs_connections_rwlock);
 
+	server->rs_conn_made++;
 	g_mutex_unlock(&server->rs_mtx);
 	return (0);
+}
+
+/* undo accept */
+static void
+rpc_server_disconnect(rpc_server_t server, rpc_connection_t conn)
+{
+ 
+        GList *iter = NULL;
+        struct rpc_connection *comp = NULL;
+
+	//debugf("Disconnecting: %p, closed == %d\n", conn, server->rs_closed);
+	fprintf(stderr, "Disconnecting: %p, closed == %d\n", conn, server->rs_closed);
+
+	g_mutex_lock(&server->rs_mtx);
+	if (server->rs_closed) {
+		g_mutex_unlock(&server->rs_mtx);
+		return;
+	}
+
+	g_assert(conn->rco_aborted);
+
+        g_rw_lock_writer_lock(&server->rs_connections_rwlock);
+        for (iter = server->rs_connections; iter != NULL; iter = iter->next) {
+                comp = iter->data;
+                if (comp == conn) {
+                        server->rs_connections =
+                            g_list_remove_link(server->rs_connections, iter);
+			fprintf(stderr, "server disconnect deref conn %p\n", conn);
+			conn->rco_conn_ref(conn,false);
+                        break;
+                }
+        }
+ 
+	g_rw_lock_writer_unlock(&server->rs_connections_rwlock);
+	g_mutex_unlock(&server->rs_mtx);
+
+	return;
 }
 
 static void *
@@ -84,6 +134,7 @@ rpc_server_worker(void *arg)
 
 	g_main_context_push_thread_default(server->rs_g_context);
 	g_main_loop_run(server->rs_g_loop);
+	fprintf(stderr, "server thread EXITING\n");
 	return (NULL);
 }
 
@@ -101,7 +152,7 @@ rpc_server_listen(void *arg)
 	g_free(scheme);
 
 	if (transport == NULL) {
-		debugf("No such transport");
+		debugf("No such transport %s", server->rs_uri);
 		server->rs_error = rpc_error_create(ENXIO,
 		    "Error: Transport Not Found", NULL);
 		goto done;
@@ -145,11 +196,10 @@ rpc_server_create(const char *uri, rpc_context_t context)
 	rpc_server_t server;
 
 	if (rpc_server_find(uri, context) != NULL) {
-		debugf("duplicate server");
-		return NULL;
+		debugf("duplicate server %s", uri);
+		return (NULL);
 	}
-
-	debugf("creating server");
+	debugf("creating server %s", uri);
 
 	server = g_malloc0(sizeof(*server));
 	server->rs_uri = uri;
@@ -158,6 +208,7 @@ rpc_server_create(const char *uri, rpc_context_t context)
 	server->rs_context = context;
 	server->rs_accept = &rpc_server_accept;
 	server->rs_valid = &rpc_server_valid;
+	server->rs_disconnect = &rpc_server_disconnect;
 	server->rs_g_context = g_main_context_new();
 	server->rs_g_loop = g_main_loop_new(server->rs_g_context, false);
 	server->rs_thread = g_thread_new("librpc server", rpc_server_worker,
@@ -177,13 +228,14 @@ rpc_server_create(const char *uri, rpc_context_t context)
 		    rpc_error_get_message(server->rs_error));
 		rpc_set_last_rpc_error(server->rs_error);
                 rpc_server_cleanup(server);
-                return(NULL);
+                return (NULL);
 	}
 
         g_rw_lock_writer_lock(&context->rcx_server_rwlock);
         g_ptr_array_add(context->rcx_servers, server);
         g_rw_lock_writer_unlock(&context->rcx_server_rwlock);
 
+	server->rs_refcnt = 1;
 	g_mutex_unlock(&server->rs_mtx);
 	return (server);
 }
@@ -243,6 +295,7 @@ rpc_server_dispatch(rpc_server_t server, struct rpc_inbound_call *call)
 	return (ret);
 }
 
+/*called with rs_call_mtx held*/
 static void
 server_queue_purge(rpc_server_t server)
 {
@@ -294,6 +347,29 @@ rpc_server_pause(rpc_server_t server)
 	g_mutex_unlock(&server->rs_calls_mtx);
 }
 
+void
+rpc_server_release(rpc_server_t server)
+{
+
+	g_mutex_lock(&server->rs_mtx);	 
+	if (server->rs_closed && server->rs_refcnt == 1) {
+        	g_rw_lock_writer_lock(&server->rs_context->rcx_server_rwlock);
+        	g_ptr_array_remove(server->rs_context->rcx_servers, server);
+        	g_rw_lock_writer_unlock(&server->rs_context->rcx_server_rwlock);
+
+		g_mutex_unlock(&server->rs_mtx);
+		fprintf(stderr,"Server closed m: %d r: %d, c: %d, f: %d, a: %d\n",
+			server->rs_conn_made, server->rs_conn_refused, 
+			server->rs_conn_closed, server->rs_conn_freed, 
+			server->rs_conn_aborted);
+		g_free(server);
+		fprintf(stderr, "FREED SERVER %p\n", server);
+		return;
+	}
+	server->rs_refcnt--;
+	g_mutex_unlock(&server->rs_mtx);
+}	
+
 int
 rpc_server_close(rpc_server_t server)
 {
@@ -312,23 +388,33 @@ rpc_server_close(rpc_server_t server)
 	g_mutex_unlock(&server->rs_calls_mtx);
 	g_mutex_unlock(&server->rs_mtx);
 
-        g_rw_lock_writer_lock(&server->rs_context->rcx_server_rwlock);
-        g_ptr_array_remove(server->rs_context->rcx_servers, server);
-        g_rw_lock_writer_unlock(&server->rs_context->rcx_server_rwlock);
-
 	/* stop listening. */
-	rpc_server_cleanup(server);
+	if (!server->rs_threaded_teardown)
+		rpc_server_cleanup(server);
 	ret = server->rs_teardown(server);
-
+	
+	debugf("TORNDOWN");
+	
 	/* Drop all connections */
 	if (server->rs_connections != NULL) {
 		for (iter = server->rs_connections; iter != NULL; iter = iter->next) {
 			conn = iter->data;
-			conn->rco_abort(conn->rco_arg);
+			fprintf(stderr, "server close deref conn %p\n", conn);
+			rpc_connection_close(conn);
+			server->rs_conn_aborted++;
+
+			conn->rco_conn_ref(conn, false);
 		}
+		debugf("DROPPED");
 	}
+	if (server->rs_threaded_teardown) {
+		if (server->rs_teardown_end != NULL && ret == 0)
+			server->rs_teardown_end(server);
+		rpc_server_cleanup(server);
+	}
+
 	g_list_free(server->rs_connections); /*abort cleanup frees connections*/
-        g_free(server);
+        rpc_server_release(server);
 
 	return (ret);
 }

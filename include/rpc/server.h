@@ -67,17 +67,6 @@ typedef void (^rpc_server_event_handler_t)(_Nonnull rpc_connection_t source,
 	}
 
 /**
- * Returns the server handle of the supplied URI if such a 
- * server exists on the context.
- *
- * @param uri URI for the context search 
- * @param context RPC context for a server instance
- * @return the handle if a server with the URI exists, else NULL
- */
-_Nullable rpc_server_t rpc_server_find(const char *_Nonnull uri,
-    _Nonnull rpc_context_t context);
-
-/**
  * Creates a server instance listening on a given URI.
  *
  * @param uri URI to listen on
@@ -85,6 +74,16 @@ _Nullable rpc_server_t rpc_server_find(const char *_Nonnull uri,
  * @return Server handle
  */
 _Nullable rpc_server_t rpc_server_create(const char *_Nonnull uri,
+    _Nonnull rpc_context_t context);
+
+/**
+ * Finds a server instance if it exists for a context.
+ *
+ * @param uri Server URI to check
+ * @param context RPC context for a server instance
+ * @return Server handle or NULL
+ */
+_Nullable rpc_server_t rpc_server_find(const char *_Nonnull uri,
     _Nonnull rpc_context_t context);
 
 /**
