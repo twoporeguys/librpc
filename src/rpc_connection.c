@@ -705,10 +705,10 @@ rpc_close(rpc_connection_t conn)
         }
 
         if (conn->rco_server) {
-        	g_mutex_unlock(&conn->rco_mtx);
                 /* Tear down all the running inbound calls */
                 g_rw_lock_reader_lock(&conn->rco_icall_rwlock);
                 if (g_hash_table_size(conn->rco_inbound_calls) > 0) {
+			g_mutex_unlock(&conn->rco_mtx);
                         g_hash_table_iter_init(&iter, conn->rco_inbound_calls);
                         while (g_hash_table_iter_next(&iter, (gpointer)&key,
                             (gpointer)&icall)) {
@@ -1076,6 +1076,7 @@ rpc_connection_free_resources(rpc_connection_t conn)
 
 }
 
+/* returns 1 if caller should release its connection reference, else 0 */
 int
 rpc_connection_close(rpc_connection_t conn)
 {
@@ -1092,7 +1093,7 @@ rpc_connection_close(rpc_connection_t conn)
 		rpc_reference_change(conn, true);
                 conn->rco_abort(conn->rco_arg);
 		rpc_reference_change(conn, false);
-                return (0);
+                return (1);
         }
 	if (conn->rco_client != NULL) {
 		if (g_hash_table_size(conn->rco_calls) > 0) {
@@ -1109,6 +1110,7 @@ rpc_connection_close(rpc_connection_t conn)
 		conn->rco_server_released = true;;
                 g_mutex_unlock(&conn->rco_mtx);
                 conn->rco_server->rs_disconnect(conn->rco_server, conn);
+                rpc_server_release(conn->rco_server); /*no more touching!*/
         } else
                 g_mutex_unlock(&conn->rco_mtx);
 
@@ -1132,7 +1134,7 @@ bool
 rpc_connection_is_open(_Nonnull rpc_connection_t conn)
 {
 
-	return (!(conn->rco_closed || !conn->rco_aborted));
+	return (!(conn->rco_closed || conn->rco_aborted));
 }
 
 void
@@ -1156,10 +1158,6 @@ rpc_reference_change(_Nonnull rpc_connection_t conn, bool retain)
 			fprintf(stderr, "%s  in thread %p FREED %p\n", 
 	    		    (conn->rco_server) ? "Server" : "Client", 
 	    		    g_thread_self(), conn);
-			if (conn->rco_server) {
-				conn->rco_server->rs_conn_freed++;
-                		rpc_server_release(conn->rco_server);
-			}
 			g_free(conn);
 			return;
 		}
@@ -1425,7 +1423,7 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	rpc_object_t frame;
 
 	g_mutex_lock(&conn->rco_mtx);
-	if (rpc_connection_is_open(conn)) {
+	if (!rpc_connection_is_open(conn)) {
 		g_mutex_unlock(&conn->rco_mtx);
 		debugf("connection not open");
 		rpc_set_last_errorf(ENOTCONN, "Connection no longer valid");

@@ -48,7 +48,7 @@ rpc_server_cleanup(rpc_server_t server)
 	        g_main_context_invoke(server->rs_g_context,
         	    (GSourceFunc)rpc_kill_main_loop, server->rs_g_loop);
         g_thread_join(server->rs_thread);
-	/*fprintf(stderr, "server thread JOINED\n");*/
+	fprintf(stderr, "server thread JOINED\n");
         g_main_loop_unref(server->rs_g_loop);
         g_main_context_unref(server->rs_g_context);
 	g_queue_free(server->rs_calls);
@@ -350,8 +350,11 @@ rpc_server_pause(rpc_server_t server)
 void
 rpc_server_release(rpc_server_t server)
 {
+//	bool m;
 
-	g_mutex_lock(&server->rs_mtx);	 
+//	m = g_mutex_trylock(&server->rs_mtx);
+//	g_assert(m);	 
+	g_mutex_lock(&server->rs_mtx);
 	if (server->rs_closed && server->rs_refcnt == 1) {
         	g_rw_lock_writer_lock(&server->rs_context->rcx_server_rwlock);
         	g_ptr_array_remove(server->rs_context->rcx_servers, server);
@@ -376,6 +379,7 @@ rpc_server_close(rpc_server_t server)
 	struct rpc_connection *conn;
 	GList *iter = NULL;
 	int ret = 0;
+	int deref;
 
 	if (server->rs_teardown == NULL) {
 		rpc_set_last_errorf(ENOTSUP, "Not supported by transport");
@@ -400,10 +404,11 @@ rpc_server_close(rpc_server_t server)
 		for (iter = server->rs_connections; iter != NULL; iter = iter->next) {
 			conn = iter->data;
 			fprintf(stderr, "server close deref conn %p\n", conn);
-			rpc_connection_close(conn);
+			deref = rpc_connection_close(conn);
 			server->rs_conn_aborted++;
 
-			conn->rco_conn_ref(conn, false);
+			if (deref == 1)
+				conn->rco_conn_ref(conn, false);
 		}
 		debugf("DROPPED");
 	}
