@@ -65,16 +65,6 @@ Object::Object(int64_t value)
 	m_value = rpc_int64_create(value);
 }
 
-Object::Object(unsigned long value)
-{
-	m_value = rpc_uint64_create(value);
-}
-
-Object::Object(long value)
-{
-	m_value = rpc_int64_create(value);
-}
-
 Object::Object(double value)
 {
 	m_value = rpc_double_create(value);
@@ -100,7 +90,7 @@ Object::Object(const std::map<std::string, Object> &dict)
 	m_value = rpc_dictionary_create();
 
 	for (auto &kv : dict) {
-		rpc_dictionary_steal_value(m_value, kv.first.c_str(),
+		rpc_dictionary_set_value(m_value, kv.first.c_str(),
 		    kv.second.m_value);
 	}
 }
@@ -110,7 +100,7 @@ Object::Object(const std::vector<Object> &array)
 	m_value = rpc_array_create();
 
 	for (auto &v : array) {
-		rpc_array_append_stolen_value(m_value, v.m_value);
+		rpc_array_append_value(m_value, v.m_value);
 	}
 }
 
@@ -119,7 +109,7 @@ Object::Object(std::initializer_list<Object> list)
 	m_value = rpc_array_create();
 
 	for (auto &v : list) {
-		rpc_array_append_stolen_value(m_value, v.m_value);
+		rpc_array_append_value(m_value, v.m_value);
 	}
 }
 
@@ -128,9 +118,14 @@ Object::Object(std::initializer_list<std::pair<std::string, Object>> list)
 	m_value = rpc_dictionary_create();
 
 	for (auto &kv : list) {
-		rpc_dictionary_steal_value(m_value, kv.first.c_str(),
+		rpc_dictionary_set_value(m_value, kv.first.c_str(),
 		    kv.second.m_value);
 	}
+}
+
+Object::~Object()
+{
+	rpc_release(m_value);
 }
 
 Object
@@ -139,13 +134,19 @@ Object::wrap(rpc_object_t other)
 	Object result;
 
 	result.m_value = rpc_retain(other);
-	return result;
+	return (result);
+}
+
+rpc_type_t
+Object::type()
+{
+	return (rpc_get_type(m_value));
 }
 
 Object
 Object::copy()
 {
-	return Object::wrap(rpc_copy(m_value));
+	return (Object::wrap(rpc_copy(m_value)));
 }
 
 void
@@ -161,12 +162,12 @@ Object::release()
 }
 
 rpc_object_t
-Object::unwrap()
+Object::unwrap() const
 {
-	return m_value;
+	return (m_value);
 }
 
-std::string &&
+std::string
 Object::describe()
 {
 	std::string result;
@@ -176,7 +177,55 @@ Object::describe()
 	result = descr;
 	free(descr);
 
-	return std::move(result);
+	return (result);
+}
+
+Object
+Object::get(const std::string &key, const librpc::Object &def)
+{
+	rpc_object_t value;
+
+	value = rpc_dictionary_get_value(m_value, key.c_str());
+	if (value == nullptr)
+		return (def);
+
+	return (Object::wrap(value));
+}
+
+Object
+Object::get(size_t index, const librpc::Object &def)
+{
+	rpc_object_t value;
+
+	value = rpc_array_get_value(m_value, index);
+	if (value == nullptr)
+		return (def);
+
+	return (Object::wrap(value));
+}
+
+void
+Object::push_back(const librpc::Object &value)
+{
+	rpc_array_append_value(m_value, value.unwrap());
+}
+
+void
+Object::set(const std::string &key, const librpc::Object &value)
+{
+	rpc_dictionary_set_value(m_value, key.c_str(), value.unwrap());
+}
+
+int
+Object::get_error_code()
+{
+	return (rpc_error_get_code(m_value));
+}
+
+std::string
+Object::get_error_message()
+{
+	return (rpc_error_get_message(m_value));
 }
 
 Object::operator int() const
@@ -202,4 +251,16 @@ Object::operator const char *() const
 Object::operator std::string() const
 {
 	return (std::string(rpc_string_get_string_ptr(m_value)));
+}
+
+Object
+Object::operator[](const std::string &key)
+{
+	return (Object::wrap(rpc_dictionary_get_value(m_value, key.c_str())));
+}
+
+Object
+Object::operator[](size_t index)
+{
+	return (Object::wrap(rpc_array_get_value(m_value, index)));
 }

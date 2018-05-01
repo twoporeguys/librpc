@@ -25,20 +25,38 @@
  *
  */
 
+#include <exception>
+#include <rpc/connection.h>
+#include <rpc/client.h>
 #include "../include/librpc.hh"
 
 using namespace librpc;
 
+Exception::Exception(int code, const std::string &message):
+    std::runtime_error(message)
+{
+	m_code = code;
+	m_message = message;
+}
+
+Exception
+Exception::last_error()
+{
+	Object error = Object::wrap(rpc_get_last_error());
+
+	return (Exception(error.get_error_code(), error.get_error_message()));
+}
+
 Object
 Call::result() const
 {
-	return Object::wrap(rpc_call_result(m_call));
+	return (Object::wrap(rpc_call_result(m_call)));
 }
 
 enum rpc_call_status
 Call::status() const
 {
-	return (enum rpc_call_status)rpc_call_status(m_call);
+	return ((enum rpc_call_status)rpc_call_status(m_call));
 }
 
 void
@@ -73,25 +91,59 @@ Connection::call(const std::string &name, const std::vector<Object> &args,
     const std::string &path, const std::string &interface)
 {
 	Object wrapped(args);
+
 	rpc_call_t call = rpc_connection_call(m_connection, path.c_str(),
 	    interface.c_str(), name.c_str(), wrapped.unwrap(), nullptr);
 
-	if (call == nullptr) {
+	if (call == nullptr)
+		throw (Exception::last_error());
 
-	}
-
-	return Call::wrap(call);
+	return (Call::wrap(call));
 }
 
 Object
 Connection::call_sync(const std::string &name, const std::vector<Object> &args,
     const std::string &path, const std::string &interface)
 {
+	Object wrapped(args);
 
+	Call c = call(name, args, path, interface);
+	c.wait();
+	return (c.result());
 }
 
 Object
 Connection::call_async(const std::vector<Object> &args)
 {
 
+}
+
+void
+Client::connect(const std::string &uri, const librpc::Object &params)
+{
+	m_client = rpc_client_create(uri.c_str(), params.unwrap());
+	if (m_client == nullptr)
+		throw (Exception::last_error());
+}
+
+void
+Client::disconnect()
+{
+	if (m_client == nullptr)
+		throw (Exception(ENOTCONN, "Not connected"));
+
+	rpc_client_close(m_client);
+	m_client = nullptr;
+}
+
+std::vector<RemoteInterface>
+RemoteInstance::interfaces()
+{
+
+}
+
+const std::string &
+RemoteInstance::path()
+{
+	return (m_path);
 }

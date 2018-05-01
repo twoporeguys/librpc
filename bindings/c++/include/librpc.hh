@@ -31,30 +31,60 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <experimental/any>
 #include <rpc/object.h>
 #include <rpc/connection.h>
+#include <rpc/client.h>
 #include <rpc/service.h>
 
 namespace librpc {
-	typedef std::experimental::any any;
-
 	class Exception: public std::runtime_error
 	{
 	public:
 	    	Exception(int code, const std::string &message);
+	    	static Exception last_error();
+
+	    	int code();
+	    	const std::string &message();
+
+	private:
+	    	int m_code;
+	    	std::string m_message;
 	};
 
+	/**
+	 *
+	 */
 	class Object
 	{
 	public:
+		/**
+		 *
+		 * @param other
+		 */
 		Object(const Object &other);
+
+		/**
+		 *
+		 * @param other
+		 */
 		Object(Object &&other) noexcept;
+
+		/**
+		 *
+		 */
 		Object();
+
+		/**
+		 *
+		 * @param value
+		 */
 		Object(std::nullptr_t value);
+
+		/**
+		 *
+		 * @param value
+		 */
 		Object(bool value);
-		Object(long value);
-		Object(unsigned long value);
 		Object(uint64_t value);
 		Object(int64_t value);
 		Object(double value);
@@ -65,19 +95,29 @@ namespace librpc {
 		Object(const std::vector<Object> &array);
 		Object(std::initializer_list<Object> list);
 		Object(std::initializer_list<std::pair<std::string, Object>> list);
+		virtual ~Object();
 
 		static Object wrap(rpc_object_t other);
+		rpc_type_t type();
 	    	Object copy();
 		void retain();
 		void release();
-		rpc_object_t unwrap();
-	    	std::string &&describe();
+		rpc_object_t unwrap() const;
+	    	std::string describe();
+	    	Object get(const std::string &key, const Object &def = Object(nullptr));
+		Object get(size_t index, const Object &def = Object(nullptr));
+		void push_back(const Object &value);
+		void set(const std::string &key, const Object &value);
+		int get_error_code();
+		std::string get_error_message();
 
 		explicit operator int64_t() const;
 	 	explicit operator uint64_t() const;
 		explicit operator int() const;
-		explicit operator const char *() const;
-	    	explicit operator std::string() const;
+		operator const char *() const;
+	    	operator std::string() const;
+	    	Object operator[](const std::string &key);
+	    	Object operator[](size_t index);
 
 	private:
 	    	rpc_object_t m_value;
@@ -117,6 +157,37 @@ namespace librpc {
 	private:
 		rpc_connection_t m_connection;
 	};
+
+	class Client: public Connection
+	{
+	public:
+		void connect(const std::string &uri, const Object &params);
+		void disconnect();
+
+	private:
+		rpc_client_t m_client;
+	};
+
+	class RemoteInterface
+	{
+	public:
+		Object call(const std::string &name, const std::vector<Object> &args);
+		Object get(const std::string &prop);
+		void set(const std::string &prop, Object value);
+	};
+
+	class RemoteInstance
+	{
+	public:
+	    const std::string &path();
+	    std::vector<RemoteInterface> interfaces();
+
+	private:
+	    rpc_connection_t m_connection;
+	    std::string m_path;
+	};
+
+
 };
 
 #endif /* LIBRPC_LIBRPC_HH */

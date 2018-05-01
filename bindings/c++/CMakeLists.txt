@@ -12,7 +12,7 @@ add_library(librpcpp SHARED
         ${SOURCE_FILES})
 
 set_target_properties(librpcpp PROPERTIES PREFIX "")
-#set_target_properties(librpc PROPERTIES MACOSX_RPATH ON)
+set_target_properties(librpc PROPERTIES MACOSX_RPATH ON)
 target_link_libraries(librpcpp librpc)
 
 add_subdirectory(examples/object)

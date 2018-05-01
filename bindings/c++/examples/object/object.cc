@@ -49,8 +49,11 @@ main(int argc, const char *argv[])
 	    )
 	};
 
-	std::cout << "v=" << static_cast<std::string>(v) << std::endl;
+	std::cout << "v=" << v << std::endl;
 	std::cout << "a+b=" << (int)a + (int)b << std::endl;
 	std::cout << "list is " << list.describe() << std::endl;
 	std::cout << "dict is " << dict.describe() << std::endl;
+	std::cout << "dict[foo]=" << dict["foo"] << std::endl;
+	std::cout << "dict[nested][somevalue]=" << dict["nested"]["somevalue"] << std::endl;
+
 }
