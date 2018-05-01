@@ -25,6 +25,8 @@
  *
  */
 
+#include <cerrno>
+#include <functional>
 #include <exception>
 #include <rpc/connection.h>
 #include <rpc/client.h>
@@ -45,6 +47,23 @@ Exception::last_error()
 	Object error = Object::wrap(rpc_get_last_error());
 
 	return (Exception(error.get_error_code(), error.get_error_message()));
+}
+
+int
+Exception::code()
+{
+	return (m_code);
+}
+
+const std::string &
+Exception::message()
+{
+	return (m_message);
+}
+
+Call::~Call()
+{
+	rpc_call_free(m_call);
 }
 
 Object
@@ -112,10 +131,21 @@ Connection::call_sync(const std::string &name, const std::vector<Object> &args,
 	return (c.result());
 }
 
-Object
-Connection::call_async(const std::vector<Object> &args)
+void
+Connection::call_async(const std::string &name, const std::vector<Object> &args,
+    const std::string &path, const std::string &interface,
+    std::function<bool (Call)> &callback)
 {
+	Object wrapped(args);
 
+	rpc_call_t call = rpc_connection_call(m_connection, path.c_str(),
+	    interface.c_str(), name.c_str(), wrapped.unwrap(),
+	    ^bool(rpc_call_t c) {
+		return (callback(Call::wrap(c)));
+	});
+
+	if (call == nullptr)
+		throw (Exception::last_error());
 }
 
 void

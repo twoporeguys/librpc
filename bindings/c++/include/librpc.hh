@@ -28,6 +28,7 @@
 #ifndef LIBRPC_LIBRPC_HH
 #define LIBRPC_LIBRPC_HH
 
+#include <functional>
 #include <string>
 #include <vector>
 #include <map>
@@ -85,8 +86,8 @@ namespace librpc {
 		 * @param value
 		 */
 		Object(bool value);
-		Object(uint64_t value);
-		Object(int64_t value);
+		Object(unsigned long long value);
+		Object(long long value);
 		Object(double value);
 		Object(const char *value);
 		Object(const std::string &value);
@@ -106,7 +107,7 @@ namespace librpc {
 	    	std::string describe();
 	    	Object get(const std::string &key, const Object &def = Object(nullptr));
 		Object get(size_t index, const Object &def = Object(nullptr));
-		void push_back(const Object &value);
+		void push(const Object &value);
 		void set(const std::string &key, const Object &value);
 		int get_error_code();
 		std::string get_error_message();
@@ -126,6 +127,7 @@ namespace librpc {
 	class Call
 	{
 	public:
+		virtual ~Call();
 		Object result() const;
 		enum rpc_call_status status() const;
 	    	void resume(bool sync = false);
@@ -152,7 +154,11 @@ namespace librpc {
 		    const std::string &path = "/",
 		    const std::string &interface = RPC_DEFAULT_INTERFACE);
 
-		Object call_async(const std::vector<Object> &args);
+		void call_async(const std::string &name,
+		    const std::vector<Object> &args,
+		    const std::string &path,
+		    const std::string &interface,
+		    std::function<bool (Call)> &callback);
 
 	private:
 		rpc_connection_t m_connection;

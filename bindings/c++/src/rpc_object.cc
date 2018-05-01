@@ -55,12 +55,12 @@ Object::Object(bool value)
 	m_value = rpc_bool_create(value);
 }
 
-Object::Object(uint64_t value)
+Object::Object(unsigned long long value)
 {
 	m_value = rpc_uint64_create(value);
 }
 
-Object::Object(int64_t value)
+Object::Object(long long value)
 {
 	m_value = rpc_int64_create(value);
 }
@@ -205,7 +205,7 @@ Object::get(size_t index, const librpc::Object &def)
 }
 
 void
-Object::push_back(const librpc::Object &value)
+Object::push(const librpc::Object &value)
 {
 	rpc_array_append_value(m_value, value.unwrap());
 }
