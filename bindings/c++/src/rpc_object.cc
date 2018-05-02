@@ -248,9 +248,33 @@ Object::operator const char *() const
 	return (rpc_string_get_string_ptr(m_value));
 }
 
-Object::operator std::string() const
+Object::operator vector_type() const
 {
-	return (std::string(rpc_string_get_string_ptr(m_value)));
+	__block vector_type ret;
+
+	rpc_array_apply(m_value, ^(size_t idx, rpc_object_t value) {
+		ret.push_back(Object::wrap(value));
+		return ((bool)true);
+	});
+
+	return (ret);
+}
+
+Object::operator map_type() const
+{
+	__block map_type ret;
+
+	rpc_dictionary_apply(m_value, ^(const char *key, rpc_object_t value) {
+		ret.insert({key, Object::wrap(value)});
+		return ((bool)true);
+	});
+
+	return (ret);
+};
+
+Object::operator string_type() const
+{
+	return (string_type(rpc_string_get_string_ptr(m_value)));
 }
 
 Object

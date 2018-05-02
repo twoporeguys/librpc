@@ -26,6 +26,7 @@
  */
 
 #include <cerrno>
+#include <algorithm>
 #include <functional>
 #include <exception>
 #include <rpc/connection.h>
@@ -61,6 +62,32 @@ Exception::message()
 	return (m_message);
 }
 
+CallIterator::CallIterator(librpc::Call *call, bool ended)
+{
+	m_call = call;
+	m_ended = ended;
+}
+
+bool
+CallIterator::operator!=(const librpc::CallIterator &other)
+{
+	return (!(m_call == other.m_call && m_ended == other.m_ended));
+}
+
+Object
+CallIterator::operator*() const
+{
+	return (m_call->result());
+}
+
+const CallIterator&
+CallIterator::operator++()
+{
+	m_call->resume(true);
+	m_ended = m_call->status() == RPC_CALL_ENDED;
+	return (*this);
+}
+
 Call::~Call()
 {
 	rpc_call_free(m_call);
@@ -94,6 +121,18 @@ void
 Call::abort()
 {
 	rpc_call_abort(m_call);
+}
+
+CallIterator
+Call::begin()
+{
+	return (CallIterator(this, false));
+}
+
+CallIterator
+Call::end()
+{
+	return (CallIterator(this, true));
 }
 
 Call
@@ -169,11 +208,61 @@ Client::disconnect()
 std::vector<RemoteInterface>
 RemoteInstance::interfaces()
 {
+	std::vector<RemoteInterface> result;
+	Object interfaces = m_connection.call_sync("get_interfaces", {},
+	    path(), RPC_DISCOVERABLE_INTERFACE);
 
+	std::transform(
+	    interfaces.as_vec().begin(),
+	    interfaces.as_vec().end(),
+	    result.begin(),
+	    [=](auto name) { return RemoteInterface(this, name); }
+	);
+
+	return (result);
 }
 
 const std::string &
 RemoteInstance::path()
 {
 	return (m_path);
+}
+
+Connection &
+RemoteInstance::connection()
+{
+	return (m_connection);
+}
+
+RemoteInterface::RemoteInterface(librpc::RemoteInstance *instance,
+    const std::string &name): m_instance(instance), m_name(name)
+{
+}
+
+Object
+RemoteInterface::get(const std::string &prop)
+{
+	return (m_instance->connection().call_sync("get", {prop},
+	    m_instance->path(), RPC_OBSERVABLE_INTERFACE));
+}
+
+void
+RemoteInterface::set(const std::string &prop, const Object &value)
+{
+
+}
+
+Object
+RemoteInterface::call(const std::string &name,
+    const std::vector<librpc::Object> &args)
+{
+	return (m_instance->connection().call_sync(name, args,
+	    m_instance->path(), m_name));
+}
+
+
+const std::string &
+RemoteInterface::name()
+{
+	return (m_name);
 }

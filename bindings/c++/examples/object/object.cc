@@ -56,4 +56,11 @@ main(int argc, const char *argv[])
 	std::cout << "dict[foo]=" << dict["foo"] << std::endl;
 	std::cout << "dict[nested][somevalue]=" << dict["nested"]["somevalue"] << std::endl;
 
+	for (auto &kv: dict.as_map()) {
+		std::cout << "iter dict[" << kv.first << "]=" << kv.second.describe() << std::endl;
+	}
+
+	for (auto &i: list.as_vec()) {
+		std::cout << "iter list[]=" << i.describe() << std::endl;
+	}
 }
