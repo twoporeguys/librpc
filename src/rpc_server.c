@@ -197,6 +197,7 @@ rpc_server_create(const char *uri, rpc_context_t context)
 
 	if (rpc_server_find(uri, context) != NULL) {
 		debugf("duplicate server %s", uri);
+		rpc_set_last_errorf(EEXIST, "Server %s already exists", uri);
 		return (NULL);
 	}
 	debugf("creating server %s", uri);
@@ -244,6 +245,7 @@ void
 rpc_server_broadcast_event(rpc_server_t server, const char *path,
     const char *interface, const char *name, rpc_object_t args)
 {
+
 	GList *item;
 
 	g_rw_lock_reader_lock(&server->rs_connections_rwlock);
@@ -407,7 +409,7 @@ rpc_server_close(rpc_server_t server)
 			deref = rpc_connection_close(conn);
 			server->rs_conn_aborted++;
 
-			if (deref == 1)
+			if (deref == -1) /* disconnect must fail, deref here */
 				conn->rco_conn_ref(conn, false);
 		}
 		debugf("DROPPED");

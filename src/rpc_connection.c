@@ -1036,6 +1036,7 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	conn->rco_recv_msg = rpc_recv_msg;
 	conn->rco_close = rpc_close;
 	conn->rco_abort = rpc_connection_abort;
+	conn->rco_conn_ref = rpc_reference_change;
 	conn->rco_arg = conn;
 	conn->rco_refcnt = 1;
 	conn->rco_callback_pool = g_thread_pool_new(&rpc_callback_worker, conn,
@@ -1076,15 +1077,14 @@ rpc_connection_free_resources(rpc_connection_t conn)
 
 }
 
-/* returns 1 if caller should release its connection reference, else 0 */
 int
 rpc_connection_close(rpc_connection_t conn)
 {
 	bool issrv = (conn->rco_server != NULL);
-	fprintf(stderr, "%s rpc_conn_close(), thread %p abort:%d   conn: %p - %d  @ %p\n", 
+	fprintf(stderr, "%s rpc_conn_close(), thread %p abort:%d   conn: %p - %d  arg: %p\n", 
 	    issrv ? "Server" : "Client", 
 	    g_thread_self(), conn->rco_aborted, conn, conn->rco_refcnt, 
-	    g_get_monotonic_time ());
+	    conn->rco_arg);
         g_mutex_lock(&conn->rco_mtx);
         if ((conn->rco_abort != NULL) && !conn->rco_aborted) {
                 /* rpc_close hasn't run. Transport must ignore multiple aborts*/
@@ -1093,15 +1093,13 @@ rpc_connection_close(rpc_connection_t conn)
 		rpc_reference_change(conn, true);
                 conn->rco_abort(conn->rco_arg);
 		rpc_reference_change(conn, false);
-                return (1);
+		return ((conn->rco_server == NULL) ? 0 : -1); /*-1, assert server closed */
         }
 	if (conn->rco_client != NULL) {
+		conn->rco_closed = true;
 		if (g_hash_table_size(conn->rco_calls) > 0) {
-			conn->rco_closed = true;
 			goto done;
 		}
-		if (!conn->rco_closed)
-			goto done;
 	}
 
 	/*abort has been run and calls have been cleaned up already*/
@@ -1142,6 +1140,7 @@ rpc_reference_change(_Nonnull rpc_connection_t conn, bool retain)
 {
 
 	g_mutex_lock(&conn->rco_mtx);	
+	g_assert(conn->rco_refcnt > 0);
 	if (retain)
 		conn->rco_refcnt++;
 	else {
@@ -1158,6 +1157,7 @@ rpc_reference_change(_Nonnull rpc_connection_t conn, bool retain)
 			fprintf(stderr, "%s  in thread %p FREED %p\n", 
 	    		    (conn->rco_server) ? "Server" : "Client", 
 	    		    g_thread_self(), conn);
+			conn->rco_refcnt = -1;
 			g_free(conn);
 			return;
 		}

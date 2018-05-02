@@ -324,14 +324,16 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 	g_socket_send_message(sock, NULL, iov, 1, cmsg, ncmsg, 0,
 	    NULL, &err);
 	if (err != NULL) {
-		rpc_set_last_gerror(err);
+		conn->sc_parent->rco_error = 
+			rpc_error_create_from_gerror(err);
 		g_error_free(err);
 		ret = -1;
 		goto done;
 	}
 
 	if (!g_output_stream_write_all(conn->sc_ostream, buf, size, NULL, NULL, &err)) {
-		rpc_set_last_gerror(err);
+		conn->sc_parent->rco_error = 
+			rpc_error_create_from_gerror(err);
 		g_error_free(err);
 		ret = -1;
 		goto done;
@@ -363,7 +365,8 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	g_socket_receive_message(sock, NULL, &iov, 1, &cmsg, &ncmsg, &flags,
 	    NULL, &err);
 	if (err != NULL) {
-		rpc_set_last_gerror(err);
+		conn->sc_parent->rco_error = 
+			rpc_error_create_from_gerror(err);
 		g_error_free(err);
 		return (-1);
 	}
@@ -398,7 +401,9 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 
 	if (!g_input_stream_read_all(conn->sc_istream, *frame, *size, NULL,
 	   NULL, &err)) {
-		rpc_set_last_gerror(err);
+		conn->sc_parent->rco_error = 
+			rpc_error_create_from_gerror(err);
+		g_error_free(err);
 		g_free(err);
 		free(*frame);
 		return (-1);
@@ -414,9 +419,6 @@ socket_abort(void *arg)
 	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
 	bool srv = (conn->sc_parent->rco_client == NULL);
 
-	fprintf(stderr, "s_ABORTING %p @ %p (%D)\n",conn->sc_parent, 
-		g_get_monotonic_time (), conn->sc_parent->rco_aborted); 
-
 	g_mutex_lock(&conn->sc_abort_mtx);
 	if (!conn->sc_aborted) {
 		conn->sc_aborted = true;	
@@ -425,7 +427,6 @@ socket_abort(void *arg)
 
 		if (conn->sc_reader_thread) {
 			g_thread_join(conn->sc_reader_thread);
-			fprintf(stderr, "s_a joined  %p\n",conn->sc_parent); 
 		}
 	}
 	g_mutex_unlock(&conn->sc_abort_mtx);

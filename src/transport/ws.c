@@ -75,7 +75,9 @@ struct ws_connection
 	SoupWebsocketConnection *	wc_ws;
 	struct rpc_connection *		wc_parent;
 	GMutex				wc_abort_mtx;
+    	GCond				wc_abort_cv;
 	bool				wc_aborted;
+	bool				wc_closed;
 	struct ws_server *		wc_server;
 };
 
@@ -116,6 +118,7 @@ ws_connect(struct rpc_connection *rco, const char *uri_string,
 	g_mutex_init(&conn->wc_mtx);
 	g_cond_init(&conn->wc_cv);
 	g_mutex_init(&conn->wc_abort_mtx);
+	g_cond_init(&conn->wc_abort_cv);
 	conn->wc_uri = soup_uri_new(uri_string);
 	conn->wc_parent = rco;
 
@@ -326,6 +329,8 @@ ws_process_connection(SoupServer *ss __unused,
 	conn->wc_ws = connection;
 	conn->wc_server = server;
 
+	g_mutex_init(&conn->wc_abort_mtx);
+	g_cond_init(&conn->wc_abort_cv);
 
 	rco = rpc_connection_alloc(server->ws_server);
 	rco->rco_send_msg = &ws_send_message;
@@ -391,18 +396,28 @@ ws_close(SoupWebsocketConnection *ws __unused, gpointer user_data)
 	struct ws_server *server = conn->wc_server;
 
 	debugf("closed: conn=%p", conn);
+	fprintf(stderr, "ws_closed: ws_conn=%p, conn: %p", conn, conn->wc_parent);
 
 	g_mutex_lock(&conn->wc_abort_mtx);
-	conn->wc_aborted = true;
+	conn->wc_aborted = true; /* prevent repeat ws_aborts after this */
 	if (server)
 		ws_manage_aborted_connections(server, conn, false);
 	g_mutex_unlock(&conn->wc_abort_mtx);
-	if (conn->wc_last_err != NULL) {
-		rpc_set_last_gerror(conn->wc_last_err);
-		g_error_free(conn->wc_last_err);
-	}
 
+	/* hold a reference to keep conn accessible after this abort-close*/
+	conn->wc_parent->rco_conn_ref(conn->wc_parent, true);
 	conn->wc_parent->rco_close(conn->wc_parent);
+
+	if (conn->wc_last_err != NULL) {
+		conn->wc_parent->rco_error = 
+		    rpc_error_create_from_gerror(conn->wc_last_err);
+		g_error_free(conn->wc_last_err);
+	} 
+	g_mutex_lock(&conn->wc_abort_mtx);
+	conn->wc_closed = true;
+	g_cond_broadcast(&conn->wc_abort_cv);
+	g_mutex_unlock(&conn->wc_abort_mtx);
+	conn->wc_parent->rco_conn_ref(conn->wc_parent, false);
 }
 
 static int
@@ -425,15 +440,21 @@ ws_abort(void *arg)
 
 	debugf("ws abort %p", conn->wc_parent);
 	g_mutex_lock(&conn->wc_abort_mtx);	
-	if (!conn->wc_aborted) {
-		if (conn->wc_server)
-			ws_manage_aborted_connections(conn->wc_server, conn,
-			    true);
-		fprintf(stderr, "WS aborting CONN  %p\n", conn->wc_parent);
-		conn->wc_aborted = true;
-		soup_websocket_connection_close(conn->wc_ws, 1000, 
-		    "Going away");
+	if (conn->wc_aborted) {
+		g_mutex_unlock(&conn->wc_abort_mtx);
+		return 0;
 	}
+	
+	if (conn->wc_server)
+		ws_manage_aborted_connections(conn->wc_server, conn, true);
+	fprintf(stderr, "WS aborting CONN  %p\n", conn->wc_parent);
+	conn->wc_aborted = true;
+	g_mutex_unlock(&conn->wc_abort_mtx);
+	soup_websocket_connection_close(conn->wc_ws, 1000, "Going away");
+
+	g_mutex_lock(&conn->wc_abort_mtx);
+	while (conn->wc_closed == false)
+		g_cond_wait(&conn->wc_abort_cv, &conn->wc_abort_mtx);
 	g_mutex_unlock(&conn->wc_abort_mtx);
 	return (0);
 }
