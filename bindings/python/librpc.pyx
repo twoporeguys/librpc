@@ -767,27 +767,6 @@ cdef class Context(object):
         del self.methods[name]
         rpc_context_unregister_member(self.context, interface, name)
 
-    def __materialized_paths_to_tree(self, lst, separator='.'):
-        result = {'children': {}, 'path': []}
-
-        def add(parent, path):
-            if not path:
-                return
-
-            p = path.pop(0)
-            c = parent['children'].get(p)
-            if not c:
-                c = {'children': {}, 'path': parent['path'] + [p], 'label': p}
-                parent['children'][p] = c
-
-            add(c, path)
-
-        for i in lst:
-            path = i.split(separator)
-            add(result, path)
-
-        return result
-
     def __dealloc__(self):
         if not self.borrowed:
             rpc_context_free(self.context)
@@ -1050,8 +1029,8 @@ cdef class RemoteInterface(object):
                 partial = functools.partial(fn, method)
                 self.methods[method] = partial
                 setattr(self, method, partial)
-        except Exception as err:
-            pass
+        except:
+            raise RuntimeError('Cannot read methods of a remote object')
 
     def __collect_properties(self):
         try:
@@ -1086,7 +1065,7 @@ cdef class RemoteInterface(object):
                     functools.partial(setter, prop['name'])
                 )
         except:
-            pass
+            raise RuntimeError('Cannot read properties of a remote object')
 
     def __collect_events(self):
             for method in self.client.call_sync(
@@ -1213,7 +1192,13 @@ cdef class Connection(object):
 
     property instances:
         def __get__(self):
-            objects = self.call_sync('get_instances', interface='com.twoporeguys.librpc.Discoverable', path='/', unpack=True)
+            objects = self.call_sync(
+                'get_instances',
+                interface='com.twoporeguys.librpc.Discoverable',
+                path='/',
+                unpack=True
+            )
+
             return {o['path']: RemoteObject(self, o['path']) for o in objects}
 
     @staticmethod
@@ -1226,7 +1211,10 @@ cdef class Connection(object):
         return ret
 
     @staticmethod
-    cdef void c_ev_handler(void *arg, const char *path, const char *interface, const char *name, rpc_object_t args) with gil:
+    cdef void c_ev_handler(
+        void *arg, const char *path, const char *interface,
+        const char *name, rpc_object_t args
+    ) with gil:
         cdef Object event_args
         cdef object handler = <object>arg
 
