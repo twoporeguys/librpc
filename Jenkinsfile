@@ -19,7 +19,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mkdir -p build' 
+                sh 'mkdir -p build'
                 sh 'cd build && cmake .. -DBUILD_LIBUSB=ON -DBUILD_DOC=ON'
                 sh 'cd build && make'
             }
@@ -50,6 +50,12 @@ pipeline {
                 sh "mkdir -p ${DOCS_PATH}/typescript/librpc-client"
                 sh "rm -rf ${DOCS_PATH}/typescript/librpc-client/*"
                 sh "cp -a bindings/typescript/doc/* ${DOCS_PATH}/typescript/librpc-client/"
+            }
+        }
+
+        stage('Build Supermom'){
+          steps{
+               build job: 'supermom/master', wait: false
             }
         }
     }
