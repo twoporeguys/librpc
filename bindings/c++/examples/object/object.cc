@@ -34,12 +34,12 @@ int
 main(int argc, const char *argv[])
 {
 	librpc::Object v("hello world");
-	librpc::Object a = 2L;
-	librpc::Object b(2L);
-	librpc::Object list = {1L, 2L, 3UL};
+	librpc::Object a = 2LL;
+	librpc::Object b(2LL);
+	librpc::Object list = {1LL, 2LL, 3ULL};
 	librpc::Object dict = {
 	    {"foo", "bar"},
-	    {"baz", -1L},
+	    {"baz", -1LL},
 	    {"hello", true},
 	    std::make_pair(
 		"nested", librpc::Object {
@@ -49,8 +49,18 @@ main(int argc, const char *argv[])
 	    )
 	};
 
-	std::cout << "v=" << static_cast<std::string>(v) << std::endl;
+	std::cout << "v=" << v << std::endl;
 	std::cout << "a+b=" << (int)a + (int)b << std::endl;
 	std::cout << "list is " << list.describe() << std::endl;
 	std::cout << "dict is " << dict.describe() << std::endl;
+	std::cout << "dict[foo]=" << dict["foo"] << std::endl;
+	std::cout << "dict[nested][somevalue]=" << dict["nested"]["somevalue"] << std::endl;
+
+	for (auto &kv: dict.as_map()) {
+		std::cout << "iter dict[" << kv.first << "]=" << kv.second.describe() << std::endl;
+	}
+
+	for (auto &i: list.as_vec()) {
+		std::cout << "iter list[]=" << i.describe() << std::endl;
+	}
 }

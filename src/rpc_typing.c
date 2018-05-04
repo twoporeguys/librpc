@@ -37,7 +37,7 @@ static int rpct_lookup_type(const char *name, const char **decl,
 static struct rpct_type *rpct_find_type(const char *name);
 static struct rpct_type *rpct_find_type_fuzzy(const char *name,
     struct rpct_file *origin);
-static rpc_object_t rpct_download_idl(void *cookie, rpc_object_t args);
+static rpc_object_t rpct_stream_idl(void *cookie, rpc_object_t args);
 static inline bool rpct_type_is_fully_specialized(struct rpct_typei *inst);
 static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *typei);
 static char *rpct_canonical_type(struct rpct_typei *typei);
@@ -66,7 +66,7 @@ static const char *builtin_types[] = {
 };
 
 static const struct rpc_if_member rpct_typing_vtable[] = {
-	RPC_METHOD(download, rpct_download_idl),
+	RPC_METHOD(download, rpct_stream_idl),
 	RPC_MEMBER_END
 };
 
@@ -213,7 +213,7 @@ rpct_find_type(const char *name)
 }
 
 static rpc_object_t
-rpct_download_idl(void *cookie, rpc_object_t args __unused)
+rpct_stream_idl(void *cookie, rpc_object_t args __unused)
 {
 	GHashTableIter iter;
 	struct rpct_file *file;
@@ -431,6 +431,7 @@ static void
 rpct_interface_free(struct rpct_interface *iface)
 {
 
+	printf("freeing %s\n", iface->name);
 	g_free(iface->name);
 	g_free(iface->description);
 	g_hash_table_destroy(iface->members);
@@ -1023,6 +1024,7 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	GRegex *regex = NULL;
 	GMatchInfo *match = NULL;
 	bool result;
+	int ret = 0;
 
 	regex = g_regex_new(INTERFACE_REGEX, 0, 0, &err);
 	g_assert_no_error(err);
@@ -1035,14 +1037,19 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 	iface = g_malloc0(sizeof(*iface));
 	iface->origin = g_strdup_printf("%s:%jd", file->path, rpc_get_line_number(obj));
-	iface->name = g_match_info_fetch(match, 1);
+	iface->name = g_strdup(g_match_info_fetch(match, 1));
 	iface->members = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    g_free, (GDestroyNotify)rpct_if_member_free);
 	iface->description = g_strdup(rpc_dictionary_get_string(obj,
 	    "description"));
 
-	if (file->ns)
+	if (file->ns) {
+		g_free(iface->name);
 		iface->name = g_strdup_printf("%s.%s", file->ns, iface->name);
+	}
+
+	if (g_hash_table_contains(context->interfaces, iface->name))
+		goto abort;
 
 	result = rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t v) {
 		if (g_str_has_prefix(key, "property")) {
@@ -1063,12 +1070,21 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		return ((bool)true);
 	});
 
-	if (result)
-		return (-1);
+	if (result) {
+		ret = -1;
+		goto abort;
+	}
 
 	g_hash_table_insert(context->interfaces, iface->name, iface);
 	g_hash_table_insert(file->interfaces, iface->name, iface);
-	return (0);
+	return (ret);
+
+abort:
+	g_free(iface->origin);
+	g_free(iface->description);
+	g_free(iface->name);
+	g_free(iface);
+	return (ret);
 }
 
 int
@@ -1332,6 +1348,12 @@ rpct_allow_idl_download(rpc_context_t context)
 }
 
 int
+rpct_download_idl(rpc_connection_t conn)
+{
+
+}
+
+int
 rpct_init(void)
 {
 	rpct_type_t type;
@@ -1343,7 +1365,7 @@ rpct_init(void)
 	context->types = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 	    (GDestroyNotify)rpct_type_free);
 	context->interfaces = g_hash_table_new_full(g_str_hash, g_str_equal,
-	    g_free, (GDestroyNotify)rpct_interface_free);
+	    NULL, (GDestroyNotify)rpct_interface_free);
 
 	for (b = builtin_types; *b != NULL; b++) {
 		type = g_malloc0(sizeof(*type));
@@ -1747,11 +1769,12 @@ rpct_interface_apply(rpct_interface_applier_t applier)
 
 	g_hash_table_iter_init(&iter, context->interfaces);
 	while (g_hash_table_iter_next(&iter, (gpointer *)&key,
-	    (gpointer *)&value))
+	    (gpointer *)&value)) {
 		if (!applier(value)) {
 			flag = true;
 			break;
 		}
+	}
 
 	return (flag);
 }

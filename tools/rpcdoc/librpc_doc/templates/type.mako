@@ -7,4 +7,6 @@
     ${partials.typedef(t)}
 % elif t.is_builtin:
     ${partials.typedef(t)}
+% elif t.is_enum:
+    ${partials.enum(t)}
 %endif

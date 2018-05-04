@@ -1339,7 +1339,7 @@ rpc_string_create_len(const char *string, size_t length)
 	union rpc_value val;
 	const char *null_b;
 
-	null_b = strchr(string, '\0');
+	null_b = memchr(string, '\0', length);
 	if ((null_b != NULL) && (null_b != string + length))
 		return (rpc_null_create());
 
@@ -2017,9 +2017,6 @@ rpc_dictionary_steal_value(rpc_object_t dictionary, const char *key,
 
 	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
 		rpc_abort("Trying dictionary API on non-dictionary object");
-
-	if (key[0] == '$')
-		rpc_abort("Cannot use $ as the first character of the key");
 
 	g_hash_table_insert(dictionary->ro_value.rv_dict,
 	    (gpointer)g_strdup(key), value);

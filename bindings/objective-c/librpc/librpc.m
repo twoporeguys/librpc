@@ -413,8 +413,12 @@
     if (call == NULL) {
         if (error != nil)
             *error = [[RPCObject lastError] value];
+
+        return (nil);
     }
+
     rpc_call_wait(call);
+
     switch (rpc_call_status(call)) {
         case RPC_CALL_DONE:
             return [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)];
@@ -458,8 +462,10 @@
     if (ret == NULL) {
         if (error != nil)
             *error = [[RPCObject lastError] value];
+
+        return (nil);
     }
-    
+
     return [[RPCCall alloc] initFromNativeObject:ret];
 }
 

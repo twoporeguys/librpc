@@ -1,8 +1,8 @@
 find_program(PYTHON "${PYTHON_VERSION}")
 
 set(SETUP_PY ${CMAKE_SOURCE_DIR}/tools/rpcdoc/setup.py)
-set(DEPS ${CMAKE_SOURCE_DIR}/tools/rpcdoc/*)
 set(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/timestamp)
+file(GLOB_RECURSE DEPS ${CMAKE_SOURCE_DIR}/tools/rpcdoc *)
 
 add_custom_command(OUTPUT ${OUTPUT}
         COMMAND cp -a ${CMAKE_SOURCE_DIR}/tools/rpcdoc/* ${CMAKE_CURRENT_BINARY_DIR}/

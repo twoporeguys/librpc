@@ -42,6 +42,22 @@
     </p>
 </%def>
 
+<%def name="enum(e)">
+<h3 id="${e.name}">enum <span class="type">${e.name}</span></h3>
+<p>${e.description}</p>
+<h4>Members:</h4>
+<ul>
+    % for m in e.members:
+    <li>
+        ${m.name}
+        <p>
+            ${m.description}
+        </p>
+    </li>
+    % endfor
+</ul>
+</%def>
+
 <%def name="generic_vars_type(t)">
     %if t.generic:
         &lt;

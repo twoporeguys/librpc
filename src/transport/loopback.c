@@ -67,6 +67,7 @@ loopback_accept(struct loopback_channel *chan, struct rpc_connection *conn)
 	conn->rco_release = loopback_release;
 
 	g_hash_table_insert(chan->lc_connections, conn, newconn);
+	chan->lc_srv->rs_accept(chan->lc_srv, newconn);
 	return (0);
 }
 

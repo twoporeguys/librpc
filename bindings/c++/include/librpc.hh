@@ -28,69 +28,140 @@
 #ifndef LIBRPC_LIBRPC_HH
 #define LIBRPC_LIBRPC_HH
 
+#include <functional>
 #include <string>
 #include <vector>
 #include <map>
-#include <experimental/any>
 #include <rpc/object.h>
 #include <rpc/connection.h>
+#include <rpc/client.h>
 #include <rpc/service.h>
 
-namespace librpc {
-	typedef std::experimental::any any;
+namespace librpc
+{
+	class Call;
+	class RemoteInterface;
 
 	class Exception: public std::runtime_error
 	{
 	public:
 	    	Exception(int code, const std::string &message);
+	    	static Exception last_error();
+
+	    	int code();
+	    	const std::string &message();
+
+	private:
+	    	int m_code;
+	    	std::string m_message;
 	};
 
+	/**
+	 *
+	 */
 	class Object
 	{
 	public:
+		typedef std::string string_type;
+		typedef std::vector<Object> vector_type;
+		typedef std::map<std::string, Object> map_type;
+
+		/**
+		 *
+		 * @param other
+		 */
 		Object(const Object &other);
+
+		/**
+		 *
+		 * @param other
+		 */
 		Object(Object &&other) noexcept;
+
+		/**
+		 *
+		 */
 		Object();
+
+		/**
+		 *
+		 * @param value
+		 */
 		Object(std::nullptr_t value);
+
+		/**
+		 *
+		 * @param value
+		 */
 		Object(bool value);
-		Object(long value);
-		Object(unsigned long value);
-		Object(uint64_t value);
-		Object(int64_t value);
+		Object(unsigned long long value);
+		Object(long long value);
 		Object(double value);
 		Object(const char *value);
-		Object(const std::string &value);
 		Object(void *data, size_t len, rpc_binary_destructor_t dtor);
-		Object(const std::map<std::string, Object> &dict);
-		Object(const std::vector<Object> &array);
+		Object(const string_type &value);
+		Object(const map_type &dict);
+		Object(const vector_type &array);
 		Object(std::initializer_list<Object> list);
-		Object(std::initializer_list<std::pair<std::string, Object>> list);
+		Object(std::initializer_list<std::pair<string_type, Object>> list);
+		virtual ~Object();
 
 		static Object wrap(rpc_object_t other);
+		rpc_type_t type();
 	    	Object copy();
 		void retain();
 		void release();
-		rpc_object_t unwrap();
-	    	std::string &&describe();
+		rpc_object_t unwrap() const;
+	    	std::string describe();
+	    	Object get(const std::string &key, const Object &def = Object());
+		Object get(size_t index, const Object &def = Object());
+		void push(const Object &value);
+		void set(const std::string &key, const Object &value);
+		int get_error_code();
+		std::string get_error_message();
+		vector_type as_vec() { return (vector_type)*this; }
+		map_type as_map() { return (map_type)*this; }
 
 		explicit operator int64_t() const;
 	 	explicit operator uint64_t() const;
 		explicit operator int() const;
-		explicit operator const char *() const;
-	    	explicit operator std::string() const;
+		operator vector_type() const;
+		operator map_type() const;
+	    	operator string_type() const;
+		operator const char *() const;
+	    	Object operator[](const std::string &key);
+	    	Object operator[](size_t index);
 
 	private:
 	    	rpc_object_t m_value;
 	};
 
+	class CallIterator
+	{
+	public:
+		friend Call;
+
+		bool operator!=(const CallIterator &other);
+		Object operator*() const;
+		const CallIterator &operator++();
+
+	private:
+		CallIterator(Call *call, bool ended);
+		Call *m_call;
+		bool m_ended;
+	};
+
 	class Call
 	{
 	public:
+		virtual ~Call();
 		Object result() const;
 		enum rpc_call_status status() const;
 	    	void resume(bool sync = false);
 		void wait();
 	    	void abort();
+	    	CallIterator begin();
+	    	CallIterator end();
 
 		static Call wrap(rpc_call_t other);
 
@@ -112,10 +183,50 @@ namespace librpc {
 		    const std::string &path = "/",
 		    const std::string &interface = RPC_DEFAULT_INTERFACE);
 
-		Object call_async(const std::vector<Object> &args);
+		void call_async(const std::string &name,
+		    const std::vector<Object> &args,
+		    const std::string &path,
+		    const std::string &interface,
+		    std::function<bool (Call)> &callback);
 
 	private:
 		rpc_connection_t m_connection;
+	};
+
+	class Client: public Connection
+	{
+	public:
+		void connect(const std::string &uri, const Object &params);
+		void disconnect();
+
+	private:
+		rpc_client_t m_client;
+	};
+
+	class RemoteInstance
+	{
+	public:
+	    const std::string &path();
+	    Connection &connection();
+	    std::vector<RemoteInterface> interfaces();
+
+	private:
+	    Connection &m_connection;
+	    std::string m_path;
+	};
+
+	class RemoteInterface
+	{
+	public:
+		RemoteInterface(RemoteInstance *instance, const std::string &name);
+		Object call(const std::string &name, const std::vector<Object> &args);
+		Object get(const std::string &prop);
+		void set(const std::string &prop, const Object &value);
+		const std::string &name();
+
+	private:
+		RemoteInstance *m_instance;
+		std::string m_name;
 	};
 };
 

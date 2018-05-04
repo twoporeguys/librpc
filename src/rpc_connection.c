@@ -1518,7 +1518,7 @@ rpc_connection_watch_property(rpc_connection_t conn, const char *path,
 		const char *ev_name;
 		rpc_object_t ev_value;
 
-		if (rpc_object_unpack(args, "{s,s,V}",
+		if (rpc_object_unpack(args, "{s,s,v}",
 		    "interface", &ev_iface,
 		    "name", &ev_name,
 		    "value", &ev_value) < 3)
