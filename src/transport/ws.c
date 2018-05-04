@@ -54,6 +54,7 @@ static int ws_get_fd(void *);
 static void ws_release(void *);
 static int ws_teardown(struct rpc_server *);
 static int ws_teardown_end(struct rpc_server *);
+static gboolean done_waiting (gpointer user_data);
 
 struct rpc_transport ws_transport = {
 	.name = "websocket",

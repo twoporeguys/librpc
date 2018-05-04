@@ -132,6 +132,7 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 	    NULL, &err);
 	if (err != NULL) {
 		debugf("accept failed");
+		g_error_free(err);
 		if (srv->rs_valid(srv))
 			goto done;
 		return;
@@ -151,7 +152,7 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 	conn->sc_parent = rco;
 	rco->rco_release = socket_release;
 	rco->rco_abort = socket_abort;
-done:
+
 	if (srv->rs_accept(srv, rco) == 0) {
 		conn->sc_istream = 
 		    g_io_stream_get_input_stream(G_IO_STREAM(gconn));
@@ -163,8 +164,7 @@ done:
 		rpc_connection_close(rco); /* will rco_abort, rco_release */
 		return;
 	}
-
-	/* Schedule next accept if server isn't closing*/
+done:
 	g_mutex_lock(&server->ss_mtx);
 	g_cancellable_reset (server->ss_cancellable);
 	g_socket_listener_accept_async(server->ss_listener,  
