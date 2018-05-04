@@ -80,10 +80,10 @@ typedef struct {
 static void
 server_wait(rpc_context_t context, const char *uri)
 {
-	int i = 0;
+	//int i = 0;
 	
 	while (rpc_server_find(uri, context) != NULL) {
-		fprintf(stderr, "%d\n", i++);
+		//fprintf(stderr, "%d\n", i++);
 		sleep(5);
 	}
 }
@@ -118,7 +118,7 @@ valid_server_set_up(server_fixture *fixture, gconstpointer u_data)
             NULL, ^(void *cookie __unused, 
 		rpc_object_t args __unused) {
 		fixture->called++;
-		fprintf(stderr, "sleeping %d\n", fixture->called * 2);
+		//fprintf(stderr, "sleeping %d\n", fixture->called * 2);
 		sleep(fixture->called * 2);
 		fixture->woke++;
                 return (rpc_string_create("haha lol"));
@@ -208,7 +208,7 @@ thread_func_delay (gpointer data)
 	/*fprintf(stderr, "thread %p CREATED\n", g_thread_self());*/
 	client = rpc_client_create(data, 0);
 	if (client == NULL) {
-		fprintf(stderr, "NO CLIENT\n");
+		//fprintf(stderr, "NO CLIENT\n");
 		g_thread_exit (GINT_TO_POINTER (1));
 	}
 
@@ -228,7 +228,6 @@ thread_func_delay (gpointer data)
 		rpc_client_close(client);
 		g_thread_exit (GINT_TO_POINTER (1));
 	}
-/*	fprintf(stderr, "Thread %p Completing OK\n", g_thread_self());*/
 
 	rpc_client_close(client);
 	g_thread_exit (GINT_TO_POINTER (0));
@@ -263,21 +262,19 @@ server_test_flush(server_fixture *fixture, gconstpointer user_data)
 	GRand *rand = g_rand_new ();
 	gint n = g_rand_int_range (rand, 3, THREADS);
 	gint m = g_rand_int_range (rand, 1, n);
-	int ret;
+	//int ret;
 
 	g_rand_free(rand);
 	g_assert_cmpint(fixture->count, ==, 0);
 
 	fixture->iclose = m;
 	fixture->resume = true;
-	ret = thread_test(n, &thread_func_delay, fixture);
+	//ret = 
+	thread_test(n, &thread_func_delay, fixture);
 
 	server_wait(fixture->ctx, uris[fixture->iuri].srv);
-	fprintf(stderr, "Flush made %d calls, failed:%d, called:%d, woke:%d int: %d\n", 
-		n, ret, fixture->called, fixture->woke, fixture->iclose);
-	
-	//g_assert_cmpint(fixture->count + ret, ==, n);
-
+	/*fprintf(stderr, "Flush made %d calls, failed:%d, called:%d, woke:%d int: %d\n", 
+		n, ret, fixture->called, fixture->woke, fixture->iclose);*/
 }
 	
 static void
@@ -293,16 +290,16 @@ server_test_resume(server_fixture *fixture, gconstpointer user_data)
 	fixture->resume = true;
 	ret = thread_test(n, &thread_func, fixture);
 
-	fprintf(stderr, "Received %d/%d calls post-resume, ret=%d\n", 
-		fixture->count, n, ret);
+	/*fprintf(stderr, "Received %d/%d calls post-resume, ret=%d\n", 
+		fixture->count, n, ret);*/
 	g_assert_cmpint(fixture->count + ret, ==, n);
 
 	fixture->count = 0;
 	rpc_server_pause(fixture->srv);
 	ret = thread_test(n, &thread_func, fixture);
 
-	fprintf(stderr, "Received %d/%d calls post-pause-resume, ret=%d\n", 
-		fixture->count, n, ret);
+	/*fprintf(stderr, "Received %d/%d calls post-pause-resume, ret=%d\n", 
+		fixture->count, n, ret);*/
 	g_assert_cmpint(fixture->count + ret, ==, n);
 }
 	
@@ -379,14 +376,15 @@ server_test_all_listen(void)
 	
 	ctx = rpc_context_create();
 	for (int i = 0; uris[i].scheme != NULL; i++) {
-		fprintf(stderr, "CREATING %s\n", uris[i].srv);
+		//fprintf(stderr, "CREATING %s\n", uris[i].srv);
 		srv = rpc_server_create(uris[i].srv, ctx);
 		g_assert((srv != NULL) == uris[i].good);
 		if (srv != NULL) {
-			fprintf(stderr, "i = %d, good\n", i);
+			//fprintf(stderr, "i = %d, good\n", i);
 			rpc_server_close(srv);
 			if (rpc_server_find(uris[i].srv, ctx))
 				fprintf(stderr, "%s NOT closed\n", uris[i].srv);
+			g_assert(rpc_server_find(uris[i].srv, ctx) == NULL);
 		}
 	}
 	rpc_context_free(ctx);
@@ -418,11 +416,11 @@ server_test_register()
 
 	g_test_add_func("/server/listen/all", server_test_all_listen);
 
-	g_test_add("/server/flushe/tcp", server_fixture, (void *)0,
+	g_test_add("/server/flush/tcp", server_fixture, (void *)0,
 	    server_test_valid_server_set_up, server_test_flush,
 	    server_test_valid_server_tear_down);
 
-	g_test_add("/server/flushe/ws", server_fixture, (void *)5,
+	g_test_add("/server/flush/ws", server_fixture, (void *)5,
 	    server_test_valid_server_set_up, server_test_flush,
 	    server_test_valid_server_tear_down);
 

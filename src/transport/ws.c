@@ -89,7 +89,6 @@ struct ws_server
 	bool				ws_done;
     	GMutex				ws_mtx;
     	GCond				ws_cv;
-	GHashTable *			ws_aborted_connections;
 	GMutex				ws_abort_mtx;
 };
 
@@ -184,7 +183,6 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 	struct ws_server *server;
 	int ret = 0;
 
-	//fprintf(stderr, "listening thread %p\n", g_thread_self());
 	uri = soup_uri_new(uri_str);
         if (uri == NULL) {
                 srv->rs_error = rpc_error_create(ENXIO, "No Such Address", NULL);
@@ -197,7 +195,6 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 	g_mutex_init(&server->ws_mtx);
 	g_cond_init(&server->ws_cv);
 	g_mutex_init(&server->ws_abort_mtx);
-	server->ws_aborted_connections = g_hash_table_new(NULL, NULL);
         srv->rs_teardown = &ws_teardown;
         srv->rs_teardown_end = &ws_teardown_end;
 	srv->rs_threaded_teardown = true;
@@ -235,9 +232,8 @@ done_waiting (gpointer user_data)
 	server->ws_done = true;
 	g_cond_broadcast(&server->ws_cv);
 	g_mutex_unlock(&server->ws_mtx);
-	fprintf(stderr, "WS server thread DONE WAITING ithread %p\n", g_thread_self());
 
-	g_main_loop_quit(server->ws_server->rs_g_loop);
+	rpc_server_quit(server->ws_server);
         return false;
 }
 
@@ -245,8 +241,6 @@ static int
 ws_teardown (struct rpc_server *srv)
 {
 	struct ws_server *server = srv->rs_arg;
-
-	fprintf(stderr, "WS server thread TEARDOWN START thread %pn",g_thread_self() );
 
 	soup_server_remove_handler(server->ws_soupserver, "/");
 	soup_server_remove_handler(server->ws_soupserver, server->ws_uri->path);
@@ -258,14 +252,8 @@ static int
 ws_teardown_end (struct rpc_server *srv)
 {
 	struct ws_server *server = srv->rs_arg;
-	rpc_connection_t conn;
         GSource *source = g_idle_source_new ();
-	int len;
-	GHashTableIter iter;
-	gpointer key;
 
-	fprintf(stderr, "WS server thread TEARDOWN END thread %pn",g_thread_self() );
-	
         g_source_set_priority (source, G_PRIORITY_LOW);
         g_source_set_callback (source, done_waiting, server, NULL);
         g_source_attach (source, srv->rs_g_context);
@@ -279,21 +267,7 @@ ws_teardown_end (struct rpc_server *srv)
         soup_server_disconnect (server->ws_soupserver);
 	soup_uri_free(server->ws_uri);
 	g_object_unref(server->ws_soupserver);
-	fprintf(stderr, "server thread TEARDOWN DONE\n");
 
-	/* recover resources from any un-acknowledged aborted connections */
-	if (!(len = g_hash_table_size(server->ws_aborted_connections) == 0)) {
-		g_hash_table_iter_init (&iter, server->ws_aborted_connections);
-		while (g_hash_table_iter_next (&iter, &key, NULL)) {
-			conn = (rpc_connection_t)key;
-			fprintf(stderr, "ws cleaning up conn %p - %d\n", conn,
-			    conn->rco_aborted);
-			g_hash_table_iter_steal (&iter);
-			if (rpc_connection_is_open(conn))
-				ws_close(NULL, conn->rco_arg);
-		}
-	}
-	g_hash_table_destroy(server->ws_aborted_connections);
 	g_free(server);
         return (0);
 }
@@ -339,7 +313,7 @@ ws_process_connection(SoupServer *ss __unused,
 	rco->rco_arg = conn;
 	conn->wc_parent = rco;
 	rco->rco_release = ws_release;
-	fprintf(stderr, "WS accepting CONN  %p\n", rco);
+
 	if (server->ws_server->rs_accept(server->ws_server, rco) != 0) {
 		rpc_connection_close(rco);
 		return;
@@ -375,37 +349,19 @@ ws_error(SoupWebsocketConnection *ws __unused, GError *error, gpointer user_data
 }
 
 static void
-ws_manage_aborted_connections(struct ws_server *server,
-    struct ws_connection *conn, bool abort)
-{
-
-	g_mutex_lock(&server->ws_abort_mtx);
-	if (abort)
-		g_hash_table_add(server->ws_aborted_connections,
-		    conn->wc_parent);
-	else
-		g_hash_table_remove(server->ws_aborted_connections,
-		    conn->wc_parent);
-	g_mutex_unlock(&server->ws_abort_mtx);
-}
-
-static void
 ws_close(SoupWebsocketConnection *ws __unused, gpointer user_data)
 {
 	struct ws_connection *conn = user_data;
-	struct ws_server *server = conn->wc_server;
 
-	debugf("closed: conn=%p", conn);
-	fprintf(stderr, "ws_closed: ws_conn=%p, conn: %p", conn, conn->wc_parent);
+	debugf("ws closed: ws conn=%p, rpc conn=%p", conn, conn->wc_parent);
 
 	g_mutex_lock(&conn->wc_abort_mtx);
 	conn->wc_aborted = true; /* prevent repeat ws_aborts after this */
-	if (server)
-		ws_manage_aborted_connections(server, conn, false);
 	g_mutex_unlock(&conn->wc_abort_mtx);
 
 	/* hold a reference to keep conn accessible after this abort-close*/
-	conn->wc_parent->rco_conn_ref(conn->wc_parent, true);
+	rpc_connection_reference_change(conn->wc_parent, true);
+
 	conn->wc_parent->rco_close(conn->wc_parent);
 
 	if (conn->wc_last_err != NULL) {
@@ -417,7 +373,7 @@ ws_close(SoupWebsocketConnection *ws __unused, gpointer user_data)
 	conn->wc_closed = true;
 	g_cond_broadcast(&conn->wc_abort_cv);
 	g_mutex_unlock(&conn->wc_abort_mtx);
-	conn->wc_parent->rco_conn_ref(conn->wc_parent, false);
+	rpc_connection_reference_change(conn->wc_parent, false);
 }
 
 static int
@@ -445,9 +401,6 @@ ws_abort(void *arg)
 		return 0;
 	}
 	
-	if (conn->wc_server)
-		ws_manage_aborted_connections(conn->wc_server, conn, true);
-	fprintf(stderr, "WS aborting CONN  %p\n", conn->wc_parent);
 	conn->wc_aborted = true;
 	g_mutex_unlock(&conn->wc_abort_mtx);
 	soup_websocket_connection_close(conn->wc_ws, 1000, "Going away");

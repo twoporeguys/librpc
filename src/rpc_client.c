@@ -82,12 +82,12 @@ rpc_client_close(rpc_client_t client)
 		 * is completely closed and cleaned up. Otherwise closing the
 		 * client thread below may prevent cleanup from happening.
 		 */
-		rpc_reference_change(client->rci_connection, true);
+		rpc_connection_reference_change(client->rci_connection, true);
 		rpc_connection_close(client->rci_connection);
 		if (client->rci_connection->rco_error != NULL) {
 			rpc_set_last_rpc_error(client->rci_connection->rco_error);
 		}
-		rpc_reference_change(client->rci_connection, false);
+		rpc_connection_reference_change(client->rci_connection, false);
         }
 
 	g_main_context_invoke(client->rci_g_context,

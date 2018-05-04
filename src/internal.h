@@ -92,9 +92,7 @@ typedef int (*rpc_abort_fn_t)(void *);
 typedef int (*rpc_get_fd_fn_t)(void *);
 typedef void (*rpc_release_fn_t)(void *);
 typedef int (*rpc_close_fn_t)(struct rpc_connection *);
-typedef void (*rpc_ref_fn_t)(struct rpc_connection *, bool);
 typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
-typedef void (*rpc_disconnect_fn_t)(struct rpc_server *, struct rpc_connection *);
 typedef bool (*rpc_valid_fn_t)(struct rpc_server *);
 typedef int (*rpc_teardown_fn_t)(struct rpc_server *);
 
@@ -267,7 +265,6 @@ struct rpc_connection
 	rpc_send_msg_fn_t	rco_send_msg;
 	rpc_abort_fn_t 		rco_abort;
 	rpc_close_fn_t		rco_close;
-	rpc_ref_fn_t		rco_conn_ref;
     	rpc_get_fd_fn_t 	rco_get_fd;
 	rpc_release_fn_t	rco_release;
 	void *			rco_arg;
@@ -290,19 +287,18 @@ struct rpc_server
     	bool			rs_operational;
 	bool			rs_paused;
 	bool			rs_closed;
+	bool			rs_stopped;
 	bool			rs_threaded_teardown;
         rpc_object_t            rs_error;
 	uint			rs_refcnt;
 	uint			rs_conn_made;
 	uint			rs_conn_refused;
 	uint			rs_conn_closed;
-	uint			rs_conn_freed;
 	uint			rs_conn_aborted;
 
     	/* Callbacks */
     	rpc_valid_fn_t		rs_valid;
     	rpc_accept_fn_t		rs_accept;
-    	rpc_disconnect_fn_t	rs_disconnect;
     	rpc_teardown_fn_t	rs_teardown;
     	rpc_teardown_fn_t	rs_teardown_end;
     	void *			rs_arg;
@@ -538,9 +534,12 @@ void rpc_set_last_gerror(GError *error);
 void rpc_set_last_errorf(int code, const char *fmt, ...);
 rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
+void rpc_connection_reference_change(_Nonnull rpc_connection_t, bool);
 int rpc_context_dispatch(rpc_context_t, struct rpc_inbound_call *);
 int rpc_server_dispatch(rpc_server_t, struct rpc_inbound_call *);
 void rpc_server_release(rpc_server_t);
+void rpc_server_quit(rpc_server_t);
+void rpc_server_disconnect(rpc_server_t server, rpc_connection_t conn);
 void rpc_connection_send_err(rpc_connection_t, rpc_object_t, int,
     const char *descr, ...);
 void rpc_connection_send_errx(rpc_connection_t, rpc_object_t, rpc_object_t);

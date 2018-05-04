@@ -596,7 +596,7 @@ rpc_instance_find_member(rpc_instance_t instance, const char *interface,
 
 	iface = g_hash_table_lookup(instance->ri_interfaces, interface);
 	if (iface == NULL) {
-		fprintf(stderr, "member %s not found on %s\n", name,
+		debugf("member %s not found on %s\n", name,
 		    interface);
 		return (NULL);
 	}

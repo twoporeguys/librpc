@@ -160,7 +160,6 @@ done:
 		conn->sc_reader_thread = g_thread_new("socket reader thread",
 		    socket_reader, (gpointer)conn);
 	} else {
-		fprintf(stderr, "ABORTING AT ACCEPT\n");
 		rpc_connection_close(rco); /* will rco_abort, rco_release */
 		return;
 	}
@@ -417,7 +416,6 @@ socket_abort(void *arg)
 {
 	struct socket_connection *conn = arg;
 	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
-	bool srv = (conn->sc_parent->rco_client == NULL);
 
 	g_mutex_lock(&conn->sc_abort_mtx);
 	if (!conn->sc_aborted) {
