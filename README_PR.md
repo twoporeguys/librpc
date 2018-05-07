@@ -244,6 +244,21 @@ Added code to allow websockets to be safely and completely closed. In the curren
 ###### ws_release:  
 - Only frees or derefs objects that were initialized. It is set up to free resources for server and client connections.  
 
+##### src/transport/ws.c:  
+Added code for closing and aborting loopback connections, and listen error reporting.
+
+###### loopback_listen:
+- Better analyze for bad URIs, differentiate strtoul errors from channel == 0
+
+###### loopback_send_msg:
+-exit if either connection is NULL
+
+###### loopback_abort:
+- Cleanup both sides of a loopback connection.
+
+###### loopback_teardown: 
+-Null out peer
+
 ##### src/transport/xpc.c:  
 - xpc_listen()  saves any errors in the rpc server structure to be reported in the right thread.   
 
