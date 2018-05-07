@@ -46,6 +46,9 @@ cdef extern from "Python.h" nogil:
 
 
 class ErrorCode(enum.IntEnum):
+    """
+    Enumeration of connection error codes known to the library.
+    """
     INVALID_RESPONSE = RPC_INVALID_RESPONSE
     CONNECTION_TIMEOUT = RPC_CONNECTION_TIMEOUT
     CONNECTION_CLOSED = RPC_CONNECTION_CLOSED
@@ -56,6 +59,9 @@ class ErrorCode(enum.IntEnum):
 
 
 class ObjectType(enum.IntEnum):
+    """
+    Enumeration of possible object types.
+    """
     NIL = RPC_TYPE_NULL
     BOOL = RPC_TYPE_BOOL
     UINT64 = RPC_TYPE_UINT64
@@ -71,6 +77,9 @@ class ObjectType(enum.IntEnum):
 
 
 class CallStatus(enum.IntEnum):
+    """
+    Enumeration of possible call object states.
+    """
     IN_PROGRESS = RPC_CALL_IN_PROGRESS,
     MORE_AVAILABLE = RPC_CALL_MORE_AVAILABLE,
     DONE = RPC_CALL_DONE,
@@ -135,7 +144,18 @@ class RpcException(LibException):
 
 
 cdef class Object(object):
+    """
+    A boxed librpc object.
+    """
     def __init__(self, value, force_type=None, typei=None):
+        """
+        Create a new boxed object.
+
+        :param value: Value to box
+        :param force_type: Force a non-default type (eg. unsigned int)
+        :param typei: Type instance to annotate the object
+        """
+
         if value is None or force_type == ObjectType.NIL:
             self.obj = rpc_null_create()
 
@@ -256,6 +276,12 @@ cdef class Object(object):
         return ret
 
     def unpack(self):
+        """
+        Unpack boxed value into a native Python value recursively.
+
+        :param self:
+        :return:
+        """
         if self.typei and self.typei.type.clazz != TypeClass.BUILTIN:
             return self.typei.factory(self)
 

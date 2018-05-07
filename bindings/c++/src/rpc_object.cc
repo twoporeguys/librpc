@@ -89,7 +89,7 @@ Object::Object(const std::map<std::string, Object> &dict)
 {
 	m_value = rpc_dictionary_create();
 
-	for (auto &kv : dict) {
+	for (auto &kv: dict) {
 		rpc_dictionary_set_value(m_value, kv.first.c_str(),
 		    kv.second.m_value);
 	}
@@ -99,7 +99,7 @@ Object::Object(const std::vector<Object> &array)
 {
 	m_value = rpc_array_create();
 
-	for (auto &v : array) {
+	for (auto &v: array) {
 		rpc_array_append_value(m_value, v.m_value);
 	}
 }
@@ -108,7 +108,7 @@ Object::Object(std::initializer_list<Object> list)
 {
 	m_value = rpc_array_create();
 
-	for (auto &v : list) {
+	for (auto &v: list) {
 		rpc_array_append_value(m_value, v.m_value);
 	}
 }
