@@ -1411,6 +1411,7 @@ cdef class Connection(object):
         b_path = path.encode('utf-8')
         b_interface = path.encode('utf-8')
         b_name = name.encode('utf-8')
+        fn_unpack = lambda val: fn(self.do_unpack(val))
 
         self.ev_handlers.append(fn)
         cookie = rpc_connection_register_event_handler(
@@ -1420,7 +1421,7 @@ cdef class Connection(object):
             b_name,
             RPC_HANDLER(
                 <rpc_handler_f>Connection.c_ev_handler,
-                <void *>fn
+                <void *>fn_unpack
             )
         )
 
@@ -1438,6 +1439,7 @@ cdef class Connection(object):
         b_path = path.encode('utf-8')
         b_interface = path.encode('utf-8')
         b_property = property.encode('utf-8')
+        fn_unpack = lambda val: fn(self.do_unpack(val))
 
         self.ev_handlers.append(fn)
         cookie = rpc_connection_watch_property(
@@ -1447,7 +1449,7 @@ cdef class Connection(object):
             b_property,
             RPC_PROPERTY_HANDLER(
                 <rpc_property_handler_f>Connection.c_prop_handler,
-                <void *>fn
+                <void *>fn_unpack
             )
         )
 
