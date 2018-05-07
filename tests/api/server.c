@@ -531,6 +531,10 @@ server_test_register()
 	    server_test_valid_server_set_up, server_test_resume,
 	    server_test_valid_server_tear_down);
 
+	g_test_add("/server/resume/loopback", server_fixture, (void *)6,
+	    server_test_valid_server_set_up, server_test_resume,
+	    server_test_valid_server_tear_down);
+
 	g_test_add("/server/listen/fail", server_fixture, (void *)1,
 	    server_test_basic_set_up, server_test_failed_listen,
 	    server_test_basic_tear_down);
