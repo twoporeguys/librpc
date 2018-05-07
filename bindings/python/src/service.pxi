@@ -244,3 +244,63 @@ cdef class Service(object):
         def __get__(self):
             return self.instance.path
 
+
+def method(arg):
+    def wrapped(fn):
+        fn.__librpc_name__ = arg
+        fn.__librpc_method__ = True
+        return fn
+
+    if callable(arg):
+        arg.__librpc_name__ = arg.__name__
+        arg.__librpc_method__ = True
+        return arg
+
+    return wrapped
+
+
+def prop(arg):
+    def wrapped(fn):
+        def setter(sfn):
+            fn.__librpc_setter__ = sfn
+
+        fn.setter = setter
+        fn.__libpc_name__ = arg
+        fn.__librpc_getter__ = True
+        return fn
+
+    if callable(arg):
+        def setter(fn):
+            arg.__librpc_setter__ = fn
+
+        arg.setter = setter
+        arg.__librpc_name__ = arg.__name__
+        arg.__librpc_getter__ = True
+        return arg
+
+    return wrapped
+
+
+def interface(name):
+    def wrapped(fn):
+        fn.__librpc_interface__ = name
+        return fn
+
+    return wrapped
+
+
+def interface_base(name):
+    def wrapped(fn):
+        fn.__librpc_interface_base__ = name
+        return fn
+
+    return wrapped
+
+
+def description(name):
+    def wrapped(fn):
+        fn.__librpc_description__ = name
+        return fn
+
+    return wrapped
+

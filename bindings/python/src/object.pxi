@@ -686,3 +686,35 @@ cdef class Dictionary(Object):
     def __bool__(self):
         return len(self) > 0
 
+
+cdef raise_internal_exc(rpc=False):
+    cdef rpc_object_t error
+
+    error = rpc_get_last_error()
+    exc = LibException
+
+    if rpc:
+        exc = RpcException
+
+    if error != <rpc_object_t>NULL:
+        raise exc(rpc_error_get_code(error), rpc_error_get_message(error).decode('utf-8'))
+
+    raise exc(errno.EFAULT, "Unknown error")
+
+
+cdef void destruct_bytes(void *arg, void *buffer) with gil:
+    cdef object value = <object>arg
+    Py_DECREF(value)
+
+
+def uint(value):
+    return Object(value, force_type=ObjectType.UINT64)
+
+
+def fd(value):
+    return Object(value, force_type=ObjectType.FD)
+
+
+def unpack(fn):
+    fn.__librpc_unpack__ = True
+    return fn

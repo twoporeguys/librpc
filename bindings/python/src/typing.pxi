@@ -491,3 +491,6 @@ cdef class BaseEnum(BaseTypingObject):
         def __get__(self):
             return [m.name for m in self.typei.type.members]
 
+
+def new(decl, *args, **kwargs):
+    return TypeInstance(decl).factory(*args, **kwargs)
