@@ -137,6 +137,12 @@ loopback_send_msg(void *arg, void *buf, size_t len __unused, const int *fds,
 	struct rpc_connection *conn = arg;
 	rpc_object_t obj = buf;
 
+	if (conn == NULL || conn->rco_arg == NULL) {
+		fprintf(stderr, "Loopback can't send on conn %p\n", conn);
+		return (-1);
+	}
+	fprintf(stderr, "Loopback sending on conn %p, arg: %p\n", conn, conn->rco_arg);
+
 	rpc_retain(obj);
 	return (conn->rco_recv_msg(conn, (const void *)obj, 0, (int *)fds,
 	    nfds, NULL));
@@ -146,8 +152,25 @@ static int
 loopback_abort(void *arg)
 {
 	struct rpc_connection *conn = arg;
+	struct rpc_connection *peer;
+	bool issrv;
 
-	rpc_connection_close(conn);
+	if (conn == 0)
+		return 0; /*mutual shutdown...*/
+	else
+		issrv = (conn->rco_server != NULL);
+	
+	peer = conn->rco_arg;
+fprintf(stderr, "LBaBORT: %p - %p\n", conn, peer);
+
+	rpc_connection_reference_change(peer, true);
+	rpc_connection_reference_change(conn, true);
+	if (peer != NULL)
+		peer->rco_close(peer);
+
+	conn->rco_close(conn);
+	rpc_connection_reference_change(peer, false);
+	rpc_connection_reference_change(conn, false);
 	return (0);
 }
 
@@ -161,6 +184,16 @@ loopback_teardown(struct rpc_server *srv __unused)
 static void
 loopback_release(void *arg)
 {
+	struct rpc_connection *conn = arg;
+
+fprintf(stderr, "releasing %p\n", conn);
+	//if (conn != NULL) 
+	//	conn->rco_arg = NULL;
+	if (conn == NULL) 
+		return;
+	conn->rco_arg = NULL;
+fprintf(stderr, "ERROR is  %p\n", conn->rco_error);
+	
 
 }
 

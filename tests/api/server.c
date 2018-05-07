@@ -27,6 +27,7 @@
 
 #include "../tests.h"
 #include "../../src/linker_set.h"
+#include "../../src/internal.h"
 #include <glib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -38,6 +39,7 @@
 #include <rpc/connection.h>
 
 #define THREADS 50
+#define STREAMS 50
 
 struct b {
 	char *	path;
@@ -75,6 +77,8 @@ typedef struct {
 	int		ok;
 	int		called;
 	int		woke;
+	GRand *		rand;
+	char *		str;
 } server_fixture;
 
 static void
@@ -128,6 +132,48 @@ valid_server_set_up(server_fixture *fixture, gconstpointer u_data)
 }
 
 static void
+server_test_stream_setup(server_fixture *fix, gconstpointer u_data)
+{
+        GRand *rand = g_rand_new ();
+        gint n = g_rand_int_range (rand, 1, STREAMS);
+	__block server_fixture *fixture = fix;
+	
+	base = args[0];
+	valid_server_set_up(fixture, u_data);
+	fixture->count = n;
+	fixture->rand = rand;
+	fixture->str = g_malloc(27);
+	strcpy(fixture->str, "abcdefghijklmnopqrstuvwxyz");
+	
+        rpc_context_register_block(fixture->ctx, base.interface, "stream",
+            NULL, ^rpc_object_t (void *cookie, rpc_object_t args __unused) {
+		int cnt = 0;	
+		gint i;
+		rpc_object_t res;
+
+		while (cnt < fixture->count) {
+			cnt++;
+
+			i = g_rand_int_range (fixture->rand, 0, 26);
+			/*fprintf(stderr, "returning %d letters, %d of %d\n", 
+			    26-i, cnt, fixture->count);*/
+
+			res = rpc_object_pack("[s, i, i]", 
+			    fixture->str + i, 26-i, cnt);
+			if (rpc_function_yield(cookie, res) != 0) {
+				/*fprintf(stderr, "yield failed\n");*/
+                        	rpc_function_end(cookie);
+                        	return (rpc_null_create());
+                	}
+		}	
+		rpc_function_end(cookie);
+		return (rpc_null_create());
+            });
+
+
+}
+
+static void
 server_test_valid_server_set_up(server_fixture *fixture, gconstpointer u_data)
 {
 
@@ -157,10 +203,79 @@ server_test_valid_server_tear_down(server_fixture *fixture, gconstpointer user_d
 }
 
 static void
+server_test_stream_tear_down(server_fixture *fixture, gconstpointer user_data)
+{
+
+	if (fixture->rand)
+		g_rand_free(fixture->rand);
+	if (fixture->str)
+		g_free(fixture->str);
+	rpc_context_unregister_member(fixture->ctx, NULL, "stream");
+	server_test_valid_server_tear_down(fixture, user_data);
+}
+
+static void
 server_test_basic_tear_down(server_fixture *fixture, gconstpointer user_data)
 {
 
 	rpc_context_free(fixture->ctx);
+}
+
+static gpointer
+thread_stream_func (gpointer data)
+{
+
+	rpc_client_t client;
+	rpc_connection_t conn;
+	//rpc_object_t err;
+	rpc_call_t call;
+	int cnt = 0;
+	int num;
+	int i;
+	int len;
+	char str[27];
+
+	client = rpc_client_create(data, 0);
+	if (client == NULL) {
+		g_thread_exit (GINT_TO_POINTER (0));
+	}
+	conn = rpc_client_get_connection(client);
+
+	call = rpc_connection_call(conn, NULL, NULL, "stream", rpc_array_create(), NULL);
+	if (call == NULL) {
+		rpc_client_close(client);
+		g_thread_exit (GINT_TO_POINTER (0));	
+	}
+        for (;;) {
+                rpc_call_wait(call);
+
+                switch (rpc_call_status(call)) {
+                        case RPC_CALL_MORE_AVAILABLE:
+				i = rpc_object_unpack(rpc_call_result(call), 
+				    "[s, i, i]", str, &len, &num);
+				g_assert(i == 3); 
+				g_assert(len == (int)strlen(str));
+				cnt++;
+                                rpc_call_continue(call, false);
+                                break;
+
+                        case RPC_CALL_DONE:
+                        case RPC_CALL_ENDED:
+                                goto done;
+
+                        case RPC_CALL_ERROR:
+                                goto done;
+
+                        default:
+                                g_assert_not_reached();
+                }
+        }
+
+done:
+        /*fprintf(stderr, "CLOSING client conn %p, cnt = %d\n", conn, cnt);*/
+	rpc_client_close(client);
+	g_thread_exit (GINT_TO_POINTER (cnt));
+	return (NULL);
 }
 
 static gpointer
@@ -179,15 +294,17 @@ thread_func (gpointer data)
 	conn = rpc_client_get_connection(client);
 	result = rpc_connection_call_simple(conn, "hi", "[s]", "world");
 	if (result == NULL) {
-		/*err = rpc_get_last_error();
-                fprintf(stderr, "NULL RETURNED error: %s,code: %d\n",
+		/*err = rpc_get_last_error();*/
+                /*fprintf(stderr, "NULL RETURNED error: %s,code: %d\n",
 		    rpc_error_get_message(err),
                     rpc_error_get_code(err));*/
+		rpc_client_close(client);
 		g_thread_exit (GINT_TO_POINTER (1));
 	} else if (rpc_is_error(result)) {
                 /*fprintf(stderr, "THREAD CALL error: %s,code: %d\n",
 		    rpc_error_get_message(result),
                     rpc_error_get_code(result));*/
+		rpc_client_close(client);
 		g_thread_exit (GINT_TO_POINTER (1));
 	}
 
@@ -208,19 +325,21 @@ thread_func_delay (gpointer data)
 	/*fprintf(stderr, "thread %p CREATED\n", g_thread_self());*/
 	client = rpc_client_create(data, 0);
 	if (client == NULL) {
-		//fprintf(stderr, "NO CLIENT\n");
+		/*fprintf(stderr, "NO CLIENT\n");*/
 		g_thread_exit (GINT_TO_POINTER (1));
 	}
 
 	conn = rpc_client_get_connection(client);
 	result = rpc_connection_call_simple(conn, "block", RPC_NULL_FORMAT);
+
 	if (result == NULL) {
-		/*err = rpc_get_last_error();
-                fprintf(stderr, "NULL RETURNED error: %s,code: %d\n",
+		/*err = rpc_get_last_error()*/;
+                /*fprintf(stderr, "NULL RETURNED error: %s,code: %d\n",
 		    rpc_error_get_message(err),
                     rpc_error_get_code(err));*/
 		rpc_client_close(client);
 		g_thread_exit (GINT_TO_POINTER (1));
+
 	} else if (rpc_is_error(result)) {
                /* fprintf(stderr, "THREAD CALL error: %s,code: %d\n",
 		    rpc_error_get_message(result),
@@ -254,6 +373,15 @@ thread_test(int n, gpointer(*t_func)(gpointer), server_fixture *fx )
 	}
 
 	return (ret);
+}
+
+static void
+server_test_stream(server_fixture *fixture, gconstpointer user_data)
+{
+	int ret;
+
+	ret = thread_test(1, &thread_stream_func, fixture);
+	g_assert(ret == fixture->count);
 }
 
 static void
@@ -376,14 +504,15 @@ server_test_all_listen(void)
 	
 	ctx = rpc_context_create();
 	for (int i = 0; uris[i].scheme != NULL; i++) {
-		//fprintf(stderr, "CREATING %s\n", uris[i].srv);
+		/*fprintf(stderr, "CREATING %s\n", uris[i].srv);*/
 		srv = rpc_server_create(uris[i].srv, ctx);
 		g_assert((srv != NULL) == uris[i].good);
 		if (srv != NULL) {
-			//fprintf(stderr, "i = %d, good\n", i);
+			/*fprintf(stderr, "i = %d, good\n", i);*/
 			rpc_server_close(srv);
-			if (rpc_server_find(uris[i].srv, ctx))
-				fprintf(stderr, "%s NOT closed\n", uris[i].srv);
+			/*iif (rpc_server_find(uris[i].srv, ctx))
+				/*fprintf(stderr, "%s NOT closed\n",
+				    uris[i].srv);*/
 			g_assert(rpc_server_find(uris[i].srv, ctx) == NULL);
 		}
 	}
@@ -424,6 +553,15 @@ server_test_register()
 	    server_test_valid_server_set_up, server_test_flush,
 	    server_test_valid_server_tear_down);
 
+/*	g_test_add("/server/stream/one", server_fixture, (void *)0,
+	    server_test_stream_setup, server_test_stream, 
+	    server_test_stream_tear_down);
+
+	g_test_add("/server/flush/loopback", server_fixture, (void *)6,
+	    server_test_valid_server_set_up, server_test_flush,
+	    server_test_valid_server_tear_down);
+
+*/
 }
 
 static struct librpc_test server = {

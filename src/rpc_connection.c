@@ -701,6 +701,7 @@ rpc_close(rpc_connection_t conn)
         }
 
         if (conn->rco_server) {
+		conn->rco_closed = true;
                 /* Tear down all the running inbound calls */
                 g_rw_lock_reader_lock(&conn->rco_icall_rwlock);
                 if (g_hash_table_size(conn->rco_inbound_calls) > 0) {
@@ -726,7 +727,6 @@ rpc_close(rpc_connection_t conn)
                          * calls, this will have to change...
                          */
                         g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
-			conn->rco_closed = true;
 			g_mutex_unlock(&conn->rco_mtx);
 
                         rpc_connection_close(conn);
@@ -742,9 +742,10 @@ rpc_close(rpc_connection_t conn)
                     (gpointer)&call)) {
 
 			/* Cancel timeout source */
-			g_source_destroy(call->rc_timeout);
-			call->rc_timeout = NULL;
-
+			if (call->rc_timeout != NULL) {
+				g_source_destroy(call->rc_timeout);
+				call->rc_timeout = NULL;
+			}
                         g_mutex_lock(&call->rc_mtx);
                         call->rc_status = RPC_CALL_ERROR;
                         call->rc_result = rpc_error_create(ECONNABORTED,
@@ -1073,10 +1074,10 @@ int
 rpc_connection_close(rpc_connection_t conn)
 {
 
-	debugf("%s rpc_conn_close(), aborted:%d   conn: %p refcnt: %d  arg: %p", 
+	debugf("%s rpc_conn_close(), aborted:%d   conn: %p refcnt: %d  arg: %p, closed %d", 
 	    conn->rco_server ? "Server" : "Client", 
 	    conn->rco_aborted, conn, conn->rco_refcnt, 
-	    conn->rco_arg);
+	    conn->rco_arg, conn->rco_closed);
         g_mutex_lock(&conn->rco_mtx);
         if ((conn->rco_abort != NULL) && !conn->rco_aborted) {
                 /* rpc_close hasn't run. Transport must ignore multiple aborts*/
@@ -1130,6 +1131,9 @@ rpc_connection_is_open(_Nonnull rpc_connection_t conn)
 void
 rpc_connection_reference_change(_Nonnull rpc_connection_t conn, bool retain)
 {
+
+	if (conn == NULL)
+		return;
 
 	g_mutex_lock(&conn->rco_mtx);	
 	g_assert(conn->rco_refcnt > 0);
@@ -1753,7 +1757,6 @@ rpc_call_free(rpc_call_t call)
             (g_hash_table_size(conn->rco_calls) == 0)) {
 		g_assert(conn->rco_aborted);
 		g_mutex_unlock(&conn->rco_mtx);
-
                 rpc_connection_close(conn);
 	} else {
 		g_mutex_unlock(&conn->rco_mtx);

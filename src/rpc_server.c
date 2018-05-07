@@ -85,6 +85,7 @@ rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 		return (-1);
 	}
 	server->rs_refcnt++; /* conn has reference */
+fprintf(stderr, "accepting %p\n", conn);
 
 	g_rw_lock_writer_lock(&server->rs_connections_rwlock);
 	server->rs_connections = g_list_append(server->rs_connections, conn);

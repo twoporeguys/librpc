@@ -534,7 +534,7 @@ void rpc_set_last_gerror(GError *error);
 void rpc_set_last_errorf(int code, const char *fmt, ...);
 rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
-void rpc_connection_reference_change(_Nonnull rpc_connection_t, bool);
+void rpc_connection_reference_change(rpc_connection_t, bool);
 int rpc_context_dispatch(rpc_context_t, struct rpc_inbound_call *);
 int rpc_server_dispatch(rpc_server_t, struct rpc_inbound_call *);
 void rpc_server_release(rpc_server_t);

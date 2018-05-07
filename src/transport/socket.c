@@ -165,6 +165,7 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 		return;
 	}
 done:
+	/* Schedule next accept if server isn't closing*/
 	g_mutex_lock(&server->ss_mtx);
 	g_cancellable_reset (server->ss_cancellable);
 	g_socket_listener_accept_async(server->ss_listener,  
