@@ -1035,6 +1035,9 @@ cdef class RemoteInterface(object):
     def call_sync(self, name, *args):
         return self.client.call_sync(name, *args, path=self.path, interface=self.interface)
 
+    def watch_property(self, name, fn):
+        return self.client.watch_property(self.path, self.interface, name, fn)
+
     def __collect_methods(self):
         try:
             for method in self.client.call_sync(
@@ -1184,6 +1187,26 @@ cdef class Call(object):
             rpc_call_continue(self.call, True)
 
 
+cdef class ListenHandle(object):
+    cdef readonly Connection connection
+    cdef void *c_cookie
+
+    @staticmethod
+    cdef init(Connection conn, void *c_cookie):
+        cdef ListenHandle result
+
+        result = ListenHandle.__new__(ListenHandle)
+        result.connection = conn
+        result.c_cookie = c_cookie
+        return result
+
+    def unregister(self):
+        rpc_connection_unregister_event_handler(
+            self.connection.connection,
+            self.c_cookie
+        )
+
+
 cdef class Connection(object):
     def __init__(self):
         PyEval_InitThreads()
@@ -1244,11 +1267,14 @@ cdef class Connection(object):
         cdef Object event_args
         cdef object handler = <object>arg
 
-        event_args = Object.__new__(Object)
-        event_args.obj = args
-        rpc_retain(args)
-
+        event_args = Object.init_from_ptr(args)
         handler(event_args)
+
+    @staticmethod
+    cdef void c_prop_handler(void *arg, rpc_object_t value):
+        cdef object handler = <object>arg
+
+        handler(Object.init_from_ptr(value))
 
     @staticmethod
     cdef void c_error_handler(void *arg, rpc_error_code_t error, rpc_object_t args) with gil:
@@ -1377,6 +1403,8 @@ cdef class Connection(object):
             rpc_connection_send_event(self.connection, c_path, c_interface, c_name, data.obj)
 
     def register_event_handler(self, name, fn, path='/', interface=None):
+        cdef void *cookie
+
         if self.connection == <rpc_connection_t>NULL:
             raise RuntimeError("Not connected")
 
@@ -1385,7 +1413,7 @@ cdef class Connection(object):
         b_name = name.encode('utf-8')
 
         self.ev_handlers.append(fn)
-        rpc_connection_register_event_handler(
+        cookie = rpc_connection_register_event_handler(
             self.connection,
             b_path,
             b_interface,
@@ -1395,6 +1423,39 @@ cdef class Connection(object):
                 <void *>fn
             )
         )
+
+        if cookie == NULL:
+            raise_internal_exc()
+
+        return ListenHandle.init(self, cookie)
+
+    def watch_property(self, path, interface, property, fn):
+        cdef void *cookie
+
+        if self.connection == <rpc_connection_t>NULL:
+            raise RuntimeError("Not connected")
+
+        b_path = path.encode('utf-8')
+        b_interface = path.encode('utf-8')
+        b_property = property.encode('utf-8')
+
+        self.ev_handlers.append(fn)
+        cookie = rpc_connection_watch_property(
+            self.connection,
+            b_path,
+            b_interface,
+            b_property,
+            RPC_PROPERTY_HANDLER(
+                <rpc_property_handler_f>Connection.c_prop_handler,
+                <void *>fn
+            )
+        )
+
+        if cookie == NULL:
+            raise_internal_exc()
+
+        return ListenHandle.init(self, cookie)
+
 
 cdef class Client(Connection):
     cdef rpc_client_t client
@@ -1839,7 +1900,7 @@ cdef class Member(object):
         return str(self)
 
     def __str__(self):
-        return "<{0} '{1}'>".format(self.__class__.__name__, self.name)
+        return "<{0} '{1}'>".formfat(self.__class__.__name__, self.name)
 
     property type:
         def __get__(self):
@@ -1890,6 +1951,10 @@ cdef class Interface(object):
 
         elif c_type == RPC_MEMBER_PROPERTY:
             result = Property.__new__(Property)
+
+        elif c_type == RPC_MEMBER_EVENT:
+            result = Event.__new__(Event)
+            print(result)
 
         result.c_member = val
         container.append(result)
@@ -1943,6 +2008,18 @@ cdef class Property(InterfaceMember):
 
     def __str__(self):
         return "<librpc.Proprety name '{0}'>".format(self.name)
+
+    def __repr__(self):
+        return str(self)
+
+
+cdef class Event(InterfaceMember):
+    property type:
+        def __get__(self):
+            return TypeInstance.init_from_ptr(rpct_property_get_type(self.c_member))
+
+    def __str__(self):
+        return "<librpc.Event name '{0}'>".format(self.name)
 
     def __repr__(self):
         return str(self)

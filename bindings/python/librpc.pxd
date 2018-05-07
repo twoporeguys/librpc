@@ -41,6 +41,7 @@ ctypedef bint (*rpct_member_applier_f)(void *arg, rpct_member_t member)
 ctypedef bint (*rpct_if_member_applier_f)(void *arg, rpct_if_member_t if_member)
 ctypedef rpc_object_t (*rpc_property_getter_f)(void *cookie)
 ctypedef void (*rpc_property_setter_f)(void *cookie, rpc_object_t value)
+ctypedef void (*rpc_property_handler_f)(void *cookie, rpc_object_t value)
 
 
 cdef extern from "rpc/object.h" nogil:
@@ -156,6 +157,7 @@ cdef extern from "rpc/connection.h" nogil:
     void *RPC_HANDLER(rpc_handler_f fn, void *arg)
     void *RPC_ERROR_HANDLER(rpc_error_handler_f fn, void *arg)
     void *RPC_CALLBACK(rpc_callback_f fn, void *arg)
+    void *RPC_PROPERTY_HANDLER(rpc_property_handler_f fn, void *arg)
 
     rpc_connection_t rpc_connection_create(void *cookie, rpc_object_t params)
     int rpc_connection_close(rpc_connection_t conn)
@@ -177,8 +179,13 @@ cdef extern from "rpc/connection.h" nogil:
     rpc_object_t rpc_call_result(rpc_call_t call)
     void rpc_call_free(rpc_call_t call)
 
-    int rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
+    void *rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
         const char *interface, const char *name, void *handler)
+    void *rpc_connection_watch_property(rpc_connection_t conn,
+        const char *path, const char *interface, const char *property,
+        void *handler)
+    void rpc_connection_unregister_event_handler(rpc_connection_t conn,
+        void *cookie)
 
 
 cdef extern from "rpc/service.h" nogil:
@@ -463,6 +470,8 @@ cdef class Connection(object):
     cdef Connection init_from_ptr(rpc_connection_t ptr)
     @staticmethod
     cdef void c_ev_handler(void *arg, const char *path, const char *inteface, const char *name, rpc_object_t args) with gil
+    @staticmethod
+    cdef void c_prop_handler(void *arg, rpc_object_t value)
     @staticmethod
     cdef void c_error_handler(void *arg, rpc_error_code_t code, rpc_object_t args) with gil
 
