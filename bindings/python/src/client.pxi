@@ -24,29 +24,37 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-import os
-import Cython.Compiler.Options
-Cython.Compiler.Options.annotate = True
+cdef class Client(Connection):
+    cdef rpc_client_t client
+    cdef object uri
 
-from distutils.core import setup
-from Cython.Distutils.extension import Extension
-from Cython.Distutils import build_ext
+    def __init__(self):
+        super(Client, self).__init__()
+        self.uri = None
+        self.client = <rpc_client_t>NULL
+        self.connection = <rpc_connection_t>NULL
 
-os.environ['CC'] = 'clang'
-os.environ.setdefault('DESTDIR', '/')
+    def __dealloc__(self):
+        if self.client != <rpc_client_t>NULL:
+            rpc_client_close(self.client)
 
-setup(
-    name='librpc',
-    version='1.0',
-    packages=[''],
-    package_data={'': ['*.html', '*.c', 'librpc.pxd']},
-    cmdclass={'build_ext': build_ext},
-    ext_modules=[
-        Extension(
-            "librpc",
-            ["src/librpc.pyx"],
-            extra_compile_args=["-fblocks", "-Wno-sometimes-uninitialized"],
-            extra_link_args=["-g", "-lrpc"],
-        )
-    ]
-)
+    def connect(self, uri, Object params=None):
+        cdef char* c_uri
+        cdef rpc_object_t rawparams
+
+        self.uri = c_uri = uri.encode('utf-8')
+        rawparams = params.obj if params else <rpc_object_t>NULL
+        with nogil:
+            self.client = rpc_client_create(c_uri, rawparams)
+
+        if self.client == <rpc_client_t>NULL:
+            raise_internal_exc(rpc=False)
+
+        self.connection = rpc_client_get_connection(self.client)
+
+    def disconnect(self):
+        if self.client == <rpc_client_t>NULL:
+            raise RuntimeError("Not connected")
+
+        rpc_client_close(self.client)
+        self.client = <rpc_client_t>NULL

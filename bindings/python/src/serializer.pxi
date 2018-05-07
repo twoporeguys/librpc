@@ -24,29 +24,42 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-import os
-import Cython.Compiler.Options
-Cython.Compiler.Options.annotate = True
+cdef class Serializer(object):
+    cdef const char *type
 
-from distutils.core import setup
-from Cython.Distutils.extension import Extension
-from Cython.Distutils import build_ext
+    def __init__(self, type):
+        if not rpc_serializer_exists(type.encode('ascii')):
+            raise LibException(errno.ENOENT, 'Unknown serializer')
 
-os.environ['CC'] = 'clang'
-os.environ.setdefault('DESTDIR', '/')
+        self.type = strdup(type.encode('ascii'))
 
-setup(
-    name='librpc',
-    version='1.0',
-    packages=[''],
-    package_data={'': ['*.html', '*.c', 'librpc.pxd']},
-    cmdclass={'build_ext': build_ext},
-    ext_modules=[
-        Extension(
-            "librpc",
-            ["src/librpc.pyx"],
-            extra_compile_args=["-fblocks", "-Wno-sometimes-uninitialized"],
-            extra_link_args=["-g", "-lrpc"],
-        )
-    ]
-)
+    def __dealloc__(self):
+        free(<void *>self.type)
+
+    def loads(self, bytes blob):
+        cdef Object ret
+        cdef char *buf = blob
+        cdef int length = len(blob)
+
+        ret = Object.__new__(Object)
+
+        with nogil:
+            ret.obj = rpc_serializer_load(self.type, buf, length)
+
+        if ret.obj == <rpc_object_t>NULL:
+            raise_internal_exc()
+
+        return ret
+
+    def dumps(self, Object obj):
+        cdef void *frame
+        cdef size_t len
+        cdef int ret
+
+        with nogil:
+            ret = rpc_serializer_dump(self.type, obj.obj, &frame, &len)
+
+        if ret != 0:
+            raise_internal_exc()
+
+        return <bytes>(<char *>frame)[:len]

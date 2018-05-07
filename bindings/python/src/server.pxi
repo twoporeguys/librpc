@@ -24,29 +24,42 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-import os
-import Cython.Compiler.Options
-Cython.Compiler.Options.annotate = True
+cdef class Server(object):
+    cdef rpc_server_t server
+    cdef Context context
+    cdef object uri
 
-from distutils.core import setup
-from Cython.Distutils.extension import Extension
-from Cython.Distutils import build_ext
+    def __init__(self, uri, context):
+        if not uri:
+            raise RuntimeError('URI cannot be empty')
 
-os.environ['CC'] = 'clang'
-os.environ.setdefault('DESTDIR', '/')
+        self.uri = uri.encode('utf-8')
+        self.context = context
+        self.server = rpc_server_create(self.uri, self.context.context)
 
-setup(
-    name='librpc',
-    version='1.0',
-    packages=[''],
-    package_data={'': ['*.html', '*.c', 'librpc.pxd']},
-    cmdclass={'build_ext': build_ext},
-    ext_modules=[
-        Extension(
-            "librpc",
-            ["src/librpc.pyx"],
-            extra_compile_args=["-fblocks", "-Wno-sometimes-uninitialized"],
-            extra_link_args=["-g", "-lrpc"],
-        )
-    ]
-)
+    def broadcast_event(self, name, args, path='/', interface=None):
+        cdef Object rpc_args
+        cdef const char *c_name
+        cdef const char *c_path
+        cdef const char *c_interface = NULL
+
+        b_name = name.encode('utf-8')
+        c_name = b_name
+        b_path = path.encode('utf-8')
+        c_path = b_path
+
+        if interface:
+            b_interface = interface.encode('utf-8')
+            c_interface = b_interface
+
+        if isinstance(args, Object):
+            rpc_args = args
+        else:
+            rpc_args = Object(args)
+            rpc_retain(rpc_args.obj)
+
+        with nogil:
+            rpc_server_broadcast_event(self.server, c_path, c_interface, c_name, rpc_args.obj)
+
+    def close(self):
+        rpc_server_close(self.server)
