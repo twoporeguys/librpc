@@ -45,14 +45,14 @@ cdef extern from "Python.h" nogil:
     void PyEval_InitThreads()
 
 
-include "object.pxi"
-include "connection.pxi"
-include "service.pxi"
-include "client.pxi"
-include "server.pxi"
-include "bus.pxi"
-include "serializer.pxi"
-include "typing.pxi"
+include "src/object.pxi"
+include "src/connection.pxi"
+include "src/service.pxi"
+include "src/client.pxi"
+include "src/server.pxi"
+include "src/bus.pxi"
+include "src/serializer.pxi"
+include "src/typing.pxi"
 
 
 cdef str_or_none(const char *val):
