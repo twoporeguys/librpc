@@ -1062,7 +1062,8 @@ rpc_connection_free_resources(rpc_connection_t conn)
 	g_hash_table_destroy(conn->rco_inbound_calls);
 	
         /* rpc_free_subscription_resources() TODO, foreach, strings and all */
-        g_ptr_array_free(conn->rco_subscriptions, true);
+        if (conn->rco_subscriptions != NULL)
+		g_ptr_array_free(conn->rco_subscriptions, true);
 	if (conn->rco_callback_pool != NULL) {
 		g_thread_pool_free(conn->rco_callback_pool, true, true);
 		conn->rco_callback_pool = NULL;

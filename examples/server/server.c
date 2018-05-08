@@ -26,6 +26,9 @@
  */
 
 #include <unistd.h>
+#include <stdio.h>
+#include <string.h>
+#include <glib.h>
 #include <rpc/object.h>
 #include <rpc/service.h>
 #include <rpc/server.h>
@@ -48,6 +51,11 @@ main(int argc, const char *argv[])
 {
 	rpc_context_t ctx;
 	__block rpc_server_t srv;
+        __block GRand *rand = g_rand_new ();
+        __block gint setcnt = g_rand_int_range (rand, 1, 50);
+        __block char *strg = g_malloc(27);
+	int ret;
+
 
 	(void)argc;
 	(void)argv;
@@ -76,10 +84,39 @@ main(int argc, const char *argv[])
 		return (rpc_null_create());
 	    });
 
+        strcpy(strg, "abcdefghijklmnopqrstuvwxyz");
+        ret = rpc_context_register_block(ctx, NULL, "stream",
+            NULL, ^rpc_object_t (void *cookie, rpc_object_t args __unused) {
+                int cnt = 0;
+                gint i;
+                rpc_object_t res;
+
+                while (cnt < setcnt) {
+                        cnt++;
+
+                        i = g_rand_int_range (rand, 0, 26);
+
+                        res = rpc_object_pack("[s, i, i]",
+                            strg + i, 26-i, cnt);
+
+                        fprintf(stderr, "returning %s,  %d letters, %d of %d\n",
+                            rpc_array_get_string(res, 0), 26-i, cnt, setcnt);
+
+                        if (rpc_function_yield(cookie, res) != 0) {
+                                fprintf(stderr, "yield failed\n");
+                                rpc_function_end(cookie);
+                                return (rpc_null_create());
+                        }
+                }
+                rpc_function_end(cookie);
+		return (rpc_null_create());
+        });
+
+	fprintf(stderr, "register stream: %d\n", ret);
+
 	//srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
 	//srv = rpc_server_create("unix:///Users/kathryn/test.sock", ctx);
 	//srv = rpc_server_create("unix://../test.sock", ctx);
-	//srv = rpc_server_create("loopback://0", ctx);
 	srv = rpc_server_create("ws://0.0.0.0:5005/ws", ctx);
         rpc_server_resume(srv);
 	sleep(30);
