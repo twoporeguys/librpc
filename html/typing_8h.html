@@ -173,6 +173,10 @@ Functions</h2></td></tr>
 <tr class="separator:ae5e41b9bdc0542b3b2ceeaea9616fcc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b69519413246783b273583cfb3d09d4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#a738ac0d076d329aece903bf1835bfcdd">rpct_member_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a5b69519413246783b273583cfb3d09d4">rpct_type_get_member</a> (<a class="el" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a> type, const char *name)</td></tr>
 <tr class="separator:a5b69519413246783b273583cfb3d09d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaccbdef57d9289cada2a56e5bc18c3eb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#aaccbdef57d9289cada2a56e5bc18c3eb">rpct_typei_retain</a> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> typei)</td></tr>
+<tr class="separator:aaccbdef57d9289cada2a56e5bc18c3eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a072f83e18ab9fb657649cc456b4450e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a072f83e18ab9fb657649cc456b4450e4">rpct_typei_release</a> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> typei)</td></tr>
+<tr class="separator:a072f83e18ab9fb657649cc456b4450e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f327621ae6dbc69d3812723c53f3feb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a6f327621ae6dbc69d3812723c53f3feb">rpct_typei_get_type</a> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> typei)</td></tr>
 <tr class="separator:a6f327621ae6dbc69d3812723c53f3feb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a940e59facf355b4f4195d9a23647c75f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a940e59facf355b4f4195d9a23647c75f">rpct_typei_get_generic_var</a> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> typei, const char *name)</td></tr>
@@ -2076,6 +2080,55 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Type handle </dd></dl>
+
+</div>
+</div>
+<a id="a072f83e18ab9fb657649cc456b4450e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a072f83e18ab9fb657649cc456b4450e4">&#9670;&nbsp;</a></span>rpct_typei_release()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rpct_typei_release </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td>
+          <td class="paramname"><em>typei</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">typei</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aaccbdef57d9289cada2a56e5bc18c3eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaccbdef57d9289cada2a56e5bc18c3eb">&#9670;&nbsp;</a></span>rpct_typei_retain()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> rpct_typei_retain </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td>
+          <td class="paramname"><em>typei</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">typei</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>

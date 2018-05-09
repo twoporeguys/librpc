@@ -413,6 +413,8 @@
     <member refid="typing_8h_1a6cee375ae342968abcbc33f0c66ca312" kind="function"><name>rpct_type_get_generic_vars_count</name></member>
     <member refid="typing_8h_1ae5e41b9bdc0542b3b2ceeaea9616fcc3" kind="function"><name>rpct_type_get_generic_var</name></member>
     <member refid="typing_8h_1a5b69519413246783b273583cfb3d09d4" kind="function"><name>rpct_type_get_member</name></member>
+    <member refid="typing_8h_1aaccbdef57d9289cada2a56e5bc18c3eb" kind="function"><name>rpct_typei_retain</name></member>
+    <member refid="typing_8h_1a072f83e18ab9fb657649cc456b4450e4" kind="function"><name>rpct_typei_release</name></member>
     <member refid="typing_8h_1a6f327621ae6dbc69d3812723c53f3feb" kind="function"><name>rpct_typei_get_type</name></member>
     <member refid="typing_8h_1a940e59facf355b4f4195d9a23647c75f" kind="function"><name>rpct_typei_get_generic_var</name></member>
     <member refid="typing_8h_1afbb30599739b51d96d00454e0512eef1" kind="function"><name>rpct_typei_get_canonical_form</name></member>
