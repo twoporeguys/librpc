@@ -45,6 +45,7 @@ else()
             COMMAND ${PYTHON} ${SETUP_PY} install
                 --record python_manifest.txt
                 --root=/\$ENV{DESTDIR}
+                --prefix=${CMAKE_INSTALL_PREFIX}
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         )")
 endif()
