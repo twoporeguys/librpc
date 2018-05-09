@@ -95,7 +95,8 @@ rpct_newi(rpct_typei_t typei, rpc_object_t object)
 	if (object == NULL)
 		return (NULL);
 
-	object->ro_typei = rpct_unwind_typei(typei);
+	object = rpc_copy(object);
+	object->ro_typei = rpct_typei_retain(rpct_unwind_typei(typei));
 	return (object);
 }
 
@@ -287,6 +288,21 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 
 	decltype = g_match_info_fetch(match, 1);
 	type = rpct_find_type_fuzzy(decltype, origin);
+
+	if (type != NULL && !type->generic) {
+		/*
+		 * Non-generic types can be cached, try looking
+		 * up in the cache
+		 */
+
+		ret = g_hash_table_lookup(context->typei_cache, decltype);
+		if (ret != NULL) {
+			g_match_info_free(match);
+			g_regex_unref(regex);
+			return (rpct_typei_retain(ret));
+		}
+	}
+
 	if (type == NULL) {
 		struct rpct_typei *cur = parent;
 
@@ -327,10 +343,11 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 	}
 
 	ret = g_malloc0(sizeof(*ret));
+	ret->refcnt = 1;
 	ret->type = type;
 	ret->parent = parent;
 	ret->specializations = g_hash_table_new_full(g_str_hash, g_str_equal,
-	    g_free, (GDestroyNotify)rpct_typei_free);
+	    g_free, (GDestroyNotify)rpct_typei_release);
 	ret->constraints = type->constraints;
 
 	if (type->generic) {
@@ -370,7 +387,7 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 
 error:
 	if (ret != NULL) {
-		rpct_typei_free(ret);
+		rpct_typei_release(ret);
 		ret = NULL;
 	}
 
@@ -391,6 +408,11 @@ done:
 
 	if (declvars != NULL)
 		g_free(declvars);
+
+	if (ret != NULL && !ret->type->generic) {
+		g_hash_table_insert(context->typei_cache,
+		    g_strdup(ret->canonical_form), ret);
+	}
 
 	return (ret);
 }
@@ -444,7 +466,7 @@ rpct_if_member_free(struct rpct_if_member *member)
 	g_free(member->description);
 	g_ptr_array_free(member->arguments, true);
 	if (member->result != NULL)
-		rpct_typei_free(member->result);
+		rpct_typei_release(member->result);
 
 	g_free(member);
 }
@@ -455,7 +477,7 @@ rpct_member_free(struct rpct_member *member)
 
 	g_free(member->name);
 	g_free(member->description);
-	rpct_typei_free(member->type);
+	rpct_typei_release(member->type);
 	g_hash_table_unref(member->constraints);
 	g_free(member);
 }
@@ -1366,6 +1388,8 @@ rpct_init(void)
 	    (GDestroyNotify)rpct_type_free);
 	context->interfaces = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    NULL, (GDestroyNotify)rpct_interface_free);
+	context->typei_cache = g_hash_table_new_full(g_str_hash, g_str_equal,
+	    g_free, (GDestroyNotify)rpct_typei_release);
 
 	for (b = builtin_types; *b != NULL; b++) {
 		type = g_malloc0(sizeof(*type));
@@ -1393,15 +1417,25 @@ rpct_free(void)
 	g_free(context);
 }
 
-void
-rpct_typei_free(struct rpct_typei *inst)
+rpct_typei_t
+rpct_typei_retain(rpct_typei_t typei)
 {
 
-	if (inst->specializations != NULL)
-		g_hash_table_destroy(inst->specializations);
+	g_atomic_int_inc(&typei->refcnt);
+	return (typei);
+}
 
-	g_free(inst->canonical_form);
-	g_free(inst);
+void
+rpct_typei_release(rpct_typei_t typei)
+{
+	if (!g_atomic_int_dec_and_test(&typei->refcnt))
+		return;
+
+	if (typei->specializations != NULL)
+		g_hash_table_destroy(typei->specializations);
+
+	g_free(typei->canonical_form);
+	g_free(typei);
 }
 
 int
@@ -1824,26 +1858,34 @@ rpct_serialize(rpc_object_t object)
 {
 	const struct rpct_class_handler *handler;
 	rpct_class_t clazz;
+	rpc_object_t cont;
 
 	if (context == NULL)
-		return (object);
+		return (rpc_retain(object));
 
 	if (object->ro_typei == NULL) {
 		/* Try recursively */
 		if (rpc_get_type(object) == RPC_TYPE_DICTIONARY) {
-			rpc_dictionary_map(object,
+			cont = rpc_dictionary_create();
+			rpc_dictionary_apply(object,
 			    ^(const char *key, rpc_object_t v) {
-				return (rpct_serialize(v));
+				rpc_dictionary_steal_value(cont, key,
+				    rpct_serialize(v));
+				return ((bool)true);
 			});
-		}
 
-		if (rpc_get_type(object) == RPC_TYPE_ARRAY) {
-			rpc_array_map(object, ^(size_t idx, rpc_object_t v) {
-				return (rpct_serialize(v));
+			return (cont);
+		} else if (rpc_get_type(object) == RPC_TYPE_ARRAY) {
+			cont = rpc_array_create();
+			rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
+				rpc_array_append_stolen_value(cont,
+				    rpct_serialize(v));
+				return ((bool)true);
 			});
-		}
 
-		return (object);
+			return (cont);
+		} else
+			return (rpc_copy(object));
 	}
 
 	clazz = object->ro_typei->type->clazz;
@@ -1860,45 +1902,56 @@ rpct_deserialize(rpc_object_t object)
 	rpc_type_t objtype = rpc_get_type(object);
 	rpc_object_t type;
 	rpc_object_t result;
+	rpc_object_t cont;
 
 	if (context == NULL)
-		return (object);
+		return (rpc_retain(object));
 
 	if (object->ro_typei != NULL)
-		return (object);
+		return (rpc_retain(object));
 
 	if (objtype == RPC_TYPE_DICTIONARY) {
-		rpc_dictionary_map(object, ^(const char *key, rpc_object_t v) {
-			return (rpct_deserialize(v));
+		cont = rpc_dictionary_create();
+		rpc_dictionary_apply(object, ^(const char *key, rpc_object_t v) {
+			rpc_dictionary_steal_value(cont, key, rpct_deserialize(v));
+			return ((bool)true);
 		});
 
-		type = rpc_dictionary_detach_key(object, RPCT_TYPE_FIELD);
+		type = rpc_dictionary_detach_key(cont, RPCT_TYPE_FIELD);
+		if (type == NULL) {
+			result = rpct_new("dictionary", cont);
+			rpc_release(cont);
+			return (result);
+		}
 
-		if (type == NULL)
-			goto trivial;
-
-		result = rpct_new(rpc_string_get_string_ptr(type),
-		    object);
-
-		if (result == NULL)
+		result = rpct_new(rpc_string_get_string_ptr(type), cont);
+		if (result == NULL) {
+			rpc_release(cont);
 			return (rpc_null_create());
+		}
 
-		rpc_retain(result);
+		rpc_release(cont);
 		return (result);
 	}
 
 	if (objtype == RPC_TYPE_ARRAY) {
-		rpc_array_map(object, ^(size_t idx, rpc_object_t v) {
-			return (rpct_deserialize(v));
+		cont = rpc_array_create();
+		rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
+			rpc_array_append_stolen_value(cont, rpct_deserialize(v));
+			return ((bool)true);
 		});
+
+		result = rpct_new("array", cont);
+		rpc_release(cont);
+		return (result);
 	}
 
-trivial:
 	typename = rpc_get_type_name(rpc_get_type(object));
 	if (g_strcmp0(typename, "null") == 0)
 		typename = "nulltype";
 
-	return (rpct_new(typename, object));
+	result = rpct_new(typename, object);
+	return (result);
 }
 
 void

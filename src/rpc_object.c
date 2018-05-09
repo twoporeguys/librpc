@@ -514,8 +514,8 @@ rpc_release_impl(rpc_object_t object)
 			break;
 		}
 
-		//if (object->ro_typei != NULL)
-		//	rpct_typei_free(object->ro_typei);
+		if (object->ro_typei != NULL)
+			rpct_typei_release(object->ro_typei);
 
 		g_free(object);
 		return (0);
@@ -645,7 +645,8 @@ rpc_copy(rpc_object_t object)
 		break;
 	}
 
-	result->ro_typei = object->ro_typei;
+	if (object->ro_typei)
+		result->ro_typei = rpct_typei_retain(object->ro_typei);
 
 	return (result);
 }
@@ -1738,7 +1739,6 @@ rpc_array_map(rpc_object_t array, rpc_array_mapper_t mapper)
 		oldv = g_ptr_array_index(array->ro_value.rv_list, i);
 		newv = mapper(i, oldv);
 		g_ptr_array_index(array->ro_value.rv_list, i) = newv;
-		rpc_retain(newv);
 		rpc_release(oldv);
 	}
 }
@@ -2099,9 +2099,7 @@ rpc_dictionary_map(rpc_object_t dictionary, rpc_dictionary_mapper_t mapper)
 	while (g_hash_table_iter_next(&iter, &key, &value)) {
 		oldv = (rpc_object_t)value;
 		newv = mapper((const char *)key, oldv);
-		rpc_retain(newv);
 		g_hash_table_iter_replace(&iter, newv);
-		//rpc_release(oldv);
 	}
 }
 

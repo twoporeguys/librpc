@@ -297,6 +297,19 @@ const char *rpct_type_get_generic_var(rpct_type_t type, int index);
 rpct_member_t rpct_type_get_member(rpct_type_t type, const char *name);
 
 /**
+ *
+ * @param typei
+ * @return
+ */
+rpct_typei_t rpct_typei_retain(rpct_typei_t typei);
+
+/**
+ *
+ * @param typei
+ */
+void rpct_typei_release(rpct_typei_t typei);
+
+/**
  * Returns base type of a type instance @p typei.
  *
  * @param typei Type instance handle
