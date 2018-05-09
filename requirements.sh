@@ -2,10 +2,19 @@
 
 case "`uname -s`" in
     Darwin*)
-        echo "I am a Mac.  Brew installing stuff."
-        echo "Don't worry about warnings of things already installed."
-        brew install glib libsoup yajl libusb libyaml yajl python3 cmake
-        pip3 install cython
+	if [ -x /usr/local/bin/brew ]; then
+        	echo "I am a Mac.  Brew installing stuff."
+        	echo "Don't worry about warnings of things already installed."
+        	brew install glib libsoup yajl libusb libyaml yajl python3 cmake
+        	pip3 install cython
+	elif [ -x /opt/local/bin/port ]; then
+        	echo "I am a Mac.  Using macports to install stuff with sudo"
+        	sudo port install glib2 libsoup yajl libusb libyaml yajl python36 cmake
+        	sudo pip-3.6 install cython
+	else
+		echo "I am a Mac but you have neither macports or brew installed."
+		exit 1
+	fi
         ;;
     Linux*)
         echo "I am some kind of Linux, hopefully Ubuntu."
