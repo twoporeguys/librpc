@@ -77,6 +77,7 @@ rpc_client_get_connection(rpc_client_t client)
 void
 rpc_client_close(rpc_client_t client)
 {
+
 	if (client->rci_connection != NULL) {
 		/* must hold a reference to retain the connection until it
 		 * is completely closed and cleaned up. Otherwise closing the
@@ -84,9 +85,9 @@ rpc_client_close(rpc_client_t client)
 		 */
 		rpc_connection_reference_change(client->rci_connection, true);
 		rpc_connection_close(client->rci_connection);
-		if (client->rci_connection->rco_error != NULL) {
+		if (rpc_get_last_error() == NULL &&
+		    client->rci_connection->rco_error != NULL)
 			rpc_set_last_rpc_error(client->rci_connection->rco_error);
-		}
 		rpc_connection_reference_change(client->rci_connection, false);
         }
 

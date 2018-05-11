@@ -77,6 +77,11 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	struct rpc_if_method *method = call->ric_method;
 	rpc_object_t result;
 
+	if (call->ric_conn->rco_closed) {
+		debugf("Can't dispatch call, conn %p closed", call->ric_conn);
+		return;
+	}
+
 	if (method == NULL) {
 		rpc_function_error(call, ENOENT, "Method not found");
 		rpc_connection_close_inbound_call(call);
@@ -147,7 +152,10 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
 	rpc_instance_t instance = NULL;
 
 	debugf("call=%p, name=%s", call, call->ric_name);
-
+	if (call->ric_conn->rco_closed) {
+		debugf("Can't dispatch call, conn %p closed", call->ric_conn);
+		return (-1);
+	}
 	if (call->ric_path == NULL) 
 		instance = context->rcx_root;
 
@@ -533,7 +541,7 @@ rpc_instance_new(void *arg, const char *fmt, ...)
 	rpc_instance_register_interface(result, RPC_INTROSPECTABLE_INTERFACE,
 	    rpc_introspectable_vtable, NULL);
 
-	rpc_instance_register_interface(result, RPC_DEFAULT_INTERFACE, 
+	rpc_instance_register_interface(result, RPC_DEFAULT_INTERFACE,
 	    NULL, NULL);
 
 
@@ -591,7 +599,7 @@ rpc_instance_find_member(rpc_instance_t instance, const char *interface,
 	if (name == NULL)
 		return (NULL);
 
-        if (interface == NULL) 
+        if (interface == NULL)
                 interface = RPC_DEFAULT_INTERFACE;
 
 	iface = g_hash_table_lookup(instance->ri_interfaces, interface);

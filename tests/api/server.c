@@ -44,7 +44,7 @@
 struct b {
 	char *	path;
 	char *	interface;
-} args [] = 
+} args [] =
 	{{NULL, NULL},
 	 {"/", RPC_DEFAULT_INTERFACE}};
 struct b base;
@@ -55,15 +55,15 @@ struct u {
 	char *	cli;
 	bool 	good;
 } uris[] =
-	{{"tcp", "tcp://0.0.0.0:5000", "tcp://127.0.0.1:5000", true},
-	 {"tpp", "tpp://0.0.0.0:5000", "tcp://127.0.0.1:5000", false}, 
-	 {"tcp", "tcp://0.42.42.42:42", "tcp://127.0.0.1:5000", false}, 
+	{{"tcp", "tcp://0.0.0.0:5500", "tcp://127.0.0.1:5500", true},
+	 {"tpp", "tpp://0.0.0.0:5500", "tcp://127.0.0.1:5500", false},
+	 {"tcp", "tcp://0.42.42.42:42", "tcp://127.0.0.1:5500", false},
 	 {"unix", "unix://test.sock", "unix://test.sock", true},
 	 {"unix", "unix:/", "unix://test.sock", false},
-	 {"ws", "ws://0.0.0.0:6000/ws", "ws://127.0.0.1:6000/ws", true}, 
-//	 {"ws", "ws://w0.0.0.0:6000/ws", "ws://127.0.0.1:6000/ws", false}, 
+	 {"ws", "ws://0.0.0.0:6600/ws", "ws://127.0.0.1:6600/ws", true},
+	 {"ws", "ws://w0.0.0.0:6600/ws", "ws://127.0.0.1:6600/ws", false},
 	 {"loopback", "loopback://0", "loopback://0", true},
-	 {"loopback", "loopback://a", "loopback://0", false}, 
+	 {"loopback", "loopback://a", "loopback://0", false},
 	 {0, "", "", 0}};
 
 typedef struct {
@@ -86,7 +86,7 @@ typedef struct {
 static void
 server_wait(rpc_context_t context, const char *uri)
 {
-	
+
 	while (rpc_server_find(uri, context) != NULL) {
 			sleep(5);
 	}
@@ -119,7 +119,7 @@ valid_server_set_up(server_fixture *fixture, gconstpointer u_data)
             });
 
         rpc_context_register_block(fixture->ctx, base.interface, "block",
-            NULL, ^(void *cookie __unused, 
+            NULL, ^(void *cookie __unused,
 		rpc_object_t args __unused) {
 		fixture->called++;
 		sleep(fixture->called * 2);
@@ -199,7 +199,7 @@ server_test_alt_server_set_up(server_fixture *fixture, gconstpointer u_data)
 static void
 server_test_valid_server_tear_down(server_fixture *fixture, gconstpointer user_data)
 {
-	
+
 	if (fixture->iclose == 0 && fixture->close == 0) {
 		rpc_server_close(fixture->srv);
 	}
@@ -252,7 +252,7 @@ thread_stream_func (gpointer data)
 	call = rpc_connection_call(conn, NULL, NULL, "stream", rpc_array_create(), NULL);
 	if (call == NULL) {
 		rpc_client_close(client);
-		g_thread_exit (GINT_TO_POINTER (0));	
+		g_thread_exit (GINT_TO_POINTER (0));
 	}
         for (;;) {
                 rpc_call_wait(call);
@@ -263,7 +263,7 @@ thread_stream_func (gpointer data)
 				i = rpc_object_unpack(result,
 				    "[s, i, i]", &str, &len, &num);
 				cnt++;
-				g_assert(i == 3); 
+				g_assert(i == 3);
 				g_assert(len == (int)strlen(str));
                                 rpc_call_continue(call, false);
                                 break;
@@ -412,7 +412,7 @@ server_test_flush(server_fixture *fixture, gconstpointer user_data)
 
 	server_wait(fixture->ctx, uris[fixture->iuri].srv);
 }
-	
+
 static void
 server_test_resume(server_fixture *fixture, gconstpointer user_data)
 {
@@ -421,6 +421,7 @@ server_test_resume(server_fixture *fixture, gconstpointer user_data)
 	int ret;
 
 	g_rand_free(rand);
+	g_assert_nonnull(fixture->srv);
 	g_assert_cmpint(fixture->count, ==, 0);
 
 	fixture->resume = true;
@@ -434,7 +435,7 @@ server_test_resume(server_fixture *fixture, gconstpointer user_data)
 
 	g_assert_cmpint(fixture->count + ret, ==, n);
 }
-	
+
 static void
 server_test_failed_listen(server_fixture *fixture, gconstpointer user_data)
 {
@@ -443,7 +444,7 @@ server_test_failed_listen(server_fixture *fixture, gconstpointer user_data)
 	fixture->srv = rpc_server_create(uris[fixture->iuri].srv, fixture->ctx);
 	g_assert_null(fixture->srv);
 	err = rpc_get_last_error();
-	
+
 	g_assert_cmpint(strlen(rpc_error_get_message(err)), >, 0);			
 }
 
@@ -475,7 +476,7 @@ server_test_nullables(server_fixture *fixture, gconstpointer user_data)
             "get_methods", call_args1, NULL);
 	rpc_call_wait(call1);
 	g_assert(!rpc_is_error(rpc_call_result(call1)));
-	
+
 	call_args2 = rpc_object_pack("[s]", args[1].interface);
 	call2 = rpc_connection_call(conn, args[1].path, RPC_INTROSPECTABLE_INTERFACE,
             "get_methods", call_args2, NULL);
@@ -503,14 +504,12 @@ server_test_all_listen(void)
 	//rpc_object_t err;
 	rpc_context_t ctx;
 	rpc_server_t srv;
-	
+
 	ctx = rpc_context_create();
 	for (int i = 0; uris[i].scheme != NULL; i++) {
-		/*fprintf(stderr, "CREATING %s\n", uris[i].srv);*/
 		srv = rpc_server_create(uris[i].srv, ctx);
 		g_assert((srv != NULL) == uris[i].good);
 		if (srv != NULL) {
-			/*fprintf(stderr, "i = %d, good\n", i);*/
 			rpc_server_close(srv);
 			/*if (rpc_server_find(uris[i].srv, ctx))
 				fprintf(stderr, "%s NOT closed\n",
@@ -533,7 +532,7 @@ server_test_register()
 	    server_test_valid_server_set_up, server_test_resume,
 	    server_test_valid_server_tear_down);
 
-	g_test_add("/server/resume/loopback", server_fixture, (void *)6,
+	g_test_add("/server/resume/loopback", server_fixture, (void *)7,
 	    server_test_valid_server_set_up, server_test_resume,
 	    server_test_valid_server_tear_down);
 
@@ -559,7 +558,7 @@ server_test_register()
 	    server_test_valid_server_set_up, server_test_flush,
 	    server_test_valid_server_tear_down);
 
-	g_test_add("/server/stream/one", server_fixture, (void *)0,
+	g_test_add("/server/stream/one", server_fixture, (void *)7,
 	    server_test_stream_setup, server_test_stream_run,
 	    server_test_stream_tear_down);
 
@@ -571,11 +570,9 @@ server_test_register()
 	    server_test_stream_setup, server_test_stream_abort,
 	    server_test_stream_tear_down);
 
-	g_test_add("/server/flush/loopback", server_fixture, (void *)6,
+	g_test_add("/server/flush/loopback", server_fixture, (void *)7,
 	    server_test_valid_server_set_up, server_test_flush,
 	    server_test_valid_server_tear_down);
-
-
 }
 
 static struct librpc_test server = {

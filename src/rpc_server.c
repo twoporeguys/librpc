@@ -53,7 +53,7 @@ rpc_server_cleanup(rpc_server_t server)
 
 	if (!server->rs_stopped)
 	        g_main_context_invoke(server->rs_g_context,
-        	    (GSourceFunc)rpc_kill_main_loop, server->rs_g_loop);
+		    (GSourceFunc)rpc_kill_main_loop, server->rs_g_loop);
         g_thread_join(server->rs_thread);
 
         g_main_loop_unref(server->rs_g_loop);
@@ -77,7 +77,7 @@ rpc_server_valid(rpc_server_t server)
 static int
 rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 {
- 
+
 	g_mutex_lock(&server->rs_mtx);
 	if (server->rs_closed) {
 		server->rs_conn_refused++;
@@ -85,6 +85,8 @@ rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 		return (-1);
 	}
 	server->rs_refcnt++; /* conn has reference */
+
+	debugf("Server accepting connection %p", conn);
 
 	g_rw_lock_writer_lock(&server->rs_connections_rwlock);
 	server->rs_connections = g_list_append(server->rs_connections, conn);
@@ -100,11 +102,11 @@ rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 void
 rpc_server_disconnect(rpc_server_t server, rpc_connection_t conn)
 {
- 
+
         GList *iter = NULL;
         struct rpc_connection *comp = NULL;
 
-	//debugf("Disconnecting: %p, closed == %d\n", conn, server->rs_closed);
+	debugf("Disconnecting: %p, closed == %d\n", conn, server->rs_closed);
 
 	g_mutex_lock(&server->rs_mtx);
 	if (server->rs_closed) {
@@ -228,7 +230,7 @@ rpc_server_create(const char *uri, rpc_context_t context)
 		g_cond_wait(&server->rs_cv, &server->rs_mtx);
 
 	if (server->rs_error != NULL) {
-                debugf("failed server create for %s with %s", uri, 
+                debugf("failed server create for %s with %s", uri,
 		    rpc_error_get_message(server->rs_error));
 		rpc_set_last_rpc_error(server->rs_error);
                 rpc_server_cleanup(server);
@@ -359,13 +361,13 @@ rpc_server_release(rpc_server_t server)
 
 	g_mutex_lock(&server->rs_mtx);
 	if (server->rs_closed && server->rs_refcnt == 1) {
-        	g_rw_lock_writer_lock(&server->rs_context->rcx_server_rwlock);
-        	g_ptr_array_remove(server->rs_context->rcx_servers, server);
-        	g_rw_lock_writer_unlock(&server->rs_context->rcx_server_rwlock);
+		g_rw_lock_writer_lock(&server->rs_context->rcx_server_rwlock);
+		g_ptr_array_remove(server->rs_context->rcx_servers, server);
+		g_rw_lock_writer_unlock(&server->rs_context->rcx_server_rwlock);
 
 		g_mutex_unlock(&server->rs_mtx);
 		debugf("Server closed m: %d r: %d, c: %d, a: %d",
-			server->rs_conn_made, server->rs_conn_refused, 
+			server->rs_conn_made, server->rs_conn_refused,
 			server->rs_conn_closed,
 			server->rs_conn_aborted);
 		g_free(server);
@@ -373,7 +375,7 @@ rpc_server_release(rpc_server_t server)
 	}
 	server->rs_refcnt--;
 	g_mutex_unlock(&server->rs_mtx);
-}	
+}
 
 int
 rpc_server_close(rpc_server_t server)
@@ -398,9 +400,9 @@ rpc_server_close(rpc_server_t server)
 	if (!server->rs_threaded_teardown)
 		rpc_server_cleanup(server);
 	ret = server->rs_teardown(server);
-	
+
 	debugf("TORNDOWN");
-	
+
 	/* Drop all connections */
 	if (server->rs_connections != NULL) {
 		for (iter = server->rs_connections; iter != NULL; iter = iter->next) {

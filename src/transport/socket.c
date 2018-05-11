@@ -154,9 +154,9 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 	rco->rco_abort = socket_abort;
 
 	if (srv->rs_accept(srv, rco) == 0) {
-		conn->sc_istream = 
+		conn->sc_istream =
 		    g_io_stream_get_input_stream(G_IO_STREAM(gconn));
-		conn->sc_ostream = 
+		conn->sc_ostream =
 		    g_io_stream_get_output_stream(G_IO_STREAM(gconn));
 		conn->sc_reader_thread = g_thread_new("socket reader thread",
 		    socket_reader, (gpointer)conn);
@@ -168,7 +168,7 @@ done:
 	/* Schedule next accept if server isn't closing*/
 	g_mutex_lock(&server->ss_mtx);
 	g_cancellable_reset (server->ss_cancellable);
-	g_socket_listener_accept_async(server->ss_listener,  
+	g_socket_listener_accept_async(server->ss_listener,
 	    server->ss_cancellable, &socket_accept, data);
 	server->ss_outstanding_accept = true;
 	g_mutex_unlock(&server->ss_mtx);
@@ -199,8 +199,9 @@ socket_connect(struct rpc_connection *rco, const char *uri,
 	conn->sc_conn = g_socket_client_connect(conn->sc_client,
 	    G_SOCKET_CONNECTABLE(addr), NULL, &err);
 	if (err != NULL) {
-		rco->rco_aborted = true;
-		rpc_connection_close(rco);
+		rco->rco_closed = true;
+		if (rco->rco_close)
+			rco->rco_close(rco);
 		g_object_unref(addr);
 		rpc_set_last_gerror(err);
 		g_error_free(err);
@@ -324,7 +325,7 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 	g_socket_send_message(sock, NULL, iov, 1, cmsg, ncmsg, 0,
 	    NULL, &err);
 	if (err != NULL) {
-		conn->sc_parent->rco_error = 
+		conn->sc_parent->rco_error =
 			rpc_error_create_from_gerror(err);
 		g_error_free(err);
 		ret = -1;
@@ -332,7 +333,7 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 	}
 
 	if (!g_output_stream_write_all(conn->sc_ostream, buf, size, NULL, NULL, &err)) {
-		conn->sc_parent->rco_error = 
+		conn->sc_parent->rco_error =
 			rpc_error_create_from_gerror(err);
 		g_error_free(err);
 		ret = -1;
@@ -365,7 +366,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	g_socket_receive_message(sock, NULL, &iov, 1, &cmsg, &ncmsg, &flags,
 	    NULL, &err);
 	if (err != NULL) {
-		conn->sc_parent->rco_error = 
+		conn->sc_parent->rco_error =
 			rpc_error_create_from_gerror(err);
 		g_error_free(err);
 		return (-1);
@@ -401,7 +402,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 
 	if (!g_input_stream_read_all(conn->sc_istream, *frame, *size, NULL,
 	   NULL, &err)) {
-		conn->sc_parent->rco_error = 
+		conn->sc_parent->rco_error =
 			rpc_error_create_from_gerror(err);
 		g_error_free(err);
 		g_free(err);
@@ -420,7 +421,7 @@ socket_abort(void *arg)
 
 	g_mutex_lock(&conn->sc_abort_mtx);
 	if (!conn->sc_aborted) {
-		conn->sc_aborted = true;	
+		conn->sc_aborted = true;
 		g_socket_shutdown(sock, true, true, NULL);
 		g_socket_close(sock, NULL);
 

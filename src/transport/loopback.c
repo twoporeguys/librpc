@@ -36,8 +36,13 @@
 struct loopback_channel
 {
     	int				lc_number;
-    	GHashTable *			lc_connections;
     	struct rpc_server *		lc_srv;
+};
+
+struct looplock
+{
+	int				ll_refcnt;
+	GMutex				ll_mtx;
 };
 
 struct loopback
@@ -46,7 +51,7 @@ struct loopback
 	struct loopback *		lb_peer;
 	bool				lb_is_srv;
 	bool				lb_closed;
-        GMutex                          lb_mtx;
+        struct looplock *		lb_lock;
 };
 
 
@@ -57,6 +62,7 @@ static int loopback_abort(void *);
 static int loopback_teardown(struct rpc_server *);
 static int loopback_send_msg(void *, void *, size_t, const int *, size_t);
 static void loopback_release(void *);
+static int loopback_lock_free(struct loopback *);
 
 static GHashTable *loopback_channels = NULL;
 
@@ -66,23 +72,30 @@ loopback_accept(struct loopback_channel *chan, struct rpc_connection *conn)
 	struct loopback *lb_s;
 	struct loopback *lb_c;
 
-	lb_c = g_malloc0(sizeof(*lb_s));
-	lb_s = g_malloc0(sizeof(*lb_c));
-	g_mutex_init(&lb_s->lb_mtx);
-	g_mutex_init(&lb_c->lb_mtx); /* unused */
+	lb_c = g_malloc0(sizeof(*lb_c));
+	lb_s = g_malloc0(sizeof(*lb_s));
+
+	/*connections need a shared lock freed when both are closed*/
+	lb_c->lb_lock = g_malloc0(sizeof(*lb_c->lb_lock));
+	g_mutex_init(&lb_c->lb_lock->ll_mtx);
+	lb_s->lb_lock = lb_c->lb_lock;
+	lb_c->lb_lock->ll_refcnt = 2;
 
 	lb_s->lb_conn = rpc_connection_alloc(chan->lc_srv);
 	lb_s->lb_is_srv = true;
 	lb_s->lb_conn->rco_send_msg = loopback_send_msg;
 	lb_s->lb_conn->rco_abort = loopback_abort;
-	lb_s->lb_conn->rco_arg = lb_c;
+	lb_s->lb_conn->rco_arg = lb_s;
 	lb_s->lb_conn->rco_release = loopback_release;
 
 	lb_c->lb_conn = conn;
 	conn->rco_send_msg = loopback_send_msg;
 	conn->rco_abort = loopback_abort;
-	conn->rco_arg = lb_s;
+	conn->rco_arg = lb_c;
 	conn->rco_release = loopback_release;
+
+	lb_c->lb_peer = lb_s;
+	lb_s->lb_peer = lb_c;
 
 	if (chan->lc_srv->rs_accept(chan->lc_srv, lb_s->lb_conn) != 0) {
 		debugf("loopback accept refused, s: %p, c: %p",
@@ -95,8 +108,8 @@ loopback_accept(struct loopback_channel *chan, struct rpc_connection *conn)
 
 		return (-1);
 	}
-	debugf("loopback connection ACCEPTED, s: %p, c: %p",
-			lb_s->lb_conn, lb_c->lb_conn);
+	debugf("loopback connection ACCEPTED, s: %p/%p, c: %p/%p",
+			lb_s->lb_conn, lb_s, lb_c->lb_conn, lb_c);
 
 	return (0);
 }
@@ -165,7 +178,7 @@ loopback_send_msg(void *arg, void *buf, size_t len __unused, const int *fds,
     size_t nfds)
 {
 	struct loopback *lb = arg;
-	struct rpc_connection *conn = lb->lb_conn;
+	struct rpc_connection *peer_conn = lb->lb_peer->lb_conn;
 	rpc_object_t obj = buf;
 
 	if (lb->lb_closed) {
@@ -173,63 +186,46 @@ loopback_send_msg(void *arg, void *buf, size_t len __unused, const int *fds,
 	}
 
 	rpc_retain(obj);
-	return (conn->rco_recv_msg(conn, (const void *)obj, 0, (int *)fds,
-	    nfds, NULL));
+	return (peer_conn->rco_recv_msg(peer_conn, (const void *)obj, 0,
+	    (int *)fds, nfds, NULL));
 }
 
 static int
 loopback_abort(void *arg)
 {
 	struct loopback *lb = arg;
-	struct loopback *lb_s;
-	struct loopback *lb_c;
-
 	struct rpc_connection *conn;
-	struct rpc_connection *peer = NULL;
+	struct rpc_connection *peer;
 
 	if (lb == NULL)
 		return (0);
 
+	g_mutex_lock(&lb->lb_lock->ll_mtx);
 	if (lb->lb_closed) {
 		debugf("Abort called on %p, %p already closed",
 			lb, lb->lb_conn);
+		g_mutex_unlock(&lb->lb_lock->ll_mtx);
 		return (0);
 	}
 
-	if (lb->lb_is_srv) {
-		lb_s = lb;
-		conn = lb->lb_conn;
-		if (conn->rco_arg != NULL) {
-			lb_c = lb_s->lb_conn->rco_arg;
-			peer = lb_c->lb_conn;
-		}
-	} else {
-		conn = lb->lb_conn;
-		lb_c = lb;
-		lb_s = conn->rco_arg;
-		g_assert_nonnull(lb_s);
-		if (lb_s == NULL)
-			return (0);
-		peer = lb_s->lb_conn;
-	}
-	g_mutex_lock(&lb_s->lb_mtx);
-	if (lb_s->lb_closed) {
-		g_mutex_unlock(&lb_s->lb_mtx);
-		return (0);
-	}
-	lb_s->lb_closed = true;
-	lb_c->lb_closed = true;
+	conn = lb->lb_conn;
+	peer = lb->lb_peer->lb_conn;
 
-	rpc_connection_reference_change(peer, true);
+	debugf("Aborting  conn/arg %p/%p, peer conn/arg %p/%p",
+	    conn, lb, peer, lb->lb_peer);
+
+	lb->lb_closed = true;
+	lb->lb_peer->lb_closed = true;
+
 	rpc_connection_reference_change(conn, true);
-	g_mutex_unlock(&lb_s->lb_mtx);
+	rpc_connection_reference_change(peer, true);
 
-	if (peer != NULL)
-		peer->rco_close(peer);
+	g_mutex_unlock(&lb->lb_lock->ll_mtx);
 
+	peer->rco_close(peer);
 	conn->rco_close(conn);
-	rpc_connection_reference_change(peer, false);
 	rpc_connection_reference_change(conn, false);
+	rpc_connection_reference_change(peer, false);
 	return (0);
 }
 
@@ -240,6 +236,23 @@ loopback_teardown(struct rpc_server *srv __unused)
 	return (0);
 }
 
+static int
+loopback_lock_free(struct loopback *lb)
+{
+	
+	g_assert(lb->lb_closed);
+	g_assert_nonnull(lb->lb_lock);
+
+	if (lb->lb_lock->ll_refcnt == 1) {
+		g_free(lb->lb_lock);
+		lb->lb_lock = NULL;
+		return 0;
+	}
+	g_assert(lb->lb_lock->ll_refcnt == 2);
+	lb->lb_lock->ll_refcnt = 1;
+	return(1);
+}
+
 static void
 loopback_release(void *arg)
 {
@@ -248,6 +261,8 @@ loopback_release(void *arg)
 	if (lb == NULL)
 		return;
 	g_assert(lb->lb_closed);
+
+	loopback_lock_free(lb);
 	g_free(lb);
 }
 

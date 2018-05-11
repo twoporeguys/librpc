@@ -42,7 +42,7 @@ main(int argc, const char *argv[])
 	rpc_object_t result;
 	rpc_call_t call;
 	const char *buf;
- 
+
 	int64_t len;
 	int i;
 	int64_t num;

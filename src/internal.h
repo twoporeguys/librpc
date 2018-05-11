@@ -232,7 +232,7 @@ struct rpc_credentials
 struct rpc_connection
 {
     	struct rpc_server *	rco_server;
-    	struct rpc_client *	rco_client;
+	struct rpc_client *	rco_client;
     	struct rpc_credentials	rco_creds;
 	bool			rco_has_creds;
 	const char *        	rco_uri;
@@ -243,8 +243,9 @@ struct rpc_connection
 	GHashTable *		rco_inbound_calls;
     	GPtrArray *		rco_subscriptions;
     	GMutex			rco_subscription_mtx;
-    	GMutex			rco_mtx;
-    	GMutex			rco_send_mtx;
+	GMutex			rco_mtx;
+	GMutex			rco_ref_mtx;
+	GMutex			rco_send_mtx;
 	GRWLock			rco_icall_rwlock;
 	GRWLock			rco_call_rwlock;
     	GMainContext *		rco_mainloop;
@@ -255,7 +256,7 @@ struct rpc_connection
 	bool			rco_closed;
 	bool			rco_aborted;
 	bool			rco_server_released;
-	int			rco_refcnt;			
+	int			rco_refcnt;
 #if LIBDISPATCH_SUPPORT
 	dispatch_queue_t	rco_dispatch_queue;
 #endif
@@ -297,10 +298,10 @@ struct rpc_server
 	uint			rs_conn_aborted;
 
     	/* Callbacks */
-    	rpc_valid_fn_t		rs_valid;
+	rpc_valid_fn_t		rs_valid;
     	rpc_accept_fn_t		rs_accept;
     	rpc_teardown_fn_t	rs_teardown;
-    	rpc_teardown_fn_t	rs_teardown_end;
+	rpc_teardown_fn_t	rs_teardown_end;
     	void *			rs_arg;
 };
 
@@ -503,8 +504,6 @@ struct rpct_validator
 };
 
 rpc_object_t rpc_prim_create(rpc_type_t type, union rpc_value val);
-void rpc_dictionary_steal_value_internal(rpc_object_t dictionary,
-    const char * key, rpc_object_t value);
 
 #if defined(__linux__)
 rpc_object_t rpc_shmem_recreate(int fd, off_t offset, size_t size);

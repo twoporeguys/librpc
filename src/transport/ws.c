@@ -76,7 +76,7 @@ struct ws_connection
 	SoupWebsocketConnection *	wc_ws;
 	struct rpc_connection *		wc_parent;
 	GMutex				wc_abort_mtx;
-    	GCond				wc_abort_cv;
+	GCond				wc_abort_cv;
 	bool				wc_aborted;
 	bool				wc_closed;
 	struct ws_server *		wc_server;
@@ -88,8 +88,8 @@ struct ws_server
 	SoupServer *			ws_soupserver;
 	SoupURI *			ws_uri;
 	bool				ws_done;
-    	GMutex				ws_mtx;
-    	GCond				ws_cv;
+	GMutex				ws_mtx;
+	GCond				ws_cv;
 	GMutex				ws_abort_mtx;
 };
 
@@ -185,11 +185,12 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 	int ret = 0;
 
 	uri = soup_uri_new(uri_str);
-        if (uri == NULL) {
+        if (uri == NULL ||
+	    (addr = g_inet_socket_address_new_from_string(uri->host,
+	        uri->port)) == NULL) {
                 srv->rs_error = rpc_error_create(ENXIO, "No Such Address", NULL);
-                ret = -1;
+                return(-1);
         }
-
 	server = calloc(1, sizeof(*server));
 	server->ws_uri = uri;
 	server->ws_server = srv;
@@ -208,15 +209,17 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 	soup_server_add_handler(server->ws_soupserver, "/", ws_process_banner,
 	    server, NULL);
 	soup_server_add_websocket_handler(server->ws_soupserver,
-	    server->ws_uri->path, NULL, NULL, ws_process_connection, server, 
+	    server->ws_uri->path, NULL, NULL, ws_process_connection, server,
 	    NULL);
 
-	addr = g_inet_socket_address_new_from_string(server->ws_uri->host, 
-	    server->ws_uri->port);
 	soup_server_listen(server->ws_soupserver, addr, 0, &err);
 	if (err != NULL) {
 		srv->rs_error = rpc_error_create(err->code, err->message, NULL);
 		g_error_free(err);
+		soup_uri_free(server->ws_uri);
+		g_object_unref(server->ws_soupserver);
+		g_object_unref(addr);
+		g_free(server);
 		ret = -1;
 	}
 
@@ -246,7 +249,7 @@ ws_teardown (struct rpc_server *srv)
 	soup_server_remove_handler(server->ws_soupserver, "/");
 	soup_server_remove_handler(server->ws_soupserver, server->ws_uri->path);
 	return (0);
-}	
+}
 
 
 static int
@@ -258,7 +261,7 @@ ws_teardown_end (struct rpc_server *srv)
         g_source_set_priority (source, G_PRIORITY_LOW);
         g_source_set_callback (source, done_waiting, server, NULL);
         g_source_attach (source, srv->rs_g_context);
-        g_source_unref (source);	
+        g_source_unref (source);
 
 	g_mutex_lock(&server->ws_mtx);
 	while (!server->ws_done)
@@ -366,10 +369,10 @@ ws_close(SoupWebsocketConnection *ws __unused, gpointer user_data)
 	conn->wc_parent->rco_close(conn->wc_parent);
 
 	if (conn->wc_last_err != NULL) {
-		conn->wc_parent->rco_error = 
+		conn->wc_parent->rco_error =
 		    rpc_error_create_from_gerror(conn->wc_last_err);
 		g_error_free(conn->wc_last_err);
-	} 
+	}
 	g_mutex_lock(&conn->wc_abort_mtx);
 	conn->wc_closed = true;
 	g_cond_broadcast(&conn->wc_abort_cv);
@@ -396,12 +399,12 @@ ws_abort(void *arg)
 	struct ws_connection *conn = arg;
 
 	debugf("ws abort %p", conn->wc_parent);
-	g_mutex_lock(&conn->wc_abort_mtx);	
+	g_mutex_lock(&conn->wc_abort_mtx);
 	if (conn->wc_aborted) {
 		g_mutex_unlock(&conn->wc_abort_mtx);
 		return 0;
 	}
-	
+
 	conn->wc_aborted = true;
 	g_mutex_unlock(&conn->wc_abort_mtx);
 	soup_websocket_connection_close(conn->wc_ws, 1000, "Going away");
