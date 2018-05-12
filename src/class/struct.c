@@ -111,20 +111,24 @@ struct_validate(struct rpct_typei *typei, rpc_object_t obj,
 static rpc_object_t
 struct_serialize(rpc_object_t obj)
 {
+	rpc_object_t result;
 
 	assert(obj != NULL);
 	assert(obj->ro_typei != NULL);
 	assert(rpc_get_type(obj) == RPC_TYPE_DICTIONARY);
 
+	result = rpc_dictionary_create();
+
 	/* Serialize every member */
-	rpc_dictionary_map(obj, ^(const char *key, rpc_object_t value) {
-		return (rpct_serialize(value));
+	rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t value) {
+		rpc_dictionary_steal_value(result, key, rpct_serialize(value));
+		return ((bool)true);
 	});
 
-	rpc_dictionary_set_string(obj, RPCT_TYPE_FIELD,
+	rpc_dictionary_set_string(result, RPCT_TYPE_FIELD,
 	    obj->ro_typei->canonical_form);
 
-	return (obj);
+	return (result);
 }
 
 static struct rpct_class_handler struct_class_handler = {

@@ -860,6 +860,7 @@ rpc_object_vpack(const char *fmt, va_list ap)
 	GQueue *keys = g_queue_new();
 	rpc_object_t current = NULL;
 	rpc_object_t container = NULL;
+	rpc_object_t tmp;
 	const char *ptr;
 	const char *search_ptr;
 	const char *comma_ptr;
@@ -1029,12 +1030,14 @@ rpc_object_vpack(const char *fmt, va_list ap)
 		case '{':
 			container = rpc_dictionary_create();
 			if (type != NULL) {
-				container = rpct_new(type, container);
-				if (container == NULL)
+				tmp = rpct_new(type, container);
+				if (tmp == NULL)
 					goto error;
 
 				g_free(type);
+				rpc_release(container);
 				type = NULL;
+				container = tmp;
 			}
 
 			g_queue_push_tail(stack, container);
@@ -1043,12 +1046,14 @@ rpc_object_vpack(const char *fmt, va_list ap)
 		case '[':
 			container = rpc_array_create();
 			if (type != NULL) {
-				container = rpct_new(type, container);
-				if (container == NULL)
+				tmp = rpct_new(type, container);
+				if (tmp == NULL)
 					goto error;
 
 				g_free(type);
+				rpc_release(container);
 				type = NULL;
+				container = tmp;
 			}
 
 			g_queue_push_tail(stack, container);

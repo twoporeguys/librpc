@@ -71,7 +71,7 @@ enum_serialize(rpc_object_t obj)
 
 	return (rpc_object_pack("{s,v}",
 	    RPCT_TYPE_FIELD, obj->ro_typei->canonical_form,
-	    RPCT_VALUE_FIELD, obj));
+	    RPCT_VALUE_FIELD, rpc_copy(obj)));
 }
 
 static struct rpct_class_handler enum_class_handler = {
