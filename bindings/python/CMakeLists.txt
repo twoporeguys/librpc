@@ -5,8 +5,8 @@ option(BUILD_CLIENT "Compile and install librpc python client application")
 set(SETUP_PY ${CMAKE_SOURCE_DIR}/bindings/python/setup.py)
 set(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/timestamp)
 set(DEPS
-        ${CMAKE_SOURCE_DIR}/bindings/python/src/librpc.pyx
-        ${CMAKE_SOURCE_DIR}/bindings/python/src/librpc.pxd
+        ${CMAKE_SOURCE_DIR}/bindings/python/librpc.pyx
+        ${CMAKE_SOURCE_DIR}/bindings/python/librpc.pxd
         ${CMAKE_SOURCE_DIR}/bindings/python/src/bus.pxi
         ${CMAKE_SOURCE_DIR}/bindings/python/src/client.pxi
         ${CMAKE_SOURCE_DIR}/bindings/python/src/connection.pxi
@@ -45,6 +45,7 @@ else()
             COMMAND ${PYTHON} ${SETUP_PY} install
                 --record python_manifest.txt
                 --root=/\$ENV{DESTDIR}
+                --prefix=${CMAKE_INSTALL_PREFIX}
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         )")
 endif()

@@ -850,7 +850,7 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 
 	name = g_match_info_fetch(match, 1);
 	prop = g_malloc0(sizeof(*prop));
-	prop->member.rim_name = name;
+	prop->member.rim_name = g_strdup(name);
 	prop->member.rim_type = RPC_MEMBER_PROPERTY;
 	prop->description = g_strdup(description);
 
@@ -905,7 +905,7 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
 
 	name = g_match_info_fetch(match, 1);
 	prop = g_malloc0(sizeof(*prop));
-	prop->member.rim_name = name;
+	prop->member.rim_name = g_strdup(name);
 	prop->member.rim_type = RPC_MEMBER_EVENT;
 	prop->description = g_strdup(description);
 
@@ -1045,6 +1045,7 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	GError *err = NULL;
 	GRegex *regex = NULL;
 	GMatchInfo *match = NULL;
+	char *name;
 	bool result;
 	int ret = 0;
 
@@ -1066,8 +1067,9 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	    "description"));
 
 	if (file->ns) {
-		g_free(iface->name);
-		iface->name = g_strdup_printf("%s.%s", file->ns, iface->name);
+		name = iface->name;
+		iface->name = g_strdup_printf("%s.%s", file->ns, name);
+		g_free(name);
 	}
 
 	if (g_hash_table_contains(context->interfaces, iface->name))

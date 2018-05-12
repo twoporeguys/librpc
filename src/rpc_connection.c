@@ -1237,8 +1237,10 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	rpc_object_t payload;
 	rpc_object_t frame;
 
-	if (conn->rco_closed)
+	if (conn->rco_closed) {
+		rpc_set_last_error(ECONNRESET, "Connection closed", NULL);
 		return (NULL);
+	}
 
 	payload = rpc_dictionary_create();
 	call = rpc_call_alloc(conn, NULL);

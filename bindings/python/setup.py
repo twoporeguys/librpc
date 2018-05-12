@@ -44,7 +44,7 @@ setup(
     ext_modules=[
         Extension(
             "librpc",
-            ["src/librpc.pyx"],
+            ["librpc.pyx"],
             extra_compile_args=["-fblocks", "-Wno-sometimes-uninitialized"],
             extra_link_args=["-g", "-lrpc"],
         )
