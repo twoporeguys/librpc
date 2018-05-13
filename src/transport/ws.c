@@ -179,18 +179,21 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
     rpc_object_t args __unused)
 {
 	GError *err = NULL;
-	GSocketAddress *addr;
+	GSocketAddress *addr = NULL;
 	SoupURI *uri;
 	struct ws_server *server;
 	int ret = 0;
 
 	uri = soup_uri_new(uri_str);
-        if (uri == NULL ||
-	    (addr = g_inet_socket_address_new_from_string(uri->host,
-	        uri->port)) == NULL) {
+        if (uri != NULL)
+		addr = g_inet_socket_address_new_from_string(uri->host,
+	            uri->port);
+	if (addr == NULL) {
                 srv->rs_error = rpc_error_create(ENXIO, "No Such Address", NULL);
+		if (uri)
+			soup_uri_free(uri);
                 return(-1);
-        }
+	}
 	server = calloc(1, sizeof(*server));
 	server->ws_uri = uri;
 	server->ws_server = srv;

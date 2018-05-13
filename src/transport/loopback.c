@@ -148,12 +148,20 @@ loopback_listen(struct rpc_server *srv, const char *uri_string,
 	SoupURI *uri;
 	struct loopback_channel *chan;
 	int host;
+	int fail = false;
 
 	uri = soup_uri_new(uri_string);
 
-        if ((uri == NULL) || (uri->host == NULL) || !strlen(uri->host) ||
-                (!(host = (int)strtoul(uri->host, NULL, 10)) && (uri->host[0] != '0'))
-                ) {
+        if ((uri == NULL) || (uri->host == NULL) || !strlen(uri->host))
+		fail = true;
+	else {
+		host = (int)strtoul(uri->host, NULL, 10);
+		if (host == 0 && uri->host[0] != '0') {
+			fail = true;
+			soup_uri_free(uri);
+		}
+	}
+	if (fail) {
                 srv->rs_error = rpc_error_create(ENXIO, "No Such Address", NULL);
                 debugf("Invalid loopback uri %s", uri_string);
                 return (-1);
@@ -178,54 +186,71 @@ loopback_send_msg(void *arg, void *buf, size_t len __unused, const int *fds,
     size_t nfds)
 {
 	struct loopback *lb = arg;
-	struct rpc_connection *peer_conn = lb->lb_peer->lb_conn;
+	struct rpc_connection *peer_conn;
 	rpc_object_t obj = buf;
+	int ret;
 
-	if (lb->lb_closed) {
+	g_mutex_lock(&lb->lb_lock->ll_mtx);
+	if (lb->lb_closed || lb->lb_peer == NULL || lb->lb_peer->lb_closed) {
+		g_mutex_unlock(&lb->lb_lock->ll_mtx);
 		return (-1);
 	}
+	peer_conn = lb->lb_peer->lb_conn;
+	rpc_connection_reference_change(peer_conn, true);
+	g_mutex_unlock(&lb->lb_lock->ll_mtx);
 
 	rpc_retain(obj);
-	return (peer_conn->rco_recv_msg(peer_conn, (const void *)obj, 0,
+	ret = (peer_conn->rco_recv_msg(peer_conn, (const void *)obj, 0,
 	    (int *)fds, nfds, NULL));
+	rpc_connection_reference_change(peer_conn, false);
+	return (ret);
 }
 
 static int
 loopback_abort(void *arg)
 {
 	struct loopback *lb = arg;
+	struct loopback *lb_peer = NULL;
 	struct rpc_connection *conn;
-	struct rpc_connection *peer;
+	struct rpc_connection *peer = NULL;;
 
 	if (lb == NULL)
 		return (0);
 
 	g_mutex_lock(&lb->lb_lock->ll_mtx);
+	g_assert(!lb->lb_closed);
 	if (lb->lb_closed) {
 		debugf("Abort called on %p, %p already closed",
 			lb, lb->lb_conn);
 		g_mutex_unlock(&lb->lb_lock->ll_mtx);
 		return (0);
 	}
+	if (lb->lb_peer) {
+		g_assert_nonnull(lb->lb_peer->lb_peer);
+		if (!lb->lb_is_srv) {
+			lb_peer = lb->lb_peer;
+			peer = lb_peer->lb_conn;
+			rpc_connection_reference_change(peer, true);
+		}
+		lb->lb_peer->lb_peer = NULL;
+		lb->lb_peer = NULL;
+	}
+
+	debugf("Aborting  conn/arg %p/%p", conn, lb);
 
 	conn = lb->lb_conn;
-	peer = lb->lb_peer->lb_conn;
-
-	debugf("Aborting  conn/arg %p/%p, peer conn/arg %p/%p",
-	    conn, lb, peer, lb->lb_peer);
-
 	lb->lb_closed = true;
-	lb->lb_peer->lb_closed = true;
-
 	rpc_connection_reference_change(conn, true);
-	rpc_connection_reference_change(peer, true);
 
 	g_mutex_unlock(&lb->lb_lock->ll_mtx);
 
-	peer->rco_close(peer);
 	conn->rco_close(conn);
 	rpc_connection_reference_change(conn, false);
-	rpc_connection_reference_change(peer, false);
+
+	if (peer != NULL) {
+		loopback_abort(lb_peer);
+		rpc_connection_reference_change(peer, false);
+	}
 	return (0);
 }
 
@@ -240,16 +265,22 @@ static int
 loopback_lock_free(struct loopback *lb)
 {
 	
+	g_assert_nonnull(lb);
+
+	g_mutex_lock(&lb->lb_lock->ll_mtx);
+
 	g_assert(lb->lb_closed);
 	g_assert_nonnull(lb->lb_lock);
 
 	if (lb->lb_lock->ll_refcnt == 1) {
+		g_mutex_unlock(&lb->lb_lock->ll_mtx);
 		g_free(lb->lb_lock);
 		lb->lb_lock = NULL;
 		return 0;
 	}
 	g_assert(lb->lb_lock->ll_refcnt == 2);
 	lb->lb_lock->ll_refcnt = 1;
+	g_mutex_unlock(&lb->lb_lock->ll_mtx);
 	return(1);
 }
 

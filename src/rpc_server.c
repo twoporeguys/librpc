@@ -370,6 +370,7 @@ rpc_server_release(rpc_server_t server)
 			server->rs_conn_made, server->rs_conn_refused,
 			server->rs_conn_closed,
 			server->rs_conn_aborted);
+		server->rs_refcnt = -1;
 		g_free(server);
 		return;
 	}

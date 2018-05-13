@@ -641,6 +641,11 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 {
 	rpc_object_t msg = (rpc_object_t)frame;
 
+	if (!rpc_connection_is_open(conn)) {
+		debugf("Rejecting msg, conn %p is closed", conn);
+		return (-1);
+	}
+
 	debugf("received frame: addr=%p, len=%zu", frame, len);
 
 	if ((conn->rco_flags & RPC_TRANSPORT_NO_SERIALIZE) == 0) {
@@ -1027,7 +1032,7 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 
 	if (transport == NULL) {
 		rpc_set_last_error(ENXIO, "Transport not found", NULL);
-		goto fail;
+		return (NULL);
 	}
 
 	conn = g_malloc0(sizeof(*conn));

@@ -87,7 +87,8 @@ socket_parse_uri(const char *uri_string)
 	int len = 0;
 	char *upath;
 
-	if ((uri = soup_uri_new(uri_string)) == NULL)
+	uri = soup_uri_new(uri_string);
+	if (uri == NULL)
 	    return NULL;
 
 	if (!g_strcmp0(uri->scheme, "tcp")) {
@@ -405,7 +406,6 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 		conn->sc_parent->rco_error =
 			rpc_error_create_from_gerror(err);
 		g_error_free(err);
-		g_free(err);
 		free(*frame);
 		return (-1);
 	}
