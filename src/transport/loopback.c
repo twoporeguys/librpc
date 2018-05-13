@@ -129,7 +129,6 @@ loopback_send_msg(void *arg, void *buf, size_t len __unused, const int *fds,
 	struct rpc_connection *conn = arg;
 	rpc_object_t obj = buf;
 
-	rpc_retain(obj);
 	return (conn->rco_recv_msg(conn, (const void *)obj, 0, (int *)fds,
 	    nfds, NULL));
 }

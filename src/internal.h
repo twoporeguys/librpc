@@ -366,6 +366,7 @@ struct rpct_context
 	GHashTable *		files;
 	GHashTable *		types;
 	GHashTable *		interfaces;
+	GHashTable *		typei_cache;
 	rpc_function_t		pre_call_hook;
 	rpc_function_t 		post_call_hook;
 };
@@ -422,7 +423,7 @@ struct rpct_typei
 	char *			canonical_form;
 	GHashTable *		specializations;
 	GHashTable *		constraints;
-	int 			refcount;
+	volatile int		refcnt;
 };
 
 struct rpct_member
@@ -522,7 +523,6 @@ void rpc_connection_close_inbound_call(struct rpc_inbound_call *);
 
 void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 
-void rpct_typei_free(struct rpct_typei *inst);
 void rpct_add_error(struct rpct_error_context *ctx, const char *fmt, ...);
 void rpct_derive_error_context(struct rpct_error_context *newctx,
     struct rpct_error_context *oldctx, const char *name);

@@ -120,8 +120,7 @@ rpc_server_broadcast_event(rpc_server_t server, const char *path,
 	for (item = g_list_first(server->rs_connections); item;
 	     item = item->next) {
 		rpc_connection_t conn = item->data;
-		rpc_connection_send_event(conn, path, interface, name,
-		    rpc_retain(args));
+		rpc_connection_send_event(conn, path, interface, name, args);
 	}
 }
 

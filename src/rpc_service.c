@@ -819,10 +819,10 @@ rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
 	}
 
 	rpc_instance_emit_event(instance, RPC_OBSERVABLE_INTERFACE, "changed",
-	    rpc_object_pack("{s,s,V}",
+	    rpc_object_pack("{s,s,v}",
 	        "interface", interface,
 	        "name", name,
-	        "value", value));
+	        "value", rpc_retain(value)));
 }
 
 rpc_instance_t

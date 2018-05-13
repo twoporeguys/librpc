@@ -326,7 +326,6 @@ const char *_Nullable rpc_get_type_name(rpc_type_t type);
 			(_object) = NULL;				\
 	} while(0)
 
-
 /**
  * Swaps @p _old object with @p_new object.
  *

@@ -267,7 +267,7 @@ cdef class Member(object):
         return str(self)
 
     def __str__(self):
-        return "<{0} '{1}'>".formfat(self.__class__.__name__, self.name)
+        return "<{0} '{1}'>".format(self.__class__.__name__, self.name)
 
     property type:
         def __get__(self):
@@ -429,7 +429,7 @@ cdef class BaseTypingObject(Object):
 cdef class BaseStruct(BaseTypingObject):
     def __init__(self, __value=None, **kwargs):
         if not __value:
-            __value = {}.update(kwargs)
+            __value = kwargs
 
         super(BaseStruct, self).__init__(__value)
 
@@ -490,6 +490,10 @@ cdef class BaseEnum(BaseTypingObject):
     property values:
         def __get__(self):
             return [m.name for m in self.typei.type.members]
+
+
+def build(decl):
+    return TypeInstance(decl).factory
 
 
 def new(decl, *args, **kwargs):
