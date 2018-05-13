@@ -99,6 +99,10 @@ const char $\ast$ \hyperlink{typing_8h_ae5e41b9bdc0542b3b2ceeaea9616fcc3}{rpct\+
 \item 
 \hyperlink{typing_8h_a738ac0d076d329aece903bf1835bfcdd}{rpct\+\_\+member\+\_\+t} \hyperlink{typing_8h_a5b69519413246783b273583cfb3d09d4}{rpct\+\_\+type\+\_\+get\+\_\+member} (\hyperlink{typing_8h_ab85403e2a616bb3728cd489bd0619cbb}{rpct\+\_\+type\+\_\+t} type, const char $\ast$name)
 \item 
+\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} \hyperlink{typing_8h_aaccbdef57d9289cada2a56e5bc18c3eb}{rpct\+\_\+typei\+\_\+retain} (\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} typei)
+\item 
+void \hyperlink{typing_8h_a072f83e18ab9fb657649cc456b4450e4}{rpct\+\_\+typei\+\_\+release} (\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} typei)
+\item 
 \hyperlink{typing_8h_ab85403e2a616bb3728cd489bd0619cbb}{rpct\+\_\+type\+\_\+t} \hyperlink{typing_8h_a6f327621ae6dbc69d3812723c53f3feb}{rpct\+\_\+typei\+\_\+get\+\_\+type} (\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} typei)
 \item 
 \hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} \hyperlink{typing_8h_a940e59facf355b4f4195d9a23647c75f}{rpct\+\_\+typei\+\_\+get\+\_\+generic\+\_\+var} (\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} typei, const char $\ast$name)
@@ -884,7 +888,7 @@ Creates a new object of the specified type.
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-
+Typed object 
 \end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_a607ecfa5cfa13782fafd4d8da6fbd3d8}\label{typing_8h_a607ecfa5cfa13782fafd4d8da6fbd3d8}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+new\+\_\+typei@{rpct\+\_\+new\+\_\+typei}}
@@ -908,15 +912,17 @@ Type instance handle or N\+U\+LL in case of error
 \subsubsection{\texorpdfstring{rpct\+\_\+newi()}{rpct\_newi()}}
 {\footnotesize\ttfamily \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpct\+\_\+newi (\begin{DoxyParamCaption}\item[{\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t}}]{typei,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{object }\end{DoxyParamCaption})}
 
+Creates a new object of the specified type.
+
 
 \begin{DoxyParams}{Parameters}
-{\em typei} & \\
+{\em typei} & Type instance handle \\
 \hline
-{\em object} & \\
+{\em object} & Contents \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-
+Typed object 
 \end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_afa62adf9fe6a415494c529254b030086}\label{typing_8h_afa62adf9fe6a415494c529254b030086}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+post\+\_\+call\+\_\+hook@{rpct\+\_\+post\+\_\+call\+\_\+hook}}
@@ -1221,15 +1227,17 @@ Type instance handle or {\ttfamily N\+U\+LL}
 \subsubsection{\texorpdfstring{rpct\+\_\+typei\+\_\+get\+\_\+member\+\_\+type()}{rpct\_typei\_get\_member\_type()}}
 {\footnotesize\ttfamily \hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} rpct\+\_\+typei\+\_\+get\+\_\+member\+\_\+type (\begin{DoxyParamCaption}\item[{\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t}}]{typei,  }\item[{\hyperlink{typing_8h_a738ac0d076d329aece903bf1835bfcdd}{rpct\+\_\+member\+\_\+t}}]{member }\end{DoxyParamCaption})}
 
+Returns type instance handler of a structure or union member.
+
 
 \begin{DoxyParams}{Parameters}
-{\em typei} & \\
+{\em typei} & Type instance handle \\
 \hline
-{\em member} & \\
+{\em member} & Member handle \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-
+Type instance handle or N\+U\+LL in case of error 
 \end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_a6f327621ae6dbc69d3812723c53f3feb}\label{typing_8h_a6f327621ae6dbc69d3812723c53f3feb}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+typei\+\_\+get\+\_\+type@{rpct\+\_\+typei\+\_\+get\+\_\+type}}
@@ -1246,6 +1254,37 @@ Returns base type of a type instance {\ttfamily typei}.
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 Type handle 
+\end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_a072f83e18ab9fb657649cc456b4450e4}\label{typing_8h_a072f83e18ab9fb657649cc456b4450e4}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+typei\+\_\+release@{rpct\+\_\+typei\+\_\+release}}
+\index{rpct\+\_\+typei\+\_\+release@{rpct\+\_\+typei\+\_\+release}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+typei\+\_\+release()}{rpct\_typei\_release()}}
+{\footnotesize\ttfamily void rpct\+\_\+typei\+\_\+release (\begin{DoxyParamCaption}\item[{\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t}}]{typei }\end{DoxyParamCaption})}
+
+Decrements reference count of a type instance handle.
+
+If the reference count reaches 0, type instance handle is freed.
+
+
+\begin{DoxyParams}{Parameters}
+{\em typei} & Type instance handle \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{typing_8h_aaccbdef57d9289cada2a56e5bc18c3eb}\label{typing_8h_aaccbdef57d9289cada2a56e5bc18c3eb}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+typei\+\_\+retain@{rpct\+\_\+typei\+\_\+retain}}
+\index{rpct\+\_\+typei\+\_\+retain@{rpct\+\_\+typei\+\_\+retain}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+typei\+\_\+retain()}{rpct\_typei\_retain()}}
+{\footnotesize\ttfamily \hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} rpct\+\_\+typei\+\_\+retain (\begin{DoxyParamCaption}\item[{\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t}}]{typei }\end{DoxyParamCaption})}
+
+Increments reference count of a type instance handle.
+
+
+\begin{DoxyParams}{Parameters}
+{\em typei} & Type instance handle \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Same as the passed argument 
 \end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_a1b6d6a2e631f2eefd83ec54b5f307282}\label{typing_8h_a1b6d6a2e631f2eefd83ec54b5f307282}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+types\+\_\+apply@{rpct\+\_\+types\+\_\+apply}}
