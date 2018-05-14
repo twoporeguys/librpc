@@ -172,7 +172,7 @@ cdef class TypeInstance(object):
         return obj
 
     def validate(self, Object obj):
-        cdef rpc_object_t errors
+        cdef rpc_object_t errors = <rpc_object_t>NULL
         cdef bint valid
 
         valid = rpct_validate(self.rpctypei, obj.obj, &errors)
