@@ -79,6 +79,7 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 
 	if (call->ric_conn->rco_closed) {
 		debugf("Can't dispatch call, conn %p closed", call->ric_conn);
+		rpc_connection_close_inbound_call(call);
 		return;
 	}
 
