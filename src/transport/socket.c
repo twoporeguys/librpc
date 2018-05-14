@@ -200,9 +200,7 @@ socket_connect(struct rpc_connection *rco, const char *uri,
 	conn->sc_conn = g_socket_client_connect(conn->sc_client,
 	    G_SOCKET_CONNECTABLE(addr), NULL, &err);
 	if (err != NULL) {
-		rco->rco_closed = true;
-		if (rco->rco_close)
-			rco->rco_close(rco);
+		socket_release(conn);
 		g_object_unref(addr);
 		rpc_set_last_gerror(err);
 		g_error_free(err);

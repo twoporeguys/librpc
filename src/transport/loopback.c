@@ -100,11 +100,9 @@ loopback_accept(struct loopback_channel *chan, struct rpc_connection *conn)
 	if (chan->lc_srv->rs_accept(chan->lc_srv, lb_s->lb_conn) != 0) {
 		debugf("loopback accept refused, s: %p, c: %p",
 			lb_s->lb_conn, lb_c->lb_conn);
-		lb_c->lb_conn->rco_closed = true;
 		lb_c->lb_closed = true;
-
-		lb_s->lb_conn->rco_close(lb_s->lb_conn);
-		lb_c->lb_conn->rco_close(lb_c->lb_conn);
+		loopback_release(lb_c);
+		loopback_abort(lb_s);
 
 		return (-1);
 	}

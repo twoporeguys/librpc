@@ -81,6 +81,7 @@ rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 	g_mutex_lock(&server->rs_mtx);
 	if (server->rs_closed) {
 		server->rs_conn_refused++;
+		conn->rco_server_released = true;
 		g_mutex_unlock(&server->rs_mtx);
 		return (-1);
 	}
