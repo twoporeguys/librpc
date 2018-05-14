@@ -54,13 +54,20 @@ cdef class Serializer(object):
 
         return ret
 
-    def dumps(self, Object obj):
+    def dumps(self, obj):
         cdef void *frame
         cdef size_t len
         cdef int ret
+        cdef Object rpc_obj
+
+        if isinstance(obj, Object):
+            rpc_obj = <Object>obj
+        else:
+            rpc_obj = Object(obj)
+
 
         with nogil:
-            ret = rpc_serializer_dump(self.type, obj.obj, &frame, &len)
+            ret = rpc_serializer_dump(self.type, rpc_obj.obj, &frame, &len)
 
         if ret != 0:
             raise_internal_exc()
