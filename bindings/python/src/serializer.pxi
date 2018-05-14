@@ -36,7 +36,7 @@ cdef class Serializer(object):
     def __dealloc__(self):
         free(<void *>self.type)
 
-    def loads(self, bytes blob):
+    def loads(self, bytes blob, unpack=False):
         cdef Object ret
         cdef char *buf = blob
         cdef int length = len(blob)
@@ -48,6 +48,9 @@ cdef class Serializer(object):
 
         if ret.obj == <rpc_object_t>NULL:
             raise_internal_exc()
+
+        if unpack:
+            return ret.unpack()
 
         return ret
 
