@@ -65,7 +65,6 @@ cdef class Serializer(object):
         else:
             rpc_obj = Object(obj)
 
-
         with nogil:
             ret = rpc_serializer_dump(self.type, rpc_obj.obj, &frame, &len)
 
