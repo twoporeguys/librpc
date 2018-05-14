@@ -205,7 +205,6 @@ struct rpc_inbound_call
 	rpc_object_t 		ric_frame;
 	rpc_object_t        	ric_id;
 	rpc_object_t        	ric_args;
-	rpc_object_t        	ric_strings;
 	rpc_abort_handler_t	ric_abort_handler;
 	const char *        	ric_name;
 	const char *		ric_interface;
@@ -533,7 +532,8 @@ void rpc_set_last_gerror(GError *error);
 void rpc_set_last_errorf(int code, const char *fmt, ...);
 rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
-void rpc_connection_reference_change(rpc_connection_t, bool);
+void rpc_connection_reference_retain(rpc_connection_t);
+void rpc_connection_reference_release(rpc_connection_t);
 int rpc_context_dispatch(rpc_context_t, struct rpc_inbound_call *);
 int rpc_server_dispatch(rpc_server_t, struct rpc_inbound_call *);
 void rpc_server_release(rpc_server_t);

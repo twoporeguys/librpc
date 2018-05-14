@@ -90,7 +90,7 @@ rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 
 	g_rw_lock_writer_lock(&server->rs_connections_rwlock);
 	server->rs_connections = g_list_append(server->rs_connections, conn);
-	rpc_connection_reference_change(conn, true);
+	rpc_connection_reference_retain(conn);
 	g_rw_lock_writer_unlock(&server->rs_connections_rwlock);
 
 	server->rs_conn_made++;
@@ -122,7 +122,7 @@ rpc_server_disconnect(rpc_server_t server, rpc_connection_t conn)
                 if (comp == conn) {
                         server->rs_connections =
                             g_list_remove_link(server->rs_connections, iter);
-			rpc_connection_reference_change(conn, false);
+			rpc_connection_reference_release(conn);
                         break;
                 }
         }
@@ -273,7 +273,6 @@ int
 rpc_server_dispatch(rpc_server_t server, struct rpc_inbound_call *call)
 {
 	int ret;
-	rpc_object_t sdict;
 
 	g_mutex_lock(&server->rs_calls_mtx);
 
@@ -283,16 +282,7 @@ rpc_server_dispatch(rpc_server_t server, struct rpc_inbound_call *call)
 	}
 
 	if (server->rs_paused || !g_queue_is_empty(server->rs_calls))  {
-		sdict = rpc_dictionary_create();
-		rpc_dictionary_set_string(sdict, "method", call->ric_name);
-		if (call->ric_path)
-			rpc_dictionary_set_string(sdict, "path",
-			    call->ric_path);
-		if (call->ric_interface)
-			rpc_dictionary_set_string(sdict, "interface",
-			    call->ric_interface);
-		call->ric_strings = sdict;
-
+		rpc_retain(call->ric_frame);
 		g_queue_push_tail(server->rs_calls, call);
 		g_mutex_unlock(&server->rs_calls_mtx);
 		return (0);
@@ -308,20 +298,32 @@ static void
 server_queue_purge(rpc_server_t server)
 {
 	struct rpc_inbound_call *icall;
+	const char *method = NULL;
+	const char *interface = NULL;
+	const char *path = NULL;
+	rpc_object_t call_args = NULL;
+	rpc_object_t frame;
 
 	while (!g_queue_is_empty(server->rs_calls)) {
 		icall = g_queue_pop_head(server->rs_calls);
-		if (icall->ric_strings != NULL) {
-			icall->ric_name = rpc_dictionary_get_string(
-			    icall->ric_strings, "method");
-			icall->ric_interface = rpc_dictionary_get_string(
-			    icall->ric_strings, "interface");
-			icall->ric_path = rpc_dictionary_get_string(
-			    icall->ric_strings, "path");
+		rpc_object_unpack(icall->ric_frame, "{s,s,s,v}",
+		    "method", &method,
+		    "interface", &interface,
+		    "path", &path,
+		    "args", &call_args);
+
+		icall->ric_name = method;
+		icall->ric_interface = interface;
+		icall->ric_path = path;
+		frame = icall->ric_frame;
+
+		if (!server->rs_closed) {
+			if (rpc_context_dispatch(server->rs_context, icall) == 0)
+				rpc_release(frame);
+				continue;
 		}
-		if (server->rs_closed ||
-		    (rpc_context_dispatch(server->rs_context, icall) != 0))
-			rpc_connection_close_inbound_call(icall);
+		rpc_release(frame);
+		rpc_connection_close_inbound_call(icall);
 	}
 }
 
@@ -412,7 +414,7 @@ rpc_server_close(rpc_server_t server)
 			server->rs_conn_aborted++;
 
 			if (deref == -1) /* disconnect must fail, deref here */
-				rpc_connection_reference_change(conn, false);
+				rpc_connection_reference_release(conn);
 		}
 	}
 	if (server->rs_threaded_teardown) {

@@ -367,7 +367,7 @@ ws_close(SoupWebsocketConnection *ws __unused, gpointer user_data)
 	g_mutex_unlock(&conn->wc_abort_mtx);
 
 	/* hold a reference to keep conn accessible after this abort-close*/
-	rpc_connection_reference_change(conn->wc_parent, true);
+	rpc_connection_reference_retain(conn->wc_parent);
 
 	conn->wc_parent->rco_close(conn->wc_parent);
 
@@ -380,7 +380,7 @@ ws_close(SoupWebsocketConnection *ws __unused, gpointer user_data)
 	conn->wc_closed = true;
 	g_cond_broadcast(&conn->wc_abort_cv);
 	g_mutex_unlock(&conn->wc_abort_mtx);
-	rpc_connection_reference_change(conn->wc_parent, false);
+	rpc_connection_reference_release(conn->wc_parent);
 }
 
 static int

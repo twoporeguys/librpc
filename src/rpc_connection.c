@@ -710,7 +710,7 @@ rpc_close(rpc_connection_t conn)
                 conn->rco_error_handler = NULL;
         }
 
-	rpc_connection_reference_change(conn, true);
+	rpc_connection_reference_retain(conn);
         if (conn->rco_server) {
 		conn->rco_closed = true;
                 /* Tear down all the running inbound calls */
@@ -741,7 +741,7 @@ rpc_close(rpc_connection_t conn)
 
                         rpc_connection_close(conn);
                 }
-		rpc_connection_reference_change(conn, false);
+		rpc_connection_reference_release(conn);
                 return (0);
         }
 
@@ -777,7 +777,7 @@ rpc_close(rpc_connection_t conn)
 		} else 
 			g_mutex_unlock(&conn->rco_mtx);
 	}
-	rpc_connection_reference_change(conn, false);
+	rpc_connection_reference_release(conn);
 
 	return (0);
 }
@@ -955,7 +955,6 @@ rpc_connection_release_call(struct rpc_inbound_call *call)
 
         rpc_release(call->ric_id);
         rpc_release(call->ric_args);
-	rpc_release(call->ric_strings);
         g_free(call);
 }
 
@@ -964,7 +963,7 @@ rpc_connection_close_inbound_call(struct rpc_inbound_call *call)
 {
 	rpc_connection_t conn = call->ric_conn;
 
-	rpc_connection_reference_change(conn, true);
+	rpc_connection_reference_retain(conn);
         g_rw_lock_writer_lock(&conn->rco_icall_rwlock);
 
 	g_assert(g_hash_table_contains(conn->rco_inbound_calls,
@@ -979,7 +978,7 @@ rpc_connection_close_inbound_call(struct rpc_inbound_call *call)
             (g_hash_table_size(conn->rco_inbound_calls) == 0)) {
                 rpc_connection_close(conn);
 	}
-	rpc_connection_reference_change(conn, false);
+	rpc_connection_reference_release(conn);
 }
 
 static rpc_object_t
@@ -1105,9 +1104,9 @@ rpc_connection_close(rpc_connection_t conn)
 		conn->rco_abort = NULL;
 		g_mutex_unlock(&conn->rco_mtx);
 
-		rpc_connection_reference_change(conn, true);
+		rpc_connection_reference_retain(conn);
                 abort_func(conn->rco_arg);
-		rpc_connection_reference_change(conn, false);
+		rpc_connection_reference_release(conn);
 
  		/* return -1 if the server caused the abort. When the the server
 		 * call queue goes empty and this function is reentered, the 
@@ -1132,7 +1131,7 @@ rpc_connection_close(rpc_connection_t conn)
                 rpc_server_release(conn->rco_server); /*no more touching!*/
 	}
 
-	rpc_connection_reference_change(conn, false);
+	rpc_connection_reference_release(conn);
 	return (0);
 done:
 	g_mutex_unlock(&conn->rco_mtx);
@@ -1156,7 +1155,7 @@ rpc_connection_is_open(_Nonnull rpc_connection_t conn)
 }
 
 void
-rpc_connection_reference_change(_Nonnull rpc_connection_t conn, bool retain)
+rpc_connection_reference_retain(rpc_connection_t conn)
 {
 
 	if (conn == NULL)
@@ -1164,34 +1163,37 @@ rpc_connection_reference_change(_Nonnull rpc_connection_t conn, bool retain)
 
 	g_mutex_lock(&conn->rco_ref_mtx);
 	g_assert(conn->rco_refcnt > 0);
-	if (retain) {
-		conn->rco_refcnt++;
-		/*fprintf(stderr, "%s %p BUMPED to %d\n",
-		    (conn->rco_server) ? "Server" : "Client",
-		    conn, conn->rco_refcnt); */
-	} else {
-		if (conn->rco_refcnt == 1) {
-			g_assert(conn->rco_closed);
+	conn->rco_refcnt++;
+	g_mutex_unlock(&conn->rco_ref_mtx);
+}
 
-			if (conn->rco_release && conn->rco_arg) {
-				conn->rco_release(conn->rco_arg);
-				conn->rco_arg = NULL;
-			}
-			rpc_connection_free_resources(conn);
+void
+rpc_connection_reference_release(rpc_connection_t conn)
+{
 
-			debugf("%s  in thread %p FREED %p", 
-	    		    (conn->rco_server) ? "Server" : "Client", 
-	    		    g_thread_self(), conn);
-			conn->rco_refcnt = -1;
-			g_mutex_unlock(&conn->rco_ref_mtx);
-			g_free(conn);
-			return;
+	if (conn == NULL)
+		return;
+
+	g_mutex_lock(&conn->rco_ref_mtx);
+	g_assert(conn->rco_refcnt > 0);
+	if (conn->rco_refcnt == 1) {
+		g_assert(conn->rco_closed);
+
+		if (conn->rco_release && conn->rco_arg) {
+			conn->rco_release(conn->rco_arg);
+			conn->rco_arg = NULL;
 		}
-		conn->rco_refcnt--;
-		/*fprintf(stderr, "%s %p DROPPED to %d\n",
+		rpc_connection_free_resources(conn);
+
+		debugf("%s  in thread %p FREED %p",
 		    (conn->rco_server) ? "Server" : "Client",
-		    conn, conn->rco_refcnt); */
+		    g_thread_self(), conn);
+		conn->rco_refcnt = -1;
+		g_mutex_unlock(&conn->rco_ref_mtx);
+		g_free(conn);
+		return;
 	}
+	conn->rco_refcnt--;
 	g_mutex_unlock(&conn->rco_ref_mtx);
 }
 
@@ -1781,7 +1783,7 @@ rpc_call_free(rpc_call_t call)
 	}
 
 	g_mutex_lock(&conn->rco_mtx);
-	rpc_connection_reference_change(conn, true);
+	rpc_connection_reference_retain(conn);
 
 	g_rw_lock_writer_lock(&conn->rco_call_rwlock);
 	g_hash_table_remove(conn->rco_calls,
@@ -1796,7 +1798,7 @@ rpc_call_free(rpc_call_t call)
 	} else {
 		g_mutex_unlock(&conn->rco_mtx);
 	}
-	rpc_connection_reference_change(conn, false);
+	rpc_connection_reference_release(conn);
 
 	Block_release(call->rc_callback);
 	rpc_release(call->rc_id);
