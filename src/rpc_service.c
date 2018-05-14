@@ -527,6 +527,9 @@ rpc_instance_new(void *arg, const char *fmt, ...)
 	rpc_instance_register_interface(result, RPC_INTROSPECTABLE_INTERFACE,
 	    rpc_introspectable_vtable, NULL);
 
+	rpc_instance_register_interface(result, RPC_OBSERVABLE_INTERFACE,
+	    rpc_observable_vtable, NULL);
+
 	return (result);
 }
 
@@ -682,14 +685,6 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 
 		if (copy->rim_property.rp_arg == NULL)
 			copy->rim_property.rp_arg = priv->rip_arg;
-
-		/* Install Observable interface if needed */
-		if (!rpc_instance_has_interface(instance,
-		    RPC_OBSERVABLE_INTERFACE)) {
-			rpc_instance_register_interface(instance,
-			    RPC_OBSERVABLE_INTERFACE, rpc_observable_vtable,
-			    NULL);
-		}
 
 		/* Emit property added event */
 		rpc_instance_emit_event(instance, RPC_OBSERVABLE_INTERFACE,
