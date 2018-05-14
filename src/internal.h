@@ -523,7 +523,8 @@ void rpc_connection_close_inbound_call(struct rpc_inbound_call *);
 
 void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 
-void rpct_add_error(struct rpct_error_context *ctx, const char *fmt, ...);
+void rpct_add_error(struct rpct_error_context *ctx, rpc_object_t extra,
+    const char *fmt, ...);
 void rpct_derive_error_context(struct rpct_error_context *newctx,
     struct rpct_error_context *oldctx, const char *name);
 void rpct_release_error_context(struct rpct_error_context *ctx);

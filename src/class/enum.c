@@ -54,7 +54,7 @@ enum_validate(struct rpct_typei *typei, rpc_object_t obj,
 	mem = rpct_type_get_member(typei->type, value);
 
 	if (mem == NULL) {
-		rpct_add_error(errctx, "Enum member %s not found", value, NULL);
+		rpct_add_error(errctx, NULL, "Enum member %s not found", value);
 		return (false);
 	}
 

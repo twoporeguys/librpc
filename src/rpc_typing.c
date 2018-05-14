@@ -262,7 +262,7 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 	GRegex *regex;
 	GMatchInfo *match = NULL;
 	GPtrArray *splitvars = NULL;
-	struct rpct_type *type;
+	struct rpct_type *type = NULL;
 	struct rpct_typei *ret = NULL;
 	struct rpct_typei *subtype;
 	char *decltype = NULL;
@@ -1171,7 +1171,7 @@ rpct_run_validators(struct rpct_typei *typei, rpc_object_t obj,
 	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&value)) {
 		v = rpc_find_validator(typename, key);
 		if (v == NULL) {
-			rpct_add_error(errctx, "Validator %s not found", key);
+			rpct_add_error(errctx, NULL, "Validator %s not found", key);
 			valid = false;
 			continue;
 		}
@@ -1209,19 +1209,19 @@ rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
 		    raw_typei->canonical_form) == 0)
 			goto step3;
 
-		rpct_add_error(errctx,
+		rpct_add_error(errctx, NULL,
 		    "Incompatible type %s, should be %s",
 		    rpc_get_type_name(obj->ro_type),
-		    raw_typei->canonical_form, NULL);
+		    raw_typei->canonical_form);
 		return (false);
 	}
 
 	/* Step 2: check type */
 	if (!rpct_type_is_compatible(raw_typei, obj->ro_typei)) {
-		rpct_add_error(errctx,
+		rpct_add_error(errctx, NULL,
 		    "Incompatible type %s, should be %s",
 		    obj->ro_typei->canonical_form,
-		    typei->canonical_form, NULL);
+		    typei->canonical_form);
 
 		valid = false;
 		goto done;
@@ -1974,7 +1974,8 @@ rpct_release_error_context(struct rpct_error_context *ctx)
 }
 
 void
-rpct_add_error(struct rpct_error_context *ctx, const char *fmt, ...)
+rpct_add_error(struct rpct_error_context *ctx, rpc_object_t extra,
+    const char *fmt, ...)
 {
 	va_list ap;
 	struct rpct_validation_error *err;
@@ -1983,7 +1984,7 @@ rpct_add_error(struct rpct_error_context *ctx, const char *fmt, ...)
 	err = g_malloc0(sizeof(*err));
 	err->path = g_strdup(ctx->path);
 	err->message = g_strdup_vprintf(fmt, ap);
-	err->extra = va_arg(ap, rpc_object_t);
+	err->extra = extra;
 	va_end(ap);
 
 	g_ptr_array_add(ctx->errors, err);

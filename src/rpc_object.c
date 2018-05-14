@@ -645,7 +645,7 @@ rpc_copy(rpc_object_t object)
 		break;
 	}
 
-	if (object->ro_typei)
+	if (object->ro_typei != NULL)
 		result->ro_typei = rpct_typei_retain(object->ro_typei);
 
 	return (result);

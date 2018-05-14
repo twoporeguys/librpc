@@ -41,7 +41,7 @@ validate_string_regex(rpc_object_t obj, rpc_object_t params,
 
 	if (!g_regex_match_simple(pattern, str, 0, 0)) {
 		valid = false;
-		rpct_add_error(errctx, "String doesn't match", NULL);
+		rpct_add_error(errctx, NULL, "String doesn't match");
 	}
 
 	return (valid);

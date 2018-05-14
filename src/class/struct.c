@@ -87,8 +87,8 @@ struct_validate(struct rpct_typei *typei, rpc_object_t obj,
 	    mtypei = rpct_typei_get_member_type(typei, member);
 	    mvalue = rpc_dictionary_get_value(obj, member->name);
 	    if (mvalue == NULL) {
-		    rpct_add_error(errctx, "Member %s not found",
-				   member->name, NULL);
+		    rpct_add_error(errctx, NULL, "Member %s not found",
+		        member->name);
 		    valid = false;
 		    return ((bool)false);
 	    }

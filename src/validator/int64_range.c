@@ -42,16 +42,16 @@ validate_int64_range(rpc_object_t obj, rpc_object_t params,
 
 	if (max != -1 && value > max) {
 		valid = false;
-		rpct_add_error(errctx,
+		rpct_add_error(errctx, NULL,
 		    "Value %" PRId64 " is larger than the maximum allowed: %" PRId64,
-		    value, max, NULL);
+		    value, max);
 	}
 
 	if (min != -1 && value < min) {
 		valid = false;
-		rpct_add_error(errctx,
+		rpct_add_error(errctx, NULL,
 		    "Value %" PRId64 " is smaller than the minimum allowed: %" PRId64,
-		    value, max, NULL);
+		    value, max);
 	}
 
 	return (valid);
