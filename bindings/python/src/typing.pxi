@@ -374,7 +374,7 @@ cdef class Property(InterfaceMember):
             return TypeInstance.init_from_ptr(rpct_property_get_type(self.c_member))
 
     def __str__(self):
-        return "<librpc.Proprety name '{0}'>".format(self.name)
+        return "<librpc.Property name '{0}'>".format(self.name)
 
     def __repr__(self):
         return str(self)
@@ -457,9 +457,6 @@ cdef class BaseStruct(BaseTypingObject):
     def __str__(self):
         return "<struct {0}>".format(self.typei.type.name)
 
-    def __repr__(self):
-        return str(self)
-
 
 
 cdef class BaseUnion(BaseTypingObject):
@@ -469,9 +466,6 @@ cdef class BaseUnion(BaseTypingObject):
     def __str__(self):
         return "<union {0}>".format(self.typei.type.name)
 
-    def __repr__(self):
-        return str(self)
-
 
 cdef class BaseEnum(BaseTypingObject):
     def __init__(self, value):
@@ -479,9 +473,6 @@ cdef class BaseEnum(BaseTypingObject):
 
     def __str__(self):
         return "<enum {0}>".format(self.typei.type.name)
-
-    def __repr__(self):
-        return str(self)
 
     property value:
         def __get__(self):

@@ -212,8 +212,7 @@ cdef class Object(object):
             return None
 
         ret = Object.__new__(Object)
-        ret.obj = ptr
-        rpc_retain(ret.obj)
+        ret.obj = rpc_retain(ptr)
         return ret
 
     def unpack(self):
