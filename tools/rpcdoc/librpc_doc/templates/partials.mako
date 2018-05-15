@@ -49,7 +49,7 @@
 <ul>
     % for m in e.members:
     <li>
-        ${m.name}
+        <span class="type">${m.name}</span>
         <p>
             ${m.description}
         </p>
