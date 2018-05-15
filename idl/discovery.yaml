@@ -37,6 +37,17 @@ struct PropertyDescriptor:
       type: any
 
 
+struct PropertyChangeNotification:
+  description: Describes a changed property value
+  members:
+    interface:
+      type: string
+    name:
+      type: string
+    value:
+      type: any
+
+
 interface Discoverable:
   method get_instances:
     description: |
@@ -103,3 +114,8 @@ interface Observable:
       - type: any
         name: value
         description: Property value
+
+  event changed:
+    description: |
+      Notifies about property change
+    type: PropertyChangeNotification
