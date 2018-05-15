@@ -1139,7 +1139,7 @@ rpct_read_file(const char *path)
 		return (-1);
 
 	file = g_malloc0(sizeof(*file));
-	file->body = rpc_retain(obj);
+	file->body = obj;
 	file->path = g_strdup(path);
 	file->uses = g_ptr_array_new_with_free_func(g_free);
 	file->types = g_hash_table_new(g_str_hash, g_str_equal);
