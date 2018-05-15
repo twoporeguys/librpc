@@ -796,6 +796,7 @@ rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
 {
 	struct rpc_if_member *prop;
 	struct rpc_property_cookie cookie;
+	bool release = false;
 
 	prop = rpc_instance_find_member(instance, interface, name);
 	g_assert(prop != NULL);
@@ -811,6 +812,7 @@ rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
 			return;
 
 		value = prop->rim_property.rp_getter(&cookie);
+		release = true;
 	}
 
 	rpc_instance_emit_event(instance, RPC_OBSERVABLE_INTERFACE, "changed",
@@ -818,6 +820,9 @@ rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
 	        "interface", interface,
 	        "name", name,
 	        "value", rpc_retain(value)));
+
+	if (release)
+		rpc_release(value);
 }
 
 rpc_instance_t

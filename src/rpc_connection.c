@@ -725,7 +725,7 @@ rpc_send_frame(rpc_connection_t conn, rpc_object_t frame)
 	}
 
 #ifdef RPC_TRACE
-	rpc_trace("SEND", frame);
+	rpc_trace("SEND", conn->rco_uri, frame);
 #endif
 
 	g_mutex_lock(&conn->rco_send_mtx);
@@ -893,6 +893,7 @@ rpc_connection_alloc(rpc_server_t server)
 	struct rpc_connection *conn = NULL;
 
 	conn = g_malloc0(sizeof(*conn));
+	conn->rco_uri = server->rs_uri;
 	conn->rco_flags = server->rs_flags;
 	conn->rco_server = server;
 	conn->rco_calls = g_hash_table_new(g_str_hash, g_str_equal);
@@ -1023,7 +1024,7 @@ rpc_connection_dispatch(rpc_connection_t conn, rpc_object_t frame)
 	    rpc_string_get_string_ptr(id));
 
 #ifdef RPC_TRACE
-	rpc_trace("RECV", frame);
+	rpc_trace("RECV", conn->rco_uri, frame);
 #endif
 
 	for (h = &handlers[0]; h->namespace != NULL; h++) {

@@ -73,7 +73,7 @@ static rpc_object_t
 builtin_serialize(rpc_object_t obj)
 {
 
-	return (obj);
+	return (rpc_copy(obj));
 }
 
 static struct rpct_class_handler builtin_class_handler = {

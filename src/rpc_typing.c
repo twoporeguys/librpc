@@ -1870,6 +1870,7 @@ rpct_serialize(rpc_object_t object)
 		/* Try recursively */
 		if (rpc_get_type(object) == RPC_TYPE_DICTIONARY) {
 			cont = rpc_dictionary_create();
+			cont->ro_typei = rpct_new_typei("dictionary");
 			rpc_dictionary_apply(object,
 			    ^(const char *key, rpc_object_t v) {
 				rpc_dictionary_steal_value(cont, key,
@@ -1880,6 +1881,7 @@ rpct_serialize(rpc_object_t object)
 			return (cont);
 		} else if (rpc_get_type(object) == RPC_TYPE_ARRAY) {
 			cont = rpc_array_create();
+			cont->ro_typei = rpct_new_typei("array");
 			rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
 				rpc_array_append_stolen_value(cont,
 				    rpct_serialize(v));
@@ -1887,8 +1889,11 @@ rpct_serialize(rpc_object_t object)
 			});
 
 			return (cont);
-		} else
-			return (rpc_copy(object));
+		} else {
+			cont = rpc_copy(object);
+			cont->ro_typei = rpct_new_typei(rpc_get_type_name(rpc_get_type(object)));
+			return (cont);
+		}
 	}
 
 	clazz = object->ro_typei->type->clazz;
