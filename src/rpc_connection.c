@@ -1259,7 +1259,7 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 		rpc_dictionary_set_string(payload, "interface", interface);
 
 	rpc_dictionary_set_string(payload, "method", name);
-	rpc_dictionary_steal_value(payload, "args", args);
+	rpc_dictionary_steal_value(payload, "args", call->rc_args);
 	frame = rpc_pack_frame("rpc", "call", call->rc_id, payload);
 
 	g_mutex_lock(&call->rc_mtx);
