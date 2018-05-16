@@ -1330,6 +1330,11 @@ rpc_connection_watch_property(rpc_connection_t conn, const char *path,
     const char *interface, const char *property,
     rpc_property_handler_t handler)
 {
+	/* add some memory leaks to we can remove them later */
+	path = g_strdup(path);
+	interface = g_strdup(interface);
+	property = g_strdup(property);
+
 	rpc_handler_t block = ^(const char *_p __unused, const char *_i __unused,
 	    const char *_n __unused, rpc_object_t args) {
 		const char *ev_iface;
