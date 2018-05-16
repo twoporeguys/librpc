@@ -180,7 +180,7 @@ cdef class Connection(object):
         handler(event_args)
 
     @staticmethod
-    cdef void c_prop_handler(void *arg, rpc_object_t value):
+    cdef void c_prop_handler(void *arg, rpc_object_t value) with gil:
         cdef object handler = <object>arg
 
         handler(Object.init_from_ptr(value))
