@@ -431,6 +431,7 @@ cdef class RemoteObject(object):
 cdef class RemoteInterface(object):
     cdef readonly client
     cdef readonly path
+    cdef readonly name
     cdef readonly interface
     cdef readonly methods
     cdef readonly properties

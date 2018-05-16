@@ -414,6 +414,7 @@ cdef class RemoteInterface(object):
     def __init__(self, client, path, interface=''):
         self.client = client
         self.path = path
+        self.name = os.path.basename(path)
         self.interface = interface
         self.methods = {}
         self.properties = {}
