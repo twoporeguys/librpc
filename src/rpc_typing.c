@@ -410,6 +410,7 @@ done:
 		g_free(declvars);
 
 	if (ret != NULL && !ret->type->generic) {
+		rpct_typei_retain(ret);
 		g_hash_table_insert(context->typei_cache,
 		    g_strdup(ret->canonical_form), ret);
 	}
