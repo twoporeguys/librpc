@@ -350,7 +350,7 @@ cdef class Connection(object):
         b_property = property.encode('utf-8')
         fn_unpack = lambda val: fn(self.do_unpack(val))
 
-        self.ev_handlers.append(fn)
+        self.ev_handlers.append(fn_unpack)
         cookie = rpc_connection_watch_property(
             self.connection,
             b_path,
