@@ -471,7 +471,7 @@ cdef class Connection(object):
     @staticmethod
     cdef void c_ev_handler(void *arg, const char *path, const char *inteface, const char *name, rpc_object_t args) with gil
     @staticmethod
-    cdef void c_prop_handler(void *arg, rpc_object_t value)
+    cdef void c_prop_handler(void *arg, rpc_object_t value) with gil
     @staticmethod
     cdef void c_error_handler(void *arg, rpc_error_code_t code, rpc_object_t args) with gil
 
