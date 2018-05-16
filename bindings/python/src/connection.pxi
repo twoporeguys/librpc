@@ -346,7 +346,7 @@ cdef class Connection(object):
             raise RuntimeError("Not connected")
 
         b_path = path.encode('utf-8')
-        b_interface = path.encode('utf-8')
+        b_interface = interface.encode('utf-8')
         b_property = property.encode('utf-8')
         fn_unpack = lambda val: fn(self.do_unpack(val))
 
