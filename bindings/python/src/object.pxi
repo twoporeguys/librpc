@@ -502,16 +502,22 @@ cdef class Array(Object):
         return rpc_array_get_count(self.obj)
 
     def __getitem__(self, index):
-        cdef Object rpc_value
+        cdef rpc_object_t c_value
+        cdef rpc_type_t c_type
 
-        rpc_value = Object.__new__(Object)
-        rpc_value.obj = rpc_array_get_value(self.obj, index)
-        if rpc_value.obj == <rpc_object_t>NULL:
+        c_value = rpc_array_get_value(self.obj, index)
+        if c_value == <rpc_object_t>NULL:
             raise LibException(errno.ERANGE, 'Array index out of range')
 
-        rpc_retain(rpc_value.obj)
+        c_type = rpc_get_type(c_value)
 
-        return rpc_value
+        if c_type == RPC_TYPE_DICTIONARY:
+            return Dictionary.init_from_ptr(c_value)
+
+        if c_type == RPC_TYPE_ARRAY:
+            return Array.init_from_ptr(c_value)
+
+        return Object.init_from_ptr(c_value)
 
     def __setitem__(self, index, value):
         cdef Object rpc_value
@@ -689,17 +695,23 @@ cdef class Dictionary(Object):
         return rpc_dictionary_get_count(self.obj)
 
     def __getitem__(self, key):
-        cdef Object rpc_value
+        cdef rpc_object_t c_value
+        cdef rpc_type_t c_type
         byte_key = key.encode('utf-8')
 
-        rpc_value = Object.__new__(Object)
-        rpc_value.obj = rpc_dictionary_get_value(self.obj, byte_key)
-        if rpc_value.obj == <rpc_object_t>NULL:
+        c_value = rpc_dictionary_get_value(self.obj, byte_key)
+        if c_value == <rpc_object_t>NULL:
             raise LibException(errno.EINVAL, 'Key {} does not exist'.format(key))
 
-        rpc_retain(rpc_value.obj)
+        c_type = rpc_get_type(c_value)
 
-        return rpc_value
+        if c_type == RPC_TYPE_DICTIONARY:
+            return Dictionary.init_from_ptr(c_value)
+
+        if c_type == RPC_TYPE_ARRAY:
+            return Array.init_from_ptr(c_value)
+
+        return Object.init_from_ptr(c_value)
 
     def __setitem__(self, key, value):
         cdef Object rpc_value
