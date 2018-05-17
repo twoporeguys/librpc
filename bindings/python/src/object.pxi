@@ -530,10 +530,12 @@ cdef class Array(Object):
     def __setitem__(self, index, value):
         cdef Object rpc_value
 
-        rpc_value = Object(value)
-        rpc_array_set_value(self.obj, index, rpc_value.obj)
+        if not isinstance(value, Object):
+            rpc_value = Object(value)
+        else:
+            rpc_value = value
 
-        rpc_retain(rpc_value.obj)
+        rpc_array_set_value(self.obj, index, rpc_value.obj)
 
     def __bool__(self):
         return len(self) > 0
@@ -713,10 +715,12 @@ cdef class Dictionary(Object):
         cdef Object rpc_value
         byte_key = key.encode('utf-8')
 
-        rpc_value = Object(value)
-        rpc_dictionary_set_value(self.obj, byte_key, rpc_value.obj)
+        if not isinstance(value, Object):
+            rpc_value = Object(value)
+        else:
+            rpc_value = value
 
-        rpc_retain(rpc_value.obj)
+        rpc_dictionary_set_value(self.obj, byte_key, rpc_value.obj)
 
     def __bool__(self):
         return len(self) > 0
