@@ -336,6 +336,20 @@ cdef class Array(Object):
 
         return <bint>cb(index, py_value)
 
+    @staticmethod
+    cdef Array init_from_ptr(rpc_object_t ptr):
+        cdef Array ret
+
+        if ptr == <rpc_object_t>NULL:
+            return None
+
+        if rpc_get_type(ptr) != RPC_TYPE_ARRAY:
+            return None
+
+        ret = Array.__new__(Array)
+        ret.obj = rpc_retain(ptr)
+        return ret
+
     def __applier(self, applier_f):
         rpc_array_apply(
             self.obj,
@@ -530,6 +544,20 @@ cdef class Dictionary(Object):
         rpc_retain(py_value.obj)
 
         return <bint>cb(key.decode('utf-8'), py_value)
+
+    @staticmethod
+    cdef Dictionary init_from_ptr(rpc_object_t ptr):
+        cdef Dictionary ret
+
+        if ptr == <rpc_object_t>NULL:
+            return None
+
+        if rpc_get_type(ptr) != RPC_TYPE_DICTIONARY:
+            return None
+
+        ret = Dictionary.__new__(Dictionary)
+        ret.obj = rpc_retain(ptr)
+        return ret
 
     def __applier(self, applier_f):
         rpc_dictionary_apply(
