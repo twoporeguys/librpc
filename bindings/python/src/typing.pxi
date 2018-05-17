@@ -415,7 +415,7 @@ cdef class BaseStruct(Dictionary):
             __value = kwargs
 
         super(BaseStruct, self).__init__(__value, typei=self.typei)
-        result, errors = self.typei.validate(self)
+        result, errors = self.validate()
         if not result:
             raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
@@ -451,7 +451,11 @@ cdef class BaseStruct(Dictionary):
 
 cdef class BaseUnion(Object):
     def __init__(self, value):
-        pass
+        super(BaseUnion, self).__init__(value, typei=self.typei)
+        result, errors = self.validate()
+        if not result:
+            raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
+
 
     def __str__(self):
         return "<union {0}>".format(self.typei.type.name)
@@ -464,7 +468,10 @@ cdef class BaseUnion(Object):
 
 cdef class BaseEnum(Object):
     def __init__(self, value):
-        super(BaseEnum, self).__init__(value)
+        super(BaseEnum, self).__init__(value, typei=self.typei)
+        result, errors = self.validate()
+        if not result:
+            raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
     def __str__(self):
         return "<enum {0}>".format(self.typei.type.name)
