@@ -191,9 +191,7 @@ cdef class Connection(object):
         cdef object handler = <object>arg
 
         if args != <rpc_object_t>NULL:
-            error_args = Object.__new__(Object)
-            error_args.obj = args
-            rpc_retain(args)
+            error_args = Object.init_from_ptr(args)
 
         handler(ErrorCode(error), error_args)
 

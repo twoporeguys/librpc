@@ -207,12 +207,25 @@ cdef class Object(object):
     @staticmethod
     cdef Object init_from_ptr(rpc_object_t ptr):
         cdef Object ret
+        cdef rpct_typei_t typei
 
         if ptr == <rpc_object_t>NULL:
             return None
 
-        ret = Object.__new__(Object)
+        if rpc_get_type(ptr) == RPC_TYPE_DICTIONARY:
+            ret = Dictionary.__new__(Dictionary)
+
+        elif rpc_get_type(ptr) == RPC_TYPE_ARRAY:
+            ret = Array.__new__(Array)
+
+        else:
+            ret = Object.__new__(Object)
+
         ret.obj = rpc_retain(ptr)
+        typei = rpct_get_typei(ptr)
+        if typei != <rpct_typei_t>NULL:
+            return TypeInstance.init_from_ptr(typei).factory(ret)
+
         return ret
 
     def unpack(self):
@@ -222,9 +235,6 @@ cdef class Object(object):
         :param self:
         :return:
         """
-        if self.typei and self.typei.type.clazz != TypeClass.BUILTIN:
-            return self.typei.factory(self)
-
         if self.type == ObjectType.DICTIONARY:
             return {k: v.unpack() for k, v in self.value.items()}
 
@@ -235,6 +245,9 @@ cdef class Object(object):
             return self
 
         return self.value
+
+    def copy(self):
+        return Object.init_from_ptr(rpc_copy(self.obj))
 
     def validate(self):
         if not self.typei:
@@ -318,11 +331,15 @@ cdef class Object(object):
 
 
 cdef class Array(Object):
-    def __init__(self, value, force_type=None):
+    def __init__(self, value, force_type=None, typei=None):
+        if isinstance(value, Array):
+            super(Array, self).__init__(value)
+            return
+
         if not isinstance(value, list):
             raise LibException(errno.EINVAL, "Cannot initialize array from {0} type".format(type(value)))
 
-        super(Array, self).__init__(value, force_type)
+        super(Array, self).__init__(value, force_type, typei)
 
     @staticmethod
     cdef bint c_applier(void *arg, size_t index, rpc_object_t value) with gil:
@@ -387,15 +404,6 @@ cdef class Array(Object):
     def clear(self):
         rpc_release(self.obj)
         self.obj = rpc_array_create()
-
-    def copy(self):
-        cdef Array copy
-
-        copy = Array.__new__(Array)
-        with nogil:
-            copy.obj = rpc_copy(self.obj)
-
-        return copy
 
     def count(self, value):
         cdef Object v1
@@ -531,13 +539,19 @@ cdef class Array(Object):
         return len(self) > 0
 
 
-
 cdef class Dictionary(Object):
-    def __init__(self, value, force_type=None):
-        if not isinstance(value, dict):
-            raise LibException(errno.EINVAL, "Cannot initialize Dictionary RPC object from {type(value)} type")
+    def __init__(self, value, force_type=None, typei=None):
+        if isinstance(value, Dictionary):
+            super(Dictionary, self).__init__(value)
+            return
 
-        super(Dictionary, self).__init__(value, force_type)
+        if not isinstance(value, dict):
+            raise LibException(
+                errno.EINVAL,
+                "Cannot initialize Dictionary RPC object from {0} type".format(type(value))
+            )
+
+        super(Dictionary, self).__init__(value, force_type, typei)
 
     @staticmethod
     cdef bint c_applier(void *arg, char *key, rpc_object_t value) with gil:
@@ -578,15 +592,6 @@ cdef class Dictionary(Object):
         with nogil:
             rpc_release(self.obj)
             self.obj = rpc_dictionary_create()
-
-    def copy(self):
-        cdef Dictionary copy
-
-        copy = Dictionary.__new__(Dictionary)
-        with nogil:
-            copy.obj = rpc_copy(self.obj)
-
-        return copy
 
     def get(self, k, d=None):
         try:
@@ -696,20 +701,11 @@ cdef class Dictionary(Object):
 
     def __getitem__(self, key):
         cdef rpc_object_t c_value
-        cdef rpc_type_t c_type
         byte_key = key.encode('utf-8')
 
         c_value = rpc_dictionary_get_value(self.obj, byte_key)
         if c_value == <rpc_object_t>NULL:
             raise LibException(errno.EINVAL, 'Key {} does not exist'.format(key))
-
-        c_type = rpc_get_type(c_value)
-
-        if c_type == RPC_TYPE_DICTIONARY:
-            return Dictionary.init_from_ptr(c_value)
-
-        if c_type == RPC_TYPE_ARRAY:
-            return Array.init_from_ptr(c_value)
 
         return Object.init_from_ptr(c_value)
 

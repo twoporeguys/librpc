@@ -167,10 +167,6 @@ cdef class TypeInstance(object):
 
             return result
 
-    def construct(self, Object obj):
-        obj.obj = rpct_newi(self.rpctypei, obj.obj)
-        return obj
-
     def validate(self, Object obj):
         cdef rpc_object_t errors = <rpc_object_t>NULL
         cdef bint valid
@@ -413,9 +409,12 @@ cdef class StructUnionMember(Member):
         return TypeInstance.init_from_ptr(rpct_typei_get_member_type(typei.rpctypei, self.rpcmem))
 
 
-cdef class BaseTypingObject(Object):
-    def __init__(self, value):
-        super(BaseTypingObject, self).__init__(value, typei=self.__class__.typei)
+cdef class BaseStruct(Dictionary):
+    def __init__(self, __value=None, **kwargs):
+        if not __value:
+            __value = kwargs
+
+        super(BaseStruct, self).__init__(__value, typei=self.typei)
         result, errors = self.typei.validate(self)
         if not result:
             raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
@@ -424,27 +423,8 @@ cdef class BaseTypingObject(Object):
         def __get__(self):
             return {m.name: m for m in self.typei.type.members}
 
-
-
-cdef class BaseStruct(BaseTypingObject):
-    def __init__(self, __value=None, **kwargs):
-        if not __value:
-            __value = kwargs
-
-        super(BaseStruct, self).__init__(__value)
-
-    def __getitem__(self, item):
-        return self.__getattr__(item)
-
-    def __setitem__(self, key, value):
-        self.__setattr__(key, value)
-
     def __getattr__(self, item):
-        cdef Dictionary struct_d
-
-        struct_d = Dictionary.init_from_ptr(self.obj)
-        result = struct_d.get(item)
-
+        result = self[item]
         if isinstance(result, (Dictionary, Array)):
             return result
 
@@ -462,22 +442,27 @@ cdef class BaseStruct(BaseTypingObject):
         if not result:
             raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
-        self.value.value[key] = value
+        self[key] = value
 
     def __str__(self):
         return "<struct {0}>".format(self.typei.type.name)
 
 
 
-cdef class BaseUnion(BaseTypingObject):
+cdef class BaseUnion(Object):
     def __init__(self, value):
         pass
 
     def __str__(self):
         return "<union {0}>".format(self.typei.type.name)
 
+    property branches:
+        def __get__(self):
+            return {m.name: m for m in self.typei.type.members}
 
-cdef class BaseEnum(BaseTypingObject):
+
+
+cdef class BaseEnum(Object):
     def __init__(self, value):
         super(BaseEnum, self).__init__(value)
 

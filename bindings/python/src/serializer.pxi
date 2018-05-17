@@ -37,22 +37,18 @@ cdef class Serializer(object):
         free(<void *>self.type)
 
     def loads(self, bytes blob, unpack=False):
-        cdef Object ret
+        cdef rpc_object_t ret
         cdef char *buf = blob
         cdef int length = len(blob)
 
-        ret = Object.__new__(Object)
-
         with nogil:
-            ret.obj = rpc_serializer_load(self.type, buf, length)
+            ret = rpc_serializer_load(self.type, buf, length)
 
-        if ret.obj == <rpc_object_t>NULL:
+        if ret == <rpc_object_t>NULL:
             raise_internal_exc()
 
-        if unpack:
-            return ret.unpack()
-
-        return ret
+        result = Object.init_from_ptr(ret)
+        return result.unpack() if unpack else result
 
     def dumps(self, obj):
         cdef void *frame
