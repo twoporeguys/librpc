@@ -440,7 +440,15 @@ cdef class BaseStruct(BaseTypingObject):
         self.__setattr__(key, value)
 
     def __getattr__(self, item):
-        return self.value.value[item].unpack()
+        cdef Dictionary struct_d
+
+        struct_d = Dictionary.init_from_ptr(self.obj)
+        result = struct_d.get(item)
+
+        if isinstance(result, (Dictionary, Array)):
+            return result
+
+        return result.unpack()
 
     def __setattr__(self, key, value):
         if not isinstance(value, Object):
