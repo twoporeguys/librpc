@@ -223,7 +223,7 @@ cdef class Object(object):
 
         ret.obj = rpc_retain(ptr)
         typei = rpct_get_typei(ptr)
-        if typei != <rpct_typei_t>NULL:
+        if typei != <rpct_typei_t>NULL and rpct_type_get_class(rpct_typei_get_type(typei)) != RPC_TYPING_BUILTIN:
             return TypeInstance.init_from_ptr(typei).factory(ret)
 
         return ret
