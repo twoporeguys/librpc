@@ -443,7 +443,9 @@ cdef class BaseStruct(BaseTypingObject):
         return self.value.value[item].unpack()
 
     def __setattr__(self, key, value):
-        value = Object(value)
+        if not isinstance(value, Object):
+            value = Object(value)
+
         member = self.members.get(key)
         if not member:
             raise LibException('Member {0} not found'.format(key))
