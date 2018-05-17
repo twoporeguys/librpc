@@ -1907,11 +1907,12 @@ rpct_serialize(rpc_object_t object)
 rpc_object_t
 rpct_deserialize(rpc_object_t object)
 {
-	const char *typename;
+	const struct rpct_class_handler *handler;
+	const char *typedecl;
 	rpc_type_t objtype = rpc_get_type(object);
-	rpc_object_t type;
+	rpct_typei_t typei;
+	rpct_class_t clazz;
 	rpc_object_t result;
-	rpc_object_t cont;
 
 	if (context == NULL)
 		return (rpc_retain(object));
@@ -1920,46 +1921,29 @@ rpct_deserialize(rpc_object_t object)
 		return (rpc_retain(object));
 
 	if (objtype == RPC_TYPE_DICTIONARY) {
-		cont = rpc_dictionary_create();
-		rpc_dictionary_apply(object, ^(const char *key, rpc_object_t v) {
-			rpc_dictionary_steal_value(cont, key, rpct_deserialize(v));
-			return ((bool)true);
-		});
+		typedecl = rpc_dictionary_get_string(object, RPCT_TYPE_FIELD);
+		if (typedecl == NULL)
+			goto builtin;
 
-		type = rpc_dictionary_detach_key(cont, RPCT_TYPE_FIELD);
-		if (type == NULL) {
-			result = rpct_new("dictionary", cont);
-			rpc_release(cont);
-			return (result);
-		}
-
-		result = rpct_new(rpc_string_get_string_ptr(type), cont);
-		if (result == NULL) {
-			rpc_release(cont);
+		typei = rpct_new_typei(typedecl);
+		if (typei == NULL)
 			return (rpc_null_create());
-		}
 
-		rpc_release(cont);
+		clazz = typei->type->clazz;
+		handler = rpc_find_class_handler(NULL, clazz);
+		g_assert_nonnull(handler);
+
+		result = handler->deserialize_fn(object);
+		result->ro_typei = typei;
 		return (result);
 	}
 
-	if (objtype == RPC_TYPE_ARRAY) {
-		cont = rpc_array_create();
-		rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
-			rpc_array_append_stolen_value(cont, rpct_deserialize(v));
-			return ((bool)true);
-		});
+builtin:
+	handler = rpc_find_class_handler(NULL, RPC_TYPING_BUILTIN);
+	g_assert_nonnull(handler);
 
-		result = rpct_new("array", cont);
-		rpc_release(cont);
-		return (result);
-	}
-
-	typename = rpc_get_type_name(rpc_get_type(object));
-	if (g_strcmp0(typename, "null") == 0)
-		typename = "nulltype";
-
-	result = rpct_new(typename, object);
+	result = handler->deserialize_fn(object);
+	result->ro_typei = rpct_new_typei(rpc_get_type_name(objtype));
 	return (result);
 }
 

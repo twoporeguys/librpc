@@ -66,6 +66,14 @@ static struct rpct_member *union_read_member(const char *decl,
 	return (member);
 }
 
+static bool
+union_validate(struct rpct_typei *typei, rpc_object_t obj,
+    struct rpct_error_context *errctx)
+{
+
+	return (rpct_run_validators(typei, obj, errctx));
+}
+
 static rpc_object_t
 union_serialize(rpc_object_t obj)
 {
@@ -78,12 +86,11 @@ union_serialize(rpc_object_t obj)
 	    RPCT_VALUE_FIELD, rpc_copy(obj)));
 }
 
-static bool
-union_validate(struct rpct_typei *typei, rpc_object_t obj,
-    struct rpct_error_context *errctx)
+static rpc_object_t
+union_deserialize(rpc_object_t obj)
 {
 
-	return (rpct_run_validators(typei, obj, errctx));
+	return (rpc_copy(rpc_dictionary_get_value(obj, RPCT_VALUE_FIELD)));
 }
 
 static struct rpct_class_handler union_class_handler = {
@@ -91,7 +98,8 @@ static struct rpct_class_handler union_class_handler = {
 	.name = "union",
 	.member_fn = union_read_member,
 	.validate_fn = union_validate,
-	.serialize_fn = union_serialize
+	.serialize_fn = union_serialize,
+	.deserialize_fn = union_deserialize
 };
 
 DECLARE_TYPE_CLASS(union_class_handler);

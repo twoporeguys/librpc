@@ -131,12 +131,32 @@ struct_serialize(rpc_object_t obj)
 	return (result);
 }
 
+static rpc_object_t
+struct_deserialize(rpc_object_t obj)
+{
+	rpc_object_t result;
+
+	assert(obj != NULL);
+	assert(rpc_get_type(obj) == RPC_TYPE_DICTIONARY);
+
+	result = rpc_dictionary_create();
+
+	/* Serialize every member */
+	rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t value) {
+		rpc_dictionary_steal_value(result, key, rpct_deserialize(value));
+		return ((bool)true);
+	});
+
+	return (result);
+}
+
 static struct rpct_class_handler struct_class_handler = {
 	.id = RPC_TYPING_STRUCT,
 	.name = "struct",
 	.member_fn = struct_read_member,
 	.validate_fn = struct_validate,
-	.serialize_fn = struct_serialize
+	.serialize_fn = struct_serialize,
+	.deserialize_fn = struct_deserialize
 };
 
 DECLARE_TYPE_CLASS(struct_class_handler);

@@ -74,12 +74,20 @@ enum_serialize(rpc_object_t obj)
 	    RPCT_VALUE_FIELD, rpc_copy(obj)));
 }
 
+static rpc_object_t
+enum_deserialize(rpc_object_t obj)
+{
+
+	return (rpc_copy(rpc_dictionary_get_value(obj, RPCT_VALUE_FIELD)));
+}
+
 static struct rpct_class_handler enum_class_handler = {
 	.id = RPC_TYPING_ENUM,
 	.name = "enum",
 	.member_fn = enum_read_member,
 	.validate_fn = enum_validate,
 	.serialize_fn = enum_serialize,
+	.deserialize_fn = enum_deserialize,
 };
 
 DECLARE_TYPE_CLASS(enum_class_handler);

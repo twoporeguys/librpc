@@ -76,12 +76,42 @@ builtin_serialize(rpc_object_t obj)
 	return (rpc_copy(obj));
 }
 
+static rpc_object_t
+builtin_deserialize(rpc_object_t obj)
+{
+	rpc_object_t result;
+
+	if (rpc_get_type(obj) == RPC_TYPE_DICTIONARY) {
+		result = rpc_dictionary_create();
+		rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t value) {
+			rpc_dictionary_steal_value(result, key, rpct_deserialize(value));
+			return ((bool)true);
+		});
+
+		return (result);
+	}
+
+	if (rpc_get_type(obj) == RPC_TYPE_ARRAY) {
+		result = rpc_array_create();
+		rpc_array_apply(obj, ^(size_t i __unused, rpc_object_t value) {
+			rpc_array_append_stolen_value(result, rpct_deserialize(value));
+			return ((bool)true);
+		});
+
+		return (result);
+	}
+
+	return (rpc_copy(obj));
+}
+
+
 static struct rpct_class_handler builtin_class_handler = {
 	.id = RPC_TYPING_BUILTIN,
 	.name = "type",
 	.member_fn = NULL,
 	.validate_fn = builtin_validate,
-	.serialize_fn = builtin_serialize
+	.serialize_fn = builtin_serialize,
+	.deserialize_fn = builtin_deserialize
 };
 
 DECLARE_TYPE_CLASS(builtin_class_handler);

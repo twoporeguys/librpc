@@ -463,6 +463,7 @@ struct rpct_class_handler
     	rpct_member_fn_t 	member_fn;
     	rpct_validate_fn_t 	validate_fn;
     	rpct_serialize_fn_t 	serialize_fn;
+	rpct_serialize_fn_t 	deserialize_fn;
 };
 
 struct rpct_validation_error
