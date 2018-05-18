@@ -233,6 +233,8 @@ Functions</h2></td></tr>
 <tr class="separator:ae4eb9d801add10b3fd0f4a81c0941d79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe7e442dfe3eb86ca20e33eb39090a32"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#afe7e442dfe3eb86ca20e33eb39090a32">rpct_newi</a> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> typei, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:afe7e442dfe3eb86ca20e33eb39090a32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0334b1f79426b6a9fa41cc0e754a793"><td class="memItemLeft" align="right" valign="top"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#af0334b1f79426b6a9fa41cc0e754a793">rpct_set_typei</a> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> typei, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
+<tr class="separator:af0334b1f79426b6a9fa41cc0e754a793"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad561bbc3570d840153fba0ac24d53792"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#ad561bbc3570d840153fba0ac24d53792">rpct_get_type</a> (const char *name)</td></tr>
 <tr class="separator:ad561bbc3570d840153fba0ac24d53792"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a016851fdb0ed6e968f56c0ccd6de16d0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a016851fdb0ed6e968f56c0ccd6de16d0">rpct_get_typei</a> (<a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> instance)</td></tr>
@@ -1636,6 +1638,43 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Object with encoded type information </dd></dl>
+
+</div>
+</div>
+<a id="af0334b1f79426b6a9fa41cc0e754a793"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0334b1f79426b6a9fa41cc0e754a793">&#9670;&nbsp;</a></span>rpct_set_typei()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> rpct_set_typei </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td>
+          <td class="paramname"><em>typei</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>object</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Binds specified type to an existing object.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">typei</td><td>Type instance handle </td></tr>
+    <tr><td class="paramname">object</td><td>Object to be typed </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Typed object </dd></dl>
 
 </div>
 </div>

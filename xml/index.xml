@@ -443,6 +443,7 @@
     <member refid="typing_8h_1a607ecfa5cfa13782fafd4d8da6fbd3d8" kind="function"><name>rpct_new_typei</name></member>
     <member refid="typing_8h_1ae4eb9d801add10b3fd0f4a81c0941d79" kind="function"><name>rpct_new</name></member>
     <member refid="typing_8h_1afe7e442dfe3eb86ca20e33eb39090a32" kind="function"><name>rpct_newi</name></member>
+    <member refid="typing_8h_1af0334b1f79426b6a9fa41cc0e754a793" kind="function"><name>rpct_set_typei</name></member>
     <member refid="typing_8h_1ad561bbc3570d840153fba0ac24d53792" kind="function"><name>rpct_get_type</name></member>
     <member refid="typing_8h_1a016851fdb0ed6e968f56c0ccd6de16d0" kind="function"><name>rpct_get_typei</name></member>
     <member refid="typing_8h_1ad8e3d04441a3bc8f8eebdc06f3bb5acb" kind="function"><name>rpct_get_value</name></member>

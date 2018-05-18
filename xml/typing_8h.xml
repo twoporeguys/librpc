@@ -1600,6 +1600,43 @@
         </inbodydescription>
         <location file="/code/include/rpc/typing.h" line="549" column="1"/>
       </memberdef>
+      <memberdef kind="function" id="typing_8h_1af0334b1f79426b6a9fa41cc0e754a793" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+        <definition>rpc_object_t rpct_set_typei</definition>
+        <argsstring>(rpct_typei_t typei, rpc_object_t object)</argsstring>
+        <name>rpct_set_typei</name>
+        <param>
+          <type><ref refid="typing_8h_1a0d718518624626887a65ead4f5cde3b9" kindref="member">rpct_typei_t</ref></type>
+          <declname>typei</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>object</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Binds specified type to an existing object.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>typei</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type instance handle </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>object</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Object to be typed </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Typed object </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/typing.h" line="558" column="1"/>
+      </memberdef>
       <memberdef kind="function" id="typing_8h_1ad561bbc3570d840153fba0ac24d53792" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="typing_8h_1ab85403e2a616bb3728cd489bd0619cbb" kindref="member">rpct_type_t</ref></type>
         <definition>rpct_type_t rpct_get_type</definition>
@@ -1624,7 +1661,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/typing.h" line="557" column="1"/>
+        <location file="/code/include/rpc/typing.h" line="566" column="1"/>
       </memberdef>
       <memberdef kind="function" id="typing_8h_1a016851fdb0ed6e968f56c0ccd6de16d0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="typing_8h_1a0d718518624626887a65ead4f5cde3b9" kindref="member">rpct_typei_t</ref></type>
@@ -1650,7 +1687,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/typing.h" line="565" column="1"/>
+        <location file="/code/include/rpc/typing.h" line="574" column="1"/>
       </memberdef>
       <memberdef kind="function" id="typing_8h_1ad8e3d04441a3bc8f8eebdc06f3bb5acb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
@@ -1676,7 +1713,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/typing.h" line="572" column="1"/>
+        <location file="/code/include/rpc/typing.h" line="581" column="1"/>
       </memberdef>
       <memberdef kind="function" id="typing_8h_1a5e40e2afc72e2eb1ab1bcf77cfb36cc9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -1712,7 +1749,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/typing.h" line="579" column="1"/>
+        <location file="/code/include/rpc/typing.h" line="588" column="1"/>
       </memberdef>
       <memberdef kind="function" id="typing_8h_1ab69f7ee39db3ab938d331c2877815d80" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
@@ -1738,7 +1775,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/typing.h" line="587" column="1"/>
+        <location file="/code/include/rpc/typing.h" line="596" column="1"/>
       </memberdef>
       <memberdef kind="function" id="typing_8h_1ae36966ca7ca5448af0bb88d173036217" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
@@ -1764,7 +1801,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/typing.h" line="595" column="1"/>
+        <location file="/code/include/rpc/typing.h" line="604" column="1"/>
       </memberdef>
       <memberdef kind="function" id="typing_8h_1ae9b8420d29e1c63b07a060985c7ab55b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>bool</type>
@@ -1812,7 +1849,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/typing.h" line="605" column="1"/>
+        <location file="/code/include/rpc/typing.h" line="614" column="1"/>
       </memberdef>
       <memberdef kind="function" id="typing_8h_1aa5b10fa1cb8c8cc46469abebb21026a0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>bool</type>
@@ -1860,7 +1897,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/typing.h" line="616" column="1"/>
+        <location file="/code/include/rpc/typing.h" line="625" column="1"/>
       </memberdef>
       <memberdef kind="function" id="typing_8h_1a2f80e7ec74258ea0a5f739c61b5b623e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>bool</type>
@@ -1908,7 +1945,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/typing.h" line="627" column="1"/>
+        <location file="/code/include/rpc/typing.h" line="636" column="1"/>
       </memberdef>
       <memberdef kind="function" id="typing_8h_1a07cecc265f9dd575d5ff4904f13b5fac" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
@@ -1945,7 +1982,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/typing.h" line="635" column="1"/>
+        <location file="/code/include/rpc/typing.h" line="644" column="1"/>
       </memberdef>
       <memberdef kind="function" id="typing_8h_1afa62adf9fe6a415494c529254b030086" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
@@ -1982,7 +2019,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/typing.h" line="643" column="1"/>
+        <location file="/code/include/rpc/typing.h" line="652" column="1"/>
       </memberdef>
       <memberdef kind="function" id="typing_8h_1a4812f96b7d0bca64c415aa3aa99182be" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -2007,7 +2044,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/typing.h" line="649" column="1"/>
+        <location file="/code/include/rpc/typing.h" line="658" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -2202,37 +2239,39 @@
 <codeline lineno="541"><highlight class="normal"></highlight></codeline>
 <codeline lineno="549"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="typing_8h_1afe7e442dfe3eb86ca20e33eb39090a32" kindref="member">rpct_newi</ref>(rpct_typei_t<sp/>typei,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">);</highlight></codeline>
 <codeline lineno="550"><highlight class="normal"></highlight></codeline>
-<codeline lineno="557"><highlight class="normal">rpct_type_t<sp/><ref refid="typing_8h_1ad561bbc3570d840153fba0ac24d53792" kindref="member">rpct_get_type</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name);</highlight></codeline>
-<codeline lineno="558"><highlight class="normal"></highlight></codeline>
-<codeline lineno="565"><highlight class="normal">rpct_typei_t<sp/><ref refid="typing_8h_1a016851fdb0ed6e968f56c0ccd6de16d0" kindref="member">rpct_get_typei</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>instance);</highlight></codeline>
-<codeline lineno="566"><highlight class="normal"></highlight></codeline>
-<codeline lineno="572"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="typing_8h_1ad8e3d04441a3bc8f8eebdc06f3bb5acb" kindref="member">rpct_get_value</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>instance);</highlight></codeline>
-<codeline lineno="573"><highlight class="normal"></highlight></codeline>
-<codeline lineno="579"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a5e40e2afc72e2eb1ab1bcf77cfb36cc9" kindref="member">rpct_set_value</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*value);</highlight></codeline>
-<codeline lineno="580"><highlight class="normal"></highlight></codeline>
-<codeline lineno="587"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="typing_8h_1ab69f7ee39db3ab938d331c2877815d80" kindref="member">rpct_serialize</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">);</highlight></codeline>
-<codeline lineno="588"><highlight class="normal"></highlight></codeline>
-<codeline lineno="595"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="typing_8h_1ae36966ca7ca5448af0bb88d173036217" kindref="member">rpct_deserialize</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">);</highlight></codeline>
-<codeline lineno="596"><highlight class="normal"></highlight></codeline>
-<codeline lineno="605"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1ae9b8420d29e1c63b07a060985c7ab55b" kindref="member">rpct_validate_args</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>rpct_if_member<sp/>*func,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args,</highlight></codeline>
-<codeline lineno="606"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>*errors);</highlight></codeline>
-<codeline lineno="607"><highlight class="normal"></highlight></codeline>
-<codeline lineno="616"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1aa5b10fa1cb8c8cc46469abebb21026a0" kindref="member">rpct_validate_return</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>rpct_if_member<sp/>*func,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>result,</highlight></codeline>
-<codeline lineno="617"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>*errors);</highlight></codeline>
-<codeline lineno="618"><highlight class="normal"></highlight></codeline>
-<codeline lineno="627"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a2f80e7ec74258ea0a5f739c61b5b623e" kindref="member">rpct_validate</ref>(rpct_typei_t<sp/>typei,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>obj,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>*errors);</highlight></codeline>
-<codeline lineno="628"><highlight class="normal"></highlight></codeline>
-<codeline lineno="635"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="typing_8h_1a07cecc265f9dd575d5ff4904f13b5fac" kindref="member">rpct_pre_call_hook</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*cookie,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
-<codeline lineno="636"><highlight class="normal"></highlight></codeline>
-<codeline lineno="643"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="typing_8h_1afa62adf9fe6a415494c529254b030086" kindref="member">rpct_post_call_hook</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*cookie,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
-<codeline lineno="644"><highlight class="normal"></highlight></codeline>
-<codeline lineno="649"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a4812f96b7d0bca64c415aa3aa99182be" kindref="member">rpct_allow_idl_download</ref>(<ref refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kindref="member">rpc_context_t</ref><sp/>context);</highlight></codeline>
-<codeline lineno="650"><highlight class="normal"></highlight></codeline>
-<codeline lineno="651"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="652"><highlight class="normal">}</highlight></codeline>
-<codeline lineno="653"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="654"><highlight class="normal"></highlight></codeline>
-<codeline lineno="655"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>LIBRPC_TYPING_H<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+<codeline lineno="558"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="typing_8h_1af0334b1f79426b6a9fa41cc0e754a793" kindref="member">rpct_set_typei</ref>(rpct_typei_t<sp/>typei,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="559"><highlight class="normal"></highlight></codeline>
+<codeline lineno="566"><highlight class="normal">rpct_type_t<sp/><ref refid="typing_8h_1ad561bbc3570d840153fba0ac24d53792" kindref="member">rpct_get_type</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name);</highlight></codeline>
+<codeline lineno="567"><highlight class="normal"></highlight></codeline>
+<codeline lineno="574"><highlight class="normal">rpct_typei_t<sp/><ref refid="typing_8h_1a016851fdb0ed6e968f56c0ccd6de16d0" kindref="member">rpct_get_typei</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>instance);</highlight></codeline>
+<codeline lineno="575"><highlight class="normal"></highlight></codeline>
+<codeline lineno="581"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="typing_8h_1ad8e3d04441a3bc8f8eebdc06f3bb5acb" kindref="member">rpct_get_value</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>instance);</highlight></codeline>
+<codeline lineno="582"><highlight class="normal"></highlight></codeline>
+<codeline lineno="588"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a5e40e2afc72e2eb1ab1bcf77cfb36cc9" kindref="member">rpct_set_value</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*value);</highlight></codeline>
+<codeline lineno="589"><highlight class="normal"></highlight></codeline>
+<codeline lineno="596"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="typing_8h_1ab69f7ee39db3ab938d331c2877815d80" kindref="member">rpct_serialize</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="597"><highlight class="normal"></highlight></codeline>
+<codeline lineno="604"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="typing_8h_1ae36966ca7ca5448af0bb88d173036217" kindref="member">rpct_deserialize</ref>(<ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="605"><highlight class="normal"></highlight></codeline>
+<codeline lineno="614"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1ae9b8420d29e1c63b07a060985c7ab55b" kindref="member">rpct_validate_args</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>rpct_if_member<sp/>*func,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args,</highlight></codeline>
+<codeline lineno="615"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>*errors);</highlight></codeline>
+<codeline lineno="616"><highlight class="normal"></highlight></codeline>
+<codeline lineno="625"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1aa5b10fa1cb8c8cc46469abebb21026a0" kindref="member">rpct_validate_return</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>rpct_if_member<sp/>*func,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>result,</highlight></codeline>
+<codeline lineno="626"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>*errors);</highlight></codeline>
+<codeline lineno="627"><highlight class="normal"></highlight></codeline>
+<codeline lineno="636"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a2f80e7ec74258ea0a5f739c61b5b623e" kindref="member">rpct_validate</ref>(rpct_typei_t<sp/>typei,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>obj,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>*errors);</highlight></codeline>
+<codeline lineno="637"><highlight class="normal"></highlight></codeline>
+<codeline lineno="644"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="typing_8h_1a07cecc265f9dd575d5ff4904f13b5fac" kindref="member">rpct_pre_call_hook</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*cookie,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
+<codeline lineno="645"><highlight class="normal"></highlight></codeline>
+<codeline lineno="652"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="typing_8h_1afa62adf9fe6a415494c529254b030086" kindref="member">rpct_post_call_hook</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*cookie,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
+<codeline lineno="653"><highlight class="normal"></highlight></codeline>
+<codeline lineno="658"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a4812f96b7d0bca64c415aa3aa99182be" kindref="member">rpct_allow_idl_download</ref>(<ref refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kindref="member">rpc_context_t</ref><sp/>context);</highlight></codeline>
+<codeline lineno="659"><highlight class="normal"></highlight></codeline>
+<codeline lineno="660"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="661"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="662"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="663"><highlight class="normal"></highlight></codeline>
+<codeline lineno="664"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>LIBRPC_TYPING_H<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
     </programlisting>
     <location file="/code/include/rpc/typing.h"/>
   </compounddef>

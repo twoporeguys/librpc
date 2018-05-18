@@ -159,6 +159,8 @@ bool \hyperlink{typing_8h_a1fe6427a1837bebcf1278d47b9a572f6}{rpct\+\_\+if\+\_\+m
 \item 
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{typing_8h_afe7e442dfe3eb86ca20e33eb39090a32}{rpct\+\_\+newi} (\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} typei, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
 \item 
+\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{typing_8h_af0334b1f79426b6a9fa41cc0e754a793}{rpct\+\_\+set\+\_\+typei} (\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} typei, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
+\item 
 \hyperlink{typing_8h_ab85403e2a616bb3728cd489bd0619cbb}{rpct\+\_\+type\+\_\+t} \hyperlink{typing_8h_ad561bbc3570d840153fba0ac24d53792}{rpct\+\_\+get\+\_\+type} (const char $\ast$name)
 \item 
 \hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} \hyperlink{typing_8h_a016851fdb0ed6e968f56c0ccd6de16d0}{rpct\+\_\+get\+\_\+typei} (\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} instance)
@@ -1003,6 +1005,24 @@ Serializes object hierarchy preserving type information.
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 Object with encoded type information 
+\end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_af0334b1f79426b6a9fa41cc0e754a793}\label{typing_8h_af0334b1f79426b6a9fa41cc0e754a793}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+set\+\_\+typei@{rpct\+\_\+set\+\_\+typei}}
+\index{rpct\+\_\+set\+\_\+typei@{rpct\+\_\+set\+\_\+typei}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+set\+\_\+typei()}{rpct\_set\_typei()}}
+{\footnotesize\ttfamily \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpct\+\_\+set\+\_\+typei (\begin{DoxyParamCaption}\item[{\hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t}}]{typei,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{object }\end{DoxyParamCaption})}
+
+Binds specified type to an existing object.
+
+
+\begin{DoxyParams}{Parameters}
+{\em typei} & Type instance handle \\
+\hline
+{\em object} & Object to be typed \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Typed object 
 \end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_a5e40e2afc72e2eb1ab1bcf77cfb36cc9}\label{typing_8h_a5e40e2afc72e2eb1ab1bcf77cfb36cc9}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+set\+\_\+value@{rpct\+\_\+set\+\_\+value}}
