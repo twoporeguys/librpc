@@ -431,8 +431,7 @@ cdef class BaseStruct(Dictionary):
         return result.unpack()
 
     def __setattr__(self, key, value):
-        if not isinstance(value, Object):
-            value = Object(value)
+        value = Object(value)
 
         member = self.members.get(key)
         if not member:

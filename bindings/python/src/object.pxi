@@ -151,7 +151,8 @@ cdef class Object(object):
             self.obj = rpc_string_create(bstr)
 
         elif isinstance(value, Object):
-            self.obj = rpc_copy((<Object>value).obj)
+            self.obj = (<Object>value).obj
+            rpc_retain(self.obj)
 
         elif hasattr(value, '__getstate__'):
             try:
@@ -530,11 +531,7 @@ cdef class Array(Object):
     def __setitem__(self, index, value):
         cdef Object rpc_value
 
-        if not isinstance(value, Object):
-            rpc_value = Object(value)
-        else:
-            rpc_value = value
-
+        rpc_value = Object(value)
         rpc_array_set_value(self.obj, index, rpc_value.obj)
 
     def __bool__(self):
@@ -715,11 +712,7 @@ cdef class Dictionary(Object):
         cdef Object rpc_value
         byte_key = key.encode('utf-8')
 
-        if not isinstance(value, Object):
-            rpc_value = Object(value)
-        else:
-            rpc_value = value
-
+        rpc_value = Object(value)
         rpc_dictionary_set_value(self.obj, byte_key, rpc_value.obj)
 
     def __bool__(self):
