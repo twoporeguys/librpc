@@ -42,7 +42,14 @@ static rpc_object_t
 typedef_serialize(rpc_object_t obj)
 {
 
-	return (obj);
+	return (rpc_copy(obj));
+}
+
+static rpc_object_t
+typedef_deserialize(rpc_object_t obj)
+{
+
+	return (rpc_copy(obj));
 }
 
 static struct rpct_class_handler typedef_class_handler = {
@@ -50,7 +57,8 @@ static struct rpct_class_handler typedef_class_handler = {
 	.name = "type",
 	.member_fn = NULL,
 	.validate_fn = typedef_validate,
-	.serialize_fn = typedef_serialize
+	.serialize_fn = typedef_serialize,
+	.deserialize_fn = typedef_deserialize
 };
 
 DECLARE_TYPE_CLASS(typedef_class_handler);

@@ -545,6 +545,8 @@ rpc_instance_new(void *arg, const char *fmt, ...)
 	rpc_instance_register_interface(result, RPC_DEFAULT_INTERFACE,
 	    NULL, NULL);
 
+	rpc_instance_register_interface(result, RPC_OBSERVABLE_INTERFACE,
+	    rpc_observable_vtable, NULL);
 
 	return (result);
 }
@@ -712,14 +714,6 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 		if (copy->rim_property.rp_arg == NULL)
 			copy->rim_property.rp_arg = priv->rip_arg;
 
-		/* Install Observable interface if needed */
-		if (!rpc_instance_has_interface(instance,
-		    RPC_OBSERVABLE_INTERFACE)) {
-			rpc_instance_register_interface(instance,
-			    RPC_OBSERVABLE_INTERFACE, rpc_observable_vtable,
-			    NULL);
-		}
-
 		/* Emit property added event */
 		rpc_instance_emit_event(instance, RPC_OBSERVABLE_INTERFACE,
 		    "property_added", rpc_object_pack("{s,b,b}",
@@ -841,6 +835,7 @@ rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
 {
 	struct rpc_if_member *prop;
 	struct rpc_property_cookie cookie;
+	bool release = false;
 
 	prop = rpc_instance_find_member(instance, interface, name);
 	g_assert(prop != NULL);
@@ -856,13 +851,17 @@ rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
 			return;
 
 		value = prop->rim_property.rp_getter(&cookie);
+		release = true;
 	}
 
 	rpc_instance_emit_event(instance, RPC_OBSERVABLE_INTERFACE, "changed",
-	    rpc_object_pack("{s,s,V}",
+	    rpc_object_pack("{s,s,v}",
 	        "interface", interface,
 	        "name", name,
-	        "value", value));
+	        "value", rpc_retain(value)));
+
+	if (release)
+		rpc_release(value);
 }
 
 rpc_instance_t

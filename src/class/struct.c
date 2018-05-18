@@ -87,8 +87,8 @@ struct_validate(struct rpct_typei *typei, rpc_object_t obj,
 	    mtypei = rpct_typei_get_member_type(typei, member);
 	    mvalue = rpc_dictionary_get_value(obj, member->name);
 	    if (mvalue == NULL) {
-		    rpct_add_error(errctx, "Member %s not found",
-				   member->name, NULL);
+		    rpct_add_error(errctx, NULL, "Member %s not found",
+		        member->name);
 		    valid = false;
 		    return ((bool)false);
 	    }
@@ -111,20 +111,43 @@ struct_validate(struct rpct_typei *typei, rpc_object_t obj,
 static rpc_object_t
 struct_serialize(rpc_object_t obj)
 {
+	rpc_object_t result;
 
 	assert(obj != NULL);
 	assert(obj->ro_typei != NULL);
 	assert(rpc_get_type(obj) == RPC_TYPE_DICTIONARY);
 
+	result = rpc_dictionary_create();
+
 	/* Serialize every member */
-	rpc_dictionary_map(obj, ^(const char *key, rpc_object_t value) {
-		return (rpct_serialize(value));
+	rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t value) {
+		rpc_dictionary_steal_value(result, key, rpct_serialize(value));
+		return ((bool)true);
 	});
 
-	rpc_dictionary_set_string(obj, RPCT_TYPE_FIELD,
+	rpc_dictionary_set_string(result, RPCT_TYPE_FIELD,
 	    obj->ro_typei->canonical_form);
 
-	return (obj);
+	return (result);
+}
+
+static rpc_object_t
+struct_deserialize(rpc_object_t obj)
+{
+	rpc_object_t result;
+
+	assert(obj != NULL);
+	assert(rpc_get_type(obj) == RPC_TYPE_DICTIONARY);
+
+	result = rpc_dictionary_create();
+
+	/* Serialize every member */
+	rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t value) {
+		rpc_dictionary_steal_value(result, key, rpct_deserialize(value));
+		return ((bool)true);
+	});
+
+	return (result);
 }
 
 static struct rpct_class_handler struct_class_handler = {
@@ -132,7 +155,8 @@ static struct rpct_class_handler struct_class_handler = {
 	.name = "struct",
 	.member_fn = struct_read_member,
 	.validate_fn = struct_validate,
-	.serialize_fn = struct_serialize
+	.serialize_fn = struct_serialize,
+	.deserialize_fn = struct_deserialize
 };
 
 DECLARE_TYPE_CLASS(struct_class_handler);

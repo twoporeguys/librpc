@@ -389,6 +389,7 @@ struct rpct_context
 	GHashTable *		files;
 	GHashTable *		types;
 	GHashTable *		interfaces;
+	GHashTable *		typei_cache;
 	rpc_function_t		pre_call_hook;
 	rpc_function_t 		post_call_hook;
 };
@@ -445,7 +446,7 @@ struct rpct_typei
 	char *			canonical_form;
 	GHashTable *		specializations;
 	GHashTable *		constraints;
-	int 			refcount;
+	volatile int		refcnt;
 };
 
 struct rpct_member
@@ -485,6 +486,7 @@ struct rpct_class_handler
     	rpct_member_fn_t 	member_fn;
     	rpct_validate_fn_t 	validate_fn;
     	rpct_serialize_fn_t 	serialize_fn;
+	rpct_serialize_fn_t 	deserialize_fn;
 };
 
 struct rpct_validation_error
@@ -513,7 +515,7 @@ off_t rpc_shmem_get_offset(rpc_object_t shmem);
 rpc_object_t rpc_error_create_from_gerror(GError *g_error);
 
 void rpc_abort(const char *fmt, ...);
-void rpc_trace(const char *msg, rpc_object_t frame);
+void rpc_trace(const char *msg, const char *ident, rpc_object_t frame);
 char *rpc_get_backtrace(void);
 char *rpc_generate_v4_uuid(void);
 gboolean rpc_kill_main_loop(void *arg);
@@ -550,8 +552,8 @@ void rpc_connection_close_inbound_call(struct rpc_inbound_call *);
 
 void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 
-void rpct_typei_free(struct rpct_typei *inst);
-void rpct_add_error(struct rpct_error_context *ctx, const char *fmt, ...);
+void rpct_add_error(struct rpct_error_context *ctx, rpc_object_t extra,
+    const char *fmt, ...);
 void rpct_derive_error_context(struct rpct_error_context *newctx,
     struct rpct_error_context *oldctx, const char *name);
 void rpct_release_error_context(struct rpct_error_context *ctx);

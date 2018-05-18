@@ -24,49 +24,47 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-import os
-import sys
-import enum
-import errno
-import types
-import inspect
-import functools
-import traceback
-import datetime
-import uuid
-from cpython.ref cimport Py_INCREF, Py_DECREF
-from librpc cimport *
-from libc.string cimport strdup
-from libc.stdint cimport *
-from libc.stdlib cimport malloc, free
+cdef class Serializer(object):
+    cdef const char *type
 
+    def __init__(self, type):
+        if not rpc_serializer_exists(type.encode('ascii')):
+            raise LibException(errno.ENOENT, 'Unknown serializer')
 
-cdef extern from "Python.h" nogil:
-    void PyEval_InitThreads()
+        self.type = strdup(type.encode('ascii'))
 
+    def __dealloc__(self):
+        free(<void *>self.type)
 
-include "src/object.pxi"
-include "src/connection.pxi"
-include "src/service.pxi"
-include "src/client.pxi"
-include "src/server.pxi"
-include "src/bus.pxi"
-include "src/serializer.pxi"
-include "src/typing.pxi"
+    def loads(self, bytes blob, unpack=False):
+        cdef rpc_object_t ret
+        cdef char *buf = blob
+        cdef int length = len(blob)
 
+        with nogil:
+            ret = rpc_serializer_load(self.type, buf, length)
 
-cdef str_or_none(const char *val):
-    if val == NULL:
-        return None
+        if ret == <rpc_object_t>NULL:
+            raise_internal_exc()
 
-    return val.decode('utf-8')
+        result = Object.init_from_ptr(ret)
+        return result.unpack() if unpack else result
 
+    def dumps(self, obj):
+        cdef void *frame
+        cdef size_t len
+        cdef int ret
+        cdef Object rpc_obj
 
-cdef const char *cstr_or_null(val):
-    if not val:
-        return NULL
+        if isinstance(obj, Object):
+            rpc_obj = <Object>obj
+        else:
+            rpc_obj = Object(obj)
 
-    return val.encode('utf-8')
+        with nogil:
+            ret = rpc_serializer_dump(self.type, rpc_obj.obj, &frame, &len)
 
+        if ret != 0:
+            raise_internal_exc()
 
-type_hooks = {}
+        return <bytes>(<char *>frame)[:len]

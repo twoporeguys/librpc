@@ -54,7 +54,7 @@ enum_validate(struct rpct_typei *typei, rpc_object_t obj,
 	mem = rpct_type_get_member(typei->type, value);
 
 	if (mem == NULL) {
-		rpct_add_error(errctx, "Enum member %s not found", value, NULL);
+		rpct_add_error(errctx, NULL, "Enum member %s not found", value);
 		return (false);
 	}
 
@@ -71,7 +71,14 @@ enum_serialize(rpc_object_t obj)
 
 	return (rpc_object_pack("{s,v}",
 	    RPCT_TYPE_FIELD, obj->ro_typei->canonical_form,
-	    RPCT_VALUE_FIELD, obj));
+	    RPCT_VALUE_FIELD, rpc_copy(obj)));
+}
+
+static rpc_object_t
+enum_deserialize(rpc_object_t obj)
+{
+
+	return (rpc_copy(rpc_dictionary_get_value(obj, RPCT_VALUE_FIELD)));
 }
 
 static struct rpct_class_handler enum_class_handler = {
@@ -80,6 +87,7 @@ static struct rpct_class_handler enum_class_handler = {
 	.member_fn = enum_read_member,
 	.validate_fn = enum_validate,
 	.serialize_fn = enum_serialize,
+	.deserialize_fn = enum_deserialize,
 };
 
 DECLARE_TYPE_CLASS(enum_class_handler);

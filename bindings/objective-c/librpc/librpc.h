@@ -407,3 +407,9 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
                                   path:(nonnull NSString *)path
                           andInterface:(nonnull NSString *)interface;
 @end
+
+@interface RPCTyping : NSObject
++ (void)init;
++ (void)loadTypes:(nonnull NSString *)path;
++ (void)loadTypesDirectory:(nonnull NSString *)directory;
+@end

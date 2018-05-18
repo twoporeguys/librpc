@@ -31,6 +31,7 @@
 #include <rpc/connection.h>
 #include <rpc/client.h>
 #include <rpc/service.h>
+#include <rpc/typing.h>
 
 #pragma mark - RPCObject
 
@@ -703,5 +704,22 @@
                    interface:@(RPC_INTROSPECTABLE_INTERFACE)
                         args:[[RPCObject alloc] initWithValue:@[_interface, property, value]]
                        error:error];
+}
+@end
+
+@implementation RPCTyping
++ (void)init
+{
+    rpct_init();
+}
+
++ (void)loadTypes:(NSString *)path
+{
+    rpct_load_types([path UTF8String]);
+}
+
++ (void)loadTypesDirectory:(NSString *)directory
+{
+    rpct_load_types_dir([directory UTF8String]);
 }
 @end

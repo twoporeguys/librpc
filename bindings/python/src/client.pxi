@@ -24,49 +24,37 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-import os
-import sys
-import enum
-import errno
-import types
-import inspect
-import functools
-import traceback
-import datetime
-import uuid
-from cpython.ref cimport Py_INCREF, Py_DECREF
-from librpc cimport *
-from libc.string cimport strdup
-from libc.stdint cimport *
-from libc.stdlib cimport malloc, free
+cdef class Client(Connection):
+    cdef rpc_client_t client
+    cdef object uri
 
+    def __init__(self):
+        super(Client, self).__init__()
+        self.uri = None
+        self.client = <rpc_client_t>NULL
+        self.connection = <rpc_connection_t>NULL
 
-cdef extern from "Python.h" nogil:
-    void PyEval_InitThreads()
+    def __dealloc__(self):
+        if self.client != <rpc_client_t>NULL:
+            rpc_client_close(self.client)
 
+    def connect(self, uri, Object params=None):
+        cdef char* c_uri
+        cdef rpc_object_t rawparams
 
-include "src/object.pxi"
-include "src/connection.pxi"
-include "src/service.pxi"
-include "src/client.pxi"
-include "src/server.pxi"
-include "src/bus.pxi"
-include "src/serializer.pxi"
-include "src/typing.pxi"
+        self.uri = c_uri = uri.encode('utf-8')
+        rawparams = params.obj if params else <rpc_object_t>NULL
+        with nogil:
+            self.client = rpc_client_create(c_uri, rawparams)
 
+        if self.client == <rpc_client_t>NULL:
+            raise_internal_exc(rpc=False)
 
-cdef str_or_none(const char *val):
-    if val == NULL:
-        return None
+        self.connection = rpc_client_get_connection(self.client)
 
-    return val.decode('utf-8')
+    def disconnect(self):
+        if self.client == <rpc_client_t>NULL:
+            raise RuntimeError("Not connected")
 
-
-cdef const char *cstr_or_null(val):
-    if not val:
-        return NULL
-
-    return val.encode('utf-8')
-
-
-type_hooks = {}
+        rpc_client_close(self.client)
+        self.client = <rpc_client_t>NULL

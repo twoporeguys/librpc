@@ -38,6 +38,11 @@ extern "C" {
 #define	JSON_EXTTYPE_FD		"$fd"
 #define	JSON_EXTTYPE_ERROR	"$error"
 
+#define	JSON_EXTTYPE_DBL	"$double"
+#define	JSON_EXTTYPE_DBL_NAN	"$nan"
+#define	JSON_EXTTYPE_DBL_INF	"$inf"
+#define	JSON_EXTTYPE_DBL_NINF	"$ninf"
+
 #define JSON_EXTTYPE_ERROR_CODE	"code"
 #define JSON_EXTTYPE_ERROR_MSG	"msg"
 #define JSON_EXTTYPE_ERROR_XTRA	"extra"

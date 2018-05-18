@@ -95,7 +95,20 @@ rpct_newi(rpct_typei_t typei, rpc_object_t object)
 	if (object == NULL)
 		return (NULL);
 
-	object->ro_typei = rpct_unwind_typei(typei);
+	object = rpc_copy(object);
+	return (rpct_set_typei(typei, object));
+}
+
+rpc_object_t
+rpct_set_typei(rpct_typei_t typei, rpc_object_t object)
+{
+	if (object == NULL)
+		return (NULL);
+
+	if (object->ro_typei != NULL)
+		rpct_typei_release(object->ro_typei);
+
+	object->ro_typei = rpct_typei_retain(rpct_unwind_typei(typei));
 	return (object);
 }
 
@@ -261,7 +274,7 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 	GRegex *regex;
 	GMatchInfo *match = NULL;
 	GPtrArray *splitvars = NULL;
-	struct rpct_type *type;
+	struct rpct_type *type = NULL;
 	struct rpct_typei *ret = NULL;
 	struct rpct_typei *subtype;
 	char *decltype = NULL;
@@ -287,6 +300,21 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 
 	decltype = g_match_info_fetch(match, 1);
 	type = rpct_find_type_fuzzy(decltype, origin);
+
+	if (type != NULL && !type->generic) {
+		/*
+		 * Non-generic types can be cached, try looking
+		 * up in the cache
+		 */
+
+		ret = g_hash_table_lookup(context->typei_cache, decltype);
+		if (ret != NULL) {
+			g_match_info_free(match);
+			g_regex_unref(regex);
+			return (rpct_typei_retain(ret));
+		}
+	}
+
 	if (type == NULL) {
 		struct rpct_typei *cur = parent;
 
@@ -327,10 +355,11 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 	}
 
 	ret = g_malloc0(sizeof(*ret));
+	ret->refcnt = 1;
 	ret->type = type;
 	ret->parent = parent;
 	ret->specializations = g_hash_table_new_full(g_str_hash, g_str_equal,
-	    g_free, (GDestroyNotify)rpct_typei_free);
+	    g_free, (GDestroyNotify)rpct_typei_release);
 	ret->constraints = type->constraints;
 
 	if (type->generic) {
@@ -370,7 +399,7 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 
 error:
 	if (ret != NULL) {
-		rpct_typei_free(ret);
+		rpct_typei_release(ret);
 		ret = NULL;
 	}
 
@@ -391,6 +420,12 @@ done:
 
 	if (declvars != NULL)
 		g_free(declvars);
+
+	if (ret != NULL && !ret->type->generic) {
+		rpct_typei_retain(ret);
+		g_hash_table_insert(context->typei_cache,
+		    g_strdup(ret->canonical_form), ret);
+	}
 
 	return (ret);
 }
@@ -444,7 +479,7 @@ rpct_if_member_free(struct rpct_if_member *member)
 	g_free(member->description);
 	g_ptr_array_free(member->arguments, true);
 	if (member->result != NULL)
-		rpct_typei_free(member->result);
+		rpct_typei_release(member->result);
 
 	g_free(member);
 }
@@ -455,7 +490,7 @@ rpct_member_free(struct rpct_member *member)
 
 	g_free(member->name);
 	g_free(member->description);
-	rpct_typei_free(member->type);
+	rpct_typei_release(member->type);
 	g_hash_table_unref(member->constraints);
 	g_free(member);
 }
@@ -828,7 +863,7 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 
 	name = g_match_info_fetch(match, 1);
 	prop = g_malloc0(sizeof(*prop));
-	prop->member.rim_name = name;
+	prop->member.rim_name = g_strdup(name);
 	prop->member.rim_type = RPC_MEMBER_PROPERTY;
 	prop->description = g_strdup(description);
 
@@ -883,7 +918,7 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
 
 	name = g_match_info_fetch(match, 1);
 	prop = g_malloc0(sizeof(*prop));
-	prop->member.rim_name = name;
+	prop->member.rim_name = g_strdup(name);
 	prop->member.rim_type = RPC_MEMBER_EVENT;
 	prop->description = g_strdup(description);
 
@@ -1023,6 +1058,7 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	GError *err = NULL;
 	GRegex *regex = NULL;
 	GMatchInfo *match = NULL;
+	char *name;
 	bool result;
 	int ret = 0;
 
@@ -1044,8 +1080,9 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	    "description"));
 
 	if (file->ns) {
-		g_free(iface->name);
-		iface->name = g_strdup_printf("%s.%s", file->ns, iface->name);
+		name = iface->name;
+		iface->name = g_strdup_printf("%s.%s", file->ns, name);
+		g_free(name);
 	}
 
 	if (g_hash_table_contains(context->interfaces, iface->name))
@@ -1115,7 +1152,7 @@ rpct_read_file(const char *path)
 		return (-1);
 
 	file = g_malloc0(sizeof(*file));
-	file->body = rpc_retain(obj);
+	file->body = obj;
 	file->path = g_strdup(path);
 	file->uses = g_ptr_array_new_with_free_func(g_free);
 	file->types = g_hash_table_new(g_str_hash, g_str_equal);
@@ -1147,7 +1184,7 @@ rpct_run_validators(struct rpct_typei *typei, rpc_object_t obj,
 	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&value)) {
 		v = rpc_find_validator(typename, key);
 		if (v == NULL) {
-			rpct_add_error(errctx, "Validator %s not found", key);
+			rpct_add_error(errctx, NULL, "Validator %s not found", key);
 			valid = false;
 			continue;
 		}
@@ -1185,19 +1222,19 @@ rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
 		    raw_typei->canonical_form) == 0)
 			goto step3;
 
-		rpct_add_error(errctx,
+		rpct_add_error(errctx, NULL,
 		    "Incompatible type %s, should be %s",
 		    rpc_get_type_name(obj->ro_type),
-		    raw_typei->canonical_form, NULL);
+		    raw_typei->canonical_form);
 		return (false);
 	}
 
 	/* Step 2: check type */
 	if (!rpct_type_is_compatible(raw_typei, obj->ro_typei)) {
-		rpct_add_error(errctx,
+		rpct_add_error(errctx, NULL,
 		    "Incompatible type %s, should be %s",
 		    obj->ro_typei->canonical_form,
-		    typei->canonical_form, NULL);
+		    typei->canonical_form);
 
 		valid = false;
 		goto done;
@@ -1366,6 +1403,8 @@ rpct_init(void)
 	    (GDestroyNotify)rpct_type_free);
 	context->interfaces = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    NULL, (GDestroyNotify)rpct_interface_free);
+	context->typei_cache = g_hash_table_new_full(g_str_hash, g_str_equal,
+	    g_free, (GDestroyNotify)rpct_typei_release);
 
 	for (b = builtin_types; *b != NULL; b++) {
 		type = g_malloc0(sizeof(*type));
@@ -1393,15 +1432,25 @@ rpct_free(void)
 	g_free(context);
 }
 
-void
-rpct_typei_free(struct rpct_typei *inst)
+rpct_typei_t
+rpct_typei_retain(rpct_typei_t typei)
 {
 
-	if (inst->specializations != NULL)
-		g_hash_table_destroy(inst->specializations);
+	g_atomic_int_inc(&typei->refcnt);
+	return (typei);
+}
 
-	g_free(inst->canonical_form);
-	g_free(inst);
+void
+rpct_typei_release(rpct_typei_t typei)
+{
+	if (!g_atomic_int_dec_and_test(&typei->refcnt))
+		return;
+
+	if (typei->specializations != NULL)
+		g_hash_table_destroy(typei->specializations);
+
+	g_free(typei->canonical_form);
+	g_free(typei);
 }
 
 int
@@ -1470,13 +1519,14 @@ rpct_load_types_dir(const char *path)
 		if (name == NULL)
 			break;
 
+		s = g_build_filename(path, name, NULL);
+		if (g_file_test(s, G_FILE_TEST_IS_DIR)) {
+			rpct_load_types_dir(s);
+			continue;
+		}
+
 		if (!g_str_has_suffix(name, ".yaml"))
 			continue;
-
-		s = g_strdup_printf("%s/%s", path, name);
-
-		if (g_file_test(s, G_FILE_TEST_IS_DIR))
-			rpct_load_types_dir(s);
 
 		if (rpct_read_file(s) != 0) {
 			g_free(s);
@@ -1824,26 +1874,39 @@ rpct_serialize(rpc_object_t object)
 {
 	const struct rpct_class_handler *handler;
 	rpct_class_t clazz;
+	rpc_object_t cont;
 
 	if (context == NULL)
-		return (object);
+		return (rpc_retain(object));
 
 	if (object->ro_typei == NULL) {
 		/* Try recursively */
 		if (rpc_get_type(object) == RPC_TYPE_DICTIONARY) {
-			rpc_dictionary_map(object,
+			cont = rpc_dictionary_create();
+			cont->ro_typei = rpct_new_typei("dictionary");
+			rpc_dictionary_apply(object,
 			    ^(const char *key, rpc_object_t v) {
-				return (rpct_serialize(v));
+				rpc_dictionary_steal_value(cont, key,
+				    rpct_serialize(v));
+				return ((bool)true);
 			});
-		}
 
-		if (rpc_get_type(object) == RPC_TYPE_ARRAY) {
-			rpc_array_map(object, ^(size_t idx, rpc_object_t v) {
-				return (rpct_serialize(v));
+			return (cont);
+		} else if (rpc_get_type(object) == RPC_TYPE_ARRAY) {
+			cont = rpc_array_create();
+			cont->ro_typei = rpct_new_typei("array");
+			rpc_array_apply(object, ^(size_t idx, rpc_object_t v) {
+				rpc_array_append_stolen_value(cont,
+				    rpct_serialize(v));
+				return ((bool)true);
 			});
-		}
 
-		return (object);
+			return (cont);
+		} else {
+			cont = rpc_copy(object);
+			cont->ro_typei = rpct_new_typei(rpc_get_type_name(rpc_get_type(object)));
+			return (cont);
+		}
 	}
 
 	clazz = object->ro_typei->type->clazz;
@@ -1856,49 +1919,44 @@ rpct_serialize(rpc_object_t object)
 rpc_object_t
 rpct_deserialize(rpc_object_t object)
 {
-	const char *typename;
+	const struct rpct_class_handler *handler;
+	const char *typedecl;
 	rpc_type_t objtype = rpc_get_type(object);
-	rpc_object_t type;
+	rpct_typei_t typei;
+	rpct_class_t clazz;
 	rpc_object_t result;
 
 	if (context == NULL)
-		return (object);
+		return (rpc_retain(object));
 
 	if (object->ro_typei != NULL)
-		return (object);
+		return (rpc_retain(object));
 
 	if (objtype == RPC_TYPE_DICTIONARY) {
-		rpc_dictionary_map(object, ^(const char *key, rpc_object_t v) {
-			return (rpct_deserialize(v));
-		});
+		typedecl = rpc_dictionary_get_string(object, RPCT_TYPE_FIELD);
+		if (typedecl == NULL)
+			goto builtin;
 
-		type = rpc_dictionary_detach_key(object, RPCT_TYPE_FIELD);
-
-		if (type == NULL)
-			goto trivial;
-
-		result = rpct_new(rpc_string_get_string_ptr(type),
-		    object);
-
-		if (result == NULL)
+		typei = rpct_new_typei(typedecl);
+		if (typei == NULL)
 			return (rpc_null_create());
 
-		rpc_retain(result);
+		clazz = typei->type->clazz;
+		handler = rpc_find_class_handler(NULL, clazz);
+		g_assert_nonnull(handler);
+
+		result = handler->deserialize_fn(object);
+		result->ro_typei = typei;
 		return (result);
 	}
 
-	if (objtype == RPC_TYPE_ARRAY) {
-		rpc_array_map(object, ^(size_t idx, rpc_object_t v) {
-			return (rpct_deserialize(v));
-		});
-	}
+builtin:
+	handler = rpc_find_class_handler(NULL, RPC_TYPING_BUILTIN);
+	g_assert_nonnull(handler);
 
-trivial:
-	typename = rpc_get_type_name(rpc_get_type(object));
-	if (g_strcmp0(typename, "null") == 0)
-		typename = "nulltype";
-
-	return (rpct_new(typename, object));
+	result = handler->deserialize_fn(object);
+	result->ro_typei = rpct_new_typei(rpc_get_type_name(objtype));
+	return (result);
 }
 
 void
@@ -1918,7 +1976,8 @@ rpct_release_error_context(struct rpct_error_context *ctx)
 }
 
 void
-rpct_add_error(struct rpct_error_context *ctx, const char *fmt, ...)
+rpct_add_error(struct rpct_error_context *ctx, rpc_object_t extra,
+    const char *fmt, ...)
 {
 	va_list ap;
 	struct rpct_validation_error *err;
@@ -1927,7 +1986,7 @@ rpct_add_error(struct rpct_error_context *ctx, const char *fmt, ...)
 	err = g_malloc0(sizeof(*err));
 	err->path = g_strdup(ctx->path);
 	err->message = g_strdup_vprintf(fmt, ap);
-	err->extra = va_arg(ap, rpc_object_t);
+	err->extra = extra;
 	va_end(ap);
 
 	g_ptr_array_add(ctx->errors, err);

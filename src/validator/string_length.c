@@ -41,16 +41,16 @@ validate_string_length(rpc_object_t obj, rpc_object_t params,
 
 	if (max != -1 && length > max) {
 		valid = false;
-		rpct_add_error(errctx,
+		rpct_add_error(errctx, NULL,
 		    "String length %d is greater than the maximum allowed: %d",
-		    length, max, NULL);
+		    length, max);
 	}
 
 	if (min != -1 && length < min) {
 		valid = false;
-		rpct_add_error(errctx,
+		rpct_add_error(errctx, NULL,
 		    "String length %d is smaller than the minimum allowed: %d",
-		    length, min, NULL);
+		    length, min);
 	}
 
 	return (valid);

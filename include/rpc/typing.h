@@ -297,6 +297,23 @@ const char *rpct_type_get_generic_var(rpct_type_t type, int index);
 rpct_member_t rpct_type_get_member(rpct_type_t type, const char *name);
 
 /**
+ * Increments reference count of a type instance handle.
+ *
+ * @param typei Type instance handle
+ * @return Same as the passed argument
+ */
+rpct_typei_t rpct_typei_retain(rpct_typei_t typei);
+
+/**
+ * Decrements reference count of a type instance handle.
+ *
+ * If the reference count reaches 0, type instance handle is freed.
+ *
+ * @param typei Type instance handle
+ */
+void rpct_typei_release(rpct_typei_t typei);
+
+/**
  * Returns base type of a type instance @p typei.
  *
  * @param typei Type instance handle
@@ -322,10 +339,11 @@ rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, const char *name);
 const char *rpct_typei_get_canonical_form(rpct_typei_t typei);
 
 /**
+ * Returns type instance handler of a structure or union member.
  *
- * @param typei
- * @param member
- * @return
+ * @param typei Type instance handle
+ * @param member Member handle
+ * @return Type instance handle or NULL in case of error
  */
 rpct_typei_t rpct_typei_get_member_type(rpct_typei_t typei,
     rpct_member_t member);
@@ -517,17 +535,27 @@ rpct_typei_t rpct_new_typei(const char *decl);
  *
  * @param decl Type declaration
  * @param object Contents
- * @return
+ * @return Typed object
  */
 rpc_object_t rpct_new(const char *decl, rpc_object_t object);
 
 /**
+ * Creates a new object of the specified type.
  *
- * @param typei
- * @param object
- * @return
+ * @param typei Type instance handle
+ * @param object Contents
+ * @return Typed object
  */
 rpc_object_t rpct_newi(rpct_typei_t typei, rpc_object_t object);
+
+/**
+ * Binds specified type to an existing object.
+ *
+ * @param typei Type instance handle
+ * @param object Object to be typed
+ * @return Typed object
+ */
+rpc_object_t rpct_set_typei(rpct_typei_t typei, rpc_object_t object);
 
 /**
  * Looks up type by name.

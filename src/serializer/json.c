@@ -28,6 +28,7 @@
 #include <glib.h>
 #include <string.h>
 #include <errno.h>
+#include <math.h>
 #include <rpc/object.h>
 #include <yajl/yajl_parse.h>
 #include <yajl/yajl_gen.h>
@@ -157,6 +158,8 @@ rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 	gpointer key, value;
 	int err_code;
 	const char *err_msg;
+	const char *dbl_type;
+	size_t dbl_type_len;
 	rpc_object_t err_extra;
 	rpc_object_t err_stack;
 #if defined(__linux__)
@@ -190,6 +193,20 @@ rpc_json_try_unpack_ext(void *ctx_ptr, rpc_object_t leaf)
 		    JSON_EXTTYPE_FD);
 		unpacked_value = rpc_fd_create(
 		    (int)rpc_int64_get_value(dict_value));
+
+	} else if (rpc_dictionary_has_key(leaf, JSON_EXTTYPE_DBL)) {
+		dict_value = rpc_dictionary_get_value(leaf,
+		    JSON_EXTTYPE_DBL);
+
+		dbl_type = rpc_string_get_string_ptr(dict_value);
+		dbl_type_len = rpc_string_get_length(dict_value);
+
+		if (!strncmp(dbl_type, JSON_EXTTYPE_DBL_INF, dbl_type_len))
+			unpacked_value = rpc_double_create(INFINITY);
+		else if (!strncmp(dbl_type, JSON_EXTTYPE_DBL_NINF, dbl_type_len))
+			unpacked_value = rpc_double_create(-INFINITY);
+		else
+			unpacked_value = rpc_double_create(NAN);
 
 	} else if (rpc_dictionary_has_key(leaf, JSON_EXTTYPE_ERROR)) {
 		dict_value = rpc_dictionary_get_value(leaf,
@@ -383,6 +400,7 @@ rpc_json_write_object_ext(yajl_gen gen, rpc_object_t object,
 	yajl_gen_status status;
 	const void *data_buf;
 	char *base64_data;
+	double d_value;
 
 	if ((status = yajl_gen_map_open(gen)) != yajl_gen_status_ok)
 		return (status);
@@ -403,6 +421,23 @@ rpc_json_write_object_ext(yajl_gen gen, rpc_object_t object,
 
 	case RPC_TYPE_FD:
 		status = yajl_gen_integer(gen, rpc_fd_get_value(object));
+		break;
+
+	case RPC_TYPE_DOUBLE:
+		d_value = rpc_double_get_value(object);
+		if (d_value == INFINITY)
+			status = yajl_gen_string(gen,
+			    (const uint8_t *)JSON_EXTTYPE_DBL_INF,
+			    strlen(JSON_EXTTYPE_DBL_INF));
+		else if (d_value == -INFINITY)
+			status = yajl_gen_string(gen,
+			    (const uint8_t *)JSON_EXTTYPE_DBL_NINF,
+			    strlen(JSON_EXTTYPE_DBL_NINF));
+		else
+			status = yajl_gen_string(gen,
+			    (const uint8_t *)JSON_EXTTYPE_DBL_NAN,
+			    strlen(JSON_EXTTYPE_DBL_NAN));
+
 		break;
 
 	case RPC_TYPE_BINARY:
@@ -492,6 +527,7 @@ static yajl_gen_status
 rpc_json_write_object(yajl_gen gen, rpc_object_t object)
 {
 	__block yajl_gen_status status;
+	double value;
 
 	switch (object->ro_type) {
 	case RPC_TYPE_NULL:
@@ -533,10 +569,17 @@ rpc_json_write_object(yajl_gen gen, rpc_object_t object)
 		return (rpc_json_write_object_ext(gen, object,
 		    (const uint8_t *)JSON_EXTTYPE_SHMEM,
 		    strlen(JSON_EXTTYPE_SHMEM)));
-#endif
 
+#endif
 	case RPC_TYPE_DOUBLE:
-		return (yajl_gen_double(gen, rpc_double_get_value(object)));
+		value = rpc_double_get_value(object);
+		if (!finite(value)) {
+			return (rpc_json_write_object_ext(gen, object,
+			    (const uint8_t *) JSON_EXTTYPE_DBL,
+			    strlen(JSON_EXTTYPE_DBL)));
+		}
+
+		return (yajl_gen_double(gen, value));
 
 	case RPC_TYPE_STRING:
 		return (yajl_gen_string(gen,

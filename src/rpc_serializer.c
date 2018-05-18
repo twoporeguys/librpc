@@ -41,6 +41,7 @@ rpc_serializer_load(const char *serializer, const void *frame,
     size_t len)
 {
 	const struct rpc_serializer *impl;
+	rpc_auto_object_t untyped = NULL;
 
 	impl = rpc_find_serializer(serializer);
 	if (impl == NULL) {
@@ -48,7 +49,8 @@ rpc_serializer_load(const char *serializer, const void *frame,
 		return (NULL);
 	}
 
-	return (impl->deserialize(frame, len));
+	untyped = impl->deserialize(frame, len);
+	return (rpct_deserialize(untyped));
 }
 
 int
@@ -56,6 +58,7 @@ rpc_serializer_dump(const char *serializer, rpc_object_t obj, void **framep,
     size_t *lenp)
 {
 	const struct rpc_serializer *impl;
+	rpc_auto_object_t typed = NULL;
 
 	impl = rpc_find_serializer(serializer);
 	if (impl == NULL) {
@@ -63,5 +66,9 @@ rpc_serializer_dump(const char *serializer, rpc_object_t obj, void **framep,
 		return (-1);
 	}
 
-	return (impl->serialize(obj, framep, lenp));
+	typed = rpct_serialize(obj);
+	if (typed == NULL)
+		return (-1);
+
+	return (impl->serialize(typed, framep, lenp));
 }

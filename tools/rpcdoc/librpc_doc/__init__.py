@@ -69,7 +69,7 @@ def generate_index(name, typing):
 def generate_interface(name, iface):
     methods = (m for m in iface.members if type(m) is librpc.Method)
     properties = (m for m in iface.members if type(m) is librpc.Property)
-    events = []
+    events = (m for m in iface.members if type(m) is librpc.Event)
 
     t = lookup.get_template('interface.mako')
     return t.render(

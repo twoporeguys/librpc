@@ -250,6 +250,8 @@ rpc_callback_worker(void *arg, void *data)
 
 		if (conn->rco_event_handler != NULL)
 			conn->rco_event_handler(path, interface, name, data);
+
+		rpc_release(item->event);
 	}
 
 done:
@@ -640,6 +642,7 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
     int *fds, size_t nfds, struct rpc_credentials *creds)
 {
 	rpc_object_t msg = (rpc_object_t)frame;
+	rpc_object_t msgt;
 
 	if (!rpc_connection_is_open(conn)) {
 		debugf("Rejecting msg, conn %p is closed", conn);
@@ -657,7 +660,8 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 			}
 			return (-1);
 		}
-	}
+	} else
+		rpc_retain(msg);
 
 	if (rpc_get_type(msg) != RPC_TYPE_DICTIONARY) {
 		if (conn->rco_error_handler != NULL)
@@ -666,8 +670,8 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 		return (-1);
 	}
 
-	msg = rpct_deserialize(msg);
-	if (msg == NULL) {
+	msgt = rpct_deserialize(msg);
+	if (msgt == NULL) {
 		if (conn->rco_error_handler != NULL)
 			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, NULL);
 
@@ -677,8 +681,9 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 	if (creds != NULL)
 		conn->rco_creds = *creds;
 
-	rpc_restore_fds(msg, fds, nfds);
-	rpc_connection_dispatch(conn, msg);
+	rpc_release(msg);
+	rpc_restore_fds(msgt, fds, nfds);
+	rpc_connection_dispatch(conn, msgt);
 	return (0);
 }
 
@@ -801,14 +806,18 @@ rpc_send_frame(rpc_connection_t conn, rpc_object_t frame)
 {
 	void *buf = frame;
 	int fds[MAX_FDS];
+	rpc_object_t tmp;
 	size_t len = 0, nfds = 0;
 	int ret;
 
-	if ((conn->rco_flags & RPC_TRANSPORT_NO_SERIALIZE) == 0)
-		frame = rpct_serialize(frame);
+	if ((conn->rco_flags & RPC_TRANSPORT_NO_SERIALIZE) == 0) {
+		tmp = rpct_serialize(frame);
+		rpc_release(frame);
+		frame = tmp;
+	}
 
 #ifdef RPC_TRACE
-	rpc_trace("SEND", frame);
+	rpc_trace("SEND", conn->rco_uri, frame);
 #endif
 
 	g_mutex_lock(&conn->rco_send_mtx);
@@ -828,7 +837,6 @@ rpc_send_frame(rpc_connection_t conn, rpc_object_t frame)
 		free(buf);
 
 	g_mutex_unlock(&conn->rco_send_mtx);
-
 	return (ret);
 }
 
@@ -997,6 +1005,7 @@ rpc_connection_alloc(rpc_server_t server)
 	struct rpc_connection *conn = NULL;
 
 	conn = g_malloc0(sizeof(*conn));
+	conn->rco_uri = server->rs_uri;
 	conn->rco_flags = server->rs_flags;
 	conn->rco_server = server;
 	conn->rco_calls = g_hash_table_new(g_str_hash, g_str_equal);
@@ -1238,7 +1247,7 @@ rpc_connection_dispatch(rpc_connection_t conn, rpc_object_t frame)
 	    rpc_string_get_string_ptr(id));
 
 #ifdef RPC_TRACE
-	rpc_trace("RECV", frame);
+	rpc_trace("RECV", conn->rco_uri, frame);
 #endif
 
 	for (h = &handlers[0]; h->namespace != NULL; h++) {
@@ -1456,7 +1465,7 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	if (!rpc_connection_is_open(conn)) {
 		g_mutex_unlock(&conn->rco_mtx);
 		debugf("connection not open");
-		rpc_set_last_errorf(ENOTCONN, "Connection no longer valid");
+		rpc_set_last_error(ECONNRESET, "Connection closed", NULL);
 		return (NULL);
 	}
 
@@ -1466,7 +1475,7 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	call->rc_path = path;
 	call->rc_interface = interface;
 	call->rc_method = name;
-	call->rc_args = args != NULL ? args : rpc_array_create();
+	call->rc_args = args != NULL ? rpc_retain(args) : rpc_array_create();
 	call->rc_callback = callback != NULL ? Block_copy(callback) : NULL;
 
 	if (path)
@@ -1476,8 +1485,8 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 		rpc_dictionary_set_string(payload, "interface", interface);
 
 	rpc_dictionary_set_string(payload, "method", name);
-	rpc_dictionary_set_value(payload, "args", args);
-	frame = rpc_pack_frame("rpc", "call", call->rc_id,  payload);
+	rpc_dictionary_steal_value(payload, "args", call->rc_args);
+	frame = rpc_pack_frame("rpc", "call", call->rc_id, payload);
 
 	g_mutex_lock(&call->rc_mtx);
 	g_rw_lock_writer_lock(&conn->rco_call_rwlock);
@@ -1551,6 +1560,11 @@ rpc_connection_watch_property(rpc_connection_t conn, const char *path,
     const char *interface, const char *property,
     rpc_property_handler_t handler)
 {
+	/* add some memory leaks to we can remove them later */
+	path = g_strdup(path);
+	interface = g_strdup(interface);
+	property = g_strdup(property);
+
 	rpc_handler_t block = ^(const char *_p __unused, const char *_i __unused,
 	    const char *_n __unused, rpc_object_t args) {
 		const char *ev_iface;
@@ -1587,10 +1601,9 @@ rpc_connection_send_event(rpc_connection_t conn, const char *path,
 	    "path", path,
 	    "interface", interface,
 	    "name", name,
-	    "args", args);
+	    "args", rpc_retain(args));
 
 	frame = rpc_pack_frame("events", "event", NULL, event);
-
 	if (rpc_send_frame(conn, frame) != 0)
 		return (-1);
 

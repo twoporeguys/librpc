@@ -24,49 +24,42 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-import os
-import sys
-import enum
-import errno
-import types
-import inspect
-import functools
-import traceback
-import datetime
-import uuid
-from cpython.ref cimport Py_INCREF, Py_DECREF
-from librpc cimport *
-from libc.string cimport strdup
-from libc.stdint cimport *
-from libc.stdlib cimport malloc, free
+cdef class Server(object):
+    cdef rpc_server_t server
+    cdef Context context
+    cdef object uri
 
+    def __init__(self, uri, context):
+        if not uri:
+            raise RuntimeError('URI cannot be empty')
 
-cdef extern from "Python.h" nogil:
-    void PyEval_InitThreads()
+        self.uri = uri.encode('utf-8')
+        self.context = context
+        self.server = rpc_server_create(self.uri, self.context.context)
 
+    def broadcast_event(self, name, args, path='/', interface=None):
+        cdef Object rpc_args
+        cdef const char *c_name
+        cdef const char *c_path
+        cdef const char *c_interface = NULL
 
-include "src/object.pxi"
-include "src/connection.pxi"
-include "src/service.pxi"
-include "src/client.pxi"
-include "src/server.pxi"
-include "src/bus.pxi"
-include "src/serializer.pxi"
-include "src/typing.pxi"
+        b_name = name.encode('utf-8')
+        c_name = b_name
+        b_path = path.encode('utf-8')
+        c_path = b_path
 
+        if interface:
+            b_interface = interface.encode('utf-8')
+            c_interface = b_interface
 
-cdef str_or_none(const char *val):
-    if val == NULL:
-        return None
+        if isinstance(args, Object):
+            rpc_args = args
+        else:
+            rpc_args = Object(args)
+            rpc_retain(rpc_args.obj)
 
-    return val.decode('utf-8')
+        with nogil:
+            rpc_server_broadcast_event(self.server, c_path, c_interface, c_name, rpc_args.obj)
 
-
-cdef const char *cstr_or_null(val):
-    if not val:
-        return NULL
-
-    return val.encode('utf-8')
-
-
-type_hooks = {}
+    def close(self):
+        rpc_server_close(self.server)

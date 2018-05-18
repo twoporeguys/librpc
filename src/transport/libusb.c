@@ -39,7 +39,6 @@
 #endif
 
 #define	LIBRPC_USB_VID		0xbeef
-#define	LIBRPC_USB_PID		0xfeed
 
 struct usb_context;
 struct usb_connection;
@@ -49,6 +48,7 @@ static void usb_close(void *);
 static int usb_hotplug_callback(libusb_context *, libusb_device *,
     libusb_hotplug_event, void *);
 static gboolean usb_hotplug_impl(void *);
+static bool usb_valid_pid(uint16_t);
 static int usb_connect(struct rpc_connection *, const char *, rpc_object_t);
 static int usb_send_msg(void *, void *, size_t, const int *fds, size_t nfds);
 static int usb_abort(void *);
@@ -161,6 +161,11 @@ static const struct rpc_transport libusb_transport = {
 	.bus_ops = &libusb_bus_ops
 };
 
+static const uint16_t libusb_valid_pids[] = {
+	0xfeed,
+	0xfeee,
+};
+
 static GMutex usb_request_mtx;
 
 static int
@@ -207,7 +212,7 @@ usb_hotplug_impl(void *arg)
 			break;
 
 		if (devdesc.idVendor != LIBRPC_USB_VID ||
-		    devdesc.idProduct != LIBRPC_USB_PID)
+		    !usb_valid_pid(devdesc.idProduct))
 			break;
 
 		address = libusb_get_device_address(state->uss_dev);
@@ -232,6 +237,19 @@ usb_hotplug_impl(void *arg)
 	}
 
 	g_free(state);
+	return (false);
+}
+
+static bool
+usb_valid_pid(uint16_t pid)
+{
+	unsigned long i;
+
+	for (i = 0; i < sizeof(libusb_valid_pids) / sizeof(uint16_t); i++) {
+		if (libusb_valid_pids[i] == pid)
+			return (true);
+	}
+
 	return (false);
 }
 
@@ -264,7 +282,7 @@ usb_open(GMainContext *main_context)
 	ret = libusb_hotplug_register_callback(ctx->uc_libusb,
 	    LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED |
 	    LIBUSB_HOTPLUG_EVENT_DEVICE_LEFT,
-	    LIBUSB_HOTPLUG_ENUMERATE, LIBRPC_USB_VID, LIBRPC_USB_PID,
+	    LIBUSB_HOTPLUG_ENUMERATE, LIBRPC_USB_VID, LIBUSB_HOTPLUG_MATCH_ANY,
 	    LIBUSB_HOTPLUG_MATCH_ANY, &usb_hotplug_callback, ctx,
 	    &ctx->uc_handle);
 
@@ -435,8 +453,7 @@ usb_enumerate_one(libusb_device *dev, struct rpc_bus_node *node)
 	if (libusb_get_device_descriptor(dev, &desc) < 0)
 		return (-1);
 
-	if (desc.idVendor != LIBRPC_USB_VID ||
-	    desc.idProduct != LIBRPC_USB_PID)
+	if (desc.idVendor != LIBRPC_USB_VID || !usb_valid_pid(desc.idProduct))
 		return (-1);
 
 	if (libusb_open(dev, &handle) != 0)
@@ -546,7 +563,7 @@ usb_find(struct libusb_context *libusb, const char *serial, int addr)
 		    address, desc.idVendor, desc.idProduct);
 
 		if (desc.idVendor != LIBRPC_USB_VID ||
-		    desc.idProduct != LIBRPC_USB_PID)
+		    !usb_valid_pid(desc.idProduct))
 			continue;
 
 		if (addr != -1 && address == addr) {

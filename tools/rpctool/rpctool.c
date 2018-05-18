@@ -92,7 +92,7 @@ connect(void)
 
 	if (idls != NULL) {
 		for (idl = idls; *idl != NULL; idl++)
-			rpct_load_types(*idl);
+			rpct_load_types_dir(*idl);
 	}
 
 	client = rpc_client_create(server, NULL);

@@ -159,7 +159,7 @@ rpc_get_last_error(void)
 }
 
 void
-rpc_trace(const char *msg, rpc_object_t frame)
+rpc_trace(const char *msg, const char *ident, rpc_object_t frame)
 {
 	char *descr;
 	const char *dest;
@@ -180,10 +180,10 @@ rpc_trace(const char *msg, rpc_object_t frame)
 
 	now = g_date_time_new_now_local();
 	descr = rpc_copy_description(frame);
-	fprintf(stream, "[%02d:%02d:%02d.%06d] %s: %s\n",
+	fprintf(stream, "[%02d:%02d:%02d.%06d] %s (%s): %s\n",
 	    g_date_time_get_hour(now), g_date_time_get_minute(now),
 	    g_date_time_get_second(now), g_date_time_get_microsecond(now),
-	    msg, descr);
+	    msg, ident, descr);
 
 	g_date_time_unref(now);
 	g_free(descr);
