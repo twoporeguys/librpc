@@ -175,7 +175,10 @@ cdef class Object(object):
                 raise LibException(errno.EINVAL, "Unknown value type: {0}".format(type(value)))
 
         if typei:
-            self.obj = rpct_newi((<TypeInstance>typei).rpctypei, self.obj)
+            if isinstance(value, Object):
+                self.obj = rpc_copy(self.obj)
+
+            self.obj = rpct_set_typei((<TypeInstance>typei).rpctypei, self.obj)
 
     def __repr__(self):
         bdescr = rpc_copy_description(self.obj)
