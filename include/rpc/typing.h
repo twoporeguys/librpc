@@ -549,6 +549,15 @@ rpc_object_t rpct_new(const char *decl, rpc_object_t object);
 rpc_object_t rpct_newi(rpct_typei_t typei, rpc_object_t object);
 
 /**
+ * Binds specified type to an existing object.
+ *
+ * @param typei Type instance handle
+ * @param object Object to be typed
+ * @return Typed object
+ */
+rpc_object_t rpct_set_typei(rpct_typei_t typei, rpc_object_t object);
+
+/**
  * Looks up type by name.
  *
  * @param name Type name

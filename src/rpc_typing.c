@@ -96,6 +96,18 @@ rpct_newi(rpct_typei_t typei, rpc_object_t object)
 		return (NULL);
 
 	object = rpc_copy(object);
+	return (rpct_set_typei(typei, object));
+}
+
+rpc_object_t
+rpct_set_typei(rpct_typei_t typei, rpc_object_t object)
+{
+	if (object == NULL)
+		return (NULL);
+
+	if (object->ro_typei != NULL)
+		rpct_typei_release(object->ro_typei);
+
 	object->ro_typei = rpct_typei_retain(rpct_unwind_typei(typei));
 	return (object);
 }
