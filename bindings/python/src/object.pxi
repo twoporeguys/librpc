@@ -239,7 +239,7 @@ cdef class Object(object):
         :param self:
         :return:
         """
-        if self.type == ObjectType.DICTIONARY:
+        if not isinstance(self, BaseStruct) and self.type == ObjectType.DICTIONARY:
             return {k: v.unpack() for k, v in self.value.items()}
 
         if self.type == ObjectType.ARRAY:
