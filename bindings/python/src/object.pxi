@@ -239,7 +239,7 @@ cdef class Object(object):
         :param self:
         :return:
         """
-        if isinstance(self, BaseStruct):
+        if isinstance(self, (BaseStruct, BaseUnion, BaseEnum)):
             return self
 
         if self.type == ObjectType.DICTIONARY:
