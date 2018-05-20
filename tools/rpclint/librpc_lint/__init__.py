@@ -42,7 +42,6 @@ def main():
     args = parser.parse_args()
 
     typing = librpc.Typing()
-    outdir = args.o
     paths = []
 
     if args.system:
@@ -73,7 +72,10 @@ def main():
 
         for member in typ.members:
             if not member.description:
-                print('{0}: description missing for member "{1}"'.format(typ.name, member.name))
+                print('{0}: description missing for member "{1}"'.format(
+                    typ.name,
+                    member.name
+                ))
 
 
 if __name__ == '__main__':

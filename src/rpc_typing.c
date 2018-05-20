@@ -876,6 +876,15 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 	if (type)
 		prop->result = rpct_instantiate_type(type, NULL, NULL, file);
 
+	if (prop->result == NULL) {
+		rpc_set_last_errorf(EINVAL,
+		    "Cannot instantiate type %s of property %s",
+		    prop->result, name);
+
+		goto error;
+	}
+
+
 	g_hash_table_insert(iface->members, g_strdup(name), prop);
 	return (0);
 
@@ -891,7 +900,7 @@ static int
 rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
     const char *decl, rpc_object_t obj)
 {
-	struct rpct_if_member *prop;
+	struct rpct_if_member *evt;
 	GError *err = NULL;
 	GRegex *regex = NULL;
 	GMatchInfo *match = NULL;
@@ -917,15 +926,22 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
 	}
 
 	name = g_match_info_fetch(match, 1);
-	prop = g_malloc0(sizeof(*prop));
-	prop->member.rim_name = g_strdup(name);
-	prop->member.rim_type = RPC_MEMBER_EVENT;
-	prop->description = g_strdup(description);
+	evt = g_malloc0(sizeof(*evt));
+	evt->member.rim_name = g_strdup(name);
+	evt->member.rim_type = RPC_MEMBER_EVENT;
+	evt->description = g_strdup(description);
 
 	if (type)
-		prop->result = rpct_instantiate_type(type, NULL, NULL, file);
+		evt->result = rpct_instantiate_type(type, NULL, NULL, file);
 
-	g_hash_table_insert(iface->members, g_strdup(name), prop);
+	if (evt->result == NULL) {
+		rpc_set_last_errorf(EINVAL,
+		    "Cannot instantiate type %s of event %s",
+		    evt->result, name);
+		goto error;
+	}
+
+	g_hash_table_insert(iface->members, g_strdup(name), evt);
 	return (0);
 
 error:
