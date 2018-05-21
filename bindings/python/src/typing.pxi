@@ -317,7 +317,6 @@ cdef class Interface(object):
 
         elif c_type == RPC_MEMBER_EVENT:
             result = Event.__new__(Event)
-            print(result)
 
         result.c_member = val
         container.append(result)
