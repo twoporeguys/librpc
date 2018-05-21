@@ -107,7 +107,7 @@ cdef class TypeInstance(object):
     def __init__(self, decl):
         self.rpctypei = rpct_new_typei(decl.encode('utf-8'))
         if self.rpctypei == <rpct_typei_t>NULL:
-            raise ValueError('Invalid type specifier')
+            raise_internal_exc()
 
     def __str__(self):
         return '<librpc.TypeInstance "{0}">'.format(self.canonical)
@@ -454,7 +454,6 @@ cdef class BaseUnion(Object):
         result, errors = self.validate()
         if not result:
             raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
-
 
     def __str__(self):
         return "<union {0}>".format(self.typei.type.name)
