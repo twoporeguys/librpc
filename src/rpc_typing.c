@@ -758,7 +758,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	type->file = file;
 	type->parent = parent;
 	type->members = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
-	    (GDestroyNotify)rpct_member_free);
+	    NULL);
 	type->constraints = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    g_free, (GDestroyNotify)rpc_release_impl);
 	type->description = g_strdup(description);
@@ -880,10 +880,8 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 		rpc_set_last_errorf(EINVAL,
 		    "Cannot instantiate type %s of property %s",
 		    prop->result, name);
-
 		goto error;
 	}
-
 
 	g_hash_table_insert(iface->members, g_strdup(name), prop);
 	return (0);
