@@ -239,6 +239,9 @@ cdef class Object(object):
         :param self:
         :return:
         """
+        if isinstance(self, (BaseStruct, BaseUnion, BaseEnum)):
+            return self
+
         if self.type == ObjectType.DICTIONARY:
             return {k: v.unpack() for k, v in self.value.items()}
 
