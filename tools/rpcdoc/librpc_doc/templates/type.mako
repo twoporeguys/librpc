@@ -3,6 +3,8 @@
 
 % if t.is_struct:
     ${partials.struct(t)}
+% elif t.is_union:
+    ${partials.union(t)}
 % elif t.is_typedef:
     ${partials.typedef(t)}
 % elif t.is_builtin:
