@@ -15,7 +15,6 @@ var searchData=
   ['rpc_5fis_5ferror',['rpc_is_error',['../object_8h.html#aa125ec0a73c4c9953b07e5da1712573e',1,'object.h']]],
   ['rpc_5fmethod',['RPC_METHOD',['../service_8h.html#a3b7ed0fba131ae55d90cbf5deb8cba5d',1,'service.h']]],
   ['rpc_5fmethod_5fblock',['RPC_METHOD_BLOCK',['../service_8h.html#a1b9446e9faacdac7aae6e9e8601ebff3',1,'service.h']]],
-  ['rpc_5fnull_5fformat',['RPC_NULL_FORMAT',['../connection_8h.html#aaf641fc7d6364f49c859701d678c8d49',1,'connection.h']]],
   ['rpc_5fproperty_5fhandler',['RPC_PROPERTY_HANDLER',['../connection_8h.html#acb61d20219377e2bd2a4727367222ec2',1,'connection.h']]],
   ['rpc_5fproperty_5fro',['RPC_PROPERTY_RO',['../service_8h.html#acbb40848a04a99a67fa65f1a103af208',1,'service.h']]],
   ['rpc_5fproperty_5frw',['RPC_PROPERTY_RW',['../service_8h.html#a6f39d78ec8fde43f05f7805fddc525d4',1,'service.h']]],
