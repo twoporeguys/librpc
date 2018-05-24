@@ -6,15 +6,16 @@ case "`uname -s`" in
         	echo "I am a Mac.  Brew installing stuff."
         	echo "Don't worry about warnings of things already installed."
         	brew install glib libsoup yajl libusb libyaml yajl python3 cmake pkg-config
-        	pip3 install cython
 	elif [ -x /opt/local/bin/port ]; then
         	echo "I am a Mac.  Using macports to install stuff with sudo"
         	sudo port install glib2 libsoup yajl libusb libyaml yajl python36 py36-pip cmake lcov pkgconfig
-        	sudo pip-3.6 install cython
+		sudo port select --set pip pip36
+		ln -fs /opt/local/bin/pip-3.6 /opt/local/bin/pip3
 	else
 		echo "I am a Mac but you have neither macports or brew installed."
 		exit 1
 	fi
+        sudo pip3 install cython
         ;;
     Linux*)
         echo "I am some kind of Linux, hopefully Ubuntu."
