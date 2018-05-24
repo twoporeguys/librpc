@@ -793,7 +793,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 	/* Read member list */
 	if (members != NULL) {
-		if (rpc_dictionary_apply(members, ^(const char *key,
+		bool ret = rpc_dictionary_apply(members, ^(const char *key,
 		    rpc_object_t value) {
 			struct rpct_member *m;
 
@@ -804,7 +804,9 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 			g_hash_table_insert(type->members,
 			    g_strdup(key), m);
 			return ((bool)true);
-		})) {
+		});
+
+		if (ret) {
 			rpct_type_free(type);
 			return (-1);
 		}

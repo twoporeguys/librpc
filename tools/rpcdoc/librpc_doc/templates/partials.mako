@@ -31,6 +31,23 @@
 </ul>
 </%def>
 
+<%def name="union(u)">
+<h3 id="${u.name}">union <span class="type">${u.name}</span></h3>
+<p>${u.description}</p>
+<h4>Branches:</h4>
+<ul>
+    % for m in u.members:
+    <li>
+        ${type(m.type)} ${m.name}
+        <p>
+            ${m.description}
+        </p>
+    </li>
+    % endfor
+</ul>
+</%def>
+
+
 <%def name="typedef(t)">
     %if t.is_builtin:
         <h3>builtin <span class="type">${t.name}</span></h3>
