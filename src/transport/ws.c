@@ -403,7 +403,7 @@ ws_abort(void *arg)
 
 	debugf("ws abort %p", conn->wc_parent);
 	g_mutex_lock(&conn->wc_abort_mtx);
-	if (conn->wc_aborted) {
+	if (conn->wc_aborted || conn->wc_closed) {
 		g_mutex_unlock(&conn->wc_abort_mtx);
 		return 0;
 	}
