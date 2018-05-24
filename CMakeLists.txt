@@ -94,6 +94,36 @@ if (ENABLE_COVERAGE)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
 endif()
 
+function(python_install SETUP_PY)
+    if(EXISTS "$ENV{DESTDIR}/${CMAKE_INSTALL_PREFIX}/lib/${PYTHON_VERSION}/dist-packages")
+        install(CODE "
+        execute_process(
+            COMMAND ${PYTHON} ${SETUP_PY} install
+                --record python_manifest.txt
+                --root=/\$ENV{DESTDIR}
+                --install-lib=${CMAKE_INSTALL_PREFIX}/lib/${PYTHON_VERSION}/dist-packages
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        )")
+    elseif(DEFINED "$ENV{CUSTOM_PREFIX}")
+        install(CODE "
+        execute_process(
+            COMMAND ${PYTHON} ${SETUP_PY} install
+                --record python_manifest.txt
+                --root=/\$ENV{DESTDIR}
+                --prefix=${CMAKE_INSTALL_PREFIX}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        )")
+    else()
+        install(CODE "
+        execute_process(
+            COMMAND ${PYTHON} ${SETUP_PY} install
+                --record python_manifest.txt
+                --root=/\$ENV{DESTDIR}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        )")
+    endif()
+endfunction()
+
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_FLAGS "-fblocks -Wall -Wextra -Wno-unused-parameter -DRPC_TRACE ${PKGCONFIG_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "-fblocks -Wall -Wextra -Wno-unused-parameter -DRPC_TRACE ${PKGCONFIG_C_FLAGS}")
@@ -218,19 +248,19 @@ target_link_libraries(librpc ${SOUP_LIBRARIES})
 target_link_libraries(librpc ${YAJL_LIBRARIES})
 target_link_libraries(librpc ${YAML_LIBRARIES})
 
-	if(BUILD_LIBUSB)
-target_link_libraries(librpc ${LIBUSB_LIBRARIES})
+if(BUILD_LIBUSB)
+    target_link_libraries(librpc ${LIBUSB_LIBRARIES})
 endif()
 
-	if(BUILD_BUS AND LINUX)
-target_link_libraries(librpc ${UDEV_LIBRARIES})
+if(BUILD_BUS AND LINUX)
+    target_link_libraries(librpc ${UDEV_LIBRARIES})
 endif()
 
-	if(NOT APPLE)
+if(NOT APPLE)
 	target_link_libraries(librpc BlocksRuntime)
 endif()
 
-	if(ENABLE_LIBDISPATCH AND NOT APPLE)
+if(ENABLE_LIBDISPATCH AND NOT APPLE)
 	target_link_libraries(librpc dispatch)
 endif()
 
@@ -259,7 +289,7 @@ if(BUILD_TESTS)
 
 add_executable(test_suite ${TEST_SOURCES})
 target_link_libraries(test_suite ${GLIB_LIBRARIES})
-	target_link_libraries(test_suite librpc)
+target_link_libraries(test_suite librpc)
 endif()
 
 if(BUILD_EXAMPLES)

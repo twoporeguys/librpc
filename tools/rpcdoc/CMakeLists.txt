@@ -13,5 +13,4 @@ add_custom_command(OUTPUT ${OUTPUT}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 add_custom_target(rpcdoc ALL DEPENDS ${OUTPUT})
-
-install(CODE "execute_process(COMMAND ${PYTHON} ${SETUP_PY} install --record python_manifest.txt --prefix=${CMAKE_INSTALL_PREFIX} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})")
+python_install(${SETUP_PY})
