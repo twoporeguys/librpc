@@ -219,16 +219,16 @@ if(BUNDLED_BLOCKS_RUNTIME)
 			contrib/BlocksRuntime/runtime.c)
 endif()
 
-	if(BUILD_LIBUSB)
+if(BUILD_LIBUSB)
 set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/libusb.c)
 endif()
 
-	if(BUILD_BUS AND LINUX)
-set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/bus.c)
+if(BUILD_BUS AND LINUX)
+    set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/bus.c)
 endif()
 
-	if(BUILD_XPC)
-set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/xpc.c)
+if(BUILD_XPC)
+    set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/xpc.c)
 endif()
 
 	add_library(librpc SHARED
