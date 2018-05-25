@@ -261,6 +261,7 @@ rpc_msgpack_read_object(mpack_node_t node)
 	case mpack_type_bool:
 		return (rpc_bool_create(mpack_node_bool(node)));
 
+	case mpack_type_float:
 	case mpack_type_double:
 		return (rpc_double_create(mpack_node_double(node)));
 

@@ -232,8 +232,11 @@ rpct_stream_idl(void *cookie, rpc_object_t args __unused)
 	struct rpct_file *file;
 
 	g_hash_table_iter_init(&iter, context->files);
-	while (g_hash_table_iter_next(&iter, NULL, (gpointer)&file))
-		rpc_function_yield(cookie, rpc_retain(file->body));
+	while (g_hash_table_iter_next(&iter, NULL, (gpointer)&file)) {
+		rpc_function_yield(cookie, rpc_object_pack("{s,v}",
+		    "name", file->path,
+		    "body", rpc_retain(file->body)));
+	}
 
 	return (NULL);
 }
@@ -1141,12 +1144,33 @@ abort:
 }
 
 int
-rpct_read_file(const char *path)
+rpct_read_idl(const char *name, rpc_object_t idl)
 {
 	struct rpct_file *file;
+
+	file = g_malloc0(sizeof(*file));
+	file->body = rpc_retain(idl);
+	file->path = g_strdup(name);
+	file->uses = g_ptr_array_new_with_free_func(g_free);
+	file->types = g_hash_table_new(g_str_hash, g_str_equal);
+	file->interfaces = g_hash_table_new(g_str_hash, g_str_equal);
+
+	if (rpct_read_meta(file, rpc_dictionary_get_value(idl, "meta")) < 0) {
+		rpc_set_last_errorf(EINVAL,
+		    "Cannot read meta section of file %s", file->path);
+		return (-1);
+	}
+
+	g_hash_table_insert(context->files, g_strdup(name), file);
+	return (0);
+}
+
+int
+rpct_read_file(const char *path)
+{
 	char *contents;
 	size_t length;
-	rpc_object_t obj;
+	rpc_auto_object_t obj = NULL;
 	GError *err = NULL;
 
 	debugf("trying to read %s", path);
@@ -1167,21 +1191,7 @@ rpct_read_file(const char *path)
 	if (obj == NULL)
 		return (-1);
 
-	file = g_malloc0(sizeof(*file));
-	file->body = obj;
-	file->path = g_strdup(path);
-	file->uses = g_ptr_array_new_with_free_func(g_free);
-	file->types = g_hash_table_new(g_str_hash, g_str_equal);
-	file->interfaces = g_hash_table_new(g_str_hash, g_str_equal);
-
-	if (rpct_read_meta(file, rpc_dictionary_get_value(obj, "meta")) < 0) {
-		rpc_set_last_errorf(EINVAL,
-		    "Cannot read meta section of file %s", file->path);
-		return (-1);
-	}
-
-	g_hash_table_insert(context->files, g_strdup(path), file);
-	return (0);
+	return (rpct_read_idl(path, obj));
 }
 
 bool
@@ -1403,7 +1413,44 @@ rpct_allow_idl_download(rpc_context_t context)
 int
 rpct_download_idl(rpc_connection_t conn)
 {
+	rpc_call_t call;
+	rpc_object_t result;
+	rpc_object_t body;
+	const char *name;
+	int ret = 0;
 
+	call = rpc_connection_call(conn, "/", RPCT_TYPING_INTERFACE,
+	    "download", NULL, NULL);
+	if (call == NULL)
+		return (-1);
+
+	rpc_call_wait(call);
+
+	switch (rpc_call_status(call)) {
+	case RPC_CALL_MORE_AVAILABLE:
+		result = rpc_call_result(call);
+		if (rpc_object_unpack(result, "{s,v}",
+		    "name", &name,
+		    "body", &body) < 2) {
+			ret = -1;
+			break;
+		}
+
+		if (rpct_read_idl(name, body) < 0)
+			ret = -1;
+
+		break;
+
+	case RPC_CALL_ENDED:
+		break;
+
+	case RPC_CALL_ERROR:
+		ret = -1;
+		break;
+	}
+
+	rpc_call_free(call);
+	return (ret);
 }
 
 int

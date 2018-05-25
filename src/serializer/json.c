@@ -573,7 +573,7 @@ rpc_json_write_object(yajl_gen gen, rpc_object_t object)
 #endif
 	case RPC_TYPE_DOUBLE:
 		value = rpc_double_get_value(object);
-		if (!finite(value)) {
+		if (!isfinite(value)) {
 			return (rpc_json_write_object_ext(gen, object,
 			    (const uint8_t *) JSON_EXTTYPE_DBL,
 			    strlen(JSON_EXTTYPE_DBL)));

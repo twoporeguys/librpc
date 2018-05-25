@@ -176,10 +176,20 @@ void rpct_free(void);
  * Reads IDL file without parsing it. @ref rpc_load_types must be called
  * on the same path again to load the associated types.
  *
- * @param path Paths to the IDL file
+ * @param path Path to the IDL file
  * @return 0 on success, -1 on error
  */
 int rpct_read_file(const char *path);
+
+/**
+ * Reads IDL object without parsing it. @ref rpc_load_types must be called
+ * on the same name again to load the associated types.
+ *
+ * @param name Name of the IDL blob
+ * @param idl IDL blob contents
+ * @return 0 on success, -1 on error
+ */
+int rpct_read_idl(const char *name, rpc_object_t idl);
 
 /**
  * Loads type information from an interface definition file.
@@ -652,10 +662,19 @@ rpc_object_t rpct_pre_call_hook(void *cookie, rpc_object_t args);
 rpc_object_t rpct_post_call_hook(void *cookie, rpc_object_t args);
 
 /**
+ * XXX
  *
  * @param context
  */
 void rpct_allow_idl_download(rpc_context_t context);
+
+/**
+ * XXX
+ *
+ * @param conn Connection handle
+ * @return 0 on success, -1 on error
+ */
+int rpct_download_idl(rpc_connection_t conn);
 
 #ifdef __cplusplus
 }
