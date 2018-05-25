@@ -2083,6 +2083,32 @@
         </inbodydescription>
         <location file="/code/include/rpc/typing.h" line="669" column="1"/>
       </memberdef>
+      <memberdef kind="function" id="typing_8h_1a57baca626f8a63a3812b28fad9aa838f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int rpct_download_idl</definition>
+        <argsstring>(rpc_connection_t conn)</argsstring>
+        <name>rpct_download_idl</name>
+        <param>
+          <type><ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref></type>
+          <declname>conn</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>XXX</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>conn</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Connection handle </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 on success, -1 on error </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/typing.h" line="677" column="1"/>
+      </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
@@ -2306,7 +2332,7 @@
 <codeline lineno="663"><highlight class="normal"></highlight></codeline>
 <codeline lineno="669"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a4812f96b7d0bca64c415aa3aa99182be" kindref="member">rpct_allow_idl_download</ref>(<ref refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kindref="member">rpc_context_t</ref><sp/>context);</highlight></codeline>
 <codeline lineno="670"><highlight class="normal"></highlight></codeline>
-<codeline lineno="677"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>rpct_download_idl(<ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref><sp/>conn)</highlight></codeline>
+<codeline lineno="677"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a57baca626f8a63a3812b28fad9aa838f" kindref="member">rpct_download_idl</ref>(<ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref><sp/>conn);</highlight></codeline>
 <codeline lineno="678"><highlight class="normal"></highlight></codeline>
 <codeline lineno="679"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="680"><highlight class="normal">}</highlight></codeline>

@@ -457,6 +457,7 @@
     <member refid="typing_8h_1a07cecc265f9dd575d5ff4904f13b5fac" kind="function"><name>rpct_pre_call_hook</name></member>
     <member refid="typing_8h_1afa62adf9fe6a415494c529254b030086" kind="function"><name>rpct_post_call_hook</name></member>
     <member refid="typing_8h_1a4812f96b7d0bca64c415aa3aa99182be" kind="function"><name>rpct_allow_idl_download</name></member>
+    <member refid="typing_8h_1a57baca626f8a63a3812b28fad9aa838f" kind="function"><name>rpct_download_idl</name></member>
   </compound>
   <compound refid="vtable_8h" kind="file"><name>vtable.h</name>
   </compound>
