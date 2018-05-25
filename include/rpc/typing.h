@@ -663,7 +663,7 @@ rpc_object_t rpct_post_call_hook(void *cookie, rpc_object_t args);
 
 /**
  * XXX
- * 
+ *
  * @param context
  */
 void rpct_allow_idl_download(rpc_context_t context);
@@ -674,7 +674,7 @@ void rpct_allow_idl_download(rpc_context_t context);
  * @param conn Connection handle
  * @return 0 on success, -1 on error
  */
-int rpct_download_idl(rpc_connection_t conn)
+int rpct_download_idl(rpc_connection_t conn);
 
 #ifdef __cplusplus
 }
