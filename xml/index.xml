@@ -400,6 +400,7 @@
     <member refid="typing_8h_1a2b9f8ae8a387369f22146612228f1d0a" kind="function"><name>rpct_init</name></member>
     <member refid="typing_8h_1a6dabfe4b5d8fbc841f0af797716c7b64" kind="function"><name>rpct_free</name></member>
     <member refid="typing_8h_1abd806217eb0710e56261f7165117f3c9" kind="function"><name>rpct_read_file</name></member>
+    <member refid="typing_8h_1a797228970122f8e212ed107266fcdf5f" kind="function"><name>rpct_read_idl</name></member>
     <member refid="typing_8h_1a614a4cc99f03ed23893a73d097f26bdc" kind="function"><name>rpct_load_types</name></member>
     <member refid="typing_8h_1a5bfb76b7035a0d74bfb415ffcfb5596c" kind="function"><name>rpct_load_types_dir</name></member>
     <member refid="typing_8h_1acbc6974bab6dc69be04a901688cfcbca" kind="function"><name>rpct_load_types_stream</name></member>

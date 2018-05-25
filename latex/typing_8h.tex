@@ -73,6 +73,8 @@ void \hyperlink{typing_8h_a6dabfe4b5d8fbc841f0af797716c7b64}{rpct\+\_\+free} (vo
 \item 
 int \hyperlink{typing_8h_abd806217eb0710e56261f7165117f3c9}{rpct\+\_\+read\+\_\+file} (const char $\ast$path)
 \item 
+int \hyperlink{typing_8h_a797228970122f8e212ed107266fcdf5f}{rpct\+\_\+read\+\_\+idl} (const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} idl)
+\item 
 int \hyperlink{typing_8h_a614a4cc99f03ed23893a73d097f26bdc}{rpct\+\_\+load\+\_\+types} (const char $\ast$path)
 \item 
 int \hyperlink{typing_8h_a5bfb76b7035a0d74bfb415ffcfb5596c}{rpct\+\_\+load\+\_\+types\+\_\+dir} (const char $\ast$path)
@@ -984,7 +986,25 @@ Reads I\+DL file without parsing it. rpc\+\_\+load\+\_\+types must be called on 
 
 
 \begin{DoxyParams}{Parameters}
-{\em path} & Paths to the I\+DL file \\
+{\em path} & Path to the I\+DL file \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on error 
+\end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_a797228970122f8e212ed107266fcdf5f}\label{typing_8h_a797228970122f8e212ed107266fcdf5f}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+read\+\_\+idl@{rpct\+\_\+read\+\_\+idl}}
+\index{rpct\+\_\+read\+\_\+idl@{rpct\+\_\+read\+\_\+idl}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+read\+\_\+idl()}{rpct\_read\_idl()}}
+{\footnotesize\ttfamily int rpct\+\_\+read\+\_\+idl (\begin{DoxyParamCaption}\item[{const char $\ast$}]{name,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{idl }\end{DoxyParamCaption})}
+
+Reads I\+DL object without parsing it. rpc\+\_\+load\+\_\+types must be called on the same name again to load the associated types.
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the I\+DL blob \\
+\hline
+{\em idl} & I\+DL blob contents \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}

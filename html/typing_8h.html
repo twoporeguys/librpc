@@ -147,6 +147,8 @@ Functions</h2></td></tr>
 <tr class="separator:a6dabfe4b5d8fbc841f0af797716c7b64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd806217eb0710e56261f7165117f3c9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#abd806217eb0710e56261f7165117f3c9">rpct_read_file</a> (const char *path)</td></tr>
 <tr class="separator:abd806217eb0710e56261f7165117f3c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a797228970122f8e212ed107266fcdf5f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a797228970122f8e212ed107266fcdf5f">rpct_read_idl</a> (const char *name, <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> idl)</td></tr>
+<tr class="separator:a797228970122f8e212ed107266fcdf5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a614a4cc99f03ed23893a73d097f26bdc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a614a4cc99f03ed23893a73d097f26bdc">rpct_load_types</a> (const char *path)</td></tr>
 <tr class="separator:a614a4cc99f03ed23893a73d097f26bdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bfb76b7035a0d74bfb415ffcfb5596c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a5bfb76b7035a0d74bfb415ffcfb5596c">rpct_load_types_dir</a> (const char *path)</td></tr>
@@ -1607,7 +1609,44 @@ Functions</h2></td></tr>
 <p>Reads IDL file without parsing it. rpc_load_types must be called on the same path again to load the associated types.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">path</td><td>Paths to the IDL file </td></tr>
+    <tr><td class="paramname">path</td><td>Path to the IDL file </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
+
+</div>
+</div>
+<a id="a797228970122f8e212ed107266fcdf5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a797228970122f8e212ed107266fcdf5f">&#9670;&nbsp;</a></span>rpct_read_idl()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpct_read_idl </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>idl</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reads IDL object without parsing it. rpc_load_types must be called on the same name again to load the associated types.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>Name of the IDL blob </td></tr>
+    <tr><td class="paramname">idl</td><td>IDL blob contents </td></tr>
   </table>
   </dd>
 </dl>
