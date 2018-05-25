@@ -1141,12 +1141,33 @@ abort:
 }
 
 int
-rpct_read_file(const char *path)
+rpct_read_idl(const char *name, rpc_object_t idl)
 {
 	struct rpct_file *file;
+
+	file = g_malloc0(sizeof(*file));
+	file->body = rpc_retain(idl);
+	file->path = g_strdup(name);
+	file->uses = g_ptr_array_new_with_free_func(g_free);
+	file->types = g_hash_table_new(g_str_hash, g_str_equal);
+	file->interfaces = g_hash_table_new(g_str_hash, g_str_equal);
+
+	if (rpct_read_meta(file, rpc_dictionary_get_value(idl, "meta")) < 0) {
+		rpc_set_last_errorf(EINVAL,
+		    "Cannot read meta section of file %s", file->path);
+		return (-1);
+	}
+
+	g_hash_table_insert(context->files, g_strdup(name), file);
+	return (0);
+}
+
+int
+rpct_read_file(const char *path)
+{
 	char *contents;
 	size_t length;
-	rpc_object_t obj;
+	rpc_auto_object_t obj;
 	GError *err = NULL;
 
 	debugf("trying to read %s", path);
@@ -1167,21 +1188,7 @@ rpct_read_file(const char *path)
 	if (obj == NULL)
 		return (-1);
 
-	file = g_malloc0(sizeof(*file));
-	file->body = obj;
-	file->path = g_strdup(path);
-	file->uses = g_ptr_array_new_with_free_func(g_free);
-	file->types = g_hash_table_new(g_str_hash, g_str_equal);
-	file->interfaces = g_hash_table_new(g_str_hash, g_str_equal);
-
-	if (rpct_read_meta(file, rpc_dictionary_get_value(obj, "meta")) < 0) {
-		rpc_set_last_errorf(EINVAL,
-		    "Cannot read meta section of file %s", file->path);
-		return (-1);
-	}
-
-	g_hash_table_insert(context->files, g_strdup(path), file);
-	return (0);
+	return (rpct_read_idl(path, obj));
 }
 
 bool
