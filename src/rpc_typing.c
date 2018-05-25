@@ -232,8 +232,11 @@ rpct_stream_idl(void *cookie, rpc_object_t args __unused)
 	struct rpct_file *file;
 
 	g_hash_table_iter_init(&iter, context->files);
-	while (g_hash_table_iter_next(&iter, NULL, (gpointer)&file))
-		rpc_function_yield(cookie, rpc_retain(file->body));
+	while (g_hash_table_iter_next(&iter, NULL, (gpointer)&file)) {
+		rpc_function_yield(cookie, rpc_object_pack("{s,v}",
+		    "name", file->path,
+		    "body", rpc_retain(file->body)));
+	}
 
 	return (NULL);
 }
@@ -1410,7 +1413,44 @@ rpct_allow_idl_download(rpc_context_t context)
 int
 rpct_download_idl(rpc_connection_t conn)
 {
+	rpc_call_t call;
+	rpc_object_t result;
+	rpc_object_t body;
+	const char *name;
+	int ret = 0;
 
+	call = rpc_connection_call(conn, "/", RPCT_TYPING_INTERFACE,
+	    "download", NULL, NULL);
+	if (call == NULL)
+		return (-1);
+
+	rpc_call_wait(call);
+
+	switch (rpc_call_status(call)) {
+	case RPC_CALL_MORE_AVAILABLE:
+		result = rpc_call_result(call);
+		if (rpc_object_unpack(result, "{s,v}",
+		    "name", &name,
+		    "body", &body) < 2) {
+			ret = -1;
+			break;
+		}
+
+		if (rpct_read_idl(name, body) < 0)
+			ret = -1;
+
+		break;
+
+	case RPC_CALL_ENDED:
+		break;
+
+	case RPC_CALL_ERROR:
+		ret = -1;
+		break;
+	}
+
+	rpc_call_free(call);
+	return (ret);
 }
 
 int
