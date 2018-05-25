@@ -1170,7 +1170,7 @@ rpct_read_file(const char *path)
 {
 	char *contents;
 	size_t length;
-	rpc_auto_object_t obj;
+	rpc_auto_object_t obj = NULL;
 	GError *err = NULL;
 
 	debugf("trying to read %s", path);
