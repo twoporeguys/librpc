@@ -807,11 +807,11 @@ rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
 		cookie.name = name;
 		cookie.arg = prop->rim_property.rp_arg;
 		cookie.error = NULL;
+		value = prop->rim_property.rp_getter(&cookie);
 
 		if (cookie.error != NULL)
 			return;
 
-		value = prop->rim_property.rp_getter(&cookie);
 		release = true;
 	}
 
