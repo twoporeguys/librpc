@@ -50,6 +50,9 @@ rpc_serializer_load(const char *serializer, const void *frame,
 	}
 
 	untyped = impl->deserialize(frame, len);
+	if (untyped == NULL)
+		return (NULL);
+
 	return (rpct_deserialize(untyped));
 }
 
