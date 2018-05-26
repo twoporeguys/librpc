@@ -82,6 +82,9 @@ rpct_new(const char *decl, rpc_object_t object)
 {
 	struct rpct_typei *typei;
 
+	if (g_strcmp0(decl, "?") == 0)
+		decl = "com.twoporeguys.librpc.Optional";
+
 	typei = rpct_instantiate_type(decl, NULL, NULL, NULL);
 	if (typei == NULL)
 		return (NULL);
