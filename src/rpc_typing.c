@@ -1459,6 +1459,10 @@ rpct_init(void)
 	rpct_type_t type;
 	const char **b;
 
+	/* Don't initialize twice */
+	if (context != NULL)
+		return (0);
+
 	context = g_malloc0(sizeof(*context));
 	context->files = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 	    (GDestroyNotify)rpct_file_free);
@@ -1911,17 +1915,29 @@ rpct_if_member_apply(rpct_interface_t iface, rpct_if_member_applier_t applier)
 	return (flag);
 }
 
+rpct_interface_t
+rpct_find_interface(const char *name)
+{
+	struct rpct_interface *iface;
+
+	iface = g_hash_table_lookup(context->interfaces, name);
+	if (iface == NULL) {
+		rpc_set_last_errorf(ENOENT, "Interface not found");
+		return (NULL);
+	}
+
+	return (iface);
+}
+
 rpct_if_member_t
 rpct_find_if_member(const char *interface, const char *member)
 {
 	struct rpct_if_member *ret;
 	struct rpct_interface *iface;
 
-	iface = g_hash_table_lookup(context->interfaces, interface);
-	if (iface == NULL) {
-		rpc_set_last_errorf(ENOENT, "Interface not found");
+	iface = rpct_find_interface(interface);
+	if (iface == NULL)
 		return (NULL);
-	}
 
 	ret = g_hash_table_lookup(iface->members, member);
 	if (ret == NULL) {
