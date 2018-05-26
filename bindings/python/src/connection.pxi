@@ -417,6 +417,7 @@ cdef class RemoteInterface(object):
         self.methods = {}
         self.properties = {}
         self.events = {}
+        self.typed = Typing().find_interface(interface)
 
         try:
             if not self.client.call_sync(

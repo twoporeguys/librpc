@@ -332,6 +332,8 @@ cdef extern from "rpc/typing.h" nogil:
     int rpct_load_types(const char *path)
     int rpct_load_types_dir(const char *path)
 
+    rpct_interface_t rpct_find_interface(const char *name)
+
     bint rpct_types_apply(void *applier)
     bint rpct_members_apply(rpct_type_t type, void *applier)
     bint rpct_interface_apply(void *applier)
@@ -437,6 +439,7 @@ cdef class RemoteInterface(object):
     cdef readonly methods
     cdef readonly properties
     cdef readonly events
+    cdef readonly typed
     cdef dict __dict__
 
 

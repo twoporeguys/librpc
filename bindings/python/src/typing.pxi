@@ -86,6 +86,18 @@ cdef class Typing(object):
         result = rpct_deserialize(obj.obj)
         return Object.init_from_ptr(result)
 
+    def find_interface(self, name):
+        cdef rpct_interface_t c_iface
+        cdef Interface iface
+
+        c_iface = rpct_find_interface(name.encode('utf-8'))
+        if c_iface == <rpct_interface_t>NULL:
+            return None
+
+        iface = Interface.__new__(Interface)
+        iface.c_iface = c_iface
+        return iface
+
     property types:
         def __get__(self):
             ret = []
@@ -296,7 +308,7 @@ cdef class Interface(object):
             return ret
 
     def __str__(self):
-        return "<{0} '{0}'>".format(self.__class__.__name__, self.name)
+        return "<{0} '{1}'>".format(self.__class__.__name__, self.name)
 
     def __repr__(self):
         return str(self)
