@@ -408,6 +408,10 @@ cdef class RemoteObject(object):
         return str(self)
 
 
+cdef class RemoteProperty(object):
+    pass
+
+
 cdef class RemoteInterface(object):
     def __init__(self, client, path, interface=''):
         self.client = client
@@ -457,6 +461,14 @@ cdef class RemoteInterface(object):
                     )
 
                 partial = functools.partial(fn, method)
+                partial.typed = None
+
+                if self.typed:
+                    partial.typed = self.typed.find_member(method)
+
+                if partial.typed:
+                    partial.__doc__ = partial.typed.description
+
                 self.methods[method] = partial
                 setattr(self, method, partial)
         except:
@@ -539,9 +551,6 @@ cdef class RemoteEvent(object):
     cdef emit(self, name, Object args):
         for h in self.handlers:
             h(args)
-
-
-
 
 
 

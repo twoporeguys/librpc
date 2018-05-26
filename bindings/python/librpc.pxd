@@ -331,8 +331,10 @@ cdef extern from "rpc/typing.h" nogil:
     int rpct_read_file(const char *path)
     int rpct_load_types(const char *path)
     int rpct_load_types_dir(const char *path)
+    int rpct_download_idl(rpc_connection_t conn)
 
     rpct_interface_t rpct_find_interface(const char *name)
+    rpct_if_member_t rpct_find_if_member(const char *interface, const char *member)
 
     bint rpct_types_apply(void *applier)
     bint rpct_members_apply(rpct_type_t type, void *applier)
@@ -454,6 +456,23 @@ cdef class TypeInstance(object):
 
     @staticmethod
     cdef TypeInstance init_from_ptr(rpct_typei_t typei)
+
+
+cdef class Interface(object):
+    cdef rpct_interface_t c_iface
+
+    @staticmethod
+    cdef Interface wrap(rpct_interface_t ptr)
+    @staticmethod
+    cdef bint c_iter(void *arg, rpct_if_member_t val)
+
+
+cdef class InterfaceMember(object):
+    cdef rpct_if_member_t c_member
+
+    @staticmethod
+    cdef wrap(rpct_if_member_t ptr)
+
 
 cdef class Call(object):
     cdef readonly Connection connection
