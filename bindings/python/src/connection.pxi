@@ -51,12 +51,15 @@ class CallStatus(enum.IntEnum):
 
 cdef class Call(object):
     @staticmethod
-    cdef Call init_from_ptr(rpc_call_t ptr):
+    cdef Call wrap(rpc_call_t ptr):
         cdef Call result
 
         result = Call.__new__(Call)
         result.call = ptr
         return result
+
+    cdef rpc_call_t unwrap(self):
+        return self.call
 
     property status:
         def __get__(self):
@@ -67,7 +70,7 @@ cdef class Call(object):
             with nogil:
                 rpc_call_wait(self.call)
 
-            return Object.init_from_ptr(rpc_call_result(self.call))
+            return Object.wrap(rpc_call_result(self.call))
 
     def __dealloc__(self):
         rpc_call_free(self.call)
@@ -160,13 +163,16 @@ cdef class Connection(object):
             return {o['path']: RemoteObject(self, o['path']) for o in objects}
 
     @staticmethod
-    cdef Connection init_from_ptr(rpc_connection_t ptr):
+    cdef Connection wrap(rpc_connection_t ptr):
         cdef Connection ret
 
         ret = Connection.__new__(Connection)
         ret.borrowed = True
         ret.connection = ptr
         return ret
+
+    cdef rpc_connection_t unwrap(self):
+        return self.connection
 
     @staticmethod
     cdef void c_ev_handler(
@@ -176,14 +182,14 @@ cdef class Connection(object):
         cdef Object event_args
         cdef object handler = <object>arg
 
-        event_args = Object.init_from_ptr(args)
+        event_args = Object.wrap(args)
         handler(event_args)
 
     @staticmethod
     cdef void c_prop_handler(void *arg, rpc_object_t value) with gil:
         cdef object handler = <object>arg
 
-        handler(Object.init_from_ptr(value))
+        handler(Object.wrap(value))
 
     @staticmethod
     cdef void c_error_handler(void *arg, rpc_error_code_t error, rpc_object_t args) with gil:
@@ -191,7 +197,7 @@ cdef class Connection(object):
         cdef object handler = <object>arg
 
         if args != <rpc_object_t>NULL:
-            error_args = Object.init_from_ptr(args)
+            error_args = Object.wrap(args)
 
         handler(ErrorCode(error), error_args)
 
@@ -211,7 +217,7 @@ cdef class Connection(object):
         if call == <rpc_call_t>NULL:
             raise_internal_exc(rpc=True)
 
-        result = Call.init_from_ptr(call)
+        result = Call.wrap(call)
         result.connection = self
         return result
 
@@ -255,7 +261,7 @@ cdef class Connection(object):
             rpc_result = rpc_call_result(call)
             rpc_retain(rpc_result)
 
-            return self.do_unpack(Object.init_from_ptr(rpc_result), unpack)
+            return self.do_unpack(Object.wrap(rpc_result), unpack)
 
         def iter_chunk():
             nonlocal call_status
@@ -409,7 +415,10 @@ cdef class RemoteObject(object):
 
 
 cdef class RemoteProperty(object):
-    pass
+    cdef readonly object name
+    cdef readonly object getter
+    cdef readonly object setter
+    cdef readonly object typed
 
 
 cdef class RemoteInterface(object):
@@ -502,10 +511,11 @@ cdef class RemoteInterface(object):
                         interface='com.twoporeguys.librpc.Observable'
                     )
 
-                self.properties[prop['name']] = (
-                    functools.partial(getter, prop['name']),
-                    functools.partial(setter, prop['name'])
-                )
+                rprop = RemoteProperty.__new__(RemoteProperty)
+                rprop.name = prop['name']
+                rprop.getter = functools.partial(getter, prop['name']),
+                rprop.setter = functools.partial(setter, prop['name'])
+                self.properties[prop['name']] = rprop
         except:
             raise RuntimeError('Cannot read properties of a remote object')
 
@@ -520,8 +530,8 @@ cdef class RemoteInterface(object):
                 self.client.register_event_handler()
 
     def __getattr__(self, item):
-        getter, _ = self.properties[item]
-        return getter()
+        prop = self.properties[item]
+        return prop.getter()
 
     def __setattr__(self, item, value):
         if item in self.properties:

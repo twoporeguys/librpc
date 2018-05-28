@@ -209,7 +209,7 @@ cdef class Object(object):
             rpc_release(self.obj)
 
     @staticmethod
-    cdef Object init_from_ptr(rpc_object_t ptr):
+    cdef Object wrap(rpc_object_t ptr):
         cdef Object ret
         cdef rpct_typei_t typei
 
@@ -228,9 +228,12 @@ cdef class Object(object):
         ret.obj = rpc_retain(ptr)
         typei = rpct_get_typei(ptr)
         if typei != <rpct_typei_t>NULL and rpct_type_get_class(rpct_typei_get_type(typei)) != RPC_TYPING_BUILTIN:
-            return TypeInstance.init_from_ptr(typei).factory(ret)
+            return TypeInstance.wrap(typei).factory(ret)
 
         return ret
+
+    cdef rpc_object_t unwrap(self):
+        return self.obj
 
     def unpack(self):
         """
@@ -254,7 +257,7 @@ cdef class Object(object):
         return self.value
 
     def copy(self):
-        return Object.init_from_ptr(rpc_copy(self.obj))
+        return Object.wrap(rpc_copy(self.obj))
 
     def validate(self):
         if not self.typei:
@@ -334,7 +337,7 @@ cdef class Object(object):
 
     property typei:
         def __get__(self):
-            return TypeInstance.init_from_ptr(rpct_get_typei(self.obj))
+            return TypeInstance.wrap(rpct_get_typei(self.obj))
 
 
 cdef class Array(Object):
@@ -361,7 +364,7 @@ cdef class Array(Object):
         return <bint>cb(index, py_value)
 
     @staticmethod
-    cdef Array init_from_ptr(rpc_object_t ptr):
+    cdef Array wrap(rpc_object_t ptr):
         cdef Array ret
 
         if ptr == <rpc_object_t>NULL:
@@ -527,12 +530,12 @@ cdef class Array(Object):
         c_type = rpc_get_type(c_value)
 
         if c_type == RPC_TYPE_DICTIONARY:
-            return Dictionary.init_from_ptr(c_value)
+            return Dictionary.wrap(c_value)
 
         if c_type == RPC_TYPE_ARRAY:
-            return Array.init_from_ptr(c_value)
+            return Array.wrap(c_value)
 
-        return Object.init_from_ptr(c_value)
+        return Object.wrap(c_value)
 
     def __setitem__(self, index, value):
         cdef Object rpc_value
@@ -571,7 +574,7 @@ cdef class Dictionary(Object):
         return <bint>cb(key.decode('utf-8'), py_value)
 
     @staticmethod
-    cdef Dictionary init_from_ptr(rpc_object_t ptr):
+    cdef Dictionary wrap(rpc_object_t ptr):
         cdef Dictionary ret
 
         if ptr == <rpc_object_t>NULL:
@@ -712,7 +715,7 @@ cdef class Dictionary(Object):
         if c_value == <rpc_object_t>NULL:
             raise LibException(errno.EINVAL, 'Key {} does not exist'.format(key))
 
-        return Object.init_from_ptr(c_value)
+        return Object.wrap(c_value)
 
     def __setitem__(self, key, value):
         cdef Object rpc_value

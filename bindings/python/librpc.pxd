@@ -394,7 +394,8 @@ cdef class Object(object):
     cdef object ref
 
     @staticmethod
-    cdef Object init_from_ptr(rpc_object_t ptr)
+    cdef Object wrap(rpc_object_t ptr)
+    cdef rpc_object_t unwrap(self)
 
 
 cdef class Context(object):
@@ -404,7 +405,8 @@ cdef class Context(object):
     cdef object instances
 
     @staticmethod
-    cdef Context init_from_ptr(rpc_context_t ptr)
+    cdef Context wrap(rpc_context_t ptr)
+    cdef rpc_context_t unwrap(self)
 
 
 cdef class Instance(object):
@@ -414,7 +416,8 @@ cdef class Instance(object):
     cdef public arg
 
     @staticmethod
-    cdef Instance init_from_ptr(rpc_instance_t ptr)
+    cdef Instance wrap(rpc_instance_t ptr)
+    cdef rpc_instance_t unwrap(self)
     @staticmethod
     cdef rpc_object_t c_property_getter(void *cookie) with gil
     @staticmethod
@@ -455,7 +458,8 @@ cdef class TypeInstance(object):
     cdef rpct_typei_t rpctypei
 
     @staticmethod
-    cdef TypeInstance init_from_ptr(rpct_typei_t typei)
+    cdef TypeInstance wrap(rpct_typei_t typei)
+    cdef rpct_typei_t unwrap(self)
 
 
 cdef class Interface(object):
@@ -463,6 +467,7 @@ cdef class Interface(object):
 
     @staticmethod
     cdef Interface wrap(rpct_interface_t ptr)
+    cdef rpct_interface_t unwrap(self)
     @staticmethod
     cdef bint c_iter(void *arg, rpct_if_member_t val)
 
@@ -472,6 +477,7 @@ cdef class InterfaceMember(object):
 
     @staticmethod
     cdef wrap(rpct_if_member_t ptr)
+    cdef rpct_if_member_t unwrap(self)
 
 
 cdef class Call(object):
@@ -479,7 +485,8 @@ cdef class Call(object):
     cdef rpc_call_t call
 
     @staticmethod
-    cdef Call init_from_ptr(rpc_call_t ptr)
+    cdef Call wrap(rpc_call_t ptr)
+    cdef rpc_call_t unwrap(self)
 
 
 cdef class Connection(object):
@@ -491,7 +498,8 @@ cdef class Connection(object):
     cdef bint borrowed
 
     @staticmethod
-    cdef Connection init_from_ptr(rpc_connection_t ptr)
+    cdef Connection wrap(rpc_connection_t ptr)
+    cdef rpc_connection_t unwrap(self)
     @staticmethod
     cdef void c_ev_handler(void *arg, const char *path, const char *inteface, const char *name, rpc_object_t args) with gil
     @staticmethod

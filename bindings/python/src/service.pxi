@@ -32,7 +32,7 @@ cdef class Context(object):
         self.context = rpc_context_create()
 
     @staticmethod
-    cdef Context init_from_ptr(rpc_context_t ptr):
+    cdef Context wrap(rpc_context_t ptr):
         cdef Context ret
 
         ret = Context.__new__(Context)
@@ -55,6 +55,8 @@ cdef class Context(object):
         if rpc_context_register_instance(self.context, instance.instance) != 0:
             raise_internal_exc()
 
+    cdef rpc_context_t unwrap(self):
+        return self.context
 
     def register_method(self, name, fn, interface=None):
         self.methods[name] = fn
@@ -78,13 +80,16 @@ cdef class Context(object):
 
 cdef class Instance(object):
     @staticmethod
-    cdef Instance init_from_ptr(rpc_instance_t ptr):
+    cdef Instance wrap(rpc_instance_t ptr):
         cdef Instance result
 
         result = Instance.__new__(Instance)
         result.properties = []
         result.instance = ptr
         return result
+
+    cdef rpc_instance_t unwrap(self):
+        return self.instance
 
     @staticmethod
     cdef rpc_object_t c_property_getter(void *cookie) with gil:
@@ -114,7 +119,7 @@ cdef class Instance(object):
         _, setter = mux
 
         try:
-            setter(Object.init_from_ptr(value))
+            setter(Object.wrap(value))
         except RpcException as err:
             rpc_property_error(cookie, err.code, err.message.encode('utf-8'))
         except Exception as err:
