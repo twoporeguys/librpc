@@ -24,6 +24,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+cimport cpython.object
+
+
 class ObjectType(enum.IntEnum):
     """
     Enumeration of possible object types.
@@ -204,6 +207,16 @@ cdef class Object(object):
 
         raise TypeError('float() argument must be a number or bool')
 
+    def __richcmp__(Object self, Object other, int op):
+        if op == cpython.object.Py_EQ:
+            return rpc_equal(self.unwrap(), other.unwrap())
+
+        if op != cpython.object.Py_NE:
+            return not rpc_equal(self.unwrap(), other.unwrap())
+
+    def __hash__(self):
+        return rpc_hash(self.unwrap())
+
     def __dealloc__(self):
         if self.obj != <rpc_object_t>NULL:
             rpc_release(self.obj)
@@ -257,7 +270,7 @@ cdef class Object(object):
         return self.value
 
     def copy(self):
-        return Object.wrap(rpc_copy(self.obj))
+        return Object.wrap(rpc_copy(self.unwrap()))
 
     def validate(self):
         if not self.typei:
@@ -279,65 +292,61 @@ cdef class Object(object):
                 return None
 
             if self.type == ObjectType.BOOL:
-                return rpc_bool_get_value(self.obj)
+                return rpc_bool_get_value(self.unwrap())
 
             if self.type == ObjectType.INT64:
-                return rpc_int64_get_value(self.obj)
+                return rpc_int64_get_value(self.unwrap())
 
             if self.type == ObjectType.UINT64:
-                return rpc_uint64_get_value(self.obj)
+                return rpc_uint64_get_value(self.unwrap())
 
             if self.type == ObjectType.FD:
-                return rpc_fd_get_value(self.obj)
+                return rpc_fd_get_value(self.unwrap())
 
             if self.type == ObjectType.STRING:
-                c_string = rpc_string_get_string_ptr(self.obj)
-                c_len = rpc_string_get_length(self.obj)
+                c_string = rpc_string_get_string_ptr(self.unwrap())
+                c_len = rpc_string_get_length(self.unwrap())
                 return c_string[:c_len].decode('utf-8')
 
             if self.type == ObjectType.DOUBLE:
-                return rpc_double_get_value(self.obj)
+                return rpc_double_get_value(self.unwrap())
 
             if self.type == ObjectType.DATE:
-                return datetime.datetime.utcfromtimestamp(rpc_date_get_value(self.obj))
+                return datetime.datetime.utcfromtimestamp(rpc_date_get_value(self.unwrap()))
 
             if self.type == ObjectType.BINARY:
-                c_bytes = <uint8_t *>rpc_data_get_bytes_ptr(self.obj)
-                c_len = rpc_data_get_length(self.obj)
+                c_bytes = <uint8_t *>rpc_data_get_bytes_ptr(self.unwrap())
+                c_len = rpc_data_get_length(self.unwrap())
                 return <bytes>c_bytes[:c_len]
 
             if self.type == ObjectType.ERROR:
-                extra = Object.__new__(Object)
-                extra.obj = rpc_error_get_extra(self.obj)
-                stack = Object.__new__(Object)
-                stack.obj = rpc_error_get_stack(self.obj)
+                extra = Object.wrap(rpc_error_get_extra(self.unwrap()))
+                stack = Object.wrap(rpc_error_get_stack(self.unwrap()))
 
                 return RpcException(
-                    rpc_error_get_code(self.obj),
-                    rpc_error_get_message(self.obj).decode('utf-8'),
+                    rpc_error_get_code(self.unwrap()),
+                    rpc_error_get_message(self.unwrap()).decode('utf-8'),
                     extra,
                     stack
                 )
 
             if self.type == ObjectType.ARRAY:
                 array = Array.__new__(Array)
-                array.obj = self.obj
-                rpc_retain(array.obj)
+                array.obj = rpc_retain(self.unwrap())
                 return array
 
             if self.type == ObjectType.DICTIONARY:
                 dictionary = Dictionary.__new__(Dictionary)
-                dictionary.obj = self.obj
-                rpc_retain(dictionary.obj)
+                dictionary.obj = rpc_retain(self.unwrap())
                 return dictionary
 
     property type:
         def __get__(self):
-            return ObjectType(rpc_get_type(self.obj))
+            return ObjectType(rpc_get_type(self.unwrap()))
 
     property typei:
         def __get__(self):
-            return TypeInstance.wrap(rpct_get_typei(self.obj))
+            return TypeInstance.wrap(rpct_get_typei(self.unwrap()))
 
 
 cdef class Array(Object):
@@ -354,14 +363,8 @@ cdef class Array(Object):
     @staticmethod
     cdef bint c_applier(void *arg, size_t index, rpc_object_t value) with gil:
         cdef object cb = <object>arg
-        cdef Object py_value
 
-        py_value = Object.__new__(Object)
-        py_value.obj = value
-
-        rpc_retain(py_value.obj)
-
-        return <bint>cb(index, py_value)
+        return <bint>cb(index, Object.wrap(value))
 
     @staticmethod
     cdef Array wrap(rpc_object_t ptr):
@@ -389,12 +392,7 @@ cdef class Array(Object):
     def append(self, value):
         cdef Object rpc_value
 
-        if isinstance(value, Object):
-            rpc_value = value
-        else:
-            rpc_value = Object(value)
-
-        rpc_array_append_value(self.obj, rpc_value.obj)
+        rpc_array_append_value(self.obj, Object(value).unwrap())
 
     def extend(self, array):
         cdef Object rpc_value
@@ -409,7 +407,7 @@ cdef class Array(Object):
 
         for value in rpc_array:
             rpc_value = value
-            rpc_array_append_value(self.obj, rpc_value.obj)
+            rpc_array_append_value(self.obj, rpc_value.unwrap())
 
     def clear(self):
         rpc_release(self.obj)
@@ -420,23 +418,19 @@ cdef class Array(Object):
         cdef Object v2
         count = 0
 
-        if isinstance(value, Object):
-            v1 = value
-        else:
-            v1 = Object(value)
+        v1 = Object(value)
 
         def count_items(idx, v):
             nonlocal v2
             nonlocal count
             v2 = v
 
-            if rpc_equal(v1.obj, v2.obj):
+            if v1 == v2:
                 count += 1
 
             return True
 
         self.__applier(count_items)
-
         return count
 
     def index(self, value):
@@ -444,17 +438,14 @@ cdef class Array(Object):
         cdef Object v2
         index = None
 
-        if isinstance(value, Object):
-            v1 = value
-        else:
-            v1 = Object(value)
+        v1 =  Object(value)
 
         def find_index(idx, v):
             nonlocal v2
             nonlocal index
             v2 = v
 
-            if rpc_equal(v1.obj, v2.obj):
+            if v1 == v2:
                 index = idx
                 return False
 
@@ -468,14 +459,7 @@ cdef class Array(Object):
         return index
 
     def insert(self, index, value):
-        cdef Object rpc_value
-
-        if isinstance(value, Object):
-            rpc_value = value
-        else:
-            rpc_value = Object(value)
-
-        rpc_array_set_value(self.obj, index, rpc_value.obj)
+        rpc_array_set_value(self.obj, index, Object(value).unwrap())
 
     def pop(self, index=None):
         if index is None:
@@ -509,7 +493,6 @@ cdef class Array(Object):
             return True
 
         self.__applier(collect)
-
         for v in result:
             yield v
 
@@ -564,14 +547,8 @@ cdef class Dictionary(Object):
     @staticmethod
     cdef bint c_applier(void *arg, char *key, rpc_object_t value) with gil:
         cdef object cb = <object>arg
-        cdef Object py_value
 
-        py_value = Object.__new__(Object)
-        py_value.obj = value
-
-        rpc_retain(py_value.obj)
-
-        return <bint>cb(key.decode('utf-8'), py_value)
+        return <bint>cb(key.decode('utf-8'), Object.wrap(value))
 
     @staticmethod
     cdef Dictionary wrap(rpc_object_t ptr):
@@ -674,17 +651,14 @@ cdef class Dictionary(Object):
         cdef Object v2
         equal = False
 
-        if isinstance(value, Object):
-            v1 = value
-        else:
-            v1 = Object(value)
+        v1 = Object(value)
 
         def compare(k, v):
             nonlocal v2
             nonlocal equal
             v2 = v
 
-            if rpc_equal(v1.obj, v2.obj):
+            if v1 == v2:
                 equal = True
                 return False
             return True
