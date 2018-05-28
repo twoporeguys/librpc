@@ -9,7 +9,6 @@ add_custom_command(OUTPUT ${OUTPUT}
         COMMAND ${PYTHON} ${SETUP_PY} bdist
         COMMAND ${CMAKE_COMMAND} -E touch ${OUTPUT}
         DEPENDS ${DEPS}
-        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 add_custom_target(rpcdoc ALL DEPENDS ${OUTPUT})

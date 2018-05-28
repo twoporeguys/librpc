@@ -20,12 +20,12 @@ if(BUILD_CLIENT)
     add_subdirectory(examples/client)
 endif()
 
-add_custom_command(OUTPUT ${OUTPUT}
+add_custom_command(
+        OUTPUT ${OUTPUT}
         COMMAND cp -a ${CMAKE_SOURCE_DIR}/bindings/python/* ${CMAKE_CURRENT_BINARY_DIR}/
         COMMAND env LDFLAGS="-L${CMAKE_CURRENT_BINARY_DIR}/../.." CFLAGS="-I${CMAKE_SOURCE_DIR}/include" ${PYTHON} ${SETUP_PY} build
         COMMAND ${CMAKE_COMMAND} -E touch ${OUTPUT}
         DEPENDS ${DEPS}
-        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 add_custom_target(py-librpc ALL DEPENDS ${OUTPUT})
