@@ -35,6 +35,11 @@
 #include <rpc/object.h>
 #include <rpc/client.h>
 
+static void timespec_diff(struct timespec *, struct timespec *,
+    struct timespec *);
+void usage(const char *);
+int main(int, char * const[]);
+
 static void timespec_diff(struct timespec *start, struct timespec *stop,
     struct timespec *result)
 {
@@ -45,6 +50,14 @@ static void timespec_diff(struct timespec *start, struct timespec *stop,
 		result->tv_sec = stop->tv_sec - start->tv_sec;
 		result->tv_nsec = stop->tv_nsec - start->tv_nsec;
 	}
+}
+
+void
+usage(const char *argv0)
+{
+
+	fprintf(stderr, "Usage: %s -u URI [-c CYCLES] [-m]\n", argv0);
+	fprintf(stderr, "       %s -h\n", argv0);
 }
 
 int
@@ -61,12 +74,13 @@ main(int argc, char * const argv[])
 	rpc_call_t call;
 	int64_t cycles = 0;
 	int64_t bytes = 0;
+	int64_t ncycles = 1000;
 	bool shmem = false;
 	char *uri = NULL;
 	int c;
 
 	for (;;) {
-		c = getopt(argc, argv, "u:mh");
+		c = getopt(argc, argv, "u:c:mh");
 		if (c == -1)
 			break;
 
@@ -75,10 +89,24 @@ main(int argc, char * const argv[])
 			uri = strdup(optarg);
 			break;
 
+		case 'c':
+			ncycles = strtoll(optarg, NULL, 10);
+			break;
+
 		case 'm':
 			shmem = true;
 			break;
+
+		case 'h':
+			usage(argv[0]);
+			return (EXIT_SUCCESS);
 		}
+	}
+
+	if (uri == NULL) {
+		fprintf(stderr, "Error: URI not specified\n");
+		usage(argv[0]);
+		return (EXIT_SUCCESS);
 	}
 
 	client = rpc_client_create(uri, NULL);
@@ -91,7 +119,8 @@ main(int argc, char * const argv[])
 
 	connection = rpc_client_get_connection(client);
 	call = rpc_connection_call(connection, "/",
-	    "com.twoporeguys.librpc.Benchmark", "stream", rpc_object_pack("[i]", 10000), NULL);
+	    "com.twoporeguys.librpc.Benchmark", "stream",
+	    rpc_object_pack("[i]", ncycles), NULL);
 	if (call == NULL) {
 		error = rpc_get_last_error();
 		fprintf(stderr, "Cannot start streaming: %s\n",
@@ -142,8 +171,8 @@ next:
 	elapsed = diff.tv_sec + diff.tv_nsec / 1E9;
 
 	printf("Received %" PRId64 " messages and %" PRId64 " bytes\n", cycles, bytes);
-	printf("It took %.02f seconds\n", elapsed);
-	printf("Average data rate: %.02f MB/s\n", bytes / elapsed / 1024 / 1024);
+	printf("It took %.04f seconds\n", elapsed);
+	printf("Average data rate: %.04f MB/s\n", bytes / elapsed / 1024 / 1024);
 	return (EXIT_SUCCESS);
 
 error:

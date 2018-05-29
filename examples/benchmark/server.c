@@ -35,17 +35,18 @@
 #include <rpc/service.h>
 #include <rpc/server.h>
 
-static char *uri;
-static size_t msgsize;
-static bool shmem;
+static char *uri = NULL;
+static size_t msgsize = 4096;
+static bool shmem = false;
 
 static rpc_object_t benchmark_stream(void *, rpc_object_t);
+void usage(const char *);
+int main(int, char * const []);
 
 static const struct rpc_if_member benchmark_vtable[] = {
 	RPC_METHOD(stream, benchmark_stream),
 	RPC_MEMBER_END
 };
-
 
 static rpc_object_t
 benchmark_stream(void *cookie, rpc_object_t args)
@@ -82,7 +83,7 @@ void
 usage(const char *argv0)
 {
 
-	fprintf(stderr, "Usage: %s -t transport -s msgsize [-m]\n", argv0);
+	fprintf(stderr, "Usage: %s -u URI [-s MSGSIZE] [-m]\n", argv0);
 	fprintf(stderr, "       %s -h\n", argv0);
 }
 
@@ -113,8 +114,14 @@ main(int argc, char * const argv[])
 
 		case 'h':
 			usage(argv[0]);
-			exit(EXIT_SUCCESS);
+			return (EXIT_SUCCESS);
 		}
+	}
+
+	if (uri == NULL) {
+		fprintf(stderr, "Error: URI not specified\n");
+		usage(argv[0]);
+		return (EXIT_SUCCESS);
 	}
 
 	context = rpc_context_create();
@@ -125,6 +132,11 @@ main(int argc, char * const argv[])
 	rpc_server_resume(server);
 
 	printf("Listening on %s\n", uri);
+	printf("Using %zu message size\n", msgsize);
+
+	if (shmem)
+		printf("Using shared memory\n");
+
 	pause();
 
 	return (EXIT_SUCCESS);
