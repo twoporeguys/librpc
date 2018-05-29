@@ -73,6 +73,8 @@ void \hyperlink{typing_8h_a6dabfe4b5d8fbc841f0af797716c7b64}{rpct\+\_\+free} (vo
 \item 
 int \hyperlink{typing_8h_abd806217eb0710e56261f7165117f3c9}{rpct\+\_\+read\+\_\+file} (const char $\ast$path)
 \item 
+int \hyperlink{typing_8h_a797228970122f8e212ed107266fcdf5f}{rpct\+\_\+read\+\_\+idl} (const char $\ast$name, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} idl)
+\item 
 int \hyperlink{typing_8h_a614a4cc99f03ed23893a73d097f26bdc}{rpct\+\_\+load\+\_\+types} (const char $\ast$path)
 \item 
 int \hyperlink{typing_8h_a5bfb76b7035a0d74bfb415ffcfb5596c}{rpct\+\_\+load\+\_\+types\+\_\+dir} (const char $\ast$path)
@@ -151,6 +153,8 @@ bool \hyperlink{typing_8h_a3df40500a9e56d03f6310af0dc40a5a0}{rpct\+\_\+interface
 \item 
 bool \hyperlink{typing_8h_a1fe6427a1837bebcf1278d47b9a572f6}{rpct\+\_\+if\+\_\+member\+\_\+apply} (\hyperlink{typing_8h_a38f857fb53c96e9aae9e02bd4996cc9f}{rpct\+\_\+interface\+\_\+t} iface, \hyperlink{typing_8h_acc5f290ad33114a3ea5ea8f6fdcef34a}{rpct\+\_\+if\+\_\+member\+\_\+applier\+\_\+t} applier)
 \item 
+\hyperlink{typing_8h_a38f857fb53c96e9aae9e02bd4996cc9f}{rpct\+\_\+interface\+\_\+t} \hyperlink{typing_8h_a9bc9d4cee413b0eaf8aa5e7b7bcf95c5}{rpct\+\_\+find\+\_\+interface} (const char $\ast$name)
+\item 
 \hyperlink{typing_8h_aa2e55bcb066527416359bc5a5dde92b3}{rpct\+\_\+if\+\_\+member\+\_\+t} \hyperlink{typing_8h_a4abbd4b37b9c85e3199721af771de323}{rpct\+\_\+find\+\_\+if\+\_\+member} (const char $\ast$interface, const char $\ast$member)
 \item 
 \hyperlink{typing_8h_a0d718518624626887a65ead4f5cde3b9}{rpct\+\_\+typei\+\_\+t} \hyperlink{typing_8h_a607ecfa5cfa13782fafd4d8da6fbd3d8}{rpct\+\_\+new\+\_\+typei} (const char $\ast$decl)
@@ -184,6 +188,8 @@ bool \hyperlink{typing_8h_a2f80e7ec74258ea0a5f739c61b5b623e}{rpct\+\_\+validate}
 \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{typing_8h_afa62adf9fe6a415494c529254b030086}{rpct\+\_\+post\+\_\+call\+\_\+hook} (void $\ast$cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
 \item 
 void \hyperlink{typing_8h_a4812f96b7d0bca64c415aa3aa99182be}{rpct\+\_\+allow\+\_\+idl\+\_\+download} (\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
+\item 
+int \hyperlink{typing_8h_a57baca626f8a63a3812b28fad9aa838f}{rpct\+\_\+download\+\_\+idl} (\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \end{DoxyCompactItemize}
 
 
@@ -430,6 +436,8 @@ Definition at line 115 of file typing.\+h.
 \subsubsection{\texorpdfstring{rpct\+\_\+allow\+\_\+idl\+\_\+download()}{rpct\_allow\_idl\_download()}}
 {\footnotesize\ttfamily void rpct\+\_\+allow\+\_\+idl\+\_\+download (\begin{DoxyParamCaption}\item[{\hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context }\end{DoxyParamCaption})}
 
+X\+XX
+
 
 \begin{DoxyParams}{Parameters}
 {\em context} & \\
@@ -499,6 +507,22 @@ Deserializes object hierarchy previously serialized with \hyperlink{typing_8h_ab
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_a57baca626f8a63a3812b28fad9aa838f}\label{typing_8h_a57baca626f8a63a3812b28fad9aa838f}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+download\+\_\+idl@{rpct\+\_\+download\+\_\+idl}}
+\index{rpct\+\_\+download\+\_\+idl@{rpct\+\_\+download\+\_\+idl}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+download\+\_\+idl()}{rpct\_download\_idl()}}
+{\footnotesize\ttfamily int rpct\+\_\+download\+\_\+idl (\begin{DoxyParamCaption}\item[{\hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
+
+X\+XX
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & Connection handle \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on error 
+\end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_a4abbd4b37b9c85e3199721af771de323}\label{typing_8h_a4abbd4b37b9c85e3199721af771de323}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+find\+\_\+if\+\_\+member@{rpct\+\_\+find\+\_\+if\+\_\+member}}
 \index{rpct\+\_\+find\+\_\+if\+\_\+member@{rpct\+\_\+find\+\_\+if\+\_\+member}!typing.\+h@{typing.\+h}}
@@ -515,7 +539,23 @@ Finds the member {\ttfamily member} of interface {\ttfamily interface}.
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
+Interface member handle 
+\end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_a9bc9d4cee413b0eaf8aa5e7b7bcf95c5}\label{typing_8h_a9bc9d4cee413b0eaf8aa5e7b7bcf95c5}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+find\+\_\+interface@{rpct\+\_\+find\+\_\+interface}}
+\index{rpct\+\_\+find\+\_\+interface@{rpct\+\_\+find\+\_\+interface}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+find\+\_\+interface()}{rpct\_find\_interface()}}
+{\footnotesize\ttfamily \hyperlink{typing_8h_a38f857fb53c96e9aae9e02bd4996cc9f}{rpct\+\_\+interface\+\_\+t} rpct\+\_\+find\+\_\+interface (\begin{DoxyParamCaption}\item[{const char $\ast$}]{name }\end{DoxyParamCaption})}
 
+Finds interface {\ttfamily name}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Interface name \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Interface handle 
 \end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_a6dabfe4b5d8fbc841f0af797716c7b64}\label{typing_8h_a6dabfe4b5d8fbc841f0af797716c7b64}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+free@{rpct\+\_\+free}}
@@ -984,7 +1024,25 @@ Reads I\+DL file without parsing it. rpc\+\_\+load\+\_\+types must be called on 
 
 
 \begin{DoxyParams}{Parameters}
-{\em path} & Paths to the I\+DL file \\
+{\em path} & Path to the I\+DL file \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on error 
+\end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_a797228970122f8e212ed107266fcdf5f}\label{typing_8h_a797228970122f8e212ed107266fcdf5f}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+read\+\_\+idl@{rpct\+\_\+read\+\_\+idl}}
+\index{rpct\+\_\+read\+\_\+idl@{rpct\+\_\+read\+\_\+idl}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+read\+\_\+idl()}{rpct\_read\_idl()}}
+{\footnotesize\ttfamily int rpct\+\_\+read\+\_\+idl (\begin{DoxyParamCaption}\item[{const char $\ast$}]{name,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{idl }\end{DoxyParamCaption})}
+
+Reads I\+DL object without parsing it. rpc\+\_\+load\+\_\+types must be called on the same name again to load the associated types.
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the I\+DL blob \\
+\hline
+{\em idl} & I\+DL blob contents \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
