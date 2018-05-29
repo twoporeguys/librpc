@@ -5,7 +5,9 @@ set(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/timestamp)
 file(GLOB_RECURSE DEPS ${CMAKE_SOURCE_DIR}/tools/rpcdoc *)
 
 add_custom_command(OUTPUT ${OUTPUT}
-        COMMAND cp -a ${CMAKE_SOURCE_DIR}/tools/rpcdoc/* ${CMAKE_CURRENT_BINARY_DIR}/
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/tools/rpcdoc
+            ${CMAKE_CURRENT_BINARY_DIR}
         COMMAND ${PYTHON} ${SETUP_PY} bdist
         COMMAND ${CMAKE_COMMAND} -E touch ${OUTPUT}
         DEPENDS ${DEPS}
