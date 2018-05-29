@@ -22,8 +22,13 @@ endif()
 
 add_custom_command(
         OUTPUT ${OUTPUT}
-        COMMAND cp -a ${CMAKE_SOURCE_DIR}/bindings/python/* ${CMAKE_CURRENT_BINARY_DIR}/
-        COMMAND env LDFLAGS="-L${CMAKE_CURRENT_BINARY_DIR}/../.. -Wl,-rpath=${CMAKE_INSTALL_PREFIX}/lib" CFLAGS="-I${CMAKE_SOURCE_DIR}/include" ${PYTHON} ${SETUP_PY} build
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/bindings/python
+            ${CMAKE_CURRENT_BINARY_DIR}
+        COMMAND ${CMAKE_COMMAND} -E env
+            CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}
+            CMAKE_PREFIX=${CMAKE_INSTALL_PREFIX}
+            ${PYTHON} ${SETUP_PY} build
         COMMAND ${CMAKE_COMMAND} -E touch ${OUTPUT}
         DEPENDS ${DEPS}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})

@@ -32,8 +32,20 @@ from distutils.core import setup
 from Cython.Distutils.extension import Extension
 from Cython.Distutils import build_ext
 
+
 os.environ['CC'] = 'clang'
 os.environ.setdefault('DESTDIR', '/')
+cflags = ['-fblocks', '-Wno-sometimes-uninitialized']
+ldflags = ['-g', '-lrpc']
+
+
+if 'CMAKE_SOURCE_DIR' in os.environ:
+    cflags += [os.path.expandvars('-I${CMAKE_SOURCE_DIR}/include')]
+    ldflags += [
+        os.path.expandvars('-L../..'),
+        os.path.expandvars('-Wl,-rpath=${CMAKE_PREFIX}/lib')
+    ]
+
 
 setup(
     name='librpc',
@@ -45,8 +57,8 @@ setup(
         Extension(
             "librpc",
             ["librpc.pyx"],
-            extra_compile_args=["-fblocks", "-Wno-sometimes-uninitialized"],
-            extra_link_args=["-g", "-lrpc"],
+            extra_compile_args=cflags,
+            extra_link_args=ldflags
         )
     ]
 )
