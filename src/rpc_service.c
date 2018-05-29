@@ -189,6 +189,13 @@ rpc_context_find_instance(rpc_context_t context, const char *path)
 	return (g_hash_table_lookup(context->rcx_instances, path));
 }
 
+rpc_instance_t
+rpc_context_get_root(rpc_context_t context)
+{
+
+	return (context->rcx_root);
+}
+
 void
 rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
     const char *name, rpc_object_t args)
