@@ -39,21 +39,12 @@ static void * rpc_server_worker(void *);
 static gboolean rpc_server_listen(void *);
 static void server_queue_purge(rpc_server_t);
 
-void rpc_server_quit(rpc_server_t server)
-{
-
-	g_main_context_invoke(server->rs_g_context,
-            (GSourceFunc)rpc_kill_main_loop, server->rs_g_loop);
-	server->rs_stopped = true;
-}
-
 static void
 rpc_server_cleanup(rpc_server_t server)
 {
 
-	if (!server->rs_stopped)
-	        g_main_context_invoke(server->rs_g_context,
-		    (GSourceFunc)rpc_kill_main_loop, server->rs_g_loop);
+	g_main_context_invoke(server->rs_g_context,
+	    (GSourceFunc)rpc_kill_main_loop, server->rs_g_loop);
         g_thread_join(server->rs_thread);
 
         g_main_loop_unref(server->rs_g_loop);

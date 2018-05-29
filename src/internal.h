@@ -287,7 +287,6 @@ struct rpc_server
     	bool			rs_operational;
 	bool			rs_paused;
 	bool			rs_closed;
-	bool			rs_stopped;
 	bool			rs_threaded_teardown;
         rpc_object_t            rs_error;
 	uint			rs_refcnt;

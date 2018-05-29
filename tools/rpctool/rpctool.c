@@ -198,15 +198,6 @@ inspect_interface(rpc_connection_t conn, const char *path, const char *interface
 
 			case RPC_CALL_DONE:
 			case RPC_CALL_ENDED:
-				if (!rpc_is_error(rpc_call_result(call))) {
-					rpc_array_apply(rpc_call_result(call), 
-					    ^(size_t idx __unused, 
-						rpc_object_t v) {
-						printf("    %s\n", 
-						    rpc_string_get_string_ptr(v));
-						return ((bool)true);
-					  }); 
-				}
 				goto done;
 
 			case RPC_CALL_ERROR:
