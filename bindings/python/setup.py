@@ -43,7 +43,7 @@ if 'CMAKE_SOURCE_DIR' in os.environ:
     cflags += [os.path.expandvars('-I${CMAKE_SOURCE_DIR}/include')]
     ldflags += [
         os.path.expandvars('-L../..'),
-        os.path.expandvars('-Wl,-rpath=${CMAKE_PREFIX}/lib')
+        os.path.expandvars('-Wl,-rpath -Wl,${CMAKE_PREFIX}/lib')
     ]
 
 
