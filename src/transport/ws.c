@@ -237,10 +237,11 @@ done_waiting (gpointer user_data)
 
 	g_mutex_lock(&server->ws_mtx);
 	server->ws_done = true;
+        soup_server_disconnect (server->ws_soupserver);
 	g_cond_broadcast(&server->ws_cv);
 	g_mutex_unlock(&server->ws_mtx);
 
-	rpc_server_quit(server->ws_server);
+	//rpc_server_quit(server->ws_server);
         return false;
 }
 
@@ -271,7 +272,7 @@ ws_teardown_end (struct rpc_server *srv)
 		g_cond_wait(&server->ws_cv, &server->ws_mtx);
 	g_mutex_unlock(&server->ws_mtx);
 
-        soup_server_disconnect (server->ws_soupserver);
+        //soup_server_disconnect (server->ws_soupserver);
 	soup_uri_free(server->ws_uri);
 	g_object_unref(server->ws_soupserver);
 
@@ -403,14 +404,20 @@ ws_abort(void *arg)
 
 	debugf("ws abort %p", conn->wc_parent);
 	g_mutex_lock(&conn->wc_abort_mtx);
-	if (conn->wc_aborted) {
+	if (conn->wc_aborted || conn->wc_closed ||
+	    soup_websocket_connection_get_state(conn->wc_ws) != 
+	    SOUP_WEBSOCKET_STATE_OPEN) {
 		g_mutex_unlock(&conn->wc_abort_mtx);
 		return 0;
 	}
 
 	conn->wc_aborted = true;
 	g_mutex_unlock(&conn->wc_abort_mtx);
-	soup_websocket_connection_close(conn->wc_ws, 1000, "Going away");
+	if (soup_websocket_connection_get_state(conn->wc_ws) != 
+			SOUP_WEBSOCKET_STATE_OPEN)
+		return (0);
+	else
+		soup_websocket_connection_close(conn->wc_ws, 1000, "Going away");
 
 	g_mutex_lock(&conn->wc_abort_mtx);
 	while (conn->wc_closed == false)

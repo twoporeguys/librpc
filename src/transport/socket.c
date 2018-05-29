@@ -420,14 +420,15 @@ socket_abort(void *arg)
 	g_mutex_lock(&conn->sc_abort_mtx);
 	if (!conn->sc_aborted) {
 		conn->sc_aborted = true;
+		g_mutex_unlock(&conn->sc_abort_mtx);
 		g_socket_shutdown(sock, true, true, NULL);
 		g_socket_close(sock, NULL);
 
 		if (conn->sc_reader_thread) {
 			g_thread_join(conn->sc_reader_thread);
 		}
-	}
-	g_mutex_unlock(&conn->sc_abort_mtx);
+	} else
+		g_mutex_unlock(&conn->sc_abort_mtx);
 	return (0);
 }
 
