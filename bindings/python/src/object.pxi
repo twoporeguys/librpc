@@ -258,7 +258,7 @@ cdef class Object(object):
         if isinstance(self, (BaseStruct, BaseUnion, BaseEnum)):
             return self
 
-        if self.type in (ObjectType.DICTIONARY, ObjectType.ARRAY, ObjectType.FD, ObjectType.UINT64):
+        if self.type in (ObjectType.FD, ObjectType.UINT64):
             return self
 
         return self.value
