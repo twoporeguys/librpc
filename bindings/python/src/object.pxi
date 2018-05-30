@@ -350,7 +350,7 @@ cdef class Array(Object):
             return
 
         if not isinstance(value, list):
-            raise LibException(errno.EINVAL, "Cannot initialize array from {0} type".format(type(value)))
+            raise TypeError('Cannot initialize array from {0} type'.format(type(value)))
 
         super(Array, self).__init__(value, force_type, typei)
 
@@ -397,7 +397,7 @@ cdef class Array(Object):
         elif isinstance(array, list):
             rpc_array = Array(array)
         else:
-            raise LibException(errno.EINVAL, "Array can be extended with only with list or another Array")
+            raise TypeError('Array can be extended with only with list or another Array')
 
         for value in rpc_array:
             rpc_value = value
@@ -448,7 +448,7 @@ cdef class Array(Object):
         self.__applier(find_index)
 
         if index is None:
-            raise LibException(errno.EINVAL, '{} is not in list'.format(value))
+            raise ValueError('{} is not in list'.format(value))
 
         return index
 
@@ -673,7 +673,7 @@ cdef class Dictionary(Object):
 
         c_value = rpc_dictionary_get_value(self.obj, byte_key)
         if c_value == <rpc_object_t>NULL:
-            raise KeyError('Key {} does not exist'.format(key))
+            raise KeyError(repr(key))
 
         return Object.wrap(c_value).unpack()
 
