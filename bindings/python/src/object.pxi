@@ -502,7 +502,7 @@ cdef class Array(Object):
 
         c_value = rpc_array_get_value(self.obj, index)
         if c_value == <rpc_object_t>NULL:
-            raise LibException(errno.ERANGE, 'Array index out of range')
+            raise IndexError('list index out of range')
 
         return Object.wrap(c_value).unpack()
 
@@ -673,7 +673,7 @@ cdef class Dictionary(Object):
 
         c_value = rpc_dictionary_get_value(self.obj, byte_key)
         if c_value == <rpc_object_t>NULL:
-            raise LibException(errno.EINVAL, 'Key {} does not exist'.format(key))
+            raise KeyError('Key {} does not exist'.format(key))
 
         return Object.wrap(c_value).unpack()
 
