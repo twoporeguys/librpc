@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 Two Pore Guys, Inc.
+ * Copyright 2017 Two Pore Guys, Inc.
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,53 +25,58 @@
  *
  */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
-#include <rpc/serializer.h>
-#include "internal.h"
-
-bool
-rpc_serializer_exists(const char *serializer)
-{
-
-	return (rpc_find_serializer(serializer) != NULL ? true : false);
-}
-
-rpc_object_t
-rpc_serializer_load(const char *serializer, const void *frame,
-    size_t len)
-{
-	const struct rpc_serializer *impl;
-	rpc_auto_object_t untyped = NULL;
-
-	impl = rpc_find_serializer(serializer);
-	if (impl == NULL) {
-		rpc_set_last_error(ENOENT, "Serializer not found", NULL);
-		return (NULL);
-	}
-
-	untyped = impl->deserialize(frame, len);
-	if (untyped == NULL)
-		return (NULL);
-
-	return (rpct_deserialize(untyped));
-}
+#include <string.h>
+#include <glib.h>
+#include <sys/socket.h>
+#include <rpc/object.h>
+#include <rpc/client.h>
+#include <rpc/server.h>
+#include <rpc/service.h>
 
 int
-rpc_serializer_dump(const char *serializer, rpc_object_t obj, void **framep,
-    size_t *lenp)
+main(int argc, const char *argv[])
 {
-	const struct rpc_serializer *impl;
-	rpc_auto_object_t typed = NULL;
+	rpc_context_t ctx;
+	rpc_server_t server;
+	rpc_client_t client;
+	rpc_connection_t conn;
+	rpc_object_t result;
+	int fd[2];
 
-	impl = rpc_find_serializer(serializer);
-	if (impl == NULL) {
-		rpc_set_last_error(ENOENT, "Serializer not found", NULL);
-		return (-1);
+	if (socketpair(AF_UNIX, SOCK_STREAM, 0, fd) != 0) {
+		fprintf(stderr, "socketpair() failed: %s", strerror(errno));
+		return (EXIT_FAILURE);
 	}
 
-	typed = rpct_serialize(obj);
-	if (typed == NULL)
-		return (-1);
+	ctx = rpc_context_create();
 
-	return (impl->serialize(typed, framep, lenp));
+	rpc_context_register_block(ctx, NULL, "hello", NULL,
+	    ^(void *cookie, rpc_object_t args) {
+		return rpc_string_create("world");
+	});
+
+	server = rpc_server_create("fd://", ctx);
+	if (server == NULL) {
+		fprintf(stderr, "cannot create server: %s", strerror(errno));
+		return (1);
+	}
+
+	client = rpc_client_create(g_strdup_printf("fd://%d", fd[1]), NULL);
+	if (client == NULL) {
+		fprintf(stderr, "cannot connect: %s", strerror(errno));
+		return (1);
+	}
+
+	rpc_server_resume(server);
+
+	conn = rpc_client_get_connection(client);
+	result = rpc_connection_call_simple(conn, "hello", "[s]", "world");
+	printf("result = %s\n", rpc_string_get_string_ptr(result));
+
+	rpc_client_close(client);
+	rpc_server_close(server);
+	return (0);
 }

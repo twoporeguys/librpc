@@ -9,4 +9,4 @@ Name: librpc
 Description: A general purpose RPC library
 Version: @VERSION@
 Cflags: -I${includedir} ${cflags}
-Libs: -L${libdir} -lrpc
+Libs: -L${libdir} -Wl,-rpath -Wl,${libdir} -lrpc

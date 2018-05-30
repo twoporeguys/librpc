@@ -195,6 +195,13 @@ rpc_context_find_instance(rpc_context_t context, const char *path)
 	    (g_hash_table_lookup(context->rcx_instances, path)));
 }
 
+rpc_instance_t
+rpc_context_get_root(rpc_context_t context)
+{
+
+	return (context->rcx_root);
+}
+
 void
 rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
     const char *name, rpc_object_t args)
@@ -846,11 +853,11 @@ rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
 		cookie.name = name;
 		cookie.arg = prop->rim_property.rp_arg;
 		cookie.error = NULL;
+		value = prop->rim_property.rp_getter(&cookie);
 
 		if (cookie.error != NULL)
 			return;
 
-		value = prop->rim_property.rp_getter(&cookie);
 		release = true;
 	}
 

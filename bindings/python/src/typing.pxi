@@ -54,9 +54,7 @@ cdef class Typing(object):
         cdef object container
 
         container = <object>arg
-        iface = Interface.__new__(Interface)
-        iface.c_iface = val
-        container.append(iface)
+        container.append(Interface.wrap(val))
         return True
 
     def load_type(self, decl, type):
@@ -74,17 +72,30 @@ cdef class Typing(object):
         if rpct_load_types_dir(path.encode('utf-8')) != 0:
             raise_internal_exc()
 
+    def download_types(self, Connection conn):
+        if rpct_download_idl(conn.connection) != 0:
+            raise_internal_exc()
+
     def serialize(self, Object obj):
         cdef rpc_object_t result
 
         result = rpct_serialize(obj.obj)
-        return Object.init_from_ptr(result)
+        return Object.wrap(result)
 
     def deserialize(self, Object obj):
         cdef rpc_object_t result
 
         result = rpct_deserialize(obj.obj)
-        return Object.init_from_ptr(result)
+        return Object.wrap(result)
+
+    def find_interface(self, name):
+        cdef rpct_interface_t c_iface
+
+        c_iface = rpct_find_interface(name.encode('utf-8'))
+        if c_iface == <rpct_interface_t>NULL:
+            return None
+
+        return Interface.wrap(c_iface)
 
     property types:
         def __get__(self):
@@ -116,7 +127,7 @@ cdef class TypeInstance(object):
         return str(self)
 
     @staticmethod
-    cdef TypeInstance init_from_ptr(rpct_typei_t typei):
+    cdef TypeInstance wrap(rpct_typei_t typei):
         cdef TypeInstance ret
 
         if typei == <rpct_typei_t>NULL:
@@ -125,6 +136,9 @@ cdef class TypeInstance(object):
         ret = TypeInstance.__new__(TypeInstance)
         ret.rpctypei = typei
         return ret
+
+    cdef rpct_typei_t unwrap(self):
+        return self.rpctypei
 
     property factory:
         def __get__(self):
@@ -172,7 +186,7 @@ cdef class TypeInstance(object):
         cdef bint valid
 
         valid = rpct_validate(self.rpctypei, obj.obj, &errors)
-        return valid, Object.init_from_ptr(errors)
+        return valid, Object.wrap(errors)
 
 
 cdef class Type(object):
@@ -233,7 +247,7 @@ cdef class Type(object):
 
     property definition:
         def __get__(self):
-            return TypeInstance.init_from_ptr(rpct_type_get_definition(self.rpctype))
+            return TypeInstance.wrap(rpct_type_get_definition(self.rpctype))
 
     property is_struct:
         def __get__(self):
@@ -267,7 +281,7 @@ cdef class Member(object):
 
     property type:
         def __get__(self):
-            return TypeInstance.init_from_ptr(rpct_member_get_typei(self.rpcmem))
+            return TypeInstance.wrap(rpct_member_get_typei(self.rpcmem))
 
     property name:
         def __get__(self):
@@ -279,8 +293,6 @@ cdef class Member(object):
 
 
 cdef class Interface(object):
-    cdef rpct_interface_t c_iface
-
     property name:
         def __get__(self):
             return str_or_none(rpct_interface_get_name(self.c_iface))
@@ -296,36 +308,40 @@ cdef class Interface(object):
             return ret
 
     def __str__(self):
-        return "<{0} '{0}'>".format(self.__class__.__name__, self.name)
+        return "<{0} '{1}'>".format(self.__class__.__name__, self.name)
 
     def __repr__(self):
         return str(self)
 
+    def find_member(self, name):
+        cdef rpct_if_member_t c_member
+
+        c_member = rpct_find_if_member(self.name.encode('utf-8'), name.encode('utf-8'))
+        if c_member == <rpct_if_member_t>NULL:
+            return None
+
+        return InterfaceMember.wrap(c_member)
+
+    @staticmethod
+    cdef Interface wrap(rpct_interface_t ptr):
+        cdef Interface result
+
+        result = Interface.__new__(Interface)
+        result.c_iface = ptr
+        return result
+
+    cdef rpct_interface_t unwrap(self):
+        return self.c_iface
+
     @staticmethod
     cdef bint c_iter(void *arg, rpct_if_member_t val):
-        cdef rpc_if_member_type c_type
-        cdef InterfaceMember result
         cdef object container = <object>arg
 
-        c_type = rpct_if_member_get_type(val)
-
-        if c_type == RPC_MEMBER_METHOD:
-            result = Method.__new__(Method)
-
-        elif c_type == RPC_MEMBER_PROPERTY:
-            result = Property.__new__(Property)
-
-        elif c_type == RPC_MEMBER_EVENT:
-            result = Event.__new__(Event)
-
-        result.c_member = val
-        container.append(result)
+        container.append(InterfaceMember.wrap(val))
         return True
 
 
 cdef class InterfaceMember(object):
-    cdef rpct_if_member_t c_member
-
     property name:
         def __get__(self):
             return str_or_none(rpct_if_member_get_name(self.c_member))
@@ -337,6 +353,30 @@ cdef class InterfaceMember(object):
     property access_flags:
         def __get__(self):
             pass
+
+    @staticmethod
+    cdef wrap(rpct_if_member_t ptr):
+        cdef InterfaceMember result
+
+        if rpct_if_member_get_type(ptr) == RPC_MEMBER_METHOD:
+            result = Method.__new__(Method)
+            result.c_member = ptr
+
+        elif rpct_if_member_get_type(ptr) == RPC_MEMBER_PROPERTY:
+            result = Property.__new__(Property)
+            result.c_member = ptr
+
+        elif rpct_if_member_get_type(ptr) == RPC_MEMBER_METHOD:
+            result = Event.__new__(Event)
+            result.c_member = ptr
+
+        else:
+            raise AssertionError('Impossible rpct_member_type')
+
+        return result
+
+    cdef rpct_if_member_t unwrap(self):
+        return self.c_member
 
 
 cdef class Method(InterfaceMember):
@@ -354,7 +394,7 @@ cdef class Method(InterfaceMember):
 
     property return_type:
         def __get__(self):
-            return TypeInstance.init_from_ptr(rpct_method_get_return_type(self.c_member))
+            return TypeInstance.wrap(rpct_method_get_return_type(self.c_member))
 
     def __str__(self):
         return "<librpc.Method name '{0}'>".format(self.name)
@@ -366,7 +406,7 @@ cdef class Method(InterfaceMember):
 cdef class Property(InterfaceMember):
     property type:
         def __get__(self):
-            return TypeInstance.init_from_ptr(rpct_property_get_type(self.c_member))
+            return TypeInstance.wrap(rpct_property_get_type(self.c_member))
 
     def __str__(self):
         return "<librpc.Property name '{0}'>".format(self.name)
@@ -378,7 +418,7 @@ cdef class Property(InterfaceMember):
 cdef class Event(InterfaceMember):
     property type:
         def __get__(self):
-            return TypeInstance.init_from_ptr(rpct_property_get_type(self.c_member))
+            return TypeInstance.wrap(rpct_property_get_type(self.c_member))
 
     def __str__(self):
         return "<librpc.Event name '{0}'>".format(self.name)
@@ -400,12 +440,12 @@ cdef class FunctionArgument(object):
 
     property type:
         def __get__(self):
-            return TypeInstance.init_from_ptr(rpct_argument_get_typei(self.c_arg))
+            return TypeInstance.wrap(rpct_argument_get_typei(self.c_arg))
 
 
 cdef class StructUnionMember(Member):
     def specialize(self, TypeInstance typei):
-        return TypeInstance.init_from_ptr(rpct_typei_get_member_type(typei.rpctypei, self.rpcmem))
+        return TypeInstance.wrap(rpct_typei_get_member_type(typei.rpctypei, self.rpcmem))
 
 
 cdef class BaseStruct(Dictionary):
@@ -423,11 +463,7 @@ cdef class BaseStruct(Dictionary):
             return {m.name: m for m in self.typei.type.members}
 
     def __getattr__(self, item):
-        result = self[item]
-        if isinstance(result, (Dictionary, Array)):
-            return result
-
-        return result.unpack()
+        return self[item]
 
     def __setattr__(self, key, value):
         value = Object(value)

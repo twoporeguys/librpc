@@ -47,7 +47,7 @@ cdef class Serializer(object):
         if ret == <rpc_object_t>NULL:
             raise_internal_exc()
 
-        result = Object.init_from_ptr(ret)
+        result = Object.wrap(ret)
         return result.unpack() if unpack else result
 
     def dumps(self, obj):

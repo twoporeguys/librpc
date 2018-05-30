@@ -31,7 +31,6 @@ import time
 import errno
 
 
-@librpc.unpack
 @librpc.interface('com.twoporeguys.librpc.ExampleServer')
 class ExampleServer(librpc.Service):
     def __init__(self):
@@ -91,6 +90,7 @@ def main():
         server.close()
 
     signal.signal(signal.SIGINT, sigint)
+    server.resume()
     signal.pause()
 
 

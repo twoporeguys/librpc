@@ -32,7 +32,7 @@ cdef class Context(object):
         self.context = rpc_context_create()
 
     @staticmethod
-    cdef Context init_from_ptr(rpc_context_t ptr):
+    cdef Context wrap(rpc_context_t ptr):
         cdef Context ret
 
         ret = Context.__new__(Context)
@@ -55,6 +55,8 @@ cdef class Context(object):
         if rpc_context_register_instance(self.context, instance.instance) != 0:
             raise_internal_exc()
 
+    cdef rpc_context_t unwrap(self):
+        return self.context
 
     def register_method(self, name, fn, interface=None):
         self.methods[name] = fn
@@ -78,13 +80,16 @@ cdef class Context(object):
 
 cdef class Instance(object):
     @staticmethod
-    cdef Instance init_from_ptr(rpc_instance_t ptr):
+    cdef Instance wrap(rpc_instance_t ptr):
         cdef Instance result
 
         result = Instance.__new__(Instance)
         result.properties = []
         result.instance = ptr
         return result
+
+    cdef rpc_instance_t unwrap(self):
+        return self.instance
 
     @staticmethod
     cdef rpc_object_t c_property_getter(void *cookie) with gil:
@@ -114,7 +119,7 @@ cdef class Instance(object):
         _, setter = mux
 
         try:
-            setter(Object.init_from_ptr(value))
+            setter(Object.wrap(value))
         except RpcException as err:
             rpc_property_error(cookie, err.code, err.message.encode('utf-8'))
         except Exception as err:
@@ -194,15 +199,11 @@ cdef class Service(object):
             if getattr(i, '__librpc_method__', None):
                 name = getattr(i, '__librpc_name__', name)
                 interface = getattr(i, '__librpc_interface__', getattr(self, '__librpc_interface__', None))
-                unpack = getattr(i, '__librpc_unpack__', getattr(self, '__librpc_unpack__', False))
                 description = getattr(self, '__librpc_description__', '')
                 fn = i
 
                 if not interface:
                     continue
-
-                if unpack:
-                    fn = lambda *args, fn=fn: fn(*(a.unpack() for a in args))
 
                 if interface not in self.interfaces:
                     self.instance.register_interface(interface)
@@ -216,7 +217,6 @@ cdef class Service(object):
                 name = getattr(i, '__librpc_name__', name)
                 setter = getattr(i, '__librpc_setter__', None)
                 interface = getattr(i, '__librpc_interface__', getattr(self, '__librpc_interface__', None))
-                unpack = getattr(i, '__librpc_unpack__', getattr(self, '__librpc_unpack__', False))
                 description = getattr(self, '__librpc_description__', '')
                 getter = i
 
@@ -226,11 +226,6 @@ cdef class Service(object):
                 # Setter is an unbound method reference, so we need to bind it to "self" first
                 if setter:
                     setter = setter.__get__(self, self.__class__)
-
-                if unpack:
-                    getter = lambda fn=getter: Object(fn())
-                    if setter:
-                        setter = lambda v, fn=setter: fn(v.unpack())
 
                 if interface not in self.interfaces:
                     self.instance.register_interface(interface)

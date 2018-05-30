@@ -524,11 +524,19 @@ bool rpct_interface_apply(rpct_interface_applier_t applier);
 bool rpct_if_member_apply(rpct_interface_t iface, rpct_if_member_applier_t applier);
 
 /**
+ * Finds interface @p name.
+ *
+ * @param name Interface name
+ * @return Interface handle
+ */
+rpct_interface_t rpct_find_interface(const char *name);
+
+/**
  * Finds the member @p member of interface @p interface.
  *
  * @param interface Interface name
  * @param member Member name
- * @return
+ * @return Interface member handle
  */
 rpct_if_member_t rpct_find_if_member(const char *interface, const char *member);
 

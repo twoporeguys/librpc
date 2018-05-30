@@ -82,6 +82,9 @@ rpct_new(const char *decl, rpc_object_t object)
 {
 	struct rpct_typei *typei;
 
+	if (g_strcmp0(decl, "?") == 0)
+		decl = "com.twoporeguys.librpc.Optional";
+
 	typei = rpct_instantiate_type(decl, NULL, NULL, NULL);
 	if (typei == NULL)
 		return (NULL);
@@ -1376,7 +1379,8 @@ rpct_pre_call_hook(void *cookie, rpc_object_t args)
 		msg = g_strdup_printf("Validation failed: %jd errors",
 		    rpc_array_get_count(errors));
 
-		rpc_function_error_ex(cookie, rpc_error_create(EINVAL, msg, errors));
+		rpc_function_error_ex(cookie,
+		    rpc_error_create(EINVAL, msg, errors));
 		g_free(msg);
 	}
 
@@ -1459,6 +1463,10 @@ rpct_init(void)
 	rpct_type_t type;
 	const char **b;
 
+	/* Don't initialize twice */
+	if (context != NULL)
+		return (0);
+
 	context = g_malloc0(sizeof(*context));
 	context->files = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 	    (GDestroyNotify)rpct_file_free);
@@ -1477,7 +1485,7 @@ rpct_init(void)
 		    g_free, (GDestroyNotify)rpct_member_free);
 		type->constraints = g_hash_table_new_full(g_str_hash,
 		    g_str_equal, g_free, (GDestroyNotify)rpc_release_impl);
-		type->description = g_strdup_printf("builtin %s type", *b);
+		type->description = g_strdup_printf("Builtin %s type", *b);
 		type->generic_vars = g_ptr_array_new();
 		g_hash_table_insert(context->types, g_strdup(type->name), type);
 	}
@@ -1911,17 +1919,29 @@ rpct_if_member_apply(rpct_interface_t iface, rpct_if_member_applier_t applier)
 	return (flag);
 }
 
+rpct_interface_t
+rpct_find_interface(const char *name)
+{
+	struct rpct_interface *iface;
+
+	iface = g_hash_table_lookup(context->interfaces, name);
+	if (iface == NULL) {
+		rpc_set_last_errorf(ENOENT, "Interface not found");
+		return (NULL);
+	}
+
+	return (iface);
+}
+
 rpct_if_member_t
 rpct_find_if_member(const char *interface, const char *member)
 {
 	struct rpct_if_member *ret;
 	struct rpct_interface *iface;
 
-	iface = g_hash_table_lookup(context->interfaces, interface);
-	if (iface == NULL) {
-		rpc_set_last_errorf(ENOENT, "Interface not found");
+	iface = rpct_find_interface(interface);
+	if (iface == NULL)
 		return (NULL);
-	}
 
 	ret = g_hash_table_lookup(iface->members, member);
 	if (ret == NULL) {
@@ -1967,7 +1987,8 @@ rpct_serialize(rpc_object_t object)
 			return (cont);
 		} else {
 			cont = rpc_copy(object);
-			cont->ro_typei = rpct_new_typei(rpc_get_type_name(rpc_get_type(object)));
+			cont->ro_typei = rpct_new_typei(
+			    rpc_get_type_name(rpc_get_type(object)));
 			return (cont);
 		}
 	}

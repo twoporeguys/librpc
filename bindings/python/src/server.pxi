@@ -61,5 +61,8 @@ cdef class Server(object):
         with nogil:
             rpc_server_broadcast_event(self.server, c_path, c_interface, c_name, rpc_args.obj)
 
+    def resume(self):
+        rpc_server_resume(self.server)
+
     def close(self):
         rpc_server_close(self.server)

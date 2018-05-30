@@ -185,7 +185,8 @@ set(CORE_FILES
 set(TRANSPORT_FILES
         src/transport/socket.c
         src/transport/ws.c
-        src/transport/loopback.c)
+        src/transport/loopback.c
+        src/transport/fd.c)
 
 set(SERIALIZER_FILES
         src/serializer/msgpack.c
@@ -305,11 +306,13 @@ if(BUILD_EXAMPLES)
     if(UNIX)
         add_subdirectory(examples/fd-client)
         add_subdirectory(examples/fd-server)
+        add_subdirectory(examples/fd-transport)
     endif()
 
     if(LINUX)
         add_subdirectory(examples/shm-client)
         add_subdirectory(examples/shm-server)
+        add_subdirectory(examples/benchmark)
     endif()
 
     if (BUILD_BUS OR BUILD_LIBUSB)
