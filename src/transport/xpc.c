@@ -39,14 +39,6 @@ static rpc_object_t xpc_to_rpc(xpc_object_t);
 static int xpc_abort(void *);
 static void xpc_conn_release(void *);
 
-static const struct rpc_transport xpc_transport = {
-	.name = "xpc",
-	.schemas = {"xpc", NULL},
-	.connect = xpc_connect,
-	.listen = xpc_listen,
-	.flags = RPC_TRANSPORT_NO_SERIALIZE
-};
-
 struct xpc_server
 {
 	xpc_connection_t 	xpc_handle;
@@ -58,6 +50,14 @@ struct xpc_connection
 	xpc_connection_t	xpc_handle;
 	dispatch_queue_t 	queue;
 	struct rpc_connection *	conn;
+};
+
+static const struct rpc_transport xpc_transport = {
+	.name = "xpc",
+	.schemas = {"xpc", NULL},
+	.connect = xpc_connect,
+	.listen = xpc_listen,
+	.flags = RPC_TRANSPORT_NO_SERIALIZE
 };
 
 static xpc_object_t

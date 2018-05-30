@@ -28,6 +28,8 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <glib.h>
+#include <sys/socket.h>
 #include <rpc/object.h>
 #include <rpc/client.h>
 #include <rpc/server.h>
@@ -41,21 +43,27 @@ main(int argc, const char *argv[])
 	rpc_client_t client;
 	rpc_connection_t conn;
 	rpc_object_t result;
+	int fd[2];
+
+	if (socketpair(AF_UNIX, SOCK_STREAM, 0, fd) != 0) {
+		fprintf(stderr, "socketpair() failed: %s", strerror(errno));
+		return (EXIT_FAILURE);
+	}
 
 	ctx = rpc_context_create();
 
 	rpc_context_register_block(ctx, NULL, "hello", NULL,
 	    ^(void *cookie, rpc_object_t args) {
-	    	return rpc_string_create("world");
+		return rpc_string_create("world");
 	});
 
-	server = rpc_server_create("loopback://0", ctx);
+	server = rpc_server_create("fd://", ctx);
 	if (server == NULL) {
 		fprintf(stderr, "cannot create server: %s", strerror(errno));
 		return (1);
 	}
 
-	client = rpc_client_create("loopback://0", 0);
+	client = rpc_client_create(g_strdup_printf("fd://%d", fd[1]), NULL);
 	if (client == NULL) {
 		fprintf(stderr, "cannot connect: %s", strerror(errno));
 		return (1);
