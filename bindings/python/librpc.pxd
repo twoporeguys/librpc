@@ -261,8 +261,7 @@ cdef extern from "rpc/server.h" nogil:
     ctypedef rpc_server *rpc_server_t
 
     rpc_server_t rpc_server_create(const char *uri, rpc_context_t context);
-    int rpc_server_start(rpc_server_t server, bint background);
-    int rpc_server_stop(rpc_server_t server);
+    int rpc_server_resume(rpc_server_t server);
     int rpc_server_close(rpc_server_t server);
 
     void rpc_server_broadcast_event(rpc_server_t server, const char *path, const char *interface, const char *name, rpc_object_t args)

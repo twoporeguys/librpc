@@ -463,11 +463,7 @@ cdef class BaseStruct(Dictionary):
             return {m.name: m for m in self.typei.type.members}
 
     def __getattr__(self, item):
-        result = self[item]
-        if isinstance(result, (Dictionary, Array)):
-            return result
-
-        return result.unpack()
+        return self[item]
 
     def __setattr__(self, key, value):
         value = Object(value)

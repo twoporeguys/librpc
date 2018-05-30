@@ -258,13 +258,7 @@ cdef class Object(object):
         if isinstance(self, (BaseStruct, BaseUnion, BaseEnum)):
             return self
 
-        if self.type == ObjectType.DICTIONARY:
-            return {k: v.unpack() for k, v in self.value.items()}
-
-        if self.type == ObjectType.ARRAY:
-            return [i.unpack() for i in self.value]
-
-        if self.type == ObjectType.FD:
+        if self.type in (ObjectType.DICTIONARY, ObjectType.ARRAY, ObjectType.FD, ObjectType.UINT64):
             return self
 
         return self.value
@@ -494,7 +488,7 @@ cdef class Array(Object):
 
         self.__applier(collect)
         for v in result:
-            yield v
+            yield v.unpack()
 
     def __len__(self):
         return rpc_array_get_count(self.obj)
@@ -510,15 +504,7 @@ cdef class Array(Object):
         if c_value == <rpc_object_t>NULL:
             raise LibException(errno.ERANGE, 'Array index out of range')
 
-        c_type = rpc_get_type(c_value)
-
-        if c_type == RPC_TYPE_DICTIONARY:
-            return Dictionary.wrap(c_value)
-
-        if c_type == RPC_TYPE_ARRAY:
-            return Array.wrap(c_value)
-
-        return Object.wrap(c_value)
+        return Object.wrap(c_value).unpack()
 
     def __setitem__(self, index, value):
         cdef Object rpc_value
@@ -587,7 +573,7 @@ cdef class Dictionary(Object):
     def items(self):
         result = []
         def collect(k, v):
-            result.append((k, v))
+            result.append((k, v.unpack()))
             return True
 
         self.__applier(collect)
@@ -595,7 +581,7 @@ cdef class Dictionary(Object):
 
     def keys(self):
         result = []
-        def collect(k, v):
+        def collect(k, _):
             result.append(k)
             return True
 
@@ -636,8 +622,8 @@ cdef class Dictionary(Object):
 
     def values(self):
         result = []
-        def collect(k, v):
-            result.append(v)
+        def collect(_, v):
+            result.append(v.unpack())
             return True
 
         self.__applier(collect)
@@ -689,7 +675,7 @@ cdef class Dictionary(Object):
         if c_value == <rpc_object_t>NULL:
             raise LibException(errno.EINVAL, 'Key {} does not exist'.format(key))
 
-        return Object.wrap(c_value)
+        return Object.wrap(c_value).unpack()
 
     def __setitem__(self, key, value):
         cdef Object rpc_value
@@ -728,8 +714,3 @@ def uint(value):
 
 def fd(value):
     return Object(value, force_type=ObjectType.FD)
-
-
-def unpack(fn):
-    fn.__librpc_unpack__ = True
-    return fn

@@ -124,7 +124,6 @@ cdef class Connection(object):
         PyEval_InitThreads()
         self.error_handler = None
         self.event_handler = None
-        self.unpack = False
         self.ev_handlers = []
 
     property error_handler:
@@ -156,8 +155,7 @@ cdef class Connection(object):
             objects = self.call_sync(
                 'get_instances',
                 interface='com.twoporeguys.librpc.Discoverable',
-                path='/',
-                unpack=True
+                path='/'
             )
 
             return {o['path']: RemoteObject(self, o['path']) for o in objects}
@@ -183,13 +181,13 @@ cdef class Connection(object):
         cdef object handler = <object>arg
 
         event_args = Object.wrap(args)
-        handler(event_args)
+        handler(event_args.unpack())
 
     @staticmethod
     cdef void c_prop_handler(void *arg, rpc_object_t value) with gil:
         cdef object handler = <object>arg
 
-        handler(Object.wrap(value))
+        handler(Object.wrap(value).unpack())
 
     @staticmethod
     cdef void c_error_handler(void *arg, rpc_error_code_t error, rpc_object_t args) with gil:
@@ -221,7 +219,7 @@ cdef class Connection(object):
         result.connection = self
         return result
 
-    def call_sync(self, method, *args, path='/', interface=None, unpack=None):
+    def call_sync(self, method, *args, path='/', interface=None):
         cdef rpc_object_t rpc_result
         cdef Array rpc_args
         cdef Dictionary error
@@ -258,10 +256,8 @@ cdef class Connection(object):
         def get_chunk():
             nonlocal rpc_result
 
-            rpc_result = rpc_call_result(call)
-            rpc_retain(rpc_result)
-
-            return self.do_unpack(Object.wrap(rpc_result), unpack)
+            rpc_result = rpc_retain(rpc_call_result(call))
+            return Object.wrap(rpc_result).unpack()
 
         def iter_chunk():
             nonlocal call_status
@@ -278,7 +274,7 @@ cdef class Connection(object):
                     rpc_call_abort(call)
 
         if call_status == CallStatus.ERROR:
-            raise self.do_unpack(get_chunk(), True)
+            raise get_chunk()
 
         if call_status == CallStatus.DONE:
             return get_chunk()
@@ -287,13 +283,6 @@ cdef class Connection(object):
             return iter_chunk()
 
         raise AssertionError('Impossible call status {0}'.format(call_status))
-
-    def do_unpack(self, value, unpack=None):
-        if not isinstance(value, Object):
-            return value
-
-        unpack = self.unpack if unpack is None else unpack
-        return value.unpack() if unpack else value
 
     def call_async(self, method, callback, *args):
         pass
@@ -324,7 +313,6 @@ cdef class Connection(object):
         b_path = path.encode('utf-8')
         b_interface = path.encode('utf-8')
         b_name = name.encode('utf-8')
-        fn_unpack = lambda val: fn(self.do_unpack(val))
 
         self.ev_handlers.append(fn)
         cookie = rpc_connection_register_event_handler(
@@ -334,7 +322,7 @@ cdef class Connection(object):
             b_name,
             RPC_HANDLER(
                 <rpc_handler_f>Connection.c_ev_handler,
-                <void *>fn_unpack
+                <void *>fn
             )
         )
 
@@ -352,9 +340,8 @@ cdef class Connection(object):
         b_path = path.encode('utf-8')
         b_interface = interface.encode('utf-8')
         b_property = property.encode('utf-8')
-        fn_unpack = lambda val: fn(self.do_unpack(val))
 
-        self.ev_handlers.append(fn_unpack)
+        self.ev_handlers.append(fn)
         cookie = rpc_connection_watch_property(
             self.connection,
             b_path,
@@ -362,7 +349,7 @@ cdef class Connection(object):
             b_property,
             RPC_PROPERTY_HANDLER(
                 <rpc_property_handler_f>Connection.c_prop_handler,
-                <void *>fn_unpack
+                <void *>fn
             )
         )
 
@@ -390,8 +377,7 @@ cdef class RemoteObject(object):
             ifaces = self.client.call_sync(
                 'get_interfaces',
                 path=self.path,
-                interface='com.twoporeguys.librpc.Introspectable',
-                unpack=True
+                interface='com.twoporeguys.librpc.Introspectable'
             )
 
             return {i: RemoteInterface(self.client, self.path, i) for i in ifaces}
@@ -401,8 +387,7 @@ cdef class RemoteObject(object):
             children = self.client.call_sync(
                 'get_instances',
                 path=self.path,
-                interface='com.twoporeguys.librpc.Discoverable',
-                unpack=True
+                interface='com.twoporeguys.librpc.Discoverable'
             )
 
             return {i['path']: RemoteObject(self.client, i['path']) for i in children}
@@ -458,8 +443,7 @@ cdef class RemoteInterface(object):
                 'get_methods',
                 self.interface,
                 path=self.path,
-                interface='com.twoporeguys.librpc.Introspectable',
-                unpack=True
+                interface='com.twoporeguys.librpc.Introspectable'
             ):
                 def fn(method, *args):
                     return self.client.call_sync(
@@ -484,13 +468,14 @@ cdef class RemoteInterface(object):
             raise RuntimeError('Cannot read methods of a remote object')
 
     def __collect_properties(self):
+        cdef RemoteProperty rprop
+
         try:
             for prop in self.client.call_sync(
                 'get_all',
                 self.interface,
                 path=self.path,
-                interface='com.twoporeguys.librpc.Observable',
-                unpack=True
+                interface='com.twoporeguys.librpc.Observable'
             ):
                 def getter(name=prop['name']):
                     return self.client.call_sync(
@@ -513,7 +498,7 @@ cdef class RemoteInterface(object):
 
                 rprop = RemoteProperty.__new__(RemoteProperty)
                 rprop.name = prop['name']
-                rprop.getter = functools.partial(getter, prop['name']),
+                rprop.getter = functools.partial(getter, prop['name'])
                 rprop.setter = functools.partial(setter, prop['name'])
                 self.properties[prop['name']] = rprop
         except:
@@ -524,8 +509,7 @@ cdef class RemoteInterface(object):
                 'get_events',
                 self.interface,
                 path=self.path,
-                interface='com.twoporeguys.librpc.Introspectable',
-                unpack=True
+                interface='com.twoporeguys.librpc.Introspectable'
             ):
                 self.client.register_event_handler()
 
@@ -535,8 +519,8 @@ cdef class RemoteInterface(object):
 
     def __setattr__(self, item, value):
         if item in self.properties:
-            _, setter = self.properties[item]
-            setter(value)
+            prop = self.properties[item]
+            prop.setter(value)
             return
 
         self.__dict__[item] = value

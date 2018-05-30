@@ -199,15 +199,11 @@ cdef class Service(object):
             if getattr(i, '__librpc_method__', None):
                 name = getattr(i, '__librpc_name__', name)
                 interface = getattr(i, '__librpc_interface__', getattr(self, '__librpc_interface__', None))
-                unpack = getattr(i, '__librpc_unpack__', getattr(self, '__librpc_unpack__', False))
                 description = getattr(self, '__librpc_description__', '')
                 fn = i
 
                 if not interface:
                     continue
-
-                if unpack:
-                    fn = lambda *args, fn=fn: fn(*(a.unpack() for a in args))
 
                 if interface not in self.interfaces:
                     self.instance.register_interface(interface)
@@ -221,7 +217,6 @@ cdef class Service(object):
                 name = getattr(i, '__librpc_name__', name)
                 setter = getattr(i, '__librpc_setter__', None)
                 interface = getattr(i, '__librpc_interface__', getattr(self, '__librpc_interface__', None))
-                unpack = getattr(i, '__librpc_unpack__', getattr(self, '__librpc_unpack__', False))
                 description = getattr(self, '__librpc_description__', '')
                 getter = i
 
@@ -231,11 +226,6 @@ cdef class Service(object):
                 # Setter is an unbound method reference, so we need to bind it to "self" first
                 if setter:
                     setter = setter.__get__(self, self.__class__)
-
-                if unpack:
-                    getter = lambda fn=getter: Object(fn())
-                    if setter:
-                        setter = lambda v, fn=setter: fn(v.unpack())
 
                 if interface not in self.interfaces:
                     self.instance.register_interface(interface)
