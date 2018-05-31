@@ -289,10 +289,12 @@
     <member refid="server_8h_1a46fd27cbcf75a54103df9d51d90a7fca" kind="typedef"><name>rpc_server_t</name></member>
     <member refid="server_8h_1a2d9a540637c63449db9ac5882cb5f7ab" kind="typedef"><name>rpc_server_event_handler_t</name></member>
     <member refid="server_8h_1a2d524c3d5822d34b46f1d8552bf7ede0" kind="function"><name>rpc_server_create</name></member>
+    <member refid="server_8h_1a6fc757c49776a73e093b37e7b073c9a6" kind="function"><name>rpc_server_create_ex</name></member>
     <member refid="server_8h_1a52667e1f1ad29521541c60aae34dcf02" kind="function"><name>rpc_server_resume</name></member>
     <member refid="server_8h_1a28eeff2b8ec73f31f1af9feff11cb698" kind="function"><name>rpc_server_broadcast_event</name></member>
     <member refid="server_8h_1ac6bfcd59fe8ec8386b1e3d312705e786" kind="function"><name>rpc_server_set_event_handler</name></member>
     <member refid="server_8h_1a1bf6070b1bb3b31d394f3862405eaf8c" kind="function"><name>rpc_server_close</name></member>
+    <member refid="server_8h_1a0b1af4b832054dc5277f43fbdd2755f3" kind="function"><name>rpc_server_sd_listen</name></member>
   </compound>
   <compound refid="service_8h" kind="file"><name>service.h</name>
     <member refid="service_8h_1ae056c0203329d7432e0361c2f389bdec" kind="define"><name>__unsafe_unretained</name></member>
