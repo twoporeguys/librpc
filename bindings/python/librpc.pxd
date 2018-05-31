@@ -260,7 +260,7 @@ cdef extern from "rpc/server.h" nogil:
 
     ctypedef rpc_server *rpc_server_t
 
-    rpc_server_t rpc_server_create(const char *uri, rpc_context_t context);
+    rpc_server_t rpc_server_create_ex(const char *uri, rpc_context_t context, rpc_object_t params);
     int rpc_server_resume(rpc_server_t server);
     int rpc_server_close(rpc_server_t server);
 

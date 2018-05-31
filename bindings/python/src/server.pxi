@@ -29,13 +29,17 @@ cdef class Server(object):
     cdef Context context
     cdef object uri
 
-    def __init__(self, uri, context):
+    def __init__(self, uri, context, params=None):
         if not uri:
             raise RuntimeError('URI cannot be empty')
 
         self.uri = uri.encode('utf-8')
         self.context = context
-        self.server = rpc_server_create(self.uri, self.context.context)
+        self.server = rpc_server_create_ex(
+            self.uri,
+            self.context.unwrap(),
+            Object(params).unwrap()
+        )
 
     def broadcast_event(self, name, args, path='/', interface=None):
         cdef Object rpc_args
