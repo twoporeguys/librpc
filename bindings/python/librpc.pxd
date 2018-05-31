@@ -261,8 +261,7 @@ cdef extern from "rpc/server.h" nogil:
     ctypedef rpc_server *rpc_server_t
 
     rpc_server_t rpc_server_create(const char *uri, rpc_context_t context);
-    int rpc_server_start(rpc_server_t server, bint background);
-    int rpc_server_stop(rpc_server_t server);
+    int rpc_server_resume(rpc_server_t server);
     int rpc_server_close(rpc_server_t server);
 
     void rpc_server_broadcast_event(rpc_server_t server, const char *path, const char *interface, const char *name, rpc_object_t args)
@@ -331,6 +330,10 @@ cdef extern from "rpc/typing.h" nogil:
     int rpct_read_file(const char *path)
     int rpct_load_types(const char *path)
     int rpct_load_types_dir(const char *path)
+    int rpct_download_idl(rpc_connection_t conn)
+
+    rpct_interface_t rpct_find_interface(const char *name)
+    rpct_if_member_t rpct_find_if_member(const char *interface, const char *member)
 
     bint rpct_types_apply(void *applier)
     bint rpct_members_apply(rpct_type_t type, void *applier)
@@ -390,7 +393,8 @@ cdef class Object(object):
     cdef object ref
 
     @staticmethod
-    cdef Object init_from_ptr(rpc_object_t ptr)
+    cdef Object wrap(rpc_object_t ptr)
+    cdef rpc_object_t unwrap(self)
 
 
 cdef class Context(object):
@@ -400,7 +404,8 @@ cdef class Context(object):
     cdef object instances
 
     @staticmethod
-    cdef Context init_from_ptr(rpc_context_t ptr)
+    cdef Context wrap(rpc_context_t ptr)
+    cdef rpc_context_t unwrap(self)
 
 
 cdef class Instance(object):
@@ -410,7 +415,8 @@ cdef class Instance(object):
     cdef public arg
 
     @staticmethod
-    cdef Instance init_from_ptr(rpc_instance_t ptr)
+    cdef Instance wrap(rpc_instance_t ptr)
+    cdef rpc_instance_t unwrap(self)
     @staticmethod
     cdef rpc_object_t c_property_getter(void *cookie) with gil
     @staticmethod
@@ -437,6 +443,7 @@ cdef class RemoteInterface(object):
     cdef readonly methods
     cdef readonly properties
     cdef readonly events
+    cdef readonly typed
     cdef dict __dict__
 
 
@@ -450,14 +457,35 @@ cdef class TypeInstance(object):
     cdef rpct_typei_t rpctypei
 
     @staticmethod
-    cdef TypeInstance init_from_ptr(rpct_typei_t typei)
+    cdef TypeInstance wrap(rpct_typei_t typei)
+    cdef rpct_typei_t unwrap(self)
+
+
+cdef class Interface(object):
+    cdef rpct_interface_t c_iface
+
+    @staticmethod
+    cdef Interface wrap(rpct_interface_t ptr)
+    cdef rpct_interface_t unwrap(self)
+    @staticmethod
+    cdef bint c_iter(void *arg, rpct_if_member_t val)
+
+
+cdef class InterfaceMember(object):
+    cdef rpct_if_member_t c_member
+
+    @staticmethod
+    cdef wrap(rpct_if_member_t ptr)
+    cdef rpct_if_member_t unwrap(self)
+
 
 cdef class Call(object):
     cdef readonly Connection connection
     cdef rpc_call_t call
 
     @staticmethod
-    cdef Call init_from_ptr(rpc_call_t ptr)
+    cdef Call wrap(rpc_call_t ptr)
+    cdef rpc_call_t unwrap(self)
 
 
 cdef class Connection(object):
@@ -469,7 +497,8 @@ cdef class Connection(object):
     cdef bint borrowed
 
     @staticmethod
-    cdef Connection init_from_ptr(rpc_connection_t ptr)
+    cdef Connection wrap(rpc_connection_t ptr)
+    cdef rpc_connection_t unwrap(self)
     @staticmethod
     cdef void c_ev_handler(void *arg, const char *path, const char *inteface, const char *name, rpc_object_t args) with gil
     @staticmethod

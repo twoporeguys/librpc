@@ -561,7 +561,7 @@ inline const char *
 rpc_get_type_name(rpc_type_t type)
 {
 
-	if (type > RPC_TYPE_ERROR)
+	if (type > sizeof(rpc_types) / sizeof(rpc_types[0]))
 		return (NULL);
 
 	return (rpc_types[type]);

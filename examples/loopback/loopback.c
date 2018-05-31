@@ -61,6 +61,8 @@ main(int argc, const char *argv[])
 		return (1);
 	}
 
+	rpc_server_resume(server);
+
 	conn = rpc_client_get_connection(client);
 	result = rpc_connection_call_simple(conn, "hello", "[s]", "world");
 	printf("result = %s\n", rpc_string_get_string_ptr(result));
