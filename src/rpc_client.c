@@ -62,9 +62,14 @@ rpc_client_create(const char *uri, rpc_object_t params)
 		return (NULL);
 	}
 
-	client->rci_connection->rco_mainloop = client->rci_g_context;
-	client->rci_connection->rco_client = client;
 	return (client);
+}
+
+GMainContext *
+rpc_client_get_main_context(rpc_client_t client)
+{
+
+	return (client->rci_g_context);
 }
 
 rpc_connection_t

@@ -122,7 +122,7 @@ ws_connect(struct rpc_connection *rco, const char *uri_string,
 	conn->wc_uri = soup_uri_new(uri_string);
 	conn->wc_parent = rco;
 
-	g_main_context_invoke(rco->rco_mainloop, ws_do_connect, conn);
+	g_main_context_invoke(rco->rco_main_context, ws_do_connect, conn);
 	g_mutex_lock(&conn->wc_mtx);
 	while (conn->wc_connect_err == NULL && conn->wc_ws == NULL)
 		g_cond_wait(&conn->wc_cv, &conn->wc_mtx);
