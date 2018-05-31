@@ -358,7 +358,7 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	conn->uc_event_source = g_timeout_source_new(500);
 	g_source_set_callback(conn->uc_event_source, usb_event_impl, conn,
 	    NULL);
-	g_source_attach(conn->uc_event_source, rco->rco_mainloop);
+	g_source_attach(conn->uc_event_source, rco->rco_main_context);
 
 	conn->uc_logsize = ident.log_size;
 	conn->uc_rco = rco;
@@ -390,7 +390,7 @@ usb_send_msg(void *arg, void *buf, size_t len, const int *fds __unused,
 	send->uss_buf = g_memdup(buf, (guint)len);
 	send->uss_len = len;
 	send->uss_conn = conn;
-	g_main_context_invoke(conn->uc_rco->rco_mainloop, usb_send_msg_impl,
+	g_main_context_invoke(conn->uc_rco->rco_main_context, usb_send_msg_impl,
 	    send);
 	return (0);
 }

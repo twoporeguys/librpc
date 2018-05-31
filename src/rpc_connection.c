@@ -1008,6 +1008,7 @@ rpc_connection_alloc(rpc_server_t server)
 	conn->rco_uri = server->rs_uri;
 	conn->rco_flags = server->rs_flags;
 	conn->rco_server = server;
+	conn->rco_main_context = server->rs_g_context;
 	conn->rco_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_inbound_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_subscriptions = g_ptr_array_new();
@@ -1044,6 +1045,7 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	}
 
 	conn = g_malloc0(sizeof(*conn));
+	conn->rco_client = client;
 	g_mutex_init(&conn->rco_mtx);
 	g_mutex_init(&conn->rco_ref_mtx);
 	g_mutex_init(&conn->rco_send_mtx);
@@ -1051,7 +1053,7 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	conn->rco_flags = transport->flags;
 	conn->rco_params = params;
 	conn->rco_uri = client->rci_uri;
-	conn->rco_mainloop = client->rci_g_context;
+	conn->rco_main_context = rpc_client_get_main_context(client);
 	conn->rco_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_inbound_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_subscriptions = g_ptr_array_new();
@@ -1497,7 +1499,7 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	call->rc_status = RPC_CALL_IN_PROGRESS;
 	call->rc_timeout = g_timeout_source_new_seconds(conn->rco_rpc_timeout);
 	g_source_set_callback(call->rc_timeout, &rpc_call_timeout, call, NULL);
-	g_source_attach(call->rc_timeout, conn->rco_client->rci_g_context);
+	g_source_attach(call->rc_timeout, conn->rco_main_context);
 	g_mutex_unlock(&call->rc_mtx);
 	g_mutex_unlock(&conn->rco_mtx);
 

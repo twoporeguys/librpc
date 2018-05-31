@@ -38,7 +38,8 @@
 #include "../linker_set.h"
 #include "../internal.h"
 
-//static void *socket_parse_uri(const char *);
+#define SC_ABORT_TIMEOUT 70
+
 static GSocketAddress *socket_parse_uri(const char *);
 static int socket_connect(struct rpc_connection *, const char *, rpc_object_t);
 static int socket_listen(struct rpc_server *, const char *, rpc_object_t);
@@ -48,6 +49,7 @@ static int socket_abort(void *);
 static int socket_get_fd(void *);
 static void socket_release(void *);
 static void *socket_reader(void *);
+static gboolean socket_abort_timeout(gpointer user_data);
 
 static const struct rpc_transport socket_transport = {
 	.name = "socket",
@@ -77,6 +79,8 @@ struct socket_connection
 	struct rpc_connection *		sc_parent;
 	GMutex 				sc_abort_mtx;
 	bool				sc_aborted;
+	GCancellable *			sc_cancellable;
+	GSource *			sc_abort_timeout;
 };
 
 static GSocketAddress *
@@ -159,6 +163,7 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 		    g_io_stream_get_input_stream(G_IO_STREAM(gconn));
 		conn->sc_ostream =
 		    g_io_stream_get_output_stream(G_IO_STREAM(gconn));
+		conn->sc_cancellable = g_cancellable_new ();
 		conn->sc_reader_thread = g_thread_new("socket reader thread",
 		    socket_reader, (gpointer)conn);
 	} else {
@@ -213,6 +218,7 @@ socket_connect(struct rpc_connection *rco, const char *uri,
 	    G_IO_STREAM(conn->sc_conn));
 	rco->rco_send_msg = socket_send_msg;
 	rco->rco_get_fd = socket_get_fd;
+	conn->sc_cancellable = g_cancellable_new ();
 	conn->sc_reader_thread = g_thread_new("socket reader thread",
 	    socket_reader, (gpointer)conn);
 
@@ -363,7 +369,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	iov.size = sizeof(header);
 
 	g_socket_receive_message(sock, NULL, &iov, 1, &cmsg, &ncmsg, &flags,
-	    NULL, &err);
+	    conn->sc_cancellable, &err);
 	if (err != NULL) {
 		conn->sc_parent->rco_error =
 			rpc_error_create_from_gerror(err);
@@ -408,6 +414,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 		return (-1);
 	}
 
+	g_cancellable_reset (conn->sc_cancellable);
 	return (0);
 }
 
@@ -421,15 +428,42 @@ socket_abort(void *arg)
 	if (!conn->sc_aborted) {
 		conn->sc_aborted = true;
 		g_mutex_unlock(&conn->sc_abort_mtx);
+		if (g_socket_is_closed(sock))
+			fprintf(stderr, "socket is closed in abort for %p\n",
+			    conn->sc_parent);
 		g_socket_shutdown(sock, true, true, NULL);
 		g_socket_close(sock, NULL);
 
 		if (conn->sc_reader_thread) {
+			conn->sc_abort_timeout = 
+			    g_timeout_source_new_seconds(SC_ABORT_TIMEOUT);
+			g_source_set_callback(conn->sc_abort_timeout, 
+			    &socket_abort_timeout, conn, NULL);
+			g_source_attach(conn->sc_abort_timeout, 
+			    conn->sc_parent->rco_main_context);
 			g_thread_join(conn->sc_reader_thread);
+			if (!g_source_is_destroyed(conn->sc_abort_timeout))
+				g_source_destroy(conn->sc_abort_timeout);
 		}
 	} else
 		g_mutex_unlock(&conn->sc_abort_mtx);
 	return (0);
+}
+
+static gboolean
+socket_abort_timeout(gpointer user_data)
+{
+	struct socket_connection *conn = user_data;
+
+	if (g_source_is_destroyed(g_main_current_source()))
+		return (false);
+
+	g_assert(g_main_current_source() == conn->sc_abort_timeout);
+	g_source_destroy(conn->sc_abort_timeout);
+	fprintf(stderr, "Cancelling - haserr = %d\n", 
+		conn->sc_parent->rco_error != NULL);
+	g_cancellable_cancel (conn->sc_cancellable);
+	return (false);
 }
 
 static int
@@ -452,6 +486,8 @@ socket_release(void *arg)
 		g_object_unref(conn->sc_client);
 	if (conn->sc_uri)
 		g_free(conn->sc_uri);
+	if (conn->sc_abort_timeout)
+		g_source_unref(conn->sc_abort_timeout);
 	g_free(conn);
 }
 
