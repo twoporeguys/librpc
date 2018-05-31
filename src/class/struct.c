@@ -143,6 +143,9 @@ struct_deserialize(rpc_object_t obj)
 
 	/* Serialize every member */
 	rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t value) {
+		if (g_strcmp0(key, RPCT_TYPE_FIELD) == 0)
+			return ((bool)true);
+
 		rpc_dictionary_steal_value(result, key, rpct_deserialize(value));
 		return ((bool)true);
 	});
