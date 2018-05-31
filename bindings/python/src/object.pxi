@@ -715,6 +715,42 @@ class uint(int):
 
         super().__init__()
 
+    def __iadd__(self, other):
+        return uint(self + other)
+
+    def __isub__(self, other):
+        return uint(self - other)
+
+    def __imul__(self, other):
+        return uint(self * other)
+
+    def __itruediv__(self, other):
+        return uint(self // other)
+
+    def __ifloordiv__(self, other):
+        return uint(self // other)
+
+    def __imod__(self, other):
+        return uint(self % other)
+
+    def __iand__(self, other):
+        return uint(self & other)
+
+    def __ior__(self, other):
+        return uint(self | other)
+
+    def __ixor__(self, other):
+        return uint(self ^ other)
+
+    def __ilshift__(self, other):
+        return uint(self << other)
+
+    def __irshift__(self, other):
+        return uint(self >> other)
+
+    def __ipow__(self, other):
+        return uint(self ** other)
+
     def __repr__(self):
         return 'librpc.uint({0})'.format(self)
 
