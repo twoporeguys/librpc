@@ -102,6 +102,10 @@ Typedefs</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a2d524c3d5822d34b46f1d8552bf7ede0"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a2d524c3d5822d34b46f1d8552bf7ede0">rpc_server_create</a> (const char *_Nonnull uri, _Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context)</td></tr>
 <tr class="separator:a2d524c3d5822d34b46f1d8552bf7ede0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74af7bf809de8e773b35038107db1221"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a74af7bf809de8e773b35038107db1221">rpc_server_find</a> (const char *_Nonnull uri, _Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a> context)</td></tr>
+<tr class="separator:a74af7bf809de8e773b35038107db1221"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7692f4863bf4db19759d95c132e03e61"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a7692f4863bf4db19759d95c132e03e61">rpc_server_pause</a> (_Nonnull <a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a> server)</td></tr>
+<tr class="separator:a7692f4863bf4db19759d95c132e03e61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52667e1f1ad29521541c60aae34dcf02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a52667e1f1ad29521541c60aae34dcf02">rpc_server_resume</a> (_Nonnull <a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a> server)</td></tr>
 <tr class="separator:a52667e1f1ad29521541c60aae34dcf02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28eeff2b8ec73f31f1af9feff11cb698"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="server_8h.html#a28eeff2b8ec73f31f1af9feff11cb698">rpc_server_broadcast_event</a> (_Nonnull <a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a> server, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name, _Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> args)</td></tr>
@@ -300,6 +304,69 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Server handle </dd></dl>
+
+</div>
+</div>
+<a id="a74af7bf809de8e773b35038107db1221"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74af7bf809de8e773b35038107db1221">&#9670;&nbsp;</a></span>rpc_server_find()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">_Nullable <a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a> rpc_server_find </td>
+          <td>(</td>
+          <td class="paramtype">const char *_Nonnull&#160;</td>
+          <td class="paramname"><em>uri</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">_Nonnull <a class="el" href="service_8h.html#a55087f28cb63ff45b6c798a5dabaedd7">rpc_context_t</a>&#160;</td>
+          <td class="paramname"><em>context</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Finds a server instance if it exists for a context.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uri</td><td>Server URI to check </td></tr>
+    <tr><td class="paramname">context</td><td>RPC context for a server instance </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Server handle or NULL </dd></dl>
+
+</div>
+</div>
+<a id="a7692f4863bf4db19759d95c132e03e61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7692f4863bf4db19759d95c132e03e61">&#9670;&nbsp;</a></span>rpc_server_pause()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rpc_server_pause </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca">rpc_server_t</a>&#160;</td>
+          <td class="paramname"><em>server</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Stops accepting requests for the server.</p>
+<p>Server instance keeps all the incoming requests queued and on hold until <a class="el" href="server_8h.html#a52667e1f1ad29521541c60aae34dcf02">rpc_server_resume</a> is called.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">server</td><td>Server handle </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
