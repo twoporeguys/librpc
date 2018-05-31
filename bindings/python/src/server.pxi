@@ -41,6 +41,14 @@ cdef class Server(object):
             Object(params).unwrap()
         )
 
+    @staticmethod
+    cdef wrap(rpc_server_t c_server):
+        cdef Server result
+
+        result = Server.__new__(Server)
+        result.server = c_server
+        return result
+
     def broadcast_event(self, name, args, path='/', interface=None):
         cdef Object rpc_args
         cdef const char *c_name
@@ -70,3 +78,24 @@ cdef class Server(object):
 
     def close(self):
         rpc_server_close(self.server)
+
+    @staticmethod
+    def systemd_listen(Context context):
+        cdef Server server
+        cdef int nservers
+        cdef rpc_server_t *servers
+        cdef rpc_context_t c_context = context.unwrap()
+
+        with nogil:
+            nservers = rpc_server_sd_listen(c_context, &servers)
+
+        if nservers < 0:
+            raise_internal_exc()
+
+        result = []
+        for i in range(nservers):
+            server = Server.wrap(servers[i])
+            server.context = context
+            result.append(server)
+
+        return result

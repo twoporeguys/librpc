@@ -174,7 +174,7 @@ rpc_server_close(rpc_server_t server)
 
 #ifdef SYSTEMD_SUPPORT
 int
-rpc_server_sd_listen(rpc_context_t context, rpc_server_t *servers)
+rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers)
 {
 	rpc_server_t server;
 	rpc_object_t params;
@@ -200,7 +200,7 @@ rpc_server_sd_listen(rpc_context_t context, rpc_server_t *servers)
 		if (server == NULL)
 			continue;
 
-		servers[n++] = server;
+		(*servers)[n++] = server;
 	}
 
 	return (nfds);
