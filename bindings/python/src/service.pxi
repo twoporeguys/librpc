@@ -258,6 +258,7 @@ def prop(arg):
     def wrapped(fn):
         def setter(sfn):
             fn.__librpc_setter__ = sfn
+            return fn
 
         fn.setter = setter
         fn.__libpc_name__ = arg
