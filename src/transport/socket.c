@@ -50,7 +50,7 @@ static void *socket_reader(void *);
 
 static const struct rpc_transport socket_transport = {
 	.name = "socket",
-	.schemas = {"unix", "tcp", NULL},
+	.schemas = {"unix", "tcp", "socket", NULL},
 	.connect = socket_connect,
 	.listen = socket_listen
 };
@@ -80,6 +80,12 @@ socket_parse_uri(const char *uri_string)
 	SoupURI *uri;
 
 	uri = soup_uri_new(uri_string);
+
+	if (!g_strcmp0(uri->scheme, "socket")) {
+		rpc_set_last_errorf(EINVAL,
+		    "socket:// may be used only with file descriptors");
+		goto done;
+	}
 
 	if (!g_strcmp0(uri->scheme, "tcp")) {
 		addr = g_inet_socket_address_new_from_string(uri->host,
@@ -185,17 +191,25 @@ socket_connect(struct rpc_connection *rco, const char *uri,
 
 int
 socket_listen(struct rpc_server *srv, const char *uri,
-    rpc_object_t args __unused)
+    rpc_object_t args)
 {
 	GError *err = NULL;
 	GFile *file;
-	GSocketAddress *addr;
+	GSocketAddress *addr = NULL;
+	GSocket *sock = NULL;
 	struct socket_server *server;
 
-	addr = socket_parse_uri(uri);
-	if (addr == NULL) {
-		g_object_unref(addr);
-		return (-1);
+	if (args != NULL && rpc_get_type(args) == RPC_TYPE_FD) {
+		sock = g_socket_new_from_fd(rpc_fd_get_value(args), &err);
+		if (sock == NULL) {
+			rpc_set_last_gerror(err);
+			g_error_free(err);
+			return (-1);
+		}
+	} else {
+		addr = socket_parse_uri(uri);
+		if (addr == NULL)
+			return (-1);
 	}
 
 	server = g_malloc0(sizeof(*server));
@@ -206,31 +220,38 @@ socket_listen(struct rpc_server *srv, const char *uri,
 	srv->rs_teardown = socket_teardown;
 	srv->rs_arg = server;
 
-#ifndef _WIN32
 	/*
 	 * If using Unix domain sockets, make sure there's no stale socket
 	 * file on the filesystem.
 	 */
-	if (g_socket_address_get_family(addr) == G_SOCKET_FAMILY_UNIX) {
-		file = g_file_new_for_path(g_unix_socket_address_get_path(
-		    G_UNIX_SOCKET_ADDRESS(addr)));
+	if (addr != NULL) {
+		if (g_socket_address_get_family(addr) == G_SOCKET_FAMILY_UNIX) {
+			file = g_file_new_for_path(g_unix_socket_address_get_path(
+			    G_UNIX_SOCKET_ADDRESS(addr)));
 
-		if (g_file_query_exists(file, NULL)) {
-			g_file_delete(file, NULL, &err);
-			if (err != NULL) {
-				rpc_set_last_gerror(err);
-				g_object_unref(addr);
-				g_error_free(err);
-				g_free(server->ss_uri);
-				g_free(server);
-				return (-1);
+			if (g_file_query_exists(file, NULL)) {
+				g_file_delete(file, NULL, &err);
+				if (err != NULL) {
+					rpc_set_last_gerror(err);
+					g_object_unref(addr);
+					g_error_free(err);
+					g_free(server->ss_uri);
+					g_free(server);
+					return (-1);
+				}
 			}
 		}
-	}
-#endif
 
-	g_socket_listener_add_address(server->ss_listener, addr,
-	    G_SOCKET_TYPE_STREAM, G_SOCKET_PROTOCOL_DEFAULT, NULL, NULL, &err);
+		g_socket_listener_add_address(server->ss_listener, addr,
+		    G_SOCKET_TYPE_STREAM, G_SOCKET_PROTOCOL_DEFAULT, NULL,
+		    NULL, &err);
+	}
+
+	if (sock != NULL) {
+		g_socket_listener_add_socket(server->ss_listener, sock, NULL,
+		    &err);
+	}
+
 	if (err != NULL) {
 		rpc_set_last_gerror(err);
 		g_object_unref(addr);

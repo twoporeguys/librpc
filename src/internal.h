@@ -275,6 +275,7 @@ struct rpc_server
     	int 			rs_flags;
     	bool			rs_operational;
 	bool			rs_paused;
+	rpc_object_t 		rs_params;
 
     	/* Callbacks */
     	rpc_accept_fn_t		rs_accept;

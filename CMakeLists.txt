@@ -26,6 +26,7 @@ option(ENABLE_LIBDISPATCH "Enable libdispatch support")
 option(ENABLE_COVERAGE "Enable code coverage")
 
 if(LINUX)
+    option(ENABLE_SYSTEMD "Enable systemd support" ON)
     option(BUILD_BUS "Build and install bus transport" ON)
     option(BUILD_KMOD "Build and install kmod" ON)
 endif()
@@ -73,6 +74,10 @@ endif()
 
 if(BUILD_BUS AND LINUX)
     pkg_check_modules(UDEV REQUIRED libudev)
+endif()
+
+if(ENABLE_SYSTEMD)
+    pkg_check_modules(SYSTEMD REQUIRED systemd)
 endif()
 
 if(BUNDLED_BLOCKS_RUNTIME)
@@ -157,6 +162,12 @@ if(BUILD_LIBUSB)
     link_directories(${LIBUSB_LIBRARY_DIRS})
 endif()
 
+if(ENABLE_SYSTEMD)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSYSTEMD_SUPPORT")
+    include_directories(${SYSTEMD_INCLUDE_DIRS})
+    link_directories(${SYSTEMD_LIBRARY_DIRS})
+endif()
+
 set(HEADERS
         include/rpc/object.h
         include/rpc/connection.h
@@ -233,13 +244,13 @@ if(BUILD_XPC)
     set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/xpc.c)
 endif()
 
-	add_library(librpc SHARED
-			${HEADERS}
-			${TRANSPORT_FILES}
-			${SERIALIZER_FILES}
-			${TYPE_CLASS_FILES}
-			${VALIDATOR_FILES}
-			${CORE_FILES})
+add_library(librpc SHARED
+        ${HEADERS}
+        ${TRANSPORT_FILES}
+        ${SERIALIZER_FILES}
+        ${TYPE_CLASS_FILES}
+        ${VALIDATOR_FILES}
+        ${CORE_FILES})
 
 set_target_properties(librpc PROPERTIES PREFIX "")
 set_target_properties(librpc PROPERTIES SOVERSION 1)
@@ -264,6 +275,10 @@ endif()
 
 if(ENABLE_LIBDISPATCH AND NOT APPLE)
 	target_link_libraries(librpc dispatch)
+endif()
+
+if(ENABLE_SYSTEMD)
+    target_link_libraries(librpc systemd)
 endif()
 
 configure_file(librpc.pc.in ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc @ONLY)
