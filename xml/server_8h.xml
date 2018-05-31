@@ -332,17 +332,17 @@
         </inbodydescription>
         <location file="/code/include/rpc/server.h" line="124" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="server_8h_1a0b1af4b832054dc5277f43fbdd2755f3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="server_8h_1a6f388ced21aab96344f4bb3a13b0ef8d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
         <definition>int rpc_server_sd_listen</definition>
-        <argsstring>(_Nonnull rpc_context_t context, _Nonnull rpc_server_t *_Nonnull servers)</argsstring>
+        <argsstring>(_Nonnull rpc_context_t context, _Nonnull rpc_server_t *_Nonnull *_Nonnull servers)</argsstring>
         <name>rpc_server_sd_listen</name>
         <param>
           <type>_Nonnull <ref refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kindref="member">rpc_context_t</ref></type>
           <declname>context</declname>
         </param>
         <param>
-          <type>_Nonnull <ref refid="server_8h_1a46fd27cbcf75a54103df9d51d90a7fca" kindref="member">rpc_server_t</ref> *_Nonnull</type>
+          <type>_Nonnull <ref refid="server_8h_1a46fd27cbcf75a54103df9d51d90a7fca" kindref="member">rpc_server_t</ref> *_Nonnull *_Nonnull</type>
           <declname>servers</declname>
         </param>
         <briefdescription>
@@ -434,8 +434,8 @@
 <codeline lineno="117"><highlight class="normal"></highlight></codeline>
 <codeline lineno="124"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="server_8h_1a1bf6070b1bb3b31d394f3862405eaf8c" kindref="member">rpc_server_close</ref>(_Nonnull<sp/>rpc_server_t<sp/>server);</highlight></codeline>
 <codeline lineno="125"><highlight class="normal"></highlight></codeline>
-<codeline lineno="133"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="server_8h_1a0b1af4b832054dc5277f43fbdd2755f3" kindref="member">rpc_server_sd_listen</ref>(_Nonnull<sp/><ref refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kindref="member">rpc_context_t</ref><sp/>context,</highlight></codeline>
-<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/>rpc_server_t<sp/>*<sp/>_Nonnull<sp/>servers);</highlight></codeline>
+<codeline lineno="133"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="server_8h_1a6f388ced21aab96344f4bb3a13b0ef8d" kindref="member">rpc_server_sd_listen</ref>(_Nonnull<sp/><ref refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kindref="member">rpc_context_t</ref><sp/>context,</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/>rpc_server_t<sp/>*_Nonnull<sp/>*_Nonnull<sp/>servers);</highlight></codeline>
 <codeline lineno="135"><highlight class="normal"></highlight></codeline>
 <codeline lineno="136"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="137"><highlight class="normal">}</highlight></codeline>
