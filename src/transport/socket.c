@@ -245,6 +245,8 @@ socket_listen(struct rpc_server *srv, const char *uri,
 		g_socket_listener_add_address(server->ss_listener, addr,
 		    G_SOCKET_TYPE_STREAM, G_SOCKET_PROTOCOL_DEFAULT, NULL,
 		    NULL, &err);
+
+		g_object_unref(addr);
 	}
 
 	if (sock != NULL) {
@@ -254,7 +256,6 @@ socket_listen(struct rpc_server *srv, const char *uri,
 
 	if (err != NULL) {
 		rpc_set_last_gerror(err);
-		g_object_unref(addr);
 		g_error_free(err);
 		g_free(server->ss_uri);
 		g_free(server);
@@ -265,7 +266,6 @@ socket_listen(struct rpc_server *srv, const char *uri,
 	g_socket_listener_accept_async(server->ss_listener,
 	    NULL, &socket_accept, server);
 
-	g_object_unref(addr);
 	return (0);
 }
 
