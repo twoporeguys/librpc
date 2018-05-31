@@ -17,6 +17,7 @@ option(BUILD_JSON "Build and install JSON serializer" ON)
 option(BUILD_LIBUSB "Build and install libusb transport")
 option(BUILD_XPC "Build and install XPC transport")
 option(BUILD_RPCTOOL "Build and install rpctool" ON)
+option(BUILD_RPCD "Build and install rpcd" ON)
 option(BUILD_RPCDOC "Build and install rpcdoc" ON)
 option(ENABLE_UBSAN "Enable undefined behavior sanitizer")
 option(ENABLE_UBSAN_NULLABILITY "Enable nullability sanitizer")
@@ -327,6 +328,10 @@ endif()
 
 if(BUILD_RPCTOOL)
     add_subdirectory(tools/rpctool)
+endif()
+
+if(BUILD_RPCD)
+    add_subdirectory(tools/rpcd)
 endif()
 
 if(BUILD_RPCDOC)

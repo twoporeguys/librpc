@@ -112,6 +112,17 @@ void rpc_server_set_event_handler(_Nullable rpc_server_event_handler_t handler);
  */
 int rpc_server_close(_Nonnull rpc_server_t server);
 
+#if defined(__linux__)
+/**
+ * Sets up some number of servers using systemd socket activation
+ * information.
+ *
+ * @param servers
+ * @return Number of servers created or -1 on error
+ */
+int rpc_server_sd_listen(_Nonnull rpc_server_t *servers);
+#endif
+
 #ifdef __cplusplus
 }
 #endif

@@ -29,6 +29,9 @@
 #include <glib.h>
 #include <rpc/object.h>
 #include <rpc/server.h>
+#if defined(__linux__)
+#include <systemd/sd-daemon.h>
+#endif
 #include "internal.h"
 
 static int rpc_server_accept(rpc_server_t, rpc_connection_t);
@@ -161,3 +164,18 @@ rpc_server_close(rpc_server_t server)
 
 	return (server->rs_teardown(server));
 }
+
+#if defined(__linux__)
+int
+rpc_server_sd_listen(_Nonnull rpc_server_t *servers)
+{
+	int nfds;
+	int i;
+
+	nfds = sd_listen_fds(1);
+
+	for (i = SD_LISTEN_FDS_START; i < nfds + SD_LISTEN_FDS_START; i++) {
+
+	}
+}
+#endif
