@@ -262,8 +262,11 @@ cdef class Object(object):
         if isinstance(self, (BaseStruct, BaseUnion, BaseEnum)):
             return self
 
-        if self.type in (ObjectType.FD, ObjectType.UINT64):
-            return self
+        if self.type == ObjectType.FD:
+            return fd(self.value)
+
+        if self.type == ObjectType.UINT64:
+            return uint(self.value)
 
         return self.value
 
@@ -518,6 +521,9 @@ cdef class Array(Object):
     def __bool__(self):
         return len(self) > 0
 
+    def __repr__(self):
+        return 'librpc.Array([' + ', '.join(repr(i) for i in self) + '])'
+
 
 cdef class Dictionary(Object):
     def __init__(self, mapping=None, typei=None, **kwargs):
@@ -648,8 +654,7 @@ cdef class Dictionary(Object):
         return equal
 
     def __delitem__(self, key):
-        bytes_key = key.encode('utf-8')
-        rpc_dictionary_remove_key(self.obj, bytes_key)
+        rpc_dictionary_remove_key(self.obj, key.encode('utf-8'))
 
     def __iter__(self):
         keys = self.keys()
@@ -681,6 +686,9 @@ cdef class Dictionary(Object):
 
     def __bool__(self):
         return len(self) > 0
+
+    def __repr__(self):
+        return 'librpc.Dictionary({' + ', '.join("'{0}': {1}".format(k, repr(v)) for k, v in self.items()) + '})'
 
 
 cdef raise_internal_exc(rpc=False):
