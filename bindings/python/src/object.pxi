@@ -24,6 +24,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+import collections
 cimport cpython.object
 
 
@@ -91,57 +92,60 @@ cdef class Object(object):
     """
     A boxed librpc object.
     """
-    def __init__(self, value, force_type=None, typei=None):
+    def __init__(self, value, typei=None):
         """
         Create a new boxed object.
 
         :param value: Value to box
-        :param force_type: Force a non-default type (eg. unsigned int)
         :param typei: Type instance to annotate the object
         """
 
-        if value is None or force_type == ObjectType.NIL:
+        if value is None:
             self.obj = rpc_null_create()
 
-        elif isinstance(value, bool) or force_type == ObjectType.BOOL:
+        elif isinstance(value, bool):
             self.obj = rpc_bool_create(value)
 
-        elif isinstance(value, int) and force_type == ObjectType.UINT64:
-            self.obj = rpc_uint64_create(value)
-
-        elif isinstance(value, int) and force_type == ObjectType.FD:
+        elif isinstance(value, fd):
             self.obj = rpc_fd_create(value)
 
-        elif isinstance(value, int) or force_type == ObjectType.INT64:
+        elif isinstance(value, uint):
+            self.obj = rpc_uint64_create(value)
+
+        elif isinstance(value, int):
             self.obj = rpc_int64_create(value)
 
-        elif isinstance(value, str) or force_type == ObjectType.STRING:
+        elif isinstance(value, str):
             bstr = value.encode('utf-8')
             self.obj = rpc_string_create(bstr)
 
-        elif isinstance(value, float) or force_type == ObjectType.DOUBLE:
+        elif isinstance(value, float):
             self.obj = rpc_double_create(value)
 
-        elif isinstance(value, datetime.datetime) or force_type == ObjectType.DATE:
+        elif isinstance(value, datetime.datetime):
             self.obj = rpc_date_create(int(value.timestamp()))
 
-        elif isinstance(value, (bytearray, bytes)) or force_type == ObjectType.BINARY:
+        elif isinstance(value, (bytearray, bytes)):
             Py_INCREF(value)
-            self.obj = rpc_data_create(<char *>value, <size_t>len(value), RPC_BINARY_DESTRUCTOR_ARG(destruct_bytes, <void *>value))
+            self.obj = rpc_data_create(
+                <char *>value,
+                <size_t>len(value),
+                RPC_BINARY_DESTRUCTOR_ARG(destruct_bytes, <void *>value)
+            )
 
         elif isinstance(value, (RpcException, LibException)):
             extra = Object(value.extra)
             stack = Object(value.stacktrace)
             self.obj = rpc_error_create_with_stack(value.code, value.message.encode('utf-8'), extra.obj, stack.obj)
 
-        elif isinstance(value, (list, tuple)) or force_type == ObjectType.ARRAY:
+        elif isinstance(value, (list, tuple)):
             self.obj = rpc_array_create()
 
             for v in value:
                 child = Object(v)
                 rpc_array_append_value(self.obj, child.obj)
 
-        elif isinstance(value, dict) or force_type == ObjectType.DICTIONARY:
+        elif isinstance(value, dict):
             self.obj = rpc_dictionary_create()
 
             for k, v in value.items():
@@ -344,15 +348,14 @@ cdef class Object(object):
 
 
 cdef class Array(Object):
-    def __init__(self, value, force_type=None, typei=None):
-        if isinstance(value, Array):
-            super(Array, self).__init__(value)
-            return
+    def __init__(self, iterable=None, typei=None):
+        if iterable is None:
+            iterable = []
 
-        if not isinstance(value, list):
-            raise TypeError('Cannot initialize array from {0} type'.format(type(value)))
+        if not isinstance(iterable, collections.Iterable):
+            raise TypeError("'{0}' object is not iterable".format(type(iterable)))
 
-        super(Array, self).__init__(value, force_type, typei)
+        super(Array, self).__init__(iterable, typei=typei)
 
     @staticmethod
     cdef bint c_applier(void *arg, size_t index, rpc_object_t value) with gil:
@@ -517,18 +520,15 @@ cdef class Array(Object):
 
 
 cdef class Dictionary(Object):
-    def __init__(self, value, force_type=None, typei=None):
-        if isinstance(value, Dictionary):
-            super(Dictionary, self).__init__(value)
-            return
+    def __init__(self, mapping=None, typei=None, **kwargs):
+        if mapping is None:
+            mapping = {}
 
-        if not isinstance(value, dict):
-            raise LibException(
-                errno.EINVAL,
-                "Cannot initialize Dictionary RPC object from {0} type".format(type(value))
-            )
+        if not isinstance(mapping, collections.Iterable):
+            raise TypeError("'{0}' object is not iterable".format(type(mapping)))
 
-        super(Dictionary, self).__init__(value, force_type, typei)
+        mapping.update(kwargs)
+        super(Dictionary, self).__init__(mapping, typei=typei)
 
     @staticmethod
     cdef bint c_applier(void *arg, char *key, rpc_object_t value) with gil:
@@ -603,22 +603,17 @@ cdef class Dictionary(Object):
             self.__setitem__(k, d)
             return d
 
-    def update(self, value):
-        cdef Dictionary py_dict
-        cdef Object py_value
-        equal = False
+    def update(self, iterable=None, **kwargs):
+        value = kwargs
 
-        if isinstance(value, Dictionary):
-            py_dict = value
-        elif isinstance(value, dict):
-            py_dict = Dictionary(value)
-        else:
-            raise LibException(errno.EINVAL, "Dictionary can be updated only with dict or other Dictionary object")
+        if iterable:
+            if not isinstance(iterable, collections.Iterable):
+                raise TypeError("'{0}' is not iterable".format(type(iterable)))
 
-        for k, v in py_dict.items():
-            py_value = v
-            byte_key = k.encode('utf-8')
-            rpc_dictionary_set_value(self.obj, byte_key, py_value.obj)
+            kwargs.update(iterable)
+
+        for k, v in value.items():
+            rpc_dictionary_set_value(self.obj, k.encode('utf-8'), Object(v).unwrap())
 
     def values(self):
         result = []
@@ -708,9 +703,29 @@ cdef void destruct_bytes(void *arg, void *buffer) with gil:
     Py_DECREF(value)
 
 
-def uint(value):
-    return Object(value, force_type=ObjectType.UINT64)
+class uint(int):
+    def __init__(self, x=0, base=None):
+        if base:
+            v = int(x, base)
+        else:
+            v = int(x)
+
+        if v < 0:
+            raise ValueError('unsigned int value cannot be negative')
+
+        super().__init__()
+
+    def __repr__(self):
+        return 'librpc.uint({0})'.format(self)
 
 
-def fd(value):
-    return Object(value, force_type=ObjectType.FD)
+class fd(int):
+    def __init__(self, x):
+        if x < 0:
+            raise ValueError('fd value cannot be negative')
+
+        super().__init__()
+
+    def __repr__(self):
+        return 'librpc.fd({0})'.format(self)
+
