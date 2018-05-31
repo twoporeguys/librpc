@@ -688,7 +688,7 @@ cdef class Dictionary(Object):
         return len(self) > 0
 
     def __repr__(self):
-        return 'librpc.Dictionary({' + ', '.join("'{0}': {1}".format(k, repr(v)) for k, v in self.items()) + '})'
+        return 'librpc.Dictionary({' + ', '.join("'{0}': {1!r}".format(k, v) for k, v in self.items()) + '})'
 
 
 cdef raise_internal_exc(rpc=False):

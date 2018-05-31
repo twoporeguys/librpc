@@ -481,6 +481,11 @@ cdef class BaseStruct(Dictionary):
     def __str__(self):
         return "<struct {0}>".format(self.typei.type.name)
 
+    def __repr__(self):
+        return \
+            '{0}('.format(self.typei.type.name) + \
+            ', '.join('{0}={1!r}'.format(k, v) for k, v in self.items()) + \
+            ')'
 
 
 cdef class BaseUnion(Object):
