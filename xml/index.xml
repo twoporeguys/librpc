@@ -198,7 +198,6 @@
     <member refid="object_8h_1af53ea18b86140d9570a7133ac9beda82" kind="function"><name>rpc_array_set_value</name></member>
     <member refid="object_8h_1a6cce558875dd3007c4939ddf48d8eeb5" kind="function"><name>rpc_array_steal_value</name></member>
     <member refid="object_8h_1a849e9e86878d651edbcbb861fdb6a44b" kind="function"><name>rpc_array_remove_index</name></member>
-    <member refid="object_8h_1a325a04c3c3f91ebbece34b5e816e1032" kind="function"><name>rpc_array_remove_all</name></member>
     <member refid="object_8h_1ad7facdb473b73004ea3829ba6bf48b83" kind="function"><name>rpc_array_append_value</name></member>
     <member refid="object_8h_1ad880c9b3591ff9be8ed8127afe3af72c" kind="function"><name>rpc_array_append_stolen_value</name></member>
     <member refid="object_8h_1acb9f788d4b87668b12c0b2b7ea561ec4" kind="function"><name>rpc_array_get_value</name></member>
@@ -238,7 +237,6 @@
     <member refid="object_8h_1a8a2eec6c6555c32a026c7ffce3037104" kind="function"><name>rpc_dictionary_set_value</name></member>
     <member refid="object_8h_1a5c456a17e640d9f5a4ea72673b78d4f4" kind="function"><name>rpc_dictionary_steal_value</name></member>
     <member refid="object_8h_1a809922bf9bb78c07e718cdccf6e23f69" kind="function"><name>rpc_dictionary_remove_key</name></member>
-    <member refid="object_8h_1a5e60b69b0ddbf4fcbb64cd2b026b15e0" kind="function"><name>rpc_dictionary_remove_all</name></member>
     <member refid="object_8h_1a68527552083ab1b528ac878934a7dd6d" kind="function"><name>rpc_dictionary_detach_key</name></member>
     <member refid="object_8h_1a68196ca5ce6f36467d561f68f354d9a8" kind="function"><name>rpc_dictionary_get_value</name></member>
     <member refid="object_8h_1af0de65c6c5ba1df6eb4990a82255320f" kind="function"><name>rpc_dictionary_get_count</name></member>
