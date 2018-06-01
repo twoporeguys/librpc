@@ -4,39 +4,39 @@
     <compoundname>typing.h</compoundname>
     <includes refid="object_8h" local="no">rpc/object.h</includes>
     <incdepgraph>
-      <node id="86">
+      <node id="84">
         <label>stdbool.h</label>
       </node>
-      <node id="87">
+      <node id="85">
         <label>stdarg.h</label>
       </node>
-      <node id="85">
+      <node id="83">
         <label>stdint.h</label>
       </node>
-      <node id="83">
+      <node id="81">
         <label>/code/include/rpc/typing.h</label>
         <link refid="typing_8h"/>
-        <childnode refid="84" relation="include">
+        <childnode refid="82" relation="include">
         </childnode>
       </node>
-      <node id="89">
+      <node id="87">
         <label>sys/types.h</label>
       </node>
-      <node id="84">
+      <node id="82">
         <label>rpc/object.h</label>
         <link refid="object_8h"/>
+        <childnode refid="83" relation="include">
+        </childnode>
+        <childnode refid="84" relation="include">
+        </childnode>
         <childnode refid="85" relation="include">
         </childnode>
         <childnode refid="86" relation="include">
         </childnode>
         <childnode refid="87" relation="include">
         </childnode>
-        <childnode refid="88" relation="include">
-        </childnode>
-        <childnode refid="89" relation="include">
-        </childnode>
       </node>
-      <node id="88">
+      <node id="86">
         <label>sys/uio.h</label>
       </node>
     </incdepgraph>
@@ -301,7 +301,7 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Block type used as a callback in <ref refid="typing_8h_1a3df40500a9e56d03f6310af0dc40a5a0" kindref="member">rpct_interface_apply</ref>. </para>        </detaileddescription>
+<para>Block type used as a callback in rpc_interface_apply. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="/code/include/rpc/typing.h" line="136" column="1" bodyfile="/code/include/rpc/typing.h" bodystart="136" bodyend="-1"/>
@@ -314,7 +314,7 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Block type used as a callback in <ref refid="typing_8h_1a1fe6427a1837bebcf1278d47b9a572f6" kindref="member">rpct_if_member_apply</ref>. </para>        </detaileddescription>
+<para>Block type used as a callback in rpc_if_member_apply. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="/code/include/rpc/typing.h" line="141" column="1" bodyfile="/code/include/rpc/typing.h" bodystart="141" bodyend="-1"/>
@@ -366,7 +366,7 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Reads IDL file without parsing it. <ref refid="typing_8h_1a614a4cc99f03ed23893a73d097f26bdc" kindref="member">rpct_load_types</ref> must be called on the same path again to load the associated types.</para><para><parameterlist kind="param"><parameteritem>
+<para>Reads IDL file without parsing it. rpc_load_types must be called on the same path again to load the associated types.</para><para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>path</parametername>
 </parameternamelist>
@@ -396,7 +396,7 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Reads IDL object without parsing it. <ref refid="typing_8h_1a614a4cc99f03ed23893a73d097f26bdc" kindref="member">rpct_load_types</ref> must be called on the same name again to load the associated types.</para><para><parameterlist kind="param"><parameteritem>
+<para>Reads IDL object without parsing it. rpc_load_types must be called on the same name again to load the associated types.</para><para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>name</parametername>
 </parameternamelist>
@@ -1202,10 +1202,10 @@
         <detaileddescription>
 <para>Returns the type instance handle representing return type of a function.</para><para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
-<parametername>method</parametername>
+<parametername>func</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Method handle </para></parameterdescription>
+<para>Function handle </para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>Return type instance handle </para></simplesect>
@@ -1228,10 +1228,10 @@
         <detaileddescription>
 <para>Returns number of arguments a function takes.</para><para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
-<parametername>method</parametername>
+<parametername>func</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Method handle </para></parameterdescription>
+<para>Function handle </para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>Number of arguments </para></simplesect>
@@ -1401,7 +1401,7 @@
 <para></para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para><computeroutput>true</computeroutput> if iteration was terminated, otherwise <computeroutput>false</computeroutput> </para></simplesect>
+<simplesect kind="return"><para></para></simplesect>
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
@@ -1438,7 +1438,7 @@
 <para></para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para><computeroutput>true</computeroutput> if iteration was terminated, otherwise <computeroutput>false</computeroutput> </para></simplesect>
+<simplesect kind="return"><para></para></simplesect>
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
@@ -1464,7 +1464,7 @@
 <para></para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para><computeroutput>true</computeroutput> if iteration was terminated, otherwise <computeroutput>false</computeroutput> </para></simplesect>
+<simplesect kind="return"><para></para></simplesect>
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
@@ -1494,7 +1494,7 @@
 <para>Callback function </para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para><computeroutput>true</computeroutput> if iteration was terminated, otherwise <computeroutput>false</computeroutput> </para></simplesect>
+<simplesect kind="return"><para></para></simplesect>
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
