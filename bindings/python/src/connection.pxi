@@ -405,6 +405,12 @@ cdef class RemoteProperty(object):
     cdef readonly object setter
     cdef readonly object typed
 
+    def __str__(self):
+        return repr(self)
+
+    def __repr__(self):
+        return "<librpc.RemoteProperty '{0}'>".format(self.name)
+
 
 cdef class RemoteInterface(object):
     def __init__(self, client, path, interface=''):

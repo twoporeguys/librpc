@@ -79,6 +79,12 @@ cdef class Server(object):
     def close(self):
         rpc_server_close(self.server)
 
+    def __str__(self):
+        return repr(self)
+
+    def __repr__(self):
+        return "<librpc.Server at '{0}'>".format(self.uri)
+
     @staticmethod
     def systemd_listen(Context context):
         cdef Server server
@@ -95,6 +101,7 @@ cdef class Server(object):
         result = []
         for i in range(nservers):
             server = Server.wrap(servers[i])
+            server.uri = None
             server.context = context
             result.append(server)
 

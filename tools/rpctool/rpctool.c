@@ -304,7 +304,6 @@ cmd_call(int argc, char *argv[])
 				goto done;
 
 			case RPC_CALL_ERROR:
-				ret = 1;
 				goto error;
 
 			default:
