@@ -54,7 +54,7 @@ struct xpc_connection
 
 static const struct rpc_transport xpc_transport = {
 	.name = "xpc",
-	.schemas = {"xpc", NULL},
+	.schemas = {"xpc", "xpc+mach", NULL},
 	.connect = xpc_connect,
 	.listen = xpc_listen,
 	.flags = RPC_TRANSPORT_NO_SERIALIZE
@@ -213,7 +213,8 @@ xpc_to_rpc(xpc_object_t obj)
 }
 
 static int
-xpc_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
+xpc_send_msg(void *arg, void *buf, size_t size __unused,
+    const int *fds __unused, size_t nfds __unused)
 {
 	struct xpc_connection *conn = arg;
 	rpc_object_t obj = buf;
@@ -254,7 +255,10 @@ xpc_connect(struct rpc_connection *conn, const char *uri_string,
 
 	xconn = g_malloc0(sizeof(*xconn));
 	xconn->queue = dispatch_queue_create("xpc client", DISPATCH_QUEUE_SERIAL);
-	xconn->xpc_handle = xpc_connection_create(uri->host, xconn->queue);
+	xconn->xpc_handle = g_strcmp0(uri->scheme, "xpc") == 0
+	    ? xpc_connection_create(uri->host, xconn->queue)
+	    : xpc_connection_create_mach_service(uri->host, xconn->queue, 0);
+
 	conn->rco_send_msg = xpc_send_msg;
 	conn->rco_abort = xpc_abort;
 	conn->rco_release = xpc_conn_release;
