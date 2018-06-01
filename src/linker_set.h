@@ -75,7 +75,7 @@
 	static void const * __MAKE_SET_CONST			\
 	__set_##set##_sym_##sym 				\
 	__attribute__((__section__("__DATA,set_" #set))) 	\
-	__used = &(sym)
+	__no_sanitize __used = &(sym)
 #else
 #define __MAKE_SET(set, sym)					\
 	__GLOBL(__CONCAT(__start_set_, set));			\

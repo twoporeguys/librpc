@@ -222,6 +222,7 @@ xpc_send_msg(void *arg, void *buf, size_t size __unused,
 
 	msg = xpc_from_rpc(obj);
 	xpc_connection_send_message(conn->xpc_handle, msg);
+	xpc_release(msg);
 	return (0);
 }
 
