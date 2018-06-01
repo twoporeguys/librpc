@@ -125,6 +125,13 @@ rpc_server_disconnect(rpc_server_t server, rpc_connection_t conn)
 	return;
 }
 
+GMainContext *
+rpc_server_get_main_context(rpc_server_t server)
+{
+
+	return (server->rs_g_context);
+}
+
 static void *
 rpc_server_worker(void *arg)
 {

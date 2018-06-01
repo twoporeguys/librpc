@@ -38,7 +38,7 @@
 #include "../linker_set.h"
 #include "../internal.h"
 
-#define SC_ABORT_TIMEOUT 70
+#define SC_ABORT_TIMEOUT 30
 
 static GSocketAddress *socket_parse_uri(const char *);
 static int socket_connect(struct rpc_connection *, const char *, rpc_object_t);
@@ -433,11 +433,11 @@ socket_abort(void *arg)
 		g_socket_close(sock, NULL);
 
 		if (conn->sc_reader_thread) {
-			conn->sc_abort_timeout = 
+			conn->sc_abort_timeout =
 			    g_timeout_source_new_seconds(SC_ABORT_TIMEOUT);
-			g_source_set_callback(conn->sc_abort_timeout, 
+			g_source_set_callback(conn->sc_abort_timeout,
 			    &socket_abort_timeout, conn, NULL);
-			g_source_attach(conn->sc_abort_timeout, 
+			g_source_attach(conn->sc_abort_timeout,
 			    conn->sc_parent->rco_main_context);
 			g_thread_join(conn->sc_reader_thread);
 			if (!g_source_is_destroyed(conn->sc_abort_timeout))
@@ -458,7 +458,7 @@ socket_abort_timeout(gpointer user_data)
 
 	g_assert(g_main_current_source() == conn->sc_abort_timeout);
 	g_source_destroy(conn->sc_abort_timeout);
-	fprintf(stderr, "Cancelling - haserr = %d\n", 
+	fprintf(stderr, "Cancelling - haserr = %d\n",
 		conn->sc_parent->rco_error != NULL);
 	g_cancellable_cancel (conn->sc_cancellable);
 	return (false);

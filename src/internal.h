@@ -248,7 +248,7 @@ struct rpc_connection
 	GMutex			rco_send_mtx;
 	GRWLock			rco_icall_rwlock;
 	GRWLock			rco_call_rwlock;
-    	GMainContext *		rco_main_context;
+	GMainContext *		rco_main_context;
 	rpc_object_t            rco_error;
     	GThreadPool *		rco_callback_pool;
 	rpc_object_t 		rco_params;
@@ -532,8 +532,6 @@ void rpc_set_last_error(int code, const char *msg, rpc_object_t extra);
 void rpc_set_last_rpc_error(rpc_object_t rpc_error);
 void rpc_set_last_gerror(GError *error);
 void rpc_set_last_errorf(int code, const char *fmt, ...);
-GMainContext * rpc_client_get_main_context(rpc_client_t client);
-
 rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
 void rpc_connection_reference_retain(rpc_connection_t);
@@ -542,7 +540,10 @@ int rpc_context_dispatch(rpc_context_t, struct rpc_inbound_call *);
 int rpc_server_dispatch(rpc_server_t, struct rpc_inbound_call *);
 void rpc_server_release(rpc_server_t);
 void rpc_server_quit(rpc_server_t);
-void rpc_server_disconnect(rpc_server_t server, rpc_connection_t conn);
+void rpc_server_disconnect(rpc_server_t, rpc_connection_t);
+GMainContext * rpc_server_get_main_context(rpc_server_t);
+GMainContext * rpc_client_get_main_context(rpc_client_t);
+
 void rpc_connection_send_err(rpc_connection_t, rpc_object_t, int,
     const char *descr, ...);
 void rpc_connection_send_errx(rpc_connection_t, rpc_object_t, rpc_object_t);

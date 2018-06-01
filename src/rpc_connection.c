@@ -1008,7 +1008,7 @@ rpc_connection_alloc(rpc_server_t server)
 	conn->rco_uri = server->rs_uri;
 	conn->rco_flags = server->rs_flags;
 	conn->rco_server = server;
-	conn->rco_main_context = server->rs_g_context;
+	conn->rco_main_context = rpc_server_get_main_context((server);
 	conn->rco_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_inbound_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_subscriptions = g_ptr_array_new();
