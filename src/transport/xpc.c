@@ -54,7 +54,7 @@ struct xpc_connection
 
 static const struct rpc_transport xpc_transport = {
 	.name = "xpc",
-	.schemas = {"xpc", NULL},
+	.schemas = {"xpc", "xpc+mach", NULL},
 	.connect = xpc_connect,
 	.listen = xpc_listen,
 	.flags = RPC_TRANSPORT_NO_SERIALIZE
@@ -100,7 +100,9 @@ xpc_from_rpc(rpc_object_t obj)
 	case RPC_TYPE_ARRAY:
 		ret = xpc_array_create(NULL, 0);
 		rpc_array_apply(obj, ^(size_t idx, rpc_object_t value) {
-			xpc_array_append_value(ret, xpc_from_rpc(value));
+			xpc_object_t item = xpc_from_rpc(value);
+			xpc_array_append_value(ret, item);
+			xpc_release(item);
 			return ((bool)true);
 		});
 
@@ -109,7 +111,9 @@ xpc_from_rpc(rpc_object_t obj)
 	case RPC_TYPE_DICTIONARY:
 		ret = xpc_dictionary_create(NULL, NULL, 0);
 		rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t value) {
-			xpc_dictionary_set_value(ret, key,  xpc_from_rpc(value));
+			xpc_object_t item = xpc_from_rpc(value);
+			xpc_dictionary_set_value(ret, key, item);
+			xpc_release(item);
 			return ((bool)true);
 		});
 
@@ -213,7 +217,8 @@ xpc_to_rpc(xpc_object_t obj)
 }
 
 static int
-xpc_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
+xpc_send_msg(void *arg, void *buf, size_t size __unused,
+    const int *fds __unused, size_t nfds __unused)
 {
 	struct xpc_connection *conn = arg;
 	rpc_object_t obj = buf;
@@ -221,6 +226,7 @@ xpc_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 
 	msg = xpc_from_rpc(obj);
 	xpc_connection_send_message(conn->xpc_handle, msg);
+	xpc_release(msg);
 	return (0);
 }
 
@@ -254,7 +260,10 @@ xpc_connect(struct rpc_connection *conn, const char *uri_string,
 
 	xconn = g_malloc0(sizeof(*xconn));
 	xconn->queue = dispatch_queue_create("xpc client", DISPATCH_QUEUE_SERIAL);
-	xconn->xpc_handle = xpc_connection_create(uri->host, xconn->queue);
+	xconn->xpc_handle = g_strcmp0(uri->scheme, "xpc") == 0
+	    ? xpc_connection_create(uri->host, xconn->queue)
+	    : xpc_connection_create_mach_service(uri->host, xconn->queue, 0);
+
 	conn->rco_send_msg = xpc_send_msg;
 	conn->rco_abort = xpc_abort;
 	conn->rco_release = xpc_conn_release;
