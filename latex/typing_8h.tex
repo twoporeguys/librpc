@@ -277,7 +277,7 @@ Definition at line 105 of file typing.\+h.
 \subsubsection{\texorpdfstring{rpct\+\_\+if\+\_\+member\+\_\+applier\+\_\+t}{rpct\_if\_member\_applier\_t}}
 {\footnotesize\ttfamily typedef bool($^\wedge$ rpct\+\_\+if\+\_\+member\+\_\+applier\+\_\+t) (\hyperlink{typing_8h_aa2e55bcb066527416359bc5a5dde92b3}{rpct\+\_\+if\+\_\+member\+\_\+t})}
 
-Block type used as a callback in rpc\+\_\+if\+\_\+member\+\_\+apply. 
+Block type used as a callback in \hyperlink{typing_8h_a1fe6427a1837bebcf1278d47b9a572f6}{rpct\+\_\+if\+\_\+member\+\_\+apply}. 
 
 Definition at line 141 of file typing.\+h.
 
@@ -297,7 +297,7 @@ Definition at line 110 of file typing.\+h.
 \subsubsection{\texorpdfstring{rpct\+\_\+interface\+\_\+applier\+\_\+t}{rpct\_interface\_applier\_t}}
 {\footnotesize\ttfamily typedef bool($^\wedge$ rpct\+\_\+interface\+\_\+applier\+\_\+t) (\hyperlink{typing_8h_a38f857fb53c96e9aae9e02bd4996cc9f}{rpct\+\_\+interface\+\_\+t})}
 
-Block type used as a callback in rpc\+\_\+interface\+\_\+apply. 
+Block type used as a callback in \hyperlink{typing_8h_a3df40500a9e56d03f6310af0dc40a5a0}{rpct\+\_\+interface\+\_\+apply}. 
 
 Definition at line 136 of file typing.\+h.
 
@@ -623,7 +623,7 @@ Iterates over members of an interface.
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-
+{\ttfamily true} if iteration was terminated, otherwise {\ttfamily false} 
 \end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_a4f72b7794018735e0cb58726b6e0d9df}\label{typing_8h_a4f72b7794018735e0cb58726b6e0d9df}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+if\+\_\+member\+\_\+get\+\_\+description@{rpct\+\_\+if\+\_\+member\+\_\+get\+\_\+description}}
@@ -698,7 +698,7 @@ Iterates over the defined functions.
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-
+{\ttfamily true} if iteration was terminated, otherwise {\ttfamily false} 
 \end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_a99ced7325c9c4387696c7e0fe9ea8ce7}\label{typing_8h_a99ced7325c9c4387696c7e0fe9ea8ce7}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+interface\+\_\+get\+\_\+description@{rpct\+\_\+interface\+\_\+get\+\_\+description}}
@@ -862,7 +862,7 @@ Iterates over the members of a given type.
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-
+{\ttfamily true} if iteration was terminated, otherwise {\ttfamily false} 
 \end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_af88b1f4e2fd53b2c154dc744ba594514}\label{typing_8h_af88b1f4e2fd53b2c154dc744ba594514}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+method\+\_\+get\+\_\+argument@{rpct\+\_\+method\+\_\+get\+\_\+argument}}
@@ -892,7 +892,7 @@ Returns number of arguments a function takes.
 
 
 \begin{DoxyParams}{Parameters}
-{\em func} & Function handle \\
+{\em method} & Method handle \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
@@ -908,7 +908,7 @@ Returns the type instance handle representing return type of a function.
 
 
 \begin{DoxyParams}{Parameters}
-{\em func} & Function handle \\
+{\em method} & Method handle \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
@@ -1020,7 +1020,7 @@ Type instance handle of the property
 \subsubsection{\texorpdfstring{rpct\+\_\+read\+\_\+file()}{rpct\_read\_file()}}
 {\footnotesize\ttfamily int rpct\+\_\+read\+\_\+file (\begin{DoxyParamCaption}\item[{const char $\ast$}]{path }\end{DoxyParamCaption})}
 
-Reads I\+DL file without parsing it. rpc\+\_\+load\+\_\+types must be called on the same path again to load the associated types.
+Reads I\+DL file without parsing it. \hyperlink{typing_8h_a614a4cc99f03ed23893a73d097f26bdc}{rpct\+\_\+load\+\_\+types} must be called on the same path again to load the associated types.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1036,7 +1036,7 @@ Reads I\+DL file without parsing it. rpc\+\_\+load\+\_\+types must be called on 
 \subsubsection{\texorpdfstring{rpct\+\_\+read\+\_\+idl()}{rpct\_read\_idl()}}
 {\footnotesize\ttfamily int rpct\+\_\+read\+\_\+idl (\begin{DoxyParamCaption}\item[{const char $\ast$}]{name,  }\item[{\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{idl }\end{DoxyParamCaption})}
 
-Reads I\+DL object without parsing it. rpc\+\_\+load\+\_\+types must be called on the same name again to load the associated types.
+Reads I\+DL object without parsing it. \hyperlink{typing_8h_a614a4cc99f03ed23893a73d097f26bdc}{rpct\+\_\+load\+\_\+types} must be called on the same name again to load the associated types.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1378,7 +1378,7 @@ Iterates over the defined types.
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-
+{\ttfamily true} if iteration was terminated, otherwise {\ttfamily false} 
 \end{DoxyReturn}
 \mbox{\Hypertarget{typing_8h_a2f80e7ec74258ea0a5f739c61b5b623e}\label{typing_8h_a2f80e7ec74258ea0a5f739c61b5b623e}} 
 \index{typing.\+h@{typing.\+h}!rpct\+\_\+validate@{rpct\+\_\+validate}}
