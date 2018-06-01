@@ -128,6 +128,7 @@ cdef extern from "rpc/object.h" nogil:
     rpc_object_t rpc_array_get_value(rpc_object_t array, size_t index)
     size_t rpc_array_get_count(rpc_object_t array)
     void rpc_array_remove_index(rpc_object_t array, size_t index)
+    void rpc_array_remove_all(rpc_object_t array)
 
     rpc_object_t rpc_dictionary_create()
     rpc_object_t rpc_dictionary_get_value(rpc_object_t dictionary,
@@ -137,6 +138,7 @@ cdef extern from "rpc/object.h" nogil:
     bint rpc_dictionary_apply(rpc_object_t dictionary, void *applier)
     size_t rpc_dictionary_get_count(rpc_object_t dictionary)
     void rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key)
+    void rpc_dictionary_remove_all(rpc_object_t dictionary)
 
 
 cdef extern from "rpc/connection.h" nogil:

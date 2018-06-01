@@ -358,6 +358,9 @@ cdef class Array(Object):
         if not isinstance(iterable, collections.Iterable):
             raise TypeError("'{0}' object is not iterable".format(type(iterable)))
 
+        if not isinstance(iterable, (list, Array)):
+            iterable = list(iterable)
+
         super(Array, self).__init__(iterable, typei=typei)
 
     @staticmethod
@@ -399,8 +402,8 @@ cdef class Array(Object):
             rpc_array_append_value(self.obj, Object(i).unwrap())
 
     def clear(self):
-        rpc_release(self.obj)
-        self.obj = rpc_array_create()
+        with nogil:
+            rpc_array_remove_all(self.obj)
 
     def count(self, value):
         cdef Object v1
@@ -556,8 +559,7 @@ cdef class Dictionary(Object):
 
     def clear(self):
         with nogil:
-            rpc_release(self.obj)
-            self.obj = rpc_dictionary_create()
+            rpc_dictionary_remove_all(self.obj)
 
     def get(self, k, d=None):
         try:
