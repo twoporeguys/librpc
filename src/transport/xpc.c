@@ -100,7 +100,9 @@ xpc_from_rpc(rpc_object_t obj)
 	case RPC_TYPE_ARRAY:
 		ret = xpc_array_create(NULL, 0);
 		rpc_array_apply(obj, ^(size_t idx, rpc_object_t value) {
-			xpc_array_append_value(ret, xpc_from_rpc(value));
+			xpc_object_t item = xpc_from_rpc(value);
+			xpc_array_append_value(ret, item);
+			xpc_release(item);
 			return ((bool)true);
 		});
 
@@ -109,7 +111,9 @@ xpc_from_rpc(rpc_object_t obj)
 	case RPC_TYPE_DICTIONARY:
 		ret = xpc_dictionary_create(NULL, NULL, 0);
 		rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t value) {
-			xpc_dictionary_set_value(ret, key,  xpc_from_rpc(value));
+			xpc_object_t item = xpc_from_rpc(value);
+			xpc_dictionary_set_value(ret, key, item);
+			xpc_release(item);
 			return ((bool)true);
 		});
 
