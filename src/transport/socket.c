@@ -429,10 +429,6 @@ socket_abort(void *arg)
 		conn->sc_aborted = true;
 		g_mutex_unlock(&conn->sc_abort_mtx);
 
-		if (g_socket_is_closed(sock))
-			fprintf(stderr, "socket is closed in abort for %p\n",
-			    conn->sc_parent);
-
 		g_socket_shutdown(sock, true, true, NULL);
 		g_socket_close(sock, NULL);
 
