@@ -394,20 +394,9 @@ cdef class Array(Object):
 
         rpc_array_append_value(self.obj, Object(value).unwrap())
 
-    def extend(self, array):
-        cdef Object rpc_value
-        cdef Array rpc_array
-
-        if isinstance(array, Array):
-            rpc_array = array
-        elif isinstance(array, list):
-            rpc_array = Array(array)
-        else:
-            raise TypeError('Array can be extended with only with list or another Array')
-
-        for value in rpc_array:
-            rpc_value = value
-            rpc_array_append_value(self.obj, rpc_value.unwrap())
+    def extend(self, iterable):
+        for i in iterable:
+            rpc_array_append_value(self.obj, Object(i).unwrap())
 
     def clear(self):
         rpc_release(self.obj)
