@@ -177,8 +177,6 @@ static int
 inspect_interface(rpc_connection_t conn, const char *path, const char *interface)
 {
 	rpc_object_t methods;
-	rpc_call_t call;
-	int ret = 0;
 
 	methods = rpc_connection_call_syncp(conn, path,
 	    RPC_INTROSPECTABLE_INTERFACE, "get_methods", "[s]", interface);
@@ -190,8 +188,7 @@ inspect_interface(rpc_connection_t conn, const char *path, const char *interface
 		return ((bool)true);
 	});
 
-	ret = inspect_properties(conn, path, interface);
-	return (ret);
+	return (inspect_properties(conn, path, interface));
 }
 
 static int
@@ -275,7 +272,6 @@ cmd_call(int argc, char *argv[])
 	rpc_call_t call;
 	rpc_object_t args;
 	rpc_object_t error;
-	int ret = 0;
 
 	if (argc < 4) {
 		fprintf(stderr, "Not enough arguments provided\n");
