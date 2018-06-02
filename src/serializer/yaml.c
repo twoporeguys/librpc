@@ -410,7 +410,7 @@ rpc_yaml_write_object(yaml_emitter_t *emitter, rpc_object_t object)
 			break;
 
 		key = YAML_SHMEM_LEN;
-		value = g_strdup_printf("%li", rpc_shmem_get_size(object));
+		value = g_strdup_printf("%zu", rpc_shmem_get_size(object));
 		status = rpc_yaml_write_kv(emitter, key, value);
 		g_free(value);
 		if (status != 1)

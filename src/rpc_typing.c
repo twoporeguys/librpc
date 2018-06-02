@@ -759,7 +759,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		return (0);
 
 	type = g_malloc0(sizeof(*type));
-	type->origin = g_strdup_printf("%s:%jd", file->path, rpc_get_line_number(obj));
+	type->origin = g_strdup_printf("%s:%zu", file->path, rpc_get_line_number(obj));
 	type->name = typename;
 	type->file = file;
 	type->parent = parent;
@@ -1094,7 +1094,7 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		return (-1);
 
 	iface = g_malloc0(sizeof(*iface));
-	iface->origin = g_strdup_printf("%s:%jd", file->path, rpc_get_line_number(obj));
+	iface->origin = g_strdup_printf("%s:%zu", file->path, rpc_get_line_number(obj));
 	iface->name = g_strdup(g_match_info_fetch(match, 1));
 	iface->members = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    g_free, (GDestroyNotify)rpct_if_member_free);
@@ -1376,7 +1376,7 @@ rpct_pre_call_hook(void *cookie, rpc_object_t args)
 		return (NULL);
 
 	if (!rpct_validate_args(member, args, &errors)) {
-		msg = g_strdup_printf("Validation failed: %jd errors",
+		msg = g_strdup_printf("Validation failed: %zu errors",
 		    rpc_array_get_count(errors));
 
 		rpc_function_error_ex(cookie,
