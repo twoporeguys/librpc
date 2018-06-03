@@ -178,6 +178,7 @@ socket_connect(struct rpc_connection *rco, const char *uri,
 
 	if (err != NULL) {
 		rpc_set_last_gerror(err);
+		g_object_unref(addr);
 		g_error_free(err);
 		return (-1);
 	}
@@ -186,16 +187,6 @@ socket_connect(struct rpc_connection *rco, const char *uri,
 	conn->sc_parent = rco;
 	conn->sc_uri = strdup(uri);
 	conn->sc_socket = sock;
-	if (err != NULL) {
-		g_object_unref(conn->sc_socket);
-		g_object_unref(addr);
-		g_free((gpointer)conn->sc_uri);
-		g_free(conn);
-		rpc_set_last_gerror(err);
-		g_error_free(err);
-		return (-1);
-	}
-
 	rco->rco_send_msg = socket_send_msg;
 	rco->rco_abort = socket_abort;
 	rco->rco_get_fd = socket_get_fd;
