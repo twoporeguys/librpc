@@ -38,6 +38,8 @@
 #include "../linker_set.h"
 #include "../internal.h"
 
+#define	SOCKET_INITIAL_READ	1024
+
 static GSocketAddress *socket_parse_uri(const char *);
 static int socket_connect(struct rpc_connection *, const char *, rpc_object_t);
 static int socket_listen(struct rpc_server *, const char *, rpc_object_t);
@@ -66,11 +68,10 @@ struct socket_connection
 {
 	char *				sc_uri;
 	GSocketConnection *		sc_conn;
-	GSocketClient *			sc_client;
-	GInputStream * 			sc_istream;
-	GOutputStream *			sc_ostream;
+	GSocket *			sc_socket;
 	GThread *			sc_reader_thread;
 	struct rpc_connection *		sc_parent;
+	bool				sc_creds_sent;
 };
 
 static GSocketAddress *
@@ -123,10 +124,8 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 	debugf("new connection");
 
 	conn = g_malloc0(sizeof(*conn));
-	conn->sc_client = g_socket_client_new();
 	conn->sc_conn = gconn;
-	conn->sc_istream = g_io_stream_get_input_stream(G_IO_STREAM(gconn));
-	conn->sc_ostream = g_io_stream_get_output_stream(G_IO_STREAM(gconn));
+	conn->sc_socket = g_socket_connection_get_socket(gconn);
 
 	rco = rpc_connection_alloc(srv);
 	rco->rco_send_msg = socket_send_msg;
@@ -150,21 +149,45 @@ socket_connect(struct rpc_connection *rco, const char *uri,
     rpc_object_t args __unused)
 {
 	GError *err = NULL;
-	GSocketAddress *addr;
+	GSocket *sock = NULL;
+	GSocketAddress *addr = NULL;
 	struct socket_connection *conn;
 
-	addr = socket_parse_uri(uri);
-	if (addr == NULL)
+	if (args != NULL && rpc_get_type(args) == RPC_TYPE_FD) {
+		sock = g_socket_new_from_fd(rpc_fd_get_value(args), &err);
+		if (sock == NULL) {
+			rpc_set_last_gerror(err);
+			g_error_free(err);
+			return (-1);
+		}
+	} else {
+		addr = socket_parse_uri(uri);
+		if (addr == NULL)
+			return (-1);
+
+		sock = g_socket_new(g_socket_address_get_family(addr),
+		    G_SOCKET_TYPE_STREAM, G_SOCKET_PROTOCOL_DEFAULT, &err);
+		if (sock == NULL) {
+			rpc_set_last_gerror(err);
+			g_error_free(err);
+			return (-1);
+		}
+
+		g_socket_connect(sock, addr, NULL, &err);
+	}
+
+	if (err != NULL) {
+		rpc_set_last_gerror(err);
+		g_error_free(err);
 		return (-1);
+	}
 
 	conn = g_malloc0(sizeof(*conn));
 	conn->sc_parent = rco;
 	conn->sc_uri = strdup(uri);
-	conn->sc_client = g_socket_client_new();
-	conn->sc_conn = g_socket_client_connect(conn->sc_client,
-	    G_SOCKET_CONNECTABLE(addr), NULL, &err);
+	conn->sc_socket = sock;
 	if (err != NULL) {
-		g_object_unref(conn->sc_client);
+		g_object_unref(conn->sc_socket);
 		g_object_unref(addr);
 		g_free((gpointer)conn->sc_uri);
 		g_free(conn);
@@ -173,10 +196,6 @@ socket_connect(struct rpc_connection *rco, const char *uri,
 		return (-1);
 	}
 
-	conn->sc_istream = g_io_stream_get_input_stream(
-	    G_IO_STREAM(conn->sc_conn));
-	conn->sc_ostream = g_io_stream_get_output_stream(
-	    G_IO_STREAM(conn->sc_conn));
 	rco->rco_send_msg = socket_send_msg;
 	rco->rco_abort = socket_abort;
 	rco->rco_get_fd = socket_get_fd;
@@ -274,12 +293,15 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 {
 	struct socket_connection *conn = arg;
 	GError *err = NULL;
-	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
 	GSocketControlMessage *cmsg[2] = { NULL };
 	GOutputVector iov[2];
 	uint32_t header[4] = { 0xdeadbeef, (uint32_t)size, 0, 0 };
+	size_t done = 0;
+	ssize_t step;
+	size_t tmp;
 	int ncmsg = 0;
 	int ret = 0;
+	int i;
 
 	debugf("sending frame: addr=%p, len=%zu, nfds=%zu", buf, size, nfds);
 
@@ -288,7 +310,11 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 
 #ifndef _WIN32
 	if (g_unix_credentials_message_is_supported()) {
-		cmsg[ncmsg++] = g_unix_credentials_message_new();
+		if (!conn->sc_creds_sent) {
+			cmsg[ncmsg++] = g_unix_credentials_message_new();
+			conn->sc_creds_sent = true;
+		}
+
 		if (nfds > 0) {
 			cmsg[ncmsg++] = g_unix_fd_message_new_with_fd_list(
 			    g_unix_fd_list_new_from_array(fds, (gint)nfds));
@@ -296,24 +322,31 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 	}
 #endif
 
-	g_socket_send_message(sock, NULL, iov, 1, cmsg, ncmsg, 0,
-	    NULL, &err);
-	if (err != NULL) {
-		rpc_set_last_gerror(err);
-		g_error_free(err);
-		ret = -1;
-		goto done;
-	}
+	for (;;) {
+		step = g_socket_send_message(conn->sc_socket, NULL, iov, 2,
+		    cmsg, ncmsg, 0, NULL, &err);
+		if (err != NULL) {
+			rpc_set_last_gerror(err);
+			g_error_free(err);
+			ret = -1;
+			goto done;
+		}
 
-	if (!g_output_stream_write_all(conn->sc_ostream, buf, size, NULL, NULL, &err)) {
-		rpc_set_last_gerror(err);
-		g_error_free(err);
-		ret = -1;
-		goto done;
+		done += step;
+
+		if (done == size + sizeof(header))
+			break;
+
+		for (i = 0; i < 2; i++) {
+			tmp = MIN((size_t)step, (size_t)iov[i].size);
+			iov[i].size -= tmp;
+			iov[i].buffer += tmp;
+			step -= tmp;
+		}
 	}
 
 done:
-	for (int i = 0; i < ncmsg; i++)
+	for (i = 0; i < ncmsg; i++)
 		g_object_unref(cmsg[i]);
 
 	return (ret);
@@ -324,32 +357,67 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
     int **fds, size_t *nfds, struct rpc_credentials *creds)
 {
 	GError *err = NULL;
-	GSocket *sock = g_socket_connection_get_socket(conn->sc_conn);
 	GSocketControlMessage **cmsg;
 	GCredentials *cr;
-	GInputVector iov;
+	GInputVector iov[2];
 	uint32_t header[4];
+	ssize_t step;
 	size_t length;
-	int ncmsg, flags = 0, i;
+	size_t done = 0;
+	size_t tmp;
+	bool have_header = false;
+	int ncmsg, i;
 	int nfds_i;
 
-	iov.buffer = header;
-	iov.size = sizeof(header);
-
-	g_socket_receive_message(sock, NULL, &iov, 1, &cmsg, &ncmsg, &flags,
-	    NULL, &err);
-	if (err != NULL) {
-		rpc_set_last_gerror(err);
-		g_error_free(err);
-		return (-1);
-	}
-
-	if (header[0] != 0xdeadbeef)
-		return (-1);
-
-	length = header[1];
+	/*
+	 * Allocate SOCKET_INITIAL_READ bytes upfront speculatively to
+	 * avoid additional syscall when receiving a small message
+	 */
+	length = SOCKET_INITIAL_READ;
 	*frame = g_malloc(length);
-	*size = length;
+	iov[0] = (GInputVector){ .buffer = header, .size = sizeof(header) };
+	iov[1] = (GInputVector){ .buffer = *frame, .size = length };
+
+	for (;;) {
+		step = g_socket_receive_message(conn->sc_socket, NULL, iov, 2,
+		    &cmsg, &ncmsg, 0, NULL, &err);
+		if (err != NULL) {
+			rpc_set_last_gerror(err);
+			g_error_free(err);
+			return (-1);
+		}
+
+		done += step;
+
+		for (i = 0; i < 2; i++) {
+			tmp = MIN((size_t)step, (size_t)iov[i].size);
+			iov[i].size -= tmp;
+			iov[i].buffer += tmp;
+			step -= tmp;
+		}
+
+		if (!have_header && done >= sizeof(header)) {
+			/* First vector should be fully exhausted by now */
+			g_assert(iov[0].size == 0);
+
+			/* Now we have read enough to decode the header */
+			if (header[0] != 0xdeadbeef)
+				return (-1);
+
+			have_header = true;
+			length = header[1];
+			*size = length;
+
+			if (length > SOCKET_INITIAL_READ + sizeof(header)) {
+				*frame = g_realloc(*frame, length);
+				iov[1].buffer = *frame + done - sizeof(header);
+				iov[1].size = length - done + sizeof(header);
+			}
+		}
+
+		if (done == length + sizeof(header))
+			break;
+	}
 
 #ifndef _WIN32
 	for (i = 0; i < ncmsg; i++) {
@@ -372,14 +440,6 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 		}
 	}
 #endif
-
-	if (!g_input_stream_read_all(conn->sc_istream, *frame, *size, NULL,
-	   NULL, &err)) {
-		rpc_set_last_gerror(err);
-		g_free(err);
-		free(*frame);
-		return (-1);
-	}
 
 	return (0);
 }
@@ -413,7 +473,7 @@ socket_release(void *arg)
 	struct socket_connection *conn = arg;
 
 	g_object_unref(conn->sc_conn);
-	g_object_unref(conn->sc_client);
+	g_object_unref(conn->sc_socket);
 	g_free(conn->sc_uri);
 	g_free(conn);
 }
