@@ -77,6 +77,7 @@ main(int argc, const char *argv[])
 	    });
 
 	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
+	rpc_server_resume(srv);
 #ifdef _WIN32
 	for (;;)
 		sleep(1);
