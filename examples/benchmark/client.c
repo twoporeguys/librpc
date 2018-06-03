@@ -173,7 +173,7 @@ next:
 	printf("Received %" PRId64 " messages and %" PRId64 " bytes\n", cycles, bytes);
 	printf("It took %.04f seconds\n", elapsed);
 	printf("Average data rate: %.04f MB/s\n", bytes / elapsed / 1024 / 1024);
-	printf("Average packet rate: %.04f\n", cycles / elapsed);
+	printf("Average packet rate: %.04f\n packets/s", cycles / elapsed);
 	return (EXIT_SUCCESS);
 
 error:
