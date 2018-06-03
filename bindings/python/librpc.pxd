@@ -387,6 +387,10 @@ cdef extern from "rpc/typing.h" nogil:
     bint rpct_validate(rpct_typei_t typei, rpc_object_t obj, rpc_object_t *errors)
 
 
+cdef extern from "rpc/rpcd.h" nogil:
+    int rpcd_register(const char *uri, const char *name, const char *description)
+
+
 cdef class Object(object):
     cdef rpc_object_t obj
     cdef object ref

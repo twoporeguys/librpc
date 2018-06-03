@@ -24,50 +24,28 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-import os
-import sys
-import enum
-import errno
-import types
-import inspect
-import functools
-import traceback
-import datetime
-import uuid
-from cpython.ref cimport Py_INCREF, Py_DECREF
-from librpc cimport *
-from libc.string cimport strdup
-from libc.stdint cimport *
-from libc.stdlib cimport malloc, free
+cdef class RPCD(object):
+    @staticmethod
+    def connect_to(sevice_name):
+        pass
 
+    @staticmethod
+    def register(uri, service_name, description):
+        cdef const char *c_uri
+        cdef const char *c_service_name
+        cdef const char *c_description
+        cdef int ret
 
-cdef extern from "Python.h" nogil:
-    void PyEval_InitThreads()
+        b_uri = uri.encode('utf-8')
+        b_service_name = service_name.encode('utf-8')
+        b_description = description.encode('utf-8')
 
+        c_service_name = b_service_name
+        c_description = b_description
+        c_uri = b_uri
 
-include "src/object.pxi"
-include "src/connection.pxi"
-include "src/service.pxi"
-include "src/client.pxi"
-include "src/server.pxi"
-include "src/bus.pxi"
-include "src/serializer.pxi"
-include "src/typing.pxi"
-include "src/rpcd.pxi"
+        with nogil:
+            ret = rpcd_register(c_uri, c_service_name, c_description)
 
-
-cdef str_or_none(const char *val):
-    if val == NULL:
-        return None
-
-    return val.decode('utf-8')
-
-
-cdef const char *cstr_or_null(val):
-    if not val:
-        return NULL
-
-    return val.encode('utf-8')
-
-
-type_hooks = {}
+        if ret != 0:
+            raise_internal_exc()
