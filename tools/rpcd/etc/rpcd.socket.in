@@ -1,0 +1,10 @@
+[Unit]
+Description=rpcd service socket
+PartOf=rpcd.service
+
+[Socket]
+ListenStream=/var/run/rpcd.sock
+ListenStream=0.0.0.0:5002
+
+[Install]
+WantedBy=sockets.target
