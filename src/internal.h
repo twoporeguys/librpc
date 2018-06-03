@@ -28,6 +28,8 @@
 #ifndef LIBRPC_INTERNAL_H
 #define LIBRPC_INTERNAL_H
 
+#include <stdio.h>
+#include <glib.h>
 #include <rpc/object.h>
 #include <rpc/query.h>
 #include <rpc/connection.h>
@@ -35,9 +37,6 @@
 #include <rpc/server.h>
 #include <rpc/bus.h>
 #include <rpc/typing.h>
-#include <stdio.h>
-#include <setjmp.h>
-#include <glib.h>
 #ifdef LIBDISPATCH_SUPPORT
 #include <dispatch/dispatch.h>
 #endif
