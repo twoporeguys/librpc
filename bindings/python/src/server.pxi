@@ -55,6 +55,7 @@ cdef class Server(object):
         cdef const char *c_path
         cdef const char *c_interface = NULL
 
+        rpc_args = Object(args)
         b_name = name.encode('utf-8')
         c_name = b_name
         b_path = path.encode('utf-8')
@@ -64,14 +65,14 @@ cdef class Server(object):
             b_interface = interface.encode('utf-8')
             c_interface = b_interface
 
-        if isinstance(args, Object):
-            rpc_args = args
-        else:
-            rpc_args = Object(args)
-            rpc_retain(rpc_args.obj)
-
         with nogil:
-            rpc_server_broadcast_event(self.server, c_path, c_interface, c_name, rpc_args.obj)
+            rpc_server_broadcast_event(
+                self.server,
+                c_path,
+                c_interface,
+                c_name,
+                rpc_args.unwrap()
+            )
 
     def resume(self):
         rpc_server_resume(self.server)

@@ -103,7 +103,7 @@ cdef class Instance(object):
             if not isinstance(result, Object):
                 raise ValueError('returned value is not librpc.Object')
 
-            return rpc_retain((<Object>result).obj)
+            return rpc_retain((<Object>result).unwrap())
         except RpcException as err:
             rpc_property_error(cookie, err.code, err.message.encode('utf-8'))
             return <rpc_object_t>NULL
