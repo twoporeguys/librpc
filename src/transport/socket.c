@@ -331,6 +331,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	uint32_t header[4];
 	size_t length;
 	int ncmsg, flags = 0, i;
+	int nfds_i;
 
 	iov.buffer = header;
 	iov.size = sizeof(header);
@@ -365,7 +366,8 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 
 		if (G_IS_UNIX_FD_MESSAGE(cmsg[i])) {
 			*fds = g_unix_fd_message_steal_fds(
-			    G_UNIX_FD_MESSAGE(cmsg[i]), (gint *)nfds);
+			    G_UNIX_FD_MESSAGE(cmsg[i]), &nfds_i);
+			*nfds = (size_t)nfds_i;
 			continue;
 		}
 	}
