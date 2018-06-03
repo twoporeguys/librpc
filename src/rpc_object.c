@@ -599,7 +599,7 @@ rpc_copy(rpc_object_t object)
 		break;
 
 	case RPC_TYPE_FD:
-		result = rpc_fd_create(rpc_fd_dup(object));
+		result = rpc_fd_create(object->ro_value.rv_fd);
 		break;
 
 	case RPC_TYPE_STRING:
