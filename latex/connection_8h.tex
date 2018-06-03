@@ -83,6 +83,8 @@ int \hyperlink{connection_8h_aa63689ba3875975bc8a1fd0177c1a228}{rpc\+\_\+connect
 \item 
 bool \hyperlink{connection_8h_a71699a40039ad05bd244713464cbee88}{rpc\+\_\+connection\+\_\+is\+\_\+open} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
+int \hyperlink{connection_8h_a72a6738b9d7aff59527dc05b12a4fb33}{rpc\+\_\+connection\+\_\+get\+\_\+fd} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
+\item 
 void \hyperlink{connection_8h_a07eb2a0e3655cb83222f5faa530e3bfd}{rpc\+\_\+connection\+\_\+free} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
 int \hyperlink{connection_8h_ae62dee58a622eb6e1501c8c3342a1530}{rpc\+\_\+connection\+\_\+subscribe\+\_\+event} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name)
@@ -709,6 +711,22 @@ Frees resources associated with \hyperlink{connection_8h_a70838cb106c3464db29952
 {\em conn} & Connection handle \\
 \hline
 \end{DoxyParams}
+\mbox{\Hypertarget{connection_8h_a72a6738b9d7aff59527dc05b12a4fb33}\label{connection_8h_a72a6738b9d7aff59527dc05b12a4fb33}} 
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+fd@{rpc\+\_\+connection\+\_\+get\+\_\+fd}}
+\index{rpc\+\_\+connection\+\_\+get\+\_\+fd@{rpc\+\_\+connection\+\_\+get\+\_\+fd}!connection.\+h@{connection.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+get\+\_\+fd()}{rpc\_connection\_get\_fd()}}
+{\footnotesize\ttfamily int rpc\+\_\+connection\+\_\+get\+\_\+fd (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
+
+Returns file descriptor associated with the connection.
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & Connection handle \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+File descriptor number 
+\end{DoxyReturn}
 \mbox{\Hypertarget{connection_8h_a5332b87fc6add76392bdc17d0db2e982}\label{connection_8h_a5332b87fc6add76392bdc17d0db2e982}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+property@{rpc\+\_\+connection\+\_\+get\+\_\+property}}
 \index{rpc\+\_\+connection\+\_\+get\+\_\+property@{rpc\+\_\+connection\+\_\+get\+\_\+property}!connection.\+h@{connection.\+h}}

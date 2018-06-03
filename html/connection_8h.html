@@ -160,6 +160,8 @@ Functions</h2></td></tr>
 <tr class="separator:aa63689ba3875975bc8a1fd0177c1a228"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71699a40039ad05bd244713464cbee88"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a71699a40039ad05bd244713464cbee88">rpc_connection_is_open</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
 <tr class="separator:a71699a40039ad05bd244713464cbee88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72a6738b9d7aff59527dc05b12a4fb33"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a72a6738b9d7aff59527dc05b12a4fb33">rpc_connection_get_fd</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="separator:a72a6738b9d7aff59527dc05b12a4fb33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07eb2a0e3655cb83222f5faa530e3bfd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a07eb2a0e3655cb83222f5faa530e3bfd">rpc_connection_free</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
 <tr class="separator:a07eb2a0e3655cb83222f5faa530e3bfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae62dee58a622eb6e1501c8c3342a1530"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ae62dee58a622eb6e1501c8c3342a1530">rpc_connection_subscribe_event</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name)</td></tr>
@@ -1240,6 +1242,32 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a72a6738b9d7aff59527dc05b12a4fb33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72a6738b9d7aff59527dc05b12a4fb33">&#9670;&nbsp;</a></span>rpc_connection_get_fd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_connection_get_fd </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns file descriptor associated with the connection.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>File descriptor number </dd></dl>
 
 </div>
 </div>

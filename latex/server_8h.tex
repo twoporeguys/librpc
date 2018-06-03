@@ -28,6 +28,8 @@ typedef void($^\wedge$ \hyperlink{server_8h_a2d9a540637c63449db9ac5882cb5f7ab}{r
 \item 
 \+\_\+\+Nullable \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} \hyperlink{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}{rpc\+\_\+server\+\_\+create} (const char $\ast$\+\_\+\+Nonnull uri, \+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
 \item 
+\+\_\+\+Nullable \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} \hyperlink{server_8h_a6fc757c49776a73e093b37e7b073c9a6}{rpc\+\_\+server\+\_\+create\+\_\+ex} (const char $\ast$\+\_\+\+Nonnull uri, \+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} params)
+\item 
 void \hyperlink{server_8h_a52667e1f1ad29521541c60aae34dcf02}{rpc\+\_\+server\+\_\+resume} (\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} server)
 \item 
 void \hyperlink{server_8h_a28eeff2b8ec73f31f1af9feff11cb698}{rpc\+\_\+server\+\_\+broadcast\+\_\+event} (\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} server, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} args)
@@ -35,6 +37,8 @@ void \hyperlink{server_8h_a28eeff2b8ec73f31f1af9feff11cb698}{rpc\+\_\+server\+\_
 void \hyperlink{server_8h_ac6bfcd59fe8ec8386b1e3d312705e786}{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler} (\+\_\+\+Nullable \hyperlink{server_8h_a2d9a540637c63449db9ac5882cb5f7ab}{rpc\+\_\+server\+\_\+event\+\_\+handler\+\_\+t} handler)
 \item 
 int \hyperlink{server_8h_a1bf6070b1bb3b31d394f3862405eaf8c}{rpc\+\_\+server\+\_\+close} (\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} server)
+\item 
+int \hyperlink{server_8h_a6f388ced21aab96344f4bb3a13b0ef8d}{rpc\+\_\+server\+\_\+sd\+\_\+listen} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, \+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} $\ast$\+\_\+\+Nonnull $\ast$\+\_\+\+Nonnull servers)
 \end{DoxyCompactItemize}
 
 
@@ -135,6 +139,26 @@ Creates a server instance listening on a given U\+RI.
 \begin{DoxyReturn}{Returns}
 Server handle 
 \end{DoxyReturn}
+\mbox{\Hypertarget{server_8h_a6fc757c49776a73e093b37e7b073c9a6}\label{server_8h_a6fc757c49776a73e093b37e7b073c9a6}} 
+\index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+create\+\_\+ex@{rpc\+\_\+server\+\_\+create\+\_\+ex}}
+\index{rpc\+\_\+server\+\_\+create\+\_\+ex@{rpc\+\_\+server\+\_\+create\+\_\+ex}!server.\+h@{server.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+server\+\_\+create\+\_\+ex()}{rpc\_server\_create\_ex()}}
+{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} rpc\+\_\+server\+\_\+create\+\_\+ex (\begin{DoxyParamCaption}\item[{const char $\ast$\+\_\+\+Nonnull}]{uri,  }\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context,  }\item[{\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{params }\end{DoxyParamCaption})}
+
+Creates a server instance listening on a given U\+RI.
+
+
+\begin{DoxyParams}{Parameters}
+{\em uri} & U\+RI to listen on \\
+\hline
+{\em context} & R\+PC context for a server instance \\
+\hline
+{\em params} & Additional parameters for a transport \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Server handle 
+\end{DoxyReturn}
 \mbox{\Hypertarget{server_8h_a52667e1f1ad29521541c60aae34dcf02}\label{server_8h_a52667e1f1ad29521541c60aae34dcf02}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+resume@{rpc\+\_\+server\+\_\+resume}}
 \index{rpc\+\_\+server\+\_\+resume@{rpc\+\_\+server\+\_\+resume}!server.\+h@{server.\+h}}
@@ -150,6 +174,22 @@ Server instance keeps all the incoming requests queued and on hold until this fu
 {\em server} & Server handle \\
 \hline
 \end{DoxyParams}
+\mbox{\Hypertarget{server_8h_a6f388ced21aab96344f4bb3a13b0ef8d}\label{server_8h_a6f388ced21aab96344f4bb3a13b0ef8d}} 
+\index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+sd\+\_\+listen@{rpc\+\_\+server\+\_\+sd\+\_\+listen}}
+\index{rpc\+\_\+server\+\_\+sd\+\_\+listen@{rpc\+\_\+server\+\_\+sd\+\_\+listen}!server.\+h@{server.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+server\+\_\+sd\+\_\+listen()}{rpc\_server\_sd\_listen()}}
+{\footnotesize\ttfamily int rpc\+\_\+server\+\_\+sd\+\_\+listen (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context,  }\item[{\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} $\ast$\+\_\+\+Nonnull $\ast$\+\_\+\+Nonnull}]{servers }\end{DoxyParamCaption})}
+
+Sets up some number of servers using systemd socket activation information.
+
+
+\begin{DoxyParams}{Parameters}
+{\em servers} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Number of servers created or -\/1 on error 
+\end{DoxyReturn}
 \mbox{\Hypertarget{server_8h_ac6bfcd59fe8ec8386b1e3d312705e786}\label{server_8h_ac6bfcd59fe8ec8386b1e3d312705e786}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler@{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler}}
 \index{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler@{rpc\+\_\+server\+\_\+set\+\_\+event\+\_\+handler}!server.\+h@{server.\+h}}

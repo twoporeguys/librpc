@@ -1,0 +1,58 @@
+\hypertarget{rpcd_8h}{}\section{/code/include/rpc/rpcd.h File Reference}
+\label{rpcd_8h}\index{/code/include/rpc/rpcd.\+h@{/code/include/rpc/rpcd.\+h}}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{rpcd_8h_a9823ef133db1543c07651a2d9da925f3}\label{rpcd_8h_a9823ef133db1543c07651a2d9da925f3}} 
+\#define {\bfseries R\+P\+C\+D\+\_\+\+S\+O\+C\+K\+E\+T\+\_\+\+L\+O\+C\+A\+T\+I\+ON}~\char`\"{}unix\+:///var/run/rpcd.\+sock\char`\"{}
+\item 
+\mbox{\Hypertarget{rpcd_8h_a68e362732de142780476f22612f534da}\label{rpcd_8h_a68e362732de142780476f22612f534da}} 
+\#define {\bfseries R\+P\+C\+D\+\_\+\+M\+A\+N\+A\+G\+E\+R\+\_\+\+I\+N\+T\+E\+R\+F\+A\+CE}~\char`\"{}com.\+twoporeguys.\+rpcd.\+Service\+Manager\char`\"{}
+\item 
+\mbox{\Hypertarget{rpcd_8h_a91d602efd501a39579b00e9a1cc0c945}\label{rpcd_8h_a91d602efd501a39579b00e9a1cc0c945}} 
+\#define {\bfseries R\+P\+C\+D\+\_\+\+S\+E\+R\+V\+I\+C\+E\+\_\+\+I\+N\+T\+E\+R\+F\+A\+CE}~\char`\"{}com.\+twoporeguys.\+rpcd.\+Service\char`\"{}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\+\_\+\+Nullable \hyperlink{client_8h_a4f7230a0c2c07d27a07a88d407a06b70}{rpc\+\_\+client\+\_\+t} \hyperlink{rpcd_8h_a7383f6110b0b5282dbd32af694ae397c}{rpcd\+\_\+connect\+\_\+to} (const char $\ast$\+\_\+\+Nonnull service\+\_\+name)
+\item 
+int \hyperlink{rpcd_8h_a4d56e4d9fa1dac691aa3aef6f02b9cf8}{rpcd\+\_\+register} (const char $\ast$\+\_\+\+Nonnull uri, const char $\ast$\+\_\+\+Nonnull name, const char $\ast$\+\_\+\+Nullable description)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{rpcd_8h_a7383f6110b0b5282dbd32af694ae397c}\label{rpcd_8h_a7383f6110b0b5282dbd32af694ae397c}} 
+\index{rpcd.\+h@{rpcd.\+h}!rpcd\+\_\+connect\+\_\+to@{rpcd\+\_\+connect\+\_\+to}}
+\index{rpcd\+\_\+connect\+\_\+to@{rpcd\+\_\+connect\+\_\+to}!rpcd.\+h@{rpcd.\+h}}
+\subsubsection{\texorpdfstring{rpcd\+\_\+connect\+\_\+to()}{rpcd\_connect\_to()}}
+{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{client_8h_a4f7230a0c2c07d27a07a88d407a06b70}{rpc\+\_\+client\+\_\+t} rpcd\+\_\+connect\+\_\+to (\begin{DoxyParamCaption}\item[{const char $\ast$\+\_\+\+Nonnull}]{service\+\_\+name }\end{DoxyParamCaption})}
+
+Looks up a service with given name and connects to it.
+
+
+\begin{DoxyParams}{Parameters}
+{\em service\+\_\+name} & F\+Q\+DN name of the service \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+R\+PC client handle or N\+U\+LL in case of an error 
+\end{DoxyReturn}
+\mbox{\Hypertarget{rpcd_8h_a4d56e4d9fa1dac691aa3aef6f02b9cf8}\label{rpcd_8h_a4d56e4d9fa1dac691aa3aef6f02b9cf8}} 
+\index{rpcd.\+h@{rpcd.\+h}!rpcd\+\_\+register@{rpcd\+\_\+register}}
+\index{rpcd\+\_\+register@{rpcd\+\_\+register}!rpcd.\+h@{rpcd.\+h}}
+\subsubsection{\texorpdfstring{rpcd\+\_\+register()}{rpcd\_register()}}
+{\footnotesize\ttfamily int rpcd\+\_\+register (\begin{DoxyParamCaption}\item[{const char $\ast$\+\_\+\+Nonnull}]{uri,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{const char $\ast$\+\_\+\+Nullable}]{description }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em uri} & \\
+\hline
+{\em name} & \\
+\hline
+{\em description} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
