@@ -29,11 +29,30 @@
 #define LIBRPC_RPCD_H
 
 /**
+ * @file rpcd.h
+ */
+
+#define	RPCD_SOCKET_LOCATION	"unix:///var/run/rpcd.sock"
+#define	RPCD_MANAGER_INTERFACE	"com.twoporeguys.rpcd.ServiceManager"
+#define	RPCD_SERVICE_INTERFACE	"com.twoporeguys.rpcd.Service"
+
+
+/**
  * Looks up a service with given name and connects to it.
  *
  * @param service_name FQDN name of the service
  * @return RPC client handle or NULL in case of an error
  */
-rpc_client_t rpcd_connect_to(const char *service_name);
+_Nullable rpc_client_t rpcd_connect_to(const char *_Nonnull service_name);
+
+/**
+ *
+ * @param uri
+ * @param name
+ * @param description
+ * @return
+ */
+int rpcd_register(const char *_Nonnull uri, const char *_Nonnull name,
+    const char *_Nullable description);
 
 #endif /* LIBRPC_RPCD_H */

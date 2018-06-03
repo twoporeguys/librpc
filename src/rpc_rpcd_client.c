@@ -25,10 +25,57 @@
  *
  */
 
+#include <rpc/object.h>
+#include <rpc/client.h>
+#include <rpc/connection.h>
 #include <rpc/rpcd.h>
+#include "internal.h"
 
-rpc_connection_t
+rpc_client_t
 rpcd_connect_to(const char *service_name)
 {
+	rpc_client_t client;
+	rpc_client_t result;
+	rpc_connection_t conn;
 
+	client = rpc_client_create(RPCD_SOCKET_LOCATION, NULL);
+	if (client == NULL) {
+
+	}
+
+	conn = rpc_client_get_connection(client);
+
+}
+
+int
+rpcd_register(const char *uri, const char *name, const char *description)
+{
+	rpc_client_t client;
+	rpc_connection_t conn;
+	rpc_object_t result;
+
+	client = rpc_client_create(RPCD_SOCKET_LOCATION, NULL);
+	if (client == NULL) {
+
+	}
+
+	conn = rpc_client_get_connection(client);
+	result = rpc_connection_call_syncp(conn, "/", RPCD_MANAGER_INTERFACE,
+	    "register_service", "[{s,s,s}]",
+	    "uri", uri,
+	    "name", name,
+	    "description", description);
+
+	if (result == NULL) {
+		rpc_client_close(client);
+		return (-1);
+	}
+
+	if (rpc_is_error(result)) {
+		rpc_client_close(client);
+		rpc_set_last_rpc_error(result);
+		return (-1);
+	}
+
+	return (0);
 }

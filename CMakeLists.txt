@@ -189,6 +189,7 @@ set(CORE_FILES
         src/rpc_bus.c
         src/rpc_serializer.c
         src/rpc_typing.c
+        src/rpc_rpcd_client.c
         src/utils.c
         src/internal.h
         src/linker_set.h
