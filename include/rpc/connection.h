@@ -169,6 +169,14 @@ int rpc_connection_close(_Nonnull rpc_connection_t conn);
 bool rpc_connection_is_open(_Nonnull rpc_connection_t conn);
 
 /**
+ * Returns file descriptor associated with the connection.
+ *
+ * @param conn Connection handle
+ * @return File descriptor number
+ */
+int rpc_connection_get_fd(_Nonnull rpc_connection_t conn);
+
+/**
  * Frees resources associated with @ref rpc_connection_t.
  *
  * @param conn Connection handle
