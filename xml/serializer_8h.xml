@@ -4,39 +4,39 @@
     <compoundname>serializer.h</compoundname>
     <includes refid="object_8h" local="no">rpc/object.h</includes>
     <incdepgraph>
-      <node id="54">
+      <node id="52">
         <label>stdbool.h</label>
       </node>
-      <node id="55">
+      <node id="53">
         <label>stdarg.h</label>
       </node>
-      <node id="53">
+      <node id="51">
         <label>stdint.h</label>
       </node>
-      <node id="51">
+      <node id="49">
         <label>/code/include/rpc/serializer.h</label>
         <link refid="serializer_8h"/>
-        <childnode refid="52" relation="include">
+        <childnode refid="50" relation="include">
         </childnode>
       </node>
-      <node id="57">
+      <node id="55">
         <label>sys/types.h</label>
       </node>
-      <node id="52">
+      <node id="50">
         <label>rpc/object.h</label>
         <link refid="object_8h"/>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
         <childnode refid="53" relation="include">
         </childnode>
         <childnode refid="54" relation="include">
         </childnode>
         <childnode refid="55" relation="include">
         </childnode>
-        <childnode refid="56" relation="include">
-        </childnode>
-        <childnode refid="57" relation="include">
-        </childnode>
       </node>
-      <node id="56">
+      <node id="54">
         <label>sys/uio.h</label>
       </node>
     </incdepgraph>

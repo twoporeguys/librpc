@@ -263,6 +263,8 @@ Functions</h2></td></tr>
 <tr class="separator:a6cce558875dd3007c4939ddf48d8eeb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a849e9e86878d651edbcbb861fdb6a44b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a849e9e86878d651edbcbb861fdb6a44b">rpc_array_remove_index</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> array, size_t index)</td></tr>
 <tr class="separator:a849e9e86878d651edbcbb861fdb6a44b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a325a04c3c3f91ebbece34b5e816e1032"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a325a04c3c3f91ebbece34b5e816e1032">rpc_array_remove_all</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> array)</td></tr>
+<tr class="separator:a325a04c3c3f91ebbece34b5e816e1032"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7facdb473b73004ea3829ba6bf48b83"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#ad7facdb473b73004ea3829ba6bf48b83">rpc_array_append_value</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> array, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
 <tr class="separator:ad7facdb473b73004ea3829ba6bf48b83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad880c9b3591ff9be8ed8127afe3af72c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#ad880c9b3591ff9be8ed8127afe3af72c">rpc_array_append_stolen_value</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> array, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> value)</td></tr>
@@ -341,6 +343,8 @@ Functions</h2></td></tr>
 <tr class="separator:a5c456a17e640d9f5a4ea72673b78d4f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a809922bf9bb78c07e718cdccf6e23f69"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a809922bf9bb78c07e718cdccf6e23f69">rpc_dictionary_remove_key</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> dictionary, const char *_Nonnull key)</td></tr>
 <tr class="separator:a809922bf9bb78c07e718cdccf6e23f69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e60b69b0ddbf4fcbb64cd2b026b15e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a5e60b69b0ddbf4fcbb64cd2b026b15e0">rpc_dictionary_remove_all</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> dictionary)</td></tr>
+<tr class="separator:a5e60b69b0ddbf4fcbb64cd2b026b15e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68527552083ab1b528ac878934a7dd6d"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a68527552083ab1b528ac878934a7dd6d">rpc_dictionary_detach_key</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> dictionary, const char *_Nonnull key)</td></tr>
 <tr class="separator:a68527552083ab1b528ac878934a7dd6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68196ca5ce6f36467d561f68f354d9a8"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a68196ca5ce6f36467d561f68f354d9a8">rpc_dictionary_get_value</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> dictionary, const char *_Nonnull key)</td></tr>
@@ -470,7 +474,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>RAII version of <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>. Automatically released when goes out of scope. </p>
 
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l01679">1679</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l01693">1693</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -1461,6 +1465,31 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">array</td><td>Input array </td></tr>
     <tr><td class="paramname">mapper</td><td>Block of code to be executed for each array element </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a325a04c3c3f91ebbece34b5e816e1032"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a325a04c3c3f91ebbece34b5e816e1032">&#9670;&nbsp;</a></span>rpc_array_remove_all()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rpc_array_remove_all </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>array</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Removes all objects from a provided array.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">array</td><td>Input array. </td></tr>
   </table>
   </dd>
 </dl>
@@ -3102,6 +3131,31 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">dictionary</td><td></td></tr>
     <tr><td class="paramname">mapper</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a5e60b69b0ddbf4fcbb64cd2b026b15e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e60b69b0ddbf4fcbb64cd2b026b15e0">&#9670;&nbsp;</a></span>rpc_dictionary_remove_all()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rpc_dictionary_remove_all </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td>
+          <td class="paramname"><em>dictionary</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Removes all keys and their associated values from a dictionary.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dictionary</td><td>Input dictionary. </td></tr>
   </table>
   </dd>
 </dl>
