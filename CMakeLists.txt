@@ -329,7 +329,6 @@ if(BUILD_EXAMPLES)
     if(LINUX)
         add_subdirectory(examples/shm-client)
         add_subdirectory(examples/shm-server)
-        add_subdirectory(examples/benchmark)
     endif()
 
     if (BUILD_BUS OR BUILD_LIBUSB)
