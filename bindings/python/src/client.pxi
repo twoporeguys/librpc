@@ -46,14 +46,15 @@ cdef class Client(Connection):
         if self.client != <rpc_client_t>NULL:
             rpc_client_close(self.client)
 
-    def connect(self, uri, Object params=None):
+    def connect(self, uri, params=None):
         cdef char* c_uri
-        cdef rpc_object_t rawparams
+        cdef rpc_object_t c_params
 
         self.uri = c_uri = uri.encode('utf-8')
-        rawparams = params.obj if params else <rpc_object_t>NULL
+        c_params = Object(params).unwrap() if params else <rpc_object_t>NULL
+
         with nogil:
-            self.client = rpc_client_create(c_uri, rawparams)
+            self.client = rpc_client_create(c_uri, c_params)
 
         if self.client == <rpc_client_t>NULL:
             raise_internal_exc(rpc=False)
