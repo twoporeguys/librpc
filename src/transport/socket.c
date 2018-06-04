@@ -38,8 +38,6 @@
 #include "../linker_set.h"
 #include "../internal.h"
 
-#define	SOCKET_INITIAL_READ	1024
-
 static GSocketAddress *socket_parse_uri(const char *);
 static int socket_connect(struct rpc_connection *, const char *, rpc_object_t);
 static int socket_listen(struct rpc_server *, const char *, rpc_object_t);
@@ -360,14 +358,8 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	int ncmsg, i;
 	int nfds_i;
 
-	/*
-	 * Allocate SOCKET_INITIAL_READ bytes upfront speculatively to
-	 * avoid additional syscall when receiving a small message
-	 */
-	length = SOCKET_INITIAL_READ;
-	*frame = g_malloc(length);
 	iov[0] = (GInputVector){ .buffer = header, .size = sizeof(header) };
-	iov[1] = (GInputVector){ .buffer = *frame, .size = length };
+	iov[1] = (GInputVector){ .buffer = NULL, .size = 0 };
 
 	for (;;) {
 		step = g_socket_receive_message(conn->sc_socket, NULL, iov, 2,
@@ -398,12 +390,9 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 			have_header = true;
 			length = header[1];
 			*size = length;
-
-			if (length > SOCKET_INITIAL_READ + sizeof(header)) {
-				*frame = g_realloc(*frame, length);
-				iov[1].buffer = *frame + done - sizeof(header);
-				iov[1].size = length - done + sizeof(header);
-			}
+			*frame = g_malloc(length);
+			iov[1].buffer = *frame + done - sizeof(header);
+			iov[1].size = length - done + sizeof(header);
 		}
 
 		if (done == length + sizeof(header))
