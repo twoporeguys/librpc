@@ -358,6 +358,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	int ncmsg, i;
 	int nfds_i;
 
+	*nfds = 0;
 	iov[0] = (GInputVector){ .buffer = header, .size = sizeof(header) };
 	iov[1] = (GInputVector){ .buffer = NULL, .size = 0 };
 
