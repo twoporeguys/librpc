@@ -25,6 +25,7 @@
  *
  */
 
+#include <errno.h>
 #include <rpc/object.h>
 #include <rpc/client.h>
 #include <rpc/connection.h>
@@ -35,16 +36,38 @@ rpc_client_t
 rpcd_connect_to(const char *service_name)
 {
 	rpc_client_t client;
-	rpc_client_t result;
 	rpc_connection_t conn;
+	rpc_auto_object_t result = NULL;
+	char *path;
 
 	client = rpc_client_create(RPCD_SOCKET_LOCATION, NULL);
-	if (client == NULL) {
-
-	}
+	if (client == NULL)
+		return (NULL);
 
 	conn = rpc_client_get_connection(client);
+	path = g_strdup_printf("/%s", service_name);
+	result = rpc_connection_call_syncp(conn, path, RPCD_SERVICE_INTERFACE,
+	    "connect", "[]");
 
+	if (result == NULL) {
+		rpc_client_close(client);
+		return (NULL);
+	}
+
+	if (rpc_is_error(result)) {
+		rpc_client_close(client);
+		rpc_set_last_rpc_error(result);
+		return (NULL);
+	}
+
+	if (rpc_get_type(result) != RPC_TYPE_FD) {
+		rpc_set_last_errorf(EINVAL, "No file descriptor returned");
+		rpc_client_close(client);
+		return (NULL);
+	}
+
+	rpc_client_close(client);
+	return (rpc_client_create("socket://", result));
 }
 
 int
@@ -52,12 +75,11 @@ rpcd_register(const char *uri, const char *name, const char *description)
 {
 	rpc_client_t client;
 	rpc_connection_t conn;
-	rpc_object_t result;
+	rpc_auto_object_t result = NULL;
 
 	client = rpc_client_create(RPCD_SOCKET_LOCATION, NULL);
-	if (client == NULL) {
-
-	}
+	if (client == NULL)
+		return (-1);
 
 	conn = rpc_client_get_connection(client);
 	result = rpc_connection_call_syncp(conn, "/", RPCD_MANAGER_INTERFACE,
