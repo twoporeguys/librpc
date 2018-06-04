@@ -161,8 +161,6 @@
     <member refid="object_8h_1aa1f69b6cfaa4ae287272d76da16b005d" kind="function"><name>rpc_get_type</name></member>
     <member refid="object_8h_1a9627e5627f82660af36d6c626aebabbd" kind="function"><name>rpc_get_type_name</name></member>
     <member refid="object_8h_1a45800949eb1b61b3af02051c780244fe" kind="function"><name>rpc_get_last_error</name></member>
-    <member refid="object_8h_1a779caec7eaf97b96bf396c36b9288f1d" kind="function"><name>rpc_object_from_json</name></member>
-    <member refid="object_8h_1ae3401dd36d39da20b6abdd20b8bcc38e" kind="function"><name>rpc_object_to_json</name></member>
     <member refid="object_8h_1a8a8454f12dcde323f5daba961febea97" kind="function"><name>rpc_object_pack</name></member>
     <member refid="object_8h_1a3c15ce52778038cf6bbfe191cf30fe71" kind="function"><name>rpc_object_vpack</name></member>
     <member refid="object_8h_1a6ff01b9e6d71ba03e2dff76ede7366f6" kind="function"><name>rpc_object_unpack</name></member>

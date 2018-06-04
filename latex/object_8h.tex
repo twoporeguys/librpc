@@ -110,10 +110,6 @@ const char $\ast$\+\_\+\+Nullable \hyperlink{object_8h_a9627e5627f82660af36d6c62
 \item 
 \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_a45800949eb1b61b3af02051c780244fe}{rpc\+\_\+get\+\_\+last\+\_\+error} (void)
 \item 
-\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_a779caec7eaf97b96bf396c36b9288f1d}{rpc\+\_\+object\+\_\+from\+\_\+json} (const void $\ast$\+\_\+\+Nonnull frame, size\+\_\+t size)
-\item 
-int \hyperlink{object_8h_ae3401dd36d39da20b6abdd20b8bcc38e}{rpc\+\_\+object\+\_\+to\+\_\+json} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object, void $\ast$\+\_\+\+Nullable $\ast$\+\_\+\+Nonnull frame, size\+\_\+t $\ast$\+\_\+\+Nullable size)
-\item 
 \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_a8a8454f12dcde323f5daba961febea97}{rpc\+\_\+object\+\_\+pack} (const char $\ast$\+\_\+\+Nonnull fmt,...)
 \item 
 \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{object_8h_a3c15ce52778038cf6bbfe191cf30fe71}{rpc\+\_\+object\+\_\+vpack} (const char $\ast$\+\_\+\+Nonnull fmt, va\+\_\+list ap)
@@ -358,7 +354,7 @@ Definition at line 158 of file object.\+h.
 
 R\+A\+II version of \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}. Automatically released when goes out of scope. 
 
-Definition at line 1699 of file object.\+h.
+Definition at line 1678 of file object.\+h.
 
 \mbox{\Hypertarget{object_8h_a470d0e93b159810ff425aec90f47c817}\label{object_8h_a470d0e93b159810ff425aec90f47c817}} 
 \index{object.\+h@{object.\+h}!R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR@{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}}
@@ -2400,24 +2396,6 @@ Creates an object holding null value.
 \begin{DoxyReturn}{Returns}
 newly created object 
 \end{DoxyReturn}
-\mbox{\Hypertarget{object_8h_a779caec7eaf97b96bf396c36b9288f1d}\label{object_8h_a779caec7eaf97b96bf396c36b9288f1d}} 
-\index{object.\+h@{object.\+h}!rpc\+\_\+object\+\_\+from\+\_\+json@{rpc\+\_\+object\+\_\+from\+\_\+json}}
-\index{rpc\+\_\+object\+\_\+from\+\_\+json@{rpc\+\_\+object\+\_\+from\+\_\+json}!object.\+h@{object.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+object\+\_\+from\+\_\+json()}{rpc\_object\_from\_json()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} rpc\+\_\+object\+\_\+from\+\_\+json (\begin{DoxyParamCaption}\item[{const void $\ast$\+\_\+\+Nonnull}]{frame,  }\item[{size\+\_\+t}]{size }\end{DoxyParamCaption})}
-
-Deserialize a J\+S\+ON string to an object compatible with library\textquotesingle{}s data model.
-
-
-\begin{DoxyParams}{Parameters}
-{\em frame} & J\+S\+ON string pointer. \\
-\hline
-{\em size} & J\+S\+ON string size. \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Deserialized object. 
-\end{DoxyReturn}
 \mbox{\Hypertarget{object_8h_a8a8454f12dcde323f5daba961febea97}\label{object_8h_a8a8454f12dcde323f5daba961febea97}} 
 \index{object.\+h@{object.\+h}!rpc\+\_\+object\+\_\+pack@{rpc\+\_\+object\+\_\+pack}}
 \index{rpc\+\_\+object\+\_\+pack@{rpc\+\_\+object\+\_\+pack}!object.\+h@{object.\+h}}
@@ -2478,26 +2456,6 @@ Format string syntax\+:
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 Packed object. 
-\end{DoxyReturn}
-\mbox{\Hypertarget{object_8h_ae3401dd36d39da20b6abdd20b8bcc38e}\label{object_8h_ae3401dd36d39da20b6abdd20b8bcc38e}} 
-\index{object.\+h@{object.\+h}!rpc\+\_\+object\+\_\+to\+\_\+json@{rpc\+\_\+object\+\_\+to\+\_\+json}}
-\index{rpc\+\_\+object\+\_\+to\+\_\+json@{rpc\+\_\+object\+\_\+to\+\_\+json}!object.\+h@{object.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+object\+\_\+to\+\_\+json()}{rpc\_object\_to\_json()}}
-{\footnotesize\ttfamily int rpc\+\_\+object\+\_\+to\+\_\+json (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}}]{object,  }\item[{void $\ast$\+\_\+\+Nullable $\ast$\+\_\+\+Nonnull}]{frame,  }\item[{size\+\_\+t $\ast$\+\_\+\+Nullable}]{size }\end{DoxyParamCaption})}
-
-Serialize an object to a J\+S\+ON string.
-
-
-\begin{DoxyParams}{Parameters}
-{\em object} & Object to be serialized. \\
-\hline
-{\em frame} & Pointer to a serialized J\+S\+ON string. \\
-\hline
-{\em size} & Size of a serialized J\+S\+ON string. \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Serialization status. Errors are reported as non-\/zero values. 
 \end{DoxyReturn}
 \mbox{\Hypertarget{object_8h_a6ff01b9e6d71ba03e2dff76ede7366f6}\label{object_8h_a6ff01b9e6d71ba03e2dff76ede7366f6}} 
 \index{object.\+h@{object.\+h}!rpc\+\_\+object\+\_\+unpack@{rpc\+\_\+object\+\_\+unpack}}
