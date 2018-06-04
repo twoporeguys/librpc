@@ -183,6 +183,23 @@ def main():
         bbox_inches='tight'
     )
 
+    plt.figure(3)
+    plt.plot(MESSAGE_SIZES, [i['lat'] for i in librpc_results], 'r', label='librpc')
+    plt.plot(MESSAGE_SIZES, [i['lat'] for i in librpc_shmem_results], 'g', label='librpc-shmem')
+    plt.plot(MESSAGE_SIZES, [i['lat'] for i in dbus_results], 'b', label='d-bus')
+
+    plt.xscale('log', basex=2)
+    plt.yscale('log')
+    plt.xlabel('Message size (bytes)')
+    plt.ylabel('Average latency')
+    plt.grid('on')
+    lgd = plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    plt.savefig(
+        os.path.join(args.output, 'latency.png'),
+        bbox_extra_artists=(lgd,),
+        bbox_inches='tight'
+    )
+
     print('Plots saved to "{0}" directory'.format(args.output))
 
 

@@ -86,7 +86,10 @@ int main(int argc, char *const argv[])
 	struct timespec start;
 	struct timespec end;
 	struct timespec diff;
+	struct timespec lat_start;
+	struct timespec lat_end;
 	double elapsed;
+	double lat_sum = 0;
 	bool quiet = false;
 	int64_t bytes = 0;
 	int64_t cycles;
@@ -120,22 +123,28 @@ int main(int argc, char *const argv[])
 
 	clock_gettime(CLOCK_REALTIME, &start);
 
-	for (cycles = 0; cycles < ncycles; cycles++)
+	for (cycles = 0; cycles < ncycles; cycles++) {
+		clock_gettime(CLOCK_REALTIME, &lat_start);
 		bytes += send_message(conn);
+		clock_gettime(CLOCK_REALTIME, &lat_end);
+		timespec_diff(&lat_start, &lat_end, &diff);
+		lat_sum += diff.tv_sec + diff.tv_nsec / 1E9;
+	}
 
 	clock_gettime(CLOCK_REALTIME, &end);
 	timespec_diff(&start, &end, &diff);
 	elapsed = diff.tv_sec + diff.tv_nsec / 1E9;
 
 	if (quiet) {
-		printf("msgs=%" PRId64 " bytes=%" PRId64 " bps=%f pps=%f\n",
-		    cycles, bytes, bytes / elapsed, cycles / elapsed);
+		printf("msgs=%" PRId64 " bytes=%" PRId64 " bps=%f pps=%f lat=%f\n",
+		    cycles, bytes, bytes / elapsed, cycles / elapsed,
+		    lat_sum / cycles);
 	} else {
 		printf("Received %" PRId64 " messages and %" PRId64 " bytes\n", cycles, bytes);
 		printf("It took %.04f seconds\n", elapsed);
 		printf("Average data rate: %.04f MB/s\n", bytes / elapsed / 1024 / 1024);
 		printf("Average packet rate: %.04f packets/s\n", cycles / elapsed);
+		printf("Average latency: %.08fs\n", lat_sum / cycles);
 	}
-
 	return (EXIT_SUCCESS);
 }
