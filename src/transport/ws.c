@@ -179,15 +179,18 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 	    SOUP_SERVER_SERVER_HEADER, "librpc",
 	    NULL);
 
-	soup_server_add_handler(server->ws_soupserver, "/", ws_process_banner,
-	    server, NULL);
+	if (g_strcmp0(server->ws_path, "/") != 0) {
+		soup_server_add_handler(server->ws_soupserver, "/",
+		    ws_process_banner, server, NULL);
+	}
+
 	soup_server_add_websocket_handler(server->ws_soupserver,
 	    server->ws_path, NULL, NULL, ws_process_connection, server, NULL);
-
 	addr = g_inet_socket_address_new_from_string(uri->host, uri->port);
 	soup_server_listen(server->ws_soupserver, addr, 0, &err);
 	if (err != NULL) {
-		errno = err->code;
+		rpc_set_last_gerror(err);
+		g_error_free(err);
 		ret = -1;
 		goto done;
 	}
