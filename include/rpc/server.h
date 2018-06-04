@@ -77,6 +77,17 @@ _Nullable rpc_server_t rpc_server_create(const char *_Nonnull uri,
     _Nonnull rpc_context_t context);
 
 /**
+ * Creates a server instance listening on a given URI.
+ *
+ * @param uri URI to listen on
+ * @param context RPC context for a server instance
+ * @param params Additional parameters for a transport
+ * @return Server handle
+ */
+_Nullable rpc_server_t rpc_server_create_ex(const char *_Nonnull uri,
+    _Nonnull rpc_context_t context, _Nullable rpc_object_t params);
+
+/**
  * Starts accepting requests by the server.
  *
  * Server instance keeps all the incoming requests queued and on hold
@@ -111,6 +122,16 @@ void rpc_server_set_event_handler(_Nullable rpc_server_event_handler_t handler);
  * @return 0 on successful teardown
  */
 int rpc_server_close(_Nonnull rpc_server_t server);
+
+/**
+ * Sets up some number of servers using systemd socket activation
+ * information.
+ *
+ * @param servers
+ * @return Number of servers created or -1 on error
+ */
+int rpc_server_sd_listen(_Nonnull rpc_context_t context,
+    _Nonnull rpc_server_t *_Nonnull *_Nonnull servers);
 
 #ifdef __cplusplus
 }

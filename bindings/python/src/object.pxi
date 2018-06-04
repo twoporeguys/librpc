@@ -249,7 +249,7 @@ cdef class Object(object):
 
         return ret
 
-    cdef rpc_object_t unwrap(self):
+    cdef rpc_object_t unwrap(self) nogil:
         return self.obj
 
     def unpack(self):

@@ -977,14 +977,21 @@ rpc_connection_close(rpc_connection_t conn)
 }
 
 bool
-rpc_connection_is_open(_Nonnull rpc_connection_t conn)
+rpc_connection_is_open(rpc_connection_t conn)
 {
 
 	return (!conn->rco_closed);
 }
 
+int
+rpc_connection_get_fd(rpc_connection_t conn)
+{
+
+	return (conn->rco_get_fd(conn->rco_arg));
+}
+
 void
-rpc_connection_free(_Nonnull rpc_connection_t conn)
+rpc_connection_free(rpc_connection_t conn)
 {
 
 	g_free(conn);

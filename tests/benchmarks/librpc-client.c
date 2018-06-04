@@ -40,7 +40,8 @@ static void timespec_diff(struct timespec *, struct timespec *,
 void usage(const char *);
 int main(int, char * const[]);
 
-static void timespec_diff(struct timespec *start, struct timespec *stop,
+static void
+timespec_diff(struct timespec *start, struct timespec *stop,
     struct timespec *result)
 {
 	if ((stop->tv_nsec - start->tv_nsec) < 0) {
@@ -76,11 +77,12 @@ main(int argc, char * const argv[])
 	int64_t bytes = 0;
 	int64_t ncycles = 1000;
 	bool shmem = false;
+	bool quiet = false;
 	char *uri = NULL;
 	int c;
 
 	for (;;) {
-		c = getopt(argc, argv, "u:c:mh");
+		c = getopt(argc, argv, "u:c:mhq");
 		if (c == -1)
 			break;
 
@@ -95,6 +97,10 @@ main(int argc, char * const argv[])
 
 		case 'm':
 			shmem = true;
+			break;
+
+		case 'q':
+			quiet = true;
 			break;
 
 		case 'h':
@@ -130,9 +136,9 @@ main(int argc, char * const argv[])
 
 	clock_gettime(CLOCK_REALTIME, &start);
 
-next:
 	rpc_call_wait(call);
 
+next:
 	switch (rpc_call_status(call)) {
 	case RPC_CALL_MORE_AVAILABLE:
 		cycles++;
@@ -154,7 +160,7 @@ next:
 			bytes += rpc_data_get_length(rpc_call_result(call));
 		}
 
-		rpc_call_continue(call, false);
+		rpc_call_continue(call, true);
 		goto next;
 
 	case RPC_CALL_DONE:
@@ -170,10 +176,16 @@ next:
 	timespec_diff(&start, &end, &diff);
 	elapsed = diff.tv_sec + diff.tv_nsec / 1E9;
 
-	printf("Received %" PRId64 " messages and %" PRId64 " bytes\n", cycles, bytes);
-	printf("It took %.04f seconds\n", elapsed);
-	printf("Average data rate: %.04f MB/s\n", bytes / elapsed / 1024 / 1024);
-	printf("Average packet rate: %.04f\n packets/s\n", cycles / elapsed);
+	if (quiet) {
+		printf("msgs=%" PRId64 " bytes=%" PRId64 " bps=%f pps=%f\n",
+		       cycles, bytes, bytes / elapsed, cycles / elapsed);
+	} else {
+		printf("Received %" PRId64 " messages and %" PRId64 " bytes\n", cycles, bytes);
+		printf("It took %.04f seconds\n", elapsed);
+		printf("Average data rate: %.04f MB/s\n", bytes / elapsed / 1024 / 1024);
+		printf("Average packet rate: %.04f packets/s\n", cycles / elapsed);
+	}
+
 	return (EXIT_SUCCESS);
 
 error:

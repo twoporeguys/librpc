@@ -17,6 +17,7 @@ option(BUILD_JSON "Build and install JSON serializer" ON)
 option(BUILD_LIBUSB "Build and install libusb transport")
 option(BUILD_XPC "Build and install XPC transport")
 option(BUILD_RPCTOOL "Build and install rpctool" ON)
+option(BUILD_RPCD "Build and install rpcd" ON)
 option(BUILD_RPCDOC "Build and install rpcdoc" ON)
 option(ENABLE_UBSAN "Enable undefined behavior sanitizer")
 option(ENABLE_UBSAN_NULLABILITY "Enable nullability sanitizer")
@@ -25,6 +26,7 @@ option(ENABLE_LIBDISPATCH "Enable libdispatch support")
 option(ENABLE_COVERAGE "Enable code coverage")
 
 if(LINUX)
+    option(ENABLE_SYSTEMD "Enable systemd support" ON)
     option(BUILD_BUS "Build and install bus transport" ON)
     option(BUILD_KMOD "Build and install kmod" ON)
 endif()
@@ -72,6 +74,10 @@ endif()
 
 if(BUILD_BUS AND LINUX)
     pkg_check_modules(UDEV REQUIRED libudev)
+endif()
+
+if(ENABLE_SYSTEMD)
+    pkg_check_modules(SYSTEMD REQUIRED systemd)
 endif()
 
 if(BUNDLED_BLOCKS_RUNTIME)
@@ -156,6 +162,12 @@ if(BUILD_LIBUSB)
     link_directories(${LIBUSB_LIBRARY_DIRS})
 endif()
 
+if(ENABLE_SYSTEMD)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSYSTEMD_SUPPORT")
+    include_directories(${SYSTEMD_INCLUDE_DIRS})
+    link_directories(${SYSTEMD_LIBRARY_DIRS})
+endif()
+
 set(HEADERS
         include/rpc/object.h
         include/rpc/connection.h
@@ -177,6 +189,7 @@ set(CORE_FILES
         src/rpc_bus.c
         src/rpc_serializer.c
         src/rpc_typing.c
+        src/rpc_rpcd_client.c
         src/utils.c
         src/internal.h
         src/linker_set.h
@@ -232,13 +245,13 @@ if(BUILD_XPC)
     set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/xpc.c)
 endif()
 
-	add_library(librpc SHARED
-			${HEADERS}
-			${TRANSPORT_FILES}
-			${SERIALIZER_FILES}
-			${TYPE_CLASS_FILES}
-			${VALIDATOR_FILES}
-			${CORE_FILES})
+add_library(librpc SHARED
+        ${HEADERS}
+        ${TRANSPORT_FILES}
+        ${SERIALIZER_FILES}
+        ${TYPE_CLASS_FILES}
+        ${VALIDATOR_FILES}
+        ${CORE_FILES})
 
 set_target_properties(librpc PROPERTIES PREFIX "")
 set_target_properties(librpc PROPERTIES SOVERSION 1)
@@ -263,6 +276,10 @@ endif()
 
 if(ENABLE_LIBDISPATCH AND NOT APPLE)
 	target_link_libraries(librpc dispatch)
+endif()
+
+if(ENABLE_SYSTEMD)
+    target_link_libraries(librpc systemd)
 endif()
 
 configure_file(librpc.pc.in ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc @ONLY)
@@ -312,7 +329,6 @@ if(BUILD_EXAMPLES)
     if(LINUX)
         add_subdirectory(examples/shm-client)
         add_subdirectory(examples/shm-server)
-        add_subdirectory(examples/benchmark)
     endif()
 
     if (BUILD_BUS OR BUILD_LIBUSB)
@@ -327,6 +343,10 @@ endif()
 
 if(BUILD_RPCTOOL)
     add_subdirectory(tools/rpctool)
+endif()
+
+if(BUILD_RPCD)
+    add_subdirectory(tools/rpcd)
 endif()
 
 if(BUILD_RPCDOC)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Two Pore Guys, Inc.
+ * Copyright 2015-2017 Two Pore Guys, Inc.
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,48 +25,34 @@
  *
  */
 
-#include <stdio.h>
-#include <unistd.h>
-#include <errno.h>
-#include <rpc/object.h>
-#include <rpc/service.h>
-#include <rpc/server.h>
+#ifndef LIBRPC_RPCD_H
+#define LIBRPC_RPCD_H
 
-static rpc_object_t
-write_to_pipe(void *cookie, rpc_object_t args)
-{
-	int fd;
+/**
+ * @file rpcd.h
+ */
 
-	if (rpc_object_unpack(args, "[f]", &fd) < 1) {
-		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
-		return (NULL);
-	}
+#define	RPCD_SOCKET_LOCATION	"unix:///var/run/rpcd.sock"
+#define	RPCD_MANAGER_INTERFACE	"com.twoporeguys.rpcd.ServiceManager"
+#define	RPCD_SERVICE_INTERFACE	"com.twoporeguys.rpcd.Service"
 
-	printf("Received fd %d\n", fd);
 
-	dprintf(fd, "Hello there\n");
-	dprintf(fd, "I am writing to the pipe\n");
-	sleep(1);
-	dprintf(fd, "And sometimes sleeping\n");
-	dprintf(fd, "Bye.\n");
-	close(fd);
+/**
+ * Looks up a service with given name and connects to it.
+ *
+ * @param service_name FQDN name of the service
+ * @return RPC client handle or NULL in case of an error
+ */
+_Nullable rpc_client_t rpcd_connect_to(const char *_Nonnull service_name);
 
-	return (NULL);
-}
+/**
+ *
+ * @param uri
+ * @param name
+ * @param description
+ * @return
+ */
+int rpcd_register(const char *_Nonnull uri, const char *_Nonnull name,
+    const char *_Nullable description);
 
-int
-main(int argc, const char *argv[])
-{
-	rpc_context_t ctx;
-	rpc_server_t srv;
-
-	(void)argc;
-	(void)argv;
-
-	ctx = rpc_context_create();
-	rpc_context_register_func(ctx, NULL, "write_to_pipe", NULL,
-	    write_to_pipe);
-	srv = rpc_server_create("unix:///tmp/server.sock", ctx);
-	rpc_server_resume(srv);
-	pause();
-}
+#endif /* LIBRPC_RPCD_H */
