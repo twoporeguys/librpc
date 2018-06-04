@@ -167,6 +167,7 @@ next:
 		clock_gettime(CLOCK_REALTIME, &lat_end);
 		timespec_diff(&lat_start, &lat_end, &diff);
 		lat_sum += diff.tv_sec + diff.tv_nsec / 1E9;
+		rpc_release(item);
 
 		clock_gettime(CLOCK_REALTIME, &lat_start);
 		rpc_call_continue(call, true);
