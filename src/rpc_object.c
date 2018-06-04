@@ -912,6 +912,9 @@ rpc_object_vpack(const char *fmt, va_list ap)
 				if (*search_ptr == '}')
 					break;
 
+				if (*search_ptr == '\'')
+					break;
+
 				search_ptr++;
 			}
 
@@ -1010,6 +1013,16 @@ rpc_object_vpack(const char *fmt, va_list ap)
 
 		case 's':
 			current = rpc_string_create(va_arg(ap, const char *));
+			break;
+
+		case '\'':
+			search_ptr = strchr(ptr + 1, '\'');
+			if (search_ptr == NULL)
+				goto error;
+
+			current = rpc_string_create_len(ptr + 1,
+			    search_ptr - ptr - 1);
+			ptr = search_ptr + 1;
 			break;
 
 		case '<':
