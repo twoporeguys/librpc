@@ -345,27 +345,6 @@ const char *_Nullable rpc_get_type_name(rpc_type_t type);
 _Nullable rpc_object_t rpc_get_last_error(void);
 
 /**
- * Deserialize a JSON string to an object compatible with library's data model.
- *
- * @param frame JSON string pointer.
- * @param size JSON string size.
- * @return Deserialized object.
- */
-_Nullable rpc_object_t rpc_object_from_json(const void *_Nonnull frame,
-    size_t size);
-
-/**
- * Serialize an object to a JSON string.
- *
- * @param object Object to be serialized.
- * @param frame Pointer to a serialized JSON string.
- * @param size Size of a serialized JSON string.
- * @return Serialization status. Errors are reported as non-zero values.
- */
-int rpc_object_to_json(_Nonnull rpc_object_t object,
-    void *_Nullable *_Nonnull frame, size_t *_Nullable size);
-
-/**
  * Packs provided values accordingly to a specified format string an into object
  * compatible with library's data model.
  *
