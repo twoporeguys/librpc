@@ -37,7 +37,7 @@ os.environ['CC'] = 'clang'
 os.environ.setdefault('DESTDIR', '/')
 cflags = ['-fblocks', '-Wno-sometimes-uninitialized']
 ldflags = ['-g', '-lrpc']
-
+systemd = os.environ['SYSTEMD_SUPPORT'] == 'ON'
 
 if 'CMAKE_SOURCE_DIR' in os.environ:
     cflags += [os.path.expandvars('-I${CMAKE_SOURCE_DIR}/include')]
@@ -59,7 +59,8 @@ setup(
             "librpc",
             ["librpc.pyx"],
             extra_compile_args=cflags,
-            extra_link_args=ldflags
+            extra_link_args=ldflags,
+            cython_compile_time_env={'SYSTEMD_SUPPORT': systemd}
         )
     ]
 )

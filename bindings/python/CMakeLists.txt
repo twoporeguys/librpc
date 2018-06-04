@@ -28,6 +28,7 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E env
             CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}
             CMAKE_PREFIX=${CMAKE_INSTALL_PREFIX}
+            SYSTEMD_SUPPORT=${ENABLE_SYSTEMD}
             ${PYTHON} ${SETUP_PY} build
         COMMAND ${CMAKE_COMMAND} -E touch ${OUTPUT}
         DEPENDS ${DEPS}

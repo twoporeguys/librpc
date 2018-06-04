@@ -86,24 +86,25 @@ cdef class Server(object):
     def __repr__(self):
         return "<librpc.Server at '{0}'>".format(self.uri)
 
-    @staticmethod
-    def systemd_listen(Context context):
-        cdef Server server
-        cdef int nservers
-        cdef rpc_server_t *servers
-        cdef rpc_context_t c_context = context.unwrap()
+    IF SYSTEMD_SUPPORT:
+        @staticmethod
+        def systemd_listen(Context context):
+            cdef Server server
+            cdef int nservers
+            cdef rpc_server_t *servers
+            cdef rpc_context_t c_context = context.unwrap()
 
-        with nogil:
-            nservers = rpc_server_sd_listen(c_context, &servers)
+            with nogil:
+                nservers = rpc_server_sd_listen(c_context, &servers)
 
-        if nservers < 0:
-            raise_internal_exc()
+            if nservers < 0:
+                raise_internal_exc()
 
-        result = []
-        for i in range(nservers):
-            server = Server.wrap(servers[i])
-            server.uri = None
-            server.context = context
-            result.append(server)
+            result = []
+            for i in range(nservers):
+                server = Server.wrap(servers[i])
+                server.uri = None
+                server.context = context
+                result.append(server)
 
-        return result
+            return result
