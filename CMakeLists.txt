@@ -345,7 +345,7 @@ if(BUILD_RPCTOOL)
     add_subdirectory(tools/rpctool)
 endif()
 
-if(BUILD_RPCD)
+if(BUILD_RPCD AND LINUX)
     add_subdirectory(tools/rpcd)
 endif()
 
