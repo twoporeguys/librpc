@@ -358,7 +358,7 @@ Definition at line 158 of file object.\+h.
 
 R\+A\+II version of \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}. Automatically released when goes out of scope. 
 
-Definition at line 1693 of file object.\+h.
+Definition at line 1699 of file object.\+h.
 
 \mbox{\Hypertarget{object_8h_a470d0e93b159810ff425aec90f47c817}\label{object_8h_a470d0e93b159810ff425aec90f47c817}} 
 \index{object.\+h@{object.\+h}!R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR@{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}}
@@ -2444,6 +2444,10 @@ Both syntaxes are allowed to be mixed together in a single format string creatin
 
 Example\+: \{\mbox{[}i,s,i\mbox{]},\mbox{[}10\+:b,s,1\+:d,u\mbox{]},\{key\+:v,f,u\}\} Array in the middle of the example below is going to be created in the following order\+: indexes 0-\/9 are going to be padded with the N\+U\+LL R\+PC objects, index 10 is going to contain B\+O\+OL R\+PC object, index 11 is going to contain a S\+T\+R\+I\+NG R\+PC object, function jumps back to the index 1 and replaces N\+U\+LL R\+PC object with the D\+O\+U\+B\+LE R\+PC object, function increments last index, that results in the index 2 and replaces the N\+U\+LL R\+PC object below that index with U\+N\+S\+I\+G\+N\+ED I\+NT R\+PC object.
 
+Format string can also contain single quoted inline strings for ease of packing of constant values.
+
+Example\+: \{inline\+\_\+string\+:\textquotesingle{}inline\+\_\+string\+\_\+value\textquotesingle{}\}
+
 Format string syntax\+:
 \begin{DoxyItemize}
 \item v -\/ librpc object -\/ args\+: rpc\+\_\+object\+\_\+t object
@@ -2458,6 +2462,7 @@ Format string syntax\+:
 \item d -\/ Double object -\/ args\+: double value
 \item D -\/ Date object -\/ args\+: int interval
 \item s -\/ String object -\/ args\+: char $\ast$string
+\item \textquotesingle{} -\/ Inline string start/end = args\+: takes no arguments
 \item \{ -\/ Open dictionary -\/ values inside of dictionary require additional char $\ast$key argument at the beginning of their usual argument list
 \item \} -\/ Close dictionary
 \item \mbox{[} -\/ Open array

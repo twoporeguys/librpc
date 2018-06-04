@@ -474,7 +474,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>RAII version of <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>. Automatically released when goes out of scope. </p>
 
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l01693">1693</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l01699">1699</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -4372,6 +4372,8 @@ Functions</h2></td></tr>
 <li>Explicit array indexing does not have to be represented in a growing order, or any sorted order</li>
 </ul>
 <p>Example: {[i,s,i],[10:b,s,1:d,u],{key:v,f,u}} Array in the middle of the example below is going to be created in the following order: indexes 0-9 are going to be padded with the NULL RPC objects, index 10 is going to contain BOOL RPC object, index 11 is going to contain a STRING RPC object, function jumps back to the index 1 and replaces NULL RPC object with the DOUBLE RPC object, function increments last index, that results in the index 2 and replaces the NULL RPC object below that index with UNSIGNED INT RPC object.</p>
+<p>Format string can also contain single quoted inline strings for ease of packing of constant values.</p>
+<p>Example: {inline_string:'inline_string_value'}</p>
 <p>Format string syntax:</p><ul>
 <li>v - librpc object - args: rpc_object_t object</li>
 <li>V - librpc object (increases refcount) - args: rpc_object_t object</li>
@@ -4385,6 +4387,7 @@ Functions</h2></td></tr>
 <li>d - Double object - args: double value</li>
 <li>D - Date object - args: int interval</li>
 <li>s - String object - args: char *string</li>
+<li>' - Inline string start/end = args: takes no arguments</li>
 <li>{ - Open dictionary - values inside of dictionary require additional char *key argument at the beginning of their usual argument list</li>
 <li>} - Close dictionary</li>
 <li>[ - Open array</li>
