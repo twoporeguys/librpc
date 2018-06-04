@@ -857,7 +857,8 @@ rpc_object_t
 rpc_object_vpack(const char *fmt, va_list ap)
 {
 	GQueue *stack = g_queue_new();
-	GQueue *keys = g_queue_new();
+	GQueue *key_q = g_queue_new();
+	GQueue *idx_q = g_queue_new();
 	rpc_object_t current = NULL;
 	rpc_object_t container = NULL;
 	rpc_object_t tmp;
@@ -871,7 +872,7 @@ rpc_object_vpack(const char *fmt, va_list ap)
 	char *type = NULL;
 	char ch;
 	char delim;
-	size_t idx = 0;
+	size_t *idx;
 	uint32_t nesting;
 
 	for (ptr = fmt; *ptr != '\0'; ptr++) {
@@ -919,26 +920,28 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			}
 
 			if (rpc_get_type(container) == RPC_TYPE_ARRAY) {
+				idx = g_malloc0(sizeof(size_t));
 				if (colon_ptr != NULL) {
-					idx = (size_t)strtol(ptr,
+					*idx = (size_t)strtol(ptr,
 					    &idx_end_ptr, 10);
 
 					if (idx_end_ptr != colon_ptr)
 						goto error;
 				} else {
-					idx = rpc_array_get_count(
+					*idx = rpc_array_get_count(
 					    container);
 				}
+				g_queue_push_tail(idx_q, idx);
 			} else {
 				if (colon_ptr != NULL) {
-					g_queue_push_tail(keys,
+					g_queue_push_tail(key_q,
 					    g_strndup(ptr,
 					    (colon_ptr - ptr)));
 
 				} else {
 					key = g_strdup(
 					    va_arg(ap, const char *));
-					g_queue_push_tail(keys,
+					g_queue_push_tail(key_q,
 					    (gpointer)key);
 				}
 			}
@@ -1074,6 +1077,9 @@ rpc_object_vpack(const char *fmt, va_list ap)
 
 		case '}':
 		case ']':
+			if (*(ptr + 1) == ',')
+				ptr++;
+
 			current = g_queue_pop_tail(stack);
 			container = g_queue_peek_tail(stack);
 			break;
@@ -1093,21 +1099,23 @@ rpc_object_vpack(const char *fmt, va_list ap)
 
 		if (container != NULL) {
 			if (rpc_get_type(container) == RPC_TYPE_DICTIONARY) {
-				key = g_queue_pop_tail(keys);
+				key = g_queue_pop_tail(key_q);
 				rpc_dictionary_steal_value(container, key,
 				    current);
 				g_free(key);
 			}
 
 			if (rpc_get_type(container) == RPC_TYPE_ARRAY) {
-				rpc_array_steal_value(container, idx, current);
+				idx = g_queue_pop_tail(idx_q);
+				rpc_array_steal_value(container, *idx, current);
 			}
 
 			continue;
 		}
 
 		g_queue_free(stack);
-		g_queue_free_full(keys, g_free);
+		g_queue_free_full(key_q, g_free);
+		g_queue_free_full(idx_q, g_free);
 
 		return (current);
 	}
@@ -1116,7 +1124,8 @@ error:
 	rpc_release(current);
 
 	g_queue_free(stack);
-	g_queue_free_full(keys, g_free);
+	g_queue_free_full(key_q, g_free);
+	g_queue_free_full(idx_q, g_free);
 	errno = EINVAL;
 
 	return (NULL);
