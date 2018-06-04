@@ -79,6 +79,7 @@ rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 	server->rs_refcnt++; /* conn has reference */
 
 	debugf("Server accepting connection %p", conn);
+	conn->rco_rpc_context = server->rs_context;
 
 	g_rw_lock_writer_lock(&server->rs_connections_rwlock);
 	server->rs_connections = g_list_append(server->rs_connections, conn);
@@ -310,7 +311,7 @@ server_queue_purge(rpc_server_t server)
 		    "path", &path,
 		    "args", &call_args);
 
-		icall->rc_method = method;
+		icall->rc_method_name = method;
 		icall->rc_interface = interface;
 		icall->rc_path = path;
 		frame = icall->rc_frame;

@@ -201,6 +201,7 @@ struct rpc_call
 	rpc_object_t 		rc_frame;
 	rpc_abort_handler_t	rc_abort_handler;
 	struct rpc_if_method *	rc_if_method;
+	void *			rc_m_arg;
     	bool			rc_streaming;
     	bool			rc_responded;
     	bool			rc_ended;
@@ -218,6 +219,7 @@ struct rpc_connection
 {
     	struct rpc_server *	rco_server;
 	struct rpc_client *	rco_client;
+	struct rpc_context *	rco_rpc_context;
     	struct rpc_credentials	rco_creds;
 	bool			rco_has_creds;
 	const char *        	rco_uri;
@@ -536,7 +538,7 @@ void rpc_connection_send_response(rpc_connection_t, rpc_object_t, rpc_object_t);
 void rpc_connection_send_fragment(rpc_connection_t, rpc_object_t, int64_t,
     rpc_object_t);
 void rpc_connection_send_end(rpc_connection_t, rpc_object_t, int64_t);
-void rpc_connection_close_inbound_call(struct rpc_inbound_call *);
+void rpc_connection_close_inbound_call(struct rpc_call *);
 
 void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 

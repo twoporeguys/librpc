@@ -47,7 +47,8 @@ static rpc_object_t rpc_new_id(void);
 static rpc_object_t rpc_pack_frame(const char *, const char *, rpc_object_t,
     rpc_object_t);
 static bool rpc_run_callback(rpc_connection_t, struct work_item *);
-static struct rpc_call *rpc_call_alloc(rpc_connection_t, rpc_object_t);
+static struct rpc_call *rpc_call_alloc(rpc_connection_t, rpc_object_t,
+    const char *, const char *, const char *, rpc_object_t);
 static int rpc_send_frame(rpc_connection_t, rpc_object_t);
 static void on_rpc_call(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_rpc_response(rpc_connection_t, rpc_object_t, rpc_object_t);
@@ -69,7 +70,8 @@ static struct rpc_subscription *rpc_connection_find_subscription(rpc_connection_
     const char *, const char *, const char *);
 static void rpc_connection_free_resources(rpc_connection_t);
 static int rpc_connection_abort(void *);
-static void rpc_connection_release_call(struct rpc_inbound_call *call);
+static void rpc_connection_release_call(struct rpc_call *call);
+static int cancel_timeout(rpc_call_t call);
 
 struct message_handler
 {
@@ -183,6 +185,10 @@ rpc_run_callback(rpc_connection_t conn, struct work_item *item)
 {
 	GError *err = NULL;
 
+	if (conn->rco_closed) {
+		return (false);
+	}
+
 #ifdef LIBDISPATCH_SUPPORT
 	if (conn->rco_dispatch_queue != NULL) {
 		dispatch_async(conn->rco_dispatch_queue, ^{
@@ -192,9 +198,6 @@ rpc_run_callback(rpc_connection_t conn, struct work_item *item)
 		return (true);
 	}
 #endif
-	if (conn->rco_closed) {
-		return (false);
-	}
 	g_thread_pool_push(conn->rco_callback_pool, item, &err);
 	if (err != NULL) {
 		g_error_free(err);
@@ -228,12 +231,12 @@ rpc_callback_worker(void *arg, void *data)
 			if (ret) {
 				if (call->rc_timeout) {
 					g_assert(g_source_is_destroyed(
-					    call->rc_timeout);
+					    call->rc_timeout));
 					g_source_unref(call->rc_timeout);
 					call->rc_timeout = NULL;
 				}
 				rpc_call_continue(call, false);
-			else
+			} else
 				rpc_call_abort(call);
 		}
 
@@ -283,26 +286,43 @@ rpc_connection_set_context(rpc_connection_t conn, rpc_context_t ctx)
 {
 
 	g_assert(conn->rco_client != NULL);
-	if (!rpc_connection_is_valid(conn) || (conn->rpc_client == NULL)) {
+	if (!rpc_connection_is_open(conn) || (conn->rco_client == NULL)) {
 		rpc_set_last_errorf(EINVAL, "%s",
 		    (conn->rco_client == NULL) ? "Not clent connection" :
 		    "Connection not open");
 		return (-1);
 	}
-	conn->rco_context = ctx;
+	conn->rco_rpc_context = ctx;
+}
+
+static int
+cancel_timeout(rpc_call_t call)
+{
+	/* Cancel timeout source */
+	if (call->rc_timeout != NULL) {
+		if (g_source_is_destroyed(call->rc_timeout)) {
+			g_mutex_unlock(&call->rc_mtx);
+			return (-1);
+		}
+		g_source_destroy(call->rc_timeout);
+		g_source_unref(call->rc_timeout);
+		call->rc_timeout = NULL;
+	}
+	return (0);
 }
 
 static void
 on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 {
-	rpc_call_t *call;
+	rpc_call_t call;
 	const char *method = NULL;
 	const char *interface = NULL;
 	const char *path = NULL;
 	rpc_object_t call_args = NULL;
+	rpc_object_t err;
 	int res;
 
-	if (conn->rco_server == NULL || conn->rco_context == NULL) {
+	if (conn->rco_rpc_context == NULL) {
 		rpc_connection_send_err(conn, id, ENOTSUP, "Not supported");
 		return;
 	}
@@ -313,34 +333,16 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	    "path", &path,
 	    "args", &call_args);
 
-	if (method == NULL) {
-		rpc_connection_send_err(conn, id, EINVAL,
-		    "Method name not provided");
-		return;
+	rpc_retain(id);
+	call = rpc_call_alloc(conn, id, path, interface, method, call_args);
+	if (call == NULL) {
+		err = rpc_get_last_error();
+		rpc_connection_send_err(conn, id, rpc_error_get_code(err),
+			rpc_error_get_message(err));
 	}
 
-	call_args = call_args != NULL
-	    ? rpc_retain(call_args)
-	    : rpc_array_create();
-
-	if (rpc_get_type(call_args) != RPC_TYPE_ARRAY) {
-		rpc_connection_send_err(conn, id, EINVAL,
-		    "Method arguments must be an array");
-		return;
-	}
-
-	call = g_malloc0(sizeof(*call));
-	call->rc_conn = conn;
-	call->rc_context = conn->rco_context; /* but also in rc_conn */
-	call->type = RPC_INBOUND_CALL;
+	call->rc_type = RPC_INBOUND_CALL;
 	call->rc_frame = rpc_retain(args);
-	call->rc_id = rpc_retain(id);
-	call->rc_args = call_args;
-	call->rc_method_name = method;
-	call->rc_interface = interface;
-	call->rc_path = path;
-	g_mutex_init(&call->rc_mtx);
-	g_cond_init(&call->rc_cv);
 
         g_rw_lock_writer_lock(&conn->rco_icall_rwlock);
 	g_hash_table_insert(conn->rco_inbound_calls,
@@ -370,11 +372,14 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	g_assert(call->rc_type == RPC_OUTBOUND_CALL);
 
 	/* Cancel timeout source */
-
-	if (g_source_is_destroyed(call->rc_timeout))
-		return;
-	g_source_destroy(call->rc_timeout);
-
+	if (call->rc_timeout != NULL) {
+		if (g_source_is_destroyed(call->rc_timeout)) {
+			g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
+			return;
+		}
+		g_source_destroy(call->rc_timeout);
+		g_source_unref(call->rc_timeout);
+	}
 	g_mutex_lock(&call->rc_mtx);
 	g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 
@@ -447,11 +452,6 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	g_cond_broadcast(&call->rc_cv);
 	g_mutex_unlock(&call->rc_mtx);
 }
-
-	/* Cancel timeout source */
-	if (g_source_is_destroyed(call->rc_timeout))
-		return;
-	g_source_destroy(call->rc_timeout);
 
 static void
 on_rpc_continue(rpc_connection_t conn, rpc_object_t args __unused,
@@ -733,9 +733,9 @@ rpc_close(rpc_connection_t conn)
 {
 	GHashTableIter iter;
 	char *key;
-	struct rpc_inbound_call *icall;
 	struct rpc_call *call;
 	rpc_object_t err;
+	bool isempty;
 
         g_mutex_lock(&conn->rco_mtx);
 	if (conn->rco_aborted) {
@@ -782,16 +782,16 @@ rpc_close(rpc_connection_t conn)
 	g_mutex_unlock(&conn->rco_mtx);
 	g_hash_table_iter_init(&iter, conn->rco_inbound_calls);
 	while (g_hash_table_iter_next(&iter, (gpointer)&key,
-	    (gpointer)&icall)) {
-		g_mutex_lock(&icall->rc_mtx);
-		icall->rc_aborted = true;
-		g_cond_broadcast(&icall->rc_cv);
-		g_mutex_unlock(&icall->rc_mtx);
+	    (gpointer)&call)) {
+		g_mutex_lock(&call->rc_mtx);
+		call->rc_aborted = true;
+		g_cond_broadcast(&call->rc_cv);
+		g_mutex_unlock(&call->rc_mtx);
 
-		if (icall->rc_abort_handler) {
-			icall->rc_abort_handler();
-			Block_release(icall->rc_abort_handler);
-			icall->rc_abort_handler = NULL;
+		if (call->rc_abort_handler) {
+			call->rc_abort_handler();
+			Block_release(call->rc_abort_handler);
+			call->rc_abort_handler = NULL;
 		}
 	}
 	g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
@@ -802,7 +802,7 @@ rpc_close(rpc_connection_t conn)
 
 		/* Cancel timeout source */
 		if (call->rc_timeout != NULL) {
-			if (g_source_is_destroyed(call->rc_timeout) {
+			if (g_source_is_destroyed(call->rc_timeout)) {
 				g_source_unref(call->rc_timeout);
 				call->rc_timeout = NULL;
 				continue;
@@ -826,12 +826,35 @@ rpc_close(rpc_connection_t conn)
 }
 
 static struct rpc_call *
-rpc_call_alloc(rpc_connection_t conn, rpc_object_t id)
+rpc_call_alloc(rpc_connection_t conn, rpc_object_t id, const char *path,
+    const char *interface, const char *method, rpc_object_t args)
 {
 	struct rpc_call *call;
+	rpc_object_t call_args;
+
+	if (method == NULL) {
+		rpc_set_last_errorf(EINVAL,
+		    "Method name not provided");
+		return (NULL);
+	}
+
+	call_args = call_args != NULL
+	    ? rpc_retain(call_args)
+	    : rpc_array_create();
+
+	if (rpc_get_type(call_args) != RPC_TYPE_ARRAY) {
+		rpc_set_last_errorf(EINVAL,
+		    "Method arguments must be an array");
+		return (NULL);
+	}
 
 	call = g_malloc0(sizeof(*call));
 	call->rc_conn = conn;
+	call->rc_context = conn->rco_rpc_context;
+	call->rc_path = path;
+	call->rc_interface = interface;
+	call->rc_method_name = method;
+	call->rc_args = call_args;
 	call->rc_id = id != NULL ? id : rpc_new_id();
 	g_mutex_init(&call->rc_mtx);
 	g_cond_init(&call->rc_cv);
@@ -1276,6 +1299,8 @@ rpc_connection_set_dispatch_queue(rpc_connection_t conn, dispatch_queue_t queue)
 {
 	GError *err = NULL;
 
+	if (conn->rco_callback_pool == NULL)
+		return (-1);
 	g_thread_pool_set_max_threads(conn->rco_callback_pool, 0, &err);
 	conn->rco_dispatch_queue = queue;
 	return (0);
@@ -1526,15 +1551,14 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 		return (NULL);
 	}
 
-	payload = rpc_dictionary_create();
-	call = rpc_call_alloc(conn, NULL);
+	call = rpc_call_alloc(conn, NULL, path, interface, name, args);
+	if (call == NULL)
+		return (NULL);
+
 	call->rc_type = RPC_OUTBOUND_CALL;
-	call->rc_path = path;
-	call->rc_interface = interface;
-	call->rc_method = name;
-	call->rc_args = args != NULL ? rpc_retain(args) : rpc_array_create();
 	call->rc_callback = callback != NULL ? Block_copy(callback) : NULL;
 
+	payload = rpc_dictionary_create();
 	if (path)
 		rpc_dictionary_set_string(payload, "path", path);
 

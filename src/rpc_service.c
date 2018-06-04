@@ -88,9 +88,9 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 		rpc_connection_close_inbound_call(call);
 		return;
 	}
-	g_assert(call->rc_type = RPC_INBOUND_CALL);
+	g_assert(call->rc_type == RPC_INBOUND_CALL);
 
-	call->rc_arg = method->rm_arg;
+	call->rc_m_arg = method->rm_arg;
 	call->rc_context = context;
 	call->rc_consumer_seqno = 1;
 
@@ -153,7 +153,7 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_call *call)
 	GError *err = NULL;
 	rpc_instance_t instance = NULL;
 
-	debugf("call=%p, name=%s", call, call->rc_method);
+	debugf("call=%p, name=%s", call, call->rc_method_name);
 	if (call->rc_conn->rco_closed) {
 		debugf("Can't dispatch call, conn %p closed", call->rc_conn);
 		return (-1);
@@ -171,7 +171,7 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_call *call)
 
 	call->rc_instance = instance;
 	member = rpc_instance_find_member(instance,
-	    call->rc_interface, call->rc_method);
+	    call->rc_interface, call->rc_method_name);
 
 	if (member == NULL || member->rim_type != RPC_MEMBER_METHOD) {
 		rpc_function_error(call, ENOENT, "Member not found");
@@ -343,7 +343,7 @@ rpc_function_get_arg(void *cookie)
 {
 	struct rpc_call *call = cookie;
 
-	return (call->rc_arg);
+	return (call->rc_m_arg);
 }
 
 inline rpc_context_t
@@ -367,7 +367,7 @@ rpc_function_get_name(void *cookie)
 {
 	struct rpc_call *call = cookie;
 
-	return (call->rc_method);
+	return (call->rc_method_name);
 }
 
 const char *
@@ -391,7 +391,7 @@ rpc_function_respond(void *cookie, rpc_object_t object)
 {
 	struct rpc_call *call = cookie;
 
-	g_aeert(call->rc_type == RPC_INBOUND_CALL);
+	g_assert(call->rc_type == RPC_INBOUND_CALL);
 	if (!call->rc_responded)
 		rpc_connection_send_response(call->rc_conn,
 		    call->rc_id, object);
