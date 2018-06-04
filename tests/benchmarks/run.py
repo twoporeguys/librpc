@@ -191,7 +191,7 @@ def main():
     plt.xscale('log', basex=2)
     plt.yscale('log')
     plt.xlabel('Message size (bytes)')
-    plt.ylabel('Average latency')
+    plt.ylabel('Average latency (seconds)')
     plt.grid('on')
     lgd = plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
     plt.savefig(
