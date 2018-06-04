@@ -364,7 +364,8 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 
 	for (;;) {
 		step = g_socket_receive_message(conn->sc_socket, NULL, iov, 2,
-		    &cmsg, &ncmsg, 0, NULL, &err);
+		    have_header ? NULL : &cmsg, have_header ? NULL : &ncmsg,
+		    0, NULL, &err);
 		if (err != NULL) {
 			rpc_set_last_gerror(err);
 			g_error_free(err);
