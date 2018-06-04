@@ -26,8 +26,20 @@
 
 cdef class RPCD(object):
     @staticmethod
-    def connect_to(sevice_name):
-        pass
+    def connect_to(service_name):
+        cdef const char *c_service_name
+        cdef rpc_client_t c_client
+
+        b_service_name = service_name.encode('utf-8')
+        c_service_name = b_service_name
+
+        with nogil:
+            c_client = rpcd_connect_to(c_service_name)
+
+        if c_client == <rpc_client_t>NULL:
+            raise_internal_exc()
+
+        return Client.wrap(c_client)
 
     @staticmethod
     def register(uri, service_name, description):

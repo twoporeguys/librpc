@@ -25,14 +25,22 @@
 #
 
 cdef class Client(Connection):
-    cdef rpc_client_t client
-    cdef object uri
+
 
     def __init__(self):
         super(Client, self).__init__()
         self.uri = None
         self.client = <rpc_client_t>NULL
         self.connection = <rpc_connection_t>NULL
+
+    @staticmethod
+    cdef Client wrap(rpc_client_t ptr):
+        cdef Client ret
+
+        ret = Client.__new__(Client)
+        ret.borrowed = True
+        ret.connection = rpc_client_get_connection(ptr)
+        return ret
 
     def __dealloc__(self):
         if self.client != <rpc_client_t>NULL:

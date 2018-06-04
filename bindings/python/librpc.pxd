@@ -388,6 +388,7 @@ cdef extern from "rpc/typing.h" nogil:
 
 
 cdef extern from "rpc/rpcd.h" nogil:
+    rpc_client_t rpcd_connect_to(const char *name)
     int rpcd_register(const char *uri, const char *name, const char *description)
 
 
@@ -511,6 +512,15 @@ cdef class Connection(object):
     cdef void c_prop_handler(void *arg, rpc_object_t value) with gil
     @staticmethod
     cdef void c_error_handler(void *arg, rpc_error_code_t code, rpc_object_t args) with gil
+
+
+
+cdef class Client(Connection):
+    cdef rpc_client_t client
+    cdef object uri
+
+    @staticmethod
+    cdef Client wrap(rpc_client_t ptr)
 
 
 cdef class Bus(object):
