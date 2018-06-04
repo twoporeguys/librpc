@@ -37,7 +37,8 @@ os.environ['CC'] = 'clang'
 os.environ.setdefault('DESTDIR', '/')
 cflags = ['-fblocks', '-Wno-sometimes-uninitialized']
 ldflags = ['-g', '-lrpc']
-systemd = os.environ['SYSTEMD_SUPPORT'] == 'ON'
+systemd = os.environ.get('SYSTEMD_SUPPORT') == 'ON'
+
 
 if 'CMAKE_SOURCE_DIR' in os.environ:
     cflags += [os.path.expandvars('-I${CMAKE_SOURCE_DIR}/include')]
