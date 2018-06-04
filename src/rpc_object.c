@@ -1659,19 +1659,19 @@ inline void
 rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value)
 {
 	rpc_object_t *ro;
-	int i;
+	size_t i;
 
 	if (array->ro_type != RPC_TYPE_ARRAY)
 		rpc_abort("Trying array API on non-array object");
 
-	for (i = (int)(index - array->ro_value.rv_list->len); i > 0; i--) {
+	for (i = (index - array->ro_value.rv_list->len); i > 0; i--) {
 		rpc_array_append_stolen_value(
 		    array,
 		    rpc_null_create()
 		);
 	}
 
-	if (index == array->ro_value.rv_list->len) {
+	if (index == (size_t)-1 || index == array->ro_value.rv_list->len) {
 		rpc_array_append_stolen_value(array, value);
 		return;
 	}
