@@ -62,6 +62,7 @@ def librpc_step(msgsize, cycles):
     )
 
     result, _ = client.communicate()
+    client.wait()
     server.terminate()
     server.wait()
     return result.decode('utf-8').strip()
@@ -88,6 +89,7 @@ def librpc_shmem_step(msgsize, cycles):
     )
 
     result, _ = client.communicate()
+    client.wait()
     server.terminate()
     server.wait()
     return result.decode('utf-8').strip()
@@ -112,6 +114,7 @@ def dbus_step(msgsize, cycles):
     )
 
     result, _ = client.communicate()
+    client.wait()
     server.terminate()
     server.wait()
     return result.decode('utf-8').strip()
