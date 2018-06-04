@@ -44,7 +44,7 @@ def parse_result(result):
 def librpc_step(msgsize, cycles):
     server = subprocess.Popen(
         [
-            'build/librpc-server',
+            './librpc-server',
             '-u', SOCKET_PATH,
             '-s', str(msgsize)
         ],
@@ -54,7 +54,7 @@ def librpc_step(msgsize, cycles):
     time.sleep(1)
     client = subprocess.Popen(
         [
-            'build/librpc-client',
+            './librpc-client',
             '-u', SOCKET_PATH,
             '-q', '-c', str(cycles)
         ],
@@ -70,7 +70,7 @@ def librpc_step(msgsize, cycles):
 def librpc_shmem_step(msgsize, cycles):
     server = subprocess.Popen(
         [
-            'build/librpc-server',
+            './librpc-server',
             '-u', SOCKET_PATH,
             '-s', str(msgsize), '-m'
         ],
@@ -80,7 +80,7 @@ def librpc_shmem_step(msgsize, cycles):
     time.sleep(1)
     client = subprocess.Popen(
         [
-            'build/librpc-client',
+            './librpc-client',
             '-u', SOCKET_PATH,
             '-q', '-c', str(cycles), '-m'
         ],
@@ -96,7 +96,7 @@ def librpc_shmem_step(msgsize, cycles):
 def dbus_step(msgsize, cycles):
     server = subprocess.Popen(
         [
-            'build/dbus-server',
+            './dbus-server',
             '-s', str(msgsize)
         ],
         stdout=subprocess.DEVNULL
@@ -105,7 +105,7 @@ def dbus_step(msgsize, cycles):
     time.sleep(1)
     client = subprocess.Popen(
         [
-            'build/dbus-client',
+            './dbus-client',
             '-q', '-c', str(cycles)
         ],
         stdout=subprocess.PIPE
