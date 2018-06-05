@@ -41,7 +41,7 @@ builtin_validate(struct rpct_typei *typei, rpc_object_t obj,
 	case RPC_TYPE_ARRAY:
 		rpc_array_apply(obj, ^(size_t idx, rpc_object_t value) {
 		    struct rpct_error_context newctx;
-		    char *name = g_strdup_printf("%lu", idx);
+		    char *name = g_strdup_printf("%zu", idx);
 
 		    rpct_derive_error_context(&newctx, errctx, name);
 		    rpct_validate_instance(value_typei, value, &newctx);

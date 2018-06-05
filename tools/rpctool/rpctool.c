@@ -176,44 +176,19 @@ inspect_properties(rpc_connection_t conn, const char *path, const char *interfac
 static int
 inspect_interface(rpc_connection_t conn, const char *path, const char *interface)
 {
-	rpc_object_t args;
-	rpc_call_t call;
-	int ret = 0;
+	rpc_object_t methods;
 
-	args = rpc_object_pack("[s]", interface);
-	call = rpc_connection_call(conn, path, RPC_INTROSPECTABLE_INTERFACE,
-	    "get_methods", args, NULL);
+	methods = rpc_connection_call_syncp(conn, path,
+	    RPC_INTROSPECTABLE_INTERFACE, "get_methods", "[s]", interface);
 
 	printf("  Methods:\n");
 
-	for (;;) {
-		rpc_call_wait(call);
+	rpc_array_apply(methods, ^(size_t idx, rpc_object_t value) {
+		printf("    %s\n", rpc_string_get_string_ptr(value));
+		return ((bool)true);
+	});
 
-		switch (rpc_call_status(call)) {
-			case RPC_CALL_MORE_AVAILABLE:
-				printf("    %s\n", rpc_string_get_string_ptr(
-				    rpc_call_result(call)));
-				rpc_call_continue(call, false);
-				break;
-
-			case RPC_CALL_DONE:
-			case RPC_CALL_ENDED:
-				goto done;
-
-			case RPC_CALL_ERROR:
-				ret = 1;
-				goto error;
-
-			default:
-				g_assert_not_reached();
-		}
-	}
-
-done:
-	ret = inspect_properties(conn, path, interface);
-
-error:
-	return (ret);
+	return (inspect_properties(conn, path, interface));
 }
 
 static int
@@ -297,7 +272,6 @@ cmd_call(int argc, char *argv[])
 	rpc_call_t call;
 	rpc_object_t args;
 	rpc_object_t error;
-	int ret = 0;
 
 	if (argc < 4) {
 		fprintf(stderr, "Not enough arguments provided\n");
@@ -330,7 +304,6 @@ cmd_call(int argc, char *argv[])
 				goto done;
 
 			case RPC_CALL_ERROR:
-				ret = 1;
 				goto error;
 
 			default:

@@ -46,6 +46,13 @@ static int rpct_read_type(struct rpct_file *file, const char *decl,
 static int rpct_parse_type(const char *decl, GPtrArray *variables);
 static void rpct_interface_free(struct rpct_interface *iface);
 
+static GRegex *rpct_instance_regex = NULL;
+static GRegex *rpct_interface_regex = NULL;
+static GRegex *rpct_type_regex = NULL;
+static GRegex *rpct_method_regex = NULL;
+static GRegex *rpct_property_regex = NULL;
+static GRegex *rpct_event_regex = NULL;
+
 static struct rpct_context *context = NULL;
 static const char *builtin_types[] = {
 	"nulltype",
@@ -277,7 +284,6 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
     struct rpct_type *ptype, struct rpct_file *origin)
 {
 	GError *err = NULL;
-	GRegex *regex;
 	GMatchInfo *match = NULL;
 	GPtrArray *splitvars = NULL;
 	struct rpct_type *type = NULL;
@@ -289,10 +295,7 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 
 	debugf("instantiating type %s", decl);
 
-	regex = g_regex_new(INSTANCE_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
-	g_assert_no_error(err);
-
-	if (!g_regex_match(regex, decl, 0, &match)) {
+	if (!g_regex_match(rpct_instance_regex, decl, 0, &match)) {
 		rpc_set_last_errorf(EINVAL, "Invalid type specification: %s",
 		    decl);
 		goto error;
@@ -316,7 +319,6 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 		ret = g_hash_table_lookup(context->typei_cache, decltype);
 		if (ret != NULL) {
 			g_match_info_free(match);
-			g_regex_unref(regex);
 			return (rpct_typei_retain(ret));
 		}
 	}
@@ -410,8 +412,6 @@ error:
 	}
 
 done:
-	g_regex_unref(regex);
-
 	if (err != NULL)
 		g_error_free(err);
 
@@ -653,13 +653,11 @@ rpct_lookup_type(const char *name, const char **decl, rpc_object_t *result,
     struct rpct_file **filep)
 {
 	GHashTableIter iter;
-	GRegex *regex;
 	const char *filename;
 	struct rpct_file *file;
 	__block int ret = -1;
 
 	g_hash_table_iter_init(&iter, context->files);
-	regex = g_regex_new(TYPE_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, NULL);
 
 	while (g_hash_table_iter_next(&iter, (gpointer *)&filename,
 	    (gpointer *)&file)) {
@@ -671,7 +669,7 @@ rpct_lookup_type(const char *name, const char **decl, rpc_object_t *result,
 			GMatchInfo *m;
 			char *full_name;
 
-			if (!g_regex_match(regex, key, 0, &m))
+			if (!g_regex_match(rpct_type_regex, key, 0, &m))
 				return ((bool)true);
 
 			full_name = file->ns != NULL
@@ -694,7 +692,6 @@ rpct_lookup_type(const char *name, const char **decl, rpc_object_t *result,
 		});
 	}
 
-	g_regex_unref(regex);
 	return (ret);
 }
 
@@ -708,8 +705,6 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	const char *inherits = NULL;
 	const char *description = "";
 	const char *decltype, *declname, *declvars, *type_def = NULL;
-	GError *err = NULL;
-	GRegex *regex;
 	GMatchInfo *match;
 	rpc_object_t members = NULL;
 
@@ -730,18 +725,13 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		}
 	}
 
-	regex = g_regex_new(TYPE_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
-	g_assert_no_error(err);
-
-	if (!g_regex_match(regex, decl, 0, &match)) {
+	if (!g_regex_match(rpct_type_regex, decl, 0, &match)) {
 		rpc_set_last_errorf(EINVAL, "Syntax error: %s", decl);
-		g_regex_unref(regex);
 		return (-1);
 	}
 
 	if (g_match_info_get_match_count(match) < 2) {
 		rpc_set_last_errorf(EINVAL, "Syntax error: %s", decl);
-		g_regex_unref(regex);
 		g_match_info_free(match);
 		return (-1);
 	}
@@ -759,7 +749,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		return (0);
 
 	type = g_malloc0(sizeof(*type));
-	type->origin = g_strdup_printf("%s:%jd", file->path, rpc_get_line_number(obj));
+	type->origin = g_strdup_printf("%s:%zu", file->path, rpc_get_line_number(obj));
 	type->name = typename;
 	type->file = file;
 	type->parent = parent;
@@ -773,7 +763,6 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	handler = rpc_find_class_handler(decltype, (rpct_class_t)-1);
 	if (handler == NULL) {
 		rpc_set_last_errorf(EINVAL, "Unknown class handler: %s", decltype);
-		g_regex_unref(regex);
 		g_match_info_free(match);
 		rpct_type_free(type);
 		return (-1);
@@ -837,7 +826,6 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
     const char *decl, rpc_object_t obj)
 {
 	struct rpct_if_member *prop;
-	GError *err = NULL;
 	GRegex *regex = NULL;
 	GMatchInfo *match = NULL;
 	const char *name;
@@ -856,10 +844,7 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 	    "write-only", &write_only,
 	    "notify", &notify);
 
-	regex = g_regex_new(PROPERTY_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
-	g_assert_no_error(err);
-
-	if (!g_regex_match(regex, decl, 0, &match)) {
+	if (!g_regex_match(rpct_property_regex, decl, 0, &match)) {
 		rpc_set_last_errorf(EINVAL, "Cannot parse: %s", decl);
 		goto error;
 	}
@@ -898,7 +883,6 @@ error:
 	if (match != NULL)
 		g_match_info_free(match);
 
-	g_regex_unref(regex);
 	return (-1);
 }
 
@@ -907,8 +891,6 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
     const char *decl, rpc_object_t obj)
 {
 	struct rpct_if_member *evt;
-	GError *err = NULL;
-	GRegex *regex = NULL;
 	GMatchInfo *match = NULL;
 	const char *name;
 	const char *description = NULL;
@@ -918,10 +900,7 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
 	    "description", &description,
 	    "type", &type);
 
-	regex = g_regex_new(EVENT_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
-	g_assert_no_error(err);
-
-	if (!g_regex_match(regex, decl, 0, &match)) {
+	if (!g_regex_match(rpct_event_regex, decl, 0, &match)) {
 		rpc_set_last_errorf(EINVAL, "Cannot parse: %s", decl);
 		goto error;
 	}
@@ -954,7 +933,6 @@ error:
 	if (match != NULL)
 		g_match_info_free(match);
 
-	g_regex_unref(regex);
 	return (-1);
 }
 
@@ -965,7 +943,6 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 	int ret = -1;
 	struct rpct_if_member *method = NULL;
 	GError *err = NULL;
-	GRegex *regex = NULL;
 	GMatchInfo *match = NULL;
 	const char *name;
 	const char *description = "";
@@ -980,10 +957,7 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 	    "args", &args,
 	    "return", &returns);
 
-	regex = g_regex_new(METHOD_REGEX, 0, G_REGEX_MATCH_NOTEMPTY, &err);
-	g_assert_no_error(err);
-
-	if (!g_regex_match(regex, decl, 0, &match)) {
+	if (!g_regex_match(rpct_method_regex, decl, 0, &match)) {
 		rpc_set_last_errorf(EINVAL, "Cannot parse: %s", decl);
 		goto error;
 	}
@@ -1064,9 +1038,6 @@ done:
 	if (err != NULL)
 		g_error_free(err);
 
-	if (regex != NULL)
-		g_regex_unref(regex);
-
 	if (match != NULL)
 		g_match_info_free(match);
 
@@ -1077,24 +1048,19 @@ static int
 rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 {
 	struct rpct_interface *iface;
-	GError *err = NULL;
-	GRegex *regex = NULL;
 	GMatchInfo *match = NULL;
 	char *name;
 	bool result;
 	int ret = 0;
 
-	regex = g_regex_new(INTERFACE_REGEX, 0, 0, &err);
-	g_assert_no_error(err);
-
-	if (!g_regex_match(regex, decl, 0, &match))
+	if (!g_regex_match(rpct_interface_regex, decl, 0, &match))
 		return (-1);
 
 	if (g_match_info_get_match_count(match) < 1)
 		return (-1);
 
 	iface = g_malloc0(sizeof(*iface));
-	iface->origin = g_strdup_printf("%s:%jd", file->path, rpc_get_line_number(obj));
+	iface->origin = g_strdup_printf("%s:%zu", file->path, rpc_get_line_number(obj));
 	iface->name = g_strdup(g_match_info_fetch(match, 1));
 	iface->members = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    g_free, (GDestroyNotify)rpct_if_member_free);
@@ -1377,7 +1343,7 @@ rpct_pre_call_hook(void *cookie, rpc_object_t args)
 		return (NULL);
 
 	if (!rpct_validate_args(member, args, &errors)) {
-		msg = g_strdup_printf("Validation failed: %jd errors",
+		msg = g_strdup_printf("Validation failed: %zu errors",
 		    rpc_array_get_count(errors));
 
 		rpc_function_error_ex(cookie,
@@ -1468,6 +1434,20 @@ rpct_init(void)
 	/* Don't initialize twice */
 	if (context != NULL)
 		return (0);
+
+	/* Compile all the regexes */
+	rpct_instance_regex = g_regex_new(INSTANCE_REGEX, 0,
+	    G_REGEX_MATCH_NOTEMPTY, NULL);
+	rpct_interface_regex =  g_regex_new(INTERFACE_REGEX, 0,
+	    G_REGEX_MATCH_NOTEMPTY, NULL);
+	rpct_property_regex = g_regex_new(PROPERTY_REGEX, 0,
+	    G_REGEX_MATCH_NOTEMPTY, NULL);
+	rpct_type_regex = g_regex_new(TYPE_REGEX, 0,
+	    G_REGEX_MATCH_NOTEMPTY, NULL);
+	rpct_method_regex = g_regex_new(METHOD_REGEX, 0,
+	    G_REGEX_MATCH_NOTEMPTY, NULL);
+	rpct_event_regex = g_regex_new(EVENT_REGEX, 0,
+	    G_REGEX_MATCH_NOTEMPTY, NULL);
 
 	context = g_malloc0(sizeof(*context));
 	context->files = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,

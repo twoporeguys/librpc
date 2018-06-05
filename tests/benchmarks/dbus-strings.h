@@ -1,5 +1,5 @@
-/*
- * Copyright 2017 Two Pore Guys, Inc.
+/*+
+ * Copyright 2018 Two Pore Guys, Inc.
  * All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,48 +25,7 @@
  *
  */
 
-#include <stdio.h>
-#include <unistd.h>
-#include <errno.h>
-#include <rpc/object.h>
-#include <rpc/service.h>
-#include <rpc/server.h>
-
-static rpc_object_t
-write_to_pipe(void *cookie, rpc_object_t args)
-{
-	int fd;
-
-	if (rpc_object_unpack(args, "[f]", &fd) < 1) {
-		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
-		return (NULL);
-	}
-
-	printf("Received fd %d\n", fd);
-
-	dprintf(fd, "Hello there\n");
-	dprintf(fd, "I am writing to the pipe\n");
-	sleep(1);
-	dprintf(fd, "And sometimes sleeping\n");
-	dprintf(fd, "Bye.\n");
-	close(fd);
-
-	return (NULL);
-}
-
-int
-main(int argc, const char *argv[])
-{
-	rpc_context_t ctx;
-	rpc_server_t srv;
-
-	(void)argc;
-	(void)argv;
-
-	ctx = rpc_context_create();
-	rpc_context_register_func(ctx, NULL, "write_to_pipe", NULL,
-	    write_to_pipe);
-	srv = rpc_server_create("unix:///tmp/server.sock", ctx);
-	rpc_server_resume(srv);
-	pause();
-}
+#define ECHO_SERVICE_PATH "/com/twoporeguys/dbustest"
+#define ECHO_SERVICE_NAME "com.twoporeguys.dbustest"
+#define ECHO_SERVICE_INTERFACE "com.twporeguys.dbustest"
+#define ECHO_SERVICE_METHODNAME_ECHO "Echo"

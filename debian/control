@@ -30,3 +30,17 @@ Architecture: any
 Depends: librpc1(= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, python3
 Description: Python 3 bindings for librpc
  Python 3 library wrapping librpc functionality.
+
+Package: librpc-tools
+Section: libs
+Architecture: any
+Depends: librpc1(= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: librpc utilities
+ Command-line utilities for librpc
+
+Package: rpcd
+Section: libs
+Architecture: any
+Depends: librpc1(= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: librpc name service daemon
+ Name service daemon providing a central directory of librpc servers

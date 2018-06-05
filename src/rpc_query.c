@@ -150,11 +150,16 @@ eval_logic_operator(rpc_object_t obj, rpc_object_t rule)
 {
 	const char *op;
 	rpc_object_t lst;
+	rpc_object_t op_val;
 
 	if (rpc_get_type(rule) != RPC_TYPE_ARRAY)
 		return (false);
 
-	op = rpc_array_get_string(rule, 0);
+	op_val = rpc_array_get_value(rule, 0);
+	if (rpc_get_type(op_val) == RPC_TYPE_ARRAY)
+		return (eval_logic_and(obj, rule));
+
+	op = rpc_string_get_string_ptr(op_val);
 	lst = rpc_array_get_value(rule, 1);
 
 	if (!g_strcmp0(op, "or"))

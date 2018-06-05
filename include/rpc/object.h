@@ -345,27 +345,6 @@ const char *_Nullable rpc_get_type_name(rpc_type_t type);
 _Nullable rpc_object_t rpc_get_last_error(void);
 
 /**
- * Deserialize a JSON string to an object compatible with library's data model.
- *
- * @param frame JSON string pointer.
- * @param size JSON string size.
- * @return Deserialized object.
- */
-_Nullable rpc_object_t rpc_object_from_json(const void *_Nonnull frame,
-    size_t size);
-
-/**
- * Serialize an object to a JSON string.
- *
- * @param object Object to be serialized.
- * @param frame Pointer to a serialized JSON string.
- * @param size Size of a serialized JSON string.
- * @return Serialization status. Errors are reported as non-zero values.
- */
-int rpc_object_to_json(_Nonnull rpc_object_t object,
-    void *_Nullable *_Nonnull frame, size_t *_Nullable size);
-
-/**
  * Packs provided values accordingly to a specified format string an into object
  * compatible with library's data model.
  *
@@ -422,6 +401,11 @@ int rpc_object_to_json(_Nonnull rpc_object_t object,
  * function increments last index, that results in the index 2 and replaces
  * the NULL RPC object below that index with UNSIGNED INT RPC object.
  *
+ * Format string can also contain single quoted inline strings for ease
+ * of packing of constant values.
+ *
+ * Example: {inline_string:'inline_string_value'}
+ *
  * Format string syntax:
  * - v - librpc object - args: rpc_object_t object
  * - V - librpc object (increases refcount) - args: rpc_object_t object
@@ -436,6 +420,7 @@ int rpc_object_to_json(_Nonnull rpc_object_t object,
  * - d - Double object - args: double value
  * - D - Date object - args: int interval
  * - s - String object - args: char *string
+ * - ' - Inline string start/end = args: takes no arguments
  * - { - Open dictionary - values inside of dictionary require additional
  *   char *key argument at the beginning of their usual argument list
  * - } - Close dictionary
@@ -852,6 +837,13 @@ void rpc_array_steal_value(_Nonnull rpc_object_t array, size_t index,
  * @param index Index to be removed.
  */
 void rpc_array_remove_index(_Nonnull rpc_object_t array, size_t index);
+
+/**
+ * Removes all objects from a provided array.
+ *
+ * @param array Input array.
+ */
+void rpc_array_remove_all(_Nonnull rpc_object_t array);
 
 /**
  * Appends an object at the end of a provided array and increments object's
@@ -1380,6 +1372,13 @@ void rpc_dictionary_steal_value(_Nonnull rpc_object_t dictionary,
  */
 void rpc_dictionary_remove_key(_Nonnull rpc_object_t dictionary,
     const char *_Nonnull key);
+
+/**
+ * Removes all keys and their associated values from a dictionary.
+ *
+ * @param dictionary Input dictionary.
+ */
+void rpc_dictionary_remove_all(_Nonnull rpc_object_t dictionary);
 
 /**
  * Removes a key from dictionary and returns it.

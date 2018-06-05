@@ -69,14 +69,14 @@ struct u {
 typedef struct {
 	rpc_context_t	ctx;
         int 		iuri;
-	int 		count;
+	volatile int 	count;
 	rpc_server_t 	srv;
 	bool 		resume;
 	int		iclose;
 	int		threads;
 	int		ok;
-	int		called;
-	int		woke;
+	volatile int	called;
+	volatile int	woke;
 	GRand *		rand;
 	char *		str;
 	int		close;
@@ -113,7 +113,7 @@ valid_server_set_up(server_fixture *fixture, gconstpointer u_data)
 
         rpc_context_register_block(fixture->ctx, base.interface, "hi",
             NULL, ^(void *cookie __unused, rpc_object_t args) {
-		fixture->count++;
+		g_atomic_int_inc(&fixture->count);
                 return rpc_string_create_with_format("hello %s!",
                     rpc_array_get_string(args, 0));
             });
@@ -121,9 +121,9 @@ valid_server_set_up(server_fixture *fixture, gconstpointer u_data)
         rpc_context_register_block(fixture->ctx, base.interface, "block",
             NULL, ^(void *cookie __unused,
 		rpc_object_t args __unused) {
-		fixture->called++;
+		g_atomic_int_inc(&fixture->called);
 		sleep(fixture->called * 2);
-		fixture->woke++;
+		g_atomic_int_inc(&fixture->woke);
                 return (rpc_string_create("haha lol"));
             });
 

@@ -209,8 +209,11 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 	    SOUP_SERVER_SERVER_HEADER, "librpc",
 	    NULL);
 
-	soup_server_add_handler(server->ws_soupserver, "/", ws_process_banner,
-	    server, NULL);
+	if (g_strcmp0(server->ws_uri->path, "/") != 0) {
+		soup_server_add_handler(server->ws_soupserver, "/",
+		    ws_process_banner, server, NULL);
+	}
+
 	soup_server_add_websocket_handler(server->ws_soupserver,
 	    server->ws_uri->path, NULL, NULL, ws_process_connection, server,
 	    NULL);
