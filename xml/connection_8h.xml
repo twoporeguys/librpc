@@ -1769,23 +1769,23 @@
         </inbodydescription>
         <location file="/code/include/rpc/connection.h" line="535" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="connection_8h_1aac09bc96d91a84c805181eed0c0171c0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="connection_8h_1a8473877ba7c0feeb002d3cd7341f35ef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
         <definition>int rpc_call_continue_many</definition>
-        <argsstring>(_Nonnull rpc_call_t call, int64_t chunks)</argsstring>
+        <argsstring>(_Nonnull rpc_call_t call, uint64_t chunks)</argsstring>
         <name>rpc_call_continue_many</name>
         <param>
           <type>_Nonnull <ref refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" kindref="member">rpc_call_t</ref></type>
           <declname>call</declname>
         </param>
         <param>
-          <type>int64_t</type>
+          <type>uint64_t</type>
           <declname>chunks</declname>
         </param>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Requests multiple chunks of a result from a call/</para><para><parameterlist kind="param"><parameteritem>
+<para>Requests multiple chunks of a result from a call.</para><para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>call</parametername>
 </parameternamelist>
@@ -2191,7 +2191,7 @@
 <codeline lineno="523"><highlight class="normal"></highlight></codeline>
 <codeline lineno="535"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1aaa5cabcf5efe1e9a94e97d63c0b4a388" kindref="member">rpc_call_continue</ref>(_Nonnull<sp/>rpc_call_t<sp/>call,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>sync);</highlight></codeline>
 <codeline lineno="536"><highlight class="normal"></highlight></codeline>
-<codeline lineno="544"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1aac09bc96d91a84c805181eed0c0171c0" kindref="member">rpc_call_continue_many</ref>(_Nonnull<sp/>rpc_call_t<sp/>call,<sp/>int64_t<sp/>chunks);</highlight></codeline>
+<codeline lineno="544"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a8473877ba7c0feeb002d3cd7341f35ef" kindref="member">rpc_call_continue_many</ref>(_Nonnull<sp/>rpc_call_t<sp/>call,<sp/>uint64_t<sp/>chunks);</highlight></codeline>
 <codeline lineno="545"><highlight class="normal"></highlight></codeline>
 <codeline lineno="552"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1af99ba11c3cb8f36c112d39fcafb73c50" kindref="member">rpc_call_abort</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
 <codeline lineno="553"><highlight class="normal"></highlight></codeline>
