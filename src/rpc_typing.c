@@ -826,7 +826,6 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
     const char *decl, rpc_object_t obj)
 {
 	struct rpct_if_member *prop;
-	GRegex *regex = NULL;
 	GMatchInfo *match = NULL;
 	const char *name;
 	const char *description = NULL;
