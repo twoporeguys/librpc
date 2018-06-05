@@ -1493,7 +1493,7 @@ rpc_call_continue(rpc_call_t call, bool sync)
 }
 
 int
-rpc_call_continue_many(rpc_call_t call, int64_t chunks)
+rpc_call_continue_many(rpc_call_t call, uint64_t chunks)
 {
 	rpc_object_t frame;
 	uint64_t seqno;

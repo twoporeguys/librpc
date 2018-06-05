@@ -535,13 +535,13 @@ int rpc_call_wait(_Nonnull rpc_call_t call);
 int rpc_call_continue(_Nonnull rpc_call_t call, bool sync);
 
 /**
- * Requests multiple chunks of a result from a call/
+ * Requests multiple chunks of a result from a call.
  *
  * @param call Call to be continued
  * @param chunks Number of chunks requested
  * @return 0 on success, -1 on error
  */
-int rpc_call_continue_many(_Nonnull rpc_call_t call, int64_t chunks);
+int rpc_call_continue_many(_Nonnull rpc_call_t call, uint64_t chunks);
 
 /**
  * Aborts a pending call.
