@@ -64,6 +64,7 @@ var searchData=
   ['rpc_5fcall_5fabort',['rpc_call_abort',['../connection_8h.html#af99ba11c3cb8f36c112d39fcafb73c50',1,'connection.h']]],
   ['rpc_5fcall_5faborted',['RPC_CALL_ABORTED',['../connection_8h.html#a22306445a7503bab94835382d07e0410a6c33a14b8aa6d0797cb614b890e9c741',1,'connection.h']]],
   ['rpc_5fcall_5fcontinue',['rpc_call_continue',['../connection_8h.html#aaa5cabcf5efe1e9a94e97d63c0b4a388',1,'connection.h']]],
+  ['rpc_5fcall_5fcontinue_5fmany',['rpc_call_continue_many',['../connection_8h.html#aac09bc96d91a84c805181eed0c0171c0',1,'connection.h']]],
   ['rpc_5fcall_5fdone',['RPC_CALL_DONE',['../connection_8h.html#a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d',1,'connection.h']]],
   ['rpc_5fcall_5fended',['RPC_CALL_ENDED',['../connection_8h.html#a22306445a7503bab94835382d07e0410aefeace6607a011c0ea3bb12990abbd1c',1,'connection.h']]],
   ['rpc_5fcall_5ferror',['RPC_CALL_ERROR',['../connection_8h.html#a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856',1,'connection.h']]],
