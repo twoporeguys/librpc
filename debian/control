@@ -10,6 +10,7 @@ Homepage: https://github.com/twoporeguys/librpc
 
 Package: librpc1
 Architecture: any
+Multi-Arch: foreign
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: RPC library
@@ -33,6 +34,7 @@ Description: Python 3 bindings for librpc
 
 Package: librpc-tools
 Section: libs
+Multi-Arch: foreign
 Architecture: any
 Depends: librpc1(= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: librpc utilities
@@ -40,6 +42,7 @@ Description: librpc utilities
 
 Package: rpcd
 Section: libs
+Multi-Arch: foreign
 Architecture: any
 Depends: librpc1(= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: librpc name service daemon
