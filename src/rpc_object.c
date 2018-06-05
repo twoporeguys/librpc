@@ -857,7 +857,8 @@ rpc_object_t
 rpc_object_vpack(const char *fmt, va_list ap)
 {
 	GQueue *stack = g_queue_new();
-	GQueue *keys = g_queue_new();
+	GQueue *key_q = g_queue_new();
+	GQueue *idx_q = g_queue_new();
 	rpc_object_t current = NULL;
 	rpc_object_t container = NULL;
 	rpc_object_t tmp;
@@ -871,7 +872,7 @@ rpc_object_vpack(const char *fmt, va_list ap)
 	char *type = NULL;
 	char ch;
 	char delim;
-	size_t idx = 0;
+	size_t *idx;
 	uint32_t nesting;
 
 	for (ptr = fmt; *ptr != '\0'; ptr++) {
@@ -912,30 +913,35 @@ rpc_object_vpack(const char *fmt, va_list ap)
 				if (*search_ptr == '}')
 					break;
 
+				if (*search_ptr == '\'')
+					break;
+
 				search_ptr++;
 			}
 
 			if (rpc_get_type(container) == RPC_TYPE_ARRAY) {
+				idx = g_malloc0(sizeof(size_t));
 				if (colon_ptr != NULL) {
-					idx = (size_t)strtol(ptr,
+					*idx = (size_t)strtol(ptr,
 					    &idx_end_ptr, 10);
 
 					if (idx_end_ptr != colon_ptr)
 						goto error;
 				} else {
-					idx = rpc_array_get_count(
+					*idx = rpc_array_get_count(
 					    container);
 				}
+				g_queue_push_tail(idx_q, idx);
 			} else {
 				if (colon_ptr != NULL) {
-					g_queue_push_tail(keys,
+					g_queue_push_tail(key_q,
 					    g_strndup(ptr,
 					    (colon_ptr - ptr)));
 
 				} else {
 					key = g_strdup(
 					    va_arg(ap, const char *));
-					g_queue_push_tail(keys,
+					g_queue_push_tail(key_q,
 					    (gpointer)key);
 				}
 			}
@@ -1012,6 +1018,16 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			current = rpc_string_create(va_arg(ap, const char *));
 			break;
 
+		case '\'':
+			search_ptr = strchr(ptr + 1, '\'');
+			if (search_ptr == NULL)
+				goto error;
+
+			current = rpc_string_create_len(ptr + 1,
+			    search_ptr - ptr - 1);
+			ptr = search_ptr + 1;
+			break;
+
 		case '<':
 			type_start = ptr + 1;
 			nesting = 1;
@@ -1061,6 +1077,9 @@ rpc_object_vpack(const char *fmt, va_list ap)
 
 		case '}':
 		case ']':
+			if (*(ptr + 1) == ',')
+				ptr++;
+
 			current = g_queue_pop_tail(stack);
 			container = g_queue_peek_tail(stack);
 			break;
@@ -1080,21 +1099,23 @@ rpc_object_vpack(const char *fmt, va_list ap)
 
 		if (container != NULL) {
 			if (rpc_get_type(container) == RPC_TYPE_DICTIONARY) {
-				key = g_queue_pop_tail(keys);
+				key = g_queue_pop_tail(key_q);
 				rpc_dictionary_steal_value(container, key,
 				    current);
 				g_free(key);
 			}
 
 			if (rpc_get_type(container) == RPC_TYPE_ARRAY) {
-				rpc_array_steal_value(container, idx, current);
+				idx = g_queue_pop_tail(idx_q);
+				rpc_array_steal_value(container, *idx, current);
 			}
 
 			continue;
 		}
 
 		g_queue_free(stack);
-		g_queue_free_full(keys, g_free);
+		g_queue_free_full(key_q, g_free);
+		g_queue_free_full(idx_q, g_free);
 
 		return (current);
 	}
@@ -1103,7 +1124,8 @@ error:
 	rpc_release(current);
 
 	g_queue_free(stack);
-	g_queue_free_full(keys, g_free);
+	g_queue_free_full(key_q, g_free);
+	g_queue_free_full(idx_q, g_free);
 	errno = EINVAL;
 
 	return (NULL);
@@ -1646,19 +1668,19 @@ inline void
 rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value)
 {
 	rpc_object_t *ro;
-	int i;
+	size_t i;
 
 	if (array->ro_type != RPC_TYPE_ARRAY)
 		rpc_abort("Trying array API on non-array object");
 
-	for (i = (int)(index - array->ro_value.rv_list->len); i > 0; i--) {
+	for (i = (index - array->ro_value.rv_list->len); i > 0; i--) {
 		rpc_array_append_stolen_value(
 		    array,
 		    rpc_null_create()
 		);
 	}
 
-	if (index == array->ro_value.rv_list->len) {
+	if (index == (size_t)-1 || index == array->ro_value.rv_list->len) {
 		rpc_array_append_stolen_value(array, value);
 		return;
 	}

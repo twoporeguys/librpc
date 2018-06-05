@@ -67,4 +67,4 @@ benchmark:
 	mkdir -p build/benchmarks
 	cd build/benchmarks && cmake ../../tests/benchmarks
 	cd build/benchmarks && make
-	cd build/benchmarks && ../../tests/benchmarks/run.py
+	cd build/benchmarks && ../../tests/benchmarks/run.py -o ../../output
