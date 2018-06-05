@@ -394,10 +394,12 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 }
 
 static void
-on_rpc_continue(rpc_connection_t conn, rpc_object_t args __unused,
+on_rpc_continue(rpc_connection_t conn, rpc_object_t args,
     rpc_object_t id)
 {
 	struct rpc_inbound_call *call;
+	uint64_t seqno __unused;
+	uint64_t inc = 1;
 
 	call = g_hash_table_lookup(conn->rco_inbound_calls,
 	    rpc_string_get_string_ptr(id));
@@ -407,8 +409,11 @@ on_rpc_continue(rpc_connection_t conn, rpc_object_t args __unused,
 		return;
 	}
 
+	if (args != NULL)
+		rpc_object_unpack(args, "{seqno:u,increment:u}", &seqno, &inc);
+
 	g_mutex_lock(&call->ric_mtx);
-	call->ric_consumer_seqno++;
+	call->ric_consumer_seqno += inc;
 	g_cond_broadcast(&call->ric_cv);
 	g_mutex_unlock(&call->ric_mtx);
 }
@@ -1468,7 +1473,7 @@ rpc_call_continue(rpc_call_t call, bool sync)
 
 	seqno = call->rc_seqno + 1;
 	frame = rpc_pack_frame("rpc", "continue", call->rc_id,
-	    rpc_uint64_create(seqno));
+	    rpc_object_pack("{seqno:u,increment:u}", seqno, 1ULL));
 
 	if (rpc_send_frame(call->rc_conn, frame) != 0) {
 		g_mutex_unlock(&call->rc_mtx);
@@ -1483,6 +1488,35 @@ rpc_call_continue(rpc_call_t call, bool sync)
 		return (rpc_call_success(call));
 	}
 
+	g_mutex_unlock(&call->rc_mtx);
+	return (0);
+}
+
+int
+rpc_call_continue_many(rpc_call_t call, int64_t chunks)
+{
+	rpc_object_t frame;
+	uint64_t seqno;
+
+	g_mutex_lock(&call->rc_mtx);
+
+	if (call->rc_status != RPC_CALL_IN_PROGRESS &&
+	    call->rc_status != RPC_CALL_MORE_AVAILABLE) {
+		errno = EINVAL;
+		g_mutex_unlock(&call->rc_mtx);
+		return (-1);
+	}
+
+	seqno = call->rc_seqno + 1;
+	frame = rpc_pack_frame("rpc", "continue", call->rc_id,
+	    rpc_object_pack("{seqno:u,increment:u}", seqno, chunks));
+
+	if (rpc_send_frame(call->rc_conn, frame) != 0) {
+		g_mutex_unlock(&call->rc_mtx);
+		return (-1);
+	}
+
+	call->rc_status = RPC_CALL_IN_PROGRESS;
 	g_mutex_unlock(&call->rc_mtx);
 	return (0);
 }

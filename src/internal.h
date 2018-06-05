@@ -210,8 +210,8 @@ struct rpc_inbound_call
 	struct rpc_if_method *	ric_method;
     	GMutex			ric_mtx;
     	GCond			ric_cv;
-    	volatile int64_t	ric_producer_seqno;
-    	volatile int64_t	ric_consumer_seqno;
+	volatile uint64_t	ric_producer_seqno;
+	volatile uint64_t	ric_consumer_seqno;
     	void *			ric_arg;
     	bool			ric_streaming;
     	bool			ric_responded;
