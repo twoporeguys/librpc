@@ -137,7 +137,7 @@ cdef class TypeInstance(object):
         ret.rpctypei = typei
         return ret
 
-    cdef rpct_typei_t unwrap(self):
+    cdef rpct_typei_t unwrap(self) nogil:
         return self.rpctypei
 
     property factory:
@@ -330,7 +330,7 @@ cdef class Interface(object):
         result.c_iface = ptr
         return result
 
-    cdef rpct_interface_t unwrap(self):
+    cdef rpct_interface_t unwrap(self) nogil:
         return self.c_iface
 
     @staticmethod
@@ -375,7 +375,7 @@ cdef class InterfaceMember(object):
 
         return result
 
-    cdef rpct_if_member_t unwrap(self):
+    cdef rpct_if_member_t unwrap(self) nogil:
         return self.c_member
 
 

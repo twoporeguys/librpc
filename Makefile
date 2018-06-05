@@ -62,3 +62,9 @@ test: build-cov
 	./build-cov/test_suite
 	lcov --capture --directory build-cov -o librpc.cov
 	genhtml librpc.cov -o coverage-report
+
+benchmark:
+	mkdir -p build/benchmarks
+	cd build/benchmarks && cmake ../../tests/benchmarks
+	cd build/benchmarks && make
+	cd build/benchmarks && ../../tests/benchmarks/run.py

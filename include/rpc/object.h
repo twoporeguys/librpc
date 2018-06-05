@@ -854,6 +854,13 @@ void rpc_array_steal_value(_Nonnull rpc_object_t array, size_t index,
 void rpc_array_remove_index(_Nonnull rpc_object_t array, size_t index);
 
 /**
+ * Removes all objects from a provided array.
+ *
+ * @param array Input array.
+ */
+void rpc_array_remove_all(_Nonnull rpc_object_t array);
+
+/**
  * Appends an object at the end of a provided array and increments object's
  * refcount.
  *
@@ -1380,6 +1387,13 @@ void rpc_dictionary_steal_value(_Nonnull rpc_object_t dictionary,
  */
 void rpc_dictionary_remove_key(_Nonnull rpc_object_t dictionary,
     const char *_Nonnull key);
+
+/**
+ * Removes all keys and their associated values from a dictionary.
+ *
+ * @param dictionary Input dictionary.
+ */
+void rpc_dictionary_remove_all(_Nonnull rpc_object_t dictionary);
 
 /**
  * Removes a key from dictionary and returns it.

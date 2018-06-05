@@ -599,7 +599,7 @@ rpc_copy(rpc_object_t object)
 		break;
 
 	case RPC_TYPE_FD:
-		result = rpc_fd_create(rpc_fd_dup(object));
+		result = rpc_fd_create(object->ro_value.rv_fd);
 		break;
 
 	case RPC_TYPE_STRING:
@@ -1592,6 +1592,7 @@ rpc_error_get_stack(rpc_object_t error)
 void
 rpc_error_set_extra(rpc_object_t error, rpc_object_t extra)
 {
+
 	if (rpc_get_type(error) != RPC_TYPE_ERROR)
 		return;
 
@@ -1632,6 +1633,7 @@ rpc_array_create_ex(const rpc_object_t *objects, size_t count, bool steal)
 inline void
 rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value)
 {
+
 	if (value == NULL)
 		rpc_array_remove_index(array, index);
 	else {
@@ -1669,6 +1671,7 @@ rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value)
 inline void
 rpc_array_remove_index(rpc_object_t array, size_t index)
 {
+
 	if (array->ro_type != RPC_TYPE_ARRAY)
 		rpc_abort("Trying array API on non-array object");
 
@@ -1678,6 +1681,20 @@ rpc_array_remove_index(rpc_object_t array, size_t index)
 	g_ptr_array_remove_index(array->ro_value.rv_list, (guint)index);
 }
 
+inline void
+rpc_array_remove_all(rpc_object_t array)
+{
+	size_t cnt;
+
+	if (array->ro_type != RPC_TYPE_ARRAY)
+		rpc_abort("Trying array API on non-array object");
+
+	cnt = rpc_array_get_count(array);
+	if (cnt == 0)
+		return;
+
+	g_ptr_array_remove_range(array->ro_value.rv_list, 0, (guint)cnt);
+}
 
 inline void
 rpc_array_append_value(rpc_object_t array, rpc_object_t value)
@@ -2042,10 +2059,22 @@ rpc_dictionary_steal_value_internal(rpc_object_t dictionary, const char *key,
 inline void
 rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key)
 {
+
 	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
 		rpc_abort("Trying dictionary API on non-dictionary object");
 
 	g_hash_table_remove(dictionary->ro_value.rv_dict, key);
+}
+
+inline void
+rpc_dictionary_remove_all(rpc_object_t dictionary)
+{
+
+	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
+		rpc_abort("Trying dictionary API on non-dictionary object");
+
+	g_hash_table_remove_all(dictionary->ro_value.rv_dict);
+
 }
 
 inline rpc_object_t

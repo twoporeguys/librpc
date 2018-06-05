@@ -40,6 +40,7 @@ static bool rpc_context_path_is_valid(const char *);
 static rpc_object_t rpc_get_objects(void *, rpc_object_t);
 static rpc_object_t rpc_get_interfaces(void *, rpc_object_t);
 static rpc_object_t rpc_get_methods(void *, rpc_object_t);
+static rpc_object_t rpc_get_events(void *, rpc_object_t);
 static rpc_object_t rpc_interface_exists(void *, rpc_object_t);
 static rpc_object_t rpc_observable_property_get(void *, rpc_object_t);
 static rpc_object_t rpc_observable_property_get_all(void *, rpc_object_t);
@@ -57,6 +58,7 @@ static const struct rpc_if_member rpc_introspectable_vtable[] = {
 	RPC_EVENT(interface_removed),
 	RPC_METHOD(get_interfaces, rpc_get_interfaces),
 	RPC_METHOD(get_methods, rpc_get_methods),
+	RPC_METHOD(get_events, rpc_get_events),
 	RPC_METHOD(interface_exists, rpc_interface_exists),
 	RPC_MEMBER_END
 };
@@ -123,6 +125,8 @@ rpc_context_create(void)
 {
 	GError *err;
 	rpc_context_t result;
+
+	rpct_init();
 
 	result = g_malloc0(sizeof(*result));
 	result->rcx_root = rpc_instance_new(NULL, "/");
@@ -1000,6 +1004,43 @@ rpc_get_methods(void *cookie, rpc_object_t args)
 	g_rw_lock_reader_unlock(&instance->ri_rwlock);
 	return (result);
 }
+
+static rpc_object_t
+rpc_get_events(void *cookie, rpc_object_t args)
+{
+	GHashTableIter iter;
+	struct rpc_interface_priv *priv;
+	const char *interface;
+	const char *k;
+	struct rpc_if_member *v;
+	rpc_object_t result = rpc_array_create();
+	rpc_instance_t instance = rpc_function_get_instance(cookie);
+
+	if (rpc_object_unpack(args, "[s]", &interface) < 1) {
+		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
+		return (NULL);
+	}
+
+	g_rw_lock_reader_lock(&instance->ri_rwlock);
+	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
+	if (priv == NULL) {
+		rpc_function_error(cookie, ENOENT, "Interface not found");
+		g_rw_lock_reader_unlock(&instance->ri_rwlock);
+		return (NULL);
+	}
+
+	g_hash_table_iter_init(&iter, priv->rip_members);
+	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
+		if (v->rim_type != RPC_MEMBER_EVENT)
+			continue;
+
+		rpc_array_append_stolen_value(result, rpc_string_create(k));
+	}
+
+	g_rw_lock_reader_unlock(&instance->ri_rwlock);
+	return (result);
+}
+
 
 static rpc_object_t
 rpc_interface_exists(void *cookie, rpc_object_t args)

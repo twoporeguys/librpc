@@ -58,7 +58,7 @@ cdef class Call(object):
         result.call = ptr
         return result
 
-    cdef rpc_call_t unwrap(self):
+    cdef rpc_call_t unwrap(self) nogil:
         return self.call
 
     property status:
@@ -169,7 +169,7 @@ cdef class Connection(object):
         ret.connection = ptr
         return ret
 
-    cdef rpc_connection_t unwrap(self):
+    cdef rpc_connection_t unwrap(self) nogil:
         return self.connection
 
     @staticmethod
@@ -401,9 +401,39 @@ cdef class RemoteObject(object):
 
 cdef class RemoteProperty(object):
     cdef readonly object name
+    cdef readonly object interface
     cdef readonly object getter
     cdef readonly object setter
     cdef readonly object typed
+
+    def __str__(self):
+        return repr(self)
+
+    def __repr__(self):
+        return "<librpc.RemoteProperty '{0}'>".format(self.name)
+
+
+cdef class RemoteEvent(object):
+    def connect(self, handler):
+        if not self.handlers:
+            pass
+
+        self.handlers.append(handler)
+
+    def disconnect(self, handler):
+        self.handlers.remove(handler)
+        if not self.handlers:
+            pass
+
+    def __str__(self):
+        return repr(self)
+
+    def __repr__(self):
+        return "<librpc.RemoteEvent '{0}'>".format(self.name)
+
+    cdef emit(self, Object args):
+        for h in self.handlers:
+            h(args.unpack())
 
 
 cdef class RemoteInterface(object):
@@ -430,6 +460,7 @@ cdef class RemoteInterface(object):
 
         self.__collect_methods()
         self.__collect_properties()
+        self.__collect_events()
 
     def call_sync(self, name, *args):
         return self.client.call_sync(name, *args, path=self.path, interface=self.interface)
@@ -498,6 +529,7 @@ cdef class RemoteInterface(object):
 
                 rprop = RemoteProperty.__new__(RemoteProperty)
                 rprop.name = prop['name']
+                rprop.interface = self
                 rprop.getter = functools.partial(getter, prop['name'])
                 rprop.setter = functools.partial(setter, prop['name'])
                 self.properties[prop['name']] = rprop
@@ -505,13 +537,22 @@ cdef class RemoteInterface(object):
             raise RuntimeError('Cannot read properties of a remote object')
 
     def __collect_events(self):
-            for method in self.client.call_sync(
+        cdef RemoteEvent revent
+
+        try:
+            for event in self.client.call_sync(
                 'get_events',
                 self.interface,
                 path=self.path,
                 interface='com.twoporeguys.librpc.Introspectable'
             ):
-                self.client.register_event_handler()
+                revent = RemoteEvent.__new__(RemoteEvent)
+                revent.handlers = []
+                revent.name = event
+                revent.interface = self
+                self.events[event] = revent
+        except:
+            raise RuntimeError('Cannot read events of a remote object')
 
     def __getattr__(self, item):
         prop = self.properties[item]
@@ -535,19 +576,6 @@ cdef class RemoteInterface(object):
         return str(self)
 
 
-cdef class RemoteEvent(object):
-    def connect(self, handler):
-        self.handlers.append(handler)
-
-    def disconnect(self, handler):
-        self.handlers.remove(handler)
-
-    cdef emit(self, name, Object args):
-        for h in self.handlers:
-            h(args)
-
-
-
 cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil:
     cdef Array args_array
     cdef Object rpc_obj
@@ -562,10 +590,9 @@ cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil:
         if isinstance(output, types.GeneratorType):
             for chunk in output:
                 rpc_obj = Object(chunk)
-                rpc_retain(rpc_obj.obj)
 
                 with nogil:
-                    ret = rpc_function_yield(cookie, rpc_obj.obj)
+                    ret = rpc_function_yield(cookie, rpc_retain(rpc_obj.unwrap()))
 
                 if ret:
                     break
@@ -576,10 +603,8 @@ cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil:
             e = RpcException(errno.EFAULT, str(e))
 
         rpc_obj = Object(e)
-        rpc_function_error_ex(cookie, rpc_obj.obj)
+        rpc_function_error_ex(cookie, rpc_obj.unwrap())
         return <rpc_object_t>NULL
 
     rpc_obj = Object(output)
-    rpc_retain(rpc_obj.obj)
-    return rpc_obj.obj
-
+    return rpc_retain(rpc_obj.unwrap())

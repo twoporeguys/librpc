@@ -69,5 +69,6 @@ main(int argc, const char *argv[])
 	rpc_context_register_func(ctx, NULL, "exchange_blob", NULL,
 	    exchange_blob);
 	srv = rpc_server_create("unix:///tmp/server.sock", ctx);
+	rpc_server_resume(srv);
 	pause();
 }

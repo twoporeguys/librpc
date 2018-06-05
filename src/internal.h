@@ -28,6 +28,8 @@
 #ifndef LIBRPC_INTERNAL_H
 #define LIBRPC_INTERNAL_H
 
+#include <stdio.h>
+#include <glib.h>
 #include <rpc/object.h>
 #include <rpc/query.h>
 #include <rpc/client.h>
@@ -36,9 +38,6 @@
 #include <rpc/server.h>
 #include <rpc/bus.h>
 #include <rpc/typing.h>
-#include <stdio.h>
-#include <setjmp.h>
-#include <glib.h>
 #ifdef LIBDISPATCH_SUPPORT
 #include <dispatch/dispatch.h>
 #endif
@@ -295,6 +294,7 @@ struct rpc_server
 	uint			rs_conn_refused;
 	uint			rs_conn_closed;
 	uint			rs_conn_aborted;
+	rpc_object_t 		rs_params;
 
     	/* Callbacks */
 	rpc_valid_fn_t		rs_valid;

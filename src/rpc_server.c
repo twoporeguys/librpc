@@ -30,6 +30,9 @@
 #include <glib.h>
 #include <rpc/object.h>
 #include <rpc/server.h>
+#ifdef SYSTEMD_SUPPORT
+#include <systemd/sd-daemon.h>
+#endif
 #include "internal.h"
 
 static int rpc_server_accept(rpc_server_t, rpc_connection_t);
@@ -198,6 +201,12 @@ rpc_server_t
 rpc_server_create(const char *uri, rpc_context_t context)
 {
 
+	return (rpc_server_create_ex(uri, context, NULL));
+}
+
+rpc_server_t
+rpc_server_create_ex(const char *uri, rpc_context_t context, rpc_object_t params)
+{
 	rpc_server_t server;
 
 	if (rpc_server_find(uri, context) != NULL) {
@@ -212,8 +221,9 @@ rpc_server_create(const char *uri, rpc_context_t context)
 	server->rs_paused = true;
 	server->rs_calls = g_queue_new();
 	server->rs_context = context;
-	server->rs_accept = &rpc_server_accept;
-	server->rs_valid = &rpc_server_valid;
+	server->rs_accept = rpc_server_accept;
+	server->rs_valid = rpc_server_valid;
+	server->rs_params = params;
 	server->rs_g_context = g_main_context_new();
 	server->rs_g_loop = g_main_loop_new(server->rs_g_context, false);
 	server->rs_thread = g_thread_new("librpc server", rpc_server_worker,
@@ -426,3 +436,38 @@ rpc_server_close(rpc_server_t server)
 
 	return (ret);
 }
+
+#ifdef SYSTEMD_SUPPORT
+int
+rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers)
+{
+	rpc_server_t server;
+	rpc_object_t params;
+	int nfds;
+	int i;
+	int n = 0;
+
+	nfds = sd_listen_fds(1);
+	if (nfds < 0) {
+		rpc_set_last_errorf(-nfds, "Cannot get listen fds: %s",
+		    strerror(-nfds));
+		return (-1);
+	}
+
+	*servers = g_malloc0(sizeof(rpc_server_t) * nfds);
+
+	for (i = SD_LISTEN_FDS_START; i < nfds + SD_LISTEN_FDS_START; i++) {
+		if (!sd_is_socket(i, AF_UNSPEC, SOCK_STREAM, 1))
+			continue;
+
+		params = rpc_fd_create(i);
+		server = rpc_server_create_ex("socket://", context, params);
+		if (server == NULL)
+			continue;
+
+		(*servers)[n++] = server;
+	}
+
+	return (nfds);
+}
+#endif
