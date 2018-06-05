@@ -394,11 +394,10 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 }
 
 static void
-on_rpc_continue(rpc_connection_t conn, rpc_object_t args,
+on_rpc_continue(rpc_connection_t conn, rpc_object_t args __unused,
     rpc_object_t id)
 {
 	struct rpc_inbound_call *call;
-	uint64_t inc = 1;
 
 	call = g_hash_table_lookup(conn->rco_inbound_calls,
 	    rpc_string_get_string_ptr(id));
@@ -408,11 +407,8 @@ on_rpc_continue(rpc_connection_t conn, rpc_object_t args,
 		return;
 	}
 
-	if (args != NULL && rpc_get_type(args) == RPC_TYPE_UINT64)
-		inc = rpc_uint64_get_value(args);
-
 	g_mutex_lock(&call->ric_mtx);
-	call->ric_consumer_seqno += inc;
+	call->ric_consumer_seqno++;
 	g_cond_broadcast(&call->ric_cv);
 	g_mutex_unlock(&call->ric_mtx);
 }
