@@ -139,8 +139,6 @@ int \hyperlink{connection_8h_a55b86b7f9f1957a23b422837e9953dab}{rpc\+\_\+call\+\
 \item 
 int \hyperlink{connection_8h_aaa5cabcf5efe1e9a94e97d63c0b4a388}{rpc\+\_\+call\+\_\+continue} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call, bool sync)
 \item 
-int \hyperlink{connection_8h_a8473877ba7c0feeb002d3cd7341f35ef}{rpc\+\_\+call\+\_\+continue\+\_\+many} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call, uint64\+\_\+t chunks)
-\item 
 int \hyperlink{connection_8h_af99ba11c3cb8f36c112d39fcafb73c50}{rpc\+\_\+call\+\_\+abort} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
 \item 
 int \hyperlink{connection_8h_aadc9504fdc18875824385dea55cb7384}{rpc\+\_\+call\+\_\+timedwait} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call, const struct timeval $\ast$\+\_\+\+Nonnull ts)
@@ -420,24 +418,6 @@ When sync is set to true the function waits until the call finishes and returns 
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 1 for successfully completed R\+PC when sync flag was set, otherwise 0 
-\end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_a8473877ba7c0feeb002d3cd7341f35ef}\label{connection_8h_a8473877ba7c0feeb002d3cd7341f35ef}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+continue\+\_\+many@{rpc\+\_\+call\+\_\+continue\+\_\+many}}
-\index{rpc\+\_\+call\+\_\+continue\+\_\+many@{rpc\+\_\+call\+\_\+continue\+\_\+many}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+call\+\_\+continue\+\_\+many()}{rpc\_call\_continue\_many()}}
-{\footnotesize\ttfamily int rpc\+\_\+call\+\_\+continue\+\_\+many (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}}]{call,  }\item[{uint64\+\_\+t}]{chunks }\end{DoxyParamCaption})}
-
-Requests multiple chunks of a result from a call.
-
-
-\begin{DoxyParams}{Parameters}
-{\em call} & Call to be continued \\
-\hline
-{\em chunks} & Number of chunks requested \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-0 on success, -\/1 on error 
 \end{DoxyReturn}
 \mbox{\Hypertarget{connection_8h_aeba8ba3e9dc7e1310568709cbcae22da}\label{connection_8h_aeba8ba3e9dc7e1310568709cbcae22da}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+free@{rpc\+\_\+call\+\_\+free}}

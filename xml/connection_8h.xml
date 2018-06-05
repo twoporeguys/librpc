@@ -1769,43 +1769,6 @@
         </inbodydescription>
         <location file="/code/include/rpc/connection.h" line="535" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="connection_8h_1a8473877ba7c0feeb002d3cd7341f35ef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>int</type>
-        <definition>int rpc_call_continue_many</definition>
-        <argsstring>(_Nonnull rpc_call_t call, uint64_t chunks)</argsstring>
-        <name>rpc_call_continue_many</name>
-        <param>
-          <type>_Nonnull <ref refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" kindref="member">rpc_call_t</ref></type>
-          <declname>call</declname>
-        </param>
-        <param>
-          <type>uint64_t</type>
-          <declname>chunks</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Requests multiple chunks of a result from a call.</para><para><parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>call</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Call to be continued </para></parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>chunks</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Number of chunks requested </para></parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>0 on success, -1 on error </para></simplesect>
-</para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/code/include/rpc/connection.h" line="544" column="1"/>
-      </memberdef>
       <memberdef kind="function" id="connection_8h_1af99ba11c3cb8f36c112d39fcafb73c50" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
         <definition>int rpc_call_abort</definition>
@@ -1830,7 +1793,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/connection.h" line="552" column="1"/>
+        <location file="/code/include/rpc/connection.h" line="543" column="1"/>
       </memberdef>
       <memberdef kind="function" id="connection_8h_1aadc9504fdc18875824385dea55cb7384" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -1867,7 +1830,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/connection.h" line="564" column="1"/>
+        <location file="/code/include/rpc/connection.h" line="555" column="1"/>
       </memberdef>
       <memberdef kind="function" id="connection_8h_1a01a0d673bf8f756e5fb5e37e6564c431" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -1893,7 +1856,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/connection.h" line="573" column="1"/>
+        <location file="/code/include/rpc/connection.h" line="564" column="1"/>
       </memberdef>
       <memberdef kind="function" id="connection_8h_1a2986b5ae174169a41b67855e72cfd42e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -1919,7 +1882,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/connection.h" line="582" column="1"/>
+        <location file="/code/include/rpc/connection.h" line="573" column="1"/>
       </memberdef>
       <memberdef kind="function" id="connection_8h_1a0e64ae2b6592deff82999556318858dd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>_Nullable <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
@@ -1945,7 +1908,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/connection.h" line="590" column="1"/>
+        <location file="/code/include/rpc/connection.h" line="581" column="1"/>
       </memberdef>
       <memberdef kind="function" id="connection_8h_1aeba8ba3e9dc7e1310568709cbcae22da" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -1970,7 +1933,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/connection.h" line="597" column="1"/>
+        <location file="/code/include/rpc/connection.h" line="588" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -2191,26 +2154,24 @@
 <codeline lineno="523"><highlight class="normal"></highlight></codeline>
 <codeline lineno="535"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1aaa5cabcf5efe1e9a94e97d63c0b4a388" kindref="member">rpc_call_continue</ref>(_Nonnull<sp/>rpc_call_t<sp/>call,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>sync);</highlight></codeline>
 <codeline lineno="536"><highlight class="normal"></highlight></codeline>
-<codeline lineno="544"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a8473877ba7c0feeb002d3cd7341f35ef" kindref="member">rpc_call_continue_many</ref>(_Nonnull<sp/>rpc_call_t<sp/>call,<sp/>uint64_t<sp/>chunks);</highlight></codeline>
-<codeline lineno="545"><highlight class="normal"></highlight></codeline>
-<codeline lineno="552"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1af99ba11c3cb8f36c112d39fcafb73c50" kindref="member">rpc_call_abort</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
-<codeline lineno="553"><highlight class="normal"></highlight></codeline>
-<codeline lineno="564"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1aadc9504fdc18875824385dea55cb7384" kindref="member">rpc_call_timedwait</ref>(_Nonnull<sp/>rpc_call_t<sp/>call,</highlight></codeline>
-<codeline lineno="565"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>timeval<sp/>*_Nonnull<sp/>ts);</highlight></codeline>
-<codeline lineno="566"><highlight class="normal"></highlight></codeline>
-<codeline lineno="573"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a01a0d673bf8f756e5fb5e37e6564c431" kindref="member">rpc_call_success</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
+<codeline lineno="543"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1af99ba11c3cb8f36c112d39fcafb73c50" kindref="member">rpc_call_abort</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
+<codeline lineno="544"><highlight class="normal"></highlight></codeline>
+<codeline lineno="555"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1aadc9504fdc18875824385dea55cb7384" kindref="member">rpc_call_timedwait</ref>(_Nonnull<sp/>rpc_call_t<sp/>call,</highlight></codeline>
+<codeline lineno="556"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>timeval<sp/>*_Nonnull<sp/>ts);</highlight></codeline>
+<codeline lineno="557"><highlight class="normal"></highlight></codeline>
+<codeline lineno="564"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a01a0d673bf8f756e5fb5e37e6564c431" kindref="member">rpc_call_success</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
+<codeline lineno="565"><highlight class="normal"></highlight></codeline>
+<codeline lineno="573"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a22306445a7503bab94835382d07e0410" kindref="member">rpc_call_status</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
 <codeline lineno="574"><highlight class="normal"></highlight></codeline>
-<codeline lineno="582"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a22306445a7503bab94835382d07e0410" kindref="member">rpc_call_status</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
-<codeline lineno="583"><highlight class="normal"></highlight></codeline>
-<codeline lineno="590"><highlight class="normal">_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="connection_8h_1a0e64ae2b6592deff82999556318858dd" kindref="member">rpc_call_result</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
-<codeline lineno="591"><highlight class="normal"></highlight></codeline>
-<codeline lineno="597"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1aeba8ba3e9dc7e1310568709cbcae22da" kindref="member">rpc_call_free</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
-<codeline lineno="598"><highlight class="normal"></highlight></codeline>
-<codeline lineno="599"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="600"><highlight class="normal">}</highlight></codeline>
-<codeline lineno="601"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="602"><highlight class="normal"></highlight></codeline>
-<codeline lineno="603"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//LIBRPC_CONNECTION_H</highlight></codeline>
+<codeline lineno="581"><highlight class="normal">_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="connection_8h_1a0e64ae2b6592deff82999556318858dd" kindref="member">rpc_call_result</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
+<codeline lineno="582"><highlight class="normal"></highlight></codeline>
+<codeline lineno="588"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1aeba8ba3e9dc7e1310568709cbcae22da" kindref="member">rpc_call_free</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
+<codeline lineno="589"><highlight class="normal"></highlight></codeline>
+<codeline lineno="590"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="591"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="592"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="593"><highlight class="normal"></highlight></codeline>
+<codeline lineno="594"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//LIBRPC_CONNECTION_H</highlight></codeline>
     </programlisting>
     <location file="/code/include/rpc/connection.h"/>
   </compounddef>

@@ -216,8 +216,6 @@ Functions</h2></td></tr>
 <tr class="separator:a55b86b7f9f1957a23b422837e9953dab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa5cabcf5efe1e9a94e97d63c0b4a388"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aaa5cabcf5efe1e9a94e97d63c0b4a388">rpc_call_continue</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call, bool sync)</td></tr>
 <tr class="separator:aaa5cabcf5efe1e9a94e97d63c0b4a388"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8473877ba7c0feeb002d3cd7341f35ef"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a8473877ba7c0feeb002d3cd7341f35ef">rpc_call_continue_many</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call, uint64_t chunks)</td></tr>
-<tr class="separator:a8473877ba7c0feeb002d3cd7341f35ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af99ba11c3cb8f36c112d39fcafb73c50"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#af99ba11c3cb8f36c112d39fcafb73c50">rpc_call_abort</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
 <tr class="separator:af99ba11c3cb8f36c112d39fcafb73c50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aadc9504fdc18875824385dea55cb7384"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aadc9504fdc18875824385dea55cb7384">rpc_call_timedwait</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call, const struct timeval *_Nonnull ts)</td></tr>
@@ -627,43 +625,6 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>1 for successfully completed RPC when sync flag was set, otherwise 0 </dd></dl>
-
-</div>
-</div>
-<a id="a8473877ba7c0feeb002d3cd7341f35ef"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8473877ba7c0feeb002d3cd7341f35ef">&#9670;&nbsp;</a></span>rpc_call_continue_many()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int rpc_call_continue_many </td>
-          <td>(</td>
-          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a>&#160;</td>
-          <td class="paramname"><em>call</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint64_t&#160;</td>
-          <td class="paramname"><em>chunks</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Requests multiple chunks of a result from a call.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">call</td><td>Call to be continued </td></tr>
-    <tr><td class="paramname">chunks</td><td>Number of chunks requested </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
 
 </div>
 </div>
