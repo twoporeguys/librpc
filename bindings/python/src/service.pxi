@@ -100,7 +100,7 @@ cdef class Instance(object):
 
         try:
             result = getter()
-            return rpc_retain(Object(result)).unwrap())
+            return rpc_retain(Object(result).unwrap())
         except RpcException as err:
             rpc_property_error(cookie, err.code, err.message.encode('utf-8'))
             return <rpc_object_t>NULL
