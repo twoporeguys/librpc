@@ -28,10 +28,6 @@ typedef void($^\wedge$ \hyperlink{server_8h_a2d9a540637c63449db9ac5882cb5f7ab}{r
 \item 
 \+\_\+\+Nullable \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} \hyperlink{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}{rpc\+\_\+server\+\_\+create} (const char $\ast$\+\_\+\+Nonnull uri, \+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
 \item 
-\+\_\+\+Nullable \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} \hyperlink{server_8h_a74af7bf809de8e773b35038107db1221}{rpc\+\_\+server\+\_\+find} (const char $\ast$\+\_\+\+Nonnull uri, \+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
-\item 
-void \hyperlink{server_8h_a7692f4863bf4db19759d95c132e03e61}{rpc\+\_\+server\+\_\+pause} (\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} server)
-\item 
 \+\_\+\+Nullable \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} \hyperlink{server_8h_a6fc757c49776a73e093b37e7b073c9a6}{rpc\+\_\+server\+\_\+create\+\_\+ex} (const char $\ast$\+\_\+\+Nonnull uri, \+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} params)
 \item 
 void \hyperlink{server_8h_a52667e1f1ad29521541c60aae34dcf02}{rpc\+\_\+server\+\_\+resume} (\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} server)
@@ -163,39 +159,6 @@ Creates a server instance listening on a given U\+RI.
 \begin{DoxyReturn}{Returns}
 Server handle 
 \end{DoxyReturn}
-\mbox{\Hypertarget{server_8h_a74af7bf809de8e773b35038107db1221}\label{server_8h_a74af7bf809de8e773b35038107db1221}} 
-\index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+find@{rpc\+\_\+server\+\_\+find}}
-\index{rpc\+\_\+server\+\_\+find@{rpc\+\_\+server\+\_\+find}!server.\+h@{server.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+server\+\_\+find()}{rpc\_server\_find()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} rpc\+\_\+server\+\_\+find (\begin{DoxyParamCaption}\item[{const char $\ast$\+\_\+\+Nonnull}]{uri,  }\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context }\end{DoxyParamCaption})}
-
-Finds a server instance if it exists for a context.
-
-
-\begin{DoxyParams}{Parameters}
-{\em uri} & Server U\+RI to check \\
-\hline
-{\em context} & R\+PC context for a server instance \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Server handle or N\+U\+LL 
-\end{DoxyReturn}
-\mbox{\Hypertarget{server_8h_a7692f4863bf4db19759d95c132e03e61}\label{server_8h_a7692f4863bf4db19759d95c132e03e61}} 
-\index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+pause@{rpc\+\_\+server\+\_\+pause}}
-\index{rpc\+\_\+server\+\_\+pause@{rpc\+\_\+server\+\_\+pause}!server.\+h@{server.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+server\+\_\+pause()}{rpc\_server\_pause()}}
-{\footnotesize\ttfamily void rpc\+\_\+server\+\_\+pause (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t}}]{server }\end{DoxyParamCaption})}
-
-Stops accepting requests for the server.
-
-Server instance keeps all the incoming requests queued and on hold until \hyperlink{server_8h_a52667e1f1ad29521541c60aae34dcf02}{rpc\+\_\+server\+\_\+resume} is called.
-
-
-\begin{DoxyParams}{Parameters}
-{\em server} & Server handle \\
-\hline
-\end{DoxyParams}
 \mbox{\Hypertarget{server_8h_a52667e1f1ad29521541c60aae34dcf02}\label{server_8h_a52667e1f1ad29521541c60aae34dcf02}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+resume@{rpc\+\_\+server\+\_\+resume}}
 \index{rpc\+\_\+server\+\_\+resume@{rpc\+\_\+server\+\_\+resume}!server.\+h@{server.\+h}}

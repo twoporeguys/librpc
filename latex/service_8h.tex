@@ -120,7 +120,7 @@ int \hyperlink{service_8h_ac0a7c2d5e6bb7464de61d346f97c0b04}{rpc\+\_\+context\+\
 \item 
 int \hyperlink{service_8h_a1aac077f97529f7c26834c139fefc2f5}{rpc\+\_\+context\+\_\+register\+\_\+func} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, void $\ast$\+\_\+\+Nullable arg, \+\_\+\+Nonnull \hyperlink{service_8h_add2d357ed7db564684628b3467048431}{rpc\+\_\+function\+\_\+f} func)
 \item 
-int \hyperlink{service_8h_a7ad6475e7ca46534421ce0c3245d0cb2}{rpc\+\_\+context\+\_\+unregister\+\_\+member} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name)
+int \hyperlink{service_8h_a982fcc47ab91486b508ca9cff5b7ed8f}{rpc\+\_\+context\+\_\+unregister\+\_\+member} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nonnull interface, const char $\ast$\+\_\+\+Nonnull name)
 \item 
 void \hyperlink{service_8h_a5eb243586ec426274b93ad40f64f0ea5}{rpc\+\_\+context\+\_\+set\+\_\+pre\+\_\+call\+\_\+hook} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, \+\_\+\+Nonnull \hyperlink{service_8h_ae49a22468cfcd4adfa558078e9e4e312}{rpc\+\_\+function\+\_\+t} fn)
 \item 
@@ -133,8 +133,6 @@ void \hyperlink{service_8h_a1665198f8dc86a0775adef55c01d843e}{rpc\+\_\+context\+
 void $\ast$\+\_\+\+Nullable \hyperlink{service_8h_ad820e18677b7171a41b0f0135600bbc4}{rpc\+\_\+function\+\_\+get\+\_\+arg} (void $\ast$\+\_\+\+Nonnull cookie)
 \item 
 \+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} \hyperlink{service_8h_aea3d4b8ab491b9ab4451ea8851f6e9ec}{rpc\+\_\+function\+\_\+get\+\_\+context} (void $\ast$\+\_\+\+Nonnull cookie)
-\item 
-\+\_\+\+Nullable \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} \hyperlink{service_8h_afe5966bf6cdc1c1b2bf59df37e374d85}{rpc\+\_\+function\+\_\+get\+\_\+connection} (void $\ast$\+\_\+\+Nonnull cookie)
 \item 
 \+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_ad148128984ab4c5bab8ff124c6796344}{rpc\+\_\+function\+\_\+get\+\_\+instance} (void $\ast$\+\_\+\+Nonnull cookie)
 \item 
@@ -423,7 +421,7 @@ Definition at line 108 of file service.\+h.
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+t@{rpc\+\_\+context\+\_\+t}}
 \index{rpc\+\_\+context\+\_\+t@{rpc\+\_\+context\+\_\+t}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+context\+\_\+t}{rpc\_context\_t}}
-{\footnotesize\ttfamily typedef struct rpc\+\_\+context$\ast$ rpc\+\_\+context\+\_\+t}
+{\footnotesize\ttfamily typedef struct rpc\+\_\+context$\ast$ \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}
 
 R\+PC context handle. 
 
@@ -696,8 +694,6 @@ Registers a new instance in {\ttfamily context} instance tree.
 
 Registers a given rpc\+\_\+method structure as an R\+PC method in a given context.
 
-The method must have a non-\/null name.
-
 
 \begin{DoxyParams}{Parameters}
 {\em context} & Target context. \\
@@ -755,11 +751,11 @@ The hook will be called before an actual implementation of R\+PC function gets c
 {\em path} & \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{service_8h_a7ad6475e7ca46534421ce0c3245d0cb2}\label{service_8h_a7ad6475e7ca46534421ce0c3245d0cb2}} 
+\mbox{\Hypertarget{service_8h_a982fcc47ab91486b508ca9cff5b7ed8f}\label{service_8h_a982fcc47ab91486b508ca9cff5b7ed8f}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+unregister\+\_\+member@{rpc\+\_\+context\+\_\+unregister\+\_\+member}}
 \index{rpc\+\_\+context\+\_\+unregister\+\_\+member@{rpc\+\_\+context\+\_\+unregister\+\_\+member}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+context\+\_\+unregister\+\_\+member()}{rpc\_context\_unregister\_member()}}
-{\footnotesize\ttfamily int rpc\+\_\+context\+\_\+unregister\+\_\+member (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int rpc\+\_\+context\+\_\+unregister\+\_\+member (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
 
 Unregisters a given R\+PC method.
 
@@ -839,22 +835,6 @@ Returns the argument associated with method.
 {\em cookie} & Running call handle \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{service_8h_afe5966bf6cdc1c1b2bf59df37e374d85}\label{service_8h_afe5966bf6cdc1c1b2bf59df37e374d85}} 
-\index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+get\+\_\+connection@{rpc\+\_\+function\+\_\+get\+\_\+connection}}
-\index{rpc\+\_\+function\+\_\+get\+\_\+connection@{rpc\+\_\+function\+\_\+get\+\_\+connection}!service.\+h@{service.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+function\+\_\+get\+\_\+connection()}{rpc\_function\_get\_connection()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} rpc\+\_\+function\+\_\+get\+\_\+connection (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nonnull}]{cookie }\end{DoxyParamCaption})}
-
-Returns the connection associated with method.
-
-
-\begin{DoxyParams}{Parameters}
-{\em cookie} & Running call handle \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-R\+PC connection handle or N\+U\+LL if the connection is closed/aborted. 
-\end{DoxyReturn}
 \mbox{\Hypertarget{service_8h_aea3d4b8ab491b9ab4451ea8851f6e9ec}\label{service_8h_aea3d4b8ab491b9ab4451ea8851f6e9ec}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+get\+\_\+context@{rpc\+\_\+function\+\_\+get\+\_\+context}}
 \index{rpc\+\_\+function\+\_\+get\+\_\+context@{rpc\+\_\+function\+\_\+get\+\_\+context}!service.\+h@{service.\+h}}
