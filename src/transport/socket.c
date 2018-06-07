@@ -422,7 +422,7 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	for (;;) {
 		step = g_socket_receive_message(conn->sc_socket, NULL, iov, 2,
 		    have_header ? NULL : &cmsg, have_header ? NULL : &ncmsg,
-		    0, NULL, &err);
+		    0, conn->sc_cancellable, &err);
 		if (err != NULL) {
 			conn->sc_parent->rco_error =
 			    rpc_error_create_from_gerror(err);

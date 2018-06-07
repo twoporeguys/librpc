@@ -81,8 +81,10 @@ typedef enum rpc_call_status
  */
 typedef enum rpc_call_type
 {
-	RPC_OUTBOUND_CALL,		/**< Call that is made by requestor */
-	RPC_INBOUND_CALL		/**< Call to be delivered to responder */
+	RPC_OUTBOUND_CALL,		/**< Call that is made by client */
+	RPC_OUTBOUND_SERVER_CALL,	/**< Call that is made by server */
+	RPC_INBOUND_CALL		/**< Call to be delivered to server */
+	RPC_INBOUND_CLIENT_CALL		/**< Call to be delivered to client */
 } rpc_call_type_t;
 
 /**
@@ -174,18 +176,23 @@ _Nullable rpc_connection_t rpc_connection_create(void *_Nonnull cookie,
  */
 int rpc_connection_close(_Nonnull rpc_connection_t conn);
 
+#ifndef rpc_context_t
+struct rpc_context;
+typedef struct rpc_context *rpc_context_t;
+#endif
 /**
  * Sets a context into the connection structure to allow a client to receive 
  * calls.
  *
- * It is an error to submit a new context for a server-side connection or if
- * the connection is not open.
+ * It is an error to submit a new context for a server-side connection or for
+ * a connection that is not open.
  *
  * @param conn Client connection
  * @param ctx Client context
  * @return 0 on success, -1 on failure.
  */
-int rpc_connection_close(_Nonnull rpc_connection_t conn);
+int rpc_connection_set_context(_Nonnull rpc_connection_t conn,
+    _Nonnull rpc_context_t ctx);
 
 /**
  * Returns @p true if connection is open, otherwise @p false.

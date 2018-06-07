@@ -145,6 +145,8 @@ void
 rpc_context_free(rpc_context_t context)
 {
 
+	if (context == NULL)
+		return;
 	g_thread_pool_free(context->rcx_threadpool, true, true);
 	rpc_instance_free(context->rcx_root);
 	g_free(context);
@@ -196,6 +198,8 @@ rpc_instance_t
 rpc_context_find_instance(rpc_context_t context, const char *path)
 {
 
+	if (context == NULL)
+		return (NULL);
 	return ((path == NULL) ? context->rcx_root :
 	    (g_hash_table_lookup(context->rcx_instances, path)));
 }
@@ -204,6 +208,8 @@ rpc_instance_t
 rpc_context_get_root(rpc_context_t context)
 {
 
+	if (context == NULL)
+		return (NULL);
 	return (context->rcx_root);
 }
 
@@ -350,6 +356,14 @@ rpc_function_get_arg(void *cookie)
 	return (call->rc_m_arg);
 }
 
+inline rpc_connection_t
+rpc_function_get_connection(void *cookie)
+{
+	struct rpc_call *call = cookie;
+
+	return (rpc_connection_is_open(call->rc_conn) ? call->rc_conn : NULL);
+}
+
 inline rpc_context_t
 rpc_function_get_context(void *cookie)
 {
@@ -431,6 +445,7 @@ rpc_function_yield(void *cookie, rpc_object_t fragment)
 {
 	struct rpc_call *call = cookie;
 	struct rpc_context *context = call->rc_context;
+	bool push;
 
 	g_mutex_lock(&call->rc_mtx);
 
@@ -453,9 +468,9 @@ rpc_function_yield(void *cookie, rpc_object_t fragment)
 	if (context->rcx_pre_call_hook != NULL) {
 
 	}
-
+	push = (call->rc_type = RPC_OUTBOUND_SERVER_CALL);
 	rpc_connection_send_fragment(call->rc_conn, call->rc_id,
-	    call->rc_producer_seqno, fragment);
+	    call->rc_producer_seqno, fragmenta, push);
 
 	call->rc_producer_seqno++;
 	call->rc_streaming = true;
