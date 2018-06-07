@@ -2358,7 +2358,7 @@
 <codeline lineno="663"><highlight class="normal"></highlight></codeline>
 <codeline lineno="670"><highlight class="normal"><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="typing_8h_1afa62adf9fe6a415494c529254b030086" kindref="member">rpct_post_call_hook</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*cookie,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
 <codeline lineno="671"><highlight class="normal"></highlight></codeline>
-<codeline lineno="677"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a4812f96b7d0bca64c415aa3aa99182be" kindref="member">rpct_allow_idl_download</ref>(<ref refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kindref="member">rpc_context_t</ref><sp/>context);</highlight></codeline>
+<codeline lineno="677"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a4812f96b7d0bca64c415aa3aa99182be" kindref="member">rpct_allow_idl_download</ref>(rpc_context_t<sp/>context);</highlight></codeline>
 <codeline lineno="678"><highlight class="normal"></highlight></codeline>
 <codeline lineno="685"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a57baca626f8a63a3812b28fad9aa838f" kindref="member">rpct_download_idl</ref>(<ref refid="connection_8h_1a70838cb106c3464db299522c5fe2782d" kindref="member">rpc_connection_t</ref><sp/>conn);</highlight></codeline>
 <codeline lineno="686"><highlight class="normal"></highlight></codeline>
