@@ -5,7 +5,7 @@ Maintainer: Jakub Klama <jakub.klama@twoporeguys.com>
 Build-Depends: debhelper (>=10), cmake, clang, pkg-config,
  libglib2.0-dev, libsoup2.4-dev, libblocksruntime-dev, libyaml-dev,
  libyajl-dev, libudev-dev, libusb-1.0-0-dev, systemd, libsystemd-dev,
- python3-dev, cython3
+ python3-dev, cython3, python3-setuptools
 Standards-Version: 4.0.0
 Homepage: https://github.com/twoporeguys/librpc
 
