@@ -53,13 +53,7 @@ static int rpc_send_frame(rpc_connection_t, rpc_object_t);
 static void on_rpc_call(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_rpc_response(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_rpc_fragment(rpc_connection_t, rpc_object_t, rpc_object_t);
-static void on_rpc_push_fragment(rpc_connection_t, rpc_object_t, rpc_object_t);
-static void recv_fragment(rpc_connection_t, rpc_object_t, rpc_object_t,
-    bool);
 static void on_rpc_continue(rpc_connection_t, rpc_object_t, rpc_object_t);
-static void on_rpc_push_continue(rpc_connection_t, rpc_object_t, rpc_object_t);
-static void recv_continue(rpc_connection_t, rpc_object_t, rpc_object_t,
-    bool);
 static void on_rpc_end(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_rpc_abort(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_rpc_error(rpc_connection_t, rpc_object_t, rpc_object_t);
@@ -78,8 +72,6 @@ static void rpc_connection_free_resources(rpc_connection_t);
 static int rpc_connection_abort(void *);
 static void rpc_connection_release_call(struct rpc_call *call);
 static int cancel_timeout(rpc_call_t call);
-static rpc_call_t find_call(rpc_connection_t conn, rpc_object_t id,
-    GRWLock *lockp);
 
 struct message_handler
 {
@@ -98,9 +90,7 @@ static const struct message_handler handlers[] = {
 	{ "rpc", "call", on_rpc_call },
 	{ "rpc", "response", on_rpc_response },
 	{ "rpc", "fragment", on_rpc_fragment },
-	{ "rpc", "push_fragment", on_rpc_fragment },
 	{ "rpc", "continue", on_rpc_continue },
-	{ "rpc", "push_continue", on_rpc_continue },
 	{ "rpc", "end", on_rpc_end },
 	{ "rpc", "abort", on_rpc_abort },
 	{ "rpc", "error", on_rpc_error },
@@ -346,6 +336,7 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 			rpc_error_get_message(err));
 	}
 
+	call->rc_type = RPC_INBOUND_CALL;
 	call->rc_frame = rpc_retain(args);
 
         g_rw_lock_writer_lock(&conn->rco_icall_rwlock);
@@ -355,10 +346,9 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 
 	if (conn->rco_server != NULL) {
 		res = rpc_server_dispatch(conn->rco_server, call);
-		call->rc_type = RPC_INBOUND_CALL;
 	} else {
 		res = rpc_context_dispatch(conn->rco_rpc_context, call);
-		call->rc_type = RPC_INBOUND_CLIENT_CALL;
+	}
         if (res != 0) {
 		rpc_function_error(call, ENOTCONN, "Server not active");
                 rpc_connection_close_inbound_call(call);
@@ -406,49 +396,25 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 static void
 on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 {
-
-	recv_fragment(conn, args, id, false);
-}
-
-static void
-on_rpc_fragment_ex(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
-{
-
-	recv_fragment(conn, args, id, true);
-}
-
-static void
-recv_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id,
-    bool pushed)
-{
 	struct work_item *item;
 	rpc_call_t call;
 	rpc_object_t payload;
 	uint64_t seqno;
-	GRWLock lock;
 
-	if (!pushed) {
-		lock = conn->rco_call_rwlock;
-		g_rw_lock_reader_lock(&lock);
-		call = g_hash_table_lookup(conn->rco_calls,
-	    	    rpc_string_get_string_ptr(id));
-	} else {
-		lock = rco_icall_rwlock;
-		g_rw_lock_reader_lock(&lock);
-		call = g_hash_table_lookup(conn->rco_inbound_calls,
-		    rpc_string_get_string_ptr(id));
-	}
+	g_rw_lock_reader_lock(&conn->rco_call_rwlock);
+	call = g_hash_table_lookup(conn->rco_calls,
+	    rpc_string_get_string_ptr(id));
 	if (call == NULL) {
-		g_rw_lock_reader_unlock(&lock);
+		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
 	}
 	if (cancel_timeout(call) != 0) {
-		g_rw_lock_reader_unlock(&lock);
+		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
 	}
 
 	g_mutex_lock(&call->rc_mtx);
-	g_rw_lock_reader_unlock(&lock);
+	g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 
 	seqno = rpc_dictionary_get_uint64(args, "seqno");
 	payload = rpc_dictionary_get_value(args, "fragment");
@@ -479,93 +445,46 @@ static void
 on_rpc_continue(rpc_connection_t conn, rpc_object_t args __unused,
     rpc_object_t id)
 {
-
-	recv_continue(conn, args, id, false);
-}
-
-static void
-on_rpc_push_continue(rpc_connection_t conn, rpc_object_t args __unused,
-    rpc_object_t id)
-{
-
-	recv_continue(conn, args, id, true);
-}
-
-static void
-recv_continue(rpc_connection_t conn, rpc_object_t args __unused,
-    rpc_object_t id, bool push)
-{
 	struct rpc_call *call;
-	GRWLock lock;
 
-	if (pushed) {
-		lock = conn->rco_call_rwlock;
-		g_rw_lock_reader_lock(&lock);
-		call = g_hash_table_lookup(conn->rco_calls,
-	    	    rpc_string_get_string_ptr(id));
-	} else {
-		lock = rco_icall_rwlock;
-		g_rw_lock_reader_lock(&lock);
-		call = g_hash_table_lookup(conn->rco_inbound_calls,
-		    rpc_string_get_string_ptr(id));
-	}
+	g_rw_lock_reader_lock(&conn->rco_icall_rwlock);
+	call = g_hash_table_lookup(conn->rco_inbound_calls,
+	    rpc_string_get_string_ptr(id));
 	if (call == NULL) {
-		g_rw_lock_reader_unlock(&lock);
+		g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
 		if (conn->rco_error_handler != NULL)
 			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, id);
 		return;
 	}
 
 	g_mutex_lock(&call->rc_mtx);
-	g_rw_lock_reader_unlock(&lock);
+	g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
 	call->rc_consumer_seqno++;
 	g_cond_broadcast(&call->rc_cv);
 	g_mutex_unlock(&call->rc_mtx);
-}
-
-/* returns with the lock at *lockp locked if call is found */
-static rpc_call_t
-find_call(rpc_connection_t conn, rpc_object_t id, GRWLock *lockp)
-{
-
-	*lockp = conn->rco_call_rwlock;
-	g_rw_lock_reader_lock(lockp);
-	call = g_hash_table_lookup(conn->rco_calls,
-	    rpc_string_get_string_ptr(id));
-	if (call != NULL)
-		return(call);
-	g_rw_lock_reader_unlock(lockp);
-
-	*lockp = conn->rco_icall_rwlock;
-	g_rw_lock_reader_lock(lockp);
-	call = g_hash_table_lookup(conn->rco_inbound_calls,
-	    rpc_string_get_string_ptr(id));
-	if (call != NULL)
-		return(call);
-	g_rw_lock_reader_unlock(lockp);
-	*lockp = NULL;
-	return (NULL);
 }
 
 static void
 on_rpc_end(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 {
 	rpc_call_t call;
-	GRWLock lock;
 
-	call = find_call(conn, id, &lock);
+	g_rw_lock_reader_lock(&conn->rco_call_rwlock);
+	call = g_hash_table_lookup(conn->rco_calls,
+	    rpc_string_get_string_ptr(id));
 	if (call == NULL) {
+		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		if (conn->rco_error_handler != NULL)
 			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, id);
 		return;
 	}
 	if (cancel_timeout(call) != 0) {
-		g_rw_lock_reader_unlock(&lock);
+		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
 	}
 		
 	g_mutex_lock(&call->rc_mtx);
-	g_rw_lock_reader_unlock(&lock);
+	g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 
 	call->rc_status = RPC_CALL_ENDED;
 	call->rc_result = NULL;
@@ -577,17 +496,19 @@ static void
 on_rpc_abort(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 {
 	struct rpc_call *call;
-	GRWLock lock;
 
-	call = find_call(conn, id, &lock);
+	g_rw_lock_reader_lock(&conn->rco_icall_rwlock);
+	call = g_hash_table_lookup(conn->rco_inbound_calls,
+	    rpc_string_get_string_ptr(id));
 	if (call == NULL) {
+		g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
 		if (conn->rco_error_handler != NULL)
 			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, id);
 		return;
 	}
 
 	g_mutex_lock(&call->rc_mtx);
-	g_rw_lock_reader_unlock(&lock);
+	g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
 	call->rc_ended = true;
 	call->rc_aborted = true;
 	g_cond_broadcast(&call->rc_cv);
@@ -604,21 +525,23 @@ static void
 on_rpc_error(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 {
 	rpc_call_t call;
-	GRWLock lock;
 
-	call = find_call(conn, id, &lock);
+	g_rw_lock_reader_lock(&conn->rco_call_rwlock);
+	call = g_hash_table_lookup(conn->rco_calls,
+	    rpc_string_get_string_ptr(id));
 	if (call == NULL) {
+		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		if (conn->rco_error_handler != NULL)
 			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, id);
 		return;
 	}
 	if (cancel_timeout(call) != 0) {
-		g_rw_lock_reader_unlock(&lock);
+		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
 	}
 
 	g_mutex_lock(&call->rc_mtx);
-	g_rw_lock_reader_unlock(&lock);
+	g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 
 	call->rc_status = RPC_CALL_ERROR;
 	call->rc_result = args;
@@ -1052,16 +975,11 @@ rpc_connection_send_response(rpc_connection_t conn, rpc_object_t id,
 
 void
 rpc_connection_send_fragment(rpc_connection_t conn, rpc_object_t id,
-    int64_t seqno, rpc_object_t fragment, bool push)
+    int64_t seqno, rpc_object_t fragment)
 {
 	rpc_object_t frame;
 	rpc_object_t args;
-	char *name;
 
-	if (push)
-		name = "push_fragment";
-	else
-		name = "fragment";
 	args = rpc_dictionary_create();
 	rpc_dictionary_set_int64(args, "seqno", seqno);
 	rpc_dictionary_steal_value(args, "fragment", fragment);
@@ -1624,12 +1542,7 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	call = rpc_call_alloc(conn, NULL, path, interface, name, args);
 	if (call == NULL)
 		return (NULL);
-	if (conn->rco_server != NULL) {
-		call->rc_consumer_seqno = 1;
-		rc_type = RPC_OUTBOUND_SERVER_CALL;
-	} else {
-		rc_type - RPC_OUTBOUND_CALL;
-	}
+	call->rc_type = RPC_OUTBOUND_CALL;
 	call->rc_callback = callback != NULL ? Block_copy(callback) : NULL;
 
 	payload = rpc_dictionary_create();

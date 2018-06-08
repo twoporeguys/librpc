@@ -208,8 +208,6 @@ rpc_instance_t
 rpc_context_get_root(rpc_context_t context)
 {
 
-	if (context == NULL)
-		return (NULL);
 	return (context->rcx_root);
 }
 
@@ -445,7 +443,6 @@ rpc_function_yield(void *cookie, rpc_object_t fragment)
 {
 	struct rpc_call *call = cookie;
 	struct rpc_context *context = call->rc_context;
-	bool push;
 
 	g_mutex_lock(&call->rc_mtx);
 
@@ -468,9 +465,8 @@ rpc_function_yield(void *cookie, rpc_object_t fragment)
 	if (context->rcx_pre_call_hook != NULL) {
 
 	}
-	push = (call->rc_type = RPC_OUTBOUND_SERVER_CALL);
 	rpc_connection_send_fragment(call->rc_conn, call->rc_id,
-	    call->rc_producer_seqno, fragmenta, push);
+	    call->rc_producer_seqno, fragment);
 
 	call->rc_producer_seqno++;
 	call->rc_streaming = true;

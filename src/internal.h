@@ -536,7 +536,7 @@ void rpc_connection_send_err(rpc_connection_t, rpc_object_t, int,
 void rpc_connection_send_errx(rpc_connection_t, rpc_object_t, rpc_object_t);
 void rpc_connection_send_response(rpc_connection_t, rpc_object_t, rpc_object_t);
 void rpc_connection_send_fragment(rpc_connection_t, rpc_object_t, int64_t,
-    rpc_object_t, bool push);
+    rpc_object_t);
 void rpc_connection_send_end(rpc_connection_t, rpc_object_t, int64_t);
 void rpc_connection_close_inbound_call(struct rpc_call *);
 

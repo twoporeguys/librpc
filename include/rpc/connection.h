@@ -81,10 +81,8 @@ typedef enum rpc_call_status
  */
 typedef enum rpc_call_type
 {
-	RPC_OUTBOUND_CALL,		/**< Call that is made by client */
-	RPC_OUTBOUND_SERVER_CALL,	/**< Call that is made by server */
-	RPC_INBOUND_CALL		/**< Call to be delivered to server */
-	RPC_INBOUND_CLIENT_CALL		/**< Call to be delivered to client */
+	RPC_OUTBOUND_CALL,		/**< Call that is made by requestor */
+	RPC_INBOUND_CALL,		/**< Call to be delivered to responder */
 } rpc_call_type_t;
 
 /**
