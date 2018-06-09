@@ -296,7 +296,7 @@ cancel_timeout(rpc_call_t call)
 {
 	/* Cancel timeout source */
 	if (call->rc_timeout != NULL) {
-		if (g_source_is_destroyed(call->rc_timeout)) {
+		if (call->rc_timedout) {
 			return (-1);
 		}
 		g_source_destroy(call->rc_timeout);
@@ -370,12 +370,13 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	}
 	g_assert(call->rc_type == RPC_OUTBOUND_CALL);
 
+	g_mutex_lock(&call->rc_mtx);
 	if (cancel_timeout(call) != 0) {
+		g_mutex_unlock(&call->rc_mtx);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
 	}
 
-	g_mutex_lock(&call->rc_mtx);
 	g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 
 	call->rc_status = RPC_CALL_DONE;
@@ -408,12 +409,13 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
 	}
+	g_mutex_lock(&call->rc_mtx);
 	if (cancel_timeout(call) != 0) {
+		g_mutex_unlock(&call->rc_mtx);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
 	}
 
-	g_mutex_lock(&call->rc_mtx);
 	g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 
 	seqno = rpc_dictionary_get_uint64(args, "seqno");
@@ -478,12 +480,13 @@ on_rpc_end(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, id);
 		return;
 	}
+	g_mutex_lock(&call->rc_mtx);
 	if (cancel_timeout(call) != 0) {
+		g_mutex_unlock(&call->rc_mtx);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
 	}
 		
-	g_mutex_lock(&call->rc_mtx);
 	g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 
 	call->rc_status = RPC_CALL_ENDED;
@@ -535,12 +538,13 @@ on_rpc_error(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, id);
 		return;
 	}
+	g_mutex_lock(&call->rc_mtx);
 	if (cancel_timeout(call) != 0) {
+		g_mutex_unlock(&call->rc_mtx);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
 	}
 
-	g_mutex_lock(&call->rc_mtx);
 	g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 
 	call->rc_status = RPC_CALL_ERROR;
@@ -780,18 +784,13 @@ rpc_close(rpc_connection_t conn)
 	while (g_hash_table_iter_next(&iter, (gpointer)&key,
 	    (gpointer)&call)) {
 
-		/* Cancel timeout source */
-		if (call->rc_timeout != NULL) {
-			if (g_source_is_destroyed(call->rc_timeout)) {
-				g_source_unref(call->rc_timeout);
-				call->rc_timeout = NULL;
-				continue;
-			}
-			g_source_destroy(call->rc_timeout);
-			g_source_unref(call->rc_timeout);
-			call->rc_timeout = NULL;
-		}
 		g_mutex_lock(&call->rc_mtx);
+		/* Cancel timeout source */
+		if (cancel_timeout(call) != 0) {
+			g_mutex_unlock(&call->rc_mtx);
+			continue;
+		}
+		
 		call->rc_status = RPC_CALL_ERROR;
 		call->rc_result = rpc_error_create(ECONNABORTED,
 		    "Connection closed", NULL);
@@ -940,8 +939,17 @@ rpc_call_timeout(gpointer user_data)
 
 	if (g_source_is_destroyed(g_main_current_source()))
 		return (false);
+	
 
 	g_mutex_lock(&call->rc_mtx);
+	call->rc_timedout = true;
+	/* make sure when we get the lock someone hasn't already handles this */
+	if (call->rc_timeout == NULL ||
+	    g_source_is_destroyed(call->rc_timeout)) {
+		g_mutex_unlock(&call->rc_mtx);
+		return false;
+	}
+
 	call->rc_status = RPC_CALL_ERROR;
 	call->rc_result = rpc_error_create(ETIMEDOUT, "Call timed out", NULL);
 	g_cond_broadcast(&call->rc_cv);
@@ -1802,9 +1810,8 @@ rpc_call_abort(rpc_call_t call)
 		return (-1);
 	}
 
-	cancel_timeout(call);
-
-	call->rc_status = RPC_CALL_ABORTED;
+	if (cancel_timeout(call) == 0)
+		call->rc_status = RPC_CALL_ABORTED;
 	g_mutex_unlock(&call->rc_mtx);
 	return (0);
 }

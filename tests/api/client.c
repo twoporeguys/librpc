@@ -144,6 +144,7 @@ SCENARIO("RPC_CLIENT", "Create a simple RPC server and connect to it") {
  */
 
 #include "../tests.h"
+#include <errno.h>
 #include "../../src/linker_set.h"
 #include "../../src/internal.h"
 #include <glib.h>
@@ -192,8 +193,10 @@ typedef struct {
 
 struct work_item {
 	rpc_connection_t	conn;
+	rpc_call_t		call;
+	rpc_object_t		args;
 	char *			method;
-	int 			count;
+	int 			ccnt;
 	client_fixture *	fx;
 };
 
@@ -307,7 +310,6 @@ thread_mestream_func (gpointer data)
 		}	
 		rpc_function_end(cookie);
 		return (rpc_null_create());
-		return (rpc_string_create("world!"));
 	});
 
 	value = rpc_object_pack("[s,i]", "callme", n);
@@ -316,7 +318,6 @@ thread_mestream_func (gpointer data)
 	rpc_call_wait(call);
 	result = rpc_call_result(call);
 
-	//result = rpc_connection_call_simple(conn, "stream-me", "[s]","callme" );
 	g_assert(result != NULL);
 	g_assert(!rpc_is_error(result));
 	g_assert_cmpstr(rpc_string_get_string_ptr(result), ==,
@@ -326,7 +327,7 @@ thread_mestream_func (gpointer data)
 	rpc_context_unregister_member(ctx, NULL, "callme");
 	if (ctx != NULL)
 		rpc_context_free(ctx);
-	g_thread_exit (GINT_TO_POINTER (cnt));
+	g_thread_exit (GINT_TO_POINTER (0));
 	
 	return (NULL);
 }
@@ -393,7 +394,74 @@ client_server_calls_test(client_fixture *fixture, gconstpointer user_data)
 	rpc_context_unregister_member(fixture->ctx, NULL, "callyou");
 }
 
-#define EINVAL 22
+static int
+do_stream_work(struct work_item *item)
+{
+
+	int cnt = 0;
+	rpc_object_t result;
+	const char *method;
+	rpc_call_t call;
+	int i;
+	const char *str;
+	int64_t len;
+	int64_t num;
+	bool failed = false;
+
+	g_atomic_int_inc(&item->fx->count);
+	i = rpc_object_unpack(item->args, "[s, i]", &method, &item->ccnt);
+	g_assert(i == 2);
+
+	call = rpc_connection_call(item->conn, NULL, NULL, method, rpc_array_create(), NULL);
+	if (call == NULL) {
+		rpc_function_error(item->call, EINVAL, "Unable to make call");
+		return (0);
+	}
+        for (;;) {
+               	rpc_call_wait(call);
+
+               	switch (rpc_call_status(call)) {
+                       	case RPC_CALL_MORE_AVAILABLE:
+				result = rpc_call_result(call);
+				i = rpc_object_unpack(result,
+				    "[s, i, i]", &str, &len, &num);
+				cnt++;
+				g_assert(i == 3);
+				g_assert(len == (int)strlen(str));
+                               	rpc_call_continue(call, false);
+                               	break;
+
+                       	case RPC_CALL_DONE:
+                       	case RPC_CALL_ENDED:
+                               	goto done;
+
+                       	case RPC_CALL_ERROR:
+				fprintf(stderr, "ERROR: %s %d\n",
+				    rpc_error_get_message(rpc_call_result(call)),
+				    rpc_error_get_code(rpc_call_result(call)));
+				failed = true;
+                               	goto done;
+
+			default:
+				g_assert_not_reached();
+                }
+        }
+done:
+
+	if (!failed) {
+		result = (rpc_string_create("DONE!"));
+		rpc_function_respond(item->call, result);
+	} else {
+		rpc_function_error(item->call, EPROTO, 
+		    "Error in receiving streamed data"); 
+	}
+	rpc_call_free(call);
+
+	/*fprintf(stderr, "CLIENT ccnt: %d blk recvd:  %d\n", 
+	    (int)item->ccnt, cnt);*/
+	return (cnt);
+}
+
 static void
 client_streams_test(client_fixture *fixture, gconstpointer user_data)
 {
@@ -405,69 +473,66 @@ client_streams_test(client_fixture *fixture, gconstpointer user_data)
 	fixture->resume = true;
 	rpc_context_register_block(fixture->ctx, NULL, "stream-me",	NULL,
 	    ^rpc_object_t (void *cookie, rpc_object_t args) {
-		rpc_object_t result;
-		const char *method;
-		rpc_connection_t conn = rpc_function_get_connection(cookie);
-		rpc_call_t call;
-		int i;
-		const char *str;
-		int64_t len;
-		int64_t num;
-		bool failed = false;
-
-		if (conn == NULL) {
-			rpc_function_error(cookie, EINVAL, "No connection provided");
-			return (NULL);
-		}
-		//method = g_strdup(rpc_array_get_string(args, 0));
-
-		i = rpc_object_unpack(args, "[s, i]", &method, &ccnt);
-		g_assert(i == 2);
-
-		call = rpc_connection_call(conn, NULL, NULL, method, rpc_array_create(), NULL);
-		if (call == NULL) {
-			//g_free(method);
-			rpc_function_error(cookie, EINVAL, "Unable to make call");
-			return (rpc_null_create());
-		}
-        	for (;;) {
-                	rpc_call_wait(call);
-
-                	switch (rpc_call_status(call)) {
-                        	case RPC_CALL_MORE_AVAILABLE:
-					result = rpc_call_result(call);
-					i = rpc_object_unpack(result,
-					    "[s, i, i]", &str, &len, &num);
-					cnt++;
-					g_assert(i == 3);
-					g_assert(len == (int)strlen(str));
-                                	rpc_call_continue(call, false);
-                                	break;
-
-                        	case RPC_CALL_DONE:
-                        	case RPC_CALL_ENDED:
-                                	goto done;
-
-                        	case RPC_CALL_ERROR:
-					fprintf(stderr, "ERROR: %s %d\n",
-					    rpc_error_get_message(args),
-					    rpc_error_get_code(args));
-					failed = true;
-                                	goto done;
-
-	                        default:
-        	                        g_assert_not_reached();
-                	}
-        	}
-done:
-		if (!failed)
-			return (rpc_string_create("DONE!"));
-		return(rpc_null_create());
+		struct work_item *item;
+		item = g_malloc0(sizeof(*item));
+		item->call = cookie;
+		item->args = args;
+		item->fx = fixture;
+		item->conn = rpc_function_get_connection(cookie);
+		cnt = do_stream_work(item);
+		g_assert(cnt == item->ccnt);
+		ccnt = item->ccnt;
+		g_free(item);
+		return (RPC_FUNCTION_STILL_RUNNING);
 	});
 
 	ret = thread_test(1, &thread_mestream_func, fixture);
-	fprintf(stderr, "CLIENT ccnt: %d blk recvd:  %d  thrd ret:  %d\n", 
-	    (int)ccnt, cnt, ret);
+	g_assert(fixture->count + ret == 1);
+	rpc_context_unregister_member(fixture->ctx, NULL, "stream-me");
+}
+
+static void
+stream_worker(void *arg, void *data)
+{
+	int cnt;
+	struct work_item *item = arg;
+
+	item->fx = data;
+	cnt = do_stream_work(item);
+	g_assert(cnt == item->ccnt);
+	g_free(item);
+}
+
+static void
+client_multi_streams_test(client_fixture *fixture, gconstpointer user_data)
+{
+	int ret = 0;
+	GError *err = NULL;
+	GRand *rand = g_rand_new ();
+	gint n = g_rand_int_range (rand, 3, THREADS);
+
+	fixture->resume = true;
+	fixture->workers = g_thread_pool_new(stream_worker, fixture,
+	    g_get_num_processors() * 4, false, &err);
+	g_assert_null(err);
+
+	rpc_context_register_block(fixture->ctx, NULL, "stream-me",	NULL,
+	    ^rpc_object_t (void *cookie, rpc_object_t args) {
+		struct work_item *item;
+		GError *error = NULL;
+
+		item = g_malloc0(sizeof(*item));
+		item->call = cookie;
+		item->args = args;
+		item->conn = rpc_function_get_connection(cookie);
+		g_thread_pool_push(fixture->workers, item, &error);
+		g_assert_null(error);
+
+		return (RPC_FUNCTION_STILL_RUNNING);
+	});
+
+	ret = thread_test(n, &thread_mestream_func, fixture);
+	g_assert(fixture->count + ret == n);
 	rpc_context_unregister_member(fixture->ctx, NULL, "stream-me");
 }
 
@@ -487,14 +552,6 @@ client_test_single_set_up(client_fixture *fixture, gconstpointer user_data)
 
 	fixture->srv = rpc_server_create(uris_[fixture->iuri].srv, fixture->ctx);
 }
-
-
-
-
-
-
-
-
 
 static void
 client_test_tear_down(client_fixture *fixture, gconstpointer user_data)
@@ -520,6 +577,10 @@ client_test_register()
 
 	g_test_add("/client/streams/tcp", client_fixture, (void *)0,
 	    client_test_single_set_up, client_streams_test,
+	    client_test_tear_down);
+
+	g_test_add("/client/multi-streams/tcp", client_fixture, (void *)0,
+	    client_test_single_set_up, client_multi_streams_test,
 	    client_test_tear_down);
 
 }

@@ -193,6 +193,7 @@ struct rpc_call
 	GCond      		rc_cv;
 	GMutex			rc_mtx;
     	GSource *		rc_timeout;
+	bool			rc_timedout;
 	rpc_callback_t    	rc_callback;
     	volatile int64_t	rc_producer_seqno;
     	volatile int64_t	rc_consumer_seqno; /* also rc_seqno */

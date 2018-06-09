@@ -524,8 +524,8 @@ socket_abort_timeout(gpointer user_data)
 
 	g_assert(g_main_current_source() == conn->sc_abort_timeout);
 	g_source_destroy(conn->sc_abort_timeout);
-	fprintf(stderr, "Cancelling - haserr = %d\n",
-		conn->sc_parent->rco_error != NULL);
+	/*fprintf(stderr, "Cancelling - haserr = %d\n",
+		conn->sc_parent->rco_error != NULL);*/
 	g_cancellable_cancel (conn->sc_cancellable);
 	return (false);
 }
