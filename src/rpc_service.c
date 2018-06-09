@@ -75,12 +75,12 @@ static void
 rpc_context_tp_handler(gpointer data, gpointer user_data)
 {
 	struct rpc_context *context = user_data;
-	struct rpc_inbound_call *call = data;
-	struct rpc_if_method *method = call->ric_method;
+	struct rpc_call *call = data;
+	struct rpc_if_method *method = call->rc_if_method;
 	rpc_object_t result;
 
-	if (call->ric_conn->rco_closed) {
-		debugf("Can't dispatch call, conn %p closed", call->ric_conn);
+	if (call->rc_conn->rco_closed) {
+		debugf("Can't dispatch call, conn %p closed", call->rc_conn);
 		rpc_connection_close_inbound_call(call);
 		return;
 	}
@@ -90,33 +90,34 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 		rpc_connection_close_inbound_call(call);
 		return;
 	}
+	g_assert(call->rc_type == RPC_INBOUND_CALL);
 
-	call->ric_arg = method->rm_arg;
-	call->ric_context = context;
-	call->ric_consumer_seqno = 1;
+	call->rc_m_arg = method->rm_arg;
+	call->rc_context = context;
+	call->rc_consumer_seqno = 1;
 
 	debugf("method=%p", method);
 
 	if (context->rcx_pre_call_hook != NULL) {
-		context->rcx_pre_call_hook(call, call->ric_args);
-		if (call->ric_responded)
+		context->rcx_pre_call_hook(call, call->rc_args);
+		if (call->rc_responded)
 			return;
 	}
 
-	result = method->rm_block((void *)call, call->ric_args);
+	result = method->rm_block((void *)call, call->rc_args);
 
 	if (!result || result == RPC_FUNCTION_STILL_RUNNING)
 		return;
 
 	if (context->rcx_post_call_hook != NULL) {
 		context->rcx_post_call_hook(call, result);
-		if (call->ric_responded)
+		if (call->rc_responded)
 			return;
 	}
 
-	if (!call->ric_streaming)
+	if (!call->rc_streaming)
 		rpc_function_respond(call, result);
-	else if (!call->ric_ended)
+	else if (!call->rc_ended)
 		rpc_function_end(data);
 }
 
@@ -144,44 +145,46 @@ void
 rpc_context_free(rpc_context_t context)
 {
 
+	if (context == NULL)
+		return;
 	g_thread_pool_free(context->rcx_threadpool, true, true);
 	rpc_instance_free(context->rcx_root);
 	g_free(context);
 }
 
 int
-rpc_context_dispatch(rpc_context_t context, struct rpc_inbound_call *call)
+rpc_context_dispatch(rpc_context_t context, struct rpc_call *call)
 {
 	struct rpc_if_member *member;
 	GError *err = NULL;
 	rpc_instance_t instance = NULL;
 
-	debugf("call=%p, name=%s", call, call->ric_name);
-	if (call->ric_conn->rco_closed) {
-		debugf("Can't dispatch call, conn %p closed", call->ric_conn);
+	debugf("call=%p, name=%s", call, call->rc_method_name);
+	if (call->rc_conn->rco_closed) {
+		debugf("Can't dispatch call, conn %p closed", call->rc_conn);
 		return (-1);
 	}
-	if (call->ric_path == NULL) 
+	if (call->rc_path == NULL) 
 		instance = context->rcx_root;
 
 	if (instance == NULL)
-		instance = rpc_context_find_instance(context, call->ric_path);
+		instance = rpc_context_find_instance(context, call->rc_path);
 
 	if (instance == NULL) {
 		rpc_function_error(call, ENOENT, "Instance not found");
 		return (-1);
 	}
 
-	call->ric_instance = instance;
+	call->rc_instance = instance;
 	member = rpc_instance_find_member(instance,
-	    call->ric_interface, call->ric_name);
+	    call->rc_interface, call->rc_method_name);
 
 	if (member == NULL || member->rim_type != RPC_MEMBER_METHOD) {
 		rpc_function_error(call, ENOENT, "Member not found");
 		return (-1);
 	}
 
-	call->ric_method = &member->rim_method;
+	call->rc_if_method = &member->rim_method;
 	g_thread_pool_push(context->rcx_threadpool, call, &err);
 	if (err != NULL) {
 		rpc_function_error(call, EFAULT, "Cannot submit call");
@@ -195,6 +198,8 @@ rpc_instance_t
 rpc_context_find_instance(rpc_context_t context, const char *path)
 {
 
+	if (context == NULL)
+		return (NULL);
 	return ((path == NULL) ? context->rcx_root :
 	    (g_hash_table_lookup(context->rcx_instances, path)));
 }
@@ -344,106 +349,115 @@ rpc_context_emit_event(rpc_context_t context, const char *path,
 inline void *
 rpc_function_get_arg(void *cookie)
 {
-	struct rpc_inbound_call *call = cookie;
+	struct rpc_call *call = cookie;
 
-	return (call->ric_arg);
+	return (call->rc_m_arg);
+}
+
+inline rpc_connection_t
+rpc_function_get_connection(void *cookie)
+{
+	struct rpc_call *call = cookie;
+
+	return (rpc_connection_is_open(call->rc_conn) ? call->rc_conn : NULL);
 }
 
 inline rpc_context_t
 rpc_function_get_context(void *cookie)
 {
-	struct rpc_inbound_call *call = cookie;
+	struct rpc_call *call = cookie;
 
-	return (call->ric_context);
+	return (call->rc_context);
 }
 
 inline rpc_instance_t
 rpc_function_get_instance(void *cookie)
 {
-	struct rpc_inbound_call *call = cookie;
+	struct rpc_call *call = cookie;
 
-	return (call->ric_instance);
+	return (call->rc_instance);
 }
 
 const char *
 rpc_function_get_name(void *cookie)
 {
-	struct rpc_inbound_call *call = cookie;
+	struct rpc_call *call = cookie;
 
-	return (call->ric_name);
+	return (call->rc_method_name);
 }
 
 const char *
 rpc_function_get_path(void *cookie)
 {
-	struct rpc_inbound_call *call = cookie;
+	struct rpc_call *call = cookie;
 
-	return (call->ric_path);
+	return (call->rc_path);
 }
 
 const char *
 rpc_function_get_interface(void *cookie)
 {
-	struct rpc_inbound_call *call = cookie;
+	struct rpc_call *call = cookie;
 
-	return (call->ric_interface);
+	return (call->rc_interface);
 }
 
 void
 rpc_function_respond(void *cookie, rpc_object_t object)
 {
-	struct rpc_inbound_call *call = cookie;
+	struct rpc_call *call = cookie;
 
-	if (!call->ric_responded)
-		rpc_connection_send_response(call->ric_conn,
-		    call->ric_id, object);
+	g_assert(call->rc_type == RPC_INBOUND_CALL);
+	if (!call->rc_responded)
+		rpc_connection_send_response(call->rc_conn,
+		    call->rc_id, object);
 	rpc_connection_close_inbound_call(call);
 }
 
 void
 rpc_function_error(void *cookie, int code, const char *message, ...)
 {
-	struct rpc_inbound_call *call = cookie;
+	struct rpc_call *call = cookie;
 	char *msg;
 	va_list ap;
 
 	va_start(ap, message);
 	g_vasprintf(&msg, message, ap);
 	va_end(ap);
-	rpc_connection_send_err(call->ric_conn, call->ric_id, code, msg);
-	call->ric_responded = true;
+	rpc_connection_send_err(call->rc_conn, call->rc_id, code, msg);
+	call->rc_responded = true;
 	g_free(msg);
 }
 
 void
 rpc_function_error_ex(void *cookie, rpc_object_t exception)
 {
-	struct rpc_inbound_call *call = cookie;
+	struct rpc_call *call = cookie;
 
-	rpc_connection_send_errx(call->ric_conn, call->ric_id, exception);
-	call->ric_responded = true;
+	rpc_connection_send_errx(call->rc_conn, call->rc_id, exception);
+	call->rc_responded = true;
 }
 
 int
 rpc_function_yield(void *cookie, rpc_object_t fragment)
 {
-	struct rpc_inbound_call *call = cookie;
-	struct rpc_context *context = call->ric_context;
+	struct rpc_call *call = cookie;
+	struct rpc_context *context = call->rc_context;
 
-	g_mutex_lock(&call->ric_mtx);
+	g_mutex_lock(&call->rc_mtx);
 
-	while (call->ric_producer_seqno == call->ric_consumer_seqno &&
-	    !call->ric_aborted)
-		g_cond_wait(&call->ric_cv, &call->ric_mtx);
+	while (call->rc_producer_seqno == call->rc_consumer_seqno &&
+	    !call->rc_aborted)
+		g_cond_wait(&call->rc_cv, &call->rc_mtx);
 
-	if (call->ric_aborted) {
-		if (!call->ric_ended) {
+	if (call->rc_aborted) {
+		if (!call->rc_ended) {
 			rpc_function_error(call, ECONNRESET,
-				"Call aborted by receiver");
-			call->ric_ended = true;
+			    "Call aborted");
+			call->rc_ended = true;
 		}
 
-		g_mutex_unlock(&call->ric_mtx);
+		g_mutex_unlock(&call->rc_mtx);
 		rpc_release(fragment);
 		return (-1);
 	}
@@ -451,76 +465,75 @@ rpc_function_yield(void *cookie, rpc_object_t fragment)
 	if (context->rcx_pre_call_hook != NULL) {
 
 	}
+	rpc_connection_send_fragment(call->rc_conn, call->rc_id,
+	    call->rc_producer_seqno, fragment);
 
-	rpc_connection_send_fragment(call->ric_conn, call->ric_id,
-	    call->ric_producer_seqno, fragment);
-
-	call->ric_producer_seqno++;
-	call->ric_streaming = true;
-	g_mutex_unlock(&call->ric_mtx);
+	call->rc_producer_seqno++;
+	call->rc_streaming = true;
+	g_mutex_unlock(&call->rc_mtx);
 	return (0);
 }
 
 void
 rpc_function_end(void *cookie)
 {
-	struct rpc_inbound_call *call = cookie;
+	struct rpc_call *call = cookie;
 
-	g_mutex_lock(&call->ric_mtx);
+	g_mutex_lock(&call->rc_mtx);
 
-	while (call->ric_producer_seqno == call->ric_consumer_seqno &&
-	    !call->ric_aborted)
-		g_cond_wait(&call->ric_cv, &call->ric_mtx);
+	while (call->rc_producer_seqno == call->rc_consumer_seqno &&
+	    !call->rc_aborted)
+		g_cond_wait(&call->rc_cv, &call->rc_mtx);
 
-        if (call->ric_aborted) {
-                if (!call->ric_ended) {
+        if (call->rc_aborted) {
+                if (!call->rc_ended) {
                         rpc_function_error(call, ECONNRESET,
-                                "Call aborted by receiver");
-                        call->ric_ended = true;
+                                "Call aborted");
+                        call->rc_ended = true;
                 }
-		g_mutex_unlock(&call->ric_mtx);
+		g_mutex_unlock(&call->rc_mtx);
 	}
 
-	if (!call->ric_ended) {
-		rpc_connection_send_end(call->ric_conn, call->ric_id,
-		    call->ric_producer_seqno);
+	if (!call->rc_ended) {
+		rpc_connection_send_end(call->rc_conn, call->rc_id,
+		    call->rc_producer_seqno);
 	}
 
-	call->ric_producer_seqno++;
-	call->ric_streaming = true;
-	call->ric_ended = true;
-	g_mutex_unlock(&call->ric_mtx);
+	call->rc_producer_seqno++;
+	call->rc_streaming = true;
+	call->rc_ended = true;
+	g_mutex_unlock(&call->rc_mtx);
 	rpc_connection_close_inbound_call(call);
 }
 
 void
 rpc_function_kill(void *cookie)
 {
-	struct rpc_inbound_call *call = cookie;
+	struct rpc_call *call = cookie;
 
-	g_mutex_lock(&call->ric_mtx);
-	call->ric_aborted = true;
-	g_cond_broadcast(&call->ric_cv);
-	g_mutex_unlock(&call->ric_mtx);
+	g_mutex_lock(&call->rc_mtx);
+	call->rc_aborted = true;
+	g_cond_broadcast(&call->rc_cv);
+	g_mutex_unlock(&call->rc_mtx);
 }
 
 bool
 rpc_function_should_abort(void *cookie)
 {
-	struct rpc_inbound_call *call = cookie;
+	struct rpc_call *call = cookie;
 
-	return (call->ric_aborted);
+	return (call->rc_aborted);
 }
 
 void rpc_function_set_async_abort_handler(void *_Nonnull cookie,
     _Nullable rpc_abort_handler_t handler)
 {
-	struct rpc_inbound_call *call = cookie;
+	struct rpc_call *call = cookie;
 
-	if (call->ric_abort_handler != NULL)
-		Block_release(call->ric_abort_handler);
+	if (call->rc_abort_handler != NULL)
+		Block_release(call->rc_abort_handler);
 
-	call->ric_abort_handler = Block_copy(handler);
+	call->rc_abort_handler = Block_copy(handler);
 }
 
 rpc_instance_t

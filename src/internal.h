@@ -163,25 +163,6 @@ struct rpc_object
 	struct rpct_typei *	ro_typei;
 };
 
-struct rpc_call
-{
-	rpc_connection_t    	rc_conn;
-	const char *        	rc_type;
-	const char *		rc_path;
-	const char *		rc_interface;
-	const char *        	rc_method;
-	rpc_object_t        	rc_id;
-	rpc_object_t        	rc_args;
-	rpc_call_status_t   	rc_status;
-	rpc_object_t        	rc_result;
-	GCond      		rc_cv;
-	GMutex			rc_mtx;
-    	GAsyncQueue *		rc_queue;
-    	GSource *		rc_timeout;
-	rpc_callback_t    	rc_callback;
-	uint64_t               	rc_seqno;
-};
-
 struct rpc_subscription
 {
 	const char *		rsu_name;
@@ -197,28 +178,34 @@ struct rpc_subscription_handler
 	rpc_handler_t 		rsh_handler;
 };
 
-struct rpc_inbound_call
+struct rpc_call
 {
-	rpc_context_t 		ric_context;
-    	rpc_connection_t    	ric_conn;
-	rpc_instance_t 		ric_instance;
-	rpc_object_t 		ric_frame;
-	rpc_object_t        	ric_id;
-	rpc_object_t        	ric_args;
-	rpc_abort_handler_t	ric_abort_handler;
-	const char *        	ric_name;
-	const char *		ric_interface;
-	const char *		ric_path;
-	struct rpc_if_method *	ric_method;
-    	GMutex			ric_mtx;
-    	GCond			ric_cv;
-    	volatile int64_t	ric_producer_seqno;
-    	volatile int64_t	ric_consumer_seqno;
-    	void *			ric_arg;
-    	bool			ric_streaming;
-    	bool			ric_responded;
-    	bool			ric_ended;
-    	bool			ric_aborted;
+	rpc_connection_t    	rc_conn;
+	rpc_context_t 		rc_context;
+	rpc_call_type_t        	rc_type;
+	const char *		rc_path;
+	const char *		rc_interface;
+	const char *        	rc_method_name;
+	rpc_object_t        	rc_id;
+	rpc_object_t        	rc_args;
+	rpc_call_status_t   	rc_status;
+	rpc_object_t        	rc_result;
+	GCond      		rc_cv;
+	GMutex			rc_mtx;
+    	GSource *		rc_timeout;
+	bool			rc_timedout;
+	rpc_callback_t    	rc_callback;
+    	volatile int64_t	rc_producer_seqno;
+    	volatile int64_t	rc_consumer_seqno; /* also rc_seqno */
+	rpc_instance_t 		rc_instance;
+	rpc_object_t 		rc_frame;
+	rpc_abort_handler_t	rc_abort_handler;
+	struct rpc_if_method *	rc_if_method;
+	void *			rc_m_arg;
+    	bool			rc_streaming;
+    	bool			rc_responded;
+    	bool			rc_ended;
+    	bool			rc_aborted;
 };
 
 struct rpc_credentials
@@ -232,6 +219,7 @@ struct rpc_connection
 {
     	struct rpc_server *	rco_server;
 	struct rpc_client *	rco_client;
+	struct rpc_context *	rco_rpc_context;
     	struct rpc_credentials	rco_creds;
 	bool			rco_has_creds;
 	const char *        	rco_uri;
@@ -536,8 +524,8 @@ rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
 void rpc_connection_reference_retain(rpc_connection_t);
 void rpc_connection_reference_release(rpc_connection_t);
-int rpc_context_dispatch(rpc_context_t, struct rpc_inbound_call *);
-int rpc_server_dispatch(rpc_server_t, struct rpc_inbound_call *);
+int rpc_context_dispatch(rpc_context_t, struct rpc_call *);
+int rpc_server_dispatch(rpc_server_t, struct rpc_call *);
 void rpc_server_release(rpc_server_t);
 void rpc_server_quit(rpc_server_t);
 void rpc_server_disconnect(rpc_server_t, rpc_connection_t);
@@ -551,8 +539,7 @@ void rpc_connection_send_response(rpc_connection_t, rpc_object_t, rpc_object_t);
 void rpc_connection_send_fragment(rpc_connection_t, rpc_object_t, int64_t,
     rpc_object_t);
 void rpc_connection_send_end(rpc_connection_t, rpc_object_t, int64_t);
-void rpc_connection_close_inbound_call(struct rpc_inbound_call *);
-
+void rpc_connection_close_inbound_call(struct rpc_call *);
 
 void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 

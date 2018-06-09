@@ -82,6 +82,7 @@ rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 	server->rs_refcnt++; /* conn has reference */
 
 	debugf("Server accepting connection %p", conn);
+	conn->rco_rpc_context = server->rs_context;
 
 	g_rw_lock_writer_lock(&server->rs_connections_rwlock);
 	server->rs_connections = g_list_append(server->rs_connections, conn);
@@ -278,7 +279,7 @@ rpc_server_broadcast_event(rpc_server_t server, const char *path,
 }
 
 int
-rpc_server_dispatch(rpc_server_t server, struct rpc_inbound_call *call)
+rpc_server_dispatch(rpc_server_t server, struct rpc_call *call)
 {
 	int ret;
 
@@ -290,7 +291,7 @@ rpc_server_dispatch(rpc_server_t server, struct rpc_inbound_call *call)
 	}
 
 	if (server->rs_paused || !g_queue_is_empty(server->rs_calls))  {
-		rpc_retain(call->ric_frame);
+		rpc_retain(call->rc_frame);
 		g_queue_push_tail(server->rs_calls, call);
 		g_mutex_unlock(&server->rs_calls_mtx);
 		return (0);
@@ -305,7 +306,7 @@ rpc_server_dispatch(rpc_server_t server, struct rpc_inbound_call *call)
 static void
 server_queue_purge(rpc_server_t server)
 {
-	struct rpc_inbound_call *icall;
+	struct rpc_call *icall;
 	const char *method = NULL;
 	const char *interface = NULL;
 	const char *path = NULL;
@@ -314,16 +315,16 @@ server_queue_purge(rpc_server_t server)
 
 	while (!g_queue_is_empty(server->rs_calls)) {
 		icall = g_queue_pop_head(server->rs_calls);
-		rpc_object_unpack(icall->ric_frame, "{s,s,s,v}",
+		rpc_object_unpack(icall->rc_frame, "{s,s,s,v}",
 		    "method", &method,
 		    "interface", &interface,
 		    "path", &path,
 		    "args", &call_args);
 
-		icall->ric_name = method;
-		icall->ric_interface = interface;
-		icall->ric_path = path;
-		frame = icall->ric_frame;
+		icall->rc_method_name = method;
+		icall->rc_interface = interface;
+		icall->rc_path = path;
+		frame = icall->rc_frame;
 
 		if (!server->rs_closed) {
 			if (rpc_context_dispatch(server->rs_context, icall) == 0)
