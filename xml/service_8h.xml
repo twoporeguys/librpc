@@ -1126,7 +1126,7 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Returns the connection associated with method.</para><para><parameterlist kind="param"><parameteritem>
+<para>Returns the connection associated with call.</para><para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>cookie</parametername>
 </parameternamelist>
