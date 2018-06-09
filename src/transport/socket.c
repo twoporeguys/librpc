@@ -91,8 +91,10 @@ socket_parse_uri(const char *uri_string)
 	char *upath;
 
 	uri = soup_uri_new(uri_string);
-	if (uri == NULL)
-	    return NULL;
+	if (uri == NULL) {
+		rpc_set_last_errorf(EINVAL, "Cannot parse URI");
+		return (NULL);
+	}
 
 	if (!g_strcmp0(uri->scheme, "socket")) {
 		rpc_set_last_errorf(EINVAL,
@@ -152,7 +154,7 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 
 	debugf("new connection %p", conn);
 	conn->sc_conn = gconn;
-	conn->sc_socket = g_socket_connection_get_socket(gconn);
+	conn->sc_socket = g_object_ref(g_socket_connection_get_socket(gconn));
 	g_mutex_init(&conn->sc_abort_mtx);
 
 	rco = rpc_connection_alloc(srv);

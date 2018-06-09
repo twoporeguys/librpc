@@ -145,3 +145,13 @@ is present by default in the clang compiler and patches adding same
 functionality exist for gcc. For more information, please refer to
 `Working with blocks <https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/WorkingwithBlocks/WorkingwithBlocks.html>`_
 article.
+
+FAQ
+---
+
+I get an error like ``ModuleNotFoundError: No module named 'librpc'``.
+How do I fix it?
+
+Run ``brew reinstall librpc --with-python``.
+Likely cause is that a ``brew upgrade`` command reinstalled librpc without the
+python bindings. 

@@ -185,6 +185,9 @@ cdef class Object(object):
             if isinstance(value, Object):
                 self.obj = rpc_copy(self.obj)
 
+            if not isinstance(typei, TypeInstance):
+                raise TypeError('typei is not a TypeInstance')
+
             self.obj = rpct_set_typei((<TypeInstance>typei).rpctypei, self.obj)
 
     def __repr__(self):

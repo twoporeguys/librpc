@@ -36,6 +36,7 @@
 cmake-build-debug
 
 # Build directory
+build
 
 # Idea directory
 .idea

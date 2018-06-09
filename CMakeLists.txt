@@ -53,6 +53,7 @@ if(NOT RELEASE_TAG)
             OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
+include(GNUInstallDirs)
 include(CPack)
 
 find_package (PkgConfig REQUIRED)
@@ -283,7 +284,7 @@ if(ENABLE_SYSTEMD)
 endif()
 
 configure_file(librpc.pc.in ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc @ONLY)
-install(TARGETS librpc DESTINATION lib)
+install(TARGETS librpc DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
 install(DIRECTORY idl/ DESTINATION ${CMAKE_INSTALL_PREFIX}/share/idl)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pkgconfig)

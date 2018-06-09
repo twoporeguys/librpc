@@ -690,7 +690,7 @@
 {
     return [_client callSync:@"get"
                         path:_path
-                   interface:@(RPC_INTROSPECTABLE_INTERFACE)
+                   interface:@(RPC_OBSERVABLE_INTERFACE)
                         args:[[RPCObject alloc] initWithValue:@[_interface, property]]
                        error:error];
 }
@@ -699,9 +699,9 @@
     value:(NSObject *)value
     error:(NSError *__autoreleasing _Nullable *)error
 {
-    return [_client callSync:@"get"
+    return [_client callSync:@"set"
                         path:_path
-                   interface:@(RPC_INTROSPECTABLE_INTERFACE)
+                   interface:@(RPC_OBSERVABLE_INTERFACE)
                         args:[[RPCObject alloc] initWithValue:@[_interface, property, value]]
                        error:error];
 }

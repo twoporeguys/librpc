@@ -49,7 +49,7 @@
 #endif
 
 static const char *rpc_types[] = {
-    [RPC_TYPE_NULL] = "null",
+    [RPC_TYPE_NULL] = "nulltype",
     [RPC_TYPE_BOOL] = "bool",
     [RPC_TYPE_UINT64] = "uint64",
     [RPC_TYPE_INT64] = "int64",
