@@ -421,7 +421,7 @@ void *_Nullable rpc_function_get_arg(void *_Nonnull cookie);
 _Nonnull rpc_context_t rpc_function_get_context(void *_Nonnull cookie);
 
 /**
- * Returns the connection associated with method.
+ * Returns the connection associated with call.
  *
  * @param cookie Running call handle
  * @return RPC connection handle or NULL if the connection is closed/aborted.

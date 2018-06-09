@@ -71,7 +71,7 @@ static struct rpc_subscription *rpc_connection_find_subscription(rpc_connection_
 static void rpc_connection_free_resources(rpc_connection_t);
 static int rpc_connection_abort(void *);
 static void rpc_connection_release_call(struct rpc_call *call);
-static int cancel_timeout(rpc_call_t call);
+static int cancel_timeout_locked(rpc_call_t call);
 
 struct message_handler
 {
@@ -292,7 +292,7 @@ rpc_connection_set_context(rpc_connection_t conn, rpc_context_t ctx)
 }
 
 static int
-cancel_timeout(rpc_call_t call)
+cancel_timeout_locked(rpc_call_t call)
 {
 	/* Cancel timeout source */
 	if (call->rc_timeout != NULL) {
@@ -371,7 +371,7 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	g_assert(call->rc_type == RPC_OUTBOUND_CALL);
 
 	g_mutex_lock(&call->rc_mtx);
-	if (cancel_timeout(call) != 0) {
+	if (cancel_timeout_locked(call) != 0) {
 		g_mutex_unlock(&call->rc_mtx);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
@@ -410,7 +410,7 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 		return;
 	}
 	g_mutex_lock(&call->rc_mtx);
-	if (cancel_timeout(call) != 0) {
+	if (cancel_timeout_locked(call) != 0) {
 		g_mutex_unlock(&call->rc_mtx);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
@@ -481,7 +481,7 @@ on_rpc_end(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 		return;
 	}
 	g_mutex_lock(&call->rc_mtx);
-	if (cancel_timeout(call) != 0) {
+	if (cancel_timeout_locked(call) != 0) {
 		g_mutex_unlock(&call->rc_mtx);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
@@ -539,7 +539,7 @@ on_rpc_error(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 		return;
 	}
 	g_mutex_lock(&call->rc_mtx);
-	if (cancel_timeout(call) != 0) {
+	if (cancel_timeout_locked(call) != 0) {
 		g_mutex_unlock(&call->rc_mtx);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
@@ -786,7 +786,7 @@ rpc_close(rpc_connection_t conn)
 
 		g_mutex_lock(&call->rc_mtx);
 		/* Cancel timeout source */
-		if (cancel_timeout(call) != 0) {
+		if (cancel_timeout_locked(call) != 0) {
 			g_mutex_unlock(&call->rc_mtx);
 			continue;
 		}
@@ -1810,7 +1810,7 @@ rpc_call_abort(rpc_call_t call)
 		return (-1);
 	}
 
-	if (cancel_timeout(call) == 0)
+	if (cancel_timeout_locked(call) == 0)
 		call->rc_status = RPC_CALL_ABORTED;
 	g_mutex_unlock(&call->rc_mtx);
 	return (0);
@@ -1863,7 +1863,9 @@ rpc_call_free(rpc_call_t call)
 {
 	rpc_connection_t conn = call->rc_conn;
 
-	cancel_timeout(call);
+	g_mutex_lock(&call->rc_mtx);
+	cancel_timeout_locked(call);
+	g_mutex_unlock(&call->rc_mtx);
 
 	g_mutex_lock(&conn->rco_mtx);
 	rpc_connection_reference_retain(conn);
