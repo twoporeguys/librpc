@@ -87,9 +87,8 @@ static void
 server_wait(rpc_context_t context, const char *uri)
 {
 
-	while (rpc_server_find(uri, context) != NULL) {
-			sleep(5);
-	}
+	while (rpc_server_find(uri, context) != NULL)
+		sleep(5);
 }
 
 static void
@@ -200,9 +199,9 @@ static void
 server_test_valid_server_tear_down(server_fixture *fixture, gconstpointer user_data)
 {
 
-	if (fixture->iclose == 0 && fixture->close == 0) {
+	if (fixture->iclose == 0 && fixture->close == 0)
 		rpc_server_close(fixture->srv);
-	}
+
 	server_wait(fixture->ctx, uris[fixture->iuri].srv);
         rpc_context_unregister_member(fixture->ctx, NULL, "hi");
         rpc_context_unregister_member(fixture->ctx, NULL, "block");
@@ -234,7 +233,6 @@ thread_stream_func (gpointer data)
 
 	rpc_client_t client;
 	rpc_connection_t conn;
-	//rpc_object_t err;
 	rpc_object_t result;
 	rpc_call_t call;
 	int cnt=0;
@@ -244,9 +242,9 @@ thread_stream_func (gpointer data)
 	const char* str;
 
 	client = rpc_client_create(data, 0);
-	if (client == NULL) {
+	if (client == NULL)
 		g_thread_exit (GINT_TO_POINTER (0));
-	}
+
 	conn = rpc_client_get_connection(client);
 
 	call = rpc_connection_call(conn, NULL, NULL, "stream", rpc_array_create(), NULL);
@@ -295,9 +293,9 @@ thread_func (gpointer data)
 	rpc_object_t result;
 
 	client = rpc_client_create(data, 0);
-	if (client == NULL) {
+	if (client == NULL)
 		g_thread_exit (GINT_TO_POINTER (1));
-	}
+
 	conn = rpc_client_get_connection(client);
 	result = rpc_connection_call_simple(conn, "hi", "[s]", "world");
 	if (result == NULL) {
@@ -319,13 +317,11 @@ thread_func_delay (gpointer data)
 
 	rpc_client_t client;
 	rpc_connection_t conn;
-	/*rpc_object_t err;*/
 	rpc_object_t result;
 
 	client = rpc_client_create(data, 0);
-	if (client == NULL) {
+	if (client == NULL)
 		g_thread_exit (GINT_TO_POINTER (1));
-	}
 
 	conn = rpc_client_get_connection(client);
 	result = rpc_connection_call_simple(conn, "block", RPC_NULL_FORMAT);
@@ -357,9 +353,8 @@ thread_test(int n, gpointer(*t_func)(gpointer), server_fixture *fx )
 		rpc_server_resume(fx->srv);
 
 	for (int i = 0; i < n; i++) {
-		if (fx->iclose > 0 && i == fx->iclose) {
+		if (fx->iclose > 0 && i == fx->iclose)
 			rpc_server_close(fx->srv);
-		}
 		ret += (int)g_thread_join (threads[i]);
 	}
 
@@ -461,9 +456,9 @@ server_test_nullables(server_fixture *fixture, gconstpointer user_data)
 
 	rpc_server_resume(fixture->srv);
         client = rpc_client_create(uris[fixture->iuri].cli, 0);
-        if (client == NULL) {
+        if (client == NULL)
                 g_thread_exit (GINT_TO_POINTER (1));
-        }
+ 
         conn = rpc_client_get_connection(client);
         result = rpc_connection_call_simple(conn, "hi", "[s]", "world");
 	g_assert(result != NULL && !(rpc_is_error(result)));

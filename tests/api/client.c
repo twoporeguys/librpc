@@ -209,9 +209,9 @@ thread_func (gpointer data)
 	rpc_object_t result;
 
 	client = rpc_client_create(data, 0);
-	if (client == NULL) {
+	if (client == NULL)
 		g_thread_exit (GINT_TO_POINTER (1));
-	}
+
 	conn = rpc_client_get_connection(client);
 	result = rpc_connection_call_simple(conn, "hi", "[s]", "world");
 	if (result == NULL) {
@@ -220,10 +220,10 @@ thread_func (gpointer data)
 	} else if (rpc_is_error(result)) {
 		rpc_client_close(client);
 		g_thread_exit (GINT_TO_POINTER (1));
-	} else {
+	} else
 		g_assert_cmpstr(rpc_string_get_string_ptr(result), ==,
 		    "hello world!");	
-	}
+
 	rpc_client_close(client);
 	g_thread_exit (GINT_TO_POINTER (0));
 	return (NULL);
@@ -239,9 +239,9 @@ thread_callme_func (gpointer data)
 	rpc_object_t result;
 
 	client = rpc_client_create(data, 0);
-	if (client == NULL) {
+	if (client == NULL)
 		g_thread_exit (GINT_TO_POINTER (1));
-	}
+
 	conn = rpc_client_get_connection(client);
 	ctx = rpc_context_create();
 	g_assert(rpc_connection_set_context(conn, ctx) == 0);
@@ -283,9 +283,9 @@ thread_mestream_func (gpointer data)
 	rpc_call_t call;
 
 	client = rpc_client_create(data, 0);
-	if (client == NULL) {
+	if (client == NULL)
 		g_thread_exit (GINT_TO_POINTER (1));
-	}
+
 	conn = rpc_client_get_connection(client);
 	ctx = rpc_context_create();
 	g_assert(rpc_connection_set_context(conn, ctx) == 0);
@@ -303,10 +303,8 @@ thread_mestream_func (gpointer data)
 
 			res = rpc_object_pack("[s, i, i]", 
 			    str + i, 26-i, cnt);
-			if (rpc_function_yield(cookie, res) != 0) {
-                        	//rpc_function_end(cookie);
+			if (rpc_function_yield(cookie, res) != 0)
                         	return (rpc_null_create());
-                	}
 		}	
 		rpc_function_end(cookie);
 		return (rpc_null_create());
@@ -345,9 +343,8 @@ thread_test(int n, gpointer(*t_func)(gpointer), client_fixture *fx )
 		rpc_server_resume(fx->srv);
 
 	for (int i = 0; i < n; i++) {
-		if (fx->iclose > 0 && i == fx->iclose) {
+		if (fx->iclose > 0 && i == fx->iclose)
 			rpc_server_close(fx->srv);
-		}
 		ret += (int)g_thread_join (threads[i]);
 	}
 
@@ -436,7 +433,7 @@ do_stream_work(struct work_item *item)
                                	goto done;
 
                        	case RPC_CALL_ERROR:
-				fprintf(stderr, "ERROR: %s %d\n",
+				debugf("Client call error: %s %d",
 				    rpc_error_get_message(rpc_call_result(call)),
 				    rpc_error_get_code(rpc_call_result(call)));
 				failed = true;
@@ -451,14 +448,10 @@ done:
 	if (!failed) {
 		result = (rpc_string_create("DONE!"));
 		rpc_function_respond(item->call, result);
-	} else {
+	} else
 		rpc_function_error(item->call, EPROTO, 
 		    "Error in receiving streamed data"); 
-	}
 	rpc_call_free(call);
-
-	/*fprintf(stderr, "CLIENT ccnt: %d blk recvd:  %d\n", 
-	    (int)item->ccnt, cnt);*/
 	return (cnt);
 }
 

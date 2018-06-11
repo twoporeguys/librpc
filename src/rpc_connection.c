@@ -185,9 +185,8 @@ rpc_run_callback(rpc_connection_t conn, struct work_item *item)
 {
 	GError *err = NULL;
 
-	if (conn->rco_closed) {
+	if (conn->rco_closed)
 		return (false);
-	}
 
 #ifdef LIBDISPATCH_SUPPORT
 	if (conn->rco_dispatch_queue != NULL) {
@@ -229,9 +228,9 @@ rpc_callback_worker(void *arg, void *data)
 		ret = call->rc_callback(call);
 
 		if (call->rc_status == RPC_CALL_MORE_AVAILABLE) {
-			if (ret) {
+			if (ret)
 				rpc_call_continue(call, false);
-			} else
+			else
 				rpc_call_abort(call);
 		}
 
@@ -296,9 +295,9 @@ cancel_timeout_locked(rpc_call_t call)
 {
 	/* Cancel timeout source */
 	if (call->rc_timeout != NULL) {
-		if (call->rc_timedout) {
+		if (call->rc_timedout)
 			return (-1);
-		}
+
 		g_source_destroy(call->rc_timeout);
 		g_source_unref(call->rc_timeout);
 		call->rc_timeout = NULL;
@@ -344,13 +343,16 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	    (gpointer)rpc_string_get_string_ptr(id), call);
         g_rw_lock_writer_unlock(&conn->rco_icall_rwlock);
 
-	if (conn->rco_server != NULL) {
+	if (conn->rco_server != NULL)
 		res = rpc_server_dispatch(conn->rco_server, call);
-	} else {
+	else
 		res = rpc_context_dispatch(conn->rco_rpc_context, call);
-	}
+
         if (res != 0) {
-		rpc_function_error(call, ENOTCONN, "Server not active");
+		if (call->rc_err != NULL)
+			rpc_function_error(call,
+			    rpc_error_get_code(call->rc_err),
+			    rpc_error_get_message(call->rc_err));
                 rpc_connection_close_inbound_call(call);
         }
 }
@@ -1034,9 +1036,9 @@ rpc_connection_close_inbound_call(struct rpc_call *call)
 
         if (conn->rco_closed &&
             (g_hash_table_size(conn->rco_inbound_calls) == 0) && 
-	    (g_hash_table_size(conn->rco_calls) == 0)) {
+	    (g_hash_table_size(conn->rco_calls) == 0))
                 rpc_connection_close(conn);
-	}
+
 	rpc_connection_reference_release(conn);
 }
 
@@ -1578,7 +1580,6 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	g_mutex_unlock(&conn->rco_mtx);
 
 	if (rpc_send_frame(conn, frame) != 0) {
-		//debugf("Frame not sent\n");
 		rpc_call_free(call);
 		return (NULL);
 	}

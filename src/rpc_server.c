@@ -287,6 +287,8 @@ rpc_server_dispatch(rpc_server_t server, struct rpc_call *call)
 
 	if (server->rs_closed) {
 		g_mutex_unlock(&server->rs_calls_mtx);
+		call->rc_err =
+		    rpc_error_create(ECONNRESET, "Server not active", NULL);
 		return (-1);
 	}
 
@@ -296,8 +298,7 @@ rpc_server_dispatch(rpc_server_t server, struct rpc_call *call)
 		g_mutex_unlock(&server->rs_calls_mtx);
 		return (0);
 	}
-	ret = server->rs_closed ? -1 :
-	    rpc_context_dispatch(server->rs_context, call);
+	ret = rpc_context_dispatch(server->rs_context, call);
 	g_mutex_unlock(&server->rs_calls_mtx);
 	return (ret);
 }
@@ -327,11 +328,20 @@ server_queue_purge(rpc_server_t server)
 		frame = icall->rc_frame;
 
 		if (!server->rs_closed) {
-			if (rpc_context_dispatch(server->rs_context, icall) == 0)
+			if (rpc_context_dispatch(server->rs_context,
+			    icall) == 0) {
 				rpc_release(frame);
 				continue;
-		}
+			}
+		} else
+			icall->rc_err = rpc_error_create(ECONNRESET,
+			    "Server not active", NULL);
 		rpc_release(frame);
+		if (icall->rc_err != NULL)
+			rpc_function_error(icall,
+			    rpc_error_get_code(icall->rc_err),
+			    rpc_error_get_message(icall->rc_err));
+
 		rpc_connection_close_inbound_call(icall);
 	}
 }

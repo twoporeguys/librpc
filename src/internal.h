@@ -190,6 +190,7 @@ struct rpc_call
 	rpc_object_t        	rc_args;
 	rpc_call_status_t   	rc_status;
 	rpc_object_t        	rc_result;
+	rpc_object_t		rc_err;
 	GCond      		rc_cv;
 	GMutex			rc_mtx;
     	GSource *		rc_timeout;

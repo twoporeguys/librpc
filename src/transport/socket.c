@@ -257,7 +257,8 @@ socket_listen(struct rpc_server *srv, const char *uri,
 	if (args != NULL && rpc_get_type(args) == RPC_TYPE_FD) {
 		sock = g_socket_new_from_fd(rpc_fd_get_value(args), &err);
 		if (sock == NULL) {
-			rpc_set_last_gerror(err);
+			srv->rs_error = rpc_error_create(err->code,
+			    err->message, NULL);
 			g_error_free(err);
 			return (-1);
 		}
@@ -310,10 +311,9 @@ socket_listen(struct rpc_server *srv, const char *uri,
 		g_object_unref(addr);
 	}
 
-	if (sock != NULL) {
+	if (sock != NULL)
 		g_socket_listener_add_socket(server->ss_listener, sock, NULL,
 		    &err);
-	}
 
 	if (err != NULL) {
 		srv->rs_error = rpc_error_create(err->code, err->message, NULL);
@@ -362,10 +362,9 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 			conn->sc_creds_sent = true;
 		}
 
-		if (nfds > 0) {
+		if (nfds > 0)
 			cmsg[ncmsg++] = g_unix_fd_message_new_with_fd_list(
 			    g_unix_fd_list_new_from_array(fds, (gint)nfds));
-		}
 	}
 #endif
 
@@ -526,8 +525,6 @@ socket_abort_timeout(gpointer user_data)
 
 	g_assert(g_main_current_source() == conn->sc_abort_timeout);
 	g_source_destroy(conn->sc_abort_timeout);
-	/*fprintf(stderr, "Cancelling - haserr = %d\n",
-		conn->sc_parent->rco_error != NULL);*/
 	g_cancellable_cancel (conn->sc_cancellable);
 	return (false);
 }
