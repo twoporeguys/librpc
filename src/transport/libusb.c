@@ -162,8 +162,9 @@ static const struct rpc_transport libusb_transport = {
 };
 
 static const uint16_t libusb_valid_pids[] = {
-	0xfeed,
-	0xfeee,
+	0xfeed,		// MOM
+	0xfeee,		// QC Rig
+	0xbabe,		// Marceline
 };
 
 static GMutex usb_request_mtx;
