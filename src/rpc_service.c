@@ -106,7 +106,7 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 
 	result = method->rm_block((void *)call, call->rc_args);
 
-	if (!result || result == RPC_FUNCTION_STILL_RUNNING)
+	if (result == RPC_FUNCTION_STILL_RUNNING)
 		return;
 
 	if (context->rcx_post_call_hook != NULL) {
