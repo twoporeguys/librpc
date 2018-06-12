@@ -1,6 +1,6 @@
 {
   "name": "@2pg/librpc-client",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "author": "Pierre Chausalet <pierre.chaussalet@twoporeguys.com>",
   "description": "LibRPC client",
   "homepage": "http://www.twoporeguys.com",
@@ -33,6 +33,10 @@
     "lodash": "^4.17.4",
     "msgpack-lite": "^0.1.26",
     "rxjs": "^5.5.11"
+  },
+  "peerDependencies": {
+    "@types/lodash": "^4.14.93",
+    "@types/msgpack-lite": "^0.1.5"
   },
   "nyc": {
     "include": [
