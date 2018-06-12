@@ -38,6 +38,15 @@
 #include <rpc/serializer.h>
 #include <rpc/typing.h>
 
+#define USAGE_STRING							\
+    "Available commands:\n"						\
+    "  tree\n"								\
+    "  inspect <path>\n"						\
+    "  call <path> <interface> <method> [arguments]\n"			\
+    "  get <path> <interface> <property>\n"				\
+    "  set <path> <interface> <property> <value>\n"			\
+    "  listen <path>\n"
+
 static int cmd_tree(int argc, char *argv[]);
 static int cmd_inspect(int argc, char *argv[]);
 static int cmd_call(int argc, char *argv[]);
@@ -240,6 +249,11 @@ cmd_inspect(int argc, char *argv[])
 	rpc_object_t result;
 	int ret = 0;
 
+	if (argc < 1) {
+		fprintf(stderr, "Not enough arguments provided\n");
+		return (1);
+	}
+
 	conn = connect();
 	result = rpc_connection_call_syncp(conn, argv[0],
 	    RPC_INTROSPECTABLE_INTERFACE, "get_interfaces", "[]");
@@ -325,7 +339,8 @@ cmd_get(int argc, char *argv[])
 	rpc_object_t result;
 
 	if (argc != 3) {
-
+		fprintf(stderr, "Not enough arguments provided\n");
+		return (1);
 	}
 
 	conn = connect();
@@ -343,7 +358,8 @@ cmd_set(int argc, char *argv[])
 	rpc_object_t result;
 
 	if (argc != 4) {
-
+		fprintf(stderr, "Not enough arguments provided\n");
+		return (1);
 	}
 
 	value = rpc_serializer_load("json", argv[3], strlen(argv[3]));
@@ -367,6 +383,11 @@ cmd_listen(int argc, char *argv[])
 {
 	__block GMutex mtx;
 	rpc_connection_t conn;
+
+	if (argc < 1) {
+		fprintf(stderr, "Not enough arguments provided\n");
+		return (1);
+	}
 
 	g_mutex_init(&mtx);
 	conn = connect();
@@ -402,7 +423,8 @@ main(int argc, char *argv[])
 	int nargs;
 	size_t i;
 
-	context = g_option_context_new(" - interact with librpc server");
+	context = g_option_context_new("<COMMAND> [ARGUMENTS...] - interact with librpc server");
+	g_option_context_set_description(context, USAGE_STRING);
 	g_option_context_add_main_entries(context, options, NULL);
 	if (!g_option_context_parse(context, &argc, &argv, &err)) {
 
