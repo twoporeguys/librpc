@@ -291,6 +291,7 @@ librpc_usb_thread(void *arg)
 
 static struct usb_device_id librpc_usb_id_table[] = {
         { USB_DEVICE_INTERFACE_NUMBER(0xbeef, 0xfeed, 0x00) },
+        { USB_DEVICE_INTERFACE_NUMBER(0xbeef, 0xfeee, 0x00) },
         { }
 };
 
