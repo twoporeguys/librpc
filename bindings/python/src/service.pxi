@@ -54,7 +54,7 @@ cdef class Context(object):
         if isinstance(obj, Instance):
             instance = <Instance>obj
 
-        self.instances[instance.path] = instance
+        self.instances[instance.path] = obj
         if rpc_context_register_instance(self.context, instance.instance) != 0:
             raise_internal_exc()
 
