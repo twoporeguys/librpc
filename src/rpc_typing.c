@@ -318,6 +318,7 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 
 		ret = g_hash_table_lookup(context->typei_cache, decltype);
 		if (ret != NULL) {
+			g_free(decltype);
 			g_match_info_free(match);
 			return (rpct_typei_retain(ret));
 		}
@@ -335,8 +336,10 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 				subtype = g_hash_table_lookup(
 				    cur->specializations, decltype);
 
-				if (subtype)
-					return (subtype);
+				if (subtype) {
+					ret = subtype;
+					goto done;
+				}
 			}
 
 			cur = cur->parent;
@@ -354,7 +357,8 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 				subtype->proxy = true;
 				subtype->variable = g_strdup(decltype);
 				subtype->canonical_form = g_strdup(decltype);
-				return (subtype);
+				ret = subtype;
+				goto done;
 			}
 		}
 
