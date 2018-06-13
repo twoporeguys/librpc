@@ -488,7 +488,7 @@ on_rpc_end(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
 	}
-		
+
 	g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 
 	call->rc_status = RPC_CALL_ENDED;
@@ -607,7 +607,7 @@ on_events_subscribe(rpc_connection_t conn, rpc_object_t args,
 		    "path", &path) <1)
 	    		return ((bool)true);
 
-	    	instance = rpc_context_find_instance(
+		instance = rpc_context_find_instance(
 		    conn->rco_server->rs_context, path);
 
 		if (instance == NULL)
@@ -754,7 +754,7 @@ rpc_close(rpc_connection_t conn)
 		 */
 		g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
-        	if (conn->rco_server || conn->rco_closed) {
+		if (conn->rco_server || conn->rco_closed) {
 			conn->rco_closed = true;
 			g_mutex_unlock(&conn->rco_mtx);
 			rpc_connection_close(conn);
@@ -763,7 +763,7 @@ rpc_close(rpc_connection_t conn)
 		rpc_connection_reference_release(conn);
 		return (0);
 	}
-			
+
 	/* Tear down all the running inbound/outbound calls */
 	g_mutex_unlock(&conn->rco_mtx);
 	g_hash_table_iter_init(&iter, conn->rco_inbound_calls);
@@ -792,7 +792,7 @@ rpc_close(rpc_connection_t conn)
 			g_mutex_unlock(&call->rc_mtx);
 			continue;
 		}
-		
+
 		call->rc_status = RPC_CALL_ERROR;
 		call->rc_result = rpc_error_create(ECONNABORTED,
 		    "Connection closed", NULL);
@@ -941,7 +941,6 @@ rpc_call_timeout(gpointer user_data)
 
 	if (g_source_is_destroyed(g_main_current_source()))
 		return (false);
-	
 
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_timedout = true;
@@ -1035,7 +1034,7 @@ rpc_connection_close_inbound_call(struct rpc_call *call)
         rpc_connection_release_call(call);
 
         if (conn->rco_closed &&
-            (g_hash_table_size(conn->rco_inbound_calls) == 0) && 
+            (g_hash_table_size(conn->rco_inbound_calls) == 0) &&
 	    (g_hash_table_size(conn->rco_calls) == 0))
                 rpc_connection_close(conn);
 
@@ -1138,7 +1137,7 @@ rpc_connection_register_context(rpc_connection_t conn, rpc_context_t ctx)
 
 	g_mutex_lock(&conn->rco_mtx);
 	if (conn->rco_closed) {
-		g_mutex_unlock(&conn->rco_mtx);	
+		g_mutex_unlock(&conn->rco_mtx);
 		return (-1);
 	}
 	conn->rco_rpc_context = ctx;
@@ -1153,7 +1152,7 @@ rpc_connection_free_resources(rpc_connection_t conn)
 	g_assert_cmpint(g_hash_table_size(conn->rco_inbound_calls), ==, 0);
 	g_hash_table_destroy(conn->rco_calls);
 	g_hash_table_destroy(conn->rco_inbound_calls);
-	
+
         /* rpc_free_subscription_resources() TODO, foreach, strings and all */
         if (conn->rco_subscriptions != NULL)
 		g_ptr_array_free(conn->rco_subscriptions, true);
@@ -1185,8 +1184,8 @@ rpc_connection_close(rpc_connection_t conn)
                 abort_func(conn->rco_arg);
 		rpc_connection_reference_release(conn);
 
- 		/* return -1 if the server caused the abort. When the the server
-		 * call queue goes empty and this function is reentered, the 
+		/* return -1 if the server caused the abort. When the the server
+		 * call queue goes empty and this function is reentered, the
 		 * call to rpc_server_disconnect will fail the conn deref so
 		 * the server must know to handle it */
 
@@ -1201,7 +1200,7 @@ rpc_connection_close(rpc_connection_t conn)
 		    g_hash_table_size(conn->rco_inbound_calls) > 0)
 			goto done;
 		g_mutex_unlock(&conn->rco_mtx);
-	} else if (conn->rco_server != NULL) { /*check, may be failed create*/ 
+	} else if (conn->rco_server != NULL) { /*check, may be failed create*/
 		if (conn->rco_server_released)
 			goto done;
                 conn->rco_server->rs_conn_closed++;

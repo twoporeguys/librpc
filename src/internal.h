@@ -193,20 +193,20 @@ struct rpc_call
 	rpc_object_t		rc_err;
 	GCond      		rc_cv;
 	GMutex			rc_mtx;
-    	GSource *		rc_timeout;
+	GSource *		rc_timeout;
 	bool			rc_timedout;
 	rpc_callback_t    	rc_callback;
-    	volatile int64_t	rc_producer_seqno;
-    	volatile int64_t	rc_consumer_seqno; /* also rc_seqno */
+	volatile int64_t	rc_producer_seqno;
+	volatile int64_t	rc_consumer_seqno; /* also rc_seqno */
 	rpc_instance_t 		rc_instance;
 	rpc_object_t 		rc_frame;
 	rpc_abort_handler_t	rc_abort_handler;
 	struct rpc_if_method *	rc_if_method;
 	void *			rc_m_arg;
-    	bool			rc_streaming;
-    	bool			rc_responded;
-    	bool			rc_ended;
-    	bool			rc_aborted;
+	bool			rc_streaming;
+	bool			rc_responded;
+	bool			rc_ended;
+	bool			rc_aborted;
 };
 
 struct rpc_credentials
@@ -218,7 +218,7 @@ struct rpc_credentials
 
 struct rpc_connection
 {
-    	struct rpc_server *	rco_server;
+	struct rpc_server *	rco_server;
 	struct rpc_client *	rco_client;
 	struct rpc_context *	rco_rpc_context;
     	struct rpc_credentials	rco_creds;

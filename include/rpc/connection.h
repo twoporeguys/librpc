@@ -179,7 +179,7 @@ struct rpc_context;
 typedef struct rpc_context *rpc_context_t;
 #endif
 /**
- * Sets a context into the connection structure to allow a client to receive 
+ * Sets a context into the connection structure to allow a client to receive
  * calls.
  *
  * It is an error to submit a new context for a server-side connection or for

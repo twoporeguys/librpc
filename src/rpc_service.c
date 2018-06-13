@@ -164,7 +164,7 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_call *call)
 		debugf("Can't dispatch call, conn %p closed", call->rc_conn);
 		return (-1);
 	}
-	if (call->rc_path == NULL) 
+	if (call->rc_path == NULL)
 		instance = context->rcx_root;
 
 	if (instance == NULL)

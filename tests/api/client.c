@@ -222,7 +222,7 @@ thread_func (gpointer data)
 		g_thread_exit (GINT_TO_POINTER (1));
 	} else
 		g_assert_cmpstr(rpc_string_get_string_ptr(result), ==,
-		    "hello world!");	
+		    "hello world!");
 
 	rpc_client_close(client);
 	g_thread_exit (GINT_TO_POINTER (0));
@@ -245,7 +245,7 @@ thread_callme_func (gpointer data)
 	conn = rpc_client_get_connection(client);
 	ctx = rpc_context_create();
 	g_assert(rpc_connection_set_context(conn, ctx) == 0);
-		
+
 	rpc_context_register_block(ctx, NULL, "callme", NULL,
 	    ^(void *cookie __unused, rpc_object_t args) {
 		return (rpc_string_create("world!"));
@@ -263,7 +263,7 @@ thread_callme_func (gpointer data)
 	if (ctx != NULL)
 		rpc_context_free(ctx);
 	g_thread_exit (GINT_TO_POINTER (0));
-	
+
 	return (NULL);
 }
 
@@ -289,23 +289,23 @@ thread_mestream_func (gpointer data)
 	conn = rpc_client_get_connection(client);
 	ctx = rpc_context_create();
 	g_assert(rpc_connection_set_context(conn, ctx) == 0);
-	
+
 	strcpy(str, "abcdefghijklmnopqrstuvwxyz");
-	
+
 	rpc_context_register_block(ctx, NULL, "callme", NULL,
 	    ^rpc_object_t(void *cookie, rpc_object_t args __unused) {
 		gint i;
 		rpc_object_t res;
-		
+
 		while (cnt < n) {
 			cnt++;
 			i = g_rand_int_range (rand, 0, 26);
 
-			res = rpc_object_pack("[s, i, i]", 
+			res = rpc_object_pack("[s, i, i]",
 			    str + i, 26-i, cnt);
 			if (rpc_function_yield(cookie, res) != 0)
-                        	return (rpc_null_create());
-		}	
+				return (rpc_null_create());
+		}
 		rpc_function_end(cookie);
 		return (rpc_null_create());
 	});
@@ -326,7 +326,7 @@ thread_mestream_func (gpointer data)
 	if (ctx != NULL)
 		rpc_context_free(ctx);
 	g_thread_exit (GINT_TO_POINTER (0));
-	
+
 	return (NULL);
 }
 
@@ -382,7 +382,7 @@ client_server_calls_test(client_fixture *fixture, gconstpointer user_data)
 		}
 		result = rpc_connection_call_simple(conn, "callme", RPC_NULL_FORMAT);
 		g_assert_cmpstr(rpc_string_get_string_ptr(result), ==,
-		    "world!");	
+		    "world!");
 		return rpc_string_create_with_format("hello %s",
 			rpc_string_get_string_ptr(result));
 	});
@@ -415,29 +415,29 @@ do_stream_work(struct work_item *item)
 		return (0);
 	}
         for (;;) {
-               	rpc_call_wait(call);
+		rpc_call_wait(call);
 
-               	switch (rpc_call_status(call)) {
-                       	case RPC_CALL_MORE_AVAILABLE:
+		switch (rpc_call_status(call)) {
+			case RPC_CALL_MORE_AVAILABLE:
 				result = rpc_call_result(call);
 				i = rpc_object_unpack(result,
 				    "[s, i, i]", &str, &len, &num);
 				cnt++;
 				g_assert(i == 3);
 				g_assert(len == (int)strlen(str));
-                               	rpc_call_continue(call, false);
-                               	break;
+				rpc_call_continue(call, false);
+				break;
 
-                       	case RPC_CALL_DONE:
-                       	case RPC_CALL_ENDED:
-                               	goto done;
+			case RPC_CALL_DONE:
+			case RPC_CALL_ENDED:
+				goto done;
 
-                       	case RPC_CALL_ERROR:
+			case RPC_CALL_ERROR:
 				debugf("Client call error: %s %d",
 				    rpc_error_get_message(rpc_call_result(call)),
 				    rpc_error_get_code(rpc_call_result(call)));
 				failed = true;
-                               	goto done;
+				goto done;
 
 			default:
 				g_assert_not_reached();
@@ -449,8 +449,8 @@ done:
 		result = (rpc_string_create("DONE!"));
 		rpc_function_respond(item->call, result);
 	} else
-		rpc_function_error(item->call, EPROTO, 
-		    "Error in receiving streamed data"); 
+		rpc_function_error(item->call, EPROTO,
+		    "Error in receiving streamed data");
 	rpc_call_free(call);
 	return (cnt);
 }
