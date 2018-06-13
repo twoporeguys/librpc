@@ -153,7 +153,6 @@
 - (void)dealloc
 {
     rpc_release(obj);
-    [super dealloc];
 }
 
 - (NSString *)describe
