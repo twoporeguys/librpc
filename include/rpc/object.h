@@ -1683,4 +1683,4 @@ inline static void __rpc_raii_release(_Nonnull rpc_object_t *_Nullable object)
 }
 #endif
 
-#endif //LIBRPC_OBJECT_H
+#endif /* LIBRPC_OBJECT_H */

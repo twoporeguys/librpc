@@ -791,4 +791,4 @@ void rpc_instance_free(_Nonnull rpc_instance_t instance);
 }
 #endif
 
-#endif //LIBRPC_SERVICE_H
+#endif /* LIBRPC_SERVICE_H */

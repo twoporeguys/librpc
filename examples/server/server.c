@@ -114,10 +114,7 @@ main(int argc, const char *argv[])
 
 	fprintf(stderr, "register stream: %d\n", ret);
 
-	//srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
-	//srv = rpc_server_create("unix:///Users/kathryn/test.sock", ctx);
-	//srv = rpc_server_create("unix://../test.sock", ctx);
-	srv = rpc_server_create("ws://0.0.0.0:5005/ws", ctx);
+	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
         rpc_server_resume(srv);
 	sleep(30);
 	rpc_server_close(srv);
