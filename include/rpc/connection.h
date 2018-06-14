@@ -45,6 +45,7 @@
 extern "C" {
 #endif
 
+struct rpc_context;
 struct rpc_connection;
 struct rpc_call;
 
@@ -174,10 +175,6 @@ _Nullable rpc_connection_t rpc_connection_create(void *_Nonnull cookie,
  */
 int rpc_connection_close(_Nonnull rpc_connection_t conn);
 
-#ifndef rpc_context_t
-struct rpc_context;
-typedef struct rpc_context *rpc_context_t;
-#endif
 /**
  * Sets a context into the connection structure to allow a client to receive
  * calls.
@@ -190,7 +187,7 @@ typedef struct rpc_context *rpc_context_t;
  * @return 0 on success, -1 on failure.
  */
 int rpc_connection_set_context(_Nonnull rpc_connection_t conn,
-    _Nonnull rpc_context_t ctx);
+    struct rpc_context *_Nonnull ctx);
 
 /**
  * Returns @p true if connection is open, otherwise @p false.
