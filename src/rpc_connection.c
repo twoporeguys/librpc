@@ -285,14 +285,16 @@ int
 rpc_connection_set_context(rpc_connection_t conn, rpc_context_t ctx)
 {
 
-	g_assert(conn->rco_client != NULL);
-	if (!rpc_connection_is_open(conn) || (conn->rco_client == NULL)) {
+	g_mutex_lock(&conn->rco_mtx);
+	if (!rpc_connection_is_open(conn) || (conn->rco_rpc_context != NULL)) {
 		rpc_set_last_errorf(EINVAL, "%s",
-		    (conn->rco_client == NULL) ? "Not clent connection" :
+		    (conn->rco_rpc_context != NULL) ? "Context already set" :
 		    "Connection not open");
+		g_mutex_unlock(&conn->rco_mtx);
 		return (-1);
 	}
 	conn->rco_rpc_context = ctx;
+	g_mutex_unlock(&conn->rco_mtx);
 	return (0);
 }
 
