@@ -115,7 +115,7 @@ main(int argc, const char *argv[])
 	fprintf(stderr, "register stream: %d\n", ret);
 
 	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
-        rpc_server_resume(srv);
+	rpc_server_resume(srv);
 	sleep(30);
 	rpc_server_close(srv);
 	return(0);
