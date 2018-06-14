@@ -312,6 +312,8 @@ void rpc_context_unregister_instance(_Nonnull rpc_context_t context,
 /**
  * Registers a given rpc_method structure as an RPC method in a given context.
  *
+ * The method must have a non-null name.
+ *
  * @param context Target context.
  * @param m RPC method structure.
  * @return Status.
@@ -355,7 +357,7 @@ int rpc_context_register_func(_Nonnull rpc_context_t context,
  * @return Status.
  */
 int rpc_context_unregister_member(_Nonnull rpc_context_t context,
-    const char *_Nonnull interface, const char *_Nonnull name);
+    const char *_Nullable interface, const char *_Nonnull name);
 
 /**
  * Installs a hook for every RPC function called.
@@ -417,6 +419,14 @@ void *_Nullable rpc_function_get_arg(void *_Nonnull cookie);
  * @return RPC context handle
  */
 _Nonnull rpc_context_t rpc_function_get_context(void *_Nonnull cookie);
+
+/**
+ * Returns the connection associated with call.
+ *
+ * @param cookie Running call handle
+ * @return RPC connection handle or NULL if the connection is closed/aborted.
+ */
+_Nullable rpc_connection_t rpc_function_get_connection(void *_Nonnull cookie);
 
 /**
  * Returns the instance handle associated with currently executing function.
@@ -781,4 +791,4 @@ void rpc_instance_free(_Nonnull rpc_instance_t instance);
 }
 #endif
 
-#endif //LIBRPC_SERVICE_H
+#endif /* LIBRPC_SERVICE_H */

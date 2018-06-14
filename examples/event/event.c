@@ -40,6 +40,11 @@ main(int argc, const char *argv[])
 	(void)argv;
 
 	client = rpc_client_create("tcp://127.0.0.1:5000", 0);
+	if (client == NULL) {
+		printf("%s\n", rpc_error_get_message(rpc_get_last_error()));
+		return (-1);
+	}
+
 	conn = rpc_client_get_connection(client);
 
 	rpc_connection_register_event_handler(conn, NULL, NULL, "server.hello",
@@ -48,7 +53,7 @@ main(int argc, const char *argv[])
 		    rpc_copy_description(args));
 	    });
 
-	result = rpc_connection_call_simple(conn, "event", NULL);
+	result = rpc_connection_call_simple(conn, "event", RPC_NULL_FORMAT);
 
 	printf("result = %s\n", rpc_string_get_string_ptr(result));
 	rpc_client_close(client);

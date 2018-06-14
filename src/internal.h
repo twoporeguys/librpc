@@ -32,6 +32,7 @@
 #include <glib.h>
 #include <rpc/object.h>
 #include <rpc/query.h>
+#include <rpc/client.h>
 #include <rpc/connection.h>
 #include <rpc/service.h>
 #include <rpc/server.h>
@@ -92,6 +93,7 @@ typedef int (*rpc_get_fd_fn_t)(void *);
 typedef void (*rpc_release_fn_t)(void *);
 typedef int (*rpc_close_fn_t)(struct rpc_connection *);
 typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
+typedef bool (*rpc_valid_fn_t)(struct rpc_server *);
 typedef int (*rpc_teardown_fn_t)(struct rpc_server *);
 
 typedef struct rpct_member *(*rpct_member_fn_t)(const char *, rpc_object_t,
@@ -161,25 +163,6 @@ struct rpc_object
 	struct rpct_typei *	ro_typei;
 };
 
-struct rpc_call
-{
-	rpc_connection_t    	rc_conn;
-	const char *        	rc_type;
-	const char *		rc_path;
-	const char *		rc_interface;
-	const char *        	rc_method;
-	rpc_object_t        	rc_id;
-	rpc_object_t        	rc_args;
-	rpc_call_status_t   	rc_status;
-	rpc_object_t        	rc_result;
-	GCond      		rc_cv;
-	GMutex			rc_mtx;
-    	GAsyncQueue *		rc_queue;
-    	GSource *		rc_timeout;
-	rpc_callback_t    	rc_callback;
-	uint64_t               	rc_seqno;
-};
-
 struct rpc_subscription
 {
 	const char *		rsu_name;
@@ -195,28 +178,35 @@ struct rpc_subscription_handler
 	rpc_handler_t 		rsh_handler;
 };
 
-struct rpc_inbound_call
+struct rpc_call
 {
-	rpc_context_t 		ric_context;
-    	rpc_connection_t    	ric_conn;
-	rpc_instance_t 		ric_instance;
-	rpc_object_t 		ric_frame;
-	rpc_object_t        	ric_id;
-	rpc_object_t        	ric_args;
-	rpc_abort_handler_t	ric_abort_handler;
-	const char *        	ric_name;
-	const char *		ric_interface;
-	const char *		ric_path;
-	struct rpc_if_method *	ric_method;
-    	GMutex			ric_mtx;
-    	GCond			ric_cv;
-    	volatile int64_t	ric_producer_seqno;
-    	volatile int64_t	ric_consumer_seqno;
-    	void *			ric_arg;
-    	bool			ric_streaming;
-    	bool			ric_responded;
-    	bool			ric_ended;
-    	bool			ric_aborted;
+	rpc_connection_t    	rc_conn;
+	rpc_context_t 		rc_context;
+	rpc_call_type_t        	rc_type;
+	const char *		rc_path;
+	const char *		rc_interface;
+	const char *        	rc_method_name;
+	rpc_object_t        	rc_id;
+	rpc_object_t        	rc_args;
+	rpc_call_status_t   	rc_status;
+	rpc_object_t        	rc_result;
+	rpc_object_t		rc_err;
+	GCond      		rc_cv;
+	GMutex			rc_mtx;
+	GSource *		rc_timeout;
+	bool			rc_timedout;
+	rpc_callback_t    	rc_callback;
+	volatile int64_t	rc_producer_seqno;
+	volatile int64_t	rc_consumer_seqno; /* also rc_seqno */
+	rpc_instance_t 		rc_instance;
+	rpc_object_t 		rc_frame;
+	rpc_abort_handler_t	rc_abort_handler;
+	struct rpc_if_method *	rc_if_method;
+	void *			rc_m_arg;
+	bool			rc_streaming;
+	bool			rc_responded;
+	bool			rc_ended;
+	bool			rc_aborted;
 };
 
 struct rpc_credentials
@@ -229,7 +219,8 @@ struct rpc_credentials
 struct rpc_connection
 {
 	struct rpc_server *	rco_server;
-    	struct rpc_client *	rco_client;
+	struct rpc_client *	rco_client;
+	struct rpc_context *	rco_rpc_context;
     	struct rpc_credentials	rco_creds;
 	bool			rco_has_creds;
 	const char *        	rco_uri;
@@ -240,13 +231,20 @@ struct rpc_connection
 	GHashTable *		rco_inbound_calls;
     	GPtrArray *		rco_subscriptions;
     	GMutex			rco_subscription_mtx;
-    	GMutex			rco_send_mtx;
-	GMutex			rco_call_mtx;
-    	GMainContext *		rco_mainloop;
+	GMutex			rco_mtx;
+	GMutex			rco_ref_mtx;
+	GMutex			rco_send_mtx;
+	GRWLock			rco_icall_rwlock;
+	GRWLock			rco_call_rwlock;
+	GMainContext *		rco_main_context;
+	rpc_object_t            rco_error;
     	GThreadPool *		rco_callback_pool;
 	rpc_object_t 		rco_params;
     	int			rco_flags;
 	bool			rco_closed;
+	bool			rco_aborted;
+	bool			rco_server_released;
+	int			rco_refcnt;
 #if LIBDISPATCH_SUPPORT
 	dispatch_queue_t	rco_dispatch_queue;
 #endif
@@ -267,18 +265,31 @@ struct rpc_server
     	GMainLoop *		rs_g_loop;
     	GThread *		rs_thread;
     	GList *			rs_connections;
+	GQueue *		rs_calls;
     	GMutex			rs_mtx;
+	GMutex			rs_calls_mtx;
     	GCond			rs_cv;
+	GRWLock			rs_connections_rwlock;
 	struct rpc_context *	rs_context;
     	const char *		rs_uri;
     	int 			rs_flags;
     	bool			rs_operational;
 	bool			rs_paused;
+	bool			rs_closed;
+	bool			rs_threaded_teardown;
+        rpc_object_t            rs_error;
+	uint			rs_refcnt;
+	uint			rs_conn_made;
+	uint			rs_conn_refused;
+	uint			rs_conn_closed;
+	uint			rs_conn_aborted;
 	rpc_object_t 		rs_params;
 
     	/* Callbacks */
+	rpc_valid_fn_t		rs_valid;
     	rpc_accept_fn_t		rs_accept;
     	rpc_teardown_fn_t	rs_teardown;
+	rpc_teardown_fn_t	rs_teardown_end;
     	void *			rs_arg;
 };
 
@@ -329,6 +340,7 @@ struct rpc_context
 	GHashTable *		rcx_instances;
 	GPtrArray * 		rcx_servers;
 	GRWLock			rcx_rwlock;
+	GRWLock			rcx_server_rwlock;
 	rpc_instance_t 		rcx_root;
 
 	/* Hooks */
@@ -511,8 +523,16 @@ void rpc_set_last_gerror(GError *error);
 void rpc_set_last_errorf(int code, const char *fmt, ...);
 rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
-int rpc_context_dispatch(rpc_context_t, struct rpc_inbound_call *);
-int rpc_server_dispatch(rpc_server_t, struct rpc_inbound_call *);
+void rpc_connection_reference_retain(rpc_connection_t);
+void rpc_connection_reference_release(rpc_connection_t);
+int rpc_context_dispatch(rpc_context_t, struct rpc_call *);
+int rpc_server_dispatch(rpc_server_t, struct rpc_call *);
+void rpc_server_release(rpc_server_t);
+void rpc_server_quit(rpc_server_t);
+void rpc_server_disconnect(rpc_server_t, rpc_connection_t);
+GMainContext * rpc_server_get_main_context(rpc_server_t);
+GMainContext * rpc_client_get_main_context(rpc_client_t);
+
 void rpc_connection_send_err(rpc_connection_t, rpc_object_t, int,
     const char *descr, ...);
 void rpc_connection_send_errx(rpc_connection_t, rpc_object_t, rpc_object_t);
@@ -520,7 +540,7 @@ void rpc_connection_send_response(rpc_connection_t, rpc_object_t, rpc_object_t);
 void rpc_connection_send_fragment(rpc_connection_t, rpc_object_t, int64_t,
     rpc_object_t);
 void rpc_connection_send_end(rpc_connection_t, rpc_object_t, int64_t);
-void rpc_connection_close_inbound_call(struct rpc_inbound_call *);
+void rpc_connection_close_inbound_call(struct rpc_call *);
 
 void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 

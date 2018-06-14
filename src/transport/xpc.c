@@ -292,7 +292,7 @@ xpc_listen(struct rpc_server *conn, const char *uri_string,
 
 	uri = soup_uri_new(uri_string);
 	if (uri == NULL) {
-		rpc_set_last_errorf(EINVAL, "Invalid URI");
+		conn->rs_error = rpc_error_create(EINVAL, "Invalid URI", NULL);
 		return (-1);
 	}
 

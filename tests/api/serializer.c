@@ -145,7 +145,7 @@ serializer_test_tear_down(serializer_fixture *fixture,
 static void
 serializer_test_register()
 {
-
+/*
 	g_test_add("/serializer/json/dict", serializer_fixture, "json",
 	    serializer_test_dict_set_up, serializer_test,
 	    serializer_test_tear_down);
@@ -155,7 +155,7 @@ serializer_test_register()
 	g_test_add("/serializer/json/single", serializer_fixture, "json",
 	    serializer_test_single_set_up, serializer_test,
 	    serializer_test_tear_down);
-
+*/
 	g_test_add("/serializer/msgpack/dict", serializer_fixture, "msgpack",
 	    serializer_test_dict_set_up, serializer_test,
 	    serializer_test_tear_down);
@@ -175,7 +175,6 @@ serializer_test_register()
 	g_test_add("/serializer/yaml/single", serializer_fixture, "yaml",
 	    serializer_test_single_set_up, serializer_test,
 	    serializer_test_tear_down);
-
 
 	#if defined(__linux__)
 	g_test_add("/serializer/json/shmem", serializer_fixture, "json",

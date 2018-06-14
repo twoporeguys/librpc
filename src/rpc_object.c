@@ -2067,6 +2067,18 @@ rpc_dictionary_steal_value(rpc_object_t dictionary, const char *key,
 }
 
 inline void
+rpc_dictionary_steal_value_internal(rpc_object_t dictionary, const char *key,
+    rpc_object_t value)
+{
+
+	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
+		rpc_abort("Trying dictionary API on non-dictionary object");
+
+	g_hash_table_insert(dictionary->ro_value.rv_dict,
+	    (gpointer)g_strdup(key), value);
+}
+
+inline void
 rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key)
 {
 

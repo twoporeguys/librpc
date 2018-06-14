@@ -1335,12 +1335,13 @@ rpct_validate(struct rpct_typei *typei, rpc_object_t obj, rpc_object_t *errors)
 rpc_object_t
 rpct_pre_call_hook(void *cookie, rpc_object_t args)
 {
-	struct rpc_inbound_call *ic = cookie;
+	struct rpc_call *ic = cookie;
 	struct rpct_if_member *member;
 	char *msg;
 	rpc_object_t errors;
 
-	member = rpct_find_if_member(ic->ric_interface, ic->ric_name);
+	g_assert(ic->rc_type == RPC_INBOUND_CALL);
+	member = rpct_find_if_member(ic->rc_interface, ic->rc_method_name);
 	if (member == NULL)
 		return (NULL);
 
@@ -1360,11 +1361,12 @@ rpct_pre_call_hook(void *cookie, rpc_object_t args)
 rpc_object_t
 rpct_post_call_hook(void *cookie, rpc_object_t result)
 {
-	struct rpc_inbound_call *ic = cookie;
+	struct rpc_call *ic = cookie;
 	struct rpct_if_member *member;
 	rpc_object_t errors;
 
-	member = rpct_find_if_member(ic->ric_interface, ic->ric_name);
+	g_assert(ic->rc_type == RPC_INBOUND_CALL);
+	member = rpct_find_if_member(ic->rc_interface, ic->rc_method_name);
 	if (member == NULL)
 		return (NULL);
 

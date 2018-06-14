@@ -77,6 +77,26 @@ _Nullable rpc_server_t rpc_server_create(const char *_Nonnull uri,
     _Nonnull rpc_context_t context);
 
 /**
+ * Finds a server instance if it exists for a context.
+ *
+ * @param uri Server URI to check
+ * @param context RPC context for a server instance
+ * @return Server handle or NULL
+ */
+_Nullable rpc_server_t rpc_server_find(const char *_Nonnull uri,
+    _Nonnull rpc_context_t context);
+
+/**
+ * Stops accepting requests for the server.
+ *
+ * Server instance keeps all the incoming requests queued and on hold
+ * until @ref rpc_server_resume is called.
+ *
+ * @param server Server handle
+ */
+void rpc_server_pause(_Nonnull rpc_server_t server);
+
+/**
  * Creates a server instance listening on a given URI.
  *
  * @param uri URI to listen on
