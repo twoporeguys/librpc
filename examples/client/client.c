@@ -46,7 +46,6 @@ main(int argc, const char *argv[])
 	int64_t len;
 	int64_t num;
 	int cnt = 0;
-	int i;
 
 	(void)argc;
 	(void)argv;
@@ -78,8 +77,9 @@ main(int argc, const char *argv[])
                 switch (rpc_call_status(call)) {
                         case RPC_CALL_MORE_AVAILABLE:
 				result = rpc_call_result(call);
-                                i = rpc_object_unpack(result,
-                                    "[s, i, i]", &buf, &len, &num);
+                                rpc_object_unpack(result, "[s, i, i]",
+				    &buf, &len, &num);
+
                                 cnt++;
 				fprintf(stderr,
 				    "frag = %s, len = %" PRId64 ", num = %" PRId64 ","
