@@ -176,6 +176,15 @@ _Nullable rpc_connection_t rpc_connection_create(void *_Nonnull cookie,
 int rpc_connection_close(_Nonnull rpc_connection_t conn);
 
 /**
+ * Returns context associated with the connection.
+ *
+ * @param conn Client connection
+ * @return Context handle or @p NULL if not set
+ */
+struct rpc_context *_Nullable rpc_connection_get_context(
+    _Nonnull rpc_connection_t conn);
+
+/**
  * Sets a context into the connection structure to allow a client to receive
  * calls.
  *

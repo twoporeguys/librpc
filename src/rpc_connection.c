@@ -275,6 +275,12 @@ rpc_pack_frame(const char *ns, const char *name, rpc_object_t id,
 	return (obj);
 }
 
+rpc_context_t
+rpc_connection_get_context(rpc_connection_t conn)
+{
+	return (conn->rco_rpc_context);
+}
+
 int
 rpc_connection_set_context(rpc_connection_t conn, rpc_context_t ctx)
 {

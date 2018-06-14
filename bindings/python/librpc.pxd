@@ -163,6 +163,8 @@ cdef extern from "rpc/connection.h" nogil:
 
     rpc_connection_t rpc_connection_create(void *cookie, rpc_object_t params)
     int rpc_connection_close(rpc_connection_t conn)
+    rpc_context_t rpc_connection_get_context(rpc_connection_t conn)
+    int rpc_connection_set_context(rpc_connection_t conn, rpc_context_t ctx)
     int rpc_connection_subscribe_event(rpc_connection_t conn, const char *name)
     int rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name)
     rpc_object_t rpc_connection_call_sync(rpc_connection_t conn,
