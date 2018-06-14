@@ -27,6 +27,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
 #include <unistd.h>
 #include <glib.h>
 #include <errno.h>
@@ -42,11 +43,10 @@ main(int argc, const char *argv[])
 	rpc_object_t result;
 	rpc_call_t call;
 	const char *buf;
-
 	int64_t len;
-	int i;
 	int64_t num;
 	int cnt = 0;
+	int i;
 
 	(void)argc;
 	(void)argv;
@@ -81,7 +81,8 @@ main(int argc, const char *argv[])
                                 i = rpc_object_unpack(result,
                                     "[s, i, i]", &buf, &len, &num);
                                 cnt++;
-				fprintf(stderr, "frag = %s, len = %lld, num = %lld,"
+				fprintf(stderr,
+				    "frag = %s, len = %" PRId64 ", num = %" PRId64 ","
 				    "cnt = %d\n", buf, len, num, cnt);
 
 				g_assert(len == (int)strlen(buf));
