@@ -667,14 +667,16 @@ rpct_lookup_type(const char *name, const char **decl, rpc_object_t *result,
 		rpc_dictionary_apply(file->body,
 		    ^(const char *key, rpc_object_t value) {
 			GMatchInfo *m;
-			char *full_name;
+			g_autofree char *type_name = NULL;
+			g_autofree char *full_name = NULL;
 
 			if (!g_regex_match(rpct_type_regex, key, 0, &m))
 				return ((bool)true);
 
+			type_name = g_match_info_fetch(m, 2);
 			full_name = file->ns != NULL
-			    ? g_strdup_printf("%s.%s", file->ns, g_match_info_fetch(m, 2))
-			    : g_strdup(g_match_info_fetch(m, 2));
+			    ? g_strdup_printf("%s.%s", file->ns, type_name)
+			    : g_strdup(type_name);
 
 			if (g_strcmp0(full_name, name) == 0) {
 				*decl = key;
@@ -682,12 +684,10 @@ rpct_lookup_type(const char *name, const char **decl, rpc_object_t *result,
 				*filep = file;
 				ret = 0;
 				g_match_info_free(m);
-				g_free(full_name);
 				return ((bool)false);
 			}
 
 			g_match_info_free(m);
-			g_free(full_name);
 			return ((bool)true);
 		});
 	}
