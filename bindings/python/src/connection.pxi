@@ -150,6 +150,19 @@ cdef class Connection(object):
         def __set__(self, fn):
             self.event_handler = fn
 
+    property context:
+        def __get__(self):
+            cdef rpc_context_t c_context
+
+            c_context = rpc_connection_get_context(self.connection)
+            if c_context == <rpc_context_t>NULL:
+                return None
+
+            return Context.wrap(c_context)
+
+        def __set__(self, Context value):
+            rpc_connection_set_context(self.connection, value.unwrap())
+
     property instances:
         def __get__(self):
             objects = self.call_sync(
