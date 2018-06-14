@@ -166,6 +166,8 @@ Functions</h2></td></tr>
 <tr class="separator:a254ad98a921503f712a2adba41160a5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa63689ba3875975bc8a1fd0177c1a228"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aa63689ba3875975bc8a1fd0177c1a228">rpc_connection_close</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
 <tr class="separator:aa63689ba3875975bc8a1fd0177c1a228"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ca2a62b6ff27ec84069fa42d6bfbd26"><td class="memItemLeft" align="right" valign="top">struct rpc_context *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a8ca2a62b6ff27ec84069fa42d6bfbd26">rpc_connection_get_context</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="separator:a8ca2a62b6ff27ec84069fa42d6bfbd26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8babe3fa9b01f06445a70d5507a7ecf"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ab8babe3fa9b01f06445a70d5507a7ecf">rpc_connection_set_context</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, struct rpc_context *_Nonnull ctx)</td></tr>
 <tr class="separator:ab8babe3fa9b01f06445a70d5507a7ecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71699a40039ad05bd244713464cbee88"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a71699a40039ad05bd244713464cbee88">rpc_connection_is_open</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
@@ -1307,6 +1309,32 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a8ca2a62b6ff27ec84069fa42d6bfbd26"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ca2a62b6ff27ec84069fa42d6bfbd26">&#9670;&nbsp;</a></span>rpc_connection_get_context()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct rpc_context* _Nullable rpc_connection_get_context </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns context associated with the connection.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td>Client connection </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Context handle or <code>NULL</code> if not set </dd></dl>
 
 </div>
 </div>

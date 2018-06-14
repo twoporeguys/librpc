@@ -89,6 +89,8 @@ enum \hyperlink{connection_8h_afd626c88bce592c3eca93e0a2a6649f4}{rpc\+\_\+call\+
 \item 
 int \hyperlink{connection_8h_aa63689ba3875975bc8a1fd0177c1a228}{rpc\+\_\+connection\+\_\+close} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
+struct rpc\+\_\+context $\ast$\+\_\+\+Nullable \hyperlink{connection_8h_a8ca2a62b6ff27ec84069fa42d6bfbd26}{rpc\+\_\+connection\+\_\+get\+\_\+context} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
+\item 
 int \hyperlink{connection_8h_ab8babe3fa9b01f06445a70d5507a7ecf}{rpc\+\_\+connection\+\_\+set\+\_\+context} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, struct rpc\+\_\+context $\ast$\+\_\+\+Nonnull ctx)
 \item 
 bool \hyperlink{connection_8h_a71699a40039ad05bd244713464cbee88}{rpc\+\_\+connection\+\_\+is\+\_\+open} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
@@ -757,6 +759,22 @@ Frees resources associated with \hyperlink{connection_8h_a70838cb106c3464db29952
 {\em conn} & Connection handle \\
 \hline
 \end{DoxyParams}
+\mbox{\Hypertarget{connection_8h_a8ca2a62b6ff27ec84069fa42d6bfbd26}\label{connection_8h_a8ca2a62b6ff27ec84069fa42d6bfbd26}} 
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+context@{rpc\+\_\+connection\+\_\+get\+\_\+context}}
+\index{rpc\+\_\+connection\+\_\+get\+\_\+context@{rpc\+\_\+connection\+\_\+get\+\_\+context}!connection.\+h@{connection.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+get\+\_\+context()}{rpc\_connection\_get\_context()}}
+{\footnotesize\ttfamily struct rpc\+\_\+context$\ast$ \+\_\+\+Nullable rpc\+\_\+connection\+\_\+get\+\_\+context (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
+
+Returns context associated with the connection.
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & Client connection \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Context handle or {\ttfamily N\+U\+LL} if not set 
+\end{DoxyReturn}
 \mbox{\Hypertarget{connection_8h_a72a6738b9d7aff59527dc05b12a4fb33}\label{connection_8h_a72a6738b9d7aff59527dc05b12a4fb33}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+fd@{rpc\+\_\+connection\+\_\+get\+\_\+fd}}
 \index{rpc\+\_\+connection\+\_\+get\+\_\+fd@{rpc\+\_\+connection\+\_\+get\+\_\+fd}!connection.\+h@{connection.\+h}}

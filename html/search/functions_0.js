@@ -63,6 +63,7 @@ var searchData=
   ['rpc_5fconnection_5fclose',['rpc_connection_close',['../connection_8h.html#aa63689ba3875975bc8a1fd0177c1a228',1,'connection.h']]],
   ['rpc_5fconnection_5fcreate',['rpc_connection_create',['../connection_8h.html#a254ad98a921503f712a2adba41160a5f',1,'connection.h']]],
   ['rpc_5fconnection_5ffree',['rpc_connection_free',['../connection_8h.html#a07eb2a0e3655cb83222f5faa530e3bfd',1,'connection.h']]],
+  ['rpc_5fconnection_5fget_5fcontext',['rpc_connection_get_context',['../connection_8h.html#a8ca2a62b6ff27ec84069fa42d6bfbd26',1,'connection.h']]],
   ['rpc_5fconnection_5fget_5ffd',['rpc_connection_get_fd',['../connection_8h.html#a72a6738b9d7aff59527dc05b12a4fb33',1,'connection.h']]],
   ['rpc_5fconnection_5fget_5fproperty',['rpc_connection_get_property',['../connection_8h.html#ab7fd4fa9afee56ad6c51dfd27e4fd35d',1,'connection.h']]],
   ['rpc_5fconnection_5fget_5fremote_5faddress',['rpc_connection_get_remote_address',['../connection_8h.html#ab74f1419e8a907d1c99dbef5358b6dd2',1,'connection.h']]],

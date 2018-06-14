@@ -87,6 +87,7 @@
     <member refid="connection_8h_1a43904e9a96b10734529cdde29be58784" kind="typedef"><name>rpc_callback_t</name></member>
     <member refid="connection_8h_1a254ad98a921503f712a2adba41160a5f" kind="function"><name>rpc_connection_create</name></member>
     <member refid="connection_8h_1aa63689ba3875975bc8a1fd0177c1a228" kind="function"><name>rpc_connection_close</name></member>
+    <member refid="connection_8h_1a8ca2a62b6ff27ec84069fa42d6bfbd26" kind="function"><name>rpc_connection_get_context</name></member>
     <member refid="connection_8h_1ab8babe3fa9b01f06445a70d5507a7ecf" kind="function"><name>rpc_connection_set_context</name></member>
     <member refid="connection_8h_1a71699a40039ad05bd244713464cbee88" kind="function"><name>rpc_connection_is_open</name></member>
     <member refid="connection_8h_1a72a6738b9d7aff59527dc05b12a4fb33" kind="function"><name>rpc_connection_get_fd</name></member>
