@@ -37,47 +37,6 @@
 static bool eval_rule(rpc_object_t obj, rpc_object_t rule);
 
 static rpc_object_t
-rpc_query_steal_get(rpc_object_t object, const char *path,
-    rpc_object_t default_val)
-{
-	char *split_path = g_strdup(path);
-	char *token;
-	rpc_object_t leaf = object;
-	rpc_object_t retval = default_val;
-	bool error = false;
-
-	token = strtok(split_path, ".");
-	while (token != NULL) {
-		switch(rpc_get_type(leaf)) {
-			case RPC_TYPE_DICTIONARY:
-				leaf = rpc_dictionary_get_value(leaf, token);
-				break;
-
-			case RPC_TYPE_ARRAY:
-				leaf = rpc_array_get_value(leaf, (size_t)atoi(token));
-				break;
-
-			default:
-				retval = NULL;
-				error = true;
-				break;
-		}
-
-		if (error)
-			break;
-
-		token = strtok(NULL, ".");
-	}
-
-	if ((!error) && (leaf != NULL))
-		retval = leaf;
-
-	g_free(split_path);
-
-	return (retval);
-}
-
-static rpc_object_t
 rpc_query_get_parent(rpc_object_t object, const char *path,
     const char **child, rpc_object_t default_val)
 {
@@ -89,7 +48,7 @@ rpc_query_get_parent(rpc_object_t object, const char *path,
 	last_segment = g_strrstr(path, ".") + 1;
 	get_path_len = strlen(path) - strlen(last_segment) - 1;
 	get_path = g_strndup(path, get_path_len);
-	parent = rpc_query_steal_get(object, (const char *)get_path,
+	parent = rpc_query_get(object, (const char *)get_path,
 	    default_val);
 
 	g_free(get_path);
@@ -201,7 +160,7 @@ eval_field_operator(rpc_object_t obj, rpc_object_t rule)
 	op = rpc_array_get_string(rule, 1);
 	right = rpc_array_get_value(rule, 2);
 
-	item = rpc_query_steal_get(obj, left, NULL);
+	item = rpc_query_get(obj, left, NULL);
 
 	if (!g_strcmp0(op, "="))
 		return (rpc_equal(item, right));
@@ -325,11 +284,39 @@ rpc_query_find_next(rpc_query_iter_t iter)
 rpc_object_t
 rpc_query_get(rpc_object_t object, const char *path, rpc_object_t default_val)
 {
-	rpc_object_t retval;
+	char *split_path = g_strdup(path);
+	char *token;
+	rpc_object_t leaf = object;
+	rpc_object_t retval = default_val;
+	bool error = false;
 
-	retval = rpc_query_steal_get(object, path, default_val);
-	if (retval != NULL)
-		rpc_retain(retval);
+	token = strtok(split_path, ".");
+	while (token != NULL) {
+		switch(rpc_get_type(leaf)) {
+		case RPC_TYPE_DICTIONARY:
+			leaf = rpc_dictionary_get_value(leaf, token);
+			break;
+
+		case RPC_TYPE_ARRAY:
+			leaf = rpc_array_get_value(leaf, (size_t)atoi(token));
+			break;
+
+		default:
+			retval = NULL;
+			error = true;
+			break;
+		}
+
+		if (error)
+			break;
+
+		token = strtok(NULL, ".");
+	}
+
+	if ((!error) && (leaf != NULL))
+		retval = leaf;
+
+	g_free(split_path);
 
 	return (retval);
 }
@@ -433,7 +420,7 @@ rpc_query_delete(rpc_object_t object, const char *path)
 bool
 rpc_query_contains(rpc_object_t object, const char *path)
 {
-	rpc_object_t target = rpc_query_steal_get(object, path, NULL);
+	rpc_object_t target = rpc_query_get(object, path, NULL);
 
 	return (target != NULL);
 }
