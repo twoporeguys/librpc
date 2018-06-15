@@ -146,8 +146,10 @@
 {
     self = [super init];
     if (self) {
-        if (object == NULL)
+        if (object == NULL) {
+            NSLog(@"Warning: Native RPCObject == NULL");
             return nil;
+        }
 
         _obj = rpc_retain(object);
     }
