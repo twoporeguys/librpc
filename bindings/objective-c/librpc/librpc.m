@@ -45,61 +45,34 @@
 {
     self = [super init];
     if (self) {
-    
         if (value == nil) {
             _obj = rpc_null_create();
-            
-        } else
-    
-        if ([value isKindOfClass:[RPCObject class]]) {
+        } else if ([value isKindOfClass:[RPCObject class]]) {
             _obj = rpc_retain([(RPCObject *)value nativeValue]);
-            
-        } else
-
-        if ([value isKindOfClass:[NSNumber class]]) {
+        } else if ([value isKindOfClass:[NSNumber class]]) {
             _obj = rpc_int64_create([(NSNumber *)value integerValue]);
-            
-        } else
-        
-        if ([value isKindOfClass:[NSString class]]) {
+        } else if ([value isKindOfClass:[NSString class]]) {
             _obj = rpc_string_create([(NSString *)value UTF8String]);
-            
-        } else
-        
-        if ([value isKindOfClass:[NSDate class]]) {
+        } else if ([value isKindOfClass:[NSDate class]]) {
             _obj = rpc_date_create([(NSDate *)value timeIntervalSince1970]);
-        } else
-        
-        if ([value isKindOfClass:[NSData class]]) {
+        } else if ([value isKindOfClass:[NSData class]]) {
             _obj = rpc_data_create([(NSData *)value bytes], [(NSData *)value length], NULL);
-            
-        } else
-        
-        if ([value isKindOfClass:[NSException class]]) {
+        } else if ([value isKindOfClass:[NSException class]]) {
             _obj = rpc_error_create(0, [[(NSException *)value reason] UTF8String], NULL);
-            
-        } else
-        
-        if ([value isKindOfClass:[NSArray class]]) {
+        } else if ([value isKindOfClass:[NSArray class]]) {
             _obj = rpc_array_create();
             for (id object in (NSArray *)value) {
                 RPCObject *robj = [[RPCObject alloc] initWithValue:object];
                 rpc_array_append_value(_obj, robj->_obj);
             }
-            
-            
-        } else
-        
-        if ([value isKindOfClass:[NSDictionary class]]) {
+        } else if ([value isKindOfClass:[NSDictionary class]]) {
             _obj = rpc_dictionary_create();
             for (NSString *key in (NSDictionary *)value) {
                 NSObject *val = [(NSDictionary *)value valueForKey:key];
                 RPCObject *robj = [[RPCObject alloc] initWithValue:val];
                 rpc_dictionary_set_value(_obj, [key UTF8String], robj->_obj);
             }
-            
         } else {
-
             NSAssert(YES, @"Value does not correspond to any rpc_object classes");
                 self = nil;
         }
