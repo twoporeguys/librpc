@@ -724,7 +724,20 @@ int rpc_connection_set_dispatch_queue(rpc_connection_t, dispatch_queue_t);
 
 @implementation RPCTyping
 
-- (instancetype)init
++ (instancetype)shared {
+    static RPCTyping *rpcTyping = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        rpcTyping = [[self alloc] initPrivate];
+    });
+    return rpcTyping;
+}
+
+- (instancetype)init {
+    return nil;
+}
+
+- (instancetype)initPrivate
 {
     self = [super init];
     if (self) {

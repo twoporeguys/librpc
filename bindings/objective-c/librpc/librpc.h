@@ -409,7 +409,7 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
 @end
 
 @interface RPCTyping : NSObject
-
++ (instancetype)shared;
 - (void)loadTypes:(nonnull NSString *)path;
 - (void)loadTypesDirectory:(nonnull NSString *)directory;
 
