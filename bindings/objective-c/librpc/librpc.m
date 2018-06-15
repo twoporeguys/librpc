@@ -35,7 +35,7 @@
 
 #pragma mark - RPCObject
 @interface RPCObject ()
-@property (nonatomic, unsafe_unretained) rpc_object_t obj;
+@property (nonatomic, readonly, unsafe_unretained) rpc_object_t obj;
 
 @end
 
@@ -82,37 +82,37 @@
 
 - (instancetype)initWithValue:(id)value andType:(RPCType)type
 {
-    self = [super init];
-    if (self) {
-        
-        switch (type) {
-            case RPCTypeBoolean:
-                _obj = rpc_bool_create([(NSNumber *)value boolValue]);
-
-            case RPCTypeUInt64:
-                _obj = rpc_uint64_create([(NSNumber *)value unsignedIntegerValue]);
-
-            case RPCTypeInt64:
-                _obj = rpc_int64_create([(NSNumber *)value integerValue]);
-
-            case RPCTypeDouble:
-                _obj = rpc_double_create([(NSNumber *)value doubleValue]);
-
-            case RPCTypeFD:
-                _obj = rpc_fd_create([(NSNumber *)value intValue]);
-
-            case RPCTypeNull:
-            case RPCTypeString:
-            case RPCTypeBinary:
-            case RPCTypeArray:
-            case RPCTypeDictionary:
-                return [[RPCObject alloc] initWithValue:value];
-
-            default:
-                return nil;
-        }
+    switch (type) {
+        case RPCTypeBoolean:
+            _obj = rpc_bool_create([(NSNumber *)value boolValue]);
+            return self;
+            
+        case RPCTypeUInt64:
+            _obj = rpc_uint64_create([(NSNumber *)value unsignedIntegerValue]);
+            return self;
+            
+        case RPCTypeInt64:
+            _obj = rpc_int64_create([(NSNumber *)value integerValue]);
+            return self;
+            
+        case RPCTypeDouble:
+            _obj = rpc_double_create([(NSNumber *)value doubleValue]);
+            return self;
+            
+        case RPCTypeFD:
+            _obj = rpc_fd_create([(NSNumber *)value intValue]);
+            return self;
+            
+        case RPCTypeNull:
+        case RPCTypeString:
+        case RPCTypeBinary:
+        case RPCTypeArray:
+        case RPCTypeDictionary:
+            return [[RPCObject alloc] initWithValue:value];
+            
+        default:
+            return nil;
     }
-    return self;
 }
 
 - (RPCObject *)initFromNativeObject:(void *)object
@@ -135,6 +135,11 @@
 }
 
 - (void)dealloc
+{
+    rpc_release(_obj);
+}
+
+- (void)deleteRPCObject
 {
     rpc_release(_obj);
 }
@@ -326,12 +331,6 @@
 @end
 
 #pragma mark - RPCClient
-
-@interface RPCClient ()
-
-int rpc_connection_set_dispatch_queue(rpc_connection_t, dispatch_queue_t);
-
-@end
 
 @implementation RPCClient {
     rpc_client_t client;
