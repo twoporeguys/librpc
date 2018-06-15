@@ -161,7 +161,14 @@ rpcd_service_connect(void *cookie, rpc_object_t args)
 static rpc_object_t
 rpcd_service_unregister(void *cookie, rpc_object_t args)
 {
+	struct rpcd_service *service;
 
+	service = rpc_function_get_arg(cookie);
+	rpc_context_unregister_instance(rpcd_context,
+	    rpc_instance_get_path(service->instance));
+
+	g_hash_table_remove(rpcd_services, service->name);
+	return (NULL);
 }
 
 static rpc_object_t
@@ -230,21 +237,21 @@ rpcd_load_services(void)
 	for (dirname = rpcd_service_dirs; *dirname != NULL; (*dirname)++) {
 		syslog(LOG_NOTICE, "Loading services from %s", *dirname);
 		dir = g_dir_open(*dirname, 0, &err);
-		if (dir == NULL) {
+		if (dir == NULL)
 			continue;
-		}
 
 		for (;;) {
 			name = g_dir_read_name(dir);
 			if (name == NULL)
 				break;
 
-
 			path = g_build_filename(*dirname, name, NULL);
 			rpcd_load_service(path);
 			g_free(path);
 		}
 	}
+
+	return (0);
 }
 
 int
