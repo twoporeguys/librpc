@@ -230,12 +230,14 @@ Functions</h2></td></tr>
 <tr class="separator:aaa5cabcf5efe1e9a94e97d63c0b4a388"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af99ba11c3cb8f36c112d39fcafb73c50"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#af99ba11c3cb8f36c112d39fcafb73c50">rpc_call_abort</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
 <tr class="separator:af99ba11c3cb8f36c112d39fcafb73c50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3d465fd37962695f644cfd3b24a2022"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ad3d465fd37962695f644cfd3b24a2022">rpc_call_set_prefetch</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call, size_t nitems)</td></tr>
+<tr class="separator:ad3d465fd37962695f644cfd3b24a2022"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aadc9504fdc18875824385dea55cb7384"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aadc9504fdc18875824385dea55cb7384">rpc_call_timedwait</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call, const struct timeval *_Nonnull ts)</td></tr>
 <tr class="separator:aadc9504fdc18875824385dea55cb7384"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01a0d673bf8f756e5fb5e37e6564c431"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a01a0d673bf8f756e5fb5e37e6564c431">rpc_call_success</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
 <tr class="separator:a01a0d673bf8f756e5fb5e37e6564c431"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2986b5ae174169a41b67855e72cfd42e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a2986b5ae174169a41b67855e72cfd42e">rpc_call_status</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
-<tr class="separator:a2986b5ae174169a41b67855e72cfd42e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe0779419fef32d1760633db2b8d3c29"><td class="memItemLeft" align="right" valign="top"><a class="el" href="connection_8h.html#a5e44285dc90be1f6bc541504a3f6d929">rpc_call_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#abe0779419fef32d1760633db2b8d3c29">rpc_call_status</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
+<tr class="separator:abe0779419fef32d1760633db2b8d3c29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e64ae2b6592deff82999556318858dd"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a0e64ae2b6592deff82999556318858dd">rpc_call_result</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
 <tr class="separator:a0e64ae2b6592deff82999556318858dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeba8ba3e9dc7e1310568709cbcae22da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aeba8ba3e9dc7e1310568709cbcae22da">rpc_call_free</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
@@ -746,14 +748,51 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a2986b5ae174169a41b67855e72cfd42e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2986b5ae174169a41b67855e72cfd42e">&#9670;&nbsp;</a></span>rpc_call_status()</h2>
+<a id="ad3d465fd37962695f644cfd3b24a2022"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3d465fd37962695f644cfd3b24a2022">&#9670;&nbsp;</a></span>rpc_call_set_prefetch()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int <a class="el" href="connection_8h.html#a22306445a7503bab94835382d07e0410">rpc_call_status</a> </td>
+          <td class="memname">int rpc_call_set_prefetch </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a>&#160;</td>
+          <td class="paramname"><em>call</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>nitems</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets how many items librpc should prefetch in a streaming call.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">call</td><td></td></tr>
+    <tr><td class="paramname">nitems</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="abe0779419fef32d1760633db2b8d3c29"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe0779419fef32d1760633db2b8d3c29">&#9670;&nbsp;</a></span>rpc_call_status()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="connection_8h.html#a5e44285dc90be1f6bc541504a3f6d929">rpc_call_status_t</a> <a class="el" href="connection_8h.html#a22306445a7503bab94835382d07e0410">rpc_call_status</a> </td>
           <td>(</td>
           <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a>&#160;</td>
           <td class="paramname"><em>call</em></td><td>)</td>
