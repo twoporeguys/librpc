@@ -63,7 +63,7 @@ static void on_events_event_burst(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_events_subscribe(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_events_unsubscribe(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void rpc_callback_worker(void *, void *);
-static inline int rpc_call_status_locked(rpc_call_t);
+static inline rpc_call_status_t rpc_call_status_locked(rpc_call_t);
 static int rpc_call_wait_locked(rpc_call_t);
 static gboolean rpc_call_timeout(gpointer user_data);
 static int rpc_connection_subscribe_event_locked(rpc_connection_t, const char *,
@@ -1913,7 +1913,7 @@ rpc_call_success(rpc_call_t call)
 	return (rpc_call_status(call) == RPC_CALL_DONE);
 }
 
-static inline int
+static inline rpc_call_status_t
 rpc_call_status_locked(rpc_call_t call)
 {
 	struct queue_item *q_item;
@@ -1926,7 +1926,7 @@ rpc_call_status_locked(rpc_call_t call)
 	return (RPC_CALL_IN_PROGRESS);
 }
 
-int
+rpc_call_status_t
 rpc_call_status(rpc_call_t call)
 {
 	rpc_call_status_t result;

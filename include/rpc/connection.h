@@ -618,7 +618,7 @@ int rpc_call_success(_Nonnull rpc_call_t call);
  * @param call Call to be checked
  * @return Call status
  */
-int rpc_call_status(_Nonnull rpc_call_t call);
+rpc_call_status_t rpc_call_status(_Nonnull rpc_call_t call);
 
 /**
  * Returns a call result (or a current fragment).
