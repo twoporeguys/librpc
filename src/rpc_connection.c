@@ -348,6 +348,7 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 		err = rpc_get_last_error();
 		rpc_connection_send_err(conn, id, rpc_error_get_code(err),
 			rpc_error_get_message(err));
+		return;
 	}
 
 	call->rc_type = RPC_INBOUND_CALL;
@@ -386,9 +387,10 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
 	}
-	g_assert(call->rc_type == RPC_OUTBOUND_CALL);
 
+	g_assert(call->rc_type == RPC_OUTBOUND_CALL);
 	g_mutex_lock(&call->rc_mtx);
+
 	if (cancel_timeout_locked(call) != 0) {
 		g_mutex_unlock(&call->rc_mtx);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
