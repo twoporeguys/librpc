@@ -189,7 +189,6 @@ struct rpc_call
 	const char *        	rc_method_name;
 	rpc_object_t        	rc_id;
 	rpc_object_t        	rc_args;
-	rpc_call_status_t   	rc_status;
 	rpc_object_t		rc_err;
 	GCond      		rc_cv;
 	GMutex			rc_mtx;
