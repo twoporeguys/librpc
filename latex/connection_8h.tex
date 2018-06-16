@@ -153,6 +153,8 @@ int \hyperlink{connection_8h_aaa5cabcf5efe1e9a94e97d63c0b4a388}{rpc\+\_\+call\+\
 \item 
 int \hyperlink{connection_8h_af99ba11c3cb8f36c112d39fcafb73c50}{rpc\+\_\+call\+\_\+abort} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
 \item 
+int \hyperlink{connection_8h_ad3d465fd37962695f644cfd3b24a2022}{rpc\+\_\+call\+\_\+set\+\_\+prefetch} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call, size\+\_\+t nitems)
+\item 
 int \hyperlink{connection_8h_aadc9504fdc18875824385dea55cb7384}{rpc\+\_\+call\+\_\+timedwait} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call, const struct timeval $\ast$\+\_\+\+Nonnull ts)
 \item 
 int \hyperlink{connection_8h_a01a0d673bf8f756e5fb5e37e6564c431}{rpc\+\_\+call\+\_\+success} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
@@ -495,6 +497,24 @@ Returns a call result (or a current fragment).
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 Result 
+\end{DoxyReturn}
+\mbox{\Hypertarget{connection_8h_ad3d465fd37962695f644cfd3b24a2022}\label{connection_8h_ad3d465fd37962695f644cfd3b24a2022}} 
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+set\+\_\+prefetch@{rpc\+\_\+call\+\_\+set\+\_\+prefetch}}
+\index{rpc\+\_\+call\+\_\+set\+\_\+prefetch@{rpc\+\_\+call\+\_\+set\+\_\+prefetch}!connection.\+h@{connection.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+call\+\_\+set\+\_\+prefetch()}{rpc\_call\_set\_prefetch()}}
+{\footnotesize\ttfamily int rpc\+\_\+call\+\_\+set\+\_\+prefetch (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}}]{call,  }\item[{size\+\_\+t}]{nitems }\end{DoxyParamCaption})}
+
+Sets how many items librpc should prefetch in a streaming call.
+
+
+\begin{DoxyParams}{Parameters}
+{\em call} & \\
+\hline
+{\em nitems} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
 \end{DoxyReturn}
 \mbox{\Hypertarget{connection_8h_a2986b5ae174169a41b67855e72cfd42e}\label{connection_8h_a2986b5ae174169a41b67855e72cfd42e}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+status@{rpc\+\_\+call\+\_\+status}}

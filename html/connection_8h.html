@@ -230,6 +230,8 @@ Functions</h2></td></tr>
 <tr class="separator:aaa5cabcf5efe1e9a94e97d63c0b4a388"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af99ba11c3cb8f36c112d39fcafb73c50"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#af99ba11c3cb8f36c112d39fcafb73c50">rpc_call_abort</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
 <tr class="separator:af99ba11c3cb8f36c112d39fcafb73c50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3d465fd37962695f644cfd3b24a2022"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ad3d465fd37962695f644cfd3b24a2022">rpc_call_set_prefetch</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call, size_t nitems)</td></tr>
+<tr class="separator:ad3d465fd37962695f644cfd3b24a2022"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aadc9504fdc18875824385dea55cb7384"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#aadc9504fdc18875824385dea55cb7384">rpc_call_timedwait</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call, const struct timeval *_Nonnull ts)</td></tr>
 <tr class="separator:aadc9504fdc18875824385dea55cb7384"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01a0d673bf8f756e5fb5e37e6564c431"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a01a0d673bf8f756e5fb5e37e6564c431">rpc_call_success</a> (_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a> call)</td></tr>
@@ -743,6 +745,43 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result </dd></dl>
+
+</div>
+</div>
+<a id="ad3d465fd37962695f644cfd3b24a2022"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3d465fd37962695f644cfd3b24a2022">&#9670;&nbsp;</a></span>rpc_call_set_prefetch()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_call_set_prefetch </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#aeb6f25e395cc04930537960ef6b50106">rpc_call_t</a>&#160;</td>
+          <td class="paramname"><em>call</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>nitems</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets how many items librpc should prefetch in a streaming call.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">call</td><td></td></tr>
+    <tr><td class="paramname">nitems</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>
