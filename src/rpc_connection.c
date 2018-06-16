@@ -40,7 +40,6 @@
 
 #define	DEFAULT_RPC_TIMEOUT	60
 #define	MAX_FDS			128
-#define	CALL_ENDED_MARKER	((void *)-1)
 
 struct work_item;
 
