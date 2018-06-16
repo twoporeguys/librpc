@@ -1414,14 +1414,19 @@ rpct_download_idl(rpc_connection_t conn)
 		if (rpct_read_idl(name, body) < 0)
 			ret = -1;
 
+		rpc_call_continue(call, true);
 		break;
 
 	case RPC_CALL_ENDED:
 		break;
 
 	case RPC_CALL_ERROR:
+	case RPC_CALL_ABORTED:
 		ret = -1;
 		break;
+
+	default:
+		g_assert_not_reached();
 	}
 
 	rpc_call_free(call);
