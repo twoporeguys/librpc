@@ -194,13 +194,13 @@ loopback_send_msg(void *arg, void *buf, size_t len __unused, const int *fds,
 		return (-1);
 	}
 	peer_conn = lb->lb_peer->lb_conn;
-	rpc_connection_reference_retain(peer_conn);
+	rpc_connection_retain(peer_conn);
 	g_mutex_unlock(&lb->lb_lock->ll_mtx);
 
 	rpc_retain(obj);
 	ret = (peer_conn->rco_recv_msg(peer_conn, (const void *)obj, 0,
 	    (int *)fds, nfds, NULL));
-	rpc_connection_reference_release(peer_conn);
+	rpc_connection_release(peer_conn);
 	return (ret);
 }
 
@@ -228,7 +228,7 @@ loopback_abort(void *arg)
 		if (!lb->lb_is_srv) {
 			lb_peer = lb->lb_peer;
 			peer = lb_peer->lb_conn;
-			rpc_connection_reference_retain(peer);
+			rpc_connection_retain(peer);
 		}
 		lb->lb_peer->lb_peer = NULL;
 		lb->lb_peer = NULL;
@@ -238,16 +238,16 @@ loopback_abort(void *arg)
 
 	conn = lb->lb_conn;
 	lb->lb_closed = true;
-	rpc_connection_reference_retain(conn);
+	rpc_connection_retain(conn);
 
 	g_mutex_unlock(&lb->lb_lock->ll_mtx);
 
 	conn->rco_close(conn);
-	rpc_connection_reference_release(conn);
+	rpc_connection_release(conn);
 
 	if (peer != NULL) {
 		loopback_abort(lb_peer);
-		rpc_connection_reference_release(peer);
+		rpc_connection_release(peer);
 	}
 	return (0);
 }

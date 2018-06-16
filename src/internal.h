@@ -28,6 +28,7 @@
 #ifndef LIBRPC_INTERNAL_H
 #define LIBRPC_INTERNAL_H
 
+#include <stdatomic.h>
 #include <stdio.h>
 #include <glib.h>
 #include <rpc/object.h>
@@ -189,15 +190,16 @@ struct rpc_call
 	rpc_object_t        	rc_id;
 	rpc_object_t        	rc_args;
 	rpc_call_status_t   	rc_status;
-	rpc_object_t        	rc_result;
 	rpc_object_t		rc_err;
 	GCond      		rc_cv;
 	GMutex			rc_mtx;
 	GSource *		rc_timeout;
+	GQueue *		rc_queue;
 	bool			rc_timedout;
 	rpc_callback_t    	rc_callback;
-	volatile int64_t	rc_producer_seqno;
-	volatile int64_t	rc_consumer_seqno; /* also rc_seqno */
+	atomic_int_fast64_t	rc_producer_seqno;
+	atomic_int_fast64_t	rc_consumer_seqno; /* also rc_seqno */
+	uint64_t 		rc_prefetch;
 	rpc_instance_t 		rc_instance;
 	rpc_object_t 		rc_frame;
 	rpc_abort_handler_t	rc_abort_handler;
@@ -523,8 +525,8 @@ void rpc_set_last_gerror(GError *error);
 void rpc_set_last_errorf(int code, const char *fmt, ...);
 rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
-void rpc_connection_reference_retain(rpc_connection_t);
-void rpc_connection_reference_release(rpc_connection_t);
+void rpc_connection_retain(rpc_connection_t);
+void rpc_connection_release(rpc_connection_t);
 int rpc_context_dispatch(rpc_context_t, struct rpc_call *);
 int rpc_server_dispatch(rpc_server_t, struct rpc_call *);
 void rpc_server_release(rpc_server_t);

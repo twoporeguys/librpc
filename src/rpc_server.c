@@ -86,7 +86,7 @@ rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 
 	g_rw_lock_writer_lock(&server->rs_connections_rwlock);
 	server->rs_connections = g_list_append(server->rs_connections, conn);
-	rpc_connection_reference_retain(conn);
+	rpc_connection_retain(conn);
 	g_rw_lock_writer_unlock(&server->rs_connections_rwlock);
 
 	server->rs_conn_made++;
@@ -118,7 +118,7 @@ rpc_server_disconnect(rpc_server_t server, rpc_connection_t conn)
                 if (comp == conn) {
                         server->rs_connections =
                             g_list_remove_link(server->rs_connections, iter);
-			rpc_connection_reference_release(conn);
+			rpc_connection_release(conn);
                         break;
                 }
         }
@@ -433,7 +433,7 @@ rpc_server_close(rpc_server_t server)
 			server->rs_conn_aborted++;
 
 			if (deref == -1) /* disconnect must fail, deref here */
-				rpc_connection_reference_release(conn);
+				rpc_connection_release(conn);
 		}
 	}
 	if (server->rs_threaded_teardown) {

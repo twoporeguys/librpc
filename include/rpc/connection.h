@@ -582,6 +582,15 @@ int rpc_call_continue(_Nonnull rpc_call_t call, bool sync);
 int rpc_call_abort(_Nonnull rpc_call_t call);
 
 /**
+ * Sets how many items librpc should prefetch in a streaming call.
+ *
+ * @param call
+ * @param nitems
+ * @return
+ */
+int rpc_call_set_prefetch(_Nonnull rpc_call_t call, size_t nitems);
+
+/**
  * Waits for a call to change status.
  *
  * If a timeout specified by a ts argument occurs, before a call
@@ -630,4 +639,4 @@ void rpc_call_free(_Nonnull rpc_call_t call);
 }
 #endif
 
-#endif //LIBRPC_CONNECTION_H
+#endif /* LIBRPC_CONNECTION_H */

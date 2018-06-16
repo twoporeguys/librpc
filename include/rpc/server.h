@@ -157,4 +157,4 @@ int rpc_server_sd_listen(_Nonnull rpc_context_t context,
 }
 #endif
 
-#endif //LIBRPC_SERVER_H
+#endif /* LIBRPC_SERVER_H */
