@@ -52,7 +52,7 @@ main(int argc, const char *argv[])
 	rpc_context_t ctx;
 	__block rpc_server_t srv;
         __block GRand *rand = g_rand_new();
-        __block gint setcnt = g_rand_int_range(rand, 50, 100);
+        __block gint setcnt = g_rand_int_range(rand, 50, 500);
         __block char *strg = g_malloc(27);
 	int ret;
 
@@ -117,10 +117,4 @@ main(int argc, const char *argv[])
 	sleep(30);
 	rpc_server_close(srv);
 	return(0);
-#ifdef _WIN32
-	for (;;)
-		sleep(1);
-#else
-	pause();
-#endif
 }

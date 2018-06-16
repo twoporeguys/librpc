@@ -103,6 +103,10 @@ main(int argc, const char *argv[])
 				fprintf(stderr, "ERRORED out\n");
                                 goto done;
 
+			case RPC_CALL_ABORTED:
+				fprintf(stderr, "ABORTED at %d\n", cnt);
+				goto done;
+
                         default:
 				break;
                 }
