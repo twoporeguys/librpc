@@ -616,7 +616,7 @@ rpc_copy(rpc_object_t object)
 #if defined(__linux__)
 	case RPC_TYPE_SHMEM:
 		result = rpc_shmem_recreate(
-		    dup(object->ro_value.rv_shmem.rsb_fd),
+		    object->ro_value.rv_shmem.rsb_fd,
 		    object->ro_value.rv_shmem.rsb_offset,
 		    object->ro_value.rv_shmem.rsb_size);
 		break;
