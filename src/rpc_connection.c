@@ -1794,6 +1794,7 @@ rpc_call_wait(rpc_call_t call)
 int
 rpc_call_continue(rpc_call_t call, bool sync)
 {
+	struct queue_item *q_item;
 	rpc_call_status_t status;
 	rpc_object_t frame;
 	int64_t seqno;
@@ -1824,7 +1825,10 @@ rpc_call_continue(rpc_call_t call, bool sync)
 	}
 
 	call->rc_consumer_seqno++;
-	g_queue_pop_head(call->rc_queue);
+
+	q_item = g_queue_pop_head(call->rc_queue);
+	rpc_release(q_item->item);
+	g_free(q_item);
 
 	if (sync) {
 		rpc_call_wait_locked(call);
