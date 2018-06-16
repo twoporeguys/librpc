@@ -379,6 +379,13 @@ socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
 			goto done;
 		}
 
+		if (step == 0) {
+			conn->sc_parent->rco_error = rpc_error_create(
+			    ECONNRESET, "Connection terminated", NULL);
+			ret = -1;
+			goto done;
+		}
+
 		done += step;
 
 		if (done == size + sizeof(header))
@@ -428,6 +435,13 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 			conn->sc_parent->rco_error =
 			    rpc_error_create_from_gerror(err);
 			g_error_free(err);
+			return (-1);
+		}
+
+
+		if (step == 0) {
+			conn->sc_parent->rco_error = rpc_error_create(
+			    ECONNRESET, "Connection terminated", NULL);
 			return (-1);
 		}
 
