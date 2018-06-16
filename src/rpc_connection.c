@@ -1826,8 +1826,8 @@ rpc_call_continue(rpc_call_t call, bool sync)
 
 	call->rc_consumer_seqno++;
 
+	/* It is assumed that the caller releases q_item->item */
 	q_item = g_queue_pop_head(call->rc_queue);
-	rpc_release(q_item->item);
 	g_free(q_item);
 
 	if (sync) {
