@@ -977,7 +977,8 @@ rpc_call_timeout(gpointer user_data)
 
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_timedout = true;
-	/* make sure when we get the lock someone hasn't already handles this */
+
+	/* make sure when we get the lock someone hasn't already handled this */
 	if (call->rc_timeout == NULL ||
 	    g_source_is_destroyed(call->rc_timeout)) {
 		g_mutex_unlock(&call->rc_mtx);
@@ -1192,6 +1193,7 @@ rpc_connection_free_resources(rpc_connection_t conn)
         /* rpc_free_subscription_resources() TODO, foreach, strings and all */
         if (conn->rco_subscriptions != NULL)
 		g_ptr_array_free(conn->rco_subscriptions, true);
+
 	if (conn->rco_callback_pool != NULL) {
 		g_thread_pool_free(conn->rco_callback_pool, true, true);
 		conn->rco_callback_pool = NULL;
