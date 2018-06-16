@@ -52,7 +52,9 @@ main(int argc, const char *argv[])
 
 	client = rpc_client_create("tcp://127.0.0.1:5000", 0);
 	if (client == NULL) {
-		fprintf(stderr, "cannot connect: %s", strerror(errno));
+		result = rpc_get_last_error();
+		fprintf(stderr, "cannot connect: %s\n",
+		    rpc_error_get_message(result));
 		return (1);
 	}
 
@@ -71,6 +73,9 @@ main(int argc, const char *argv[])
                 rpc_client_close(client);
                 return (1);
         }
+
+        rpc_call_set_prefetch(call, 10);
+
         for (;;) {
                 rpc_call_wait(call);
 
@@ -95,7 +100,7 @@ main(int argc, const char *argv[])
                                 goto done;
 
                         case RPC_CALL_ERROR:
-				fprintf(stderr, "ERRED out\n");
+				fprintf(stderr, "ERRORED out\n");
                                 goto done;
 
                         default:

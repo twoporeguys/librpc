@@ -51,8 +51,8 @@ main(int argc, const char *argv[])
 {
 	rpc_context_t ctx;
 	__block rpc_server_t srv;
-        __block GRand *rand = g_rand_new ();
-        __block gint setcnt = g_rand_int_range (rand, 1, 50);
+        __block GRand *rand = g_rand_new();
+        __block gint setcnt = g_rand_int_range(rand, 50, 100);
         __block char *strg = g_malloc(27);
 	int ret;
 
@@ -111,8 +111,6 @@ main(int argc, const char *argv[])
                 rpc_function_end(cookie);
 		return (rpc_null_create());
         });
-
-	fprintf(stderr, "register stream: %d\n", ret);
 
 	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
 	rpc_server_resume(srv);
