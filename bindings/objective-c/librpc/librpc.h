@@ -248,7 +248,7 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
 /**
  * Issues a call to the server.
  */
-- (nonnull RPCCall *)call:(nonnull NSString *)method
+- (nullable RPCCall *)call:(nonnull NSString *)method
                      path:(nullable NSString *)path
                 interface:(nullable NSString *)interface
                      args:(nullable RPCObject *)args
@@ -409,7 +409,8 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
 @end
 
 @interface RPCTyping : NSObject
-+ (void)init;
-+ (void)loadTypes:(nonnull NSString *)path;
-+ (void)loadTypesDirectory:(nonnull NSString *)directory;
++ (instancetype)shared;
+- (void)loadTypes:(nonnull NSString *)path;
+- (void)loadTypesDirectory:(nonnull NSString *)directory;
+
 @end
