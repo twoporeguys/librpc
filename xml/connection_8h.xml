@@ -2006,9 +2006,9 @@
         </inbodydescription>
         <location file="/code/include/rpc/connection.h" line="612" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="connection_8h_1a2986b5ae174169a41b67855e72cfd42e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>int</type>
-        <definition>int rpc_call_status</definition>
+      <memberdef kind="function" id="connection_8h_1abe0779419fef32d1760633db2b8d3c29" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="connection_8h_1a5e44285dc90be1f6bc541504a3f6d929" kindref="member">rpc_call_status_t</ref></type>
+        <definition>rpc_call_status_t rpc_call_status</definition>
         <argsstring>(_Nonnull rpc_call_t call)</argsstring>
         <name>rpc_call_status</name>
         <param>
@@ -2326,7 +2326,7 @@
 <codeline lineno="605"><highlight class="normal"></highlight></codeline>
 <codeline lineno="612"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a01a0d673bf8f756e5fb5e37e6564c431" kindref="member">rpc_call_success</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
 <codeline lineno="613"><highlight class="normal"></highlight></codeline>
-<codeline lineno="621"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a22306445a7503bab94835382d07e0410" kindref="member">rpc_call_status</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
+<codeline lineno="621"><highlight class="normal">rpc_call_status_t<sp/><ref refid="connection_8h_1a22306445a7503bab94835382d07e0410" kindref="member">rpc_call_status</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
 <codeline lineno="622"><highlight class="normal"></highlight></codeline>
 <codeline lineno="629"><highlight class="normal">_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/><ref refid="connection_8h_1a0e64ae2b6592deff82999556318858dd" kindref="member">rpc_call_result</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
 <codeline lineno="630"><highlight class="normal"></highlight></codeline>

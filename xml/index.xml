@@ -122,7 +122,7 @@
     <member refid="connection_8h_1ad3d465fd37962695f644cfd3b24a2022" kind="function"><name>rpc_call_set_prefetch</name></member>
     <member refid="connection_8h_1aadc9504fdc18875824385dea55cb7384" kind="function"><name>rpc_call_timedwait</name></member>
     <member refid="connection_8h_1a01a0d673bf8f756e5fb5e37e6564c431" kind="function"><name>rpc_call_success</name></member>
-    <member refid="connection_8h_1a2986b5ae174169a41b67855e72cfd42e" kind="function"><name>rpc_call_status</name></member>
+    <member refid="connection_8h_1abe0779419fef32d1760633db2b8d3c29" kind="function"><name>rpc_call_status</name></member>
     <member refid="connection_8h_1a0e64ae2b6592deff82999556318858dd" kind="function"><name>rpc_call_result</name></member>
     <member refid="connection_8h_1aeba8ba3e9dc7e1310568709cbcae22da" kind="function"><name>rpc_call_free</name></member>
   </compound>
