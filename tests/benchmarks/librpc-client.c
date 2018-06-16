@@ -140,6 +140,7 @@ main(int argc, char * const argv[])
 	clock_gettime(CLOCK_REALTIME, &start);
 	lat_start = start;
 
+	rpc_call_set_prefetch(call, 128);
 	rpc_call_wait(call);
 
 next:
