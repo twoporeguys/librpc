@@ -136,6 +136,7 @@ set(CMAKE_C_FLAGS "-fblocks -Wall -Wextra -Wno-unused-parameter -DRPC_TRACE ${PK
 set(CMAKE_CXX_FLAGS "-fblocks -Wall -Wextra -Wno-unused-parameter -DRPC_TRACE ${PKGCONFIG_C_FLAGS}")
 include_directories(include)
 include_directories(/usr/local/include)
+include_directories(${CMAKE_BINARY_DIR}/include)
 include_directories (${GLIB_INCLUDE_DIRS})
 link_directories(${GLIB_LIBRARY_DIRS})
 include_directories(${GIO_INCLUDE_DIRS})
@@ -284,8 +285,10 @@ if(ENABLE_SYSTEMD)
 endif()
 
 configure_file(librpc.pc.in ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc @ONLY)
+configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/rpc/config.h)
 install(TARGETS librpc DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
 install(DIRECTORY idl/ DESTINATION ${CMAKE_INSTALL_PREFIX}/share/idl)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pkgconfig)
 
