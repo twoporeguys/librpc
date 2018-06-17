@@ -1,9 +1,10 @@
 <map id="/code/include/rpc/object.h" name="/code/include/rpc/object.h">
-<area shape="rect" id="node2" href="$connection_8h.html" title="/code/include/rpc/connection.h" alt="" coords="111,80,329,107"/>
-<area shape="rect" id="node5" href="$service_8h.html" title="/code/include/rpc/service.h" alt="" coords="264,155,459,181"/>
-<area shape="rect" id="node6" href="$query_8h.html" title="/code/include/rpc/query.h" alt="" coords="405,80,587,107"/>
-<area shape="rect" id="node7" href="$serializer_8h.html" title="/code/include/rpc/serializer.h" alt="" coords="611,80,818,107"/>
-<area shape="rect" id="node8" href="$typing_8h.html" title="/code/include/rpc/typing.h" alt="" coords="843,80,1032,107"/>
-<area shape="rect" id="node3" href="$client_8h.html" title="/code/include/rpc/client.h" alt="" coords="5,155,189,181"/>
-<area shape="rect" id="node4" href="$server_8h.html" title="/code/include/rpc/server.h" alt="" coords="199,229,387,256"/>
+<area shape="rect" id="node2" href="$connection_8h.html" title="/code/include/rpc/connection.h" alt="" coords="168,80,387,107"/>
+<area shape="rect" id="node4" href="$rpc_8h_source.html" title="/code/include/rpc/rpc.h" alt="" coords="437,304,605,331"/>
+<area shape="rect" id="node6" href="$service_8h.html" title="/code/include/rpc/service.h" alt="" coords="315,155,509,181"/>
+<area shape="rect" id="node7" href="$query_8h.html" title="/code/include/rpc/query.h" alt="" coords="585,155,767,181"/>
+<area shape="rect" id="node8" href="$serializer_8h.html" title="/code/include/rpc/serializer.h" alt="" coords="791,155,998,181"/>
+<area shape="rect" id="node9" href="$typing_8h.html" title="/code/include/rpc/typing.h" alt="" coords="909,80,1099,107"/>
+<area shape="rect" id="node3" href="$client_8h.html" title="/code/include/rpc/client.h" alt="" coords="5,229,189,256"/>
+<area shape="rect" id="node5" href="$server_8h.html" title="/code/include/rpc/server.h" alt="" coords="270,229,458,256"/>
 </map>
