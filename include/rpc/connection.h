@@ -132,7 +132,7 @@ typedef bool (^rpc_callback_t)(_Nonnull rpc_call_t call);
 #define	RPC_HANDLER(_fn, _arg) 						\
 	^(const char *_path, const char *_iface, const char *_name, 	\
 	    rpc_object_t _args) {					\
-		return (_fn(_arg, _path, _iface, _name, _args));	\
+		_fn(_arg, _path, _iface, _name, _args);			\
 	}
 
 /**
@@ -156,7 +156,7 @@ typedef bool (^rpc_callback_t)(_Nonnull rpc_call_t call);
  */
 #define RPC_RAW_HANDLER(_fn, _arg)					\
 	^(const void *_msg, size_t _len, const int *_fds, size_t nfds) {\
-		_fn(_arg, _msg, _len, _fds, _nfds);			\
+		return (_fn(_arg, _msg, _len, _fds, _nfds));		\
 	}
 
 /**
