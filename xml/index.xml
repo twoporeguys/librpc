@@ -55,6 +55,7 @@
     <member refid="connection_8h_1a4f7704822a76a6f293f6abbb59bf41f3" kind="define"><name>RPC_HANDLER</name></member>
     <member refid="connection_8h_1acb61d20219377e2bd2a4727367222ec2" kind="define"><name>RPC_PROPERTY_HANDLER</name></member>
     <member refid="connection_8h_1ac6630daf34229f9dd8a754b119e4a94d" kind="define"><name>RPC_ERROR_HANDLER</name></member>
+    <member refid="connection_8h_1af9a0d94391b33db990ba2eade0231c6b" kind="define"><name>RPC_RAW_HANDLER</name></member>
     <member refid="connection_8h_1a7512dc753949d75650bbec7527f9d0a6" kind="define"><name>RPC_CALLBACK</name></member>
     <member refid="connection_8h_1aaf641fc7d6364f49c859701d678c8d49" kind="define"><name>RPC_NULL_FORMAT</name></member>
     <member refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccd" kind="enum"><name>rpc_error_code</name></member>
@@ -84,6 +85,7 @@
     <member refid="connection_8h_1abd97c34e4cc24dce96eb2944a3cf5aad" kind="typedef"><name>rpc_handler_t</name></member>
     <member refid="connection_8h_1af9b1dc56a631c67a830ceb096d1a16ac" kind="typedef"><name>rpc_property_handler_t</name></member>
     <member refid="connection_8h_1ad84e18a0f030d415f1ac06697fe93525" kind="typedef"><name>rpc_error_handler_t</name></member>
+    <member refid="connection_8h_1a862a6720fa3fe2a5dbcd3663f82e7dd5" kind="typedef"><name>rpc_raw_handler_t</name></member>
     <member refid="connection_8h_1a43904e9a96b10734529cdde29be58784" kind="typedef"><name>rpc_callback_t</name></member>
     <member refid="connection_8h_1a254ad98a921503f712a2adba41160a5f" kind="function"><name>rpc_connection_create</name></member>
     <member refid="connection_8h_1aa63689ba3875975bc8a1fd0177c1a228" kind="function"><name>rpc_connection_close</name></member>
@@ -109,6 +111,8 @@
     <member refid="connection_8h_1a4560bfb571379ff9cdbb10f1de968e7a" kind="function"><name>rpc_connection_watch_property</name></member>
     <member refid="connection_8h_1abd699ca36e45ca40ff561c8243cbc99e" kind="function"><name>rpc_connection_send_event</name></member>
     <member refid="connection_8h_1abbce64346725655e72faa0bf1c479750" kind="function"><name>rpc_connection_ping</name></member>
+    <member refid="connection_8h_1a7e4d9f9f96a7dd1ce336439c0daeccce" kind="function"><name>rpc_connection_send_raw_message</name></member>
+    <member refid="connection_8h_1a474036622817775d7c0a68904baf5a09" kind="function"><name>rpc_connection_set_raw_message_handler</name></member>
     <member refid="connection_8h_1a08f27546613deb38559d3a8ced1a1104" kind="function"><name>rpc_connection_set_event_handler</name></member>
     <member refid="connection_8h_1a08ccbcafd60ed5e2ebb7cf199dc9c574" kind="function"><name>rpc_connection_set_error_handler</name></member>
     <member refid="connection_8h_1ab74f1419e8a907d1c99dbef5358b6dd2" kind="function"><name>rpc_connection_get_remote_address</name></member>
