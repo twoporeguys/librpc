@@ -29,9 +29,10 @@
 #include <errno.h>
 #include <glib.h>
 #include <glib/gprintf.h>
+#include <rpc/config.h>
 #include <rpc/object.h>
 #include <rpc/connection.h>
-#ifdef LIBDISPATCH_SUPPORT
+#ifdef ENABLE_LIBDISPATCH
 #include <dispatch/dispatch.h>
 #endif
 #include "linker_set.h"
@@ -195,7 +196,7 @@ rpc_run_callback(rpc_connection_t conn, struct work_item *item)
 	if (conn->rco_closed)
 		return (false);
 
-#ifdef LIBDISPATCH_SUPPORT
+#ifdef ENABLE_LIBDISPATCH
 	if (conn->rco_dispatch_queue != NULL) {
 		dispatch_async(conn->rco_dispatch_queue, ^{
 			rpc_callback_worker(item, conn);
@@ -709,6 +710,9 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 
 	debugf("received frame: addr=%p, len=%zu", frame, len);
 
+	if (conn->rco_raw_handler != NULL)
+		return (conn->rco_raw_handler(frame, len, fds, nfds));
+
 	if ((conn->rco_flags & RPC_TRANSPORT_NO_SERIALIZE) == 0) {
 		msg = rpc_msgpack_deserialize(frame, len);
 		if (msg == NULL) {
@@ -1209,7 +1213,7 @@ rpc_connection_close(rpc_connection_t conn)
 {
 	rpc_abort_fn_t abort_func;
 
-	debugf("%s, aborted:%d   conn: %p refcnt: %d  arg: %p, closed %d",
+	debugf("%s aborted: %d conn: %p refcnt: %d  arg: %p, closed %d",
 	    conn->rco_server ? "Server" : "Client",
 	    conn->rco_aborted, conn, conn->rco_refcnt,
 	    conn->rco_arg, conn->rco_closed);
@@ -1225,30 +1229,35 @@ rpc_connection_close(rpc_connection_t conn)
                 abort_func(conn->rco_arg);
 		rpc_connection_release(conn);
 
-		/* return -1 if the server caused the abort. When the the server
+		/*
+		 * return -1 if the server caused the abort. When the the server
 		 * call queue goes empty and this function is reentered, the
 		 * call to rpc_server_disconnect will fail the conn deref so
-		 * the server must know to handle it */
+		 * the server must know to handle it
+		 */
 
 		return ((conn->rco_server == NULL) ? 0 : -1);
         }
 
 	if (conn->rco_client != NULL) {
 		conn->rco_closed = true;
-		/* if server caused the abort queues might still have calls.
-		 * This function will be called again when they are empty */
+		/*
+		 * if server caused the abort queues might still have calls.
+		 * This function will be called again when they are empty
+		 */
 		if (g_hash_table_size(conn->rco_calls) > 0 ||
 		    g_hash_table_size(conn->rco_inbound_calls) > 0)
 			goto done;
 		g_mutex_unlock(&conn->rco_mtx);
-	} else if (conn->rco_server != NULL) { /*check, may be failed create*/
+	} else if (conn->rco_server != NULL) { /* check, may be failed create */
 		if (conn->rco_server_released)
 			goto done;
+
                 conn->rco_server->rs_conn_closed++;
 		conn->rco_server_released = true;
                 g_mutex_unlock(&conn->rco_mtx);
                 rpc_server_disconnect(conn->rco_server, conn);
-                rpc_server_release(conn->rco_server); /*no more touching!*/
+                rpc_server_release(conn->rco_server); /* no more touching! */
 	}
 
 	rpc_connection_release(conn);
@@ -1305,9 +1314,10 @@ rpc_connection_release(rpc_connection_t conn)
 		}
 		rpc_connection_free_resources(conn);
 
-		debugf("%s  in thread %p FREED %p",
-		    (conn->rco_server) ? "Server" : "Client",
+		debugf("%s in thread %p freed %p",
+		    conn->rco_server ? "Server" : "Client",
 		    g_thread_self(), conn);
+
 		conn->rco_refcnt = -1;
 		g_mutex_unlock(&conn->rco_ref_mtx);
 		g_free(conn);
@@ -1331,7 +1341,7 @@ rpc_connection_free(rpc_connection_t conn)
 
 }
 
-#ifdef LIBDISPATCH_SUPPORT
+#ifdef ENABLE_LIBDISPATCH
 int
 rpc_connection_set_dispatch_queue(rpc_connection_t conn, dispatch_queue_t queue)
 {
@@ -1339,6 +1349,7 @@ rpc_connection_set_dispatch_queue(rpc_connection_t conn, dispatch_queue_t queue)
 
 	if (conn->rco_callback_pool == NULL)
 		return (-1);
+
 	g_thread_pool_set_max_threads(conn->rco_callback_pool, 0, &err);
 	conn->rco_dispatch_queue = queue;
 	return (0);
@@ -1724,6 +1735,39 @@ rpc_connection_send_event(rpc_connection_t conn, const char *path,
 		return (-1);
 
 	return (0);
+}
+
+int
+rpc_connection_send_raw_message(rpc_connection_t conn, void *msg, size_t len,
+    const int *fds, size_t nfds)
+{
+	int ret;
+
+	g_mutex_lock(&conn->rco_mtx);
+	ret = conn->rco_send_msg(conn->rco_arg, msg, len, fds, nfds);
+	g_mutex_unlock(&conn->rco_mtx);
+
+	return (ret);
+}
+
+void
+rpc_connection_set_raw_message_handler(rpc_connection_t conn,
+    rpc_raw_handler_t handler)
+{
+
+	g_mutex_lock(&conn->rco_mtx);
+	if (conn->rco_raw_handler != NULL) {
+		Block_release(conn->rco_raw_handler);
+		conn->rco_raw_handler = NULL;
+	}
+
+	if (handler == NULL) {
+		g_mutex_unlock(&conn->rco_mtx);
+		return;
+	}
+
+	conn->rco_raw_handler = Block_copy(handler);
+	g_mutex_unlock(&conn->rco_mtx);
 }
 
 void

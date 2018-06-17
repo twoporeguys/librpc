@@ -30,8 +30,9 @@
 
 #include <Block.h>
 #include <sys/time.h>
+#include <rpc/config.h>
 #include <rpc/object.h>
-#ifdef LIBDISPATCH_SUPPORT
+#ifdef ENABLE_LIBDISPATCH
 #include <dispatch/dispatch.h>
 #endif
 
@@ -115,6 +116,12 @@ typedef void (^rpc_error_handler_t)(rpc_error_code_t code,
     _Nullable rpc_object_t args);
 
 /**
+ * Definition of raw message handler block type.
+ */
+typedef int (^rpc_raw_handler_t)(const void *_Nonnull msg, size_t len,
+    const int *_Nullable fds, size_t nfds);
+
+/**
  * Definition of RPC callback block type.
  */
 typedef bool (^rpc_callback_t)(_Nonnull rpc_call_t call);
@@ -125,7 +132,7 @@ typedef bool (^rpc_callback_t)(_Nonnull rpc_call_t call);
 #define	RPC_HANDLER(_fn, _arg) 						\
 	^(const char *_path, const char *_iface, const char *_name, 	\
 	    rpc_object_t _args) {					\
-		_fn(_arg, _path, _iface, _name, _args);			\
+		return (_fn(_arg, _path, _iface, _name, _args));	\
 	}
 
 /**
@@ -142,6 +149,14 @@ typedef bool (^rpc_callback_t)(_Nonnull rpc_call_t call);
 #define	RPC_ERROR_HANDLER(_fn, _arg) 					\
 	^(rpc_error_code_t _code, rpc_object_t _args) {			\
 		_fn(_arg, _code, _args);				\
+	}
+
+/**
+ * Converts function pointer to a @ref rpc_message_handler_t block type.
+ */
+#define RPC_RAW_HANDLER(_fn, _arg)					\
+	^(const void *_msg, size_t _len, const int *_fds, size_t nfds) {\
+		_fn(_arg, _msg, _len, _fds, _nfds);			\
 	}
 
 /**
@@ -221,7 +236,7 @@ int rpc_connection_get_fd(_Nonnull rpc_connection_t conn);
  */
 void rpc_connection_free(_Nonnull rpc_connection_t conn);
 
-#ifdef LIBDISPATCH_SUPPORT
+#ifdef ENABLE_LIBDISPATCH
 /**
  * Assigns a libdispatch queue to the connection.
  *
@@ -495,6 +510,27 @@ int rpc_connection_send_event(_Nonnull rpc_connection_t conn,
  * Ping the other end of a connection.
  */
 int rpc_connection_ping(_Nonnull rpc_connection_t conn);
+
+/**
+ *
+ * @param conn
+ * @param msg
+ * @param len
+ * @param fds
+ * @param nfds
+ * @return
+ */
+int rpc_connection_send_raw_message(_Nonnull rpc_connection_t conn,
+    void *_Nonnull msg, size_t len, const int *_Nullable fds, size_t nfds);
+
+/**
+ *
+ * @param conn
+ * @param handler
+ * @return
+ */
+void rpc_connection_set_raw_message_handler(_Nonnull rpc_connection_t conn,
+    _Nullable rpc_raw_handler_t handler);
 
 /**
  * Sets global event handler for a connection.

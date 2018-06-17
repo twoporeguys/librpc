@@ -227,6 +227,7 @@ struct rpc_connection
 	const char *        	rco_uri;
 	rpc_error_handler_t 	rco_error_handler;
 	rpc_handler_t		rco_event_handler;
+	rpc_raw_handler_t 	rco_raw_handler;
 	guint                 	rco_rpc_timeout;
 	GHashTable *		rco_calls;
 	GHashTable *		rco_inbound_calls;
