@@ -41,7 +41,10 @@ systemd = os.environ.get('SYSTEMD_SUPPORT') == 'ON'
 
 
 if 'CMAKE_SOURCE_DIR' in os.environ:
-    cflags += [os.path.expandvars('-I${CMAKE_SOURCE_DIR}/include')]
+    cflags += [
+        os.path.expandvars('-I${CMAKE_SOURCE_DIR}/include'),
+        os.path.expandvars('-I../../include/')
+    ]
     ldflags += [
         os.path.expandvars('-L../..'),
         os.path.expandvars('-Wl,-rpath'),
