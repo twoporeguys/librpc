@@ -107,7 +107,7 @@
         <param><defname>_arg</defname></param>
         <initializer>^(const char *_path, const char *_iface, const char *_name, 	\
 	    <ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref> _args) {					\
-		return (_fn(_arg, _path, _iface, _name, _args));	\
+		_fn(_arg, _path, _iface, _name, _args);			\
 	}</initializer>
         <briefdescription>
         </briefdescription>
@@ -152,7 +152,7 @@
         <param><defname>_fn</defname></param>
         <param><defname>_arg</defname></param>
         <initializer>^(const void *_msg, size_t _len, const int *_fds, size_t nfds) {\
-		_fn(_arg, _msg, _len, _fds, _nfds);			\
+		return (_fn(_arg, _msg, _len, _fds, _nfds));		\
 	}</initializer>
         <briefdescription>
         </briefdescription>
@@ -2338,7 +2338,7 @@
 <codeline lineno="132" refid="connection_8h_1a4f7704822a76a6f293f6abbb59bf41f3" refkind="member"><highlight class="preprocessor">#define<sp/>RPC_HANDLER(_fn,<sp/>_arg)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
 <codeline lineno="133"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>^(const<sp/>char<sp/>*_path,<sp/>const<sp/>char<sp/>*_iface,<sp/>const<sp/>char<sp/>*_name,<sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
 <codeline lineno="134"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>rpc_object_t<sp/>_args)<sp/>{<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
-<codeline lineno="135"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>(_fn(_arg,<sp/>_path,<sp/>_iface,<sp/>_name,<sp/>_args));<sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="135"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>_fn(_arg,<sp/>_path,<sp/>_iface,<sp/>_name,<sp/>_args);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
 <codeline lineno="136"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="137"><highlight class="normal"></highlight></codeline>
 <codeline lineno="141" refid="connection_8h_1acb61d20219377e2bd2a4727367222ec2" refkind="member"><highlight class="preprocessor">#define<sp/>RPC_PROPERTY_HANDLER(_fn,<sp/>_arg)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
@@ -2353,7 +2353,7 @@
 <codeline lineno="153"><highlight class="normal"></highlight></codeline>
 <codeline lineno="157" refid="connection_8h_1af9a0d94391b33db990ba2eade0231c6b" refkind="member"><highlight class="preprocessor">#define<sp/>RPC_RAW_HANDLER(_fn,<sp/>_arg)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
 <codeline lineno="158"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>^(const<sp/>void<sp/>*_msg,<sp/>size_t<sp/>_len,<sp/>const<sp/>int<sp/>*_fds,<sp/>size_t<sp/>nfds)<sp/>{\</highlight></codeline>
-<codeline lineno="159"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>_fn(_arg,<sp/>_msg,<sp/>_len,<sp/>_fds,<sp/>_nfds);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="159"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>(_fn(_arg,<sp/>_msg,<sp/>_len,<sp/>_fds,<sp/>_nfds));<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
 <codeline lineno="160"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="161"><highlight class="normal"></highlight></codeline>
 <codeline lineno="165" refid="connection_8h_1a7512dc753949d75650bbec7527f9d0a6" refkind="member"><highlight class="preprocessor">#define<sp/>RPC_CALLBACK(_fn,<sp/>_arg)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>

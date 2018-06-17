@@ -349,7 +349,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">^(<span class="keyword">const</span> <span class="keywordtype">char</span> *_path, <span class="keyword">const</span> <span class="keywordtype">char</span> *_iface, <span class="keyword">const</span> <span class="keywordtype">char</span> *_name,     \</div><div class="line">        rpc_object_t _args) {                   \</div><div class="line">        return (_fn(_arg, _path, _iface, _name, _args));    \</div><div class="line">    }</div></div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#abd97c34e4cc24dce96eb2944a3cf5aad">rpc_handler_t</a> block type. </p>
+<b>Value:</b><div class="fragment"><div class="line">^(<span class="keyword">const</span> <span class="keywordtype">char</span> *_path, <span class="keyword">const</span> <span class="keywordtype">char</span> *_iface, <span class="keyword">const</span> <span class="keywordtype">char</span> *_name,     \</div><div class="line">        rpc_object_t _args) {                   \</div><div class="line">        _fn(_arg, _path, _iface, _name, _args);         \</div><div class="line">    }</div></div><!-- fragment --><p>Converts function pointer to a <a class="el" href="connection_8h.html#abd97c34e4cc24dce96eb2944a3cf5aad">rpc_handler_t</a> block type. </p>
 
 <p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00132">132</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
@@ -429,7 +429,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">^(<span class="keyword">const</span> <span class="keywordtype">void</span> *_msg, <span class="keywordtype">size_t</span> _len, <span class="keyword">const</span> <span class="keywordtype">int</span> *_fds, <span class="keywordtype">size_t</span> nfds) {\</div><div class="line">        _fn(_arg, _msg, _len, _fds, _nfds);         \</div><div class="line">    }</div></div><!-- fragment --><p>Converts function pointer to a rpc_message_handler_t block type. </p>
+<b>Value:</b><div class="fragment"><div class="line">^(<span class="keyword">const</span> <span class="keywordtype">void</span> *_msg, <span class="keywordtype">size_t</span> _len, <span class="keyword">const</span> <span class="keywordtype">int</span> *_fds, <span class="keywordtype">size_t</span> nfds) {\</div><div class="line">        return (_fn(_arg, _msg, _len, _fds, _nfds));        \</div><div class="line">    }</div></div><!-- fragment --><p>Converts function pointer to a rpc_message_handler_t block type. </p>
 
 <p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00157">157</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 

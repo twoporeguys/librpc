@@ -222,7 +222,7 @@ Definition at line 149 of file connection.\+h.
 \begin{DoxyCode}
 ^(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_path, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_iface, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_name,     \(\backslash\)
         rpc\_object\_t \_args) \{                   \(\backslash\)
-        return (\_fn(\_arg, \_path, \_iface, \_name, \_args));    \(\backslash\)
+        \_fn(\_arg, \_path, \_iface, \_name, \_args);         \(\backslash\)
     \}
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}{rpc\+\_\+handler\+\_\+t} block type. 
@@ -264,7 +264,7 @@ Definition at line 141 of file connection.\+h.
 {\bfseries Value\+:}
 \begin{DoxyCode}
 ^(\textcolor{keyword}{const} \textcolor{keywordtype}{void} *\_msg, \textcolor{keywordtype}{size\_t} \_len, \textcolor{keyword}{const} \textcolor{keywordtype}{int} *\_fds, \textcolor{keywordtype}{size\_t} nfds) \{\(\backslash\)
-        \_fn(\_arg, \_msg, \_len, \_fds, \_nfds);         \(\backslash\)
+        return (\_fn(\_arg, \_msg, \_len, \_fds, \_nfds));        \(\backslash\)
     \}
 \end{DoxyCode}
 Converts function pointer to a rpc\+\_\+message\+\_\+handler\+\_\+t block type. 
