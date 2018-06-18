@@ -488,13 +488,15 @@ rpc_function_end(void *cookie)
 	    !call->rc_aborted)
 		g_cond_wait(&call->rc_cv, &call->rc_mtx);
 
-        if (call->rc_aborted) {
-                if (!call->rc_ended) {
-                        rpc_function_error(call, ECONNRESET,
-                                "Call aborted");
-                        call->rc_ended = true;
-                }
+	if (call->rc_aborted) {
+		if (!call->rc_ended) {
+			rpc_function_error(call, ECONNRESET,
+                            "Call aborted");
+			call->rc_ended = true;
+		}
+
 		g_mutex_unlock(&call->rc_mtx);
+		return;
 	}
 
 	if (!call->rc_ended)
