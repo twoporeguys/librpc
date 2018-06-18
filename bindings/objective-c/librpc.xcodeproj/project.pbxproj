@@ -434,7 +434,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				HEADER_SEARCH_PATHS = ../../include;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../../dest/usr/include/";
 				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks @loader_path/momd.xpc/Contents/Resources/usr/lib @loader_path/../XPCServices/momd.xpc/Contents/Resources/usr/lib/";
 				LIBRARY_SEARCH_PATHS = ../../../dest/usr/lib/;
@@ -457,7 +457,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				HEADER_SEARCH_PATHS = ../../include;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../../dest/usr/include/";
 				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks @loader_path/momd.xpc/Contents/Resources/usr/lib @loader_path/../XPCServices/momd.xpc/Contents/Resources/usr/lib/";
 				LIBRARY_SEARCH_PATHS = ../../../dest/usr/lib/;
