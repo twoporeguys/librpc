@@ -298,9 +298,15 @@
         case RPC_CALL_ERROR:
             @throw [[[RPCObject alloc] initFromNativeObject:rpc_call_result(call)] value];
 
+        case RPC_CALL_IN_PROGRESS:
+            break;
         case RPC_CALL_ENDED:
         case RPC_CALL_DONE:
+        case RPC_CALL_ABORTED:
             return (0);
+        
+            
+            
     }
 
     return (0);
