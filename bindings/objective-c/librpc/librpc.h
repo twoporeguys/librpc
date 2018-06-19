@@ -190,6 +190,13 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
 - (void)abort;
 
 /**
+ * Sets prefetch size for a streaming call.
+ *
+ * @param len Number of items to prefetch.
+ */
+- (void)setPrefetch:(NSInteger)len;
+
+/**
  * Returns the result of the call.
  *
  * In case of a streaming call, it returns last chunk of data

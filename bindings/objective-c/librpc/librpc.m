@@ -274,6 +274,10 @@
     rpc_call_abort(call);
 }
 
+- (void)setPrefetch:(NSInteger)len {
+    rpc_call_set_prefetch(call, (size_t)len);
+}
+
 - (RPCObject *)result {
     return [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)];
 }
