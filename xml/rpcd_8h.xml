@@ -2,19 +2,6 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
   <compounddef id="rpcd_8h" kind="file" language="C++">
     <compoundname>rpcd.h</compoundname>
-    <includedby refid="rpc_8h" local="no">/code/include/rpc/rpc.h</includedby>
-    <invincdepgraph>
-      <node id="77">
-        <label>/code/include/rpc/rpcd.h</label>
-        <link refid="rpcd_8h"/>
-        <childnode refid="78" relation="include">
-        </childnode>
-      </node>
-      <node id="78">
-        <label>/code/include/rpc/rpc.h</label>
-        <link refid="rpc_8h_source"/>
-      </node>
-    </invincdepgraph>
       <sectiondef kind="define">
       <memberdef kind="define" id="rpcd_8h_1a9823ef133db1543c07651a2d9da925f3" prot="public" static="no">
         <name>RPCD_SOCKET_LOCATION</name>

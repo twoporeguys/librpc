@@ -26,7 +26,6 @@ var searchData=
   ['rpc_5fquery_5fcb_5ft',['rpc_query_cb_t',['../query_8h.html#a2e4187b74c3bd970f9e41bb2d02d09a0',1,'query.h']]],
   ['rpc_5fquery_5fiter_5ft',['rpc_query_iter_t',['../query_8h.html#a927ba6540a1cd3a2f2cf5d20b39fdadd',1,'query.h']]],
   ['rpc_5fquery_5fparams_5ft',['rpc_query_params_t',['../query_8h.html#a831694aa25fae9a6c3243911c3defb94',1,'query.h']]],
-  ['rpc_5fraw_5fhandler_5ft',['rpc_raw_handler_t',['../connection_8h.html#a862a6720fa3fe2a5dbcd3663f82e7dd5',1,'connection.h']]],
   ['rpc_5fserver_5fevent_5fhandler_5ft',['rpc_server_event_handler_t',['../server_8h.html#a2d9a540637c63449db9ac5882cb5f7ab',1,'server.h']]],
   ['rpc_5fserver_5ft',['rpc_server_t',['../server_8h.html#a46fd27cbcf75a54103df9d51d90a7fca',1,'server.h']]],
   ['rpct_5fargument_5ft',['rpct_argument_t',['../typing_8h.html#a182f9a414fde2db9be9f83a78310f628',1,'typing.h']]],

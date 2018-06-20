@@ -9,6 +9,7 @@
   <compound refid="structrpc__if__member" kind="struct"><name>rpc_if_member</name>
     <member refid="structrpc__if__member_1a656607611d627c965972e4153523287e" kind="variable"><name>rim_name</name></member>
     <member refid="structrpc__if__member_1a0ffdb5e81a707932149376d01c716b10" kind="variable"><name>rim_type</name></member>
+    <member refid="structrpc__if__member_1a81f7022fde88764d1d985dda20724bbd" kind="variable"><name>rim_interface</name></member>
     <member refid="structrpc__if__member_1a89089595ce2e4eb41017e5aea463787c" kind="variable"><name>rim_method</name></member>
     <member refid="structrpc__if__member_1ae82e990c08326140bb7a4dbd9f601296" kind="variable"><name>rim_property</name></member>
     <member refid="structrpc__if__member_1a7c950b405b6852b3038ae847d0b7e2e0" kind="variable"><name>@1</name></member>
@@ -55,7 +56,6 @@
     <member refid="connection_8h_1a4f7704822a76a6f293f6abbb59bf41f3" kind="define"><name>RPC_HANDLER</name></member>
     <member refid="connection_8h_1acb61d20219377e2bd2a4727367222ec2" kind="define"><name>RPC_PROPERTY_HANDLER</name></member>
     <member refid="connection_8h_1ac6630daf34229f9dd8a754b119e4a94d" kind="define"><name>RPC_ERROR_HANDLER</name></member>
-    <member refid="connection_8h_1af9a0d94391b33db990ba2eade0231c6b" kind="define"><name>RPC_RAW_HANDLER</name></member>
     <member refid="connection_8h_1a7512dc753949d75650bbec7527f9d0a6" kind="define"><name>RPC_CALLBACK</name></member>
     <member refid="connection_8h_1aaf641fc7d6364f49c859701d678c8d49" kind="define"><name>RPC_NULL_FORMAT</name></member>
     <member refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccd" kind="enum"><name>rpc_error_code</name></member>
@@ -85,7 +85,6 @@
     <member refid="connection_8h_1abd97c34e4cc24dce96eb2944a3cf5aad" kind="typedef"><name>rpc_handler_t</name></member>
     <member refid="connection_8h_1af9b1dc56a631c67a830ceb096d1a16ac" kind="typedef"><name>rpc_property_handler_t</name></member>
     <member refid="connection_8h_1ad84e18a0f030d415f1ac06697fe93525" kind="typedef"><name>rpc_error_handler_t</name></member>
-    <member refid="connection_8h_1a862a6720fa3fe2a5dbcd3663f82e7dd5" kind="typedef"><name>rpc_raw_handler_t</name></member>
     <member refid="connection_8h_1a43904e9a96b10734529cdde29be58784" kind="typedef"><name>rpc_callback_t</name></member>
     <member refid="connection_8h_1a254ad98a921503f712a2adba41160a5f" kind="function"><name>rpc_connection_create</name></member>
     <member refid="connection_8h_1aa63689ba3875975bc8a1fd0177c1a228" kind="function"><name>rpc_connection_close</name></member>
@@ -111,8 +110,6 @@
     <member refid="connection_8h_1a4560bfb571379ff9cdbb10f1de968e7a" kind="function"><name>rpc_connection_watch_property</name></member>
     <member refid="connection_8h_1abd699ca36e45ca40ff561c8243cbc99e" kind="function"><name>rpc_connection_send_event</name></member>
     <member refid="connection_8h_1abbce64346725655e72faa0bf1c479750" kind="function"><name>rpc_connection_ping</name></member>
-    <member refid="connection_8h_1a7e4d9f9f96a7dd1ce336439c0daeccce" kind="function"><name>rpc_connection_send_raw_message</name></member>
-    <member refid="connection_8h_1a474036622817775d7c0a68904baf5a09" kind="function"><name>rpc_connection_set_raw_message_handler</name></member>
     <member refid="connection_8h_1a08f27546613deb38559d3a8ced1a1104" kind="function"><name>rpc_connection_set_event_handler</name></member>
     <member refid="connection_8h_1a08ccbcafd60ed5e2ebb7cf199dc9c574" kind="function"><name>rpc_connection_set_error_handler</name></member>
     <member refid="connection_8h_1ab74f1419e8a907d1c99dbef5358b6dd2" kind="function"><name>rpc_connection_get_remote_address</name></member>
@@ -123,10 +120,9 @@
     <member refid="connection_8h_1a55b86b7f9f1957a23b422837e9953dab" kind="function"><name>rpc_call_wait</name></member>
     <member refid="connection_8h_1aaa5cabcf5efe1e9a94e97d63c0b4a388" kind="function"><name>rpc_call_continue</name></member>
     <member refid="connection_8h_1af99ba11c3cb8f36c112d39fcafb73c50" kind="function"><name>rpc_call_abort</name></member>
-    <member refid="connection_8h_1ad3d465fd37962695f644cfd3b24a2022" kind="function"><name>rpc_call_set_prefetch</name></member>
     <member refid="connection_8h_1aadc9504fdc18875824385dea55cb7384" kind="function"><name>rpc_call_timedwait</name></member>
     <member refid="connection_8h_1a01a0d673bf8f756e5fb5e37e6564c431" kind="function"><name>rpc_call_success</name></member>
-    <member refid="connection_8h_1abe0779419fef32d1760633db2b8d3c29" kind="function"><name>rpc_call_status</name></member>
+    <member refid="connection_8h_1a2986b5ae174169a41b67855e72cfd42e" kind="function"><name>rpc_call_status</name></member>
     <member refid="connection_8h_1a0e64ae2b6592deff82999556318858dd" kind="function"><name>rpc_call_result</name></member>
     <member refid="connection_8h_1aeba8ba3e9dc7e1310568709cbcae22da" kind="function"><name>rpc_call_free</name></member>
   </compound>
@@ -289,8 +285,6 @@
     <member refid="query_8h_1a979b1dfd5f0fb3be66501ed3c7df3f78" kind="function"><name>rpc_query_next</name></member>
     <member refid="query_8h_1acfa3a9a25b98a0acd3a64c7c222e5f99" kind="function"><name>rpc_query_iter_free</name></member>
   </compound>
-  <compound refid="rpc_8h" kind="file"><name>rpc.h</name>
-  </compound>
   <compound refid="rpcd_8h" kind="file"><name>rpcd.h</name>
     <member refid="rpcd_8h_1a9823ef133db1543c07651a2d9da925f3" kind="define"><name>RPCD_SOCKET_LOCATION</name></member>
     <member refid="rpcd_8h_1a68e362732de142780476f22612f534da" kind="define"><name>RPCD_MANAGER_INTERFACE</name></member>
@@ -350,7 +344,7 @@
     <member refid="service_8h_1aa8b38d8ab3bafe79a96edaebafe13b8d" kind="typedef"><name>rpc_property_setter_t</name></member>
     <member refid="service_8h_1aebbaf8e39f128b6655d23aad6a8ab634" kind="typedef"><name>rpc_abort_handler_t</name></member>
     <member refid="service_8h_1aa53a346b1f60759fabc2f047e75fdb90" kind="function"><name>rpc_context_create</name></member>
-    <member refid="service_8h_1a4f63ab83623a2f407eac2fe9b7f80023" kind="function"><name>rpc_context_free</name></member>
+    <member refid="service_8h_1a9e384c26d2428f5a19e6ee94211330ec" kind="function"><name>rpc_context_free</name></member>
     <member refid="service_8h_1a125f2739087a2d4f89384d24fadb6cde" kind="function"><name>rpc_context_find_instance</name></member>
     <member refid="service_8h_1a099a8fc4046be7999da0454548825513" kind="function"><name>rpc_context_get_root</name></member>
     <member refid="service_8h_1acfa9c9b0063bd316850e8a58878cb44e" kind="function"><name>rpc_context_register_instance</name></member>

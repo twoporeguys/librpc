@@ -3,56 +3,43 @@
   <compounddef id="query_8h" kind="file" language="C++">
     <compoundname>query.h</compoundname>
     <includes refid="object_8h" local="no">rpc/object.h</includes>
-    <includedby refid="rpc_8h" local="no">/code/include/rpc/rpc.h</includedby>
     <incdepgraph>
-      <node id="47">
+      <node id="41">
         <label>/code/include/rpc/query.h</label>
         <link refid="query_8h"/>
-        <childnode refid="48" relation="include">
+        <childnode refid="42" relation="include">
         </childnode>
       </node>
-      <node id="50">
+      <node id="44">
         <label>stdbool.h</label>
       </node>
-      <node id="51">
+      <node id="45">
         <label>stdarg.h</label>
       </node>
-      <node id="49">
+      <node id="43">
         <label>stdint.h</label>
       </node>
-      <node id="53">
+      <node id="47">
         <label>sys/types.h</label>
       </node>
-      <node id="48">
+      <node id="42">
         <label>rpc/object.h</label>
         <link refid="object_8h"/>
-        <childnode refid="49" relation="include">
+        <childnode refid="43" relation="include">
         </childnode>
-        <childnode refid="50" relation="include">
+        <childnode refid="44" relation="include">
         </childnode>
-        <childnode refid="51" relation="include">
+        <childnode refid="45" relation="include">
         </childnode>
-        <childnode refid="52" relation="include">
+        <childnode refid="46" relation="include">
         </childnode>
-        <childnode refid="53" relation="include">
+        <childnode refid="47" relation="include">
         </childnode>
       </node>
-      <node id="52">
+      <node id="46">
         <label>sys/uio.h</label>
       </node>
     </incdepgraph>
-    <invincdepgraph>
-      <node id="54">
-        <label>/code/include/rpc/query.h</label>
-        <link refid="query_8h"/>
-        <childnode refid="55" relation="include">
-        </childnode>
-      </node>
-      <node id="55">
-        <label>/code/include/rpc/rpc.h</label>
-        <link refid="rpc_8h_source"/>
-      </node>
-    </invincdepgraph>
     <innerclass refid="structrpc__query__params" prot="public">rpc_query_params</innerclass>
       <sectiondef kind="define">
       <memberdef kind="define" id="query_8h_1ac5142dc38666b2011833bab884b6af9d" prot="public" static="no">

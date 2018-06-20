@@ -4,79 +4,61 @@
     <compoundname>client.h</compoundname>
     <includes local="no">stdbool.h</includes>
     <includes refid="connection_8h" local="no">rpc/connection.h</includes>
-    <includedby refid="rpc_8h" local="no">/code/include/rpc/rpc.h</includedby>
     <incdepgraph>
-      <node id="5">
+      <node id="4">
         <label>stdbool.h</label>
       </node>
-      <node id="12">
+      <node id="10">
         <label>stdarg.h</label>
       </node>
-      <node id="4">
+      <node id="3">
         <label>/code/include/rpc/client.h</label>
         <link refid="client_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
         <childnode refid="5" relation="include">
         </childnode>
-        <childnode refid="6" relation="include">
-        </childnode>
-      </node>
-      <node id="11">
-        <label>stdint.h</label>
       </node>
       <node id="9">
-        <label>rpc/config.h</label>
+        <label>stdint.h</label>
       </node>
-      <node id="6">
+      <node id="5">
         <label>rpc/connection.h</label>
         <link refid="connection_8h"/>
+        <childnode refid="6" relation="include">
+        </childnode>
         <childnode refid="7" relation="include">
         </childnode>
         <childnode refid="8" relation="include">
         </childnode>
+      </node>
+      <node id="12">
+        <label>sys/types.h</label>
+      </node>
+      <node id="8">
+        <label>rpc/object.h</label>
+        <link refid="object_8h"/>
         <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
         </childnode>
         <childnode refid="10" relation="include">
         </childnode>
-      </node>
-      <node id="14">
-        <label>sys/types.h</label>
-      </node>
-      <node id="10">
-        <label>rpc/object.h</label>
-        <link refid="object_8h"/>
         <childnode refid="11" relation="include">
-        </childnode>
-        <childnode refid="5" relation="include">
         </childnode>
         <childnode refid="12" relation="include">
         </childnode>
-        <childnode refid="13" relation="include">
-        </childnode>
-        <childnode refid="14" relation="include">
-        </childnode>
       </node>
-      <node id="13">
+      <node id="11">
         <label>sys/uio.h</label>
       </node>
-      <node id="7">
+      <node id="6">
         <label>Block.h</label>
       </node>
-      <node id="8">
+      <node id="7">
         <label>sys/time.h</label>
       </node>
     </incdepgraph>
-    <invincdepgraph>
-      <node id="15">
-        <label>/code/include/rpc/client.h</label>
-        <link refid="client_8h"/>
-        <childnode refid="16" relation="include">
-        </childnode>
-      </node>
-      <node id="16">
-        <label>/code/include/rpc/rpc.h</label>
-        <link refid="rpc_8h_source"/>
-      </node>
-    </invincdepgraph>
       <sectiondef kind="typedef">
       <memberdef kind="typedef" id="client_8h_1a4f7230a0c2c07d27a07a88d407a06b70" prot="public" static="no">
         <type>struct rpc_client *</type>

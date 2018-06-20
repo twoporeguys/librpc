@@ -9,30 +9,60 @@
     <includes local="no">sys/types.h</includes>
     <includedby refid="connection_8h" local="no">/code/include/rpc/connection.h</includedby>
     <includedby refid="query_8h" local="no">/code/include/rpc/query.h</includedby>
-    <includedby refid="rpc_8h" local="no">/code/include/rpc/rpc.h</includedby>
     <includedby refid="serializer_8h" local="no">/code/include/rpc/serializer.h</includedby>
     <includedby refid="service_8h" local="no">/code/include/rpc/service.h</includedby>
     <includedby refid="typing_8h" local="no">/code/include/rpc/typing.h</includedby>
     <incdepgraph>
-      <node id="34">
+      <node id="29">
         <label>stdbool.h</label>
       </node>
-      <node id="35">
+      <node id="30">
         <label>stdarg.h</label>
       </node>
-      <node id="33">
+      <node id="28">
         <label>stdint.h</label>
       </node>
-      <node id="37">
+      <node id="32">
         <label>sys/types.h</label>
       </node>
-      <node id="32">
+      <node id="27">
         <label>/code/include/rpc/object.h</label>
         <link refid="object_8h"/>
-        <childnode refid="33" relation="include">
+        <childnode refid="28" relation="include">
         </childnode>
-        <childnode refid="34" relation="include">
+        <childnode refid="29" relation="include">
         </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+      </node>
+      <node id="31">
+        <label>sys/uio.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="38">
+        <label>/code/include/rpc/query.h</label>
+        <link refid="query_8h"/>
+      </node>
+      <node id="35">
+        <label>/code/include/rpc/client.h</label>
+        <link refid="client_8h"/>
+      </node>
+      <node id="40">
+        <label>/code/include/rpc/typing.h</label>
+        <link refid="typing_8h"/>
+      </node>
+      <node id="39">
+        <label>/code/include/rpc/serializer.h</label>
+        <link refid="serializer_8h"/>
+      </node>
+      <node id="34">
+        <label>/code/include/rpc/connection.h</label>
+        <link refid="connection_8h"/>
         <childnode refid="35" relation="include">
         </childnode>
         <childnode refid="36" relation="include">
@@ -41,78 +71,27 @@
         </childnode>
       </node>
       <node id="36">
-        <label>sys/uio.h</label>
-      </node>
-    </incdepgraph>
-    <invincdepgraph>
-      <node id="44">
-        <label>/code/include/rpc/query.h</label>
-        <link refid="query_8h"/>
-        <childnode refid="41" relation="include">
-        </childnode>
-      </node>
-      <node id="40">
-        <label>/code/include/rpc/client.h</label>
-        <link refid="client_8h"/>
-        <childnode refid="41" relation="include">
-        </childnode>
-      </node>
-      <node id="46">
-        <label>/code/include/rpc/typing.h</label>
-        <link refid="typing_8h"/>
-        <childnode refid="41" relation="include">
-        </childnode>
-      </node>
-      <node id="45">
-        <label>/code/include/rpc/serializer.h</label>
-        <link refid="serializer_8h"/>
-        <childnode refid="41" relation="include">
-        </childnode>
-      </node>
-      <node id="39">
-        <label>/code/include/rpc/connection.h</label>
-        <link refid="connection_8h"/>
-        <childnode refid="40" relation="include">
-        </childnode>
-        <childnode refid="41" relation="include">
-        </childnode>
-        <childnode refid="42" relation="include">
-        </childnode>
-        <childnode refid="43" relation="include">
-        </childnode>
-      </node>
-      <node id="42">
         <label>/code/include/rpc/server.h</label>
         <link refid="server_8h"/>
-        <childnode refid="41" relation="include">
-        </childnode>
       </node>
-      <node id="41">
-        <label>/code/include/rpc/rpc.h</label>
-        <link refid="rpc_8h_source"/>
-      </node>
-      <node id="38">
+      <node id="33">
         <label>/code/include/rpc/object.h</label>
         <link refid="object_8h"/>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
         <childnode refid="39" relation="include">
         </childnode>
-        <childnode refid="44" relation="include">
+        <childnode refid="37" relation="include">
         </childnode>
-        <childnode refid="41" relation="include">
-        </childnode>
-        <childnode refid="45" relation="include">
-        </childnode>
-        <childnode refid="43" relation="include">
-        </childnode>
-        <childnode refid="46" relation="include">
+        <childnode refid="40" relation="include">
         </childnode>
       </node>
-      <node id="43">
+      <node id="37">
         <label>/code/include/rpc/service.h</label>
         <link refid="service_8h"/>
-        <childnode refid="41" relation="include">
-        </childnode>
-        <childnode refid="42" relation="include">
+        <childnode refid="36" relation="include">
         </childnode>
       </node>
     </invincdepgraph>

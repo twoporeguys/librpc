@@ -21,7 +21,6 @@ var searchData=
   ['rpc_5fproperty_5frw',['RPC_PROPERTY_RW',['../service_8h.html#a6f39d78ec8fde43f05f7805fddc525d4',1,'service.h']]],
   ['rpc_5fproperty_5fwo',['RPC_PROPERTY_WO',['../service_8h.html#a6ea5b0d468e84170d93e3afeaed4d5b6',1,'service.h']]],
   ['rpc_5fquery_5fcb',['RPC_QUERY_CB',['../query_8h.html#ac5142dc38666b2011833bab884b6af9d',1,'query.h']]],
-  ['rpc_5fraw_5fhandler',['RPC_RAW_HANDLER',['../connection_8h.html#af9a0d94391b33db990ba2eade0231c6b',1,'connection.h']]],
   ['rpc_5frelease',['rpc_release',['../object_8h.html#aac19be935f72b35eeb2851bc509eabb2',1,'object.h']]],
   ['rpc_5fserver_5fhandler',['RPC_SERVER_HANDLER',['../server_8h.html#a34749fc2472ddb06c6d36006e2a948c3',1,'server.h']]],
   ['rpc_5fswap',['rpc_swap',['../object_8h.html#a541e997e04e48fe86df08ae323516490',1,'object.h']]]
