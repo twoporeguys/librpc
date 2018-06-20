@@ -529,8 +529,8 @@ rpc_function_should_abort(void *cookie)
 	return (call->rc_aborted);
 }
 
-void rpc_function_set_async_abort_handler(void *_Nonnull cookie,
-    _Nullable rpc_abort_handler_t handler)
+void rpc_function_set_async_abort_handler(void *cookie,
+    rpc_abort_handler_t handler)
 {
 	struct rpc_call *call = cookie;
 
