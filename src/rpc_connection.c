@@ -547,13 +547,13 @@ on_rpc_abort(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 	call->rc_ended = true;
 	call->rc_aborted = true;
 	g_cond_broadcast(&call->rc_cv);
+	g_mutex_unlock(&call->rc_mtx);
 
 	if (call->rc_abort_handler) {
 		call->rc_abort_handler();
 		Block_release(call->rc_abort_handler);
 		call->rc_abort_handler = NULL;
 	}
-	g_mutex_unlock(&call->rc_mtx);
 }
 
 static void
