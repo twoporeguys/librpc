@@ -253,6 +253,7 @@ struct rpc_if_property
 struct rpc_if_member {
 	const char *_Nonnull		rim_name;
 	enum rpc_if_member_type		rim_type;
+	void *_Nullable			rim_interface;
 	union {
 		struct rpc_if_method 	rim_method;
 		struct rpc_if_property 	rim_property;
@@ -269,9 +270,13 @@ _Nonnull rpc_context_t rpc_context_create(void);
 /**
  * Disposes existing RPC context and frees all associated resources.
  *
+ * Fails if the Context has registered servers or instances other than the
+ * root instance
+ *
  * @param context Context to dispose
+ * @return 0 if the context could be freed, else -1.
  */
-void rpc_context_free(_Nonnull rpc_context_t context);
+int  rpc_context_free(_Nonnull rpc_context_t context);
 
 /**
  * Finds an instance registered in @p context.

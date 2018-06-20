@@ -315,6 +315,7 @@ struct rpc_instance
 	GHashTable *		ri_properties;
 	GMutex			ri_mtx;
 	GRWLock			ri_rwlock;
+	bool			ri_unregistered;
 };
 
 struct rpc_interface_priv
@@ -323,7 +324,8 @@ struct rpc_interface_priv
 	char *			rip_description;
 	void *			rip_arg;
 	GHashTable *		rip_members;
-	GMutex			rip_mtx;
+	GRWLock			rip_rwlock;
+
 };
 
 struct rpc_property_cookie
@@ -346,6 +348,8 @@ struct rpc_context
 	/* Hooks */
 	rpc_function_t		rcx_pre_call_hook;
 	rpc_function_t		rcx_post_call_hook;
+	GAsyncQueue *		rcx_emit_queue;
+	GThread *		rcx_emit_thread;
 };
 
 struct rpc_bus_transport
