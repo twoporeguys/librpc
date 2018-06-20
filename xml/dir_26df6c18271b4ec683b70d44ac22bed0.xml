@@ -7,6 +7,7 @@
     <innerfile refid="connection_8h">connection.h</innerfile>
     <innerfile refid="object_8h">object.h</innerfile>
     <innerfile refid="query_8h">query.h</innerfile>
+    <innerfile refid="rpc_8h">rpc.h</innerfile>
     <innerfile refid="rpcd_8h">rpcd.h</innerfile>
     <innerfile refid="serializer_8h">serializer.h</innerfile>
     <innerfile refid="server_8h">server.h</innerfile>

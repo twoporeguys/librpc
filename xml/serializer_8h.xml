@@ -3,43 +3,56 @@
   <compounddef id="serializer_8h" kind="file" language="C++">
     <compoundname>serializer.h</compoundname>
     <includes refid="object_8h" local="no">rpc/object.h</includes>
+    <includedby refid="rpc_8h" local="no">/code/include/rpc/rpc.h</includedby>
     <incdepgraph>
-      <node id="54">
+      <node id="82">
         <label>stdbool.h</label>
       </node>
-      <node id="55">
+      <node id="83">
         <label>stdarg.h</label>
       </node>
-      <node id="53">
+      <node id="81">
         <label>stdint.h</label>
       </node>
-      <node id="51">
+      <node id="79">
         <label>/code/include/rpc/serializer.h</label>
         <link refid="serializer_8h"/>
-        <childnode refid="52" relation="include">
+        <childnode refid="80" relation="include">
         </childnode>
       </node>
-      <node id="57">
+      <node id="85">
         <label>sys/types.h</label>
       </node>
-      <node id="52">
+      <node id="80">
         <label>rpc/object.h</label>
         <link refid="object_8h"/>
-        <childnode refid="53" relation="include">
+        <childnode refid="81" relation="include">
         </childnode>
-        <childnode refid="54" relation="include">
+        <childnode refid="82" relation="include">
         </childnode>
-        <childnode refid="55" relation="include">
+        <childnode refid="83" relation="include">
         </childnode>
-        <childnode refid="56" relation="include">
+        <childnode refid="84" relation="include">
         </childnode>
-        <childnode refid="57" relation="include">
+        <childnode refid="85" relation="include">
         </childnode>
       </node>
-      <node id="56">
+      <node id="84">
         <label>sys/uio.h</label>
       </node>
     </incdepgraph>
+    <invincdepgraph>
+      <node id="86">
+        <label>/code/include/rpc/serializer.h</label>
+        <link refid="serializer_8h"/>
+        <childnode refid="87" relation="include">
+        </childnode>
+      </node>
+      <node id="87">
+        <label>/code/include/rpc/rpc.h</label>
+        <link refid="rpc_8h_source"/>
+      </node>
+    </invincdepgraph>
       <sectiondef kind="func">
       <memberdef kind="function" id="serializer_8h_1aab2daa65954ec29b20ac84a12946e154" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>bool</type>

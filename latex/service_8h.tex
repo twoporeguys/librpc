@@ -15,7 +15,7 @@ This graph shows which files directly or indirectly include this file\+:
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=226pt]{service_8h__dep__incl}
+\includegraphics[width=274pt]{service_8h__dep__incl}
 \end{center}
 \end{figure}
 \subsection*{Classes}
@@ -104,7 +104,7 @@ enum \hyperlink{service_8h_ae93cefa938d7efd2095f73e9dcdf8926}{rpc\+\_\+property\
 \item 
 \+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} \hyperlink{service_8h_aa53a346b1f60759fabc2f047e75fdb90}{rpc\+\_\+context\+\_\+create} (void)
 \item 
-int \hyperlink{service_8h_a9e384c26d2428f5a19e6ee94211330ec}{rpc\+\_\+context\+\_\+free} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
+void \hyperlink{service_8h_a4f63ab83623a2f407eac2fe9b7f80023}{rpc\+\_\+context\+\_\+free} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context)
 \item 
 \+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_a125f2739087a2d4f89384d24fadb6cde}{rpc\+\_\+context\+\_\+find\+\_\+instance} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, const char $\ast$\+\_\+\+Nonnull path)
 \item 
@@ -593,24 +593,19 @@ Finds an instance registered in {\ttfamily context}.
 \begin{DoxyReturn}{Returns}
 R\+PC instance handle or N\+U\+LL if not found 
 \end{DoxyReturn}
-\mbox{\Hypertarget{service_8h_a9e384c26d2428f5a19e6ee94211330ec}\label{service_8h_a9e384c26d2428f5a19e6ee94211330ec}} 
+\mbox{\Hypertarget{service_8h_a4f63ab83623a2f407eac2fe9b7f80023}\label{service_8h_a4f63ab83623a2f407eac2fe9b7f80023}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+free@{rpc\+\_\+context\+\_\+free}}
 \index{rpc\+\_\+context\+\_\+free@{rpc\+\_\+context\+\_\+free}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+context\+\_\+free()}{rpc\_context\_free()}}
-{\footnotesize\ttfamily int rpc\+\_\+context\+\_\+free (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void rpc\+\_\+context\+\_\+free (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context }\end{DoxyParamCaption})}
 
 Disposes existing R\+PC context and frees all associated resources.
-
-Fails if the Context has registered servers or instances other than the root instance
 
 
 \begin{DoxyParams}{Parameters}
 {\em context} & Context to dispose \\
 \hline
 \end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-0 if the context could be freed, else -\/1. 
-\end{DoxyReturn}
 \mbox{\Hypertarget{service_8h_a099a8fc4046be7999da0454548825513}\label{service_8h_a099a8fc4046be7999da0454548825513}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+get\+\_\+root@{rpc\+\_\+context\+\_\+get\+\_\+root}}
 \index{rpc\+\_\+context\+\_\+get\+\_\+root@{rpc\+\_\+context\+\_\+get\+\_\+root}!service.\+h@{service.\+h}}
