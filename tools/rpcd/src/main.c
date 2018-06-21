@@ -60,6 +60,7 @@ static GHashTable *rpcd_services;
 static int rpcd_log_level;
 static const char **rpcd_service_dirs;
 static const char **rpcd_listen;
+static gboolean rpcd_use_systemd;
 
 static const GOptionEntry rpcd_options[] = {
 	{
@@ -85,6 +86,13 @@ static const GOptionEntry rpcd_options[] = {
 		.arg_data = &rpcd_listen,
 		.description = "Listen address",
 		.arg_description = "URI"
+	},
+	{
+		.long_name = "systemd-activation",
+		.short_name = 's',
+		.arg = G_OPTION_ARG_NONE,
+		.arg_data = &rpcd_use_systemd,
+		.description = "Use systemd socket activation"
 	},
 	{ }
 };
@@ -259,7 +267,10 @@ main(int argc, char *argv[])
 {
 	GError *err = NULL;
 	GOptionContext *parser;
-	int i;
+	rpc_server_t srv;
+	rpc_object_t error;
+	const char **uri;
+	int i = 0;
 
 	openlog("rpcd", LOG_PID, LOG_DAEMON);
 	parser = g_option_context_new("");
@@ -274,10 +285,28 @@ main(int argc, char *argv[])
 
 	rpcd_services = g_hash_table_new(g_str_hash, g_str_equal);
 	rpcd_context = rpc_context_create();
-	rpcd_nservers = rpc_server_sd_listen(rpcd_context, &rpcd_servers);
-	if (rpcd_nservers == 0) {
-		syslog(LOG_EMERG, "No addresses to listen on, exiting");
-		exit(EXIT_FAILURE);
+
+	if (rpcd_use_systemd) {
+		rpcd_nservers = rpc_server_sd_listen(rpcd_context, &rpcd_servers);
+		if (rpcd_nservers == 0) {
+			syslog(LOG_EMERG, "No addresses to listen on, exiting");
+			exit(EXIT_FAILURE);
+		}
+	} else {
+		rpcd_nservers = g_strv_length((gchar **)rpcd_listen);
+		rpcd_servers = g_malloc(rpcd_nservers * sizeof(rpc_server_t));
+
+		for (uri = rpcd_listen; *uri; uri++) {
+			srv = rpc_server_create(*uri, rpcd_context);
+			if (srv == NULL) {
+				error = rpc_get_last_error();
+				syslog(LOG_EMERG, "Cannot listen on %s: %s",
+				    *uri, rpc_error_get_message(error));
+				exit(EXIT_FAILURE);
+			}
+
+			rpcd_servers[i++] = srv;
+		}
 	}
 
 	rpc_instance_register_interface(rpc_context_get_root(rpcd_context),

@@ -2,7 +2,7 @@
 Description=librpc directory service daemon
 
 [Service]
-ExecStart=@CMAKE_INSTALL_PREFIX@/sbin/rpcd
+ExecStart=@CMAKE_INSTALL_PREFIX@/sbin/rpcd -s
 
 [Install]
 WantedBy=multi-user.target
