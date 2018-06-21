@@ -74,6 +74,7 @@ static void rpc_connection_free_resources(rpc_connection_t);
 static int rpc_connection_abort(void *);
 static void rpc_connection_release_call(struct rpc_call *call);
 static int cancel_timeout_locked(rpc_call_t call);
+static void rpc_connection_set_default_fn_handlers(rpc_connection_t);
 
 struct message_handler
 {
@@ -1096,6 +1097,21 @@ rpc_new_id(void)
 	return (ret);
 }
 
+static void
+rpc_connection_set_default_fn_handlers(rpc_connection_t conn)
+{
+
+	conn->rco_fn_cbs.rcf_fn_respond = rpc_function_respond_impl;
+	conn->rco_fn_cbs.rcf_fn_error = rpc_function_error_impl;
+	conn->rco_fn_cbs.rcf_fn_error_ex = rpc_function_error_ex_impl;
+	conn->rco_fn_cbs.rcf_fn_yield = rpc_function_yield_impl;
+	conn->rco_fn_cbs.rcf_fn_end = rpc_function_end_impl;
+	conn->rco_fn_cbs.rcf_fn_kill = rpc_function_kill_impl;
+	conn->rco_fn_cbs.rcf_should_abort = rpc_function_should_abort_impl;
+	conn->rco_fn_cbs.rcf_set_async_abort_handler =
+	    rpc_function_set_async_abort_handler_impl;
+}
+
 rpc_connection_t
 rpc_connection_alloc(rpc_server_t server)
 {
@@ -1120,6 +1136,7 @@ rpc_connection_alloc(rpc_server_t server)
 	g_mutex_init(&conn->rco_send_mtx);
 	g_mutex_init(&conn->rco_mtx);
 	g_mutex_init(&conn->rco_ref_mtx);
+	rpc_connection_set_default_fn_handlers(conn);
 	return (conn);
 }
 
@@ -1162,6 +1179,7 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	conn->rco_refcnt = 1;
 	conn->rco_callback_pool = g_thread_pool_new(&rpc_callback_worker, conn,
 	    g_get_num_processors(), false, &err);
+	rpc_connection_set_default_fn_handlers(conn);
 
 	if (err != NULL)
 		goto fail;
