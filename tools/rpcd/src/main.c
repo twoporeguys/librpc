@@ -293,6 +293,11 @@ main(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 		}
 	} else {
+		if (rpcd_listen == NULL) {
+			syslog(LOG_EMERG, "No addresses to listen on, exiting");
+			exit(EXIT_FAILURE);
+		}
+
 		rpcd_nservers = g_strv_length((gchar **)rpcd_listen);
 		rpcd_servers = g_malloc(rpcd_nservers * sizeof(rpc_server_t));
 
