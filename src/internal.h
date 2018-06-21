@@ -312,9 +312,6 @@ struct rpc_instance
 	void *			ri_arg;
 	rpc_context_t 		ri_context;
 	GHashTable *		ri_interfaces;
-	GHashTable *		ri_children;
-	GHashTable *		ri_subscriptions;
-	GHashTable *		ri_properties;
 	GMutex			ri_mtx;
 	GRWLock			ri_rwlock;
 };

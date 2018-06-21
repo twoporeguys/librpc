@@ -177,8 +177,14 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_call *call)
 	}
 
 	call->rc_instance = instance;
+
 	member = rpc_instance_find_member(instance,
 	    call->rc_interface, call->rc_method_name);
+
+	if (member == NULL) {
+		member = rpc_instance_find_member(instance,
+		    RPC_DEFAULT_INTERFACE, "method_missing");
+	}
 
 	if (member == NULL || member->rim_type != RPC_MEMBER_METHOD) {
 		call->rc_err = rpc_error_create(ENOENT, "Member not found",
@@ -560,7 +566,6 @@ rpc_instance_new(void *arg, const char *fmt, ...)
 	g_mutex_init(&result->ri_mtx);
 	g_rw_lock_init(&result->ri_rwlock);
 	result->ri_path = g_strdup(path);
-	result->ri_subscriptions = g_hash_table_new(g_str_hash, g_str_equal);
 	result->ri_interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 	result->ri_arg = arg;
 

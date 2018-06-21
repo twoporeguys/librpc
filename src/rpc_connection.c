@@ -764,11 +764,12 @@ rpc_close(rpc_connection_t conn)
 		g_mutex_unlock(&conn->rco_mtx); /*another thread called first*/
 		return (0);
 	}
-        conn->rco_aborted = true;
 
+        conn->rco_aborted = true;
         err = rpc_get_last_error();
 	if (!err && conn->rco_error != NULL)
 		err = conn->rco_error;
+
         if (conn->rco_error_handler) {
                 if (conn->rco_error != NULL)
                         conn->rco_error_handler(RPC_TRANSPORT_ERROR,
@@ -786,7 +787,8 @@ rpc_close(rpc_connection_t conn)
 	    g_hash_table_size(conn->rco_calls) == 0;
 
 	if (isempty) {
-		/* there are no handles on the connection if this is a server
+		/*
+		 * there are no handles on the connection if this is a server
 		 * or the client has already called rpc_connection_close()
 		 */
 		g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
@@ -863,9 +865,8 @@ rpc_call_alloc(rpc_connection_t conn, rpc_object_t id, const char *path,
 			return (NULL);
 		}
 		call_args = rpc_retain(args);
-	} else {
+	} else
 		call_args = rpc_array_create();
-	}
 
 	call = g_malloc0(sizeof(*call));
 	call->rc_queue = g_queue_new();
