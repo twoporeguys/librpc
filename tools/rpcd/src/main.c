@@ -41,6 +41,7 @@
 struct rpcd_service
 {
 	rpc_instance_t 	instance;
+	rpc_object_t 	manifest;
 	const char *	name;
 	const char *	description;
 	const char *	uri;
@@ -201,35 +202,52 @@ static int
 rpcd_load_service(const char *path)
 {
 	GError *err = NULL;
-	struct rpcd_service *svc;
+	struct rpcd_service *service;
 	char *contents;
 	size_t len;
-	rpc_auto_object_t descriptor;
+	rpc_object_t error;
+	rpc_object_t descriptor;
 
-	if (!g_file_get_contents(path, &contents, &len, &err))
+	syslog(LOG_NOTICE, "Loading service from %s", path);
+
+	if (!g_file_get_contents(path, &contents, &len, &err)) {
+		syslog(LOG_WARNING, "%s: cannot read file contents", path);
 		return (-1);
+	}
 
 	descriptor = rpc_serializer_load("yaml", contents, len);
-	if (descriptor == NULL)
+	if (descriptor == NULL) {
+		syslog(LOG_WARNING, "%s: not a valid YAML", path);
+		g_free(contents);
 		return (-1);
+	}
 
-	svc = g_malloc0(sizeof(*svc));
+	service = g_malloc0(sizeof(*service));
 	if (rpc_object_unpack(descriptor, "{s,s,s}",
-	    "name", &svc->name,
-	    "description", &svc->description,
-	    "uri", &svc->uri) < 3) {
-		g_free(svc);
+	    "name", &service->name,
+	    "description", &service->description,
+	    "uri", &service->uri) < 3) {
+		syslog(LOG_WARNING, "%s: not a valid YAML", path);
+		g_free(service);
+		g_free(contents);
 		return (-1);
 	}
 
-	svc->instance = rpc_instance_new(svc, "/%s", svc->name);
-	if (svc->instance == NULL) {
-
+	service->manifest = descriptor;
+	service->instance = rpc_instance_new(service, "/%s", service->name);
+	if (service->instance == NULL) {
+		error = rpc_get_last_error();
+		syslog(LOG_WARNING, "%s: %s", path, rpc_error_get_message(error));
+		g_free(service);
+		g_free(contents);
+		return (-1);
 	}
 
-	rpc_instance_register_interface(svc->instance,
-	    "com.twoporeguys.rpcd.Service", rpcd_service_vtable, svc);
+	rpc_instance_register_interface(service->instance,
+	    "com.twoporeguys.rpcd.Service", rpcd_service_vtable, service);
 
+	g_hash_table_insert(rpcd_services, g_strdup(service->name), service);
+	rpc_context_register_instance(rpcd_context, service->instance);
 	return (0);
 }
 
@@ -242,7 +260,7 @@ rpcd_load_services(void)
 	const char *name;
 	char *path;
 
-	for (dirname = rpcd_service_dirs; *dirname != NULL; (*dirname)++) {
+	for (dirname = rpcd_service_dirs; *dirname != NULL; dirname++) {
 		syslog(LOG_NOTICE, "Loading services from %s", *dirname);
 		dir = g_dir_open(*dirname, 0, &err);
 		if (dir == NULL)
