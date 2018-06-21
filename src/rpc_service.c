@@ -416,6 +416,14 @@ rpc_function_respond(void *cookie, rpc_object_t object)
 {
 	struct rpc_call *call = cookie;
 
+	call->rc_conn->rco_fn_cbs.rcf_fn_respond(cookie, object);
+}
+
+void
+rpc_function_respond_impl(void *cookie, rpc_object_t object)
+{
+	struct rpc_call *call = cookie;
+
 	g_assert(call->rc_type == RPC_INBOUND_CALL);
 	if (!call->rc_responded)
 		rpc_connection_send_response(call->rc_conn,
@@ -427,12 +435,20 @@ void
 rpc_function_error(void *cookie, int code, const char *message, ...)
 {
 	struct rpc_call *call = cookie;
-	char *msg;
 	va_list ap;
 
 	va_start(ap, message);
-	g_vasprintf(&msg, message, ap);
+	call->rc_conn->rco_fn_cbs.rcf_fn_error(cookie, code, message, ap);
 	va_end(ap);
+}
+
+void
+rpc_function_error_impl(void *cookie, int code, const char *message, va_list ap)
+{
+	struct rpc_call *call = cookie;
+	char *msg;
+
+	g_vasprintf(&msg, message, ap);
 	rpc_connection_send_err(call->rc_conn, call->rc_id, code, msg);
 	call->rc_responded = true;
 	g_free(msg);
@@ -443,12 +459,28 @@ rpc_function_error_ex(void *cookie, rpc_object_t exception)
 {
 	struct rpc_call *call = cookie;
 
+	call->rc_conn->rco_fn_cbs.rcf_fn_error_ex(cookie, exception);
+}
+
+void
+rpc_function_error_ex_impl(void *cookie, rpc_object_t exception)
+{
+	struct rpc_call *call = cookie;
+
 	rpc_connection_send_errx(call->rc_conn, call->rc_id, exception);
 	call->rc_responded = true;
 }
 
 int
 rpc_function_yield(void *cookie, rpc_object_t fragment)
+{
+	struct rpc_call *call = cookie;
+
+	return (call->rc_conn->rco_fn_cbs.rcf_fn_yield(cookie, fragment));
+}
+
+int
+rpc_function_yield_impl(void *cookie, rpc_object_t fragment)
 {
 	struct rpc_call *call = cookie;
 	struct rpc_context *context = call->rc_context;
@@ -488,6 +520,14 @@ rpc_function_end(void *cookie)
 {
 	struct rpc_call *call = cookie;
 
+	call->rc_conn->rco_fn_cbs.rcf_fn_end(cookie);
+}
+
+void
+rpc_function_end_impl(void *cookie)
+{
+	struct rpc_call *call = cookie;
+
 	g_mutex_lock(&call->rc_mtx);
 
 	while (call->rc_producer_seqno == call->rc_consumer_seqno &&
@@ -521,6 +561,14 @@ rpc_function_kill(void *cookie)
 {
 	struct rpc_call *call = cookie;
 
+	call->rc_conn->rco_fn_cbs.rcf_fn_kill(cookie);
+}
+
+void
+rpc_function_kill_impl(void *cookie)
+{
+	struct rpc_call *call = cookie;
+
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_aborted = true;
 	g_cond_broadcast(&call->rc_cv);
@@ -532,10 +580,25 @@ rpc_function_should_abort(void *cookie)
 {
 	struct rpc_call *call = cookie;
 
+	return (call->rc_conn->rco_fn_cbs.rcf_should_abort(cookie));
+}
+
+bool rpc_function_should_abort_impl(void *cookie)
+{
+	struct rpc_call *call = cookie;
+
 	return (call->rc_aborted);
 }
 
 void rpc_function_set_async_abort_handler(void *cookie,
+    rpc_abort_handler_t handler)
+{
+	struct rpc_call *call = cookie;
+
+	call->rc_conn->rco_fn_cbs.rcf_set_async_abort_handler(cookie, handler);
+}
+
+void rpc_function_set_async_abort_handler_impl(void *cookie,
     rpc_abort_handler_t handler)
 {
 	struct rpc_call *call = cookie;

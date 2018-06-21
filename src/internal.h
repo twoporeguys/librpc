@@ -103,6 +103,15 @@ typedef bool (*rpct_validate_fn_t)(struct rpct_typei *, rpc_object_t,
     struct rpct_error_context *);
 typedef rpc_object_t (*rpct_serialize_fn_t)(rpc_object_t);
 
+typedef void (*rpc_fn_respond_fn_t)(void *, rpc_object_t);
+typedef void (*rpc_fn_error_fn_t)(void *, int , const char *, va_list ap);
+typedef void (*rpc_fn_error_ex_fn_t)(void *, rpc_object_t);
+typedef int (*rpc_fn_yield_fn_t)(void *, rpc_object_t);
+typedef void (*rpc_fn_end_fn_t)(void *);
+typedef void (*rpc_fn_kill_fn_t)(void *);
+typedef bool (*rpc_fn_should_abt_fn_t)(void *);
+typedef void (*rpc_fn_set_abt_h_fn_t)(void *, rpc_abort_handler_t);
+
 struct rpc_query_iter
 {
 	rpc_object_t 		rqi_source;
@@ -217,6 +226,18 @@ struct rpc_credentials
     	pid_t 			rcc_pid;
 };
 
+struct rpc_fn_callbacks
+{
+	rpc_fn_respond_fn_t	rcf_fn_respond;
+	rpc_fn_error_fn_t	rcf_fn_error;
+	rpc_fn_error_ex_fn_t	rcf_fn_error_ex;
+	rpc_fn_yield_fn_t	rcf_fn_yield;
+	rpc_fn_end_fn_t		rcf_fn_end;
+	rpc_fn_kill_fn_t	rcf_fn_kill;
+	rpc_fn_should_abt_fn_t	rcf_should_abort;
+	rpc_fn_set_abt_h_fn_t	rcf_set_async_abort_handler;
+};
+
 struct rpc_connection
 {
 	struct rpc_server *	rco_server;
@@ -259,6 +280,7 @@ struct rpc_connection
     	rpc_get_fd_fn_t 	rco_get_fd;
 	rpc_release_fn_t	rco_release;
 	void *			rco_arg;
+	struct rpc_fn_callbacks rco_fn_cbs;
 };
 
 struct rpc_server
@@ -555,5 +577,16 @@ bool rpct_run_validators(struct rpct_typei *typei, rpc_object_t obj,
 struct rpct_typei *rpct_instantiate_type(const char *decl,
     struct rpct_typei *parent, struct rpct_type *ptype,
     struct rpct_file *origin);
+
+void rpc_function_respond_impl(void *cookie, rpc_object_t object);
+void rpc_function_error_impl(void *cookie, int code, const char *message,
+    va_list ap);
+void rpc_function_error_ex_impl(void *cookie, rpc_object_t exception);
+int rpc_function_yield_impl(void *cookie, rpc_object_t fragment);
+void rpc_function_end_impl(void *cookie);
+void rpc_function_kill_impl(void *cookie);
+bool rpc_function_should_abort_impl(void *cookie);
+void rpc_function_set_async_abort_handler_impl(void *cookie,
+    rpc_abort_handler_t handler);
 
 #endif /* LIBRPC_INTERNAL_H */
