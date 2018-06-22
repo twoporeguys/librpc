@@ -1899,8 +1899,10 @@ rpc_call_continue(rpc_call_t call, bool sync)
 		    "increment", call->rc_prefetch));
 
 		if (rpc_send_frame(call->rc_conn, frame) != 0) {
-			g_mutex_unlock(&call->rc_mtx);
-			return (-1);
+			q_item = g_malloc0(sizeof(*q_item));
+			q_item->status = RPC_CALL_ERROR;
+			q_item->item = rpc_retain(rpc_get_last_error());
+			g_queue_push_tail(call->rc_queue, q_item);
 		}
 
 		call->rc_producer_seqno += call->rc_prefetch;
