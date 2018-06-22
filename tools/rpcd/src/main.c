@@ -271,6 +271,9 @@ rpcd_load_services(void)
 			if (name == NULL)
 				break;
 
+			if (!g_str_has_suffix(name, ".yaml"))
+				continue;
+
 			path = g_build_filename(*dirname, name, NULL);
 			rpcd_load_service(path);
 			g_free(path);
