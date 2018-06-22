@@ -226,6 +226,10 @@ Functions</h2></td></tr>
 <tr class="separator:a08ccbcafd60ed5e2ebb7cf199dc9c574"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab74f1419e8a907d1c99dbef5358b6dd2"><td class="memItemLeft" align="right" valign="top">const char *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ab74f1419e8a907d1c99dbef5358b6dd2">rpc_connection_get_remote_address</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
 <tr class="separator:ab74f1419e8a907d1c99dbef5358b6dd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9cd83235082c4a5c4a6ba5c59651709"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ab9cd83235082c4a5c4a6ba5c59651709">rpc_connection_supports_fd_passing</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="separator:ab9cd83235082c4a5c4a6ba5c59651709"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e58c29858c958922c04273c1e6c0218"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a1e58c29858c958922c04273c1e6c0218">rpc_connection_supports_credentials</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="separator:a1e58c29858c958922c04273c1e6c0218"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79e22944d8fb685f6378f9e5c10464f3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a79e22944d8fb685f6378f9e5c10464f3">rpc_connection_has_credentials</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
 <tr class="separator:a79e22944d8fb685f6378f9e5c10464f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43855db9f044fdc830fc1370d84a4f4b"><td class="memItemLeft" align="right" valign="top">uid_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a43855db9f044fdc830fc1370d84a4f4b">rpc_connection_get_remote_uid</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
@@ -2231,6 +2235,58 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure </dd></dl>
+
+</div>
+</div>
+<a id="a1e58c29858c958922c04273c1e6c0218"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e58c29858c958922c04273c1e6c0218">&#9670;&nbsp;</a></span>rpc_connection_supports_credentials()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rpc_connection_supports_credentials </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Checks whether a given connection does support credentials.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if credentials are supported, otherwise false </dd></dl>
+
+</div>
+</div>
+<a id="ab9cd83235082c4a5c4a6ba5c59651709"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9cd83235082c4a5c4a6ba5c59651709">&#9670;&nbsp;</a></span>rpc_connection_supports_fd_passing()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rpc_connection_supports_fd_passing </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Checks whether a given connection does support file descriptor passing.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if fd passing is supported, otherwise false </dd></dl>
 
 </div>
 </div>

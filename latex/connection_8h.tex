@@ -148,6 +148,10 @@ void \hyperlink{connection_8h_a08ccbcafd60ed5e2ebb7cf199dc9c574}{rpc\+\_\+connec
 \item 
 const char $\ast$\+\_\+\+Nullable \hyperlink{connection_8h_ab74f1419e8a907d1c99dbef5358b6dd2}{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
+bool \hyperlink{connection_8h_ab9cd83235082c4a5c4a6ba5c59651709}{rpc\+\_\+connection\+\_\+supports\+\_\+fd\+\_\+passing} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
+\item 
+bool \hyperlink{connection_8h_a1e58c29858c958922c04273c1e6c0218}{rpc\+\_\+connection\+\_\+supports\+\_\+credentials} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
+\item 
 bool \hyperlink{connection_8h_a79e22944d8fb685f6378f9e5c10464f3}{rpc\+\_\+connection\+\_\+has\+\_\+credentials} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
 uid\+\_\+t \hyperlink{connection_8h_a43855db9f044fdc830fc1370d84a4f4b}{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
@@ -1180,6 +1184,38 @@ Calls to \hyperlink{connection_8h_ae62dee58a622eb6e1501c8c3342a1530}{rpc\+\_\+co
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on failure 
+\end{DoxyReturn}
+\mbox{\Hypertarget{connection_8h_a1e58c29858c958922c04273c1e6c0218}\label{connection_8h_a1e58c29858c958922c04273c1e6c0218}} 
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+supports\+\_\+credentials@{rpc\+\_\+connection\+\_\+supports\+\_\+credentials}}
+\index{rpc\+\_\+connection\+\_\+supports\+\_\+credentials@{rpc\+\_\+connection\+\_\+supports\+\_\+credentials}!connection.\+h@{connection.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+supports\+\_\+credentials()}{rpc\_connection\_supports\_credentials()}}
+{\footnotesize\ttfamily bool rpc\+\_\+connection\+\_\+supports\+\_\+credentials (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
+
+Checks whether a given connection does support credentials.
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & Connection handle \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if credentials are supported, otherwise false 
+\end{DoxyReturn}
+\mbox{\Hypertarget{connection_8h_ab9cd83235082c4a5c4a6ba5c59651709}\label{connection_8h_ab9cd83235082c4a5c4a6ba5c59651709}} 
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+supports\+\_\+fd\+\_\+passing@{rpc\+\_\+connection\+\_\+supports\+\_\+fd\+\_\+passing}}
+\index{rpc\+\_\+connection\+\_\+supports\+\_\+fd\+\_\+passing@{rpc\+\_\+connection\+\_\+supports\+\_\+fd\+\_\+passing}!connection.\+h@{connection.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+supports\+\_\+fd\+\_\+passing()}{rpc\_connection\_supports\_fd\_passing()}}
+{\footnotesize\ttfamily bool rpc\+\_\+connection\+\_\+supports\+\_\+fd\+\_\+passing (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
+
+Checks whether a given connection does support file descriptor passing.
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & Connection handle \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if fd passing is supported, otherwise false 
 \end{DoxyReturn}
 \mbox{\Hypertarget{connection_8h_a102ad5fd1ab895a56319a25f43060a20}\label{connection_8h_a102ad5fd1ab895a56319a25f43060a20}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler}}
