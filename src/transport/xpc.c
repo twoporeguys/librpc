@@ -57,7 +57,8 @@ static const struct rpc_transport xpc_transport = {
 	.schemas = {"xpc", "xpc+mach", NULL},
 	.connect = xpc_connect,
 	.listen = xpc_listen,
-	.flags = RPC_TRANSPORT_NO_SERIALIZE
+	.flags = RPC_TRANSPORT_NO_SERIALIZE | RPC_TRANSPORT_FD_PASSING |
+	    RPC_TRANSPORT_CREDENTIALS
 };
 
 static xpc_object_t

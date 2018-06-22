@@ -559,6 +559,22 @@ const char *_Nullable rpc_connection_get_remote_address(
     _Nonnull rpc_connection_t conn);
 
 /**
+ * Checks whether a given connection does support file descriptor passing.
+ *
+ * @param conn Connection handle
+ * @return true if fd passing is supported, otherwise false
+ */
+bool rpc_connection_supports_fd_passing(_Nonnull rpc_connection_t conn);
+
+/**
+ * Checks whether a given connection does support credentials.
+ *
+ * @param conn Connection handle
+ * @return true if credentials are supported, otherwise false
+ */
+bool rpc_connection_supports_credentials(_Nonnull rpc_connection_t conn);
+
+/**
  * Returns true if a connection has associated remote credentials information.
  *
  * @param conn Connection handle

@@ -1806,6 +1806,20 @@ rpc_connection_set_error_handler(rpc_connection_t conn, rpc_error_handler_t h)
 }
 
 bool
+rpc_connection_supports_fd_passing(rpc_connection_t conn)
+{
+
+	return ((bool)(conn->rco_flags & RPC_TRANSPORT_FD_PASSING));
+}
+
+bool
+rpc_connection_supports_credentials(rpc_connection_t conn)
+{
+
+	return ((bool)(conn->rco_flags & RPC_TRANSPORT_CREDENTIALS));
+}
+
+bool
 rpc_connection_has_credentials(rpc_connection_t conn)
 {
 

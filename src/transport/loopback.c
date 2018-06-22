@@ -300,7 +300,7 @@ struct rpc_transport loopback_transport = {
 	.schemas = {"loopback", NULL},
 	.connect = loopback_connect,
 	.listen = loopback_listen,
-    	.flags = RPC_TRANSPORT_NO_SERIALIZE
+    	.flags = RPC_TRANSPORT_NO_SERIALIZE | RPC_TRANSPORT_FD_PASSING
 };
 
 DECLARE_TRANSPORT(loopback_transport);

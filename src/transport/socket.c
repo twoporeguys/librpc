@@ -55,7 +55,8 @@ static const struct rpc_transport socket_transport = {
 	.name = "socket",
 	.schemas = {"unix", "tcp", "socket", NULL},
 	.connect = socket_connect,
-	.listen = socket_listen
+	.listen = socket_listen,
+	.flags = RPC_TRANSPORT_FD_PASSING | RPC_TRANSPORT_CREDENTIALS
 };
 
 struct socket_server
