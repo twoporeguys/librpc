@@ -79,7 +79,7 @@ xread(int fd, void *buf, size_t nbytes)
 }
 
 ssize_t
-xwrite(int fd, void *buf, size_t nbytes)
+xwrite(int fd, const void *buf, size_t nbytes)
 {
 	ssize_t ret, done = 0;
 
@@ -126,7 +126,7 @@ fd_recv_msg(struct fd_connection *fdconn, void **frame, size_t *size)
 }
 
 static int
-fd_send_msg(void *arg, void *buf, size_t size, const int *fds __unused,
+fd_send_msg(void *arg, const void *buf, size_t size, const int *fds __unused,
     size_t nfds __unused)
 {
 	struct fd_connection *fdconn = arg;

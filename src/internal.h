@@ -88,7 +88,7 @@ struct rpct_error_context;
 
 typedef int (*rpc_recv_msg_fn_t)(struct rpc_connection *, const void *, size_t,
     int *, size_t, struct rpc_credentials *);
-typedef int (*rpc_send_msg_fn_t)(void *, void *, size_t, const int *, size_t);
+typedef int (*rpc_send_msg_fn_t)(void *, const void *, size_t, const int *, size_t);
 typedef int (*rpc_abort_fn_t)(void *);
 typedef int (*rpc_get_fd_fn_t)(void *);
 typedef void (*rpc_release_fn_t)(void *);

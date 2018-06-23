@@ -66,7 +66,7 @@ rpcd_connect_to(const char *service_name)
 		return (rpc_client_create("socket://", result));
 	}
 
-	if (rpc_get_type(result) == RPC_TYPE_NULL) {
+	if (g_strcmp0(rpc_string_get_string_ptr(result), "BRIDGED") == 0) {
 		/* Bi-dir bridging */
 		return (client);
 	}

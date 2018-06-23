@@ -43,7 +43,7 @@
 static GSocketAddress *socket_parse_uri(const char *);
 static int socket_connect(struct rpc_connection *, const char *, rpc_object_t);
 static int socket_listen(struct rpc_server *, const char *, rpc_object_t);
-static int socket_send_msg(void *, void *, size_t, const int *, size_t);
+static int socket_send_msg(void *, const void *, size_t, const int *, size_t);
 static int socket_teardown(struct rpc_server *);
 static int socket_abort(void *);
 static int socket_get_fd(void *);
@@ -339,7 +339,8 @@ socket_listen(struct rpc_server *srv, const char *uri,
 }
 
 static int
-socket_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
+socket_send_msg(void *arg, const void *buf, size_t size, const int *fds,
+    size_t nfds)
 {
 	struct socket_connection *conn = arg;
 	GError *err = NULL;

@@ -42,7 +42,7 @@ static void ws_connect_done(GObject *, GAsyncResult *, gpointer);
 static int ws_listen(struct rpc_server *, const char *, rpc_object_t);
 static void ws_receive_message(SoupWebsocketConnection *, SoupWebsocketDataType,
     GBytes *, gpointer);
-static int ws_send_message(void *, void *, size_t, const int *, size_t);
+static int ws_send_message(void *, const void *, size_t, const int *, size_t);
 static void ws_process_banner(SoupServer *, SoupMessage *, const char *,
     GHashTable *, SoupClientContext *, gpointer);
 static void ws_process_connection(SoupServer *, SoupWebsocketConnection *,
@@ -386,8 +386,8 @@ ws_close(SoupWebsocketConnection *ws __unused, gpointer user_data)
 }
 
 static int
-ws_send_message(void *arg, void *buf, size_t len, const int *fds __unused,
-    size_t nfds __unused)
+ws_send_message(void *arg, const void *buf, size_t len,
+    const int *fds __unused, size_t nfds __unused)
 {
 	struct ws_connection *conn = arg;
 
@@ -434,10 +434,13 @@ ws_release(void *arg)
 
 	if (conn->wc_uri)
 		soup_uri_free(conn->wc_uri);
+
 	if (conn->wc_session)
 		g_object_unref(conn->wc_session);
+
 	if (conn->wc_ws)
 		g_object_unref(conn->wc_ws);
+
 	g_free(conn);
 }
 

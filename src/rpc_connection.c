@@ -775,6 +775,7 @@ rpc_close(rpc_connection_t conn)
                 if (conn->rco_error != NULL)
                         conn->rco_error_handler(RPC_TRANSPORT_ERROR,
                             conn->rco_error);
+
                 conn->rco_error_handler(RPC_CONNECTION_CLOSED, NULL);
                 Block_release(conn->rco_error_handler);
                 conn->rco_error_handler = NULL;

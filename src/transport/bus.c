@@ -54,7 +54,7 @@ typedef void (*bus_netlink_cb_t)(void *, struct librpc_message *, void *,
 static void *bus_open(GMainContext *);
 static void bus_close(void *);
 static int bus_connect(struct rpc_connection *, const char *, rpc_object_t);
-static int bus_send_msg(void *, void *, size_t, const int *, size_t);
+static int bus_send_msg(void *, const void *, size_t, const int *, size_t);
 static int bus_ping(void *, const char *);
 static int bus_enumerate(void *, struct rpc_bus_node **, size_t *);
 static int bus_abort(void *);
@@ -285,7 +285,7 @@ bus_lookup_address(const char *serial, uint32_t *address)
 }
 
 static int
-bus_send_msg(void *arg, void *buf, size_t len, const int *fds __unused,
+bus_send_msg(void *arg, const void *buf, size_t len, const int *fds __unused,
     size_t nfds __unused)
 {
 	struct bus_connection *conn = arg;

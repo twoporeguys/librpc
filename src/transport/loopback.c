@@ -60,7 +60,7 @@ static int loopback_connect(struct rpc_connection *, const char *, rpc_object_t)
 static int loopback_listen(struct rpc_server *, const char *, rpc_object_t);
 static int loopback_abort(void *);
 static int loopback_teardown(struct rpc_server *);
-static int loopback_send_msg(void *, void *, size_t, const int *, size_t);
+static int loopback_send_msg(void *, const void *, size_t, const int *, size_t);
 static void loopback_release(void *);
 static int loopback_lock_free(struct loopback *);
 static bool loopback_supports_fd_passing(struct rpc_connection *);
@@ -180,12 +180,12 @@ loopback_listen(struct rpc_server *srv, const char *uri_string,
 }
 
 static int
-loopback_send_msg(void *arg, void *buf, size_t len __unused, const int *fds,
-    size_t nfds)
+loopback_send_msg(void *arg, const void *buf, size_t len __unused,
+    const int *fds, size_t nfds)
 {
 	struct loopback *lb = arg;
 	struct rpc_connection *peer_conn;
-	rpc_object_t obj = buf;
+	rpc_object_t obj = (void *)buf;
 	int ret;
 
 	g_mutex_lock(&lb->lb_lock->ll_mtx);
