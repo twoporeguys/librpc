@@ -155,8 +155,8 @@ typedef bool (^rpc_callback_t)(_Nonnull rpc_call_t call);
  * Converts function pointer to a @ref rpc_message_handler_t block type.
  */
 #define RPC_RAW_HANDLER(_fn, _arg)					\
-	^(const void *_msg, size_t _len, const int *_fds, size_t nfds) {\
-		return (_fn(_arg, _msg, _len, _fds, _nfds));		\
+	^(const void *_msg, size_t _len, const int *_fds, size_t _nfd) {\
+		return (_fn(_arg, _msg, _len, _fds, _nfd));		\
 	}
 
 /**
@@ -521,7 +521,8 @@ int rpc_connection_ping(_Nonnull rpc_connection_t conn);
  * @return
  */
 int rpc_connection_send_raw_message(_Nonnull rpc_connection_t conn,
-    void *_Nonnull msg, size_t len, const int *_Nullable fds, size_t nfds);
+    const void *_Nonnull msg, size_t len, const int *_Nullable fds,
+    size_t nfds);
 
 /**
  *
