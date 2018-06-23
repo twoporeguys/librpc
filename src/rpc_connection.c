@@ -1757,8 +1757,8 @@ rpc_connection_send_event(rpc_connection_t conn, const char *path,
 }
 
 int
-rpc_connection_send_raw_message(rpc_connection_t conn, void *msg, size_t len,
-    const int *fds, size_t nfds)
+rpc_connection_send_raw_message(rpc_connection_t conn, const void *msg,
+    size_t len, const int *fds, size_t nfds)
 {
 	int ret;
 
