@@ -37,16 +37,7 @@
 #include <rpc/client.h>
 #include <rpc/server.h>
 #include <rpc/serializer.h>
-
-struct rpcd_service
-{
-	rpc_instance_t 	instance;
-	rpc_object_t 	manifest;
-	const char *	name;
-	const char *	description;
-	const char *	uri;
-	bool		needs_activation;
-};
+#include "internal.h"
 
 static rpc_object_t rpcd_register_service(void *, rpc_object_t);
 static rpc_object_t rpcd_service_connect(void *, rpc_object_t);
@@ -111,6 +102,13 @@ static const struct rpc_if_member rpcd_service_vtable[] = {
 	RPC_MEMBER_END
 };
 
+struct rpcd_service *
+rpcd_find_service(const char *name)
+{
+
+	return (g_hash_table_lookup(rpcd_services, name));
+}
+
 static rpc_object_t
 rpcd_register_service(void *cookie, rpc_object_t args)
 {
@@ -146,12 +144,21 @@ rpcd_register_service(void *cookie, rpc_object_t args)
 	return (rpc_string_create(rpc_instance_get_path(service->instance)));
 }
 
+static int
+rpcd_service_forward(void *arg, const void *msg, size_t len,
+    const int *fds, size_t nfds)
+{
+
+	return (rpc_connection_send_raw_message(arg, msg, len, fds, nfds));
+}
+
 static rpc_object_t
-rpcd_service_connect(void *cookie, rpc_object_t args)
+rpcd_service_connect(void *cookie, rpc_object_t args __unused)
 {
 	struct rpcd_service *service;
 	rpc_client_t client;
 	rpc_connection_t conn;
+	rpc_connection_t this_conn;
 	int fd;
 
 	service = rpc_function_get_arg(cookie);
@@ -161,10 +168,22 @@ rpcd_service_connect(void *cookie, rpc_object_t args)
 		return (NULL);
 	}
 
+	this_conn = rpc_function_get_connection(cookie);
 	conn = rpc_client_get_connection(client);
-	fd = rpc_connection_get_fd(conn);
 
-	return (rpc_fd_create(fd));
+	if (rpc_connection_supports_fd_passing(this_conn)) {
+		fd = rpc_connection_get_fd(conn);
+		return (rpc_fd_create(fd));
+	}
+
+	/* Set up bidirectional bridging */
+	rpc_connection_set_raw_message_handler(this_conn,
+	    RPC_RAW_HANDLER(rpcd_service_forward, conn));
+
+	rpc_connection_set_raw_message_handler(conn,
+	    RPC_RAW_HANDLER(rpcd_service_forward, this_conn));
+
+	return (NULL);
 }
 
 static rpc_object_t

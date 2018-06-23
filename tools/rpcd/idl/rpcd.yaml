@@ -1,0 +1,10 @@
+---
+meta:
+  version: 1
+  namespace: com.twoporeguys.librpc.rpcd
+  description: rpcd interface definitions
+
+
+interface ServiceManager:
+
+interface Service:
