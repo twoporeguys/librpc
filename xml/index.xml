@@ -111,7 +111,7 @@
     <member refid="connection_8h_1a4560bfb571379ff9cdbb10f1de968e7a" kind="function"><name>rpc_connection_watch_property</name></member>
     <member refid="connection_8h_1abd699ca36e45ca40ff561c8243cbc99e" kind="function"><name>rpc_connection_send_event</name></member>
     <member refid="connection_8h_1abbce64346725655e72faa0bf1c479750" kind="function"><name>rpc_connection_ping</name></member>
-    <member refid="connection_8h_1a7e4d9f9f96a7dd1ce336439c0daeccce" kind="function"><name>rpc_connection_send_raw_message</name></member>
+    <member refid="connection_8h_1a9f01d451156d866cb14013c37f111b68" kind="function"><name>rpc_connection_send_raw_message</name></member>
     <member refid="connection_8h_1a474036622817775d7c0a68904baf5a09" kind="function"><name>rpc_connection_set_raw_message_handler</name></member>
     <member refid="connection_8h_1a08f27546613deb38559d3a8ced1a1104" kind="function"><name>rpc_connection_set_event_handler</name></member>
     <member refid="connection_8h_1a08ccbcafd60ed5e2ebb7cf199dc9c574" kind="function"><name>rpc_connection_set_error_handler</name></member>

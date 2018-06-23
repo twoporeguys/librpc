@@ -138,7 +138,7 @@ int \hyperlink{connection_8h_abd699ca36e45ca40ff561c8243cbc99e}{rpc\+\_\+connect
 \item 
 int \hyperlink{connection_8h_abbce64346725655e72faa0bf1c479750}{rpc\+\_\+connection\+\_\+ping} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
-int \hyperlink{connection_8h_a7e4d9f9f96a7dd1ce336439c0daeccce}{rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, void $\ast$\+\_\+\+Nonnull msg, size\+\_\+t len, const int $\ast$\+\_\+\+Nullable fds, size\+\_\+t nfds)
+int \hyperlink{connection_8h_a9f01d451156d866cb14013c37f111b68}{rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const void $\ast$\+\_\+\+Nonnull msg, size\+\_\+t len, const int $\ast$\+\_\+\+Nullable fds, size\+\_\+t nfds)
 \item 
 void \hyperlink{connection_8h_a474036622817775d7c0a68904baf5a09}{rpc\+\_\+connection\+\_\+set\+\_\+raw\+\_\+message\+\_\+handler} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, \+\_\+\+Nullable \hyperlink{connection_8h_a862a6720fa3fe2a5dbcd3663f82e7dd5}{rpc\+\_\+raw\+\_\+handler\+\_\+t} handler)
 \item 
@@ -267,8 +267,8 @@ Definition at line 141 of file connection.\+h.
 
 {\bfseries Value\+:}
 \begin{DoxyCode}
-^(\textcolor{keyword}{const} \textcolor{keywordtype}{void} *\_msg, \textcolor{keywordtype}{size\_t} \_len, \textcolor{keyword}{const} \textcolor{keywordtype}{int} *\_fds, \textcolor{keywordtype}{size\_t} nfds) \{\(\backslash\)
-        return (\_fn(\_arg, \_msg, \_len, \_fds, \_nfds));        \(\backslash\)
+^(\textcolor{keyword}{const} \textcolor{keywordtype}{void} *\_msg, \textcolor{keywordtype}{size\_t} \_len, \textcolor{keyword}{const} \textcolor{keywordtype}{int} *\_fds, \textcolor{keywordtype}{size\_t} \_nfd) \{\(\backslash\)
+        return (\_fn(\_arg, \_msg, \_len, \_fds, \_nfd));     \(\backslash\)
     \}
 \end{DoxyCode}
 Converts function pointer to a rpc\+\_\+message\+\_\+handler\+\_\+t block type. 
@@ -1005,11 +1005,11 @@ Sends an event.
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on failure 
 \end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_a7e4d9f9f96a7dd1ce336439c0daeccce}\label{connection_8h_a7e4d9f9f96a7dd1ce336439c0daeccce}} 
+\mbox{\Hypertarget{connection_8h_a9f01d451156d866cb14013c37f111b68}\label{connection_8h_a9f01d451156d866cb14013c37f111b68}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message@{rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message}}
 \index{rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message@{rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message}!connection.\+h@{connection.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message()}{rpc\_connection\_send\_raw\_message()}}
-{\footnotesize\ttfamily int rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{void $\ast$\+\_\+\+Nonnull}]{msg,  }\item[{size\+\_\+t}]{len,  }\item[{const int $\ast$\+\_\+\+Nullable}]{fds,  }\item[{size\+\_\+t}]{nfds }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const void $\ast$\+\_\+\+Nonnull}]{msg,  }\item[{size\+\_\+t}]{len,  }\item[{const int $\ast$\+\_\+\+Nullable}]{fds,  }\item[{size\+\_\+t}]{nfds }\end{DoxyParamCaption})}
 
 
 \begin{DoxyParams}{Parameters}

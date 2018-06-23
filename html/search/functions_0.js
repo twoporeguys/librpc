@@ -76,7 +76,7 @@ var searchData=
   ['rpc_5fconnection_5fping',['rpc_connection_ping',['../connection_8h.html#abbce64346725655e72faa0bf1c479750',1,'connection.h']]],
   ['rpc_5fconnection_5fregister_5fevent_5fhandler',['rpc_connection_register_event_handler',['../connection_8h.html#ab223ffd9a03ab35ac0369f4fde934c49',1,'connection.h']]],
   ['rpc_5fconnection_5fsend_5fevent',['rpc_connection_send_event',['../connection_8h.html#abd699ca36e45ca40ff561c8243cbc99e',1,'connection.h']]],
-  ['rpc_5fconnection_5fsend_5fraw_5fmessage',['rpc_connection_send_raw_message',['../connection_8h.html#a7e4d9f9f96a7dd1ce336439c0daeccce',1,'connection.h']]],
+  ['rpc_5fconnection_5fsend_5fraw_5fmessage',['rpc_connection_send_raw_message',['../connection_8h.html#a9f01d451156d866cb14013c37f111b68',1,'connection.h']]],
   ['rpc_5fconnection_5fset_5fcontext',['rpc_connection_set_context',['../connection_8h.html#ab8babe3fa9b01f06445a70d5507a7ecf',1,'connection.h']]],
   ['rpc_5fconnection_5fset_5ferror_5fhandler',['rpc_connection_set_error_handler',['../connection_8h.html#a08ccbcafd60ed5e2ebb7cf199dc9c574',1,'connection.h']]],
   ['rpc_5fconnection_5fset_5fevent_5fhandler',['rpc_connection_set_event_handler',['../connection_8h.html#a08f27546613deb38559d3a8ced1a1104',1,'connection.h']]],
