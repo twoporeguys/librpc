@@ -60,14 +60,19 @@ rpcd_connect_to(const char *service_name)
 		return (NULL);
 	}
 
-	if (rpc_get_type(result) != RPC_TYPE_FD) {
-		rpc_set_last_errorf(EINVAL, "No file descriptor returned");
+	if (rpc_get_type(result) == RPC_TYPE_FD) {
+		/* File descriptor was passed to us */
 		rpc_client_close(client);
-		return (NULL);
+		return (rpc_client_create("socket://", result));
 	}
 
-	rpc_client_close(client);
-	return (rpc_client_create("socket://", result));
+	if (rpc_get_type(result) == RPC_TYPE_NULL) {
+		/* Bi-dir bridging */
+		return (client);
+	}
+
+	g_assert_not_reached();
+
 }
 
 int
