@@ -245,6 +245,7 @@ struct rpc_connection
 	struct rpc_context *	rco_rpc_context;
     	struct rpc_credentials	rco_creds;
 	bool			rco_has_creds;
+	bool			rco_supports_fd_passing;
 	const char *        	rco_uri;
 	rpc_error_handler_t 	rco_error_handler;
 	rpc_handler_t		rco_event_handler;
@@ -381,6 +382,7 @@ struct rpc_transport
 {
 	int (*connect)(struct rpc_connection *, const char *, rpc_object_t);
 	int (*listen)(struct rpc_server *, const char *, rpc_object_t);
+	bool (*is_fd_passing)(struct rpc_connection *);
     	int flags;
         const struct rpc_bus_transport *bus_ops;
 	const char *name;

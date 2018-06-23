@@ -38,6 +38,7 @@ static xpc_object_t xpc_from_rpc(rpc_object_t);
 static rpc_object_t xpc_to_rpc(xpc_object_t);
 static int xpc_abort(void *);
 static void xpc_conn_release(void *);
+static bool xpc_supports_fd_passing(struct rpc_connection *);
 
 struct xpc_server
 {
@@ -57,6 +58,7 @@ static const struct rpc_transport xpc_transport = {
 	.schemas = {"xpc", "xpc+mach", NULL},
 	.connect = xpc_connect,
 	.listen = xpc_listen,
+	.is_fd_passing = xpc_supports_fd_passing,
 	.flags = RPC_TRANSPORT_NO_SERIALIZE | RPC_TRANSPORT_FD_PASSING |
 	    RPC_TRANSPORT_CREDENTIALS
 };
@@ -329,6 +331,13 @@ xpc_listen(struct rpc_server *conn, const char *uri_string,
 
 	xpc_connection_resume(xserver->xpc_handle);
 	return (0);
+}
+
+static bool
+xpc_supports_fd_passing(struct rpc_connection *rpc_conn __unused)
+{
+
+	return (true);
 }
 
 DECLARE_TRANSPORT(xpc_transport);

@@ -63,6 +63,7 @@ static int loopback_teardown(struct rpc_server *);
 static int loopback_send_msg(void *, void *, size_t, const int *, size_t);
 static void loopback_release(void *);
 static int loopback_lock_free(struct loopback *);
+static bool loopback_supports_fd_passing(struct rpc_connection *);
 
 static GHashTable *loopback_channels = NULL;
 
@@ -141,8 +142,7 @@ loopback_connect(struct rpc_connection *conn, const char *uri_string,
 
 static int
 loopback_listen(struct rpc_server *srv, const char *uri_string,
-    rpc_object_t extra __unused)
-{
+    rpc_object_t extra __unused) {
 	SoupURI *uri;
 	struct loopback_channel *chan;
 	int host;
@@ -150,9 +150,9 @@ loopback_listen(struct rpc_server *srv, const char *uri_string,
 
 	uri = soup_uri_new(uri_string);
 
-        if ((uri == NULL) || (uri->host == NULL) || !strlen(uri->host))
+	if ((uri == NULL) || (uri->host == NULL) || !strlen(uri->host)) {
 		fail = true;
-	else {
+	} else {
 		host = (int)strtoul(uri->host, NULL, 10);
 		if (host == 0 && uri->host[0] != '0') {
 			fail = true;
@@ -295,11 +295,19 @@ loopback_release(void *arg)
 	g_free(lb);
 }
 
+static bool
+loopback_supports_fd_passing(struct rpc_connection *rpc_conn __unused)
+{
+
+	return (true);
+}
+
 struct rpc_transport loopback_transport = {
 	.name = "loopback",
 	.schemas = {"loopback", NULL},
 	.connect = loopback_connect,
 	.listen = loopback_listen,
+	.is_fd_passing = loopback_supports_fd_passing,
     	.flags = RPC_TRANSPORT_NO_SERIALIZE | RPC_TRANSPORT_FD_PASSING
 };
 

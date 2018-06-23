@@ -1187,6 +1187,9 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	if (transport->connect(conn, conn->rco_uri, params) != 0)
 		goto fail;
 
+	if (conn->rco_flags & RPC_TRANSPORT_FD_PASSING)
+		conn->rco_supports_fd_passing = transport->is_fd_passing(conn);
+
 	return (conn);
 fail:
         if (conn != NULL)
@@ -1809,7 +1812,7 @@ bool
 rpc_connection_supports_fd_passing(rpc_connection_t conn)
 {
 
-	return ((bool)(conn->rco_flags & RPC_TRANSPORT_FD_PASSING));
+	return (conn->rco_supports_fd_passing);
 }
 
 bool

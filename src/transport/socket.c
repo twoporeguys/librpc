@@ -50,12 +50,14 @@ static int socket_get_fd(void *);
 static void socket_release(void *);
 static void *socket_reader(void *);
 static gboolean socket_abort_timeout(gpointer user_data);
+static bool socket_supports_fd_passing(struct rpc_connection *);
 
 static const struct rpc_transport socket_transport = {
 	.name = "socket",
 	.schemas = {"unix", "tcp", "socket", NULL},
 	.connect = socket_connect,
 	.listen = socket_listen,
+	.is_fd_passing = socket_supports_fd_passing,
 	.flags = RPC_TRANSPORT_FD_PASSING | RPC_TRANSPORT_CREDENTIALS
 };
 
@@ -607,6 +609,14 @@ socket_reader(void *arg)
 
 	conn->sc_parent->rco_close(conn->sc_parent);
 	return (NULL);
+}
+
+static bool
+socket_supports_fd_passing(struct rpc_connection *rpc_conn)
+{
+	struct socket_connection *conn = rpc_conn->rco_arg;
+
+	return (g_socket_get_family(conn->sc_socket) == G_SOCKET_FAMILY_UNIX);
 }
 
 DECLARE_TRANSPORT(socket_transport);
