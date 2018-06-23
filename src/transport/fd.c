@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 #include <glib.h>
