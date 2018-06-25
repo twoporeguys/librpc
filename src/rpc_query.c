@@ -45,7 +45,11 @@ rpc_query_get_parent(rpc_object_t object, const char *path,
 	rpc_object_t parent;
 	char *last_segment;
 
-	last_segment = g_strrstr(path, ".") + 1;
+	last_segment = g_strrstr(path, ".");
+	if (last_segment == NULL)
+		return (object);
+
+	last_segment += 1;
 	get_path_len = strlen(path) - strlen(last_segment) - 1;
 	get_path = g_strndup(path, get_path_len);
 	parent = rpc_query_get(object, (const char *)get_path,
