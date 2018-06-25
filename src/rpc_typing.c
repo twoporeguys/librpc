@@ -674,9 +674,10 @@ rpct_lookup_type(const char *name, const char **decl, rpc_object_t *result,
 			g_autofree char *type_name = NULL;
 			g_autofree char *full_name = NULL;
 
-			if (!g_regex_match(rpct_type_regex, key, 0, &m))
+			if (!g_regex_match(rpct_type_regex, key, 0, &m)) {
+				g_match_info_free(m);
 				return ((bool)true);
-
+			}
 			type_name = g_match_info_fetch(m, 2);
 			full_name = file->ns != NULL
 			    ? g_strdup_printf("%s.%s", file->ns, type_name)
@@ -730,6 +731,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	}
 
 	if (!g_regex_match(rpct_type_regex, decl, 0, &match)) {
+		g_match_info_free(match);
 		rpc_set_last_errorf(EINVAL, "Syntax error: %s", decl);
 		return (-1);
 	}
@@ -749,8 +751,11 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	    : g_strdup(declname);
 
 	/* If type already exists, do nothing */
-	if (g_hash_table_contains(context->types, typename))
+	if (g_hash_table_contains(context->types, typename)) {
+		g_match_info_free(match);
+		g_free(typename);
 		return (0);
+	}
 
 	type = g_malloc0(sizeof(*type));
 	type->origin = g_strdup_printf("%s:%zu", file->path, rpc_get_line_number(obj));
@@ -769,6 +774,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		rpc_set_last_errorf(EINVAL, "Unknown class handler: %s", decltype);
 		g_match_info_free(match);
 		rpct_type_free(type);
+		g_free(typename);
 		return (-1);
 	}
 
@@ -789,6 +795,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		while (g_hash_table_iter_next(&iter, &key, &value))
 			g_hash_table_insert(type->members, key, value);
 	}
+	g_match_info_free(match);
 
 	/* Read member list */
 	if (members != NULL) {
@@ -880,11 +887,11 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 	}
 
 	g_hash_table_insert(iface->members, g_strdup(name), prop);
+	g_match_info_free(match);
 	return (0);
 
 error:
-	if (match != NULL)
-		g_match_info_free(match);
+	g_match_info_free(match);
 
 	return (-1);
 }
@@ -930,11 +937,11 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
 	}
 
 	g_hash_table_insert(iface->members, g_strdup(name), evt);
+	g_match_info_free(match);
 	return (0);
 
 error:
-	if (match != NULL)
-		g_match_info_free(match);
+	g_match_info_free(match);
 
 	return (-1);
 }
@@ -1056,11 +1063,15 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	bool result;
 	int ret = 0;
 
-	if (!g_regex_match(rpct_interface_regex, decl, 0, &match))
+	if (!g_regex_match(rpct_interface_regex, decl, 0, &match)) {
+		g_match_info_free(match);
 		return (-1);
+	}
 
-	if (g_match_info_get_match_count(match) < 1)
+	if (g_match_info_get_match_count(match) < 1) {
+		g_match_info_free(match);
 		return (-1);
+	}
 
 	iface = g_malloc0(sizeof(*iface));
 	iface->origin = g_strdup_printf("%s:%zu", file->path, rpc_get_line_number(obj));
@@ -1075,6 +1086,7 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		iface->name = g_strdup_printf("%s.%s", file->ns, name);
 		g_free(name);
 	}
+	g_match_info_free(match);
 
 	if (g_hash_table_contains(context->interfaces, iface->name))
 		goto abort;
