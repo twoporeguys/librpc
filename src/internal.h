@@ -553,8 +553,8 @@ int rpc_server_dispatch(rpc_server_t, struct rpc_call *);
 void rpc_server_release(rpc_server_t);
 void rpc_server_quit(rpc_server_t);
 void rpc_server_disconnect(rpc_server_t, rpc_connection_t);
-GMainContext * rpc_server_get_main_context(rpc_server_t);
-GMainContext * rpc_client_get_main_context(rpc_client_t);
+GMainContext *rpc_server_get_main_context(rpc_server_t);
+GMainContext *rpc_client_get_main_context(rpc_client_t);
 
 void rpc_connection_send_err(rpc_connection_t, rpc_object_t, int,
     const char *descr, ...);

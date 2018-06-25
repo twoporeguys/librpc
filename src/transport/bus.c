@@ -62,7 +62,7 @@ static int bus_get_fd(void *);
 static int bus_netlink_open(struct bus_netlink *);
 static int bus_netlink_close(struct bus_netlink *);
 static int bus_netlink_send(struct bus_netlink *, struct librpc_message *,
-    void *, size_t);
+    const void *, size_t);
 static int bus_netlink_recv(struct bus_netlink *);
 static int bus_lookup_address(const char *, uint32_t *);
 static void bus_process_message(void *, struct librpc_message *, void *, size_t);
@@ -338,7 +338,7 @@ bus_netlink_close(struct bus_netlink *bn)
 
 static int
 bus_netlink_send(struct bus_netlink *bn, struct librpc_message *msg,
-    void *payload, size_t len)
+    const void *payload, size_t len)
 {
 	char buf[BUS_NL_MSGSIZE];
 	struct bus_ack ack;
