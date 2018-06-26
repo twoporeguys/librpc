@@ -503,7 +503,6 @@ cdef class BaseUnion(Object):
             return {m.name: m for m in self.typei.type.members}
 
 
-
 cdef class BaseEnum(Object):
     def __init__(self, value):
         super(BaseEnum, self).__init__(value, typei=self.typei)

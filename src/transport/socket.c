@@ -165,6 +165,7 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 		g_error_free(err);
 		if (srv->rs_valid(srv))
 			goto done;
+
 		return;
 	}
 
