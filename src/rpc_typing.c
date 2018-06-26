@@ -897,7 +897,6 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 	}
 
 	g_hash_table_insert(iface->members, g_strdup(name), prop);
-	g_match_info_free(match);
 	ret = 0;
 
 error:
