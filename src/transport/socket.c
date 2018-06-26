@@ -89,8 +89,11 @@ static GSocketAddress *
 socket_parse_uri(const char *uri_string)
 {
 	GSocketAddress *addr = NULL;
+	GResolver *resolver;
+	GError *err = NULL;
+	GList *addresses;
 	SoupURI *uri;
-	int len = 0;
+	char *host;
 	char *upath;
 
 	uri = soup_uri_new(uri_string);
@@ -100,14 +103,28 @@ socket_parse_uri(const char *uri_string)
 	}
 
 	if (!g_strcmp0(uri->scheme, "socket")) {
+		soup_uri_free(uri);
 		rpc_set_last_errorf(EINVAL,
 		    "socket:// may be used only with file descriptors");
-		goto done;
+		return (NULL);
 	}
 
 	if (!g_strcmp0(uri->scheme, "tcp")) {
-		addr = g_inet_socket_address_new_from_string(uri->host,
-		    uri->port);
+		resolver = g_resolver_get_default();
+		addresses = g_resolver_lookup_by_name(resolver, uri->host, NULL, &err);
+		g_object_unref(resolver);
+
+		if (addresses == NULL || addresses->data == NULL) {
+			rpc_set_last_gerror(err);
+			g_error_free(err);
+			return (NULL);
+		}
+
+		host = g_inet_address_to_string(addresses->data);
+		addr = g_inet_socket_address_new_from_string(host, uri->port);
+
+		g_free(host);
+		g_list_free_full(addresses, g_object_unref);
 		goto done;
 	}
 
@@ -115,13 +132,11 @@ socket_parse_uri(const char *uri_string)
 	if (!g_strcmp0(uri->scheme, "unix")) {
 		if (uri->host == NULL || uri->path ==NULL)
 			return NULL;
-		len = strlen(uri->host) + strlen(uri->path);
-		if (len == 0)
-			return (NULL);
-		upath = g_malloc0(len + 1);
-		strcpy(upath, uri->host);
-		strcat(upath, uri->path);
 
+		if (strlen(uri->host) + strlen(uri->path) == 0)
+			return (NULL);
+
+		upath = g_strdup_printf("%s%s", uri->host, uri->path);
 		addr = g_unix_socket_address_new(upath);
 		g_free(upath);
 		goto done;
