@@ -38,7 +38,9 @@ static struct rpct_type *rpct_find_type(const char *name);
 static struct rpct_type *rpct_find_type_fuzzy(const char *name,
     struct rpct_file *origin);
 static rpc_object_t rpct_stream_idl(void *cookie, rpc_object_t args);
+#if 0
 static inline bool rpct_type_is_fully_specialized(struct rpct_typei *inst);
+#endif
 static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *typei);
 static char *rpct_canonical_type(struct rpct_typei *typei);
 static int rpct_read_type(struct rpct_file *file, const char *decl,
@@ -505,6 +507,7 @@ rpct_member_free(struct rpct_member *member)
 	g_free(member);
 }
 
+#if 0
 static inline bool
 rpct_type_is_fully_specialized(struct rpct_typei *inst)
 {
@@ -515,6 +518,7 @@ rpct_type_is_fully_specialized(struct rpct_typei *inst)
 	return (g_hash_table_size(inst->specializations)
 	    == inst->type->generic_vars->len);
 }
+#endif
 
 static inline struct rpct_typei *
 rpct_unwind_typei(struct rpct_typei *typei)
@@ -709,8 +713,11 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	char *typename;
 	const char *inherits = NULL;
 	const char *description = "";
-	const char *decltype, *declname, *declvars, *type_def = NULL;
-	GMatchInfo *match;
+	char *decltype = NULL;
+	char *declname = NULL;
+	char *declvars = NULL;
+	const char *type_def = NULL;
+	GMatchInfo *match = NULL;
 	rpc_object_t members = NULL;
 	int ret = 0;
 
@@ -847,7 +854,7 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 {
 	struct rpct_if_member *prop;
 	GMatchInfo *match = NULL;
-	const char *name;
+	char *name = NULL;
 	const char *description = NULL;
 	const char *type = NULL;
 	bool read_only = false;
@@ -912,7 +919,7 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
 {
 	struct rpct_if_member *evt;
 	GMatchInfo *match = NULL;
-	const char *name;
+	char *name = NULL;
 	const char *description = NULL;
 	const char *type = NULL;
 	int ret = -1;
@@ -965,7 +972,7 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 	struct rpct_if_member *method = NULL;
 	GError *err = NULL;
 	GMatchInfo *match = NULL;
-	const char *name;
+	char *name = NULL;
 	const char *description = "";
 	const char *returns_type;
 	rpc_object_t args = NULL;
@@ -1073,7 +1080,7 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 {
 	struct rpct_interface *iface;
 	GMatchInfo *match = NULL;
-	char *name;
+	char *name = NULL;
 	bool result;
 	int ret = 0;
 
