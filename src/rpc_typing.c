@@ -674,9 +674,10 @@ rpct_lookup_type(const char *name, const char **decl, rpc_object_t *result,
 			g_autofree char *type_name = NULL;
 			g_autofree char *full_name = NULL;
 
-			if (!g_regex_match(rpct_type_regex, key, 0, &m))
+			if (!g_regex_match(rpct_type_regex, key, 0, &m)) {
+				g_match_info_free(m);
 				return ((bool)true);
-
+			}
 			type_name = g_match_info_fetch(m, 2);
 			full_name = file->ns != NULL
 			    ? g_strdup_printf("%s.%s", file->ns, type_name)
@@ -711,6 +712,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	const char *decltype, *declname, *declvars, *type_def = NULL;
 	GMatchInfo *match;
 	rpc_object_t members = NULL;
+	int ret = 0;
 
 	debugf("reading type \"%s\"", decl);
 
@@ -731,13 +733,14 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 	if (!g_regex_match(rpct_type_regex, decl, 0, &match)) {
 		rpc_set_last_errorf(EINVAL, "Syntax error: %s", decl);
-		return (-1);
+		ret = -1;
+		goto done;
 	}
 
 	if (g_match_info_get_match_count(match) < 2) {
 		rpc_set_last_errorf(EINVAL, "Syntax error: %s", decl);
-		g_match_info_free(match);
-		return (-1);
+		ret = -1;
+		goto done;
 	}
 
 	decltype = g_match_info_fetch(match, 1);
@@ -749,8 +752,11 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	    : g_strdup(declname);
 
 	/* If type already exists, do nothing */
-	if (g_hash_table_contains(context->types, typename))
-		return (0);
+	if (g_hash_table_contains(context->types, typename)) {
+		g_free(typename);
+		ret = 0;
+		goto done;
+	}
 
 	type = g_malloc0(sizeof(*type));
 	type->origin = g_strdup_printf("%s:%zu", file->path, rpc_get_line_number(obj));
@@ -767,9 +773,10 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	handler = rpc_find_class_handler(decltype, (rpct_class_t)-1);
 	if (handler == NULL) {
 		rpc_set_last_errorf(EINVAL, "Unknown class handler: %s", decltype);
-		g_match_info_free(match);
 		rpct_type_free(type);
-		return (-1);
+		g_free(typename);
+		ret = -1;
+		goto done;
 	}
 
 	type->clazz = handler->id;
@@ -807,7 +814,8 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 		if (ret) {
 			rpct_type_free(type);
-			return (-1);
+			ret = -1;
+			goto done;
 		}
 	}
 
@@ -822,7 +830,15 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		g_assert_not_reached();
 
 	debugf("inserted type %s", declname);
-	return (0);
+done:
+	g_match_info_free(match);
+	if (declvars != NULL)
+		g_free(declvars);
+	if (declname != NULL)
+		g_free(declname);
+	if (decltype != NULL)
+		g_free(decltype);
+	return (ret);
 }
 
 static int
@@ -838,6 +854,7 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 	bool read_write = false;
 	bool write_only = false;
 	bool notify = false;
+	int ret = -1;
 
 	rpc_object_unpack(obj, "{s,s,b,b,b,b}",
 	    "description", &description,
@@ -880,13 +897,13 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 	}
 
 	g_hash_table_insert(iface->members, g_strdup(name), prop);
-	return (0);
+	ret = 0;
 
 error:
-	if (match != NULL)
-		g_match_info_free(match);
-
-	return (-1);
+	g_match_info_free(match);
+	if (name != NULL)
+		g_free(name);
+	return (ret);
 }
 
 static int
@@ -898,6 +915,7 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
 	const char *name;
 	const char *description = NULL;
 	const char *type = NULL;
+	int ret = -1;
 
 	rpc_object_unpack(obj, "{s,s}",
 	    "description", &description,
@@ -930,13 +948,13 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
 	}
 
 	g_hash_table_insert(iface->members, g_strdup(name), evt);
-	return (0);
+	ret = 0;
 
 error:
-	if (match != NULL)
-		g_match_info_free(match);
-
-	return (-1);
+	g_match_info_free(match);
+	if (name != NULL)
+		g_free(name);
+	return (ret);
 }
 
 static int
@@ -952,6 +970,7 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 	const char *returns_type;
 	rpc_object_t args = NULL;
 	rpc_object_t returns = NULL;
+	ret = -1;
 
 	debugf("reading <%s> from file %s", decl, file->path);
 
@@ -1035,6 +1054,8 @@ error:
 	if (method != NULL) {
 		g_ptr_array_free(method->arguments, true);
 		g_free(method);
+		if (name != NULL)
+			g_free(name);
 	}
 
 done:
@@ -1056,15 +1077,19 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	bool result;
 	int ret = 0;
 
-	if (!g_regex_match(rpct_interface_regex, decl, 0, &match))
+	if (!g_regex_match(rpct_interface_regex, decl, 0, &match)) {
+		g_match_info_free(match);
 		return (-1);
+	}
 
-	if (g_match_info_get_match_count(match) < 1)
+	if (g_match_info_get_match_count(match) < 1) {
+		g_match_info_free(match);
 		return (-1);
+	}
 
 	iface = g_malloc0(sizeof(*iface));
 	iface->origin = g_strdup_printf("%s:%zu", file->path, rpc_get_line_number(obj));
-	iface->name = g_strdup(g_match_info_fetch(match, 1));
+	iface->name = g_match_info_fetch(match, 1);
 	iface->members = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    g_free, (GDestroyNotify)rpct_if_member_free);
 	iface->description = g_strdup(rpc_dictionary_get_string(obj,
@@ -1075,6 +1100,7 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		iface->name = g_strdup_printf("%s.%s", file->ns, name);
 		g_free(name);
 	}
+	g_match_info_free(match);
 
 	if (g_hash_table_contains(context->interfaces, iface->name))
 		goto abort;
