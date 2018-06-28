@@ -395,6 +395,8 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>The function follows a given "key1.key2.0.key3.1" like path to find the last element in the path inside of the provided object and delete it.</p>
 <p>If the provided path does not match a given object, then library error is set.</p>
+<p>rpc_query_set always tries to automatically add missing pieces of the provided path. Example: object = {} path = "some.0.values.1.and.indexes" value = true</p>
+<p>result = {some:[{values:[null,{and:{indexes:true}}]}]}</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">object</td><td>Object to perform the lookup on. </td></tr>
