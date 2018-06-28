@@ -169,7 +169,7 @@ rpc_server_listen(void *arg)
 
 	debugf("selected transport %s", transport->name);
 	server->rs_flags = transport->flags;
-	if (transport->listen(server, server->rs_uri, NULL) == 0)
+	if (transport->listen(server, server->rs_uri, server->rs_params) == 0)
 	    server->rs_operational = true;
 
 done:
@@ -210,11 +210,6 @@ rpc_server_create_ex(const char *uri, rpc_context_t context, rpc_object_t params
 {
 	rpc_server_t server;
 
-	if (rpc_server_find(uri, context) != NULL) {
-		debugf("duplicate server %s", uri);
-		rpc_set_last_errorf(EEXIST, "Server %s already exists", uri);
-		return (NULL);
-	}
 	debugf("creating server %s", uri);
 
 	server = g_malloc0(sizeof(*server));
@@ -479,6 +474,6 @@ rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers)
 		(*servers)[n++] = server;
 	}
 
-	return (nfds);
+	return (n);
 }
 #endif

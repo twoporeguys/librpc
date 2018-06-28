@@ -188,12 +188,15 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
         if (uri != NULL)
 		addr = g_inet_socket_address_new_from_string(uri->host,
 	            uri->port);
+
 	if (addr == NULL) {
-                srv->rs_error = rpc_error_create(ENXIO, "No Such Address", NULL);
-		if (uri)
+                srv->rs_error = rpc_error_create(ENXIO, "No such address", NULL);
+		if (uri != NULL)
 			soup_uri_free(uri);
+
                 return(-1);
 	}
+
 	server = calloc(1, sizeof(*server));
 	server->ws_uri = uri;
 	server->ws_server = srv;
