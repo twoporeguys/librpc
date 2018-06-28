@@ -543,7 +543,7 @@ const struct rpct_class_handler *rpc_find_class_handler(const char *name,
 void rpc_set_last_error(int code, const char *msg, rpc_object_t extra);
 void rpc_set_last_rpc_error(rpc_object_t rpc_error);
 void rpc_set_last_gerror(GError *error);
-void rpc_set_last_errorf(int code, const char *fmt, ...);
+void rpc_set_last_errorf(int code, const char *fmt, ...) __attribute__((__format__(__printf__, 2, 3)));
 rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
 void rpc_connection_retain(rpc_connection_t);
