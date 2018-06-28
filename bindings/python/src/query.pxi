@@ -24,51 +24,50 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-import os
-import sys
-import enum
-import errno
-import types
-import inspect
-import functools
-import traceback
-import datetime
-import uuid
-from cpython.ref cimport Py_INCREF, Py_DECREF
-from librpc cimport *
-from libc.string cimport strdup
-from libc.stdint cimport *
-from libc.stdlib cimport malloc, free
+def get(object, path, default=None):
+    cdef rpc_object_t result
+
+    rpc_obj = Object(object)
+    rpc_default = Object(default)
+
+    result = rpc_query_get(
+        rpc_obj.unwrap(),
+        cstr_or_null(path),
+        rpc_default.unwrap()
+    )
+
+    return Object.wrap(result)
 
 
-cdef extern from "Python.h" nogil:
-    void PyEval_InitThreads()
+def set(object, path, value):
+    rpc_obj = Object(object)
+    rpc_val = Object(value)
+
+    rpc_query_set(
+        rpc_obj.unwrap(),
+        cstr_or_null(path),
+        rpc_val.unwrap(),
+        False
+    )
+
+    return rpc_obj
 
 
-include "src/object.pxi"
-include "src/connection.pxi"
-include "src/service.pxi"
-include "src/client.pxi"
-include "src/server.pxi"
-include "src/bus.pxi"
-include "src/serializer.pxi"
-include "src/typing.pxi"
-include "src/rpcd.pxi"
-include "src/query.pxi"
+def delete(object, path):
+    rpc_obj = Object(object)
+
+    rpc_query_delete(
+        rpc_obj.unwrap(),
+        cstr_or_null(path),
+    )
+
+    return rpc_obj
 
 
-cdef str_or_none(const char *val):
-    if val == NULL:
-        return None
+def contains(object, path):
+    rpc_obj = Object(object)
 
-    return val.decode('utf-8')
-
-
-cdef const char *cstr_or_null(val):
-    if not val:
-        return NULL
-
-    return val.encode('utf-8')
-
-
-type_hooks = {}
+    return rpc_query_contains(
+        rpc_obj.unwrap(),
+        cstr_or_null(path),
+    )

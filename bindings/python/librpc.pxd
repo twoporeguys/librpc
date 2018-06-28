@@ -298,6 +298,26 @@ cdef extern from "rpc/serializer.h" nogil:
     int rpc_serializer_dump(const char *serializer, rpc_object_t obj, void **framep, size_t *lenp)
 
 
+cdef extern from "rpc/query.h" nogil:
+    ctypedef struct rpc_query_iter_t:
+        pass
+
+    ctypedef struct rpc_query_params:
+        bint single;
+        bint count;
+        uint64_t offset;
+        uint64_t limit;
+        bint reverse;
+        void *sort;
+        void *callback;
+
+    rpc_object_t rpc_query_get(rpc_object_t object, const char *path, rpc_object_t default_val)
+    void rpc_query_set(rpc_object_t object, const char *path, rpc_object_t value, bint steal)
+    void rpc_query_delete(rpc_object_t object, const char *path)
+    bint rpc_query_contains(rpc_object_t object, const char *path)
+    rpc_query_iter_t rpc_query(rpc_object_t object, rpc_query_params *params, rpc_object_t rules)
+
+
 cdef extern from "rpc/typing.h" nogil:
     ctypedef struct rpct_type_t:
         pass
