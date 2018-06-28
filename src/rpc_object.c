@@ -1668,7 +1668,7 @@ inline void
 rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value)
 {
 	rpc_object_t *ro;
-	size_t i;
+	int64_t i;
 
 	if (array->ro_type != RPC_TYPE_ARRAY)
 		rpc_abort("Trying array API on non-array object");
