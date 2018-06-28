@@ -41,6 +41,9 @@ cdef class Server(object):
             Object(params).unwrap()
         )
 
+        if self.server == <rpc_server_t>NULL:
+            raise_internal_exc()
+
     @staticmethod
     cdef wrap(rpc_server_t c_server):
         cdef Server result
