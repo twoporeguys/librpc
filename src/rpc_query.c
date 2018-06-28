@@ -331,39 +331,87 @@ void
 rpc_query_set(rpc_object_t object, const char *path, rpc_object_t value,
     bool steal)
 {
-	rpc_object_t container;
-	const char *child;
+	rpc_object_t container = object;
+	rpc_object_t temp;
 	size_t idx;
-	char *next_char;
+	char *endptr;
+	char **tokens;
+	char *token;
+	char *next_token;
+	size_t tok_ptr = 0;
 
-	container = rpc_query_get_parent(object, path, &child, NULL);
-	if (container == NULL) {
-		rpc_set_last_error(ENOENT, "SET: Parent object not found.",
-		    NULL);
+	g_assert_nonnull(object);
+	g_assert_nonnull(value);
+
+	if (strlen(path) == 0) {
+		rpc_set_last_errorf(EINVAL, "SET: Path is empty");
 		return;
 	}
 
-	if (child == NULL) {
-		rpc_set_last_error(ENOENT,
-		    "SET: Path too short - specify target for the value.",
-		    NULL);
-		return;
+	tokens = g_strsplit(path, ".", 0);
+	token = tokens[0];
+
+	while (tokens[tok_ptr + 1] != NULL) {
+		switch(rpc_get_type(container)) {
+		case RPC_TYPE_DICTIONARY:
+			temp = rpc_dictionary_get_value(container, token);
+			break;
+		case RPC_TYPE_ARRAY:
+			idx = (size_t)g_ascii_strtoull(token, &endptr, 10);
+			if ((idx == 0) && (token == endptr)) {
+				rpc_set_last_errorf(EINVAL,
+				    "SET: Token %s is not a number", token);
+				goto error;
+			}
+
+			temp = rpc_array_get_value(container, idx);
+			break;
+		default:
+			rpc_set_last_errorf(EINVAL,
+			    "SET: Unsupported type of container");
+			goto error;
+		}
+
+		if (temp == NULL) {
+			next_token = tokens[tok_ptr + 1];
+
+			idx = (size_t)g_ascii_strtoull(next_token, &endptr, 10);
+			if ((idx == 0) && (next_token == endptr))
+				temp = rpc_dictionary_create();
+			else
+				temp = rpc_array_create();
+
+			if (rpc_get_type(container) == RPC_TYPE_DICTIONARY) {
+				rpc_dictionary_steal_value(container, token,
+				    temp);
+			} else {
+				idx = (size_t)g_ascii_strtoull(token, &endptr,
+				    10);
+				rpc_array_steal_value(container, idx, temp);
+			}
+		}
+
+		container = temp;
+		tok_ptr++;
+		token = tokens[tok_ptr];
 	}
 
 	switch(rpc_get_type(container)) {
 	case RPC_TYPE_DICTIONARY:
 		if (steal)
-			rpc_dictionary_steal_value(container, child, value);
+			rpc_dictionary_steal_value(container, token, value);
 		else
-			rpc_dictionary_set_value(container, child, value);
+			rpc_dictionary_set_value(container, token, value);
 
 		break;
 
 	case RPC_TYPE_ARRAY:
-		idx = (size_t)strtol(child, &next_char, 10);
-		if (next_char != NULL)
-			rpc_set_last_error(ENOENT,
-			    "SET: String to index conversion failed.", NULL);
+		idx = (size_t)g_ascii_strtoull(token, &endptr, 10);
+		if ((idx == 0) && (token == endptr)) {
+			rpc_set_last_errorf(EINVAL,
+			    "SET: Token %s is not a number", token);
+			goto error;
+		}
 
 		if (steal)
 			rpc_array_steal_value(container, idx, value);
@@ -377,6 +425,9 @@ rpc_query_set(rpc_object_t object, const char *path, rpc_object_t value,
 		    "SET: Cannot navigate through non-container types.", NULL);
 		break;
 	}
+
+error:
+	g_strfreev(tokens);
 }
 
 void
