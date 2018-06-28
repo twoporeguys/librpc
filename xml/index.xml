@@ -140,8 +140,6 @@
     <member refid="object_8h_1a5b9fa1b598d399f5eacdbf2a8f86fd41" kind="define"><name>RPC_BINARY_DESTRUCTOR_ARG</name></member>
     <member refid="object_8h_1aa125ec0a73c4c9953b07e5da1712573e" kind="define"><name>rpc_is_error</name></member>
     <member refid="object_8h_1aac19be935f72b35eeb2851bc509eabb2" kind="define"><name>rpc_release</name></member>
-    <member refid="object_8h_1abf9a4850c7b07273ae276175478a7527" kind="define"><name>rpc_releasem</name></member>
-    <member refid="object_8h_1a3853c28445ffd47673fa89df60319a10" kind="define"><name>rpc_releasep</name></member>
     <member refid="object_8h_1a541e997e04e48fe86df08ae323516490" kind="define"><name>rpc_swap</name></member>
     <member refid="object_8h_1aa2468583d15995a2451e3f2072631086" kind="define"><name>rpc_auto_object_t</name></member>
     <member refid="object_8h_1a40ea3143863f0a2b47446ccaf655638e" kind="enum"><name>rpc_type_t</name></member>
@@ -165,11 +163,7 @@
     <member refid="object_8h_1a29f4de14614637dc5848764170dcd186" kind="typedef"><name>rpc_array_cmp_t</name></member>
     <member refid="object_8h_1af9a3ce2bd5f1b2c442a37baceccc4790" kind="typedef"><name>rpc_binary_destructor_t</name></member>
     <member refid="object_8h_1a38666db12609d1a1f5c856a7f3f0a03a" kind="function"><name>rpc_retain</name></member>
-    <member refid="object_8h_1ae84fd2385b9cb36afb53576df7503d52" kind="function"><name>rpc_retainp</name></member>
-    <member refid="object_8h_1adeaaf67b06c485208b5cdf21828c4bf0" kind="function"><name>rpc_retainm</name></member>
     <member refid="object_8h_1aef96805793fdeeb98b88d03890d034ba" kind="function"><name>rpc_release_impl</name></member>
-    <member refid="object_8h_1ab6c993cf39407c67794647968bafa8fa" kind="function"><name>rpc_release_implm</name></member>
-    <member refid="object_8h_1ad58b99813db959f2e6d3340a94597076" kind="function"><name>rpc_release_implp</name></member>
     <member refid="object_8h_1a304648476e1f6a68cd9c2521a7703824" kind="function"><name>rpc_get_refcount</name></member>
     <member refid="object_8h_1a7cfb70b97eaa92aec1888ff177b3100d" kind="function"><name>rpc_get_line_number</name></member>
     <member refid="object_8h_1ac2b74c41ca419b2daca6ffb7123a1fb7" kind="function"><name>rpc_get_column_number</name></member>

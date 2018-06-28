@@ -117,10 +117,6 @@ Macros</h2></td></tr>
 <tr class="separator:aa125ec0a73c4c9953b07e5da1712573e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac19be935f72b35eeb2851bc509eabb2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aac19be935f72b35eeb2851bc509eabb2">rpc_release</a>(_object)</td></tr>
 <tr class="separator:aac19be935f72b35eeb2851bc509eabb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf9a4850c7b07273ae276175478a7527"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_releasem</b>(_object)</td></tr>
-<tr class="separator:abf9a4850c7b07273ae276175478a7527"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3853c28445ffd47673fa89df60319a10"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_releasep</b>(_object)</td></tr>
-<tr class="separator:a3853c28445ffd47673fa89df60319a10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a541e997e04e48fe86df08ae323516490"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a541e997e04e48fe86df08ae323516490">rpc_swap</a>(_old,  _new)</td></tr>
 <tr class="separator:a541e997e04e48fe86df08ae323516490"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2468583d15995a2451e3f2072631086"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aa2468583d15995a2451e3f2072631086">rpc_auto_object_t</a>&#160;&#160;&#160;__attribute__((cleanup(__rpc_raii_release))) <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></td></tr>
@@ -170,20 +166,8 @@ Enumerations</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a38666db12609d1a1f5c856a7f3f0a03a"><td class="memItemLeft" align="right" valign="top">_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a38666db12609d1a1f5c856a7f3f0a03a">rpc_retain</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:a38666db12609d1a1f5c856a7f3f0a03a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae84fd2385b9cb36afb53576df7503d52"><td class="memItemLeft" align="right" valign="top"><a id="ae84fd2385b9cb36afb53576df7503d52"></a>
-_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_retainp</b> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
-<tr class="separator:ae84fd2385b9cb36afb53576df7503d52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adeaaf67b06c485208b5cdf21828c4bf0"><td class="memItemLeft" align="right" valign="top"><a id="adeaaf67b06c485208b5cdf21828c4bf0"></a>
-_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_retainm</b> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
-<tr class="separator:adeaaf67b06c485208b5cdf21828c4bf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef96805793fdeeb98b88d03890d034ba"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#aef96805793fdeeb98b88d03890d034ba">rpc_release_impl</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:aef96805793fdeeb98b88d03890d034ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6c993cf39407c67794647968bafa8fa"><td class="memItemLeft" align="right" valign="top"><a id="ab6c993cf39407c67794647968bafa8fa"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_release_implm</b> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
-<tr class="separator:ab6c993cf39407c67794647968bafa8fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad58b99813db959f2e6d3340a94597076"><td class="memItemLeft" align="right" valign="top"><a id="ad58b99813db959f2e6d3340a94597076"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_release_implp</b> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
-<tr class="separator:ad58b99813db959f2e6d3340a94597076"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a304648476e1f6a68cd9c2521a7703824"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a304648476e1f6a68cd9c2521a7703824">rpc_get_refcount</a> (_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:a304648476e1f6a68cd9c2521a7703824"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7cfb70b97eaa92aec1888ff177b3100d"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a7cfb70b97eaa92aec1888ff177b3100d">rpc_get_line_number</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
@@ -487,7 +471,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_release_implp</b> 
 </div><div class="memdoc">
 <p>RAII version of <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>. Automatically released when goes out of scope. </p>
 
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l01694">1694</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l01678">1678</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -598,7 +582,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_release_implp</b> 
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00317">317</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00313">313</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -627,47 +611,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_release_implp</b> 
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00327">327</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
-
-</div>
-</div>
-<a id="abf9a4850c7b07273ae276175478a7527"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abf9a4850c7b07273ae276175478a7527">&#9670;&nbsp;</a></span>rpc_releasem</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define rpc_releasem</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_object</td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                \</div><div class="line">        if (rpc_release_implm(_object) == 0)            \</div><div class="line">            (_object) = NULL;               \</div><div class="line">    } <span class="keywordflow">while</span>(0)</div></div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00333">333</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
-
-</div>
-</div>
-<a id="a3853c28445ffd47673fa89df60319a10"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3853c28445ffd47673fa89df60319a10">&#9670;&nbsp;</a></span>rpc_releasep</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define rpc_releasep</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_object</td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                \</div><div class="line">        if (rpc_release_implp(_object) == 0)            \</div><div class="line">            (_object) = NULL;               \</div><div class="line">    } <span class="keywordflow">while</span>(0)</div></div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00339">339</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00323">323</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -699,7 +643,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>rpc_release_implp</b> 
 <b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                \</div><div class="line">        rpc_release(_old);                  \</div><div class="line">        (_old) = (_new);                    \</div><div class="line">    } <span class="keywordflow">while</span> (0)</div></div><!-- fragment --><p>Swaps <code>_old</code> object with  object.</p>
 <p>Releases <code>_old</code> before replacing it with <code>_new</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00350">350</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00334">334</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
