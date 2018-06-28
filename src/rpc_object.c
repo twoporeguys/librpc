@@ -66,6 +66,21 @@ static const char *rpc_types[] = {
     [RPC_TYPE_ERROR] = "error"
 };
 
+volatile int rcnt;
+volatile int rcntm;
+volatile int rcntp;
+
+
+int rpc_release_impl_main(rpc_object_t object);
+
+rpc_object_t
+rpc_object_get_counts(void)
+{
+
+	return (rpc_string_create_with_format(
+	    "OBJ COUNTS: R-%d,  P-%d,  M-%d", rcnt, rcntp, rcntm));
+}
+
 rpc_object_t
 rpc_prim_create(rpc_type_t type, union rpc_value val)
 {
@@ -458,12 +473,75 @@ inline rpc_object_t
 rpc_retain(rpc_object_t object)
 {
 
+	g_atomic_int_inc(&rcnt);
+	g_atomic_int_inc(&object->ro_refcnt);
+	return (object);
+}
+
+inline rpc_object_t
+rpc_retainm(rpc_object_t object)
+{
+
+	g_atomic_int_inc(&rcntm);
+	g_atomic_int_inc(&object->ro_refcnt);
+	return (object);
+}
+
+inline rpc_object_t
+rpc_retainp(rpc_object_t object)
+{
+
+	g_atomic_int_inc(&rcntp);
+	if ((rcntp > 1000) && (rcntp < 100000) && ((rcntp & 1023) == 0))
+		fprintf(stderr, "++++++++++  %d\n", rcntp);
 	g_atomic_int_inc(&object->ro_refcnt);
 	return (object);
 }
 
 inline int
 rpc_release_impl(rpc_object_t object)
+{
+
+	if (object == NULL)
+		return (0);
+
+	if (object->ro_refcnt > 1)
+		g_atomic_int_dec_and_test(&rcnt);
+	return (rpc_release_impl_main(object));
+}
+
+inline int
+rpc_release_implm(rpc_object_t object)
+{
+
+	if (object == NULL)
+		return (0);
+
+	if (object->ro_refcnt > 1)
+		g_atomic_int_dec_and_test(&rcntm);
+	return (rpc_release_impl_main(object));
+}
+
+inline int
+rpc_release_implp(rpc_object_t object)
+{
+	int was;
+
+	if (object == NULL)
+		return (0);
+
+	if (object->ro_refcnt > 1) {
+		was = g_atomic_int_add(&rcntp, -1);
+		if (was == 0) {
+			g_atomic_int_add(&rcntp, 1);
+			g_atomic_int_add(&rcnt, -1);
+		}
+	}
+	return (rpc_release_impl_main(object));
+}
+
+int
+rpc_release_impl_main(rpc_object_t object)
 {
 
 	if (object == NULL)

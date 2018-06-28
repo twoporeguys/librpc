@@ -591,4 +591,5 @@ bool rpc_function_should_abort_impl(void *cookie);
 void rpc_function_set_async_abort_handler_impl(void *cookie,
     rpc_abort_handler_t handler);
 
+rpc_object_t rpc_object_get_counts(void);
 #endif /* LIBRPC_INTERNAL_H */

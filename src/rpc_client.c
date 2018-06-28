@@ -30,6 +30,18 @@
 #include <gio/gio.h>
 #include "internal.h"
 
+volatile int havet; /* a fake singleton, don't care to be rigorous... */
+GSource * tout;
+
+static gboolean
+prt_counts(gpointer user_data __unused)
+{
+
+	fprintf(stderr, "::::::::::: %s\n", rpc_string_get_string_ptr(
+	    rpc_object_get_counts()));
+	return (true); /* re-arm */
+}
+
 static void *
 rpc_client_worker(void *arg)
 {
@@ -60,6 +72,14 @@ rpc_client_create(const char *uri, rpc_object_t params)
 	if (client->rci_connection == NULL) {
 		rpc_client_close(client);
 		return (NULL);
+	}
+	if (!havet) {
+		havet = 1;
+		if (tout == NULL) {
+			tout = g_timeout_source_new_seconds(10);
+			g_source_set_callback(tout, &prt_counts, tout, NULL);
+			g_source_attach(tout, client->rci_g_context);
+		}
 	}
 
 	return (client);

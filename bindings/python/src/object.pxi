@@ -159,12 +159,12 @@ cdef class Object(object):
 
         elif isinstance(value, Object):
             self.obj = (<Object>value).obj
-            rpc_retain(self.obj)
+            rpc_retainp(self.obj)
 
         elif hasattr(value, '__getstate__'):
             try:
                 child = Object(value.__getstate__())
-                self.obj = rpc_retain(child.obj)
+                self.obj = rpc_retainp(child.obj)
             except:
                 raise LibException(errno.EFAULT, "__getstate__() raised an exception")
 
@@ -226,7 +226,7 @@ cdef class Object(object):
 
     def __dealloc__(self):
         if self.obj != <rpc_object_t>NULL:
-            rpc_release(self.obj)
+            rpc_releasep(self.obj)
 
     @staticmethod
     cdef Object wrap(rpc_object_t ptr):
@@ -245,7 +245,7 @@ cdef class Object(object):
         else:
             ret = Object.__new__(Object)
 
-        ret.obj = rpc_retain(ptr)
+        ret.obj = rpc_retainp(ptr)
         typei = rpct_get_typei(ptr)
         if typei != <rpct_typei_t>NULL and rpct_type_get_class(rpct_typei_get_type(typei)) != RPC_TYPING_BUILTIN:
             return TypeInstance.wrap(typei).factory(ret)
@@ -336,12 +336,12 @@ cdef class Object(object):
 
             if self.type == ObjectType.ARRAY:
                 array = Array.__new__(Array)
-                array.obj = rpc_retain(self.unwrap())
+                array.obj = rpc_retainp(self.unwrap())
                 return array
 
             if self.type == ObjectType.DICTIONARY:
                 dictionary = Dictionary.__new__(Dictionary)
-                dictionary.obj = rpc_retain(self.unwrap())
+                dictionary.obj = rpc_retainp(self.unwrap())
                 return dictionary
 
     property type:
@@ -383,7 +383,7 @@ cdef class Array(Object):
             return None
 
         ret = Array.__new__(Array)
-        ret.obj = rpc_retain(ptr)
+        ret.obj = rpc_retainp(ptr)
         return ret
 
     def __applier(self, applier_f):
@@ -548,7 +548,7 @@ cdef class Dictionary(Object):
             return None
 
         ret = Dictionary.__new__(Dictionary)
-        ret.obj = rpc_retain(ptr)
+        ret.obj = rpc_retainp(ptr)
         return ret
 
     def __applier(self, applier_f):

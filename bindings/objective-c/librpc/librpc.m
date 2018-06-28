@@ -48,7 +48,7 @@
         if (value == nil) {
             _obj = rpc_null_create();
         } else if ([value isKindOfClass:[RPCObject class]]) {
-            _obj = rpc_retain([(RPCObject *)value nativeValue]);
+            _obj = rpc_retainm([(RPCObject *)value nativeValue]);
         } else if ([value isKindOfClass:[NSNumber class]]) {
             _obj = rpc_int64_create([(NSNumber *)value integerValue]);
         } else if ([value isKindOfClass:[NSString class]]) {
@@ -124,7 +124,7 @@
             return nil;
         }
 
-        _obj = rpc_retain(object);
+        _obj = rpc_retainm(object);
     }
     return self;
 }
@@ -136,12 +136,12 @@
 
 - (void)dealloc
 {
-    rpc_release(_obj);
+    rpc_releasem(_obj);
 }
 
 - (void)deleteRPCObject
 {
-    rpc_release(_obj);
+    rpc_releasem(_obj);
 }
 
 - (NSString *)describe

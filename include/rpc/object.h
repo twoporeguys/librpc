@@ -187,6 +187,8 @@ typedef void (^rpc_binary_destructor_t)(void *_Nullable);
  * @return Same object
  */
 _Nonnull rpc_object_t rpc_retain(_Nonnull rpc_object_t object);
+_Nonnull rpc_object_t rpc_retainp(_Nonnull rpc_object_t object);
+_Nonnull rpc_object_t rpc_retainm(_Nonnull rpc_object_t object);
 
 /**
  * Decrements reference count of an object.
@@ -197,6 +199,8 @@ _Nonnull rpc_object_t rpc_retain(_Nonnull rpc_object_t object);
  * @return Reference count after operation.
  */
 int rpc_release_impl(_Nonnull rpc_object_t object);
+int rpc_release_implm(_Nonnull rpc_object_t object);
+int rpc_release_implp(_Nonnull rpc_object_t object);
 
 /**
  * Returns reference count of an object.
@@ -323,6 +327,18 @@ const char *_Nullable rpc_get_type_name(rpc_type_t type);
 #define	rpc_release(_object)						\
 	do {								\
 		if (rpc_release_impl(_object) == 0)			\
+			(_object) = NULL;				\
+	} while(0)
+
+#define	rpc_releasem(_object)						\
+	do {								\
+		if (rpc_release_implm(_object) == 0)			\
+			(_object) = NULL;				\
+	} while(0)
+
+#define	rpc_releasep(_object)						\
+	do {								\
+		if (rpc_release_implp(_object) == 0)			\
 			(_object) = NULL;				\
 	} while(0)
 

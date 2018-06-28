@@ -220,7 +220,7 @@ cdef class Connection(object):
             raise RuntimeError("Not connected")
 
         rpc_args = Array(list(args))
-        rpc_retain(rpc_args.obj)
+        rpc_retainp(rpc_args.obj)
 
         with nogil:
             call = rpc_connection_call(self.connection, path, interface, method, rpc_args.obj, NULL)
@@ -269,7 +269,7 @@ cdef class Connection(object):
         def get_chunk():
             nonlocal rpc_result
 
-            rpc_result = rpc_retain(rpc_call_result(call))
+            rpc_result = rpc_retainp(rpc_call_result(call))
             return Object.wrap(rpc_result).unpack()
 
         def iter_chunk():
@@ -605,7 +605,7 @@ cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil:
                 rpc_obj = Object(chunk)
 
                 with nogil:
-                    ret = rpc_function_yield(cookie, rpc_retain(rpc_obj.unwrap()))
+                    ret = rpc_function_yield(cookie, rpc_retainp(rpc_obj.unwrap()))
 
                 if ret:
                     break
@@ -620,4 +620,4 @@ cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil:
         return <rpc_object_t>NULL
 
     rpc_obj = Object(output)
-    return rpc_retain(rpc_obj.unwrap())
+    return rpc_retainp(rpc_obj.unwrap())
