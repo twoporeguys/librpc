@@ -152,6 +152,12 @@ rpcd_service_forward(void *arg, const void *msg, size_t len,
 	return (rpc_connection_send_raw_message(arg, msg, len, fds, nfds));
 }
 
+static void
+rpc_service_handle_error(void *arg, rpc_error_code_t code, rpc_object_t args)
+{
+
+}
+
 static rpc_object_t
 rpcd_service_connect(void *cookie, rpc_object_t args __unused)
 {
@@ -183,11 +189,17 @@ rpcd_service_connect(void *cookie, rpc_object_t args __unused)
 	rpc_connection_set_raw_message_handler(conn,
 	    RPC_RAW_HANDLER(rpcd_service_forward, this_conn));
 
-	return (NULL);
+	rpc_connection_set_error_handler(this_conn,
+	    RPC_ERROR_HANDLER(rpc_service_handle_error, conn));
+
+	rpc_connection_set_error_handler(conn,
+	    RPC_ERROR_HANDLER(rpc_service_handle_error, this_conn));
+
+	return (rpc_string_create("BRIDGED"));
 }
 
 static rpc_object_t
-rpcd_service_unregister(void *cookie, rpc_object_t args)
+rpcd_service_unregister(void *cookie, rpc_object_t args __unused)
 {
 	struct rpcd_service *service;
 
@@ -290,7 +302,7 @@ rpcd_load_services(void)
 			if (name == NULL)
 				break;
 
-			if (!g_str_has_suffix(name, ".yaml"))
+			if (!g_str_has_suffix(name, ".rpcd"))
 				continue;
 
 			path = g_build_filename(*dirname, name, NULL);
