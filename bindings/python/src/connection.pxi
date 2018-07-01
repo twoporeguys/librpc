@@ -96,7 +96,7 @@ cdef class Call(object):
 
     def resume(self):
         with nogil:
-            rpc_call_continue(self.call, True)
+            rpc_call_continue(self.call, False)
 
 
 cdef class ListenHandle(object):
