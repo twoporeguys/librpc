@@ -224,10 +224,6 @@ The function follows a given \char`\"{}key1.\+key2.\+0.\+key3.\+1\char`\"{} like
 
 If the provided path does not match a given object, then library error is set.
 
-rpc\+\_\+query\+\_\+set always tries to automatically add missing pieces of the provided path. Example\+: object = \{\} path = \char`\"{}some.\+0.\+values.\+1.\+and.\+indexes\char`\"{} value = true
-
-result = \{some\+:\mbox{[}\{values\+:\mbox{[}null,\{and\+:\{indexes\+:true\}\}\mbox{]}\}\mbox{]}\}
-
 
 \begin{DoxyParams}{Parameters}
 {\em object} & Object to perform the lookup on. \\

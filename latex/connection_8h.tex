@@ -138,7 +138,7 @@ int \hyperlink{connection_8h_abd699ca36e45ca40ff561c8243cbc99e}{rpc\+\_\+connect
 \item 
 int \hyperlink{connection_8h_abbce64346725655e72faa0bf1c479750}{rpc\+\_\+connection\+\_\+ping} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
-int \hyperlink{connection_8h_a9f01d451156d866cb14013c37f111b68}{rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const void $\ast$\+\_\+\+Nonnull msg, size\+\_\+t len, const int $\ast$\+\_\+\+Nullable fds, size\+\_\+t nfds)
+int \hyperlink{connection_8h_a7e4d9f9f96a7dd1ce336439c0daeccce}{rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, void $\ast$\+\_\+\+Nonnull msg, size\+\_\+t len, const int $\ast$\+\_\+\+Nullable fds, size\+\_\+t nfds)
 \item 
 void \hyperlink{connection_8h_a474036622817775d7c0a68904baf5a09}{rpc\+\_\+connection\+\_\+set\+\_\+raw\+\_\+message\+\_\+handler} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, \+\_\+\+Nullable \hyperlink{connection_8h_a862a6720fa3fe2a5dbcd3663f82e7dd5}{rpc\+\_\+raw\+\_\+handler\+\_\+t} handler)
 \item 
@@ -147,10 +147,6 @@ void \hyperlink{connection_8h_a08f27546613deb38559d3a8ced1a1104}{rpc\+\_\+connec
 void \hyperlink{connection_8h_a08ccbcafd60ed5e2ebb7cf199dc9c574}{rpc\+\_\+connection\+\_\+set\+\_\+error\+\_\+handler} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, \+\_\+\+Nullable \hyperlink{connection_8h_ad84e18a0f030d415f1ac06697fe93525}{rpc\+\_\+error\+\_\+handler\+\_\+t} handler)
 \item 
 const char $\ast$\+\_\+\+Nullable \hyperlink{connection_8h_ab74f1419e8a907d1c99dbef5358b6dd2}{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+address} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
-\item 
-bool \hyperlink{connection_8h_ab9cd83235082c4a5c4a6ba5c59651709}{rpc\+\_\+connection\+\_\+supports\+\_\+fd\+\_\+passing} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
-\item 
-bool \hyperlink{connection_8h_a1e58c29858c958922c04273c1e6c0218}{rpc\+\_\+connection\+\_\+supports\+\_\+credentials} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
 bool \hyperlink{connection_8h_a79e22944d8fb685f6378f9e5c10464f3}{rpc\+\_\+connection\+\_\+has\+\_\+credentials} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
@@ -226,7 +222,7 @@ Definition at line 149 of file connection.\+h.
 \begin{DoxyCode}
 ^(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_path, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_iface, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *\_name,     \(\backslash\)
         rpc\_object\_t \_args) \{                   \(\backslash\)
-        \_fn(\_arg, \_path, \_iface, \_name, \_args);         \(\backslash\)
+        return (\_fn(\_arg, \_path, \_iface, \_name, \_args));    \(\backslash\)
     \}
 \end{DoxyCode}
 Converts function pointer to a \hyperlink{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}{rpc\+\_\+handler\+\_\+t} block type. 
@@ -267,8 +263,8 @@ Definition at line 141 of file connection.\+h.
 
 {\bfseries Value\+:}
 \begin{DoxyCode}
-^(\textcolor{keyword}{const} \textcolor{keywordtype}{void} *\_msg, \textcolor{keywordtype}{size\_t} \_len, \textcolor{keyword}{const} \textcolor{keywordtype}{int} *\_fds, \textcolor{keywordtype}{size\_t} \_nfd) \{\(\backslash\)
-        return (\_fn(\_arg, \_msg, \_len, \_fds, \_nfd));     \(\backslash\)
+^(\textcolor{keyword}{const} \textcolor{keywordtype}{void} *\_msg, \textcolor{keywordtype}{size\_t} \_len, \textcolor{keyword}{const} \textcolor{keywordtype}{int} *\_fds, \textcolor{keywordtype}{size\_t} nfds) \{\(\backslash\)
+        \_fn(\_arg, \_msg, \_len, \_fds, \_nfds);         \(\backslash\)
     \}
 \end{DoxyCode}
 Converts function pointer to a rpc\+\_\+message\+\_\+handler\+\_\+t block type. 
@@ -1005,11 +1001,11 @@ Sends an event.
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on failure 
 \end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_a9f01d451156d866cb14013c37f111b68}\label{connection_8h_a9f01d451156d866cb14013c37f111b68}} 
+\mbox{\Hypertarget{connection_8h_a7e4d9f9f96a7dd1ce336439c0daeccce}\label{connection_8h_a7e4d9f9f96a7dd1ce336439c0daeccce}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message@{rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message}}
 \index{rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message@{rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message}!connection.\+h@{connection.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message()}{rpc\_connection\_send\_raw\_message()}}
-{\footnotesize\ttfamily int rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const void $\ast$\+\_\+\+Nonnull}]{msg,  }\item[{size\+\_\+t}]{len,  }\item[{const int $\ast$\+\_\+\+Nullable}]{fds,  }\item[{size\+\_\+t}]{nfds }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int rpc\+\_\+connection\+\_\+send\+\_\+raw\+\_\+message (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{void $\ast$\+\_\+\+Nonnull}]{msg,  }\item[{size\+\_\+t}]{len,  }\item[{const int $\ast$\+\_\+\+Nullable}]{fds,  }\item[{size\+\_\+t}]{nfds }\end{DoxyParamCaption})}
 
 
 \begin{DoxyParams}{Parameters}
@@ -1184,38 +1180,6 @@ Calls to \hyperlink{connection_8h_ae62dee58a622eb6e1501c8c3342a1530}{rpc\+\_\+co
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on failure 
-\end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_a1e58c29858c958922c04273c1e6c0218}\label{connection_8h_a1e58c29858c958922c04273c1e6c0218}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+supports\+\_\+credentials@{rpc\+\_\+connection\+\_\+supports\+\_\+credentials}}
-\index{rpc\+\_\+connection\+\_\+supports\+\_\+credentials@{rpc\+\_\+connection\+\_\+supports\+\_\+credentials}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+supports\+\_\+credentials()}{rpc\_connection\_supports\_credentials()}}
-{\footnotesize\ttfamily bool rpc\+\_\+connection\+\_\+supports\+\_\+credentials (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
-
-Checks whether a given connection does support credentials.
-
-
-\begin{DoxyParams}{Parameters}
-{\em conn} & Connection handle \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-true if credentials are supported, otherwise false 
-\end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_ab9cd83235082c4a5c4a6ba5c59651709}\label{connection_8h_ab9cd83235082c4a5c4a6ba5c59651709}} 
-\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+supports\+\_\+fd\+\_\+passing@{rpc\+\_\+connection\+\_\+supports\+\_\+fd\+\_\+passing}}
-\index{rpc\+\_\+connection\+\_\+supports\+\_\+fd\+\_\+passing@{rpc\+\_\+connection\+\_\+supports\+\_\+fd\+\_\+passing}!connection.\+h@{connection.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+supports\+\_\+fd\+\_\+passing()}{rpc\_connection\_supports\_fd\_passing()}}
-{\footnotesize\ttfamily bool rpc\+\_\+connection\+\_\+supports\+\_\+fd\+\_\+passing (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
-
-Checks whether a given connection does support file descriptor passing.
-
-
-\begin{DoxyParams}{Parameters}
-{\em conn} & Connection handle \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-true if fd passing is supported, otherwise false 
 \end{DoxyReturn}
 \mbox{\Hypertarget{connection_8h_a102ad5fd1ab895a56319a25f43060a20}\label{connection_8h_a102ad5fd1ab895a56319a25f43060a20}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler}}
