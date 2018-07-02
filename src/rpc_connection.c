@@ -75,6 +75,7 @@ static int rpc_connection_abort(void *);
 static void rpc_connection_release_call(struct rpc_call *call);
 static int cancel_timeout_locked(rpc_call_t call);
 static void rpc_connection_set_default_fn_handlers(rpc_connection_t);
+static inline rpc_object_t rpc_call_result_save(rpc_call_t call);
 
 struct message_handler
 {
@@ -756,20 +757,19 @@ rpc_close(rpc_connection_t conn)
 	GHashTableIter iter;
 	struct rpc_call *call;
 	struct queue_item *q_item;
-	rpc_object_t err;
 	char *key;
 	bool isempty;
 
-        g_mutex_lock(&conn->rco_mtx);
+	g_mutex_lock(&conn->rco_mtx);
 	if (conn->rco_aborted) {
 		g_mutex_unlock(&conn->rco_mtx); /*another thread called first*/
 		return (0);
 	}
 
         conn->rco_aborted = true;
-        err = rpc_get_last_error();
-	if (!err && conn->rco_error != NULL)
-		err = conn->rco_error;
+	
+	if (conn->rco_error == NULL)
+		conn->rco_error = rpc_get_last_error();
 
         if (conn->rco_error_handler) {
                 if (conn->rco_error != NULL)
@@ -911,6 +911,7 @@ rpc_send_frame(rpc_connection_t conn, rpc_object_t frame)
 	if ((conn->rco_flags & RPC_TRANSPORT_NO_SERIALIZE) == 0) {
 		if (rpc_msgpack_serialize(frame, &buf, &len) != 0) {
 			g_mutex_unlock(&conn->rco_send_mtx);
+			rpc_release(frame);
 			return (-1);
 		}
 	}
@@ -1539,7 +1540,7 @@ rpc_connection_call_syncv(rpc_connection_t conn, const char *path,
 		return (NULL);
 
 	rpc_call_wait(call);
-	result = rpc_call_result(call);
+	result = rpc_call_result_save(call);
 	rpc_call_free(call);
 	return (result);
 }
@@ -1587,7 +1588,7 @@ rpc_object_t rpc_connection_call_syncpv(rpc_connection_t conn,
 		return (NULL);
 
 	rpc_call_wait(call);
-	result = rpc_call_result(call);
+	result = rpc_call_result_save(call);
 	rpc_call_free(call);
 	return (result);
 }
@@ -1884,6 +1885,7 @@ rpc_call_continue(rpc_call_t call, bool sync)
 	rpc_call_status_t status;
 	rpc_object_t frame;
 	int64_t seqno;
+	int ret = 0;
 
 	g_mutex_lock(&call->rc_mtx);
 	status = rpc_call_status_locked(call);
@@ -1907,6 +1909,7 @@ rpc_call_continue(rpc_call_t call, bool sync)
 			q_item->status = RPC_CALL_ERROR;
 			q_item->item = rpc_retain(rpc_get_last_error());
 			g_queue_push_tail(call->rc_queue, q_item);
+			ret = -1;
 		}
 
 		call->rc_producer_seqno += call->rc_prefetch;
@@ -1914,18 +1917,19 @@ rpc_call_continue(rpc_call_t call, bool sync)
 
 	call->rc_consumer_seqno++;
 
-	/* It is assumed that the caller releases q_item->item */
+	/* It is assumed that the caller retains q_item->item if it is needed */
 	q_item = g_queue_pop_head(call->rc_queue);
+	rpc_release(q_item->item);
 	g_free(q_item);
 
-	if (sync) {
+	if (sync && ret == 0) {
 		rpc_call_wait_locked(call);
 		g_mutex_unlock(&call->rc_mtx);
 		return (rpc_call_success(call));
 	}
 
 	g_mutex_unlock(&call->rc_mtx);
-	return (0);
+	return (ret);
 }
 
 int
@@ -2037,13 +2041,34 @@ rpc_call_result(rpc_call_t call)
 	return (q_item != NULL ? q_item->item : NULL);
 }
 
+static inline rpc_object_t
+rpc_call_result_save(rpc_call_t call)
+{
+	struct queue_item *q_item;
+
+	g_mutex_lock(&call->rc_mtx);
+	q_item = g_queue_peek_head(call->rc_queue);
+	if (q_item != NULL)
+		rpc_retain(q_item->item);
+	g_mutex_unlock(&call->rc_mtx);
+
+	return (q_item != NULL ? q_item->item : NULL);
+}
+
 void
 rpc_call_free(rpc_call_t call)
 {
 	rpc_connection_t conn = call->rc_conn;
+	struct queue_item *q_item;
 
 	g_mutex_lock(&call->rc_mtx);
 	cancel_timeout_locked(call);
+	while (!g_queue_is_empty(call->rc_queue)) {
+		q_item = g_queue_pop_head(call->rc_queue);
+		rpc_release(q_item->item);
+		g_free(q_item);
+	}
+	g_queue_free(call->rc_queue);
 	g_mutex_unlock(&call->rc_mtx);
 
 	g_mutex_lock(&conn->rco_mtx);
