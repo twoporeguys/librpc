@@ -29,6 +29,7 @@ from libc.stdint cimport *
 
 ctypedef bint (*rpc_dictionary_applier_f)(void *arg, const char *key, rpc_object_t value)
 ctypedef bint (*rpc_array_applier_f)(void *arg, size_t index, rpc_object_t value)
+ctypedef int (*rpc_array_cmp_f)(void *arg, rpc_object_t o1, rpc_object_t o2)
 ctypedef void (*rpc_binary_destructor_f)(void *buffer)
 ctypedef void (*rpc_binary_destructor_arg_f)(void *arg, void *buffer)
 ctypedef void (*rpc_handler_f)(void *arg, const char *path, const char *interface, const char *name, rpc_object_t args)
@@ -42,6 +43,7 @@ ctypedef bint (*rpct_if_member_applier_f)(void *arg, rpct_if_member_t if_member)
 ctypedef rpc_object_t (*rpc_property_getter_f)(void *cookie)
 ctypedef void (*rpc_property_setter_f)(void *cookie, rpc_object_t value)
 ctypedef void (*rpc_property_handler_f)(void *cookie, rpc_object_t value)
+ctypedef rpc_object_t (*rpc_query_cb_f)(void *arg, rpc_object_t object)
 
 
 cdef extern from "rpc/object.h" nogil:
@@ -73,6 +75,7 @@ cdef extern from "rpc/object.h" nogil:
 
     void *RPC_DICTIONARY_APPLIER(rpc_dictionary_applier_f fn, void *arg)
     void *RPC_ARRAY_APPLIER(rpc_array_applier_f fn, void *arg)
+    void *RPC_ARRAY_CMP(rpc_array_cmp_f fn, void *arg)
     void *RPC_BINARY_DESTRUCTOR_ARG(rpc_binary_destructor_arg_f fn, void *arg)
 
     rpc_object_t rpc_get_last_error()
@@ -299,23 +302,30 @@ cdef extern from "rpc/serializer.h" nogil:
 
 
 cdef extern from "rpc/query.h" nogil:
-    ctypedef struct rpc_query_iter_t:
+    cdef struct rpc_query_params:
+        bint single
+        bint count
+        uint64_t offset
+        uint64_t limit
+        bint reverse
+        void *sort
+        void *callback
+
+    ctypedef struct rpc_query_iter:
         pass
 
-    ctypedef struct rpc_query_params:
-        bint single;
-        bint count;
-        uint64_t offset;
-        uint64_t limit;
-        bint reverse;
-        void *sort;
-        void *callback;
+    ctypedef rpc_query_iter *rpc_query_iter_t
+    ctypedef rpc_query_params *rpc_query_params_t
+
+    void *RPC_QUERY_CB(rpc_query_cb_f fn, void *arg)
 
     rpc_object_t rpc_query_get(rpc_object_t object, const char *path, rpc_object_t default_val)
     void rpc_query_set(rpc_object_t object, const char *path, rpc_object_t value, bint steal)
     void rpc_query_delete(rpc_object_t object, const char *path)
     bint rpc_query_contains(rpc_object_t object, const char *path)
-    rpc_query_iter_t rpc_query(rpc_object_t object, rpc_query_params *params, rpc_object_t rules)
+    rpc_query_iter_t rpc_query(rpc_object_t object, rpc_query_params_t params, rpc_object_t rules)
+    bint rpc_query_next(rpc_query_iter_t iter, rpc_object_t *chunk)
+    void rpc_query_iter_free(rpc_query_iter_t iter)
 
 
 cdef extern from "rpc/typing.h" nogil:
@@ -538,7 +548,6 @@ cdef class Connection(object):
     cdef void c_error_handler(void *arg, rpc_error_code_t code, rpc_object_t args) with gil
 
 
-
 cdef class Client(Connection):
     cdef rpc_client_t client
     cdef object uri
@@ -552,3 +561,18 @@ cdef class Bus(object):
 
     @staticmethod
     cdef void c_ev_handler(void *arg, rpc_bus_event_t ev, rpc_bus_node *bn) with gil
+
+
+cdef class QueryIterator(object):
+    cdef rpc_query_iter_t iter
+    cdef object sort_cb
+    cdef object postprocess_cb
+    cdef object cnt
+    cdef object unpack
+
+    @staticmethod
+    cdef QueryIterator wrap(rpc_query_iter_t iter, object sort, object cb, object unpack)
+    @staticmethod
+    cdef rpc_object_t c_callback(void *arg, rpc_object_t object)
+    @staticmethod
+    cdef int c_sort(void *arg, rpc_object_t o1, rpc_object_t o2)
