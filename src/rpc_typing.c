@@ -929,6 +929,11 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
 	    "description", &description,
 	    "type", &type);
 
+	if (type == NULL) {
+		rpc_set_last_errorf(EINVAL, "Cannot process NULL type: %s", decl);
+		goto error;
+	}
+
 	if (!g_regex_match(rpct_event_regex, decl, 0, &match)) {
 		rpc_set_last_errorf(EINVAL, "Cannot parse: %s", decl);
 		goto error;
@@ -1013,16 +1018,16 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 			arg_name = rpc_dictionary_get_string(i, "name");
 			if (arg_name == NULL) {
 				rpc_set_last_errorf(EINVAL,
-				    "Required 'name' field in argument %d "
-				    "of %s missing", (int)idx, name);
+				    "Required 'name' field in argument %zu "
+				    "of %s missing", idx, name);
 				return ((bool)false);
 			}
 
 			arg_type = rpc_dictionary_get_string(i, "type");
 			if (arg_type == NULL) {
 				rpc_set_last_errorf(EINVAL,
-				    "Required 'type' field in argument %d "
-				    "of %s missing", (int)idx, name);
+				    "Required 'type' field in argument %zu "
+				    "of %s missing", idx, name);
 				return ((bool)false);
 			}
 
