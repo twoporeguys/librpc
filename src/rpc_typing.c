@@ -801,7 +801,8 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 		g_hash_table_iter_init(&iter, parent->members);
 		while (g_hash_table_iter_next(&iter, &key, &value))
-			g_hash_table_insert(type->members, key, value);
+			g_hash_table_insert(type->members, g_strdup(key),
+			    value);
 	}
 
 	/* Read member list */
@@ -899,7 +900,7 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 	if (prop->result == NULL) {
 		rpc_set_last_errorf(EINVAL,
 		    "Cannot instantiate type %s of property %s",
-		    prop->result, name);
+		    type, name);
 		goto error;
 	}
 
@@ -928,6 +929,11 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
 	    "description", &description,
 	    "type", &type);
 
+	if (type == NULL) {
+		rpc_set_last_errorf(EINVAL, "Cannot process NULL type: %s", decl);
+		goto error;
+	}
+
 	if (!g_regex_match(rpct_event_regex, decl, 0, &match)) {
 		rpc_set_last_errorf(EINVAL, "Cannot parse: %s", decl);
 		goto error;
@@ -950,7 +956,7 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
 	if (evt->result == NULL) {
 		rpc_set_last_errorf(EINVAL,
 		    "Cannot instantiate type %s of event %s",
-		    evt->result, name);
+		    (type == NULL) ? "NULL" : type, name);
 		goto error;
 	}
 
@@ -1003,8 +1009,7 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 	method->arguments = g_ptr_array_new();
 
 	if (args != NULL) {
-		if (rpc_array_apply(args, ^(size_t idx __unused,
-		    rpc_object_t i) {
+		if (rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
 			const char *arg_name;
 			const char* arg_type;
 			struct rpct_argument *arg;
@@ -1013,7 +1018,7 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 			arg_name = rpc_dictionary_get_string(i, "name");
 			if (arg_name == NULL) {
 				rpc_set_last_errorf(EINVAL,
-				    "Required 'name' field in argument %d "
+				    "Required 'name' field in argument %zu "
 				    "of %s missing", idx, name);
 				return ((bool)false);
 			}
@@ -1021,7 +1026,7 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 			arg_type = rpc_dictionary_get_string(i, "type");
 			if (arg_type == NULL) {
 				rpc_set_last_errorf(EINVAL,
-				    "Required 'type' field in argument %d "
+				    "Required 'type' field in argument %zu "
 				    "of %s missing", idx, name);
 				return ((bool)false);
 			}
