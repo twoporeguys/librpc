@@ -280,6 +280,7 @@ xpc_connect(struct rpc_connection *conn, const char *uri_string,
 
 		rpc_object_t obj = xpc_to_rpc(msg);
 		conn->rco_recv_msg(conn, obj, 0, NULL, 0, NULL);
+		rpc_release(obj);
 	});
 
 	xpc_connection_resume(xconn->xpc_handle);
