@@ -53,9 +53,10 @@ pipeline {
             }
         }
 
-        stage('Build Supermom'){
-          steps{
-               build job: 'supermom/master', wait: false
+        stage('Build dependent jobs') {
+            steps {
+                build job: 'supermom/master', wait: false
+                build job: 'supermom-debs/master', wait: false
             }
         }
     }
