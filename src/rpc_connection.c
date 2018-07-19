@@ -734,11 +734,7 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 		return (-1);
 	}
 
-	if ((conn->rco_flags & RPC_TRANSPORT_NO_SERIALIZE) == 0) {
-		msgt = rpct_deserialize(msg);
-		rpc_release(msg);
-	} else
-		msgt = msg;
+	msgt = rpct_deserialize(msg);
 
 	if (msgt == NULL) {
 		if (conn->rco_error_handler != NULL)
@@ -750,6 +746,7 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 	if (creds != NULL)
 		conn->rco_creds = *creds;
 
+	rpc_release(msg);
 	rpc_restore_fds(msgt, fds, nfds);
 	rpc_connection_dispatch(conn, msgt);
 	return (0);
@@ -899,7 +896,7 @@ rpc_send_frame(rpc_connection_t conn, rpc_object_t frame)
 	size_t len = 0, nfds = 0;
 	int ret;
 
-	if ((conn->rco_flags & RPC_TRANSPORT_NO_SERIALIZE) == 0) {
+	if ((conn->rco_flags & RPC_TRANSPORT_NO_RPCT_SERIALIZE) == 0) {
 		tmp = rpct_serialize(frame);
 		rpc_release(frame);
 		frame = tmp;

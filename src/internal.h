@@ -56,6 +56,7 @@
 #define	RPC_TRANSPORT_NO_SERIALIZE		(1 << 0)
 #define	RPC_TRANSPORT_CREDENTIALS		(1 << 1)
 #define RPC_TRANSPORT_FD_PASSING		(1 << 2)
+#define	RPC_TRANSPORT_NO_RPCT_SERIALIZE		(1 << 3)
 
 #if RPC_DEBUG
 #define debugf(...) 				\
