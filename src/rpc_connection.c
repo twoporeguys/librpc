@@ -900,6 +900,7 @@ rpc_send_frame(rpc_connection_t conn, rpc_object_t frame)
 		tmp = rpct_serialize(frame);
 		rpc_release(frame);
 		frame = tmp;
+		buf = tmp;
 	}
 
 #ifdef RPC_TRACE
