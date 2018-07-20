@@ -1,5 +1,3 @@
-.PHONY: all clean bootstrap install uninstall
-
 export CC := clang
 export CXX := clang++
 PYTHON_VERSION := python3
@@ -12,7 +10,7 @@ BUILD_TYPE ?= Release
 BUILD_XPC ?= OFF
 ENABLE_LIBDISPATCH ?= OFF
 
-.PHONY: build build-cov bootstrap clean install uninstall test
+.PHONY: all clean bootstrap build build-cov bootstrap clean install uninstall test
 
 all: build
 
