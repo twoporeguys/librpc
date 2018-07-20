@@ -10,7 +10,7 @@ BUILD_TYPE ?= Release
 BUILD_XPC ?= OFF
 ENABLE_LIBDISPATCH ?= OFF
 
-.PHONY: all clean bootstrap build build-cov bootstrap clean install uninstall test
+.PHONY: all clean bootstrap build build-cov install uninstall test
 
 all: build
 
