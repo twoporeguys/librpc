@@ -65,8 +65,6 @@ ws_error(SoupWebsocketConnection *ws __unused, GError *error,
 {
 	struct ws_connection *conn = user_data;
 
-	debugf("err");
-	conn->wc_last_err = g_error_copy(error);
 }
 
 static void
