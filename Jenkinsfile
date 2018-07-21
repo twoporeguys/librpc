@@ -9,11 +9,7 @@ pipeline {
     }
 
     stages {
-        stage('Build dependent jobs') {
-            steps {
-                build job: 'supermom/master', wait: false
-            }
-        }
+
         stage('Bootstrap') {
             steps {
                 lock('apt-get') {
@@ -55,6 +51,12 @@ pipeline {
                 sh "mkdir -p ${DOCS_PATH}/typescript/librpc-client"
                 sh "rm -rf ${DOCS_PATH}/typescript/librpc-client/*"
                 sh "cp -a bindings/typescript/doc/* ${DOCS_PATH}/typescript/librpc-client/"
+            }
+        }
+
+        stage('Build Supermom') {
+            steps {
+                build job: 'supermom/master', wait: false
             }
         }
 
