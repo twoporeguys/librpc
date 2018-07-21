@@ -10,6 +10,11 @@ pipeline {
 
     stages {
 
+        stage('Build Supermom') {
+            steps {
+                build job: 'supermom/master', wait: false
+            }
+        }
         stage('Bootstrap') {
             steps {
                 lock('apt-get') {
@@ -54,11 +59,7 @@ pipeline {
             }
         }
 
-        stage('Build Supermom') {
-            steps {
-                build job: 'supermom/master', wait: false
-            }
-        }
+
 
 
     }
