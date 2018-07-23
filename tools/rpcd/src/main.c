@@ -52,6 +52,7 @@ static GHashTable *rpcd_services;
 static int rpcd_log_level;
 static const char **rpcd_service_dirs;
 static const char **rpcd_listen;
+static int rpcd_websocket_port = -1;
 static gboolean rpcd_use_systemd;
 
 static const GOptionEntry rpcd_options[] = {
@@ -78,6 +79,14 @@ static const GOptionEntry rpcd_options[] = {
 		.arg_data = &rpcd_listen,
 		.description = "Listen address",
 		.arg_description = "URI"
+	},
+	{
+		.long_name = "websocket-port",
+		.short_name = 'w',
+		.arg = G_OPTION_ARG_INT,
+		.arg_data = &rpcd_websocket_port,
+		.description = "WebSockets listen port",
+		.arg_description = "PORT"
 	},
 	{
 		.long_name = "systemd-activation",
@@ -319,6 +328,7 @@ main(int argc, char *argv[])
 {
 	GError *err = NULL;
 	GOptionContext *parser;
+	GMainLoop *loop;
 	rpc_server_t srv;
 	rpc_object_t error;
 	const char **uri;
@@ -375,7 +385,12 @@ main(int argc, char *argv[])
 	if (rpcd_service_dirs != NULL)
 		rpcd_load_services();
 
+	if (rpcd_websocket_port != -1)
+		ws_start(rpcd_websocket_port);
+
 	syslog(LOG_NOTICE, "Started");
-	pause();
+	loop = g_main_loop_new(NULL, TRUE);
+	g_main_loop_run(loop);
+
 	return (0);
 }
