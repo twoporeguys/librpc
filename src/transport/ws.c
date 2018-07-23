@@ -319,9 +319,9 @@ ws_process_connection(SoupServer *ss __unused,
 	g_cond_init(&conn->wc_abort_cv);
 
 	rco = rpc_connection_alloc(server->ws_server);
-	rco->rco_send_msg = &ws_send_message;
-	rco->rco_abort = &ws_abort;
-	rco->rco_get_fd = &ws_get_fd;
+	rco->rco_send_msg = ws_send_message;
+	rco->rco_abort = ws_abort;
+	rco->rco_get_fd = ws_get_fd;
 	rco->rco_arg = conn;
 	conn->wc_parent = rco;
 	rco->rco_release = ws_release;
