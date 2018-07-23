@@ -308,7 +308,8 @@ struct rpc_transport loopback_transport = {
 	.connect = loopback_connect,
 	.listen = loopback_listen,
 	.is_fd_passing = loopback_supports_fd_passing,
-    	.flags = RPC_TRANSPORT_NO_SERIALIZE | RPC_TRANSPORT_FD_PASSING
+	.flags = RPC_TRANSPORT_NO_SERIALIZE | RPC_TRANSPORT_FD_PASSING |
+	    RPC_TRANSPORT_NO_RPCT_SERIALIZE
 };
 
 DECLARE_TRANSPORT(loopback_transport);
