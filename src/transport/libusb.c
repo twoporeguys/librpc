@@ -50,7 +50,7 @@ static int usb_hotplug_callback(libusb_context *, libusb_device *,
 static gboolean usb_hotplug_impl(void *);
 static bool usb_valid_pid(uint16_t);
 static int usb_connect(struct rpc_connection *, const char *, rpc_object_t);
-static int usb_send_msg(void *, void *, size_t, const int *fds, size_t nfds);
+static int usb_send_msg(void *, const void *, size_t, const int *fds, size_t nfds);
 static int usb_abort(void *);
 static int usb_get_fd(void *);
 static int usb_ping(void *, const char *);
@@ -381,7 +381,7 @@ error:
 }
 
 static int
-usb_send_msg(void *arg, void *buf, size_t len, const int *fds __unused,
+usb_send_msg(void *arg, const void *buf, size_t len, const int *fds __unused,
     size_t nfds __unused)
 {
 
