@@ -3,7 +3,11 @@ execute_process(
         OUTPUT_VARIABLE SYSTEMD_UNIT_DIR
         OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-add_executable(rpcd src/main.c)
+add_executable(rpcd
+        src/main.c
+        src/ws.c
+        src/internal.h)
+
 target_link_libraries(rpcd ${GLIB_LIBRARIES} librpc)
 configure_file(etc/rpcd.service.in rpcd.service @ONLY)
 configure_file(etc/rpcd.socket.in rpcd.socket @ONLY)
