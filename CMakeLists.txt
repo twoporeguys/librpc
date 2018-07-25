@@ -31,7 +31,7 @@ if(LINUX)
     option(BUILD_KMOD "Build and install kmod" ON)
 endif()
 
-set(PKGCONFIG_C_FLAGS "")
+set(PKGCONFIG_C_FLAGS "-fblocks")
 set(CPACK_PACKAGE_NAME librpc)
 set(CPACK_PACKAGE_VENDOR Two Pore Guys)
 set(CPACK_PACKAGE_VERSION_MAJOR 0)
