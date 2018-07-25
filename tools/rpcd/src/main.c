@@ -255,7 +255,7 @@ rpcd_load_service(const char *path)
 		return (-1);
 	}
 
-	descriptor = rpc_serializer_load("rpcd", contents, len);
+	descriptor = rpc_serializer_load("yaml", contents, len);
 	if (descriptor == NULL) {
 		syslog(LOG_WARNING, "%s: not a valid YAML", path);
 		g_free(contents);
