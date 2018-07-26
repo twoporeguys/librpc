@@ -324,6 +324,20 @@ rpct_typei_t rpct_typei_retain(rpct_typei_t typei);
 void rpct_typei_release(rpct_typei_t typei);
 
 /**
+ *
+ * @param typei
+ * @return
+ */
+bool rpct_typei_get_proxy(rpct_typei_t typei);
+
+/**
+ *
+ * @param typei
+ * @return
+ */
+const char *rpct_typei_get_proxy_variable(rpct_typei_t typei);
+
+/**
  * Returns base type of a type instance @p typei.
  *
  * @param typei Type instance handle

@@ -32,10 +32,10 @@
  * @file rpcd.h
  */
 
+#define	RPCD_SOCKET_ENV		"RPCD_SOCKET_LOCATION"
 #define	RPCD_SOCKET_LOCATION	"unix:///var/run/rpcd.sock"
 #define	RPCD_MANAGER_INTERFACE	"com.twoporeguys.rpcd.ServiceManager"
 #define	RPCD_SERVICE_INTERFACE	"com.twoporeguys.rpcd.Service"
-
 
 /**
  * Looks up a service with given name and connects to it.
