@@ -294,6 +294,7 @@
   <compound refid="rpc_8h" kind="file"><name>rpc.h</name>
   </compound>
   <compound refid="rpcd_8h" kind="file"><name>rpcd.h</name>
+    <member refid="rpcd_8h_1a204f319d051b7186891d0aab57259db0" kind="define"><name>RPCD_SOCKET_ENV</name></member>
     <member refid="rpcd_8h_1a9823ef133db1543c07651a2d9da925f3" kind="define"><name>RPCD_SOCKET_LOCATION</name></member>
     <member refid="rpcd_8h_1a68e362732de142780476f22612f534da" kind="define"><name>RPCD_MANAGER_INTERFACE</name></member>
     <member refid="rpcd_8h_1a91d602efd501a39579b00e9a1cc0c945" kind="define"><name>RPCD_SERVICE_INTERFACE</name></member>
@@ -445,6 +446,8 @@
     <member refid="typing_8h_1a5b69519413246783b273583cfb3d09d4" kind="function"><name>rpct_type_get_member</name></member>
     <member refid="typing_8h_1aaccbdef57d9289cada2a56e5bc18c3eb" kind="function"><name>rpct_typei_retain</name></member>
     <member refid="typing_8h_1a072f83e18ab9fb657649cc456b4450e4" kind="function"><name>rpct_typei_release</name></member>
+    <member refid="typing_8h_1afbdb700f7ee6b149e3e4847aff436b85" kind="function"><name>rpct_typei_get_proxy</name></member>
+    <member refid="typing_8h_1ae6b71a01ec1699ea18ffd5aaaa19f378" kind="function"><name>rpct_typei_get_proxy_variable</name></member>
     <member refid="typing_8h_1a6f327621ae6dbc69d3812723c53f3feb" kind="function"><name>rpct_typei_get_type</name></member>
     <member refid="typing_8h_1a940e59facf355b4f4195d9a23647c75f" kind="function"><name>rpct_typei_get_generic_var</name></member>
     <member refid="typing_8h_1afbb30599739b51d96d00454e0512eef1" kind="function"><name>rpct_typei_get_canonical_form</name></member>

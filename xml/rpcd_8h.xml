@@ -16,6 +16,17 @@
       </node>
     </invincdepgraph>
       <sectiondef kind="define">
+      <memberdef kind="define" id="rpcd_8h_1a204f319d051b7186891d0aab57259db0" prot="public" static="no">
+        <name>RPCD_SOCKET_ENV</name>
+        <initializer>&quot;RPCD_SOCKET_LOCATION&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/rpcd.h" line="35" column="9" bodyfile="/code/include/rpc/rpcd.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
       <memberdef kind="define" id="rpcd_8h_1a9823ef133db1543c07651a2d9da925f3" prot="public" static="no">
         <name>RPCD_SOCKET_LOCATION</name>
         <initializer>&quot;unix:///var/run/rpcd.sock&quot;</initializer>
@@ -25,7 +36,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/rpcd.h" line="35" column="9" bodyfile="/code/include/rpc/rpcd.h" bodystart="35" bodyend="-1"/>
+        <location file="/code/include/rpc/rpcd.h" line="36" column="9" bodyfile="/code/include/rpc/rpcd.h" bodystart="36" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="rpcd_8h_1a68e362732de142780476f22612f534da" prot="public" static="no">
         <name>RPCD_MANAGER_INTERFACE</name>
@@ -36,7 +47,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/rpcd.h" line="36" column="9" bodyfile="/code/include/rpc/rpcd.h" bodystart="36" bodyend="-1"/>
+        <location file="/code/include/rpc/rpcd.h" line="37" column="9" bodyfile="/code/include/rpc/rpcd.h" bodystart="37" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="rpcd_8h_1a91d602efd501a39579b00e9a1cc0c945" prot="public" static="no">
         <name>RPCD_SERVICE_INTERFACE</name>
@@ -47,7 +58,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/rpcd.h" line="37" column="9" bodyfile="/code/include/rpc/rpcd.h" bodystart="37" bodyend="-1"/>
+        <location file="/code/include/rpc/rpcd.h" line="38" column="9" bodyfile="/code/include/rpc/rpcd.h" bodystart="38" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
@@ -161,10 +172,10 @@
 <codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>LIBRPC_RPCD_H</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>LIBRPC_RPCD_H</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="30"><highlight class="normal"></highlight></codeline>
-<codeline lineno="35"><highlight class="preprocessor">#define<sp/>RPCD_SOCKET_LOCATION<sp/><sp/><sp/><sp/>&quot;unix:</highlight></codeline>
-<codeline lineno="36"><highlight class="preprocessor">#define<sp/>RPCD_MANAGER_INTERFACE<sp/><sp/>&quot;com.twoporeguys.rpcd.ServiceManager&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="37"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>RPCD_SERVICE_INTERFACE<sp/><sp/>&quot;com.twoporeguys.rpcd.Service&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="preprocessor">#define<sp/>RPCD_SOCKET_ENV<sp/><sp/><sp/><sp/><sp/>&quot;RPCD_SOCKET_LOCATION&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>RPCD_SOCKET_LOCATION<sp/><sp/><sp/><sp/>&quot;unix:</highlight></codeline>
+<codeline lineno="37"><highlight class="preprocessor">#define<sp/>RPCD_MANAGER_INTERFACE<sp/><sp/>&quot;com.twoporeguys.rpcd.ServiceManager&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>RPCD_SERVICE_INTERFACE<sp/><sp/>&quot;com.twoporeguys.rpcd.Service&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="39"><highlight class="normal"></highlight></codeline>
 <codeline lineno="46"><highlight class="normal">_Nullable<sp/><ref refid="client_8h_1a4f7230a0c2c07d27a07a88d407a06b70" kindref="member">rpc_client_t</ref><sp/><ref refid="rpcd_8h_1a7383f6110b0b5282dbd32af694ae397c" kindref="member">rpcd_connect_to</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>service_name);</highlight></codeline>
 <codeline lineno="47"><highlight class="normal"></highlight></codeline>
