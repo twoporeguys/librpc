@@ -154,6 +154,14 @@ cdef class TypeInstance(object):
             if self.type.clazz == TypeClass.ENUM:
                 return type(self.canonical, (BaseEnum,), {'typei': self})
 
+    property proxy:
+        def __get__(self):
+            return rpct_typei_get_proxy(self.rpctypei)
+
+    property proxy_variable:
+        def __get__(self):
+            return str_or_none(rpct_typei_get_proxy_variable(self.rpctypei))
+
     property type:
         def __get__(self):
             cdef Type typ
@@ -366,7 +374,7 @@ cdef class InterfaceMember(object):
             result = Property.__new__(Property)
             result.c_member = ptr
 
-        elif rpct_if_member_get_type(ptr) == RPC_MEMBER_METHOD:
+        elif rpct_if_member_get_type(ptr) == RPC_MEMBER_EVENT:
             result = Event.__new__(Event)
             result.c_member = ptr
 

@@ -1721,6 +1721,19 @@ rpct_type_get_generic_var(rpct_type_t type, int index)
 	return (g_ptr_array_index(type->generic_vars, index));
 }
 
+bool
+rpct_typei_get_proxy(rpct_typei_t typei)
+{
+
+	return (typei->proxy);
+}
+
+const char *
+rpct_typei_get_proxy_variable(rpct_typei_t typei)
+{
+
+	return (typei->variable);
+}
 
 rpct_type_t
 rpct_typei_get_type(rpct_typei_t typei)

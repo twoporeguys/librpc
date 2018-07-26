@@ -383,6 +383,8 @@ cdef extern from "rpc/typing.h" nogil:
     int rpct_type_get_generic_vars_count(rpct_type_t type)
     const char *rpct_type_get_generic_var(rpct_type_t type, int index)
 
+    bint rpct_typei_get_proxy(rpct_typei_t typei)
+    const char *rpct_typei_get_proxy_variable(rpct_typei_t typei)
     rpct_type_t rpct_typei_get_type(rpct_typei_t typei)
     const char *rpct_typei_get_canonical_form(rpct_typei_t typei)
     rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, const char *name)
