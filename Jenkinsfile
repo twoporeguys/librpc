@@ -9,13 +9,13 @@ pipeline {
     }
 
     stages {
-
-        stage('Build Supermom') {
+       stage('Build Supermom') {
             steps {
                 build job: 'supermom/master', wait: false
             }
         }
-        stage('Bootstrap') {
+
+       stage('Bootstrap') {
             steps {
                 lock('apt-get') {
 	                sh 'sudo make bootstrap'
@@ -58,9 +58,5 @@ pipeline {
                 sh "cp -a bindings/typescript/doc/* ${DOCS_PATH}/typescript/librpc-client/"
             }
         }
-
-
-
-
     }
 }
