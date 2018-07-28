@@ -91,6 +91,10 @@ rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 
 	server->rs_conn_made++;
 	g_mutex_unlock(&server->rs_mtx);
+
+	if (server->rs_event_handler != NULL)
+		server->rs_event_handler(conn, RPC_SERVER_CLIENT_CONNECT);
+
 	return (0);
 }
 
@@ -118,7 +122,6 @@ rpc_server_disconnect(rpc_server_t server, rpc_connection_t conn)
                 if (comp == conn) {
                         server->rs_connections =
                             g_list_remove_link(server->rs_connections, iter);
-			rpc_connection_release(conn);
                         break;
                 }
         }
@@ -126,7 +129,10 @@ rpc_server_disconnect(rpc_server_t server, rpc_connection_t conn)
 	g_rw_lock_writer_unlock(&server->rs_connections_rwlock);
 	g_mutex_unlock(&server->rs_mtx);
 
-	return;
+	if (server->rs_event_handler != NULL)
+		server->rs_event_handler(conn, RPC_SERVER_CLIENT_DISCONNECT);
+
+	rpc_connection_release(conn);
 }
 
 GMainContext *
@@ -271,6 +277,18 @@ rpc_server_broadcast_event(rpc_server_t server, const char *path,
 		rpc_connection_send_event(conn, path, interface, name, args);
 	}
 	g_rw_lock_reader_unlock(&server->rs_connections_rwlock);
+}
+
+void
+rpc_server_set_event_handler(rpc_server_t server,
+    rpc_server_ev_handler_t handler)
+{
+
+	if (server->rs_event_handler != NULL)
+		Block_release(server->rs_event_handler);
+
+	if (handler != NULL)
+		server->rs_event_handler = Block_copy(handler);
 }
 
 int

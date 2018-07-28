@@ -54,7 +54,7 @@ static int ws_get_fd(void *);
 static void ws_release(void *);
 static int ws_teardown(struct rpc_server *);
 static int ws_teardown_end(struct rpc_server *);
-static gboolean done_waiting (gpointer user_data);
+static gboolean ws_done_waiting (gpointer user_data);
 
 struct rpc_transport ws_transport = {
 	.name = "websocket",
@@ -237,7 +237,7 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 }
 
 static gboolean
-done_waiting (gpointer user_data)
+ws_done_waiting(gpointer user_data)
 {
 	struct ws_server *server = user_data;
 
@@ -251,7 +251,7 @@ done_waiting (gpointer user_data)
 }
 
 static int
-ws_teardown (struct rpc_server *srv)
+ws_teardown(struct rpc_server *srv)
 {
 	struct ws_server *server = srv->rs_arg;
 
@@ -262,15 +262,15 @@ ws_teardown (struct rpc_server *srv)
 
 
 static int
-ws_teardown_end (struct rpc_server *srv)
+ws_teardown_end(struct rpc_server *srv)
 {
 	struct ws_server *server = srv->rs_arg;
         GSource *source = g_idle_source_new ();
 
-        g_source_set_priority (source, G_PRIORITY_LOW);
-        g_source_set_callback (source, done_waiting, server, NULL);
-        g_source_attach (source, srv->rs_g_context);
-        g_source_unref (source);
+        g_source_set_priority(source, G_PRIORITY_LOW);
+        g_source_set_callback(source, ws_done_waiting, server, NULL);
+        g_source_attach(source, srv->rs_g_context);
+        g_source_unref(source);
 
 	g_mutex_lock(&server->ws_mtx);
 	while (!server->ws_done)

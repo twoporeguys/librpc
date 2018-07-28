@@ -1812,6 +1812,14 @@ rpc_connection_set_error_handler(rpc_connection_t conn, rpc_error_handler_t h)
 	conn->rco_error_handler = Block_copy(h);
 }
 
+const char *
+rpc_connection_get_remote_address(rpc_connection_t conn)
+{
+
+	return (conn->rco_endpoint_address);
+}
+
+
 bool
 rpc_connection_supports_fd_passing(rpc_connection_t conn)
 {

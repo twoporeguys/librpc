@@ -37,6 +37,21 @@
 #define __unused __attribute__((unused))
 #endif
 
+static void
+server_event(void *arg __unused, rpc_connection_t conn,
+    rpc_server_event_t event)
+{
+	const char *addr;
+
+	addr = rpc_connection_get_remote_address(conn);
+
+	if (event == RPC_SERVER_CLIENT_CONNECT)
+		printf("client %s connected\n", addr);
+
+	if (event == RPC_SERVER_CLIENT_DISCONNECT)
+		printf("client %s disconnected\n", addr);
+}
+
 static rpc_object_t
 hello(void *cookie __unused, rpc_object_t args)
 {
@@ -54,8 +69,6 @@ main(int argc, const char *argv[])
         __block GRand *rand = g_rand_new();
         __block gint setcnt = g_rand_int_range(rand, 50, 500);
         __block char *strg = g_malloc(27);
-	int ret;
-
 
 	(void)argc;
 	(void)argv;
@@ -85,7 +98,7 @@ main(int argc, const char *argv[])
 	    });
 
         strcpy(strg, "abcdefghijklmnopqrstuvwxyz");
-        ret = rpc_context_register_block(ctx, NULL, "stream",
+        rpc_context_register_block(ctx, NULL, "stream",
             NULL, ^rpc_object_t (void *cookie, rpc_object_t args __unused) {
                 int cnt = 0;
                 gint i;
@@ -113,6 +126,7 @@ main(int argc, const char *argv[])
         });
 
 	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
+	rpc_server_set_event_handler(srv, RPC_SERVER_HANDLER(server_event, NULL));
 	rpc_server_resume(srv);
 	sleep(30);
 	rpc_server_close(srv);

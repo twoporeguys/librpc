@@ -248,6 +248,7 @@ struct rpc_connection
 	bool			rco_has_creds;
 	bool			rco_supports_fd_passing;
 	const char *        	rco_uri;
+	char *			rco_endpoint_address;
 	rpc_error_handler_t 	rco_error_handler;
 	rpc_handler_t		rco_event_handler;
 	rpc_raw_handler_t 	rco_raw_handler;
@@ -310,6 +311,7 @@ struct rpc_server
 	uint			rs_conn_closed;
 	uint			rs_conn_aborted;
 	rpc_object_t 		rs_params;
+	rpc_server_ev_handler_t rs_event_handler;
 
     	/* Callbacks */
 	rpc_valid_fn_t		rs_valid;
