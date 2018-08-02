@@ -616,7 +616,7 @@ cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil:
             e = RpcException(errno.EFAULT, str(e))
 
         rpc_obj = Object(e)
-        rpc_function_error_ex(cookie, rpc_obj.unwrap())
+        rpc_function_error_ex(cookie, rpc_retain(rpc_obj.unwrap()))
         return <rpc_object_t>NULL
 
     rpc_obj = Object(output)
