@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
+include(GNUInstallDirs)
+include(CPack)
 project(librpc)
 
 if(UNIX AND NOT APPLE)
@@ -52,9 +54,6 @@ if(NOT RELEASE_TAG)
             OUTPUT_VARIABLE CPACK_PACKAGE_VERSION_PATCH
             OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
-
-include(GNUInstallDirs)
-include(CPack)
 
 find_package (PkgConfig REQUIRED)
 pkg_check_modules (GLIB REQUIRED glib-2.0>=2.40)
