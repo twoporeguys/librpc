@@ -24,11 +24,9 @@ pipeline {
 
         stage('Bootstrap') {
             steps {
-                lock('apt-get') {
-                    sh 'apt-get update'
-                    sh 'apt-get -y install build-essential'
-	                sh 'make bootstrap'
-                }
+                sh 'apt-get update'
+                sh 'apt-get -y install build-essential'
+                sh 'make bootstrap'
             }
         }
 
@@ -53,7 +51,7 @@ pipeline {
 
         stage('Generate typescript docs') {
             steps {
-                sh 'cd bindings/typescript && make doc'
+                sh 'make -C bindings/typescript doc'
             }
         }
 
