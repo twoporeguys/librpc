@@ -9,20 +9,24 @@ pipeline {
     environment {
         CC = 'clang'
         CXX = 'clang++'
+        DEBIAN_FRONTEND = 'noninteractive'
+        LANG = 'C'
         http_proxy = "http://proxy.twoporeguys.com:3128"
         npm_config_cache = "${pwd()}/.npm"
     }
 
     stages {
-       stage('Build Supermom') {
+        stage('Build Supermom') {
             steps {
                 build job: 'supermom/master', wait: false
             }
         }
 
-       stage('Bootstrap') {
+        stage('Bootstrap') {
             steps {
                 lock('apt-get') {
+                    sh 'apt-get update'
+                    sh 'apt-get -y install build-essential'
 	                sh 'make bootstrap'
                 }
             }
