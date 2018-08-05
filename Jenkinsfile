@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'ubuntu:18.04'
+            args '-u root:sudo -v /mnt/builds/docs:/mnt/builds/docs'
+        }
+    }
 
     environment {
         CC = 'clang'
