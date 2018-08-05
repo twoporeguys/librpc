@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'ubuntu:18.04'
-            args "-u root:sudo -v ${env.DOCS_PATH}:{env.DOCS_PATH}"
+            args "-u root:sudo -v ${env.DOCS_PATH}:${env.DOCS_PATH}"
         }
     }
 
