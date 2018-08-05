@@ -23,7 +23,8 @@ case "`uname -s`" in
             cmake clang libglib2.0-dev libsoup-gnome2.4-dev \
             libyajl-dev libblocksruntime-dev libyaml-dev libudev-dev \
             libusb-1.0-0-dev python3 cython3 python3-sphinx \
-	    libelf-dev python3-setuptools linux-headers-generic
+	        libelf-dev python3-setuptools linux-headers-generic \
+	        libsystemd-dev
         ;;
     default)
         echo "Don't know how to set up for your OS."
