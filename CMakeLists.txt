@@ -77,7 +77,7 @@ if(BUILD_BUS AND LINUX)
 endif()
 
 if(ENABLE_SYSTEMD)
-    pkg_check_modules(SYSTEMD REQUIRED systemd)
+    pkg_check_modules(SYSTEMD REQUIRED libsystemd)
 endif()
 
 if(BUNDLED_BLOCKS_RUNTIME)
@@ -282,7 +282,7 @@ if(ENABLE_LIBDISPATCH AND NOT APPLE)
 endif()
 
 if(ENABLE_SYSTEMD)
-    target_link_libraries(librpc systemd)
+    target_link_libraries(librpc ${SYSTEMD_LIBRARIES})
 endif()
 
 configure_file(librpc.pc.in ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc @ONLY)
