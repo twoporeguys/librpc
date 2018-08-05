@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'ubuntu:18.04'
-            args '-u root:sudo -v /mnt/builds/docs:/mnt/builds/docs'
+            args "-u root:sudo -v ${env.DOCS_PATH}:{env.DOCS_PATH}"
         }
     }
 
@@ -23,7 +23,7 @@ pipeline {
        stage('Bootstrap') {
             steps {
                 lock('apt-get') {
-	                sh 'sudo make bootstrap'
+	                sh 'make bootstrap'
                 }
             }
         }
