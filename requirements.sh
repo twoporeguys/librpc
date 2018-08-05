@@ -24,7 +24,7 @@ case "`uname -s`" in
             libyajl-dev libblocksruntime-dev libyaml-dev libudev-dev \
             libusb-1.0-0-dev python3 cython3 python3-sphinx \
 	        libelf-dev python3-setuptools linux-headers-generic \
-	        libsystemd-dev systemd doxygen nodejs
+	        libsystemd-dev systemd doxygen nodejs npm
         ;;
     default)
         echo "Don't know how to set up for your OS."
