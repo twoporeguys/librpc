@@ -36,8 +36,12 @@ from Cython.Distutils import build_ext
 os.environ['CC'] = 'clang'
 os.environ.setdefault('DESTDIR', '/')
 cflags = ['-fblocks', '-Wno-sometimes-uninitialized']
-ldflags = ['-g', '-lrpc']
+ldflags = ['-lrpc']
 systemd = os.environ.get('SYSTEMD_SUPPORT') == 'ON'
+
+
+if os.environ.get('CMAKE_BUILD_TYPE') == 'Debug':
+    cflags += ['-g', '-O0']
 
 
 if 'CMAKE_SOURCE_DIR' in os.environ:
