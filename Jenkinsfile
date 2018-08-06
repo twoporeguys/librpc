@@ -33,7 +33,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'mkdir -p build'
-                sh 'cd build && cmake .. -DBUILD_LIBUSB=ON -DBUILD_KMOD=OFF -DBUILD_DOC=ON'
+                sh 'cd build && cmake .. -DBUILD_LIBUSB=ON -DBUILD_DOC=ON'
                 sh 'cd build && make'
             }
         }

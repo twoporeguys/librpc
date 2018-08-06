@@ -30,7 +30,7 @@ option(ENABLE_COVERAGE "Enable code coverage")
 if(LINUX)
     option(ENABLE_SYSTEMD "Enable systemd support" ON)
     option(BUILD_BUS "Build and install bus transport" ON)
-    option(BUILD_KMOD "Build and install kmod" ON)
+    option(BUILD_KMOD "Build and install kmod")
 endif()
 
 set(PKGCONFIG_C_FLAGS "-fblocks")
