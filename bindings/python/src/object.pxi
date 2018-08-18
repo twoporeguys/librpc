@@ -628,24 +628,7 @@ cdef class Dictionary(Object):
         return repr(self)
 
     def __contains__(self, value):
-        cdef Object v1
-        cdef Object v2
-        equal = False
-
-        v1 = Object(value)
-
-        def compare(k, v):
-            nonlocal v2
-            nonlocal equal
-            v2 = v
-
-            if v1 == v2:
-                equal = True
-                return False
-            return True
-
-        self.__applier(compare)
-        return equal
+        return value in self.keys()
 
     def __delitem__(self, key):
         rpc_dictionary_remove_key(self.obj, key.encode('utf-8'))
