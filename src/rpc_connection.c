@@ -37,6 +37,7 @@
 #endif
 #include "linker_set.h"
 #include "internal.h"
+#include "notify.h"
 #include "serializer/msgpack.h"
 
 #define	DEFAULT_RPC_TIMEOUT	60
@@ -414,7 +415,7 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	q_item->item = rpc_retain(args);
 
 	g_queue_push_tail(call->rc_queue, q_item);
-	g_cond_broadcast(&call->rc_cv);
+	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
 }
 
@@ -464,7 +465,7 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	q_item->item = rpc_retain(payload);
 
 	g_queue_push_tail(call->rc_queue, q_item);
-	g_cond_broadcast(&call->rc_cv);
+	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
 }
 
@@ -492,7 +493,7 @@ on_rpc_continue(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	g_mutex_lock(&call->rc_mtx);
 	g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
 	call->rc_consumer_seqno += increment;
-	g_cond_broadcast(&call->rc_cv);
+	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
 }
 
@@ -525,7 +526,7 @@ on_rpc_end(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 	q_item->item = rpc_retain(args);
 
 	g_queue_push_tail(call->rc_queue, q_item);
-	g_cond_broadcast(&call->rc_cv);
+	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
 }
 
@@ -548,7 +549,7 @@ on_rpc_abort(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 	g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
 	call->rc_ended = true;
 	call->rc_aborted = true;
-	g_cond_broadcast(&call->rc_cv);
+	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
 
 	if (call->rc_abort_handler) {
@@ -587,7 +588,7 @@ on_rpc_error(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	q_item->item = rpc_retain(args);
 
 	g_queue_push_tail(call->rc_queue, q_item);
-	g_cond_broadcast(&call->rc_cv);
+	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
 }
 
@@ -812,7 +813,7 @@ rpc_close(rpc_connection_t conn)
 	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&call)) {
 		g_mutex_lock(&call->rc_mtx);
 		call->rc_aborted = true;
-		g_cond_broadcast(&call->rc_cv);
+		notify_signal(&call->rc_notify);
 		g_mutex_unlock(&call->rc_mtx);
 
 		if (call->rc_abort_handler) {
@@ -839,7 +840,7 @@ rpc_close(rpc_connection_t conn)
 		    "Connection closed", NULL);
 
 		g_queue_push_tail(call->rc_queue, q_item);
-		g_cond_broadcast(&call->rc_cv);
+		notify_signal(&call->rc_notify);
 		g_mutex_unlock(&call->rc_mtx);
 	}
 	g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
@@ -882,7 +883,7 @@ rpc_call_alloc(rpc_connection_t conn, rpc_object_t id, const char *path,
 	call->rc_args = call_args;
 	call->rc_id = id != NULL ? id : rpc_new_id();
 	g_mutex_init(&call->rc_mtx);
-	g_cond_init(&call->rc_cv);
+	notify_init(&call->rc_notify);
 
 	return (call);
 }
@@ -973,10 +974,21 @@ rpc_connection_send_err(rpc_connection_t conn, rpc_object_t id, int code,
 static int
 rpc_call_wait_locked(rpc_call_t call)
 {
-	while (g_queue_is_empty(call->rc_queue))
-		g_cond_wait(&call->rc_cv, &call->rc_mtx);
+	int ret = 0;
 
-	return (0);
+	while (g_queue_is_empty(call->rc_queue)) {
+		g_mutex_unlock(&call->rc_mtx);
+		ret = notify_wait(&call->rc_notify);
+		if (ret < 0 && errno == EINTR) {
+			rpc_set_last_errorf(EINTR, "Interrupted by signal");
+			g_mutex_lock(&call->rc_mtx);
+			return (-1);
+		}
+
+		g_mutex_lock(&call->rc_mtx);
+	}
+
+	return (ret);
 }
 
 static gboolean
@@ -1003,7 +1015,7 @@ rpc_call_timeout(gpointer user_data)
 	q_item->item = rpc_error_create(ETIMEDOUT, "Call timed out", NULL);
 
 	g_queue_push_tail(call->rc_queue, q_item);
-	g_cond_broadcast(&call->rc_cv);
+	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
 
 	return (false);
@@ -1933,7 +1945,11 @@ rpc_call_continue(rpc_call_t call, bool sync)
 	g_free(q_item);
 
 	if (sync && ret == 0) {
-		rpc_call_wait_locked(call);
+		if (rpc_call_wait_locked(call) < 0) {
+			g_mutex_unlock(&call->rc_mtx);
+			return (-1);
+		}
+
 		g_mutex_unlock(&call->rc_mtx);
 		return (rpc_call_success(call));
 	}
@@ -1990,18 +2006,15 @@ inline int
 rpc_call_timedwait(rpc_call_t call, const struct timeval *ts)
 {
 	int ret = 0;
-	int64_t end_time;
-
-	end_time = g_get_monotonic_time();
-	end_time += ts->tv_sec * 1000000;
-	end_time += ts->tv_usec;
 
 	g_mutex_lock(&call->rc_mtx);
 	while (g_queue_is_empty(call->rc_queue)) {
-		if (!g_cond_wait_until(&call->rc_cv, &call->rc_mtx, end_time)) {
+		g_mutex_unlock(&call->rc_mtx);
+		if (!notify_timedwait(&call->rc_notify, ts)) {
 			ret = -1;
 			break;
 		}
+		g_mutex_lock(&call->rc_mtx);
 	}
 
 	g_mutex_unlock(&call->rc_mtx);

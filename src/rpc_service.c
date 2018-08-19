@@ -488,8 +488,11 @@ rpc_function_yield_impl(void *cookie, rpc_object_t fragment)
 	g_mutex_lock(&call->rc_mtx);
 
 	while (call->rc_producer_seqno == call->rc_consumer_seqno &&
-	    !call->rc_aborted)
-		g_cond_wait(&call->rc_cv, &call->rc_mtx);
+	    !call->rc_aborted) {
+		g_mutex_unlock(&call->rc_mtx);
+		notify_wait(&call->rc_notify);
+		g_mutex_lock(&call->rc_mtx);
+	}
 
 	if (call->rc_aborted) {
 		if (!call->rc_ended) {
@@ -531,8 +534,11 @@ rpc_function_end_impl(void *cookie)
 	g_mutex_lock(&call->rc_mtx);
 
 	while (call->rc_producer_seqno == call->rc_consumer_seqno &&
-	    !call->rc_aborted)
-		g_cond_wait(&call->rc_cv, &call->rc_mtx);
+	    !call->rc_aborted) {
+		g_mutex_unlock(&call->rc_mtx);
+		notify_wait(&call->rc_notify);
+		g_mutex_lock(&call->rc_mtx);
+	}
 
 	if (call->rc_aborted) {
 		if (!call->rc_ended) {
@@ -571,7 +577,7 @@ rpc_function_kill_impl(void *cookie)
 
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_aborted = true;
-	g_cond_broadcast(&call->rc_cv);
+	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
 }
 

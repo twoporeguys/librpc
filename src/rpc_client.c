@@ -33,7 +33,13 @@
 static void *
 rpc_client_worker(void *arg)
 {
+	sigset_t set;
 	rpc_client_t client = arg;
+
+	sigemptyset(&set);
+	sigaddset(&set, SIGINT);
+	sigaddset(&set, SIGTERM);
+	pthread_sigmask(SIG_BLOCK, &set, NULL);
 
 	g_main_context_push_thread_default(client->rci_g_context);
 	g_main_loop_run(client->rci_g_loop);

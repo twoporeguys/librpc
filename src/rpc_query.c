@@ -494,9 +494,8 @@ rpc_query(rpc_object_t object, rpc_query_params_t params, rpc_object_t rules)
 		return (NULL);
 	}
 
-	iter = (rpc_query_iter_t)g_malloc(sizeof(*iter));
-
-	local_params = (rpc_query_params_t)g_malloc(sizeof(*local_params));
+	iter = g_malloc(sizeof(*iter));
+	local_params = g_malloc(sizeof(*local_params));
 
 	if (params != NULL)
 		*local_params = *params;

@@ -43,6 +43,7 @@
 #include <dispatch/dispatch.h>
 #endif
 #include "linker_set.h"
+#include "notify.h"
 
 #ifndef __unused
 #define __unused __attribute__((unused))
@@ -200,7 +201,7 @@ struct rpc_call
 	rpc_object_t        	rc_id;
 	rpc_object_t        	rc_args;
 	rpc_object_t		rc_err;
-	GCond      		rc_cv;
+	struct notify		rc_notify;
 	GMutex			rc_mtx;
 	GSource *		rc_timeout;
 	GQueue *		rc_queue;
