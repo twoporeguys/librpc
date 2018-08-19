@@ -40,43 +40,59 @@ notify_init(struct notify *notify)
 {
 	struct kevent kev;
 
-	if (kqueue_fd == -1)
+	if (kqueue_fd == -1) {
 		kqueue_fd = kqueue();
+		g_assert(kqueue_fd != -1);
+	}
 
 	notify->fd = ++id;
-	EV_SET(&kev, notify->fd, EVFILT_USER, EV_ADD, NOTE_FFCOPY, 0, NULL);
-	kevent(kqueue_fd, &kev, 1, NULL, 0, NULL);
+
+	EV_SET(&kev, notify->fd, EVFILT_USER, EV_ADD | EV_CLEAR, 0, 0, NULL);
+	if (kevent(kqueue_fd, &kev, 1, NULL, 0, NULL) != 0)
+		g_assert_not_reached();
+}
 
 void
 notify_free(struct notify *notify)
 {
+	struct kevent kev;
 
-	close(notify->fd);
-	g_free(notify);
+	EV_SET(&kev, notify->fd, EVFILT_USER, EV_DELETE, 0, 0, NULL);
+	if (kevent(kqueue_fd, &kev, 1, NULL, 0, NULL) != 0)
+		g_assert_not_reached();
 }
 
 int
 notify_wait(struct notify *notify)
 {
-	eventfd_t value;
 
-	if (eventfd_read(notify->fd, &value) < 0) {
-		printf("eventfd_read() = %d\n", errno);
-		return (-1);
-	}
-
-	return ((int)value);
+	return (notify_timedwait(notify, NULL));
 }
 
 int
-notify_timedwait(struct notify *notify, const struct timeval *ts)
+notify_timedwait(struct notify *notify, const struct timespec *ts)
 {
+	struct kevent kev;
+	int ret;
 
+	for (;;) {
+		ret = kevent(kqueue_fd, NULL, 0, &kev, 1, ts);
+		if (ret < 0)
+			return (-1);
+
+		if (ret == 0)
+			return (0);
+
+		if (kev.ident == (uintptr_t)notify->fd)
+			return (1);
+	}
 }
 
 int
 notify_signal(struct notify *notify)
 {
+	struct kevent kev;
 
-	return (eventfd_write(notify->fd, 1));
+	EV_SET(&kev, notify->fd, EVFILT_USER, 0, NOTE_TRIGGER, 1, NULL);
+	return (kevent(kqueue_fd, &kev, 1, NULL, 0, NULL));
 }
