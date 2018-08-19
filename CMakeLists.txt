@@ -223,6 +223,14 @@ set(VALIDATOR_FILES
         src/validator/string_regex.c
         src/validator/int64_range.c)
 
+if(LINUX)
+    set(CORE_FILES ${CORE_FILES} src/notify_eventfd.c)
+endif()
+
+if(APPLE)
+    set(CORE_FILES ${CORE_FILES} src/notify_kqueue.c)
+endif()
+
 if(BUILD_JSON)
 	set(SERIALIZER_FILES
 			${SERIALIZER_FILES}
@@ -237,7 +245,7 @@ if(BUNDLED_BLOCKS_RUNTIME)
 endif()
 
 if(BUILD_LIBUSB)
-set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/libusb.c)
+    set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/libusb.c)
 endif()
 
 if(BUILD_BUS AND LINUX)
