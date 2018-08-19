@@ -798,17 +798,20 @@ rpc_close(rpc_connection_t conn)
 		 */
 		g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
-		if (conn->rco_server || conn->rco_closed) {
+
+		if (conn->rco_server != NULL) {
 			g_mutex_unlock(&conn->rco_mtx);
 			rpc_connection_close(conn);
 		} else
 			g_mutex_unlock(&conn->rco_mtx);
+
 		rpc_connection_release(conn);
 		return (0);
 	}
 
 	/* Tear down all the running inbound/outbound calls */
 	g_mutex_unlock(&conn->rco_mtx);
+
 	g_hash_table_iter_init(&iter, conn->rco_inbound_calls);
 	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&call)) {
 		g_mutex_lock(&call->rc_mtx);
@@ -822,11 +825,9 @@ rpc_close(rpc_connection_t conn)
 			call->rc_abort_handler = NULL;
 		}
 	}
-	g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
 
 	g_hash_table_iter_init(&iter, conn->rco_calls);
 	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&call)) {
-
 		g_mutex_lock(&call->rc_mtx);
 		/* Cancel timeout source */
 		if (cancel_timeout_locked(call) != 0) {
@@ -843,6 +844,8 @@ rpc_close(rpc_connection_t conn)
 		notify_signal(&call->rc_notify);
 		g_mutex_unlock(&call->rc_mtx);
 	}
+
+	g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
 	g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 	rpc_connection_release(conn);
 
