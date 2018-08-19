@@ -2149,17 +2149,17 @@
         </inbodydescription>
         <location file="/code/include/rpc/connection.h" line="644" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="connection_8h_1aadc9504fdc18875824385dea55cb7384" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="connection_8h_1a5006d9039a8e24cf613d2dc06f161460" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
         <definition>int rpc_call_timedwait</definition>
-        <argsstring>(_Nonnull rpc_call_t call, const struct timeval *_Nonnull ts)</argsstring>
+        <argsstring>(_Nonnull rpc_call_t call, const struct timespec *_Nonnull ts)</argsstring>
         <name>rpc_call_timedwait</name>
         <param>
           <type>_Nonnull <ref refid="connection_8h_1aeb6f25e395cc04930537960ef6b50106" kindref="member">rpc_call_t</ref></type>
           <declname>call</declname>
         </param>
         <param>
-          <type>const struct timeval *_Nonnull</type>
+          <type>const struct timespec *_Nonnull</type>
           <declname>ts</declname>
         </param>
         <briefdescription>
@@ -2547,8 +2547,8 @@
 <codeline lineno="636"><highlight class="normal"></highlight></codeline>
 <codeline lineno="644"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1ad3d465fd37962695f644cfd3b24a2022" kindref="member">rpc_call_set_prefetch</ref>(_Nonnull<sp/>rpc_call_t<sp/>call,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>nitems);</highlight></codeline>
 <codeline lineno="645"><highlight class="normal"></highlight></codeline>
-<codeline lineno="656"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1aadc9504fdc18875824385dea55cb7384" kindref="member">rpc_call_timedwait</ref>(_Nonnull<sp/>rpc_call_t<sp/>call,</highlight></codeline>
-<codeline lineno="657"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>timeval<sp/>*_Nonnull<sp/>ts);</highlight></codeline>
+<codeline lineno="656"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a5006d9039a8e24cf613d2dc06f161460" kindref="member">rpc_call_timedwait</ref>(_Nonnull<sp/>rpc_call_t<sp/>call,</highlight></codeline>
+<codeline lineno="657"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>timespec<sp/>*_Nonnull<sp/>ts);</highlight></codeline>
 <codeline lineno="658"><highlight class="normal"></highlight></codeline>
 <codeline lineno="665"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="connection_8h_1a01a0d673bf8f756e5fb5e37e6564c431" kindref="member">rpc_call_success</ref>(_Nonnull<sp/>rpc_call_t<sp/>call);</highlight></codeline>
 <codeline lineno="666"><highlight class="normal"></highlight></codeline>

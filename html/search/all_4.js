@@ -76,7 +76,7 @@ var searchData=
   ['rpc_5fcall_5fstatus_5ft',['rpc_call_status_t',['../connection_8h.html#a5e44285dc90be1f6bc541504a3f6d929',1,'connection.h']]],
   ['rpc_5fcall_5fsuccess',['rpc_call_success',['../connection_8h.html#a01a0d673bf8f756e5fb5e37e6564c431',1,'connection.h']]],
   ['rpc_5fcall_5ft',['rpc_call_t',['../connection_8h.html#aeb6f25e395cc04930537960ef6b50106',1,'connection.h']]],
-  ['rpc_5fcall_5ftimedwait',['rpc_call_timedwait',['../connection_8h.html#aadc9504fdc18875824385dea55cb7384',1,'connection.h']]],
+  ['rpc_5fcall_5ftimedwait',['rpc_call_timedwait',['../connection_8h.html#a5006d9039a8e24cf613d2dc06f161460',1,'connection.h']]],
   ['rpc_5fcall_5ftimeout',['RPC_CALL_TIMEOUT',['../connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70',1,'connection.h']]],
   ['rpc_5fcall_5ftype',['rpc_call_type',['../connection_8h.html#afd626c88bce592c3eca93e0a2a6649f4',1,'connection.h']]],
   ['rpc_5fcall_5ftype_5ft',['rpc_call_type_t',['../connection_8h.html#a023a05257c5dd7a313e1fcb3a7362dcb',1,'connection.h']]],

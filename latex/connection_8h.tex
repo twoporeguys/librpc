@@ -168,7 +168,7 @@ int \hyperlink{connection_8h_af99ba11c3cb8f36c112d39fcafb73c50}{rpc\+\_\+call\+\
 \item 
 int \hyperlink{connection_8h_ad3d465fd37962695f644cfd3b24a2022}{rpc\+\_\+call\+\_\+set\+\_\+prefetch} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call, size\+\_\+t nitems)
 \item 
-int \hyperlink{connection_8h_aadc9504fdc18875824385dea55cb7384}{rpc\+\_\+call\+\_\+timedwait} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call, const struct timeval $\ast$\+\_\+\+Nonnull ts)
+int \hyperlink{connection_8h_a5006d9039a8e24cf613d2dc06f161460}{rpc\+\_\+call\+\_\+timedwait} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call, const struct timespec $\ast$\+\_\+\+Nonnull ts)
 \item 
 int \hyperlink{connection_8h_a01a0d673bf8f756e5fb5e37e6564c431}{rpc\+\_\+call\+\_\+success} (\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t} call)
 \item 
@@ -587,11 +587,11 @@ Checks whether a call has been completed successfully.
 \begin{DoxyReturn}{Returns}
 1 when call was successfully completed, otherwise 0 
 \end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_aadc9504fdc18875824385dea55cb7384}\label{connection_8h_aadc9504fdc18875824385dea55cb7384}} 
+\mbox{\Hypertarget{connection_8h_a5006d9039a8e24cf613d2dc06f161460}\label{connection_8h_a5006d9039a8e24cf613d2dc06f161460}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+timedwait@{rpc\+\_\+call\+\_\+timedwait}}
 \index{rpc\+\_\+call\+\_\+timedwait@{rpc\+\_\+call\+\_\+timedwait}!connection.\+h@{connection.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+call\+\_\+timedwait()}{rpc\_call\_timedwait()}}
-{\footnotesize\ttfamily int rpc\+\_\+call\+\_\+timedwait (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}}]{call,  }\item[{const struct timeval $\ast$\+\_\+\+Nonnull}]{ts }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int rpc\+\_\+call\+\_\+timedwait (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\+\_\+call\+\_\+t}}]{call,  }\item[{const struct timespec $\ast$\+\_\+\+Nonnull}]{ts }\end{DoxyParamCaption})}
 
 Waits for a call to change status.
 
