@@ -241,6 +241,7 @@ cdef class Connection(object):
         cdef const char *c_path
         cdef const char *c_interface = NULL
         cdef const char *c_method
+        cdef int ret
 
         if self.connection == <rpc_connection_t>NULL:
             raise RuntimeError("Not connected")
@@ -262,7 +263,10 @@ cdef class Connection(object):
             raise_internal_exc(rpc=True)
 
         with nogil:
-            rpc_call_wait(call)
+            ret = rpc_call_wait(call)
+
+        if ret < 0:
+            raise_internal_exc()
 
         call_status = rpc_call_status(call)
 
@@ -279,7 +283,10 @@ cdef class Connection(object):
                 while call_status == CallStatus.MORE_AVAILABLE:
                     yield get_chunk()
                     with nogil:
-                        rpc_call_continue(call, True)
+                        ret = rpc_call_continue(call, True)
+
+                    if ret < 0:
+                        raise_internal_exc()
 
                     call_status = rpc_call_status(call)
             finally:
