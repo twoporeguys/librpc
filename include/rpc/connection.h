@@ -654,7 +654,7 @@ int rpc_call_set_prefetch(_Nonnull rpc_call_t call, size_t nitems);
  * @return 0 on success, -1 on failure or timeout
  */
 int rpc_call_timedwait(_Nonnull rpc_call_t call,
-    const struct timeval *_Nonnull ts);
+    const struct timespec *_Nonnull ts);
 
 /**
  * Checks whether a call has been completed successfully.
