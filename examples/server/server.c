@@ -66,6 +66,7 @@ int
 main(int argc, const char *argv[])
 {
 	rpc_context_t ctx;
+	rpc_object_t error;
 	__block rpc_server_t srv;
         __block GRand *rand = g_rand_new();
         __block gint setcnt = g_rand_int_range(rand, 50, 500);
@@ -127,9 +128,16 @@ main(int argc, const char *argv[])
         });
 
 	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
+	if (srv == NULL) {
+		error = rpc_get_last_error();
+		fprintf(stderr, "Cannot create server: %s\n",
+			rpc_error_get_message(error));
+		return (1);
+	}
+
 	rpc_server_set_event_handler(srv, RPC_SERVER_HANDLER(server_event, NULL));
 	rpc_server_resume(srv);
 	pause();
 	rpc_server_close(srv);
-	return(0);
+	return (0);
 }
