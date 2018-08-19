@@ -53,6 +53,7 @@ static int cmd_call(int argc, char *argv[]);
 static int cmd_get(int argc, char *argv[]);
 static int cmd_set(int argc, char *argv[]);
 static int cmd_listen(int argc, char *argv[]);
+static void  usage(GOptionContext *);
 
 static const char *server;
 static const char **idls;
@@ -414,6 +415,15 @@ cmd_listen(int argc, char *argv[])
 	return (0);
 }
 
+static void
+usage(GOptionContext *context)
+{
+	g_autofree char *help;
+
+	help = g_option_context_get_help(context, true, NULL);
+	fprintf(stderr, "%s", help);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -427,12 +437,11 @@ main(int argc, char *argv[])
 	g_option_context_set_description(context, USAGE_STRING);
 	g_option_context_add_main_entries(context, options, NULL);
 	if (!g_option_context_parse(context, &argc, &argv, &err)) {
-
+		usage(context);
 	}
 
 	if (args == NULL) {
-		fprintf(stderr, "No command specified. Use \"rpctool -h\" to "
-		    "get help.\n");
+		usage(context);
 		return (1);
 	}
 
