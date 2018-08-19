@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#include <signal.h>
 #include <glib.h>
 #include <rpc/object.h>
 #include <rpc/service.h>
@@ -84,7 +85,7 @@ main(int argc, const char *argv[])
 
 	rpc_context_register_block(ctx, NULL, "delay",
 	    NULL, ^(void *cookie __unused, rpc_object_t args __unused) {
-		sleep(60);
+		sleep(5);
 		return (rpc_int64_create(42));
 	    });
 
@@ -128,7 +129,7 @@ main(int argc, const char *argv[])
 	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
 	rpc_server_set_event_handler(srv, RPC_SERVER_HANDLER(server_event, NULL));
 	rpc_server_resume(srv);
-	sleep(30);
+	pause();
 	rpc_server_close(srv);
 	return(0);
 }
