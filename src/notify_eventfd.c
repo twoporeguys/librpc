@@ -53,10 +53,8 @@ notify_wait(struct notify *notify)
 {
 	eventfd_t value;
 
-	if (eventfd_read(notify->fd, &value) < 0) {
-		printf("eventfd_read() = %d\n", errno);
+	if (eventfd_read(notify->fd, &value) < 0)
 		return (-1);
-	}
 
 	return ((int)value);
 }
@@ -73,10 +71,8 @@ notify_timedwait(struct notify *notify, const struct timespec *ts)
 
 	switch (ppoll(&pfd, 1, ts, NULL)) {
 	case 1:
-		if (eventfd_read(notify->fd, &value) < 0) {
-			printf("eventfd_read() = %d\n", errno);
+		if (eventfd_read(notify->fd, &value) < 0)
 			return (-1);
-		}
 
 		return ((int)value);
 
