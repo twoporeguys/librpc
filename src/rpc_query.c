@@ -290,12 +290,16 @@ rpc_query_find_next(rpc_query_iter_t iter)
 rpc_object_t
 rpc_query_get(rpc_object_t object, const char *path, rpc_object_t default_val)
 {
-	char *split_path = g_strdup(path);
+	char *split_path;
 	char *token;
 	rpc_object_t leaf = object;
 	rpc_object_t retval = default_val;
 	bool error = false;
 
+	if (path == NULL)
+		return (NULL);
+
+	split_path = g_strdup(path);
 	token = strtok(split_path, ".");
 	while (token != NULL) {
 		switch(rpc_get_type(leaf)) {
