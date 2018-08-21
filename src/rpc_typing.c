@@ -115,13 +115,16 @@ rpct_newi(rpct_typei_t typei, rpc_object_t object)
 rpc_object_t
 rpct_set_typei(rpct_typei_t typei, rpc_object_t object)
 {
+	const char *typename;
+
 	if (object == NULL)
 		return (NULL);
 
+	typename = rpc_get_type_name(object->ro_type);
 	typei = rpct_unwind_typei(typei);
 
 	if (typei->type->clazz == RPC_TYPING_BUILTIN &&
-	    !rpct_type_is_compatible(object->ro_typei, typei))
+	    g_strcmp0(typei->canonical_form, typename ) != 0)
 		return (NULL);
 
 	if (object->ro_typei != NULL)
