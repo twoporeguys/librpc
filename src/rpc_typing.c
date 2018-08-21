@@ -41,7 +41,8 @@ static rpc_object_t rpct_stream_idl(void *cookie, rpc_object_t args);
 #if 0
 static inline bool rpct_type_is_fully_specialized(struct rpct_typei *inst);
 #endif
-static inline bool rpct_type_is_compatible(struct rpct_typei *, struct rpct_typei *);
+static inline bool rpct_type_is_compatible(struct rpct_typei *,
+    struct rpct_typei *);
 static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *typei);
 static char *rpct_canonical_type(struct rpct_typei *typei);
 static int rpct_read_type(struct rpct_file *file, const char *decl,
@@ -124,7 +125,7 @@ rpct_set_typei(rpct_typei_t typei, rpc_object_t object)
 	typei = rpct_unwind_typei(typei);
 
 	if (typei->type->clazz == RPC_TYPING_BUILTIN &&
-	    g_strcmp0(typei->canonical_form, typename ) != 0)
+	    g_strcmp0(typei->canonical_form, typename) != 0)
 		return (NULL);
 
 	if (object->ro_typei != NULL)
@@ -402,10 +403,12 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 			goto error;
 
 		for (guint i = 0; i < splitvars->len; i++) {
-			const char *var = g_ptr_array_index(type->generic_vars, i);
 			const char *vartype = g_ptr_array_index(splitvars, i);
+			const char *var = g_ptr_array_index(
+			    type->generic_vars, i);
 
-			subtype = rpct_instantiate_type(vartype, ret, ptype, origin);
+			subtype = rpct_instantiate_type(vartype, ret, ptype,
+			    origin);
 			if (subtype == NULL) {
 				rpc_set_last_errorf(EINVAL,
 				    "Cannot instantiate generic type %s in %s",
@@ -626,7 +629,8 @@ rpct_parse_type(const char *decl, GPtrArray *variables)
 	}
 
 	groups++;
-	g_ptr_array_add(variables, g_strndup(&decl[istart], (gsize)(i - istart)));
+	g_ptr_array_add(variables, g_strndup(&decl[istart],
+	    (gsize)(i - istart)));
 	return (groups);
 }
 
@@ -651,7 +655,8 @@ rpct_canonical_type(struct rpct_typei *typei)
 	g_string_append(ret, "<");
 	g_hash_table_iter_init(&iter, typei->specializations);
 
-	while (g_hash_table_iter_next(&iter, (gpointer *)&key, (gpointer *)&value)) {
+	while (g_hash_table_iter_next(&iter, (gpointer *)&key,
+	    (gpointer *)&value)) {
 		substr = rpct_canonical_type(value);
 		g_string_append(ret, substr);
 		g_free(substr);
@@ -776,7 +781,8 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	}
 
 	type = g_malloc0(sizeof(*type));
-	type->origin = g_strdup_printf("%s:%zu", file->path, rpc_get_line_number(obj));
+	type->origin = g_strdup_printf("%s:%zu", file->path,
+	    rpc_get_line_number(obj));
 	type->name = typename;
 	type->file = file;
 	type->parent = parent;
@@ -789,7 +795,8 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 	handler = rpc_find_class_handler(decltype, (rpct_class_t)-1);
 	if (handler == NULL) {
-		rpc_set_last_errorf(EINVAL, "Unknown class handler: %s", decltype);
+		rpc_set_last_errorf(EINVAL, "Unknown class handler: %s",
+		    decltype);
 		rpct_type_free(type);
 		g_free(typename);
 		ret = -1;
@@ -839,7 +846,8 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 	if (type_def != NULL) {
 		type->clazz = RPC_TYPING_TYPEDEF;
-		type->definition = rpct_instantiate_type(type_def, NULL, type, file);
+		type->definition = rpct_instantiate_type(type_def, NULL,
+		    type, file);
 
 		g_assert_nonnull(type->definition);
 	}
@@ -1038,13 +1046,15 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 				return ((bool)false);
 			}
 
-			arg_inst = rpct_instantiate_type(arg_type, NULL, NULL, file);
+			arg_inst = rpct_instantiate_type(arg_type, NULL, NULL,
+			    file);
 			if (arg_inst == NULL)
 				return ((bool)false);
 
 			arg = g_malloc0(sizeof(*arg));
 			arg->name = g_strdup(arg_name);
-			arg->description = g_strdup(rpc_dictionary_get_string(i, "description"));
+			arg->description = g_strdup(rpc_dictionary_get_string(
+			    i, "description"));
 			arg->type = arg_inst;
 			g_ptr_array_add(method->arguments, arg);
 			return ((bool)true);
@@ -1054,7 +1064,9 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 
 	if (returns != NULL) {
 		returns_type = rpc_dictionary_get_string(returns, "type");
-		method->result = rpct_instantiate_type(returns_type, NULL, NULL, file);
+		method->result = rpct_instantiate_type(returns_type, NULL,
+		    NULL, file);
+
 		if (method->result == NULL)
 			goto error;
 	}
@@ -1103,7 +1115,8 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	}
 
 	iface = g_malloc0(sizeof(*iface));
-	iface->origin = g_strdup_printf("%s:%zu", file->path, rpc_get_line_number(obj));
+	iface->origin = g_strdup_printf("%s:%zu", file->path,
+	    rpc_get_line_number(obj));
 	iface->name = g_match_info_fetch(match, 1);
 	iface->members = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    g_free, (GDestroyNotify)rpct_if_member_free);
@@ -1220,10 +1233,12 @@ rpct_run_validators(struct rpct_typei *typei, rpc_object_t obj,
 
 	/* Run validators */
 	g_hash_table_iter_init(&iter, typei->constraints);
-	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&value)) {
+	while (g_hash_table_iter_next(&iter, (gpointer *)&key,
+	    (gpointer *)&value)) {
 		v = rpc_find_validator(typename, key);
 		if (v == NULL) {
-			rpct_add_error(errctx, NULL, "Validator %s not found", key);
+			rpct_add_error(errctx, NULL, "Validator %s not found",
+			    key);
 			valid = false;
 			continue;
 		}
@@ -1591,8 +1606,10 @@ rpct_load_types(const char *path)
 
 	if (fail) {
 		error = rpc_get_last_error();
-		errmsg = g_strdup_printf("%s: %s", path, rpc_error_get_message(error));
-		rpc_set_last_error(rpc_error_get_code(error), errmsg, rpc_error_get_extra(error));
+		errmsg = g_strdup_printf("%s: %s", path,
+		    rpc_error_get_message(error));
+		rpc_set_last_error(rpc_error_get_code(error), errmsg,
+		    rpc_error_get_extra(error));
 		return (-1);
 	}
 
@@ -2008,7 +2025,8 @@ rpct_serialize(rpc_object_t object)
 	if (context == NULL)
 		return (rpc_retain(object));
 
-	if (object->ro_typei == NULL || object->ro_typei->type->clazz == RPC_TYPING_BUILTIN) {
+	if (object->ro_typei == NULL ||
+	    object->ro_typei->type->clazz == RPC_TYPING_BUILTIN) {
 		/* Try recursively */
 		if (rpc_get_type(object) == RPC_TYPE_DICTIONARY) {
 			cont = rpc_dictionary_create();
