@@ -879,6 +879,12 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 	    "write-only", &write_only,
 	    "notify", &notify);
 
+	if (!type) {
+		rpc_set_last_errorf(EINVAL, "Property %s has no type defined",
+		    name);
+		goto error;
+	}
+
 	if (!g_regex_match(rpct_property_regex, decl, 0, &match)) {
 		rpc_set_last_errorf(EINVAL, "Cannot parse: %s", decl);
 		goto error;
@@ -901,9 +907,7 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 		goto error;
 	}
 
-	if (type)
-		prop->result = rpct_instantiate_type(type, NULL, NULL, file);
-
+	prop->result = rpct_instantiate_type(type, NULL, NULL, file);
 	if (prop->result == NULL)
 		goto error;
 
@@ -933,7 +937,8 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
 	    "type", &type);
 
 	if (type == NULL) {
-		rpc_set_last_errorf(EINVAL, "Cannot process NULL type: %s", decl);
+		rpc_set_last_errorf(EINVAL, "Event %s has no type defined",
+		    name);
 		goto error;
 	}
 
@@ -956,12 +961,8 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
 	if (type)
 		evt->result = rpct_instantiate_type(type, NULL, NULL, file);
 
-	if (evt->result == NULL) {
-		rpc_set_last_errorf(EINVAL,
-		    "Cannot instantiate type %s of event %s",
-		    (type == NULL) ? "NULL" : type, name);
+	if (evt->result == NULL)
 		goto error;
-	}
 
 	g_hash_table_insert(iface->members, g_strdup(name), evt);
 	ret = 0;
@@ -1051,12 +1052,8 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 	if (returns != NULL) {
 		returns_type = rpc_dictionary_get_string(returns, "type");
 		method->result = rpct_instantiate_type(returns_type, NULL, NULL, file);
-		if (method->result == NULL) {
-			rpc_set_last_errorf(EINVAL,
-			    "Cannot instantiate return type %s of method %s",
-			    returns_type, name);
+		if (method->result == NULL)
 			goto error;
-		}
 	}
 
 	method->description = g_strdup(description);

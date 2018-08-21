@@ -1881,21 +1881,10 @@ rpc_connection_get_remote_pid(rpc_connection_t conn)
 int
 rpc_call_wait(rpc_call_t call)
 {
-	rpc_call_status_t status;
 	int ret;
 
 	g_assert_nonnull(call);
-
 	g_mutex_lock(&call->rc_mtx);
-	status = rpc_call_status_locked(call);
-
-	if (status != RPC_CALL_IN_PROGRESS &&
-	    status != RPC_CALL_MORE_AVAILABLE) {
-		errno = EINVAL;
-		g_mutex_unlock(&call->rc_mtx);
-		return (-1);
-	}
-
 	ret = rpc_call_wait_locked(call);
 	g_mutex_unlock(&call->rc_mtx);
 
