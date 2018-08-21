@@ -75,11 +75,9 @@ rpc_prim_create(rpc_type_t type, union rpc_value val)
 	if (ro == NULL)
 		rpc_abort("malloc() returned NULL");
 
-	ro->ro_typei = rpct_new_typei(rpc_get_type_name(type));
 	ro->ro_type = type;
 	ro->ro_value = val;
 	ro->ro_refcnt = 1;
-
 	return (ro);
 }
 
@@ -1610,7 +1608,6 @@ rpc_error_get_stack(rpc_object_t error)
 
 	return (error->ro_value.rv_error.rev_stack);
 }
-
 
 void
 rpc_error_set_extra(rpc_object_t error, rpc_object_t extra)

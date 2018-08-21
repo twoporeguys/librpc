@@ -120,12 +120,12 @@ rpct_set_typei(rpct_typei_t typei, rpc_object_t object)
 
 	typei = rpct_unwind_typei(typei);
 
-	if (object->ro_typei != NULL) {
-		if (!rpct_type_is_compatible(object->ro_typei, typei))
-			return (NULL);
+	if (typei->type->clazz == RPC_TYPING_BUILTIN &&
+	    !rpct_type_is_compatible(object->ro_typei, typei))
+		return (NULL);
 
+	if (object->ro_typei != NULL)
 		rpct_typei_release(object->ro_typei);
-	}
 
 	object->ro_typei = rpct_typei_retain(typei);
 	return (object);
@@ -2005,7 +2005,7 @@ rpct_serialize(rpc_object_t object)
 	if (context == NULL)
 		return (rpc_retain(object));
 
-	if (object->ro_typei == NULL) {
+	if (object->ro_typei == NULL || object->ro_typei->type->clazz == RPC_TYPING_BUILTIN) {
 		/* Try recursively */
 		if (rpc_get_type(object) == RPC_TYPE_DICTIONARY) {
 			cont = rpc_dictionary_create();
