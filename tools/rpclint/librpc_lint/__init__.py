@@ -38,7 +38,6 @@ def main():
     parser.add_argument('--system', action='store_true', help='Use system types')
     parser.add_argument('-f', metavar='FILE', action='append', help='IDL file')
     parser.add_argument('-d', metavar='DIRECTORY', action='append', help='IDL directory')
-    parser.add_argument('-o', metavar='FILE', help='Output file', required=True)
     args = parser.parse_args()
 
     typing = librpc.Typing()

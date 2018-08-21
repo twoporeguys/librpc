@@ -21,6 +21,7 @@ option(BUILD_XPC "Build and install XPC transport")
 option(BUILD_RPCTOOL "Build and install rpctool" ON)
 option(BUILD_RPCD "Build and install rpcd" ON)
 option(BUILD_RPCDOC "Build and install rpcdoc" ON)
+option(BUILD_RPCLINT "Build and install rpclint" ON)
 option(ENABLE_UBSAN "Enable undefined behavior sanitizer")
 option(ENABLE_UBSAN_NULLABILITY "Enable nullability sanitizer")
 option(ENABLE_ASAN "Enable address sanitizer")
@@ -364,6 +365,10 @@ endif()
 
 if(BUILD_RPCDOC)
     add_subdirectory(tools/rpcdoc)
+endif()
+
+if(BUILD_RPCLINT)
+    add_subdirectory(tools/rpclint)
 endif()
 
 if(BUILD_PYTHON)
