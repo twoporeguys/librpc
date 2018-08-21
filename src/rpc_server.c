@@ -311,6 +311,7 @@ rpc_server_dispatch(rpc_server_t server, struct rpc_call *call)
 		g_mutex_unlock(&server->rs_calls_mtx);
 		return (0);
 	}
+
 	ret = rpc_context_dispatch(server->rs_context, call);
 	g_mutex_unlock(&server->rs_calls_mtx);
 	return (ret);

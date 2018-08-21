@@ -1077,9 +1077,14 @@ static void
 rpc_connection_release_call(struct rpc_call *call)
 {
 
-        rpc_release(call->rc_id);
-        rpc_release(call->rc_args);
-        g_free(call);
+	if (call->rc_callback != NULL)
+		Block_release(call->rc_callback);
+
+	rpc_release(call->rc_id);
+	rpc_release(call->rc_args);
+	notify_free(&call->rc_notify);
+	g_mutex_clear(&call->rc_mtx);
+	g_free(call);
 }
 
 void
@@ -2103,9 +2108,5 @@ rpc_call_free(rpc_call_t call)
 		g_mutex_unlock(&conn->rco_mtx);
 
 	rpc_connection_release(conn);
-
-	Block_release(call->rc_callback);
-	rpc_release(call->rc_id);
-	rpc_release(call->rc_args);
-	g_free(call);
+	rpc_connection_release_call(call);
 }
