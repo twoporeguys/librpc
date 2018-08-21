@@ -431,7 +431,7 @@
     <member refid="typing_8h_1a1b34b1728df4e41085d0ec7ecf5e8b7d" kind="typedef"><name>rpct_member_applier_t</name></member>
     <member refid="typing_8h_1a2b565c4384ebdd8e0749b1467eec94e3" kind="typedef"><name>rpct_interface_applier_t</name></member>
     <member refid="typing_8h_1acc5f290ad33114a3ea5ea8f6fdcef34a" kind="typedef"><name>rpct_if_member_applier_t</name></member>
-    <member refid="typing_8h_1a2b9f8ae8a387369f22146612228f1d0a" kind="function"><name>rpct_init</name></member>
+    <member refid="typing_8h_1a62ae3e30a3b7c5accf5e2f2f710a65f9" kind="function"><name>rpct_init</name></member>
     <member refid="typing_8h_1a6dabfe4b5d8fbc841f0af797716c7b64" kind="function"><name>rpct_free</name></member>
     <member refid="typing_8h_1abd806217eb0710e56261f7165117f3c9" kind="function"><name>rpct_read_file</name></member>
     <member refid="typing_8h_1a797228970122f8e212ed107266fcdf5f" kind="function"><name>rpct_read_idl</name></member>

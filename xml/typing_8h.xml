@@ -334,13 +334,14 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
-      <memberdef kind="function" id="typing_8h_1a2b9f8ae8a387369f22146612228f1d0a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="typing_8h_1a62ae3e30a3b7c5accf5e2f2f710a65f9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
         <definition>int rpct_init</definition>
-        <argsstring>(void)</argsstring>
+        <argsstring>(bool load_system_types)</argsstring>
         <name>rpct_init</name>
         <param>
-          <type>void</type>
+          <type>bool</type>
+          <declname>load_system_types</declname>
         </param>
         <briefdescription>
         </briefdescription>
@@ -2300,7 +2301,7 @@
 <codeline lineno="160"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>((bool)_fn(_arg,<sp/>_if_member));<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
 <codeline lineno="161"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="162"><highlight class="normal"></highlight></codeline>
-<codeline lineno="168"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a2b9f8ae8a387369f22146612228f1d0a" kindref="member">rpct_init</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="168"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a62ae3e30a3b7c5accf5e2f2f710a65f9" kindref="member">rpct_init</ref>(</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>load_system_types);</highlight></codeline>
 <codeline lineno="169"><highlight class="normal"></highlight></codeline>
 <codeline lineno="173"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="typing_8h_1a6dabfe4b5d8fbc841f0af797716c7b64" kindref="member">rpct_free</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
 <codeline lineno="174"><highlight class="normal"></highlight></codeline>
