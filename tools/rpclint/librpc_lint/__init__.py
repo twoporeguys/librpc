@@ -40,7 +40,7 @@ def main():
     parser.add_argument('-d', metavar='DIRECTORY', action='append', help='IDL directory')
     args = parser.parse_args()
 
-    typing = librpc.Typing()
+    typing = librpc.Typing(load_system_types=False)
     paths = []
 
     if args.system:

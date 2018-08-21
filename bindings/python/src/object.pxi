@@ -189,6 +189,8 @@ cdef class Object(object):
                 raise TypeError('typei is not a TypeInstance')
 
             self.obj = rpct_set_typei((<TypeInstance>typei).rpctypei, self.obj)
+            if self.obj == <rpc_object_t>NULL:
+                raise TypeError('Invalid typei for the value')
 
     def __repr__(self):
         bdescr = rpc_copy_description(self.obj)

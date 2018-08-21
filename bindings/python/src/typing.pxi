@@ -33,9 +33,11 @@ class TypeClass(enum.IntEnum):
 
 
 cdef class Typing(object):
-    def __init__(self):
+    def __init__(self, load_system_types=True):
+        cdef bint load = load_system_types
+
         with nogil:
-            rpct_init()
+            rpct_init(load)
 
     @staticmethod
     cdef bint c_type_iter(void *arg, rpct_type_t val):
@@ -153,6 +155,9 @@ cdef class TypeInstance(object):
 
             if self.type.clazz == TypeClass.ENUM:
                 return type(self.canonical, (BaseEnum,), {'typei': self})
+
+            if self.type.clazz == TypeClass.TYPEDEF:
+                return type(self.canonical, (BaseType,), {'typei': self})
 
     property proxy:
         def __get__(self):
@@ -528,6 +533,21 @@ cdef class BaseEnum(Object):
     property values:
         def __get__(self):
             return [m.name for m in self.typei.type.members]
+
+
+cdef class BaseType(Object):
+    def __init__(self, value):
+        super(BaseType, self).__init__(value, typei=self.typei)
+        result, errors = self.validate()
+        if not result:
+            raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
+
+    def __str__(self):
+        return "<type {0}>".format(self.typei.type.name)
+
+    property value:
+        def __get__(self):
+            pass
 
 
 def build(decl):

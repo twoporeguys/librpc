@@ -530,7 +530,7 @@ off_t rpc_shmem_get_offset(rpc_object_t shmem);
 
 rpc_object_t rpc_error_create_from_gerror(GError *g_error);
 
-void rpc_abort(const char *fmt, ...);
+_Noreturn void rpc_abort(const char *fmt, ...);
 void rpc_trace(const char *msg, const char *ident, rpc_object_t frame);
 char *rpc_get_backtrace(void);
 char *rpc_generate_v4_uuid(void);

@@ -41,6 +41,7 @@ static rpc_object_t rpct_stream_idl(void *cookie, rpc_object_t args);
 #if 0
 static inline bool rpct_type_is_fully_specialized(struct rpct_typei *inst);
 #endif
+static inline bool rpct_type_is_compatible(struct rpct_typei *, struct rpct_typei *);
 static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *typei);
 static char *rpct_canonical_type(struct rpct_typei *typei);
 static int rpct_read_type(struct rpct_file *file, const char *decl,
@@ -117,10 +118,16 @@ rpct_set_typei(rpct_typei_t typei, rpc_object_t object)
 	if (object == NULL)
 		return (NULL);
 
-	if (object->ro_typei != NULL)
-		rpct_typei_release(object->ro_typei);
+	typei = rpct_unwind_typei(typei);
 
-	object->ro_typei = rpct_typei_retain(rpct_unwind_typei(typei));
+	if (object->ro_typei != NULL) {
+		if (!rpct_type_is_compatible(object->ro_typei, typei))
+			return (NULL);
+
+		rpct_typei_release(object->ro_typei);
+	}
+
+	object->ro_typei = rpct_typei_retain(typei);
 	return (object);
 }
 
@@ -897,12 +904,8 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 	if (type)
 		prop->result = rpct_instantiate_type(type, NULL, NULL, file);
 
-	if (prop->result == NULL) {
-		rpc_set_last_errorf(EINVAL,
-		    "Cannot instantiate type %s of property %s",
-		    type, name);
+	if (prop->result == NULL)
 		goto error;
-	}
 
 	g_hash_table_insert(iface->members, g_strdup(name), prop);
 	ret = 0;
@@ -1472,7 +1475,7 @@ rpct_download_idl(rpc_connection_t conn)
 }
 
 int
-rpct_init(void)
+rpct_init(bool load_system_types)
 {
 	rpct_type_t type;
 	const char **b;
@@ -1519,7 +1522,9 @@ rpct_init(void)
 	}
 
 	/* Load system-wide types */
-	rpct_load_types_dir("/usr/local/share/idl");
+	if (load_system_types)
+		rpct_load_types_dir("/usr/local/share/idl");
+
 	return (0);
 }
 

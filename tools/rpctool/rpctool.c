@@ -98,7 +98,7 @@ connect(void)
 		exit(1);
 	}
 
-	rpct_init();
+	rpct_init(true);
 
 	if (idls != NULL) {
 		for (idl = idls; *idl != NULL; idl++)

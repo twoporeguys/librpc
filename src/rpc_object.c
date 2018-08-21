@@ -75,6 +75,7 @@ rpc_prim_create(rpc_type_t type, union rpc_value val)
 	if (ro == NULL)
 		rpc_abort("malloc() returned NULL");
 
+	ro->ro_typei = rpct_new_typei(rpc_get_type_name(type));
 	ro->ro_type = type;
 	ro->ro_value = val;
 	ro->ro_refcnt = 1;

@@ -106,3 +106,17 @@ rpcd_register(const char *uri, const char *name, const char *description)
 
 	return (0);
 }
+
+int
+rpcd_unregister(const char *name)
+{
+	rpc_client_t client;
+	rpc_connection_t conn;
+	rpc_auto_object_t result = NULL;
+
+	client = rpc_client_create(RPCD_SOCKET_LOCATION, NULL);
+	if (client == NULL)
+		return (-1);
+
+	return (-1);
+}

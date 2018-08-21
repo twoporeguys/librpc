@@ -59,7 +59,7 @@ main(int argc __unused, const char *argv[] __unused)
 	rpc_context_t ctx;
 	rpc_instance_t manager;
 
-	rpct_init();
+	rpct_init(true);
 	rpct_load_types("validation.yaml");
 
 	ctx = rpc_context_create();

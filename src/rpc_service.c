@@ -127,7 +127,7 @@ rpc_context_create(void)
 	GError *err;
 	rpc_context_t result;
 
-	rpct_init();
+	rpct_init(true);
 
 	result = g_malloc0(sizeof(*result));
 	result->rcx_root = rpc_instance_new(NULL, "/");
