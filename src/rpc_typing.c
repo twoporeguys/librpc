@@ -1538,7 +1538,7 @@ rpct_init(bool load_system_types)
 
 	/* Load system-wide types */
 	if (load_system_types)
-		rpct_load_types_dir("/usr/local/share/idl");
+		return (rpct_load_types_dir("/usr/local/share/idl"));
 
 	return (0);
 }
@@ -1610,6 +1610,10 @@ rpct_load_types(const char *path)
 		    rpc_error_get_message(error));
 		rpc_set_last_error(rpc_error_get_code(error), errmsg,
 		    rpc_error_get_extra(error));
+
+#ifdef RPC_TRACE
+		rpc_trace("ERROR", "rpct_load_types", rpc_get_last_error());
+#endif
 		return (-1);
 	}
 
