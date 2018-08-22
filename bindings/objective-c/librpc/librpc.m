@@ -723,7 +723,7 @@
 {
     self = [super init];
     if (self) {
-        rpct_init();
+        rpct_init(true);
     }
     return self;
 }
