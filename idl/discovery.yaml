@@ -20,8 +20,10 @@ struct DiscoveryMethod:
   description: Represents a single defined function
   members:
     name:
+      description: Method name
       type: string
     description:
+      description: Method description
       type: string
     arguments:
       type: List<DiscoveryMethodArgument>
@@ -79,8 +81,7 @@ interface Introspectable:
 
 interface Observable:
   method get:
-    description: |
-      Returns value of a property.
+    description: eturns value of a property.
     args:
       - type: string
         name: interface
@@ -92,8 +93,7 @@ interface Observable:
       type: any
 
   method get_all:
-    description: |
-      Returns values of all properties of a given interface.
+    description: Returns values of all properties of a given interface.
     args:
       - type: string
         name: interface
@@ -102,8 +102,7 @@ interface Observable:
       type: List<PropertyDescriptor>
 
   method set:
-    description: |
-      Sets a value of a property
+    description: Sets the value of a property
     args:
       - type: string
         name: interface
@@ -116,6 +115,5 @@ interface Observable:
         description: Property value
 
   event changed:
-    description: |
-      Notifies about property change
+    description: Motifies about property change.
     type: PropertyChangeNotification
