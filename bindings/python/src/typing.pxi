@@ -202,7 +202,6 @@ cdef class TypeInstance(object):
         return valid, Object.wrap(errors)
 
 
-@cython.internal
 cdef class Type(object):
     cdef rpct_type_t rpctype
 
@@ -307,7 +306,6 @@ cdef class Member(object):
             return str_or_none(rpct_member_get_description(self.rpcmem))
 
 
-@cython.internal
 cdef class Interface(object):
     property name:
         def __get__(self):
@@ -357,7 +355,6 @@ cdef class Interface(object):
         return True
 
 
-@cython.internal
 cdef class InterfaceMember(object):
     property name:
         def __get__(self):
@@ -396,7 +393,6 @@ cdef class InterfaceMember(object):
         return self.c_member
 
 
-@cython.internal
 cdef class Method(InterfaceMember):
     property arguments:
         def __get__(self):
@@ -421,7 +417,6 @@ cdef class Method(InterfaceMember):
         return str(self)
 
 
-@cython.internal
 cdef class Property(InterfaceMember):
     property type:
         def __get__(self):
@@ -434,7 +429,6 @@ cdef class Property(InterfaceMember):
         return str(self)
 
 
-@cython.internal
 cdef class Event(InterfaceMember):
     property type:
         def __get__(self):
@@ -447,7 +441,6 @@ cdef class Event(InterfaceMember):
         return str(self)
 
 
-@cython.internal
 cdef class FunctionArgument(object):
     cdef rpct_argument_t c_arg
 
@@ -464,13 +457,11 @@ cdef class FunctionArgument(object):
             return TypeInstance.wrap(rpct_argument_get_typei(self.c_arg))
 
 
-@cython.internal
 cdef class StructUnionMember(Member):
     def specialize(self, TypeInstance typei):
         return TypeInstance.wrap(rpct_typei_get_member_type(typei.rpctypei, self.rpcmem))
 
 
-@cython.internal
 cdef class BaseStruct(Dictionary):
     def __init__(self, __value=None, **kwargs):
         if not __value:
@@ -511,7 +502,6 @@ cdef class BaseStruct(Dictionary):
             ')'
 
 
-@cython.internal
 cdef class BaseUnion(Object):
     def __init__(self, value):
         super(BaseUnion, self).__init__(value, typei=self.typei)
@@ -527,7 +517,6 @@ cdef class BaseUnion(Object):
             return {m.name: m for m in self.typei.type.members}
 
 
-@cython.internal
 cdef class BaseEnum(Object):
     def __init__(self, value):
         super(BaseEnum, self).__init__(value, typei=self.typei)
@@ -547,7 +536,6 @@ cdef class BaseEnum(Object):
             return [m.name for m in self.typei.type.members]
 
 
-@cython.internal
 cdef class BaseType(Object):
     def __init__(self, value):
         super(BaseType, self).__init__(value, typei=self.typei)
