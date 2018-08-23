@@ -257,7 +257,14 @@ cdef class Connection(object):
             c_interface = b_interface
 
         with nogil:
-            call = rpc_connection_call(self.connection, c_path, c_interface, c_method, rpc_args.obj, NULL)
+            call = rpc_connection_call(
+                self.connection,
+                c_path,
+                c_interface,
+                c_method,
+                rpc_retain(rpc_args.obj),
+                NULL
+            )
 
         if call == <rpc_call_t>NULL:
             raise_internal_exc(rpc=True)
@@ -266,6 +273,7 @@ cdef class Connection(object):
             ret = rpc_call_wait(call)
 
         if ret < 0:
+            rpc_call_free(call)
             raise_internal_exc()
 
         call_status = rpc_call_status(call)
@@ -292,12 +300,17 @@ cdef class Connection(object):
             finally:
                 with nogil:
                     rpc_call_abort(call)
+                    rpc_call_free(call)
 
         if call_status == CallStatus.ERROR:
-            raise get_chunk()
+            result = get_chunk()
+            rpc_call_free(call)
+            raise result
 
         if call_status == CallStatus.DONE:
-            return get_chunk()
+            result = get_chunk()
+            rpc_call_free(call)
+            return result
 
         if call_status in (CallStatus.MORE_AVAILABLE, CallStatus.ENDED):
             return iter_chunk()
