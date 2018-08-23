@@ -99,6 +99,7 @@ cdef class Call(object):
             rpc_call_continue(self.call, True)
 
 
+@cython.internal
 cdef class ListenHandle(object):
     cdef readonly Connection connection
     cdef void *c_cookie
@@ -171,7 +172,7 @@ cdef class Connection(object):
                 path='/'
             )
 
-            return {o['path']: RemoteObject(self, o['path']) for o in objects}
+            return {o['path']: RemoteObject.construct(self, o['path']) for o in objects}
 
     @staticmethod
     cdef Connection wrap(rpc_connection_t ptr):
@@ -392,52 +393,80 @@ cdef class Connection(object):
         return ListenHandle.init(self, cookie)
 
 
+@cython.internal
 cdef class RemoteObject(object):
-    def __init__(self, client, path):
-        self.client = client
-        self.path = path
-
-    property path:
-        def __get__(self):
-            return self.path
-
-    property description:
-        def __get__(self):
-            pass
-
-    property interfaces:
-        def __get__(self):
+    @staticmethod
+    def construct(client, path):
+        def get_interfaces(self):
             ifaces = self.client.call_sync(
                 'get_interfaces',
                 path=self.path,
                 interface='com.twoporeguys.librpc.Introspectable'
             )
 
-            return {i: RemoteInterface(self.client, self.path, i) for i in ifaces}
+            return {
+                 i: RemoteInterface.construct(self.client, self, i)
+                 for i in ifaces
+            }
 
-    property children:
-        def __get__(self):
+        def get_children(self):
             children = self.client.call_sync(
                 'get_instances',
                 path=self.path,
                 interface='com.twoporeguys.librpc.Discoverable'
             )
 
-            return {i['path']: RemoteObject(self.client, i['path']) for i in children}
+            return {
+                i['path']: RemoteObject.construct(self.client, i['path'])
+                for i in children
+            }
 
-    def __str__(self):
-        return "<librpc.RemoteObject at '{0}'>".format(self.path)
+        def __str__(self):
+            return "<librpc.RemoteObject at '{0}'>".format(self.path)
 
-    def __repr__(self):
-        return str(self)
+        members = {
+            'client': client,
+            'path': path,
+            'name': os.path.basename(path),
+            'description': None,
+            'interfaces': property(get_interfaces),
+            'children': property(get_children),
+            '__str__': __str__,
+            '__repr__': __str__
+        }
+
+        result = type(path, (object,), members)
+
+        for iface in result().interfaces.values():
+            for name, method in iface.methods.items():
+                setattr(result, name, method)
+
+            for prop in iface.properties:
+                setattr(result, prop.name, property(prop.getter, prop.setter))
+
+        return result()
 
 
+@cython.internal
 cdef class RemoteProperty(object):
-    cdef readonly object name
-    cdef readonly object interface
-    cdef readonly object getter
-    cdef readonly object setter
-    cdef readonly object typed
+    def getter(self, parent):
+        return parent.client.call_sync(
+            'get',
+            self.interface,
+            self.name,
+            path=parent.path,
+            interface='com.twoporeguys.librpc.Observable'
+         )
+
+    def setter(self, parent, value):
+        return parent.client.call_sync(
+            'set',
+            self.interface,
+            self.name,
+            value,
+            path=parent.path,
+            interface='com.twoporeguys.librpc.Observable'
+         )
 
     def __str__(self):
         return repr(self)
@@ -446,6 +475,7 @@ cdef class RemoteProperty(object):
         return "<librpc.RemoteProperty '{0}'>".format(self.name)
 
 
+@cython.internal
 cdef class RemoteEvent(object):
     def connect(self, handler):
         if not self.handlers:
@@ -468,20 +498,15 @@ cdef class RemoteEvent(object):
         for h in self.handlers:
             h(args.unpack())
 
-
+@cython.internal
 cdef class RemoteInterface(object):
-    def __init__(self, client, path, interface=''):
-        self.client = client
-        self.path = path
-        self.name = os.path.basename(path)
-        self.interface = interface
-        self.methods = {}
-        self.properties = {}
-        self.events = {}
-        self.typed = Typing().find_interface(interface)
+    @staticmethod
+    def construct(client, instance, interface=''):
+        cdef RemoteInterface result
 
+        path = instance.path
         try:
-            if not self.client.call_sync(
+            if not client.call_sync(
                 'interface_exists',
                 interface,
                 path=path,
@@ -491,122 +516,125 @@ cdef class RemoteInterface(object):
         except:
             raise
 
-        self.__collect_methods()
-        self.__collect_properties()
-        self.__collect_events()
+        def call_sync(self, name, *args):
+            return self.client.call_sync(
+                name, *args, path=self.path,
+                interface=self.interface
+            )
 
-    def call_sync(self, name, *args):
-        return self.client.call_sync(name, *args, path=self.path, interface=self.interface)
+        def watch_property(self, name, fn):
+            return self.client.watch_property(
+                self.path, self.interface,
+                name, fn
+             )
 
-    def watch_property(self, name, fn):
-        return self.client.watch_property(self.path, self.interface, name, fn)
-
-    def __collect_methods(self):
-        try:
-            for method in self.client.call_sync(
-                'get_methods',
+        def __str__(self):
+            return "<librpc.RemoteInterface '{0}' at '{1}'>".format(
                 self.interface,
-                path=self.path,
+                self.path
+             )
+
+        typed = Typing().find_interface(interface)
+        methods = dict(RemoteInterface.__collect_methods(client, path, interface, typed))
+        properties = list(RemoteInterface.__collect_properties(client, path, interface, typed))
+        events = list(RemoteInterface.__collect_events(client, path, interface, typed))
+        members = {
+            'interface': interface,
+            'typed': typed,
+            'methods': methods,
+            'properties': properties,
+            'events': events,
+            'call_sync': call_sync,
+            'watch_property': watch_property,
+            '__str__': __str__,
+            '__repr__': __str__
+        }
+
+        for name, fn in methods.items():
+            members[name] = fn
+
+        for prop in properties:
+            members[prop.name] = property(
+                lambda self, prop=prop: prop.getter(self),
+                lambda self, value, prop=prop: prop.setter(self, value)
+            )
+
+        for event in events:
+            members[event.name] = event
+
+        t = type(interface, (RemoteInterface,), members)
+        result = t.__new__(t)
+        result.client = client
+        result.instance = instance
+        result.path = path
+        return result
+
+    @staticmethod
+    def __collect_methods(client, path, interface, typed):
+        try:
+            for method in client.call_sync(
+                'get_methods',
+                interface,
+                path=path,
                 interface='com.twoporeguys.librpc.Introspectable'
             ):
-                def fn(method, *args):
+                def fn(self, *args, __interface=interface, __method=method):
                     return self.client.call_sync(
-                        method,
+                        __method,
                         *args,
                         path=self.path,
-                        interface=self.interface
+                        interface=__interface
                     )
 
-                partial = functools.partial(fn, method)
+                partial = fn
                 partial.typed = None
 
-                if self.typed:
-                    partial.typed = self.typed.find_member(method)
+                if typed:
+                    partial.typed = typed.find_member(method)
 
                 if partial.typed:
                     partial.__doc__ = partial.typed.description
 
-                self.methods[method] = partial
-                setattr(self, method, partial)
+                yield method, partial
         except:
             raise RuntimeError('Cannot read methods of a remote object')
 
-    def __collect_properties(self):
+    @staticmethod
+    def __collect_properties(client, path, interface, typed):
         cdef RemoteProperty rprop
 
         try:
-            for prop in self.client.call_sync(
+            for prop in client.call_sync(
                 'get_all',
-                self.interface,
-                path=self.path,
+                interface,
+                path=path,
                 interface='com.twoporeguys.librpc.Observable'
             ):
-                def getter(name=prop['name']):
-                    return self.client.call_sync(
-                        'get',
-                        self.interface,
-                        name,
-                        path=self.path,
-                        interface='com.twoporeguys.librpc.Observable'
-                    )
-
-                def setter(name=prop['name'], value=None):
-                    return self.client.call_sync(
-                        'set',
-                        self.interface,
-                        name,
-                        value,
-                        path=self.path,
-                        interface='com.twoporeguys.librpc.Observable'
-                    )
-
                 rprop = RemoteProperty.__new__(RemoteProperty)
                 rprop.name = prop['name']
-                rprop.interface = self
-                rprop.getter = functools.partial(getter, prop['name'])
-                rprop.setter = functools.partial(setter, prop['name'])
-                self.properties[prop['name']] = rprop
+                rprop.interface = interface
+                yield rprop
         except:
             raise RuntimeError('Cannot read properties of a remote object')
 
-    def __collect_events(self):
+    @staticmethod
+    def __collect_events(client, path, interface, typed):
         cdef RemoteEvent revent
 
         try:
-            for event in self.client.call_sync(
+            for event in client.call_sync(
                 'get_events',
-                self.interface,
-                path=self.path,
+                interface,
+                path=path,
                 interface='com.twoporeguys.librpc.Introspectable'
             ):
                 revent = RemoteEvent.__new__(RemoteEvent)
                 revent.handlers = []
                 revent.name = event
-                revent.interface = self
-                self.events[event] = revent
+                revent.interface = None
+                yield revent
         except:
             raise RuntimeError('Cannot read events of a remote object')
-
-    def __getattr__(self, item):
-        prop = self.properties[item]
-        return prop.getter()
-
-    def __setattr__(self, item, value):
-        if item in self.properties:
-            prop = self.properties[item]
-            prop.setter(value)
-            return
-
-        self.__dict__[item] = value
-
-    def __str__(self):
-        return "<librpc.RemoteInterface '{0}' at '{1}'>".format(
-            self.interface,
-            self.path
-        )
-
-    def __repr__(self):
-        return str(self)
 
 
 cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil:

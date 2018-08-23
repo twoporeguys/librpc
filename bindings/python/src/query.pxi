@@ -24,6 +24,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+@cython.internal
 cdef class QueryIterator(object):
     def __dealloc__(self):
         if self.iter != <rpc_query_iter_t>NULL:

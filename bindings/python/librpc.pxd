@@ -470,21 +470,16 @@ cdef class Service(object):
     cdef object interfaces
 
 
-cdef class RemoteObject(object):
-    cdef object client
-    cdef object path
-
-
 cdef class RemoteInterface(object):
-    cdef readonly client
-    cdef readonly path
-    cdef readonly name
-    cdef readonly interface
-    cdef readonly methods
-    cdef readonly properties
-    cdef readonly events
-    cdef readonly typed
-    cdef dict __dict__
+    cdef readonly object client
+    cdef readonly object instance
+    cdef readonly object path
+
+
+cdef class RemoteProperty(object):
+    cdef readonly object name
+    cdef readonly object interface
+    cdef readonly object typed
 
 
 cdef class RemoteEvent(object):
