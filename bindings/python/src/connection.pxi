@@ -439,9 +439,17 @@ cdef class RemoteObject(object):
 
         for iface in result().interfaces.values():
             for name, method in iface.methods.items():
+                if hasattr(result, name):
+                    delattr(result, name)
+                    continue
+
                 setattr(result, name, method)
 
             for prop in iface.properties:
+                if hasattr(result, prop.name):
+                    delattr(result, prop.name)
+                    continue
+
                 setattr(result, prop.name, property(prop.getter, prop.setter))
 
         return result()
