@@ -1468,8 +1468,6 @@ next:
 			break;
 		}
 
-		printf("reading %s\n", name);
-
 		if (rpct_read_idl(name, body) < 0)
 			ret = -1;
 
@@ -1700,8 +1698,6 @@ rpct_load_types_cached(void)
 	while (g_hash_table_iter_next(&iter, NULL, (gpointer *)&file)) {
 		if (file->loaded)
 			continue;
-
-		printf("loading %s\n", file->path);
 
 		if (rpct_load_types(file->path) != 0)
 			return (-1);
