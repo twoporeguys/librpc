@@ -415,6 +415,7 @@ struct rpct_file
 	char *			path;
 	const char *		description;
 	const char *		ns;
+	bool			loaded;
 	int64_t			version;
 	GPtrArray *		uses;
 	GHashTable *		types;

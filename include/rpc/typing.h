@@ -218,6 +218,13 @@ int rpct_load_types_dir(const char *path);
 int rpct_load_types_stream(int fd);
 
 /**
+ * Loads type information from files previously loaded by @ref rpct_read_idl.
+ *
+ * @return 0 on success, -1 on error
+ */
+int rpct_load_types_cached(void);
+
+/**
  * Returns the type name.
  *
  * @param type Type handle

@@ -1455,6 +1455,7 @@ rpct_download_idl(rpc_connection_t conn)
 	if (call == NULL)
 		return (-1);
 
+next:
 	rpc_call_wait(call);
 
 	switch (rpc_call_status(call)) {
@@ -1467,11 +1468,13 @@ rpct_download_idl(rpc_connection_t conn)
 			break;
 		}
 
+		printf("reading %s\n", name);
+
 		if (rpct_read_idl(name, body) < 0)
 			ret = -1;
 
 		rpc_call_continue(call, true);
-		break;
+		goto next;
 
 	case RPC_CALL_ENDED:
 		break;
@@ -1486,6 +1489,7 @@ rpct_download_idl(rpc_connection_t conn)
 	}
 
 	rpc_call_free(call);
+	rpct_load_types_cached();
 	return (ret);
 }
 
@@ -1580,11 +1584,17 @@ rpct_load_types(const char *path)
 	char *errmsg;
 	bool fail;
 
-	if (rpct_read_file(path) != 0)
-		return (-1);
-
 	file = g_hash_table_lookup(context->files, path);
-	g_assert_nonnull(file);
+	if (file == NULL) {
+		if (rpct_read_file(path) != 0)
+			return (-1);
+	}
+
+	if (file == NULL)
+		g_assert_not_reached();
+
+	if (file->loaded)
+		return (-1);
 
 	fail = rpc_dictionary_apply(file->body, ^bool(const char *key,
 	    rpc_object_t v) {
@@ -1678,6 +1688,26 @@ rpct_load_types_stream(int fd)
 
 	rpc_set_last_errorf(ENOTSUP, "Not implemented");
 	return (-1);
+}
+
+int
+rpct_load_types_cached(void)
+{
+	GHashTableIter iter;
+	struct rpct_file *file;
+
+	g_hash_table_iter_init(&iter, context->files);
+	while (g_hash_table_iter_next(&iter, NULL, (gpointer *)&file)) {
+		if (file->loaded)
+			continue;
+
+		printf("loading %s\n", file->path);
+
+		if (rpct_load_types(file->path) != 0)
+			return (-1);
+	}
+
+	return (0);
 }
 
 const char *
