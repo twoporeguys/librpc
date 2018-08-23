@@ -49,6 +49,7 @@ class CallStatus(enum.IntEnum):
     ENDED = RPC_CALL_ENDED
 
 
+@cython.internal
 cdef class Call(object):
     @staticmethod
     cdef Call wrap(rpc_call_t ptr):
@@ -120,6 +121,7 @@ cdef class ListenHandle(object):
         )
 
 
+@cython.internal
 cdef class Connection(object):
     def __init__(self):
         PyEval_InitThreads()
