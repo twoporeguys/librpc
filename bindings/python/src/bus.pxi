@@ -29,7 +29,6 @@ class BusEvent(enum.IntEnum):
     DETACHED = RPC_BUS_DETACHED
 
 
-@cython.internal
 cdef class BusNode(object):
     cdef readonly object name
     cdef readonly object description

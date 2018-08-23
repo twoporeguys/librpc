@@ -283,7 +283,6 @@ cdef class Type(object):
             return self.clazz == TypeClass.BUILTIN
 
 
-@cython.internal
 cdef class Member(object):
     cdef rpct_member_t rpcmem
 

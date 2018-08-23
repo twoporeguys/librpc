@@ -49,7 +49,6 @@ class CallStatus(enum.IntEnum):
     ENDED = RPC_CALL_ENDED
 
 
-@cython.internal
 cdef class Call(object):
     @staticmethod
     cdef Call wrap(rpc_call_t ptr):
@@ -100,7 +99,6 @@ cdef class Call(object):
             rpc_call_continue(self.call, True)
 
 
-@cython.internal
 cdef class ListenHandle(object):
     cdef readonly Connection connection
     cdef void *c_cookie
@@ -121,7 +119,6 @@ cdef class ListenHandle(object):
         )
 
 
-@cython.internal
 cdef class Connection(object):
     def __init__(self):
         PyEval_InitThreads()
@@ -395,7 +392,6 @@ cdef class Connection(object):
         return ListenHandle.init(self, cookie)
 
 
-@cython.internal
 cdef class RemoteObject(object):
     @staticmethod
     def construct(client, path):
@@ -463,7 +459,6 @@ cdef class RemoteObject(object):
         return result()
 
 
-@cython.internal
 cdef class RemoteProperty(object):
     def getter(self, parent):
         return parent.client.call_sync(
@@ -491,7 +486,6 @@ cdef class RemoteProperty(object):
         return "<librpc.RemoteProperty '{0}'>".format(self.name)
 
 
-@cython.internal
 cdef class RemoteEvent(object):
     def connect(self, handler):
         if not self.handlers:
@@ -514,7 +508,7 @@ cdef class RemoteEvent(object):
         for h in self.handlers:
             h(args.unpack())
 
-@cython.internal
+
 cdef class RemoteInterface(object):
     __type_cache = {}
 
