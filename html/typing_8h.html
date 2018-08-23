@@ -163,6 +163,8 @@ Functions</h2></td></tr>
 <tr class="separator:a5bfb76b7035a0d74bfb415ffcfb5596c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acbc6974bab6dc69be04a901688cfcbca"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#acbc6974bab6dc69be04a901688cfcbca">rpct_load_types_stream</a> (int fd)</td></tr>
 <tr class="separator:acbc6974bab6dc69be04a901688cfcbca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d5a5b4abf009aa8318dccafdd1a48af"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a0d5a5b4abf009aa8318dccafdd1a48af">rpct_load_types_cached</a> (void)</td></tr>
+<tr class="separator:a0d5a5b4abf009aa8318dccafdd1a48af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae54e088b78c7f0166d91fb95faf170d8"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#ae54e088b78c7f0166d91fb95faf170d8">rpct_type_get_name</a> (<a class="el" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a> type)</td></tr>
 <tr class="separator:ae54e088b78c7f0166d91fb95faf170d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa97ecafb9cd3f056287625b472d29634"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#aa97ecafb9cd3f056287625b472d29634">rpct_type_get_origin</a> (<a class="el" href="typing_8h.html#ab85403e2a616bb3728cd489bd0619cbb">rpct_type_t</a> iface)</td></tr>
@@ -1202,6 +1204,26 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
+
+</div>
+</div>
+<a id="a0d5a5b4abf009aa8318dccafdd1a48af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d5a5b4abf009aa8318dccafdd1a48af">&#9670;&nbsp;</a></span>rpct_load_types_cached()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpct_load_types_cached </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Loads type information from files previously loaded by <a class="el" href="typing_8h.html#a797228970122f8e212ed107266fcdf5f">rpct_read_idl</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
 
 </div>

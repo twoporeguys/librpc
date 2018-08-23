@@ -89,6 +89,8 @@ int \hyperlink{typing_8h_a5bfb76b7035a0d74bfb415ffcfb5596c}{rpct\+\_\+load\+\_\+
 \item 
 int \hyperlink{typing_8h_acbc6974bab6dc69be04a901688cfcbca}{rpct\+\_\+load\+\_\+types\+\_\+stream} (int fd)
 \item 
+int \hyperlink{typing_8h_a0d5a5b4abf009aa8318dccafdd1a48af}{rpct\+\_\+load\+\_\+types\+\_\+cached} (void)
+\item 
 const char $\ast$ \hyperlink{typing_8h_ae54e088b78c7f0166d91fb95faf170d8}{rpct\+\_\+type\+\_\+get\+\_\+name} (\hyperlink{typing_8h_ab85403e2a616bb3728cd489bd0619cbb}{rpct\+\_\+type\+\_\+t} type)
 \item 
 const char $\ast$ \hyperlink{typing_8h_aa97ecafb9cd3f056287625b472d29634}{rpct\+\_\+type\+\_\+get\+\_\+origin} (\hyperlink{typing_8h_ab85403e2a616bb3728cd489bd0619cbb}{rpct\+\_\+type\+\_\+t} iface)
@@ -775,6 +777,17 @@ Loads type information from an interface definition file.
 {\em path} & Path of the I\+DL file \\
 \hline
 \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on error 
+\end{DoxyReturn}
+\mbox{\Hypertarget{typing_8h_a0d5a5b4abf009aa8318dccafdd1a48af}\label{typing_8h_a0d5a5b4abf009aa8318dccafdd1a48af}} 
+\index{typing.\+h@{typing.\+h}!rpct\+\_\+load\+\_\+types\+\_\+cached@{rpct\+\_\+load\+\_\+types\+\_\+cached}}
+\index{rpct\+\_\+load\+\_\+types\+\_\+cached@{rpct\+\_\+load\+\_\+types\+\_\+cached}!typing.\+h@{typing.\+h}}
+\subsubsection{\texorpdfstring{rpct\+\_\+load\+\_\+types\+\_\+cached()}{rpct\_load\_types\_cached()}}
+{\footnotesize\ttfamily int rpct\+\_\+load\+\_\+types\+\_\+cached (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+Loads type information from files previously loaded by \hyperlink{typing_8h_a797228970122f8e212ed107266fcdf5f}{rpct\+\_\+read\+\_\+idl}.
+
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on error 
 \end{DoxyReturn}
