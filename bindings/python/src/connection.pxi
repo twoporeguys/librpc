@@ -439,6 +439,9 @@ cdef class RemoteObject(object):
 
         for iface in result().interfaces.values():
             for name, method in iface.methods.items():
+                if name in members:
+                    continue
+
                 if hasattr(result, name):
                     delattr(result, name)
                     continue
@@ -446,6 +449,9 @@ cdef class RemoteObject(object):
                 setattr(result, name, method)
 
             for prop in iface.properties:
+                if name in members:
+                    continue
+
                 if hasattr(result, prop.name):
                     delattr(result, prop.name)
                     continue
