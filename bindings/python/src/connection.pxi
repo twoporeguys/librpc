@@ -451,7 +451,7 @@ cdef class RemoteObject(object):
                 setattr(result, name, method)
 
             for prop in iface.properties:
-                if name in members:
+                if prop.name in members:
                     continue
 
                 if hasattr(result, prop.name):
