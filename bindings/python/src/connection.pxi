@@ -500,69 +500,76 @@ cdef class RemoteEvent(object):
 
 @cython.internal
 cdef class RemoteInterface(object):
+    __type_cache = {}
+
     @staticmethod
     def construct(client, instance, interface=''):
         cdef RemoteInterface result
 
         path = instance.path
-        try:
-            if not client.call_sync(
-                'interface_exists',
-                interface,
-                path=path,
-                interface='com.twoporeguys.librpc.Introspectable'
-            ):
-                raise ValueError('Interface not found')
-        except:
-            raise
+        t = RemoteInterface.__type_cache.get(interface)
 
-        def call_sync(self, name, *args):
-            return self.client.call_sync(
-                name, *args, path=self.path,
-                interface=self.interface
-            )
+        if not t:
+            try:
+                if not client.call_sync(
+                    'interface_exists',
+                    interface,
+                    path=path,
+                    interface='com.twoporeguys.librpc.Introspectable'
+                ):
+                    raise ValueError('Interface not found')
+            except:
+                raise
 
-        def watch_property(self, name, fn):
-            return self.client.watch_property(
-                self.path, self.interface,
-                name, fn
-             )
+            def call_sync(self, name, *args):
+                return self.client.call_sync(
+                    name, *args, path=self.path,
+                    interface=self.interface
+                )
 
-        def __str__(self):
-            return "<librpc.RemoteInterface '{0}' at '{1}'>".format(
-                self.interface,
-                self.path
-             )
+            def watch_property(self, name, fn):
+                return self.client.watch_property(
+                    self.path, self.interface,
+                    name, fn
+                 )
 
-        typed = Typing().find_interface(interface)
-        methods = dict(RemoteInterface.__collect_methods(client, path, interface, typed))
-        properties = list(RemoteInterface.__collect_properties(client, path, interface, typed))
-        events = list(RemoteInterface.__collect_events(client, path, interface, typed))
-        members = {
-            'interface': interface,
-            'typed': typed,
-            'methods': methods,
-            'properties': properties,
-            'events': events,
-            'call_sync': call_sync,
-            'watch_property': watch_property,
-            '__str__': __str__,
-            '__repr__': __str__
-        }
+            def __str__(self):
+                return "<librpc.RemoteInterface '{0}' at '{1}'>".format(
+                    self.interface,
+                    self.path
+                 )
 
-        for name, fn in methods.items():
-            members[name] = fn
+            typed = Typing().find_interface(interface)
+            methods = dict(RemoteInterface.__collect_methods(client, path, interface, typed))
+            properties = list(RemoteInterface.__collect_properties(client, path, interface, typed))
+            events = list(RemoteInterface.__collect_events(client, path, interface, typed))
+            members = {
+                'interface': interface,
+                'typed': typed,
+                'methods': methods,
+                'properties': properties,
+                'events': events,
+                'call_sync': call_sync,
+                'watch_property': watch_property,
+                '__str__': __str__,
+                '__repr__': __str__
+            }
 
-        for prop in properties:
-            members[prop.name] = property(
-                lambda self, prop=prop: prop.getter(self),
-                lambda self, value, prop=prop: prop.setter(self, value)
-            )
+            for name, fn in methods.items():
+                members[name] = fn
 
-        for event in events:
-            members[event.name] = event
+            for prop in properties:
+                members[prop.name] = property(
+                    lambda self, prop=prop: prop.getter(self),
+                    lambda self, value, prop=prop: prop.setter(self, value)
+                )
 
-        t = type(interface, (RemoteInterface,), members)
+            for event in events:
+                members[event.name] = event
+
+            t = type(interface, (RemoteInterface,), members)
+            RemoteInterface.__type_cache[interface] = t
+
         result = t.__new__(t)
         result.client = client
         result.instance = instance
