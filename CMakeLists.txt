@@ -19,6 +19,7 @@ option(BUILD_JSON "Build and install JSON serializer" ON)
 option(BUILD_LIBUSB "Build and install libusb transport")
 option(BUILD_XPC "Build and install XPC transport")
 option(BUILD_RPCTOOL "Build and install rpctool" ON)
+option(BUILD_RPCGUI "Build and install rpcgui" ON)
 option(BUILD_RPCD "Build and install rpcd" ON)
 option(BUILD_RPCDOC "Build and install rpcdoc" ON)
 option(BUILD_RPCLINT "Build and install rpclint" ON)
@@ -357,6 +358,10 @@ endif()
 
 if(BUILD_RPCTOOL)
     add_subdirectory(tools/rpctool)
+endif()
+
+if(BUILD_RPCTOOL)
+    add_subdirectory(tools/rpcgui)
 endif()
 
 if(BUILD_RPCD AND LINUX)
