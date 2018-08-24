@@ -1033,6 +1033,7 @@ rpc_get_objects(void *cookie, rpc_object_t args __unused)
 	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
 		if (prefix != NULL && !g_str_has_prefix(v->ri_path, prefix))
 			continue;
+
 		rpc_array_append_stolen_value(list, rpc_object_pack("{s,s}",
 		    "path", v->ri_path,
 		    "description", v->ri_descr));
