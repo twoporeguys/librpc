@@ -433,7 +433,7 @@ cdef class RemoteObject(object):
             '__repr__': __str__
         }
 
-        result = type(path, (object,), members)
+        result = type(path, (RemoteObject,), members)
 
         for iface in result().interfaces.values():
             for name, method in iface.methods.items():
@@ -604,6 +604,7 @@ cdef class RemoteInterface(object):
                     )
 
                 partial = fn
+                partial.name = method
                 partial.typed = None
 
                 if typed:
@@ -630,6 +631,11 @@ cdef class RemoteInterface(object):
                 rprop = RemoteProperty.__new__(RemoteProperty)
                 rprop.name = prop['name']
                 rprop.interface = interface
+                rprop.typed = None
+
+                if typed:
+                    rprop.typed = typed.find_member(prop['name'])
+
                 yield rprop
         except:
             raise RuntimeError('Cannot read properties of a remote object')
