@@ -1025,12 +1025,15 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 
 	if (args != NULL) {
 		if (rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
-			const char *arg_name;
-			const char* arg_type;
+			const char *arg_name = NULL;
+			const char* arg_type = NULL;
 			struct rpct_argument *arg;
 			struct rpct_typei *arg_inst;
 
-			arg_name = rpc_dictionary_get_string(i, "name");
+			rpc_object_unpack(i, "{s,s}",
+			    "name", &arg_name,
+			    "type", &arg_type);
+
 			if (arg_name == NULL) {
 				rpc_set_last_errorf(EINVAL,
 				    "Required 'name' field in argument %zu "
@@ -1038,7 +1041,6 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 				return ((bool)false);
 			}
 
-			arg_type = rpc_dictionary_get_string(i, "type");
 			if (arg_type == NULL) {
 				rpc_set_last_errorf(EINVAL,
 				    "Required 'type' field in argument %zu "
@@ -1063,7 +1065,13 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 	}
 
 	if (returns != NULL) {
-		returns_type = rpc_dictionary_get_string(returns, "type");
+		if (rpc_object_unpack(returns, "{type:s}", &returns_type) < 1) {
+			rpc_set_last_errorf(EINVAL,
+			    "Missing 'type' field in returns clause "
+			    " of method %s", name);
+			goto error;
+		}
+
 		method->result = rpct_instantiate_type(returns_type, NULL,
 		    NULL, file);
 
