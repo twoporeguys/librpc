@@ -1648,18 +1648,19 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	call = rpc_call_alloc(conn, NULL, path, interface, name, args);
 	if (call == NULL)
 		return (NULL);
+
 	call->rc_type = RPC_OUTBOUND_CALL;
 	call->rc_callback = callback != NULL ? Block_copy(callback) : NULL;
-
 	payload = rpc_dictionary_create();
-	if (path)
+
+	if (path != NULL)
 		rpc_dictionary_set_string(payload, "path", path);
 
-	if (interface)
+	if (interface != NULL)
 		rpc_dictionary_set_string(payload, "interface", interface);
 
 	rpc_dictionary_set_string(payload, "method", name);
-	rpc_dictionary_steal_value(payload, "args", call->rc_args);
+	rpc_dictionary_set_value(payload, "args", call->rc_args);
 	frame = rpc_pack_frame("rpc", "call", call->rc_id, payload);
 
 	g_mutex_lock(&call->rc_mtx);
