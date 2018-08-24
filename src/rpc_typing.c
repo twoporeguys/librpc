@@ -736,6 +736,8 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	rpc_object_t members = NULL;
 	int ret = 0;
 
+	g_assert_nonnull(decl);
+	g_assert_nonnull(obj);
 	debugf("reading type \"%s\"", decl);
 
 	rpc_object_unpack(obj, "{s,s,s,v}",
@@ -882,6 +884,9 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 	bool notify = false;
 	int ret = -1;
 
+	g_assert_nonnull(decl);
+	g_assert_nonnull(obj);
+
 	rpc_object_unpack(obj, "{s,s,b,b,b,b}",
 	    "description", &description,
 	    "type", &type,
@@ -943,6 +948,9 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
 	const char *type = NULL;
 	int ret = -1;
 
+	g_assert_nonnull(decl);
+	g_assert_nonnull(obj);
+
 	rpc_object_unpack(obj, "{s,s}",
 	    "description", &description,
 	    "type", &type);
@@ -1000,6 +1008,8 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 	rpc_object_t returns = NULL;
 	ret = -1;
 
+	g_assert_nonnull(decl);
+	g_assert_nonnull(obj);
 	debugf("reading <%s> from file %s", decl, file->path);
 
 	rpc_object_unpack(obj, "{s,v,v}",
@@ -1331,12 +1341,19 @@ rpct_validate_args(struct rpct_if_member *func, rpc_object_t args,
 	rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
 		struct rpct_argument *arg;
 
-		if (idx >= func->arguments->len)
+		if (idx >= func->arguments->len) {
+			valid = false;
+			rpct_add_error(&errctx, NULL,
+			    "Too many method arguments: %d, should be %d",
+			    rpc_array_get_count(args), func->arguments->len);
 			return ((bool)false);
+		}
 
 		arg = g_ptr_array_index(func->arguments, idx);
-		if (!rpct_validate_instance(arg->type, i, &errctx))
+		if (!rpct_validate_instance(arg->type, i, &errctx)) {
 			valid = false;
+			return ((bool)false);
+		}
 
 		return ((bool)true);
 	});
