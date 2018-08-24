@@ -470,6 +470,14 @@ cdef class Service(object):
     cdef object interfaces
 
 
+cdef class RemoteObject(object):
+    cdef readonly object client
+    cdef readonly object path
+    cdef readonly object name
+    cdef readonly object description
+    cdef readonly object interfaces
+
+
 cdef class RemoteInterface(object):
     cdef readonly object client
     cdef readonly object instance
