@@ -68,6 +68,10 @@ interface Introspectable:
   method get_methods:
     description: |
       Returns a list of interface methods.
+    args:
+      - type: string
+        name: interface
+        description: Interface name
     return:
       type: List<string>
 
@@ -75,6 +79,10 @@ interface Introspectable:
     description: |
       Returns true if specified interface is registered on the object,
       otherwise false.
+    args:
+      - type: string
+        name: interface
+        description: Interface name
     return:
       type: bool
 

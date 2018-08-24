@@ -1197,9 +1197,11 @@ rpc_observable_property_set(void *cookie, rpc_object_t args)
 	rpc_instance_t inst = rpc_function_get_instance(cookie);
 	struct rpc_property_cookie prop;
 	struct rpc_if_member *member;
+	struct rpct_if_member *tmember;
 	const char *interface;
 	const char *name;
 	rpc_object_t value;
+	rpc_object_t errors;
 
 	if (rpc_object_unpack(args, "[s,s,v]", &interface, &name, &value) < 3) {
 		rpc_function_error(cookie, EINVAL, "Invalid arguments passed");
@@ -1215,6 +1217,15 @@ rpc_observable_property_set(void *cookie, rpc_object_t args)
 	if (member->rim_property.rp_setter == NULL) {
 		rpc_function_error(cookie, EPERM, "Property write not allowed");
 		return (NULL);
+	}
+
+	tmember = rpct_find_if_member(interface, name);
+	if (tmember != NULL) {
+		if (!rpct_validate(tmember->result, value, &errors)) {
+			rpc_function_error_ex(cookie, rpc_error_create(
+			    EINVAL, "Validation failed", errors));
+			return (NULL);
+		}
 	}
 
 	prop.instance = inst;
