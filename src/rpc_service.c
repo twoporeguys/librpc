@@ -1156,8 +1156,10 @@ rpc_observable_property_get(void *cookie, rpc_object_t args)
 {
 	rpc_instance_t inst = rpc_function_get_instance(cookie);
 	rpc_object_t result;
+	rpc_object_t errors;
 	struct rpc_property_cookie prop;
 	struct rpc_if_member *member;
+	struct rpct_if_member *tmember;
 	const char *interface;
 	const char *name;
 
@@ -1186,6 +1188,23 @@ rpc_observable_property_get(void *cookie, rpc_object_t args)
 	if (prop.error != NULL) {
 		rpc_function_error_ex(cookie, prop.error);
 		return (NULL);
+	}
+
+	tmember = rpct_find_if_member(interface, name);
+	if (tmember != NULL) {
+		if (tmember->member.rim_type != RPC_MEMBER_PROPERTY) {
+			rpc_function_error(cookie, EFAULT,
+			    "Internal inconsistency: invalid member type "
+			    "found in IDL file");
+			return (NULL);
+		}
+
+		if (!rpct_validate(tmember->result, result, &errors)) {
+			rpc_function_error_ex(cookie, rpc_error_create(
+			    EFAULT, "Internal inconsistency: server-side "
+			    "return type validation failed", errors));
+			return (NULL);
+		}
 	}
 
 	return (result);
@@ -1221,6 +1240,13 @@ rpc_observable_property_set(void *cookie, rpc_object_t args)
 
 	tmember = rpct_find_if_member(interface, name);
 	if (tmember != NULL) {
+		if (tmember->member.rim_type != RPC_MEMBER_PROPERTY) {
+			rpc_function_error(cookie, EFAULT,
+			    "Internal inconsistency: invalid member type "
+			    "found in IDL file");
+			return (NULL);
+		}
+
 		if (!rpct_validate(tmember->result, value, &errors)) {
 			rpc_function_error_ex(cookie, rpc_error_create(
 			    EINVAL, "Validation failed", errors));
