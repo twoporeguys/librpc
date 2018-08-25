@@ -307,6 +307,11 @@ rpct_read_meta(struct rpct_file *file, rpc_object_t obj)
 	    "description", &file->description,
 	    "use", &uses);
 
+	if (file->version != 1) {
+		rpc_set_last_errorf(EINVAL, "Invalid IDL version, should be 1");
+		return (-1);
+	}
+
 	if (uses != NULL) {
 		rpc_array_apply(uses, ^(size_t idx, rpc_object_t value) {
 			g_ptr_array_add(file->uses, g_strdup(
