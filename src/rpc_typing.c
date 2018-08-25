@@ -297,6 +297,10 @@ rpct_read_meta(struct rpct_file *file, rpc_object_t obj)
 		return (-1);
 	}
 
+	if (rpct_check_fields(obj, "version", "namespace", "description",
+	    "use", NULL) != 0)
+		return (-1);
+
 	ret = rpc_object_unpack(obj, "{i,s,s,v}",
 	    "version", &file->version,
 	    "namespace", &file->ns,

@@ -59,19 +59,22 @@ def main():
                 typing.read_file(f)
                 paths.append(f)
             except librpc.LibException as err:
-                print('Processing {0} failed: {1}'.format(f, str(err)))
+                print('error: {0}: {1}'.format(f, err.message))
                 continue
 
     for p in paths:
-        typing.load_types(p)
+        try:
+            typing.load_types(p)
+        except librpc.RpcException as err:
+            print('error: loading {0}: {1}'.format(p, err.message))
 
     for typ in typing.types:
         if not typ.description:
-            print('{0}: description missing'.format(typ.name))
+            print('warning: {0}: description missing'.format(typ.name))
 
         for member in typ.members:
             if not member.description:
-                print('{0}: description missing for member "{1}"'.format(
+                print('warning: {0}: description missing for member "{1}"'.format(
                     typ.name,
                     member.name
                 ))
