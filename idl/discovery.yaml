@@ -47,10 +47,13 @@ struct PropertyChangeNotification:
   description: Describes a changed property value
   members:
     interface:
+      description: Interface name the property belongs to
       type: string
     name:
+      description: Property name
       type: string
     value:
+      description: Property value
       type: any
 
 
