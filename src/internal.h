@@ -488,6 +488,7 @@ struct rpct_argument
 	struct rpct_typei *	type;
 	char *			name;
 	char *			description;
+	bool			opt;
 };
 
 struct rpct_error_context

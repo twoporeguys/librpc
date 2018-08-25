@@ -31,24 +31,23 @@
 #include <rpc/serializer.h>
 #include "internal.h"
 
-static int rpct_read_meta(struct rpct_file *file, rpc_object_t obj);
-static int rpct_lookup_type(const char *name, const char **decl,
-    rpc_object_t *result, struct rpct_file **filep);
-static struct rpct_type *rpct_find_type(const char *name);
-static struct rpct_type *rpct_find_type_fuzzy(const char *name,
-    struct rpct_file *origin);
-static rpc_object_t rpct_stream_idl(void *cookie, rpc_object_t args);
+static int rpct_read_meta(struct rpct_file *, rpc_object_t);
+static int rpct_lookup_type(const char *, const char **, rpc_object_t *,
+    struct rpct_file **);
+static struct rpct_type *rpct_find_type(const char *);
+static struct rpct_type *rpct_find_type_fuzzy(const char *, struct rpct_file *);
+static rpc_object_t rpct_stream_idl(void *, rpc_object_t);
+static int rpct_check_fields(rpc_object_t, ...);
 #if 0
 static inline bool rpct_type_is_fully_specialized(struct rpct_typei *inst);
 #endif
 static inline bool rpct_type_is_compatible(struct rpct_typei *,
     struct rpct_typei *);
-static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *typei);
-static char *rpct_canonical_type(struct rpct_typei *typei);
-static int rpct_read_type(struct rpct_file *file, const char *decl,
-    rpc_object_t obj);
-static int rpct_parse_type(const char *decl, GPtrArray *variables);
-static void rpct_interface_free(struct rpct_interface *iface);
+static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *);
+static char *rpct_canonical_type(struct rpct_typei *);
+static int rpct_read_type(struct rpct_file *, const char *, rpc_object_t);
+static int rpct_parse_type(const char *, GPtrArray *);
+static void rpct_interface_free(struct rpct_interface *);
 
 static GRegex *rpct_instance_regex = NULL;
 static GRegex *rpct_interface_regex = NULL;
@@ -172,17 +171,40 @@ rpct_get_value(rpc_object_t instance)
 	return (rpc_dictionary_get_value(instance, RPCT_VALUE_FIELD));
 }
 
-void
-rpct_struct_set_value(rpc_object_t instance, const char *value)
+static int
+rpct_check_fields(rpc_object_t obj, ...)
 {
+	GPtrArray *allowed;
+	const char *token;
+	va_list ap;
+	bool ret;
 
-	if ((instance == NULL) || (instance->ro_typei == NULL))
-		return;
+	allowed = g_ptr_array_new();
+	va_start(ap, obj);
 
-	if (rpc_get_type(instance) != RPC_TYPE_DICTIONARY)
-		return;
+	for (;;) {
+		token = va_arg(ap, const char *);
+		if (token == NULL)
+			break;
 
-	rpc_dictionary_set_string(instance, RPCT_VALUE_FIELD, value);
+		g_ptr_array_add(allowed, (gpointer)token);
+	}
+
+	va_end(ap);
+
+	ret = rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t v) {
+		if (!g_ptr_array_find_with_equal_func(allowed, key,
+		    g_str_equal, NULL)) {
+			rpc_set_last_errorf(EINVAL,
+			    "Unknown field '%s' in declaration", key);
+			return ((bool)false);
+		}
+
+		return ((bool)true);
+	});
+
+	g_ptr_array_free(allowed, true);
+	return (ret ? -1 : 0);
 }
 
 static struct rpct_type *
@@ -887,6 +909,10 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 	g_assert_nonnull(decl);
 	g_assert_nonnull(obj);
 
+	if (rpct_check_fields(obj, "description", "type", "read-only",
+	    "read-write", "write-only", "notify", NULL) != 0)
+		return (-1);
+
 	rpc_object_unpack(obj, "{s,s,b,b,b,b}",
 	    "description", &description,
 	    "type", &type,
@@ -951,6 +977,9 @@ rpct_read_event(struct rpct_file *file, struct rpct_interface *iface,
 	g_assert_nonnull(decl);
 	g_assert_nonnull(obj);
 
+	if (rpct_check_fields(obj, "description", "type", NULL) != 0)
+		return (-1);
+
 	rpc_object_unpack(obj, "{s,s}",
 	    "description", &description,
 	    "type", &type);
@@ -1012,6 +1041,9 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 	g_assert_nonnull(obj);
 	debugf("reading <%s> from file %s", decl, file->path);
 
+	if (rpct_check_fields(obj, "description", "args", "return", NULL) != 0)
+		goto error;
+
 	rpc_object_unpack(obj, "{s,v,v}",
 	    "description", &description,
 	    "args", &args,
@@ -1037,12 +1069,14 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 		if (rpc_array_apply(args, ^(size_t idx, rpc_object_t i) {
 			const char *arg_name = NULL;
 			const char* arg_type = NULL;
+			bool opt = false;
 			struct rpct_argument *arg;
 			struct rpct_typei *arg_inst;
 
-			rpc_object_unpack(i, "{s,s}",
+			rpc_object_unpack(i, "{s,s,b}",
 			    "name", &arg_name,
-			    "type", &arg_type);
+			    "type", &arg_type,
+			    "optional", &opt);
 
 			if (arg_name == NULL) {
 				rpc_set_last_errorf(EINVAL,
@@ -1064,6 +1098,7 @@ rpct_read_method(struct rpct_file *file, struct rpct_interface *iface,
 				return ((bool)false);
 
 			arg = g_malloc0(sizeof(*arg));
+			arg->opt = opt;
 			arg->name = g_strdup(arg_name);
 			arg->description = g_strdup(rpc_dictionary_get_string(
 			    i, "description"));
