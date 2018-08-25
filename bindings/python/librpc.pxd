@@ -87,6 +87,7 @@ cdef extern from "rpc/object.h" nogil:
     size_t rpc_hash(rpc_object_t object)
     char *rpc_copy_description(rpc_object_t object)
     rpc_type_t rpc_get_type(rpc_object_t object)
+    const char *rpc_get_type_name(rpc_type_t type)
     void rpc_release(rpc_object_t object)
 
     rpc_object_t rpc_null_create()

@@ -752,3 +752,6 @@ class fd(int):
     def __repr__(self):
         return 'librpc.fd({0})'.format(self)
 
+
+def rpc_typename(object_type):
+    return str_or_none(rpc_get_type_name(object_type))
