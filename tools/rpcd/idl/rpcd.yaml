@@ -5,6 +5,44 @@ meta:
   description: rpcd interface definitions
 
 
+struct Service:
+  description: Describes a service.
+  members:
+    uri:
+      description: URI of service listening socket
+      type: string
+
+    name:
+      description: Service name in reverse-FQDN notation
+      type: string
+
+    description:
+      description: Textual description of the service
+      type: string
+
+
 interface ServiceManager:
+  method register_service:
+    args:
+      - name: service
+        type: Service
+    return:
+      type: string
+
 
 interface Service:
+  property name:
+    type: string
+    read-only: true
+
+  property description:
+    type: string
+    read-only: true
+
+  method connect:
+    description: Sets up a communication channel with a service.
+    return:
+      type: any
+
+  method unregister:
+    description: Unregisters service.
