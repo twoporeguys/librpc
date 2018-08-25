@@ -32,6 +32,11 @@ type Iter<T>:
   value-type: T
 
 
+type InstancePath:
+  description: Path to a librpc instance
+  type: string
+
+
 union IPAddress:
   description: Can hold an IP address (either v4 or v6)
   members:

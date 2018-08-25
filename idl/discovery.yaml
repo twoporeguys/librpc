@@ -11,8 +11,10 @@ struct DiscoveryMethodArgument:
   description: Represents a single function argument
   members:
     name:
+      description: Argument name
       type: string
     description:
+      description: Argument description
       type: string
 
 
@@ -34,8 +36,10 @@ struct PropertyDescriptor:
   description: Describes a single property and its value
   members:
     name:
+      description: Property name
       type: string
     value:
+      description: Property value
       type: any
 
 
@@ -68,6 +72,10 @@ interface Introspectable:
   method get_methods:
     description: |
       Returns a list of interface methods.
+    args:
+      - name: interface
+        type: string
+        description: Interface name
     return:
       type: List<string>
 
@@ -75,6 +83,10 @@ interface Introspectable:
     description: |
       Returns true if specified interface is registered on the object,
       otherwise false.
+    args:
+      - name: interface
+        type: string
+        description: Interface name
     return:
       type: bool
 
