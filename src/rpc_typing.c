@@ -857,7 +857,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 
 	/* Read member list */
 	if (members != NULL) {
-		bool ret = rpc_dictionary_apply(members, ^(const char *key,
+		bool stop = rpc_dictionary_apply(members, ^(const char *key,
 		    rpc_object_t value) {
 			struct rpct_member *m;
 
@@ -870,7 +870,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 			return ((bool)true);
 		});
 
-		if (ret) {
+		if (stop) {
 			rpct_type_free(type);
 			ret = -1;
 			goto done;
@@ -897,6 +897,7 @@ done:
 		g_free(declname);
 	if (decltype != NULL)
 		g_free(decltype);
+
 	return (ret);
 }
 
