@@ -115,16 +115,17 @@ rpct_newi(rpct_typei_t typei, rpc_object_t object)
 rpc_object_t
 rpct_set_typei(rpct_typei_t typei, rpc_object_t object)
 {
+	rpct_typei_t base_typei;
 	const char *typename;
 
 	if (object == NULL)
 		return (NULL);
 
 	typename = rpc_get_type_name(object->ro_type);
-	typei = rpct_unwind_typei(typei);
+	base_typei = rpct_unwind_typei(typei);
 
-	if (typei->type->clazz == RPC_TYPING_BUILTIN &&
-	    g_strcmp0(typei->canonical_form, typename) != 0)
+	if (base_typei->type->clazz == RPC_TYPING_BUILTIN &&
+	    g_strcmp0(base_typei->canonical_form, typename) != 0)
 		return (NULL);
 
 	if (object->ro_typei != NULL)
@@ -878,7 +879,6 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	}
 
 	if (type_def != NULL) {
-		type->clazz = RPC_TYPING_TYPEDEF;
 		type->definition = rpct_instantiate_type(type_def, NULL,
 		    type, file);
 

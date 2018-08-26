@@ -353,6 +353,7 @@ cdef extern from "rpc/typing.h" nogil:
         RPC_TYPING_UNION
         RPC_TYPING_ENUM
         RPC_TYPING_TYPEDEF
+        RPC_TYPING_CONTAINER
         RPC_TYPING_BUILTIN
 
     void *RPCT_TYPE_APPLIER(rpct_type_applier_f fn, void *arg)
@@ -524,6 +525,21 @@ cdef class InterfaceMember(object):
     @staticmethod
     cdef wrap(rpct_if_member_t ptr)
     cdef rpct_if_member_t unwrap(self) nogil
+
+
+cdef class BaseTypingObject(object):
+    cdef public Object object
+    cdef readonly TypeInstance typei
+
+    @staticmethod
+    cdef construct_struct(TypeInstance typei)
+    @staticmethod
+    cdef construct_union(TypeInstance typei)
+    @staticmethod
+    cdef construct_enum(TypeInstance typei)
+    @staticmethod
+    cdef construct_type(TypeInstance typei)
+
 
 
 cdef class Call(object):

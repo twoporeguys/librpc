@@ -16,17 +16,17 @@ union Optional<T>:
       type: nulltype
 
 
-type List<T>:
+container List<T>:
   description: A list of elements of the same type
   type: array
 
 
-type Dict<T>:
+container Dict<T>:
   description: A dictionary of elements of the same type
   type: dictionary
 
 
-type Iter<T>:
+container Iter<T>:
   description: Same as list, but meant to denote a streaming response
   type: array
   value-type: T

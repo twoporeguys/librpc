@@ -234,8 +234,6 @@ loopback_abort(void *arg)
 		lb->lb_peer = NULL;
 	}
 
-	debugf("Aborting  conn/arg %p/%p", conn, lb);
-
 	conn = lb->lb_conn;
 	lb->lb_closed = true;
 	rpc_connection_retain(conn);

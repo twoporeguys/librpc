@@ -117,6 +117,7 @@ typedef enum {
 	RPC_TYPING_UNION,		/**< A union */
 	RPC_TYPING_ENUM,		/**< An enum */
 	RPC_TYPING_TYPEDEF,		/**< A type alias */
+	RPC_TYPING_CONTAINER,		/**< A container type */
 	RPC_TYPING_BUILTIN		/**< A builtin type */
 } rpct_class_t;
 

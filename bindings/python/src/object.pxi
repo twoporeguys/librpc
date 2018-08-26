@@ -161,6 +161,10 @@ cdef class Object(object):
             self.obj = (<Object>value).obj
             rpc_retain(self.obj)
 
+        elif isinstance(value, BaseTypingObject):
+            self.obj = (<BaseTypingObject>value).object.obj
+            rpc_retain(self.obj)
+
         elif hasattr(value, '__getstate__'):
             try:
                 child = Object(value.__getstate__())

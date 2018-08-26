@@ -24,11 +24,29 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+
+DEFAULT_VALUES = {
+    'nulltype': None,
+    'bool': False,
+    'uint64': uint(0),
+    'int64': 0,
+    'double': 0.0,
+    'date': datetime.datetime.now(),
+    'string': '',
+    'binary': b'',
+    'fd': fd(0),
+    'error': None,
+    'dictionary': Dictionary(),
+    'array': Array()
+}
+
+
 class TypeClass(enum.IntEnum):
     STRUCT = RPC_TYPING_STRUCT
     UNION = RPC_TYPING_UNION
     ENUM = RPC_TYPING_ENUM
     TYPEDEF = RPC_TYPING_TYPEDEF
+    CONTAINER = RPC_TYPING_CONTAINER
     BUILTIN = RPC_TYPING_BUILTIN
 
 
@@ -145,19 +163,25 @@ cdef class TypeInstance(object):
     property factory:
         def __get__(self):
             if self.type.clazz == TypeClass.BUILTIN:
-                return lambda x: Object(x).unpack()
+                def fn(x=None):
+                    if not x:
+                        x = DEFAULT_VALUES[self.canonical]
+
+                    return Object(x).unpack()
+
+                return fn
 
             if self.type.clazz == TypeClass.STRUCT:
-                return type(self.canonical, (BaseStruct,), {'typei': self})
+                return BaseTypingObject.construct_struct(self)
 
             if self.type.clazz == TypeClass.UNION:
-                return type(self.canonical, (BaseUnion,), {'typei': self})
+                return BaseTypingObject.construct_union(self)
 
             if self.type.clazz == TypeClass.ENUM:
-                return type(self.canonical, (BaseEnum,), {'typei': self})
+                return BaseTypingObject.construct_enum(self)
 
-            if self.type.clazz == TypeClass.TYPEDEF:
-                return type(self.canonical, (BaseType,), {'typei': self})
+            if self.type.clazz in (TypeClass.TYPEDEF, TypeClass.CONTAINER):
+                return BaseTypingObject.construct_type(self)
 
     property proxy:
         def __get__(self):
@@ -461,93 +485,148 @@ cdef class StructUnionMember(Member):
         return TypeInstance.wrap(rpct_typei_get_member_type(typei.rpctypei, self.rpcmem))
 
 
-cdef class BaseStruct(Dictionary):
-    def __init__(self, __value=None, **kwargs):
-        if not __value:
-            __value = kwargs
+cdef class BaseTypingObject(object):
+    @staticmethod
+    cdef construct_struct(TypeInstance typei):
+        def getter(self, member):
+            return self.object[member.name]
 
-        super(BaseStruct, self).__init__(__value, typei=self.typei)
-        result, errors = self.validate()
-        if not result:
-            raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
+        def setter(self, member, value):
+            value = Object(value, typei=member.type)
+            result, errors = member.type.validate(value)
+            if not result:
+                raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
-    property members:
-        def __get__(self):
-            return {m.name: m for m in self.typei.type.members}
+            self.object[member.name] = value
 
-    def __getattr__(self, item):
-        return self[item]
+        def __init__(self, **kwargs):
+            self.object = Dictionary()
+            for m in self.members:
+                self.object[m.name] = m.type.factory(kwargs.get(m.name))
 
-    def __setattr__(self, key, value):
-        value = Object(value)
+        def __str__(self):
+            return "<struct {0}>".format(self.typei.type.name)
 
-        member = self.members.get(key)
-        if not member:
-            raise LibException('Member {0} not found'.format(key))
+        def __repr__(self):
+            return \
+                '{0}('.format(self.typei.type.name) + \
+                ', '.join('{0}={1!r}'.format(m.name, getattr(self, m.name)) for m in self.members) + \
+                ')'
 
-        result, errors = member.type.validate(value)
-        if not result:
-            raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
+        members = {
+            'typei': typei,
+            'members': typei.type.members,
+            '__init__': __init__,
+            '__str__': __str__,
+            '__repr__': __repr__
+        }
 
-        self[key] = value
+        for m in typei.type.members:
+            members[m.name] = property(
+                lambda self, member=m: getter(self, member),
+                lambda self, value, member=m: setter(self, member, value),
+                None,
+                m.description
+            )
 
-    def __str__(self):
-        return "<struct {0}>".format(self.typei.type.name)
+        return type(typei.type.name, (BaseStruct,), members)
 
-    def __repr__(self):
-        return \
-            '{0}('.format(self.typei.type.name) + \
-            ', '.join('{0}={1!r}'.format(k, v) for k, v in self.items()) + \
-            ')'
+    @staticmethod
+    cdef construct_union(TypeInstance typei):
+        def getter(self):
+            return self.object
+
+        def setter(self, value):
+            value = Object(value, typei=self.typei)
+            result, errors = self.typei.validate(value)
+            if not result:
+                raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
+
+            self.object = value
+
+        def __init__(self, value):
+            self.value = value
+
+        members = {
+            'typei': typei,
+            'branches': {m.name: m for m in typei.type.members},
+            'value': property(getter, setter),
+            '__init__': __init__,
+            '__str__': __str__,
+            '__repr__': __repr__
+        }
+
+        return type(typei.type.name, (BaseUnion,), members)
+
+    @staticmethod
+    cdef construct_enum(TypeInstance typei):
+        def getter(self):
+            return self.object
+
+        def setter(self, value):
+            value = Object(value, typei=self.typei)
+            result, errors = self.typei.validate(value)
+            if not result:
+                raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
+
+            self.object = value
+
+        def __init__(self, value):
+            self.value = value
+
+        members = {
+            'typei': typei,
+            'values': [m.name for m in typei.type.members],
+            'value': property(getter, setter),
+            '__init__': __init__,
+            '__str__': __str__,
+            '__repr__': __repr__
+        }
+
+        return type(typei.type.name, (BaseEnum,), members)
+
+    @staticmethod
+    cdef construct_type(TypeInstance typei):
+        def getter(self):
+            return self.object
+
+        def setter(self, value):
+            value = Object(value, typei=self.typei)
+            result, errors = self.typei.validate(value)
+            if not result:
+                raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
+
+            self.object = value
+
+        def __init__(self, value):
+            self.value = value
+
+        members = {
+            'typei': typei,
+            'value': property(getter, setter),
+            '__init__': __init__,
+            '__str__': __str__,
+            '__repr__': __repr__
+        }
+
+        return type(typei.type.name, (BaseType,), members)
 
 
-cdef class BaseUnion(Object):
-    def __init__(self, value):
-        super(BaseUnion, self).__init__(value, typei=self.typei)
-        result, errors = self.validate()
-        if not result:
-            raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
-    def __str__(self):
-        return "<union {0}>".format(self.typei.type.name)
-
-    property branches:
-        def __get__(self):
-            return {m.name: m for m in self.typei.type.members}
+cdef class BaseStruct(BaseTypingObject):
+    pass
 
 
-cdef class BaseEnum(Object):
-    def __init__(self, value):
-        super(BaseEnum, self).__init__(value, typei=self.typei)
-        result, errors = self.validate()
-        if not result:
-            raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
-
-    def __str__(self):
-        return "<enum {0}>".format(self.typei.type.name)
-
-    property value:
-        def __get__(self):
-            pass
-
-    property values:
-        def __get__(self):
-            return [m.name for m in self.typei.type.members]
+cdef class BaseUnion(BaseTypingObject):
+    pass
 
 
-cdef class BaseType(Object):
-    def __init__(self, value):
-        super(BaseType, self).__init__(value, typei=self.typei)
-        result, errors = self.validate()
-        if not result:
-            raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
+cdef class BaseEnum(BaseTypingObject):
+    pass
 
-    def __str__(self):
-        return "<type {0}>".format(self.typei.type.name)
 
-    property value:
-        def __get__(self):
-            pass
+cdef class BaseType(BaseTypingObject):
+    pass
 
 
 def build(decl):
