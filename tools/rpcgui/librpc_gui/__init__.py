@@ -38,8 +38,10 @@ from gi.repository import Gtk, GLib, Pango
 class Context(object):
     def __init__(self, uri):
         self.uri = uri
+        self.typing = librpc.Typing()
         self.client = librpc.Client()
         self.client.connect(uri)
+        self.typing.download_types(self.client)
 
 
 class MainWindow(Gtk.Window):
@@ -56,13 +58,13 @@ class MainWindow(Gtk.Window):
         self.content_box = Gtk.Frame()
         self.init_treeview()
         self.enumerate_tree_level(self.client.instances['/'], None)
-        self.paned.add1(scrolled(self.tree))
-        self.paned.add2(self.content_box)
+        self.paned.pack1(scrolled(self.tree), True, False)
+        self.paned.pack2(self.content_box, True, False)
         self.add(self.paned)
         self.content_box.add(self.content)
         self.connect('delete-event', Gtk.main_quit)
         self.tree.get_selection().connect('changed', self.on_tree_selection)
-        self.set_size_request(800, 600)
+        self.set_size_request(1024, 769)
 
     def enumerate_tree_level(self, instance, parent_iter):
         for name, inst in instance.children.items():
@@ -184,7 +186,7 @@ class PropertyPane(Gtk.Box):
         self.item = item
         self.serializer = librpc.Serializer('json')
         self.font = Pango.FontDescription('monospace 10')
-        self.current = self.read()
+        self.current = ObjectEditor({'result': self.read(), 'test': {}})
         self.new = Gtk.TreeView()
         self.actions = Gtk.ActionBar()
         self.change = Gtk.Button('Set value')
@@ -194,24 +196,15 @@ class PropertyPane(Gtk.Box):
         self.pack_start(Gtk.Label('New value:'), False, True, 0)
         self.pack_start(scrolled(self.new), True, True, 0)
         self.pack_start(self.actions, False, False, 0)
-
         self.show_all()
 
     def read(self):
         try:
             value = self.item.getter(self.interface)
-            if isinstance(value, librpc.BaseStruct):
-                return StructRenderer(value)
         except librpc.RpcException as err:
             value = err
 
-        dump = self.serializer.dumps(value)
-        text = json.dumps(json.loads(dump), indent=4, sort_keys=True)
-        result = Gtk.TextView()
-        result.set_editable(False)
-        result.get_buffer().set_text(text)
-        result.modify_font(self.font)
-        return result
+        return value
 
     def change(self):
         pass
@@ -224,42 +217,106 @@ class MethodPane(Gtk.Box):
         self.item = item
 
 
-class StructRenderer(Gtk.TreeView):
-    def __init__(self, item):
-        super().__init__(model=Gtk.TreeStore(str, str, str))
-        self.store = self.get_model()
+class ValueDescriptor(object):
+    def __init__(self, name, value, path, name_editable, value_editable, deletable):
+        self.name = name
+        self.value = value
+        self.path = path
+        self.name_editable = name_editable
+        self.value_editable = value_editable
+        self.deletable = deletable
+
+
+class ValueCellRenderer(Gtk.CellRenderer):
+    def __init__(self):
+        pass
+
+
+class TypeSelectorStore(Gtk.ListStore):
+    def __init__(self):
+        super().__init__(str, str)
+
+
+class ObjectEditor(Gtk.TreeView):
+    def __init__(self, items):
+        self.items = items
+        self.store = Gtk.TreeStore(ValueDescriptor)
+
+        for k, v in items.items():
+            self.add(None, k, v, True, True, True)
+
+        super().__init__(self.store)
         self.init_treeview()
-        self.populate_members(item, None)
-        self.show_all()
+
+    def render_type(self, column, cell, model, iter, *data):
+        item = model[iter][1]
+
+        if not isinstance(item, librpc.Object):
+            item = librpc.Object(item)
+
+        if item.typei:
+            cell.set_property('text', item.typei.canonical)
+            return
+
+        cell.set_property('text', librpc.rpc_typename(item.type))
+
+    def render_value(self, column, cell, model, iter, *data):
+        cell.set_property('text', str(model[iter][1]))
+
+    def render_name(self, column, cell, model, iter, *data):
+        cell.set_property('text', model[iter][0])
+        cell.set_property('editable', model[iter][2])
 
     def init_treeview(self):
-        column = Gtk.TreeViewColumn("Name")
+        column = Gtk.TreeViewColumn('Name')
         label = Gtk.CellRendererText()
         column.pack_start(label, True)
         column.add_attribute(label, "text", 0)
+        column.set_cell_data_func(label, self.render_name)
         self.append_column(column)
 
-        column = Gtk.TreeViewColumn("Description")
+        column = Gtk.TreeViewColumn('Type')
         label = Gtk.CellRendererText()
         column.pack_start(label, True)
-        column.add_attribute(label, "text", 1)
+        column.set_cell_data_func(label, self.render_type)
         self.append_column(column)
 
-        column = Gtk.TreeViewColumn("Value")
+        column = Gtk.TreeViewColumn('Value')
         label = Gtk.CellRendererText()
         column.pack_start(label, True)
-        column.add_attribute(label, "text", 2)
+        column.set_cell_data_func(label, self.render_value)
         self.append_column(column)
 
-    def populate_members(self, item, parent_iter):
-        for m in item.typei.type.members:
-            value = item[m.name]
-            if isinstance(value, librpc.BaseStruct):
-                it = self.store.append(parent_iter, (m.name, m.description, ''))
-                self.populate_members(value, it)
-                continue
+        column = Gtk.TreeViewColumn('Delete')
+        label = Gtk.CellRendererPixbuf()
+        column.pack_start(label, True)
+        self.append_column(column)
 
-            self.store.append(parent_iter, (m.name, m.description, str(value)))
+    def add(self, parent, name, value, name_editable, value_editable, deletable):
+        it = self.store.append(parent, (
+            name,
+            value,
+            name_editable,
+            value_editable,
+            deletable
+        ))
+
+        if isinstance(value, dict):
+            for k, v in value.items():
+                self.add(it, k, v, value_editable, value_editable, deletable)
+
+            self.store.append(it, ('Add new row', None, False, False, False))
+
+        if isinstance(value, list):
+            for idx, v in enumerate(value):
+                self.add(it, str(idx), v, value_editable, value_editable, deletable)
+
+            self.store.append(it, ('Add new row', None, False, False, False))
+
+        if isinstance(value, librpc.BaseStruct):
+            for m in value.typei.type.members:
+                v = value[m.name]
+                self.add(it, m.name, v, False, value_editable, False)
 
 
 def scrolled(widget):
