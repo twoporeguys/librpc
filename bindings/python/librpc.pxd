@@ -435,7 +435,7 @@ cdef class Object(object):
     cdef object ref
 
     @staticmethod
-    cdef Object wrap(rpc_object_t ptr)
+    cdef wrap(rpc_object_t ptr)
     cdef rpc_object_t unwrap(self) nogil
 
 

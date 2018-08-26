@@ -486,6 +486,9 @@ cdef class StructUnionMember(Member):
 
 
 cdef class BaseTypingObject(object):
+    def unpack(self):
+        return self
+
     @staticmethod
     cdef construct_struct(TypeInstance typei):
         def getter(self, member):
@@ -499,10 +502,20 @@ cdef class BaseTypingObject(object):
 
             self.object[member.name] = value
 
-        def __init__(self, **kwargs):
-            self.object = Dictionary()
+        def __init__(self, value=None, **kwargs):
+            if not value:
+                value = Dictionary(typei=self.typei)
+
+            if isinstance(value, BaseStruct):
+                value = value.object
+
+            if value.typei.canonical != self.typei.canonical:
+                raise TypeError('Incompatible value type')
+
+            self.object = value
             for m in self.members:
-                self.object[m.name] = m.type.factory(kwargs.get(m.name))
+                if m.name not in self.object:
+                    self.object[m.name] = m.type.factory(kwargs.get(m.name))
 
         def __str__(self):
             return "<struct {0}>".format(self.typei.type.name)
@@ -547,6 +560,12 @@ cdef class BaseTypingObject(object):
         def __init__(self, value):
             self.value = value
 
+        def __str__(self):
+            return "<union {0}>".format(self.typei.type.name)
+
+        def __repr__(self):
+            return '{0}({1})'.format(self.typei.type.name, self.value)
+
         members = {
             'typei': typei,
             'branches': {m.name: m for m in typei.type.members},
@@ -561,7 +580,7 @@ cdef class BaseTypingObject(object):
     @staticmethod
     cdef construct_enum(TypeInstance typei):
         def getter(self):
-            return self.object
+            return self.object.unpack()
 
         def setter(self, value):
             value = Object(value, typei=self.typei)
@@ -570,6 +589,12 @@ cdef class BaseTypingObject(object):
                 raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
             self.object = value
+
+        def __str__(self):
+            return "<enum {0}>".format(self.typei.type.name)
+
+        def __repr__(self):
+            return '{0}({1})'.format(self.typei.type.name, self.value)
 
         def __init__(self, value):
             self.value = value
@@ -588,7 +613,7 @@ cdef class BaseTypingObject(object):
     @staticmethod
     cdef construct_type(TypeInstance typei):
         def getter(self):
-            return self.object
+            return self.object.unpack()
 
         def setter(self, value):
             value = Object(value, typei=self.typei)
@@ -597,6 +622,12 @@ cdef class BaseTypingObject(object):
                 raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
             self.object = value
+
+        def __str__(self):
+            return "<type {0}>".format(self.typei.type.name)
+
+        def __repr__(self):
+            return '{0}({1})'.format(self.typei.type.name, self.value)
 
         def __init__(self, value):
             self.value = value

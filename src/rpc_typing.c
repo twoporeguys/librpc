@@ -128,8 +128,8 @@ rpct_set_typei(rpct_typei_t typei, rpc_object_t object)
 	    g_strcmp0(base_typei->canonical_form, typename) != 0)
 		return (NULL);
 
-	if (object->ro_typei != NULL)
-		rpct_typei_release(object->ro_typei);
+	//if (object->ro_typei != NULL)
+	//	rpct_typei_release(object->ro_typei);
 
 	object->ro_typei = rpct_typei_retain(typei);
 	return (object);
@@ -339,6 +339,11 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 	int found_proxy_type = -1;
 
 	debugf("instantiating type %s", decl);
+
+	if (rpct_instance_regex == NULL) {
+		rpc_set_last_errorf(ENXIO, "Typing not initialized");
+		return (NULL);
+	}
 
 	if (!g_regex_match(rpct_instance_regex, decl, 0, &match)) {
 		rpc_set_last_errorf(EINVAL, "Invalid type specification: %s",
@@ -759,6 +764,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	const struct rpct_class_handler *handler;
 	char *typename;
 	const char *inherits = NULL;
+	const char *value_type = NULL;
 	const char *description = "";
 	char *decltype = NULL;
 	char *declname = NULL;
@@ -772,10 +778,11 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	g_assert_nonnull(obj);
 	debugf("reading type \"%s\"", decl);
 
-	rpc_object_unpack(obj, "{s,s,s,v}",
+	rpc_object_unpack(obj, "{s,s,s,s,v}",
 	    "inherits", &inherits,
 	    "description", &description,
 	    "type", &type_def,
+	    "value-type", &value_type,
 	    "members", &members);
 
 	if (inherits != NULL) {
@@ -883,6 +890,13 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		    type, file);
 
 		g_assert_nonnull(type->definition);
+	}
+
+	if (value_type != NULL) {
+		type->value_type = rpct_instantiate_type(value_type, NULL,
+		    type, file);
+
+		g_assert_nonnull(type->value_type);
 	}
 
 	if (!g_hash_table_insert(context->types, g_strdup(type->name), type))
