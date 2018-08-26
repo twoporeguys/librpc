@@ -188,7 +188,7 @@ cdef class TypeInstance(object):
                 return BaseTypingObject.construct_enum(self)
 
             if self.type.clazz == TypeClass.TYPEDEF:
-                return BaseTypingObject.construct_type(self)
+                return self.type.definition.factory
 
     property proxy:
         def __get__(self):
@@ -616,39 +616,6 @@ cdef class BaseTypingObject(object):
         }
 
         return type(typei.type.name, (BaseEnum,), members)
-
-    @staticmethod
-    cdef construct_type(TypeInstance typei):
-        def getter(self):
-            return self.object.unpack()
-
-        def setter(self, value):
-            value = Object(value, typei=self.typei)
-            result, errors = self.typei.validate(value)
-            if not result:
-                raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
-
-            self.object = value
-
-        def __str__(self):
-            return "<type {0}>".format(self.typei.type.name)
-
-        def __repr__(self):
-            return '{0}({1})'.format(self.typei.type.name, self.value)
-
-        def __init__(self, value):
-            self.value = value
-
-        members = {
-            'typei': typei,
-            'value': property(getter, setter),
-            '__init__': __init__,
-            '__str__': __str__,
-            '__repr__': __repr__
-        }
-
-        return type(typei.type.name, (BaseType,), members)
-
 
 
 cdef class BaseStruct(BaseTypingObject):

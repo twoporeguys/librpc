@@ -537,8 +537,6 @@ cdef class BaseTypingObject(object):
     cdef construct_union(TypeInstance typei)
     @staticmethod
     cdef construct_enum(TypeInstance typei)
-    @staticmethod
-    cdef construct_type(TypeInstance typei)
 
 
 
