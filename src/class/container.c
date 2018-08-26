@@ -112,22 +112,19 @@ container_serialize(rpc_object_t obj)
 		g_assert_not_reached();
 	}
 
-	return (rpc_object_pack("{s,v}",
-	    RPCT_TYPE_FIELD, obj->ro_typei->canonical_form,
-	    RPCT_VALUE_FIELD, value));
+	return (value);
 }
 
 static rpc_object_t
 container_deserialize(rpc_object_t obj)
 {
 	rpc_object_t result;
-	obj = rpc_dictionary_get_value(obj, RPCT_VALUE_FIELD);
 
 	if (rpc_get_type(obj) == RPC_TYPE_DICTIONARY) {
 		result = rpc_dictionary_create();
 		rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t value) {
-		    rpc_dictionary_steal_value(result, key, rpct_deserialize(value));
-		    return ((bool)true);
+			rpc_dictionary_steal_value(result, key, rpct_deserialize(value));
+			return ((bool)true);
 		});
 
 		return (result);
@@ -136,8 +133,8 @@ container_deserialize(rpc_object_t obj)
 	if (rpc_get_type(obj) == RPC_TYPE_ARRAY) {
 		result = rpc_array_create();
 		rpc_array_apply(obj, ^(size_t i __unused, rpc_object_t value) {
-		    rpc_array_append_stolen_value(result, rpct_deserialize(value));
-		    return ((bool)true);
+			rpc_array_append_stolen_value(result, rpct_deserialize(value));
+			return ((bool)true);
 		});
 
 		return (result);

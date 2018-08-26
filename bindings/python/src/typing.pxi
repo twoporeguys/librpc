@@ -171,6 +171,13 @@ cdef class TypeInstance(object):
 
                 return fn
 
+            if self.type.clazz == TypeClass.CONTAINER:
+                if self.type.definition.canonical == 'array':
+                    return Array
+
+                if self.type.definition.canonical == 'dict':
+                    return Dictionary
+
             if self.type.clazz == TypeClass.STRUCT:
                 return BaseTypingObject.construct_struct(self)
 
@@ -180,7 +187,7 @@ cdef class TypeInstance(object):
             if self.type.clazz == TypeClass.ENUM:
                 return BaseTypingObject.construct_enum(self)
 
-            if self.type.clazz in (TypeClass.TYPEDEF, TypeClass.CONTAINER):
+            if self.type.clazz == TypeClass.TYPEDEF:
                 return BaseTypingObject.construct_type(self)
 
     property proxy:

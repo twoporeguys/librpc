@@ -180,6 +180,11 @@ rpct_check_fields(rpc_object_t obj, ...)
 	va_list ap;
 	bool ret;
 
+	if (rpc_get_type(obj) != RPC_TYPE_DICTIONARY) {
+		rpc_set_last_errorf(EINVAL, "Declaration not a dictionary");
+		return (-1);
+	}
+
 	allowed = g_ptr_array_new();
 	va_start(ap, obj);
 
@@ -576,7 +581,8 @@ rpct_unwind_typei(struct rpct_typei *typei)
 	struct rpct_typei *current = typei;
 
 	while (current) {
-		if (current->type->clazz == RPC_TYPING_TYPEDEF) {
+		if (current->type->clazz == RPC_TYPING_TYPEDEF ||
+		    current->type->clazz == RPC_TYPING_CONTAINER) {
 			current = current->type->definition;
 			continue;
 		}
@@ -1259,8 +1265,7 @@ rpct_read_idl(const char *name, rpc_object_t idl)
 	file->interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 
 	if (rpct_read_meta(file, rpc_dictionary_get_value(idl, "meta")) < 0) {
-		rpc_set_last_errorf(EINVAL,
-		    "Cannot read meta section of file %s", file->path);
+		rpct_file_free(file);
 		return (-1);
 	}
 

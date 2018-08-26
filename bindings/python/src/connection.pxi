@@ -629,12 +629,12 @@ cdef class RemoteInterface(object):
                 interface='com.twoporeguys.librpc.Observable'
             ):
                 rprop = RemoteProperty.__new__(RemoteProperty)
-                rprop.name = prop['name']
+                rprop.name = prop.name
                 rprop.interface = interface
                 rprop.typed = None
 
                 if typed:
-                    rprop.typed = typed.find_member(prop['name'])
+                    rprop.typed = typed.find_member(prop.name)
 
                 yield rprop
         except:
