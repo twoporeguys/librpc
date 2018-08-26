@@ -420,6 +420,7 @@
     <member refid="typing_8h_1a9a426085402f8ec2eeb39f876b69261ba9ad5bd76922635a0b8568576d88e7515" kind="enumvalue"><name>RPC_TYPING_UNION</name></member>
     <member refid="typing_8h_1a9a426085402f8ec2eeb39f876b69261ba52881f53baa4539863c4100a0e7151c0" kind="enumvalue"><name>RPC_TYPING_ENUM</name></member>
     <member refid="typing_8h_1a9a426085402f8ec2eeb39f876b69261baa090dc151eff727a5576057f42816a48" kind="enumvalue"><name>RPC_TYPING_TYPEDEF</name></member>
+    <member refid="typing_8h_1a9a426085402f8ec2eeb39f876b69261ba089b694600dee458a8d559654ae3a5f7" kind="enumvalue"><name>RPC_TYPING_CONTAINER</name></member>
     <member refid="typing_8h_1a9a426085402f8ec2eeb39f876b69261ba5112c6c026c6d744be5a9fbe0ebaa71d" kind="enumvalue"><name>RPC_TYPING_BUILTIN</name></member>
     <member refid="typing_8h_1ab85403e2a616bb3728cd489bd0619cbb" kind="typedef"><name>rpct_type_t</name></member>
     <member refid="typing_8h_1a0d718518624626887a65ead4f5cde3b9" kind="typedef"><name>rpct_typei_t</name></member>
