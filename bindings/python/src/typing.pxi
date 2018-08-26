@@ -568,7 +568,7 @@ cdef class BaseTypingObject(object):
             if not result:
                 raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
-            self.object = value
+            (<BaseTypingObject>self).object = value
 
         def __init__(self, value):
             self.value = value
@@ -601,7 +601,7 @@ cdef class BaseTypingObject(object):
             if not result:
                 raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
-            self.object = value
+            (<BaseTypingObject>self).object = value
 
         def __str__(self):
             return "<enum {0}>".format(self.typei.type.name)
