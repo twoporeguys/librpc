@@ -1377,11 +1377,11 @@ rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
 	}
 
 step3:
-	handler = rpc_find_class_handler(NULL, raw_typei->type->clazz);
+	handler = rpc_find_class_handler(NULL, typei->type->clazz);
 	g_assert_nonnull(handler);
 
 	/* Step 3: run per-class validator */
-	valid = handler->validate_fn(raw_typei, obj, errctx);
+	valid = handler->validate_fn(typei, obj, errctx);
 
 done:
 	return (valid);

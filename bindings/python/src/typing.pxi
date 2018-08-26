@@ -178,6 +178,8 @@ cdef class TypeInstance(object):
                 if self.type.definition.canonical == 'dict':
                     return Dictionary
 
+                raise AssertionError('Unknown container type')
+
             if self.type.clazz == TypeClass.STRUCT:
                 return BaseTypingObject.construct_struct(self)
 
@@ -519,10 +521,14 @@ cdef class BaseTypingObject(object):
             if value.typei.canonical != self.typei.canonical:
                 raise TypeError('Incompatible value type')
 
-            self.object = value
+            (<BaseTypingObject>self).object = value
             for m in self.members:
                 if m.name not in self.object:
                     self.object[m.name] = m.type.factory(kwargs.get(m.name))
+
+            result, errors = self.typei.validate(self.object)
+            if not result:
+                raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
         def __str__(self):
             return "<struct {0}>".format(self.typei.type.name)

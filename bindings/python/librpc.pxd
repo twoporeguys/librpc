@@ -528,7 +528,7 @@ cdef class InterfaceMember(object):
 
 
 cdef class BaseTypingObject(object):
-    cdef public Object object
+    cdef readonly Object object
     cdef readonly TypeInstance typei
 
     @staticmethod
@@ -537,7 +537,6 @@ cdef class BaseTypingObject(object):
     cdef construct_union(TypeInstance typei)
     @staticmethod
     cdef construct_enum(TypeInstance typei)
-
 
 
 cdef class Call(object):
