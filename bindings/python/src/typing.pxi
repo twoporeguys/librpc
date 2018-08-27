@@ -532,6 +532,12 @@ cdef class BaseTypingObject(object):
             if not result:
                 raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
+        def __getitem__(self, item):
+            return getattr(self, item)
+
+        def __setitem__(self, key, value):
+            setattr(self, key, value)
+
         def __str__(self):
             return "<struct {0}>".format(self.typei.type.name)
 
@@ -549,6 +555,8 @@ cdef class BaseTypingObject(object):
             'typei': typei,
             'members': typei.type.members,
             '__init__': __init__,
+            '__getitem__': __getitem__,
+            '__setitem__': __setitem__,
             '__str__': __str__,
             '__repr__': __repr__
         }
