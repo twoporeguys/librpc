@@ -345,7 +345,7 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 
 	debugf("instantiating type %s", decl);
 
-	if (rpct_instance_regex == NULL) {
+	if (context == NULL) {
 		rpc_set_last_errorf(ENXIO, "Typing not initialized");
 		return (NULL);
 	}
