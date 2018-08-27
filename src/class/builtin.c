@@ -31,41 +31,7 @@ static bool
 builtin_validate(struct rpct_typei *typei, rpc_object_t obj,
     struct rpct_error_context *errctx)
 {
-	struct rpct_typei *value_typei = g_hash_table_lookup(
-	    typei->specializations, "T");
 
-	if (value_typei == NULL)
-		goto done;
-
-	switch (rpc_get_type(obj)) {
-	case RPC_TYPE_ARRAY:
-		rpc_array_apply(obj, ^(size_t idx, rpc_object_t value) {
-		    struct rpct_error_context newctx;
-		    char *name = g_strdup_printf("%zu", idx);
-
-		    rpct_derive_error_context(&newctx, errctx, name);
-		    rpct_validate_instance(value_typei, value, &newctx);
-		    rpct_release_error_context(&newctx);
-		    return ((bool)true);
-		});
-		break;
-
-	case RPC_TYPE_DICTIONARY:
-		rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t value) {
-		    struct rpct_error_context newctx;
-
-		    rpct_derive_error_context(&newctx, errctx, key);
-		    rpct_validate_instance(value_typei, value, &newctx);
-		    rpct_release_error_context(&newctx);
-		    return ((bool)true);
-		});
-		break;
-
-	default:
-		break;
-	}
-
-done:
 	return (rpct_run_validators(typei, obj, errctx));
 }
 

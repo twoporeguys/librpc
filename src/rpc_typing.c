@@ -115,20 +115,21 @@ rpct_newi(rpct_typei_t typei, rpc_object_t object)
 rpc_object_t
 rpct_set_typei(rpct_typei_t typei, rpc_object_t object)
 {
+	rpct_typei_t base_typei;
 	const char *typename;
 
 	if (object == NULL)
 		return (NULL);
 
 	typename = rpc_get_type_name(object->ro_type);
-	typei = rpct_unwind_typei(typei);
+	base_typei = rpct_unwind_typei(typei);
 
-	if (typei->type->clazz == RPC_TYPING_BUILTIN &&
-	    g_strcmp0(typei->canonical_form, typename) != 0)
+	if (base_typei->type->clazz == RPC_TYPING_BUILTIN &&
+	    g_strcmp0(base_typei->canonical_form, typename) != 0)
 		return (NULL);
 
-	if (object->ro_typei != NULL)
-		rpct_typei_release(object->ro_typei);
+	//if (object->ro_typei != NULL)
+	//	rpct_typei_release(object->ro_typei);
 
 	object->ro_typei = rpct_typei_retain(typei);
 	return (object);
@@ -178,6 +179,11 @@ rpct_check_fields(rpc_object_t obj, ...)
 	const char *token;
 	va_list ap;
 	bool ret;
+
+	if (rpc_get_type(obj) != RPC_TYPE_DICTIONARY) {
+		rpc_set_last_errorf(EINVAL, "Declaration not a dictionary");
+		return (-1);
+	}
 
 	allowed = g_ptr_array_new();
 	va_start(ap, obj);
@@ -338,6 +344,11 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 	int found_proxy_type = -1;
 
 	debugf("instantiating type %s", decl);
+
+	if (context == NULL) {
+		rpc_set_last_errorf(ENXIO, "Typing not initialized");
+		return (NULL);
+	}
 
 	if (!g_regex_match(rpct_instance_regex, decl, 0, &match)) {
 		rpc_set_last_errorf(EINVAL, "Invalid type specification: %s",
@@ -570,7 +581,8 @@ rpct_unwind_typei(struct rpct_typei *typei)
 	struct rpct_typei *current = typei;
 
 	while (current) {
-		if (current->type->clazz == RPC_TYPING_TYPEDEF) {
+		if (current->type->clazz == RPC_TYPING_TYPEDEF ||
+		    current->type->clazz == RPC_TYPING_CONTAINER) {
 			current = current->type->definition;
 			continue;
 		}
@@ -758,6 +770,7 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	const struct rpct_class_handler *handler;
 	char *typename;
 	const char *inherits = NULL;
+	const char *value_type = NULL;
 	const char *description = "";
 	char *decltype = NULL;
 	char *declname = NULL;
@@ -771,10 +784,11 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	g_assert_nonnull(obj);
 	debugf("reading type \"%s\"", decl);
 
-	rpc_object_unpack(obj, "{s,s,s,v}",
+	rpc_object_unpack(obj, "{s,s,s,s,v}",
 	    "inherits", &inherits,
 	    "description", &description,
 	    "type", &type_def,
+	    "value-type", &value_type,
 	    "members", &members);
 
 	if (inherits != NULL) {
@@ -878,11 +892,17 @@ rpct_read_type(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	}
 
 	if (type_def != NULL) {
-		type->clazz = RPC_TYPING_TYPEDEF;
 		type->definition = rpct_instantiate_type(type_def, NULL,
 		    type, file);
 
 		g_assert_nonnull(type->definition);
+	}
+
+	if (value_type != NULL) {
+		type->value_type = rpct_instantiate_type(value_type, NULL,
+		    type, file);
+
+		g_assert_nonnull(type->value_type);
 	}
 
 	if (!g_hash_table_insert(context->types, g_strdup(type->name), type))
@@ -1245,8 +1265,7 @@ rpct_read_idl(const char *name, rpc_object_t idl)
 	file->interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 
 	if (rpct_read_meta(file, rpc_dictionary_get_value(idl, "meta")) < 0) {
-		rpc_set_last_errorf(EINVAL,
-		    "Cannot read meta section of file %s", file->path);
+		rpct_file_free(file);
 		return (-1);
 	}
 
@@ -1358,11 +1377,11 @@ rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
 	}
 
 step3:
-	handler = rpc_find_class_handler(NULL, raw_typei->type->clazz);
+	handler = rpc_find_class_handler(NULL, typei->type->clazz);
 	g_assert_nonnull(handler);
 
 	/* Step 3: run per-class validator */
-	valid = handler->validate_fn(raw_typei, obj, errctx);
+	valid = handler->validate_fn(typei, obj, errctx);
 
 done:
 	return (valid);

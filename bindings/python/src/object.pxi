@@ -161,6 +161,10 @@ cdef class Object(object):
             self.obj = (<Object>value).obj
             rpc_retain(self.obj)
 
+        elif isinstance(value, BaseTypingObject):
+            self.obj = (<BaseTypingObject>value).object.obj
+            rpc_retain(self.obj)
+
         elif hasattr(value, '__getstate__'):
             try:
                 child = Object(value.__getstate__())
@@ -182,9 +186,6 @@ cdef class Object(object):
                 raise LibException(errno.EINVAL, "Unknown value type: {0}".format(type(value)))
 
         if typei:
-            if isinstance(value, Object):
-                self.obj = rpc_copy(self.obj)
-
             if not isinstance(typei, TypeInstance):
                 raise TypeError('typei is not a TypeInstance')
 
@@ -231,7 +232,7 @@ cdef class Object(object):
             rpc_release(self.obj)
 
     @staticmethod
-    cdef Object wrap(rpc_object_t ptr):
+    cdef wrap(rpc_object_t ptr):
         cdef Object ret
         cdef rpct_typei_t typei
 
@@ -264,9 +265,6 @@ cdef class Object(object):
         :param self:
         :return:
         """
-        if isinstance(self, (BaseStruct, BaseUnion, BaseEnum)):
-            return self
-
         if self.type == ObjectType.FD:
             return fd(self.value)
 

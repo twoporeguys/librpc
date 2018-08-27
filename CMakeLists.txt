@@ -217,6 +217,7 @@ set(TYPE_CLASS_FILES
         src/class/struct.c
         src/class/union.c
         src/class/typedef.c
+        src/class/container.c
         src/class/enum.c
         src/class/builtin.c)
 

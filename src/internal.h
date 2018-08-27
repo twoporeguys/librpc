@@ -70,7 +70,7 @@
 #define debugf(...)
 #endif
 
-#define	TYPE_REGEX	"(struct|union|type|enum) ([\\w\\.]+)(<(.*)>)?"
+#define	TYPE_REGEX	"(struct|union|type|container|enum) ([\\w\\.]+)(<(.*)>)?"
 #define	INTERFACE_REGEX	"interface (\\w+)"
 #define	INSTANCE_REGEX	"([\\w\\.]+)(<(.*)>)?"
 #define	METHOD_REGEX	"method (\\w+)"
@@ -435,6 +435,7 @@ struct rpct_type
 	struct rpct_file *	file;
 	struct rpct_type *	parent;
 	struct rpct_typei *	definition;
+	struct rpct_typei *	value_type;
 	bool			generic;
 	GPtrArray *		generic_vars;
 	GHashTable *		members;
