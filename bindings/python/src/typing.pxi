@@ -495,6 +495,8 @@ cdef class StructUnionMember(Member):
 
 
 cdef class BaseTypingObject(object):
+    __type_cache = {}
+
     def unpack(self):
         return self
 
@@ -539,6 +541,10 @@ cdef class BaseTypingObject(object):
                 ', '.join('{0}={1!r}'.format(m.name, getattr(self, m.name)) for m in self.members) + \
                 ')'
 
+        cached = BaseTypingObject.__type_cache.get(typei.canonical)
+        if cached:
+            return cached
+
         members = {
             'typei': typei,
             'members': typei.type.members,
@@ -555,7 +561,9 @@ cdef class BaseTypingObject(object):
                 m.description
             )
 
-        return type(typei.type.name, (BaseStruct,), members)
+        ret = type(typei.type.name, (BaseStruct,), members)
+        BaseTypingObject.__type_cache[typei.canonical] = ret
+        return ret
 
     @staticmethod
     cdef construct_union(TypeInstance typei):
@@ -579,6 +587,10 @@ cdef class BaseTypingObject(object):
         def __repr__(self):
             return '{0}({1})'.format(self.typei.type.name, self.value)
 
+        cached = BaseTypingObject.__type_cache.get(typei.canonical)
+        if cached:
+            return cached
+
         members = {
             'typei': typei,
             'branches': {m.name: m for m in typei.type.members},
@@ -588,7 +600,9 @@ cdef class BaseTypingObject(object):
             '__repr__': __repr__
         }
 
-        return type(typei.type.name, (BaseUnion,), members)
+        ret = type(typei.type.name, (BaseUnion,), members)
+        BaseTypingObject.__type_cache[typei.canonical] = ret
+        return ret
 
     @staticmethod
     cdef construct_enum(TypeInstance typei):
@@ -612,6 +626,10 @@ cdef class BaseTypingObject(object):
         def __init__(self, value):
             self.value = value
 
+        cached = BaseTypingObject.__type_cache.get(typei.canonical)
+        if cached:
+            return cached
+
         members = {
             'typei': typei,
             'values': [m.name for m in typei.type.members],
@@ -621,7 +639,9 @@ cdef class BaseTypingObject(object):
             '__repr__': __repr__
         }
 
-        return type(typei.type.name, (BaseEnum,), members)
+        ret = type(typei.type.name, (BaseEnum,), members)
+        BaseTypingObject.__type_cache[typei.canonical] = ret
+        return ret
 
 
 cdef class BaseStruct(BaseTypingObject):
