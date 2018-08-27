@@ -186,7 +186,7 @@ class PropertyPane(Gtk.Box):
         self.item = item
         self.serializer = librpc.Serializer('json')
         self.font = Pango.FontDescription('monospace 10')
-        self.current = ObjectEditor({'result': self.read(), 'test': {}})
+        self.current = ObjectEditor({'result': self.read(), 'test': {'a': {'b': 5, 'c': {'d': False}}}})
         self.new = Gtk.TreeView()
         self.actions = Gtk.ActionBar()
         self.change = Gtk.Button('Set value')
@@ -218,13 +218,17 @@ class MethodPane(Gtk.Box):
 
 
 class ValueDescriptor(object):
-    def __init__(self, name, value, path, name_editable, value_editable, deletable):
+    def __init__(self, name, value, path, name_editable, value_editable, deletable, cb=None):
         self.name = name
         self.value = value
         self.path = path
         self.name_editable = name_editable
         self.value_editable = value_editable
         self.deletable = deletable
+        self.callback = cb
+
+    def get_value(self):
+        return librpc.get(self.value, self.path)
 
 
 class ValueCellRenderer(Gtk.CellRenderer):
@@ -240,16 +244,18 @@ class TypeSelectorStore(Gtk.ListStore):
 class ObjectEditor(Gtk.TreeView):
     def __init__(self, items):
         self.items = items
-        self.store = Gtk.TreeStore(ValueDescriptor)
+        self.store = Gtk.TreeStore(object)
 
         for k, v in items.items():
-            self.add(None, k, v, True, True, True)
+            self.add(None, ValueDescriptor(k, v, None, False, False, False))
 
         super().__init__(self.store)
         self.init_treeview()
+        self.connect('row-activated', self.on_row_activated)
 
     def render_type(self, column, cell, model, iter, *data):
-        item = model[iter][1]
+        desc = model[iter][0]
+        item = desc.get_value()
 
         if not isinstance(item, librpc.Object):
             item = librpc.Object(item)
@@ -261,17 +267,19 @@ class ObjectEditor(Gtk.TreeView):
         cell.set_property('text', librpc.rpc_typename(item.type))
 
     def render_value(self, column, cell, model, iter, *data):
-        cell.set_property('text', str(model[iter][1]))
+        desc = model[iter][0]
+        item = desc.get_value()
+        cell.set_property('text', str(item))
 
     def render_name(self, column, cell, model, iter, *data):
-        cell.set_property('text', model[iter][0])
-        cell.set_property('editable', model[iter][2])
+        desc = model[iter][0]
+        cell.set_property('text', desc.name)
+        cell.set_property('editable', desc.name_editable)
 
     def init_treeview(self):
         column = Gtk.TreeViewColumn('Name')
         label = Gtk.CellRendererText()
         column.pack_start(label, True)
-        column.add_attribute(label, "text", 0)
         column.set_cell_data_func(label, self.render_name)
         self.append_column(column)
 
@@ -292,31 +300,71 @@ class ObjectEditor(Gtk.TreeView):
         column.pack_start(label, True)
         self.append_column(column)
 
-    def add(self, parent, name, value, name_editable, value_editable, deletable):
-        it = self.store.append(parent, (
-            name,
-            value,
-            name_editable,
-            value_editable,
-            deletable
-        ))
+    def on_row_activated(self, treeview, path, column):
+        iter = self.store.get_iter(path)
+        row = self.store[iter]
+        desc = row[0]
 
-        if isinstance(value, dict):
+        if desc.callback:
+            desc.callback(iter, desc)
+
+    def add_dict_entry(self, iter, desc):
+        path = '{0}.unnamed'.format(desc.path)
+        librpc.set(desc.value, path, None)
+        self.add(
+            self.store.iter_parent(iter),
+            ValueDescriptor(
+                'unnamed',
+                desc.value,
+                path,
+                desc.name_editable, desc.value_editable, desc.deletable))
+
+    def add(self, parent, desc):
+        it = self.store.append(parent, (desc,))
+        value = desc.value
+
+        if desc.path:
+            print('desc.value={0}, desc.path={1}'.format(desc.value, desc.path))
+            value = librpc.get(desc.value, desc.path)
+            print('value={0}'.format(value))
+
+        if isinstance(value, (librpc.Dictionary, dict)):
             for k, v in value.items():
-                self.add(it, k, v, value_editable, value_editable, deletable)
+                print('adding dict key={0}'.format(k))
+                self.add(it, ValueDescriptor(
+                    name=k,
+                    value=desc.value,
+                    path='.'.join(filter(None, [desc.path, k])),
+                    name_editable=desc.value_editable,
+                    value_editable=desc.value_editable,
+                    deletable=desc.deletable
+                ))
 
-            self.store.append(it, ('Add new row', None, False, False, False))
+            self.store.append(it, (ValueDescriptor('Add new row', desc.value, desc.path, False, False, False, self.add_dict_entry),))
 
-        if isinstance(value, list):
+        if isinstance(value, (librpc.Array, list)):
             for idx, v in enumerate(value):
-                self.add(it, str(idx), v, value_editable, value_editable, deletable)
+                self.add(it, ValueDescriptor(
+                    name=str(idx),
+                    value=desc.value,
+                    path='.'.join(filter(None, [desc.path, str(idx)])),
+                    name_editable=False,
+                    value_editable=desc.value_editable,
+                    deletable=desc.deletable
+                ))
 
-            self.store.append(it, ('Add new row', None, False, False, False))
+                self.store.append(it, (ValueDescriptor('Add new row', desc.value, desc.path, False, False, False),))
 
         if isinstance(value, librpc.BaseStruct):
             for m in value.typei.type.members:
-                v = value[m.name]
-                self.add(it, m.name, v, False, value_editable, False)
+                self.add(it, ValueDescriptor(
+                    name=m.name,
+                    value=desc.value,
+                    path='.'.join(filter(None, [desc.path, m.name])),
+                    name_editable=False,
+                    value_editable=desc.value_editable,
+                    deletable=desc.deletable
+                ))
 
 
 def scrolled(widget):
