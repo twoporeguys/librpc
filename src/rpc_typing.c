@@ -2205,8 +2205,11 @@ rpct_deserialize(rpc_object_t object)
 			goto builtin;
 
 		typei = rpct_new_typei(typedecl);
-		if (typei == NULL)
-			return (rpc_null_create());
+		if (typei == NULL) {
+			return (rpc_error_create(ENOENT,
+			    "Type information not found",
+			    rpc_object_pack("{type:s}", typedecl)));
+		}
 
 		clazz = typei->type->clazz;
 		handler = rpc_find_class_handler(NULL, clazz);

@@ -1599,7 +1599,7 @@ rpc_object_t rpc_connection_call_syncpv(rpc_connection_t conn,
     const char *fmt, va_list ap)
 {
 	rpc_call_t call;
-	rpc_object_t args;
+	rpc_auto_object_t args = NULL;
 	rpc_object_t result;
 
 	args = rpc_object_vpack(fmt, ap);
