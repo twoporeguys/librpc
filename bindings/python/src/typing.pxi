@@ -504,7 +504,7 @@ cdef class BaseTypingObject(object):
     @staticmethod
     cdef construct_struct(TypeInstance typei):
         def getter(self, member):
-            return self.object[member.name]
+            return self.__object__[member.name]
 
         def setter(self, member, value):
             value = Object(value, typei=member.type)
@@ -512,26 +512,26 @@ cdef class BaseTypingObject(object):
             if not result:
                 raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
-            self.object[member.name] = value
+            self.__object__[member.name] = value
 
         def __init__(self, value=None, **kwargs):
             if not value:
-                value = Dictionary(typei=self.typei)
+                value = Dictionary(typei=self.__typei__)
 
             if isinstance(value, BaseStruct):
-                value = value.object
+                value = value.__object__
 
-            if value.typei.canonical != self.typei.canonical:
+            if value.typei.canonical != self.__typei__.canonical:
                 raise TypeError('Incompatible value type')
 
-            (<BaseTypingObject>self).object = value
-            for m in self.members:
-                if m.name not in self.object:
-                    self.object[m.name] = m.type.factory(kwargs.get(m.name))
+            (<BaseTypingObject>self).__object__ = value
+            for m in self.__members__:
+                if m.name not in self.__object__:
+                    self.__object__[m.name] = m.type.factory(kwargs.get(m.name))
 
-            result, errors = self.typei.validate(self.object)
+            result, errors = self.__typei__.validate(self.__object__)
             if not result:
-                raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
+                raise LibException(errno.EINVAL, 'Validation failed: {0}'.format(errors.unpack()), errors.unpack())
 
         def __getitem__(self, item):
             return getattr(self, item)
@@ -540,24 +540,26 @@ cdef class BaseTypingObject(object):
             setattr(self, key, value)
 
         def __str__(self):
-            return "<struct {0}>".format(self.typei.type.name)
+            return "<struct {0}>".format(self.__typei__.type.name)
+
+        def __iter__(self):
+            return iter(self.__object__.items())
 
         def __repr__(self):
-            return \
-                '{0}('.format(self.typei.type.name) + \
-                ', '.join('{0}={1!r}'.format(m.name, getattr(self, m.name)) for m in self.members) + \
-                ')'
+            memb = ('{0}={1!r}'.format(m.name, self[m.name]) for m in self.__members__)
+            return '{0}({1})'.format(self.__typei__.type.name, ', '.join(memb))
 
         cached = BaseTypingObject.__type_cache.get(typei.canonical)
         if cached:
             return cached
 
         members = {
-            'typei': typei,
-            'members': typei.type.members,
+            '__typei__': typei,
+            '__members__': typei.type.members,
             '__init__': __init__,
             '__getitem__': __getitem__,
             '__setitem__': __setitem__,
+            '__iter__': __iter__,
             '__str__': __str__,
             '__repr__': __repr__
         }
@@ -577,33 +579,33 @@ cdef class BaseTypingObject(object):
     @staticmethod
     cdef construct_union(TypeInstance typei):
         def getter(self):
-            return self.object
+            return self.__object__
 
         def setter(self, value):
-            value = Object(value, typei=self.typei)
-            result, errors = self.typei.validate(value)
+            value = Object(value, typei=self.__typei__)
+            result, errors = self.__typei__.validate(value)
             if not result:
                 raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
-            (<BaseTypingObject>self).object = value
+            (<BaseTypingObject>self).__object__ = value
 
         def __init__(self, value):
             self.value = value
 
         def __str__(self):
-            return "<union {0}>".format(self.typei.type.name)
+            return "<union {0}>".format(self.__typei__.type.name)
 
         def __repr__(self):
-            return '{0}({1})'.format(self.typei.type.name, self.value)
+            return '{0}({1})'.format(self.__typei__.type.name, self.value)
 
         cached = BaseTypingObject.__type_cache.get(typei.canonical)
         if cached:
             return cached
 
         members = {
-            'typei': typei,
-            'branches': {m.name: m for m in typei.type.members},
             'value': property(getter, setter),
+            '__typei__': typei,
+            '__branches__': {m.name: m for m in typei.type.members},
             '__init__': __init__,
             '__str__': __str__,
             '__repr__': __repr__
@@ -619,18 +621,18 @@ cdef class BaseTypingObject(object):
             return self.object.unpack()
 
         def setter(self, value):
-            value = Object(value, typei=self.typei)
-            result, errors = self.typei.validate(value)
+            value = Object(value, typei=self.__typei__)
+            result, errors = self.__typei__.validate(value)
             if not result:
                 raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
 
-            (<BaseTypingObject>self).object = value
+            (<BaseTypingObject>self).__object__ = value
 
         def __str__(self):
-            return "<enum {0}>".format(self.typei.type.name)
+            return "<enum {0}>".format(self.__typei__.type.name)
 
         def __repr__(self):
-            return '{0}({1})'.format(self.typei.type.name, self.value)
+            return '{0}({1})'.format(self.__typei__.type.name, self.value)
 
         def __init__(self, value):
             self.value = value
@@ -640,9 +642,9 @@ cdef class BaseTypingObject(object):
             return cached
 
         members = {
-            'typei': typei,
-            'values': [m.name for m in typei.type.members],
             'value': property(getter, setter),
+            '__typei__': typei,
+            '__values__': [m.name for m in typei.type.members],
             '__init__': __init__,
             '__str__': __str__,
             '__repr__': __repr__

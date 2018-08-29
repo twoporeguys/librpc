@@ -528,8 +528,8 @@ cdef class InterfaceMember(object):
 
 
 cdef class BaseTypingObject(object):
-    cdef readonly Object object
-    cdef readonly TypeInstance typei
+    cdef readonly Object __object__
+    cdef readonly TypeInstance __typei__
 
     @staticmethod
     cdef construct_struct(TypeInstance typei)
