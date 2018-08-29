@@ -202,6 +202,8 @@ Functions</h2></td></tr>
 <tr class="separator:afbb30599739b51d96d00454e0512eef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad197e18cc381248bd28c52d8854ea8ea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#ad197e18cc381248bd28c52d8854ea8ea">rpct_typei_get_member_type</a> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> typei, <a class="el" href="typing_8h.html#a738ac0d076d329aece903bf1835bfcdd">rpct_member_t</a> member)</td></tr>
 <tr class="separator:ad197e18cc381248bd28c52d8854ea8ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae311eedb9f457c51cfd94e1aa1b2708a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#ae311eedb9f457c51cfd94e1aa1b2708a">rpct_typei_is_compatible</a> (<a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> decl, <a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a> type)</td></tr>
+<tr class="separator:ae311eedb9f457c51cfd94e1aa1b2708a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a556bc81ded7514d653442d3b5fc59235"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a556bc81ded7514d653442d3b5fc59235">rpct_member_get_name</a> (<a class="el" href="typing_8h.html#a738ac0d076d329aece903bf1835bfcdd">rpct_member_t</a> member)</td></tr>
 <tr class="separator:a556bc81ded7514d653442d3b5fc59235"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5175bf9357d574e1002294ed68cc5a12"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typing_8h.html#a5175bf9357d574e1002294ed68cc5a12">rpct_member_get_description</a> (<a class="el" href="typing_8h.html#a738ac0d076d329aece903bf1835bfcdd">rpct_member_t</a> member)</td></tr>
@@ -2304,6 +2306,43 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Type handle </dd></dl>
+
+</div>
+</div>
+<a id="ae311eedb9f457c51cfd94e1aa1b2708a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae311eedb9f457c51cfd94e1aa1b2708a">&#9670;&nbsp;</a></span>rpct_typei_is_compatible()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rpct_typei_is_compatible </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td>
+          <td class="paramname"><em>decl</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="typing_8h.html#a0d718518624626887a65ead4f5cde3b9">rpct_typei_t</a>&#160;</td>
+          <td class="paramname"><em>type</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns <code>true</code> if <code>decl</code> and <code>type</code> are compatible types.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">decl</td><td>First type </td></tr>
+    <tr><td class="paramname">type</td><td>Second type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if compatible, otherwise <code>false</code> </dd></dl>
 
 </div>
 </div>
