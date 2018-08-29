@@ -298,6 +298,7 @@ var searchData=
   ['rpct_5ftypei_5fget_5fproxy',['rpct_typei_get_proxy',['../typing_8h.html#afbdb700f7ee6b149e3e4847aff436b85',1,'typing.h']]],
   ['rpct_5ftypei_5fget_5fproxy_5fvariable',['rpct_typei_get_proxy_variable',['../typing_8h.html#ae6b71a01ec1699ea18ffd5aaaa19f378',1,'typing.h']]],
   ['rpct_5ftypei_5fget_5ftype',['rpct_typei_get_type',['../typing_8h.html#a6f327621ae6dbc69d3812723c53f3feb',1,'typing.h']]],
+  ['rpct_5ftypei_5fis_5fcompatible',['rpct_typei_is_compatible',['../typing_8h.html#ae311eedb9f457c51cfd94e1aa1b2708a',1,'typing.h']]],
   ['rpct_5ftypei_5frelease',['rpct_typei_release',['../typing_8h.html#a072f83e18ab9fb657649cc456b4450e4',1,'typing.h']]],
   ['rpct_5ftypei_5fretain',['rpct_typei_retain',['../typing_8h.html#aaccbdef57d9289cada2a56e5bc18c3eb',1,'typing.h']]],
   ['rpct_5ftypes_5fapply',['rpct_types_apply',['../typing_8h.html#a1b6d6a2e631f2eefd83ec54b5f307282',1,'typing.h']]],
