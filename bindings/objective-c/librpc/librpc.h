@@ -424,7 +424,7 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
 
 @interface RPCTyping : NSObject
 + (instancetype)shared;
-- (void)loadTypes:(nonnull NSString *)path error:(NSError *_Nullable *_Nullable)error;
-- (void)loadTypesDirectory:(nonnull NSString *)directory error:(NSError *_Nullable *_Nullable)error;
-- (void)loadTypesConnection:(nonnull RPCClient *)client error:(NSError *_Nullable *_Nullable)error;
+- (BOOL)loadTypes:(nonnull NSString *)path error:(NSError *_Nullable *_Nullable)error;
+- (BOOL)loadTypesDirectory:(nonnull NSString *)directory error:(NSError *_Nullable *_Nullable)error;
+- (BOOL)loadTypesConnection:(nonnull RPCClient *)client error:(NSError *_Nullable *_Nullable)error;
 @end

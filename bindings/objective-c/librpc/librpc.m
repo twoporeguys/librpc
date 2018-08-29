@@ -733,23 +733,31 @@
     return self;
 }
 
-- (void)loadTypes:(NSString *)path error:(NSError **)error
+- (BOOL)loadTypes:(NSString *)path error:(NSError **)error
 {
     if (rpct_load_types([path UTF8String]) != 0) {
         if (error != nil)
             *error = [[RPCObject lastError] value];
+
+        return NO;
     }
+
+    return YES;
 }
 
-- (void)loadTypesDirectory:(NSString *)directory error:(NSError **)error
+- (BOOL)loadTypesDirectory:(NSString *)directory error:(NSError **)error
 {
     if (rpct_load_types_dir([directory UTF8String]) != 0) {
         if (error != nil)
             *error = [[RPCObject lastError] value];
+
+        return NO;
     }
+
+    return YES;
 }
 
-- (void)loadTypesConnection:(RPCClient *)client error:(NSError **)error
+- (BOOL)loadTypesConnection:(RPCClient *)client error:(NSError **)error
 {
     rpc_connection_t conn;
 
@@ -757,7 +765,11 @@
     if (rpct_download_idl(conn) != 0) {
         if (error != nil)
             *error = [[RPCObject lastError] value];
+
+        return NO;
     }
+
+    return YES;
 }
 
 @end
