@@ -200,6 +200,7 @@ loopback_send_msg(void *arg, const void *buf, size_t len __unused,
 	rpc_retain(obj);
 	ret = (peer_conn->rco_recv_msg(peer_conn, (const void *)obj, 0,
 	    (int *)fds, nfds, NULL));
+	rpc_release(obj);
 	rpc_connection_release(peer_conn);
 	return (ret);
 }

@@ -1107,6 +1107,7 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			if (rpc_get_type(container) == RPC_TYPE_ARRAY) {
 				idx = g_queue_pop_tail(idx_q);
 				rpc_array_steal_value(container, *idx, current);
+				g_free(idx);
 			}
 
 			continue;

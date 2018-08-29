@@ -1084,6 +1084,8 @@ rpc_connection_release_call(struct rpc_call *call)
 	rpc_release(call->rc_args);
 	notify_free(&call->rc_notify);
 	g_mutex_clear(&call->rc_mtx);
+	if (call->rc_queue != NULL)
+		g_queue_free(call->rc_queue);
 	g_free(call);
 }
 
@@ -2088,7 +2090,6 @@ rpc_call_free(rpc_call_t call)
 		rpc_release(q_item->item);
 		g_free(q_item);
 	}
-	g_queue_free(call->rc_queue);
 	g_mutex_unlock(&call->rc_mtx);
 
 	g_mutex_lock(&conn->rco_mtx);
