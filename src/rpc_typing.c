@@ -41,8 +41,6 @@ static int rpct_check_fields(rpc_object_t, ...);
 #if 0
 static inline bool rpct_type_is_fully_specialized(struct rpct_typei *inst);
 #endif
-static inline bool rpct_type_is_compatible(struct rpct_typei *,
-    struct rpct_typei *);
 static inline struct rpct_typei *rpct_unwind_typei(struct rpct_typei *);
 static char *rpct_canonical_type(struct rpct_typei *);
 static int rpct_read_type(struct rpct_file *, const char *, rpc_object_t);
@@ -524,8 +522,11 @@ static void
 rpct_file_free(struct rpct_file *file)
 {
 
+	rpc_release(file->body);
 	g_free(file->path);
+	g_ptr_array_free(file->uses, true);
 	g_hash_table_destroy(file->types);
+	g_hash_table_destroy(file->interfaces);
 	g_free(file);
 }
 
@@ -533,7 +534,6 @@ static void
 rpct_interface_free(struct rpct_interface *iface)
 {
 
-	printf("freeing %s\n", iface->name);
 	g_free(iface->name);
 	g_free(iface->description);
 	g_hash_table_destroy(iface->members);
@@ -593,8 +593,8 @@ rpct_unwind_typei(struct rpct_typei *typei)
 	return (NULL);
 }
 
-static inline bool
-rpct_type_is_compatible(struct rpct_typei *decl, struct rpct_typei *type)
+bool
+rpct_typei_is_compatible(struct rpct_typei *decl, struct rpct_typei *type)
 {
 	struct rpct_type *parent_type;
 	bool compatible = false;
@@ -614,7 +614,7 @@ rpct_type_is_compatible(struct rpct_typei *decl, struct rpct_typei *type)
 				break;
 
 			if (g_strcmp0(parent_type->name,
-			    type->type->name) == 0) {
+			    decl->type->name) == 0) {
 				compatible = true;
 				break;
 			}
@@ -1366,7 +1366,7 @@ rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
 	}
 
 	/* Step 2: check type */
-	if (!rpct_type_is_compatible(raw_typei, obj->ro_typei)) {
+	if (!rpct_typei_is_compatible(raw_typei, obj->ro_typei)) {
 		rpct_add_error(errctx, NULL,
 		    "Incompatible type %s, should be %s",
 		    obj->ro_typei->canonical_form,

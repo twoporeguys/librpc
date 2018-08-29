@@ -381,6 +381,15 @@ rpct_typei_t rpct_typei_get_member_type(rpct_typei_t typei,
     rpct_member_t member);
 
 /**
+ * Returns @p true if @p decl and @p type are compatible types.
+ *
+ * @param decl First type
+ * @param type Second type
+ * @return @p true if compatible, otherwise @p false
+ */
+bool rpct_typei_is_compatible(rpct_typei_t decl, rpct_typei_t type);
+
+/**
  * Returns the name of a member.
  *
  * @param member Member handle
