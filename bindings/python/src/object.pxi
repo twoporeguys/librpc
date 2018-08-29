@@ -367,7 +367,7 @@ cdef class Array(Object):
         super(Array, self).__init__(iterable, typei=typei)
 
     @staticmethod
-    cdef bint c_applier(void *arg, size_t index, rpc_object_t value) with gil:
+    cdef bint c_applier(void *arg, size_t index, rpc_object_t value) except * with gil:
         cdef object cb = <object>arg
 
         return <bint>cb(index, Object.wrap(value))
@@ -532,7 +532,7 @@ cdef class Dictionary(Object):
         super(Dictionary, self).__init__(mapping, typei=typei)
 
     @staticmethod
-    cdef bint c_applier(void *arg, char *key, rpc_object_t value) with gil:
+    cdef bint c_applier(void *arg, char *key, rpc_object_t value) except * with gil:
         cdef object cb = <object>arg
 
         return <bint>cb(key.decode('utf-8'), Object.wrap(value))

@@ -37,7 +37,8 @@ DEFAULT_VALUES = {
     'fd': fd(0),
     'error': None,
     'dictionary': Dictionary(),
-    'array': Array()
+    'array': Array(),
+    'any': None
 }
 
 
