@@ -254,6 +254,8 @@ struct rpc_connection
 	rpc_handler_t		rco_event_handler;
 	rpc_raw_handler_t 	rco_raw_handler;
 	guint                 	rco_rpc_timeout;
+	int			rco_refcnt;
+	int			rco_callcnt;
 	GHashTable *		rco_calls;
 	GHashTable *		rco_inbound_calls;
     	GPtrArray *		rco_subscriptions;
@@ -269,9 +271,9 @@ struct rpc_connection
 	rpc_object_t 		rco_params;
     	int			rco_flags;
 	bool			rco_closed;
+	bool			rco_can_close;
 	bool			rco_aborted;
 	bool			rco_server_released;
-	int			rco_refcnt;
 #if LIBDISPATCH_SUPPORT
 	dispatch_queue_t	rco_dispatch_queue;
 #endif
