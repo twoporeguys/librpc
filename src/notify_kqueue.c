@@ -30,6 +30,7 @@
 #include <unistd.h>
 #include <glib.h>
 #include <sys/event.h>
+#include "internal.h"
 #include "notify.h"
 
 static int kqueue_fd = -1;
@@ -47,7 +48,7 @@ notify_init(struct notify *notify)
 
 	notify->fd = ++id;
 
-	EV_SET(&kev, notify->fd, EVFILT_USER, EV_ADD | EV_CLEAR, 0, 0, NULL);
+	EV_SET(&kev, notify->fd, EVFILT_USER, EV_ADD, 0, 0, NULL);
 	if (kevent(kqueue_fd, &kev, 1, NULL, 0, NULL) != 0)
 		g_assert_not_reached();
 }
@@ -56,10 +57,13 @@ void
 notify_free(struct notify *notify)
 {
 	struct kevent kev;
+	int ret;
 
-	EV_SET(&kev, notify->fd, EVFILT_USER, EV_DELETE, 0, 0, NULL);
-	if (kevent(kqueue_fd, &kev, 1, NULL, 0, NULL) != 0)
-		g_assert_not_reached();
+	EV_SET(&kev, notify->fd, EVFILT_USER, EV_CLEAR | EV_DELETE, 0, 0, NULL);
+	ret = kevent(kqueue_fd, &kev, 1, NULL, 0, NULL);
+
+	if (ret != 0 && errno != EINPROGRESS)
+		rpc_abort("kevent() failure: ret=%d, errno=%d", ret, errno);
 }
 
 int
@@ -84,8 +88,12 @@ notify_timedwait(struct notify *notify, const struct timespec *ts)
 			return (0);
 
 		if (kev.ident == (uintptr_t)notify->fd)
-			return (1);
+			break;
 	}
+
+	EV_SET(&kev, notify->fd, EVFILT_USER, EV_CLEAR, 0, 0, NULL);
+	kevent(kqueue_fd, &kev, 1, NULL, 0, NULL);
+	return (1);
 }
 
 int
