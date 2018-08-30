@@ -62,6 +62,10 @@ notify_free(struct notify *notify)
 	EV_SET(&kev, notify->fd, EVFILT_USER, EV_CLEAR | EV_DELETE, 0, 0, NULL);
 	ret = kevent(kqueue_fd, &kev, 1, NULL, 0, NULL);
 
+	/*
+	 * I have no idea why kevent() returns EINPROGRESS, as it's not
+	 * documented anywhere, so let's ignore it. ¯\_(ツ)_/¯
+	 */
 	if (ret != 0 && errno != EINPROGRESS)
 		rpc_abort("kevent() failure: ret=%d, errno=%d", ret, errno);
 }
