@@ -2314,7 +2314,7 @@ rpc_dictionary_get_fd(rpc_object_t dictionary, const char *key)
 	rpc_object_t xfd;
 
 	xfd = rpc_dictionary_get_value(dictionary, key);
-	return ((xfd != NULL) ? rpc_fd_get_value(xfd) : 0);
+	return ((xfd != NULL) ? rpc_fd_get_value(xfd) : -1);
 }
 
 inline int

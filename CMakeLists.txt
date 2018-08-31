@@ -57,8 +57,8 @@ if(NOT RELEASE_TAG)
             OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
-find_package (PkgConfig REQUIRED)
-pkg_check_modules (GLIB REQUIRED glib-2.0>=2.40)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GLIB REQUIRED glib-2.0>=2.40)
 pkg_check_modules(SOUP REQUIRED libsoup-2.4)
 pkg_check_modules(YAML REQUIRED yaml-0.1)
 

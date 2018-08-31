@@ -176,25 +176,31 @@ ws_connect_done(GObject *obj, GAsyncResult *res, gpointer user_data)
 
 static int
 ws_listen(struct rpc_server *srv, const char *uri_str,
-    rpc_object_t args __unused)
+    rpc_object_t args)
 {
 	GError *err = NULL;
 	GSocketAddress *addr = NULL;
 	SoupURI *uri;
 	struct ws_server *server;
+	int fd = -1;
 	int ret = 0;
 
 	uri = soup_uri_new(uri_str);
-        if (uri != NULL)
-		addr = g_inet_socket_address_new_from_string(uri->host,
-	            uri->port);
+	if (uri != NULL) {
+		if (args != NULL && rpc_get_type(args) == RPC_TYPE_FD)
+			fd = rpc_fd_get_value(args);
+		else {
+			addr = g_inet_socket_address_new_from_string(uri->host,
+			    uri->port);
+		}
+	}
 
 	if (addr == NULL) {
-                srv->rs_error = rpc_error_create(ENXIO, "No such address", NULL);
+		srv->rs_error = rpc_error_create(ENXIO, "No such address", NULL);
 		if (uri != NULL)
 			soup_uri_free(uri);
 
-                return(-1);
+		return (-1);
 	}
 
 	server = calloc(1, sizeof(*server));
@@ -221,7 +227,12 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 	    server->ws_uri->path, NULL, NULL, ws_process_connection, server,
 	    NULL);
 
-	soup_server_listen(server->ws_soupserver, addr, 0, &err);
+	if (addr != NULL)
+		soup_server_listen(server->ws_soupserver, addr, 0, &err);
+
+	if (fd != -1)
+		soup_server_listen_fd(server->ws_soupserver, fd, 0, &err);
+
 	if (err != NULL) {
 		srv->rs_error = rpc_error_create(err->code, err->message, NULL);
 		g_error_free(err);

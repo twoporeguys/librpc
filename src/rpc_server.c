@@ -464,15 +464,22 @@ rpc_server_close(rpc_server_t server)
 
 #ifdef SYSTEMD_SUPPORT
 int
-rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers)
+rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers,
+    rpc_object_t *rest)
 {
 	rpc_server_t server;
 	rpc_object_t params;
+	const char *name;
+	const char *uri;
+	char **names;
 	int nfds;
 	int i;
 	int n = 0;
 
-	nfds = sd_listen_fds(1);
+	if (rest != NULL)
+		*rest = rpc_dictionary_create();
+
+	nfds = sd_listen_fds_with_names(1, &names);
 	if (nfds < 0) {
 		rpc_set_last_errorf(-nfds, "Cannot get listen fds: %s",
 		    strerror(-nfds));
@@ -485,8 +492,22 @@ rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers)
 		if (!sd_is_socket(i, AF_UNSPEC, SOCK_STREAM, 1))
 			continue;
 
+		name = names[i - SD_LISTEN_FDS_START];
+
+		if (g_strcmp0(name, "librpc.socket") == 0 ||
+		    g_strcmp0(name, "librpc") == 0)
+			uri = "socket://";
+		else if (g_strcmp0(name, "librpc.ws") == 0)
+			uri = "ws://";
+		else {
+			if (rest != NULL)
+				rpc_dictionary_set_fd(*rest, name, i);
+
+			continue;
+		}
+
 		params = rpc_fd_create(i);
-		server = rpc_server_create_ex("socket://", context, params);
+		server = rpc_server_create_ex(uri, context, params);
 		if (server == NULL)
 			continue;
 

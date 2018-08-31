@@ -52,7 +52,6 @@ static GHashTable *rpcd_services;
 static int rpcd_log_level;
 static const char **rpcd_service_dirs;
 static const char **rpcd_listen;
-static int rpcd_websocket_port = -1;
 static gboolean rpcd_use_systemd;
 
 static const GOptionEntry rpcd_options[] = {
@@ -79,14 +78,6 @@ static const GOptionEntry rpcd_options[] = {
 		.arg_data = &rpcd_listen,
 		.description = "Listen address",
 		.arg_description = "URI"
-	},
-	{
-		.long_name = "websocket-port",
-		.short_name = 'w',
-		.arg = G_OPTION_ARG_INT,
-		.arg_data = &rpcd_websocket_port,
-		.description = "WebSockets listen port",
-		.arg_description = "PORT"
 	},
 	{
 		.long_name = "systemd-activation",
@@ -331,7 +322,9 @@ main(int argc, char *argv[])
 	GMainLoop *loop;
 	rpc_server_t srv;
 	rpc_object_t error;
+	rpc_object_t fds = NULL;
 	const char **uri;
+	int ws_fd;
 	int i = 0;
 
 	openlog("rpcd", LOG_PID, LOG_DAEMON);
@@ -349,7 +342,9 @@ main(int argc, char *argv[])
 	rpcd_context = rpc_context_create();
 
 	if (rpcd_use_systemd) {
-		rpcd_nservers = rpc_server_sd_listen(rpcd_context, &rpcd_servers);
+		rpcd_nservers = rpc_server_sd_listen(rpcd_context,
+		    &rpcd_servers, &fds);
+
 		if (rpcd_nservers == 0) {
 			syslog(LOG_EMERG, "No addresses to listen on, exiting");
 			exit(EXIT_FAILURE);
@@ -385,8 +380,11 @@ main(int argc, char *argv[])
 	if (rpcd_service_dirs != NULL)
 		rpcd_load_services();
 
-	if (rpcd_websocket_port != -1)
-		ws_start(rpcd_websocket_port);
+	if (fds != NULL) {
+		ws_fd = rpc_dictionary_get_fd(fds, "websocket");
+		if (ws_fd != -1)
+			ws_start(ws_fd);
+	}
 
 	syslog(LOG_NOTICE, "Started");
 	loop = g_main_loop_new(NULL, TRUE);

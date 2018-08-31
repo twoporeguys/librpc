@@ -116,10 +116,9 @@ ws_process_connection(SoupServer *ss __unused,
 }
 
 int
-ws_start(int port)
+ws_start(int fd)
 {
 	GError *err = NULL;
-	GSocketAddress *addr;
 	struct ws_server *server;
 
 	server = g_malloc0(sizeof(*server));
@@ -130,11 +129,9 @@ ws_start(int port)
 	soup_server_add_websocket_handler(server->server, NULL, NULL, NULL,
 	    ws_process_connection, server, NULL);
 
-	addr = g_inet_socket_address_new_from_string("0.0.0.0", (guint)port);
-	if (!soup_server_listen(server->server, addr, 0, &err)) {
-		g_object_unref(addr);
+	if (!soup_server_listen_fd(server->server, fd, 0, &err)) {
 		g_object_unref(server->server);
-		syslog(LOG_EMERG, "Cannot listen on %d: %s", port, err->message);
+		syslog(LOG_EMERG, "Cannot listen on fd %d: %s", fd, err->message);
 		return (-1);
 	}
 

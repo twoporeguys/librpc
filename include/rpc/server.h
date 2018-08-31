@@ -158,7 +158,8 @@ int rpc_server_close(_Nonnull rpc_server_t server);
  * @return Number of servers created or -1 on error
  */
 int rpc_server_sd_listen(_Nonnull rpc_context_t context,
-    _Nonnull rpc_server_t *_Nonnull *_Nonnull servers);
+    _Nonnull rpc_server_t *_Nonnull *_Nonnull servers,
+    _Nullable rpc_object_t *_Nullable rest);
 
 #ifdef __cplusplus
 }

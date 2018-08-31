@@ -41,11 +41,11 @@
 #define USAGE_STRING							\
     "Available commands:\n"						\
     "  tree\n"								\
-    "  inspect <path>\n"						\
-    "  call <path> <interface> <method> [arguments]\n"			\
-    "  get <path> <interface> <property>\n"				\
-    "  set <path> <interface> <property> <value>\n"			\
-    "  listen <path>\n"
+    "  inspect PATH\n"							\
+    "  call PATH INTERFACE METHOD [ARGUMENTS]\n"			\
+    "  get PATH INTERFACE PROPERTY\n"					\
+    "  set PATH INTERFACE PROPERTY VALUE\n"				\
+    "  listen PATH\n"
 
 static int cmd_tree(int argc, char *argv[]);
 static int cmd_inspect(int argc, char *argv[]);
