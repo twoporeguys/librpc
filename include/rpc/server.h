@@ -155,6 +155,7 @@ int rpc_server_close(_Nonnull rpc_server_t server);
  * information.
  *
  * @param servers
+ * @param rest
  * @return Number of servers created or -1 on error
  */
 int rpc_server_sd_listen(_Nonnull rpc_context_t context,

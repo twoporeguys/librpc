@@ -95,10 +95,11 @@ cdef class Server(object):
             cdef Server server
             cdef int nservers
             cdef rpc_server_t *servers
+            cdef rpc_object_t rest = <rpc_object_t>NULL
             cdef rpc_context_t c_context = context.unwrap()
 
             with nogil:
-                nservers = rpc_server_sd_listen(c_context, &servers)
+                nservers = rpc_server_sd_listen(c_context, &servers, &rest)
 
             if nservers < 0:
                 raise_internal_exc()
@@ -110,4 +111,4 @@ cdef class Server(object):
                 server.context = context
                 result.append(server)
 
-            return result
+            return result, Object.wrap(rest).unpack()
