@@ -61,7 +61,7 @@ void \hyperlink{server_8h_a1dd5a060b892c8a4f554ca13291d9645}{rpc\+\_\+server\+\_
 \item 
 int \hyperlink{server_8h_a1bf6070b1bb3b31d394f3862405eaf8c}{rpc\+\_\+server\+\_\+close} (\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} server)
 \item 
-int \hyperlink{server_8h_a6f388ced21aab96344f4bb3a13b0ef8d}{rpc\+\_\+server\+\_\+sd\+\_\+listen} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, \+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} $\ast$\+\_\+\+Nonnull $\ast$\+\_\+\+Nonnull servers)
+int \hyperlink{server_8h_acedadccc0d8807f6840fb5224f260636}{rpc\+\_\+server\+\_\+sd\+\_\+listen} (\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t} context, \+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} $\ast$\+\_\+\+Nonnull $\ast$\+\_\+\+Nonnull servers, \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$\+\_\+\+Nullable rest)
 \end{DoxyCompactItemize}
 
 
@@ -230,11 +230,11 @@ Server instance keeps all the incoming requests queued and on hold until this fu
 {\em server} & Server handle \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{server_8h_a6f388ced21aab96344f4bb3a13b0ef8d}\label{server_8h_a6f388ced21aab96344f4bb3a13b0ef8d}} 
+\mbox{\Hypertarget{server_8h_acedadccc0d8807f6840fb5224f260636}\label{server_8h_acedadccc0d8807f6840fb5224f260636}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+sd\+\_\+listen@{rpc\+\_\+server\+\_\+sd\+\_\+listen}}
 \index{rpc\+\_\+server\+\_\+sd\+\_\+listen@{rpc\+\_\+server\+\_\+sd\+\_\+listen}!server.\+h@{server.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+server\+\_\+sd\+\_\+listen()}{rpc\_server\_sd\_listen()}}
-{\footnotesize\ttfamily int rpc\+\_\+server\+\_\+sd\+\_\+listen (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context,  }\item[{\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} $\ast$\+\_\+\+Nonnull $\ast$\+\_\+\+Nonnull}]{servers }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int rpc\+\_\+server\+\_\+sd\+\_\+listen (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\+\_\+context\+\_\+t}}]{context,  }\item[{\+\_\+\+Nonnull \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\+\_\+server\+\_\+t} $\ast$\+\_\+\+Nonnull $\ast$\+\_\+\+Nonnull}]{servers,  }\item[{\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} $\ast$\+\_\+\+Nullable}]{rest }\end{DoxyParamCaption})}
 
 Sets up some number of servers using systemd socket activation information.
 
