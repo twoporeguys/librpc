@@ -1,6 +1,6 @@
 export CC := clang
 export CXX := clang++
-PYTHON_VERSION := python3
+PYTHON_VERSION ?= python3
 PREFIX ?= /usr/local
 BUILD_PYTHON ?= ON
 BUILD_CPLUSPLUS ?= OFF
