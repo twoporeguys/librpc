@@ -318,6 +318,9 @@ cmd_call(int argc, char *argv[])
 				output(rpc_call_result(call));
 				goto done;
 
+			case RPC_CALL_ENDED:
+				goto done;
+
 			case RPC_CALL_ERROR:
 				goto error;
 
