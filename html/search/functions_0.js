@@ -227,7 +227,7 @@ var searchData=
   ['rpc_5fserver_5ffind',['rpc_server_find',['../server_8h.html#a74af7bf809de8e773b35038107db1221',1,'server.h']]],
   ['rpc_5fserver_5fpause',['rpc_server_pause',['../server_8h.html#a7692f4863bf4db19759d95c132e03e61',1,'server.h']]],
   ['rpc_5fserver_5fresume',['rpc_server_resume',['../server_8h.html#a52667e1f1ad29521541c60aae34dcf02',1,'server.h']]],
-  ['rpc_5fserver_5fsd_5flisten',['rpc_server_sd_listen',['../server_8h.html#acedadccc0d8807f6840fb5224f260636',1,'server.h']]],
+  ['rpc_5fserver_5fsd_5flisten',['rpc_server_sd_listen',['../server_8h.html#a6f388ced21aab96344f4bb3a13b0ef8d',1,'server.h']]],
   ['rpc_5fserver_5fset_5fevent_5fhandler',['rpc_server_set_event_handler',['../server_8h.html#a1dd5a060b892c8a4f554ca13291d9645',1,'server.h']]],
   ['rpc_5fstring_5fcreate',['rpc_string_create',['../object_8h.html#ae7ba5d4d5a269764aaac74170be2884c',1,'object.h']]],
   ['rpc_5fstring_5fcreate_5flen',['rpc_string_create_len',['../object_8h.html#a227a4ec7bd24bd07dd68678d4900340e',1,'object.h']]],
