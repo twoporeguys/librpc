@@ -762,7 +762,6 @@ rpc_close(rpc_connection_t conn)
 	struct rpc_call *call;
 	struct queue_item *q_item;
 	char *key;
-	bool isempty;
 
 	g_mutex_lock(&conn->rco_mtx);
 	if (conn->rco_aborted) {
@@ -1261,7 +1260,7 @@ rpc_connection_close(rpc_connection_t conn)
 {
 
 	conn->rco_can_close = true;
-	rpc_connection_do_close(conn);
+	return (rpc_connection_do_close(conn));
 }
 
 int
