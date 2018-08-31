@@ -4,15 +4,8 @@ PartOf=rpcd.service
 
 [Socket]
 ListenStream=/var/run/rpcd.sock
-FileDescriptorName=librpc.socket
-
-[Socket]
 ListenStream=0.0.0.0:5002
 FileDescriptorName=librpc.socket
-
-[Socket]
-ListenStream=0.0.0.0:5003
-FileDescriptorName=websocket
 
 [Install]
 WantedBy=sockets.target
