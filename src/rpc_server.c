@@ -469,8 +469,8 @@ rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers,
 {
 	rpc_server_t server;
 	rpc_object_t params;
-	const char *name;
 	const char *uri;
+	char *name;
 	char **names;
 	int nfds;
 	int i;
@@ -503,6 +503,7 @@ rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers,
 			if (rest != NULL)
 				rpc_dictionary_set_fd(*rest, name, i);
 
+			free(name);
 			continue;
 		}
 
@@ -514,6 +515,7 @@ rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers,
 		(*servers)[n++] = server;
 	}
 
+	free(names);
 	return (n);
 }
 #endif

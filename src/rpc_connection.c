@@ -351,7 +351,7 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	if (call == NULL) {
 		err = rpc_get_last_error();
 		rpc_connection_send_err(conn, id, rpc_error_get_code(err),
-			rpc_error_get_message(err));
+		    rpc_error_get_message(err));
 		return;
 	}
 
@@ -736,6 +736,7 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 	}
 
 	msgt = rpct_deserialize(msg);
+	rpc_release(msg);
 
 	if (msgt == NULL) {
 		if (conn->rco_error_handler != NULL)
@@ -747,7 +748,6 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 	if (creds != NULL)
 		conn->rco_creds = *creds;
 
-	rpc_release(msg);
 	rpc_restore_fds(msgt, fds, nfds);
 	rpc_connection_dispatch(conn, msgt);
 	return (0);
