@@ -65,5 +65,11 @@ pipeline {
                 sh "cp -a bindings/typescript/doc/* ${DOCS_PATH}/typescript/librpc-client/"
             }
         }
+
+        stage('Cleanup') {
+            steps {
+                sh 'chown -R 9001:9001 .'
+            }
+        }
     }
 }
