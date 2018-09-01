@@ -233,7 +233,7 @@ cdef class TypeInstance(object):
         cdef bint valid
 
         valid = rpct_validate(self.rpctypei, obj.obj, &errors)
-        return valid, Object.wrap(errors)
+        return valid, Object.wrap(errors, False)
 
 
 cdef class Type(object):

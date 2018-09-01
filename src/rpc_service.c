@@ -632,13 +632,14 @@ rpc_instance_new(void *arg, const char *fmt, ...)
 
 	if (!rpc_context_path_is_valid(path)) {
 		rpc_set_last_error(EINVAL, "Invalid path", NULL);
+		g_free(path);
 		return (NULL);
 	}
 
 	result = g_malloc0(sizeof(*result));
 	g_mutex_init(&result->ri_mtx);
 	g_rw_lock_init(&result->ri_rwlock);
-	result->ri_path = g_strdup(path);
+	result->ri_path = path;
 	result->ri_interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 	result->ri_arg = arg;
 
