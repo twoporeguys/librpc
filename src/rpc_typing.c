@@ -1211,6 +1211,7 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 		iface->name = g_strdup_printf("%s.%s", file->ns, name);
 		g_free(name);
 	}
+
 	g_match_info_free(match);
 
 	if (g_hash_table_contains(context->interfaces, iface->name))
@@ -1245,6 +1246,7 @@ rpct_read_interface(struct rpct_file *file, const char *decl, rpc_object_t obj)
 	return (ret);
 
 abort:
+	g_hash_table_destroy(iface->members);
 	g_free(iface->origin);
 	g_free(iface->description);
 	g_free(iface->name);
@@ -1707,7 +1709,7 @@ rpct_load_types(const char *path)
 		    rpc_error_get_message(error));
 		rpc_set_last_error(rpc_error_get_code(error), errmsg,
 		    rpc_error_get_extra(error));
-
+		g_free(errmsg);
 #ifdef RPC_TRACE
 		rpc_trace("ERROR", "rpct_load_types", rpc_get_last_error());
 #endif

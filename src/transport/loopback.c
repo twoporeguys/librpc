@@ -142,27 +142,29 @@ loopback_connect(struct rpc_connection *conn, const char *uri_string,
 
 static int
 loopback_listen(struct rpc_server *srv, const char *uri_string,
-    rpc_object_t extra __unused) {
+    rpc_object_t extra __unused)
+{
 	SoupURI *uri;
 	struct loopback_channel *chan;
-	int host;
+	int host = 0;
 	int fail = false;
 
 	uri = soup_uri_new(uri_string);
 
-	if ((uri == NULL) || (uri->host == NULL) || !strlen(uri->host)) {
+	if ((uri == NULL) || (uri->host == NULL) || !strlen(uri->host))
 		fail = true;
-	} else {
+	else {
 		host = (int)strtoul(uri->host, NULL, 10);
-		if (host == 0 && uri->host[0] != '0') {
+		if (host == 0 && uri->host[0] != '0')
 			fail = true;
-			soup_uri_free(uri);
-		}
 	}
+
+	soup_uri_free(uri);
+
 	if (fail) {
-                srv->rs_error = rpc_error_create(ENXIO, "No Such Address", NULL);
-                debugf("Invalid loopback uri %s", uri_string);
-                return (-1);
+		srv->rs_error = rpc_error_create(ENXIO, "No Such Address", NULL);
+		debugf("Invalid loopback uri %s", uri_string);
+		return (-1);
         }
 
 	chan = g_malloc0(sizeof(*chan));
