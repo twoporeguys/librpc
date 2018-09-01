@@ -68,7 +68,7 @@ pipeline {
 
         stage('Cleanup') {
             steps {
-                sh 'chown -R 9001:9001 .'
+                sh 'chown -v -R 9001:9001 .'
             }
         }
     }
