@@ -41,30 +41,35 @@
 #define THREADS 50
 #define STREAMS 50
 
-struct b {
+struct b
+{
 	char *	path;
 	char *	interface;
-} args [] =
-	{{NULL, NULL},
-	 {"/", RPC_DEFAULT_INTERFACE}};
+} args [] = {
+	{NULL, NULL},
+	{"/", RPC_DEFAULT_INTERFACE}
+};
+
 struct b base;
 
-struct u {
+struct u
+{
 	char *	scheme;
 	char *	srv;
 	char *	cli;
 	bool 	good;
-} uris[] =
-	{{"tcp", "tcp://0.0.0.0:5500", "tcp://127.0.0.1:5500", true},
-	 {"tpp", "tpp://0.0.0.0:5500", "tcp://127.0.0.1:5500", false},
-	 {"tcp", "tcp://0.42.42.42:42", "tcp://127.0.0.1:5500", false},
-	 {"unix", "unix://test.sock", "unix://test.sock", true},
-	 {"unix", "unix:/", "unix://test.sock", false},
-	 {"ws", "ws://0.0.0.0:6600/ws", "ws://127.0.0.1:6600/ws", true},
-	 {"ws", "ws://w0.0.0.0:6600/ws", "ws://127.0.0.1:6600/ws", false},
-	 {"loopback", "loopback://0", "loopback://0", true},
-	 {"loopback", "loopback://a", "loopback://0", false},
-	 {0, "", "", 0}};
+} uris[] = {
+	{"tcp", "tcp://0.0.0.0:5500", "tcp://127.0.0.1:5500", true},
+	{"tpp", "tpp://0.0.0.0:5500", "tcp://127.0.0.1:5500", false},
+	{"tcp", "tcp://0.42.42.42:42", "tcp://127.0.0.1:5500", false},
+	{"unix", "unix://test.sock", "unix://test.sock", true},
+	{"unix", "unix:/", "unix://test.sock", false},
+	{"ws", "ws://0.0.0.0:6600/ws", "ws://127.0.0.1:6600/ws", true},
+	{"ws", "ws://w0.0.0.0:6600/ws", "ws://127.0.0.1:6600/ws", false},
+	{"loopback", "loopback://0", "loopback://0", true},
+	{"loopback", "loopback://a", "loopback://0", false},
+	{0, "", "", 0}
+};
 
 typedef struct {
 	rpc_context_t	ctx;
