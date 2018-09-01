@@ -500,6 +500,7 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 	struct usb_context *ctx = arg;
 	struct libusb_device_descriptor desc;
 	libusb_device **devices;
+	libusb_device **ptr;
 	libusb_device *dev;
 	struct rpc_bus_node node;
 
@@ -507,8 +508,8 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 	*resultp = NULL;
 	libusb_get_device_list(ctx->uc_libusb, &devices);
 
-	for (; *devices != NULL; devices++) {
-		dev = *devices;
+	for (ptr = devices; *ptr != NULL; ptr++) {
+		dev = *ptr;
 		libusb_get_device_descriptor(dev, &desc);
 
 		debugf("trying device %d (vid=0x%04x, pid=0x%04x)",
@@ -524,6 +525,7 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 		(*countp)++;
 	}
 
+	libusb_free_device_list(devices, true);
 	return (0);
 }
 

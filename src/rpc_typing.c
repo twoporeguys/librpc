@@ -1744,11 +1744,14 @@ rpct_load_types_dir(const char *path)
 		s = g_build_filename(path, name, NULL);
 		if (g_file_test(s, G_FILE_TEST_IS_DIR)) {
 			rpct_load_types_dir(s);
+			g_free(s);
 			continue;
 		}
 
-		if (!g_str_has_suffix(name, ".yaml"))
+		if (!g_str_has_suffix(name, ".yaml")) {
+			g_free(s);
 			continue;
+		}
 
 		if (rpct_read_file(s) != 0) {
 			g_free(s);
