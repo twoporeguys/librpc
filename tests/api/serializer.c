@@ -33,9 +33,10 @@
 #include <rpc/serializer.h>
 
 
-struct serializer_fixture {
-	rpc_object_t object;
-	const char *type;
+struct serializer_fixture
+{
+	rpc_object_t	object;
+	const char *	type;
 };
 
 static void
@@ -117,7 +118,6 @@ serializer_test_single_set_up(struct serializer_fixture *fixture,
 {
 
 	fixture->object = rpc_object_pack("u", (uint64_t)g_test_rand_int());
-
 	fixture->type = user_data;
 }
 
@@ -129,7 +129,6 @@ serializer_test_shmem_set_up(struct serializer_fixture *fixture,
 	size_t size = (size_t)g_test_rand_int_range(1024, 1024*1024);
 
 	fixture->object = rpc_shmem_create(size);
-
 	fixture->type = user_data;
 }
 #endif
@@ -145,17 +144,17 @@ serializer_test_tear_down(struct serializer_fixture *fixture,
 static void
 serializer_test_register()
 {
-/*
-	g_test_add("/serializer/json/dict", serializer_fixture, "json",
-	    serializer_test_dict_set_up, serializer_test,
+
+	g_test_add("/serializer/json/dict", struct serializer_fixture,
+	    "json", serializer_test_dict_set_up, serializer_test,
 	    serializer_test_tear_down);
-	g_test_add("/serializer/json/array", serializer_fixture, "json",
-	    serializer_test_array_set_up, serializer_test,
+	g_test_add("/serializer/json/array", struct serializer_fixture,
+	    "json", serializer_test_array_set_up, serializer_test,
 	    serializer_test_tear_down);
-	g_test_add("/serializer/json/single", serializer_fixture, "json",
-	    serializer_test_single_set_up, serializer_test,
+	g_test_add("/serializer/json/single", struct serializer_fixture,
+	    "json", serializer_test_single_set_up, serializer_test,
 	    serializer_test_tear_down);
-*/
+
 	g_test_add("/serializer/msgpack/dict", struct serializer_fixture, "msgpack",
 	    serializer_test_dict_set_up, serializer_test,
 	    serializer_test_tear_down);
@@ -174,21 +173,38 @@ serializer_test_register()
 	    serializer_test_tear_down);
 	g_test_add("/serializer/yaml/single", struct serializer_fixture, "yaml",
 	    serializer_test_single_set_up, serializer_test,
+
+	g_test_add("/serializer/msgpack/dict", struct serializer_fixture,
+	    "msgpack", serializer_test_dict_set_up, serializer_test,
+	    serializer_test_tear_down);
+	g_test_add("/serializer/msgpack/array", struct serializer_fixture,
+	    "msgpack", serializer_test_array_set_up, serializer_test,
+	    serializer_test_tear_down);
+	g_test_add("/serializer/msgpack/single", struct serializer_fixture,
+	    "msgpack", serializer_test_single_set_up, serializer_test,
 	    serializer_test_tear_down);
 
-/*
+	g_test_add("/serializer/yaml/dict", struct serializer_fixture,
+	    "yaml", serializer_test_dict_set_up, serializer_test,
+	    serializer_test_tear_down);
+	g_test_add("/serializer/yaml/array", struct serializer_fixture,
+	    "yaml", serializer_test_array_set_up, serializer_test,
+	    serializer_test_tear_down);
+	g_test_add("/serializer/yaml/single", struct serializer_fixture,
+	    "yaml", serializer_test_single_set_up, serializer_test,
+	    serializer_test_tear_down);
+
 #if defined(__linux__)
-	g_test_add("/serializer/json/shmem", serializer_fixture, "json",
-	    serializer_test_shmem_set_up, serializer_test,
+	g_test_add("/serializer/json/shmem", struct serializer_fixture,
+	    "json", serializer_test_shmem_set_up, serializer_test,
 	    serializer_test_tear_down);
-	g_test_add("/serializer/msgpack/shmem", serializer_fixture, "msgpack",
-	    serializer_test_shmem_set_up, serializer_test,
+	g_test_add("/serializer/msgpack/shmem", struct serializer_fixture,
+	    "msgpack", serializer_test_shmem_set_up, serializer_test,
 	    serializer_test_tear_down);
-	g_test_add("/serializer/yaml/shmem", serializer_fixture, "yaml",
-	    serializer_test_shmem_set_up, serializer_test,
+	g_test_add("/serializer/yaml/shmem",struct  serializer_fixture,
+	    "yaml", serializer_test_shmem_set_up, serializer_test,
 	    serializer_test_tear_down);
 #endif
-*/
 
 }
 
