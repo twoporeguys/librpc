@@ -150,6 +150,7 @@ rpc_context_free(rpc_context_t context)
 
 	if (context == NULL)
 		return;
+
 	g_thread_pool_free(context->rcx_threadpool, true, true);
 	rpc_instance_free(context->rcx_root);
 	g_free(context);

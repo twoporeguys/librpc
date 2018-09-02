@@ -369,10 +369,12 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 		res = rpc_context_dispatch(conn->rco_rpc_context, call);
 
         if (res != 0) {
-		if (call->rc_err != NULL)
+		if (call->rc_err != NULL) {
 			rpc_function_error(call,
 			    rpc_error_get_code(call->rc_err),
 			    rpc_error_get_message(call->rc_err));
+		}
+
                 rpc_connection_close_inbound_call(call);
         }
 }
@@ -1080,12 +1082,15 @@ rpc_connection_release_call(struct rpc_call *call)
 	if (call->rc_callback != NULL)
 		Block_release(call->rc_callback);
 
+	rpc_release(call->rc_err);
 	rpc_release(call->rc_id);
 	rpc_release(call->rc_args);
 	notify_free(&call->rc_notify);
 	g_mutex_clear(&call->rc_mtx);
+
 	if (call->rc_queue != NULL)
 		g_queue_free(call->rc_queue);
+
 	g_free(call);
 }
 
@@ -1254,6 +1259,9 @@ rpc_connection_free_resources(rpc_connection_t conn)
 		conn->rco_callback_pool = NULL;
 	}
 
+	rpc_release(conn->rco_error);
+	g_rw_lock_clear(&conn->rco_call_rwlock);
+	g_rw_lock_clear(&conn->rco_icall_rwlock);
 }
 
 int

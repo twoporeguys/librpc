@@ -103,12 +103,10 @@ void
 rpc_server_disconnect(rpc_server_t server, rpc_connection_t conn)
 {
 
-        GList *iter = NULL;
-        struct rpc_connection *comp = NULL;
-
 	debugf("Disconnecting: %p, closed == %d\n", conn, server->rs_closed);
 
 	g_mutex_lock(&server->rs_mtx);
+
 	if (server->rs_closed) {
 		g_mutex_unlock(&server->rs_mtx);
 		return;
@@ -116,16 +114,8 @@ rpc_server_disconnect(rpc_server_t server, rpc_connection_t conn)
 
 	g_assert(conn->rco_aborted);
 
-        g_rw_lock_writer_lock(&server->rs_connections_rwlock);
-        for (iter = server->rs_connections; iter != NULL; iter = iter->next) {
-                comp = iter->data;
-                if (comp == conn) {
-                        server->rs_connections =
-                            g_list_remove_link(server->rs_connections, iter);
-                        break;
-                }
-        }
- 
+	g_rw_lock_writer_lock(&server->rs_connections_rwlock);
+	server->rs_connections = g_list_remove(server->rs_connections, conn);
 	g_rw_lock_writer_unlock(&server->rs_connections_rwlock);
 	g_mutex_unlock(&server->rs_mtx);
 
