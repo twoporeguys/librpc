@@ -81,7 +81,14 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts 'coverage-report'
+            publishHTML target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: false,
+                keepAll: true,
+                reportDir: 'coverage-report',
+                reportFiles: 'index.html',
+                reportName: 'Code coverage report'
+            ]
 	    junit 'junit-test-report.xml'
         }
     }
