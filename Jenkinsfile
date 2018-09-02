@@ -42,16 +42,6 @@ pipeline {
             steps {
                 sh 'make test'
             }
-	    
-            junit 'junit-test-report.xml'
-            publishHTML target: [
-                allowMissing: false,
-                alwaysLinkToLastBuild: false,
-                keepAll: true,
-                reportDir: 'coverage-report',
-                reportFiles: 'index.html',
-                reportName: 'Code coverage report'
-            ]
         }
 
         stage('Deploy docs') {
@@ -86,6 +76,20 @@ pipeline {
             steps {
                 sh 'chown -v -R 9001:9001 .'
             }
+        }
+    }
+
+    post {
+        always {
+            publishHTML target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: false,
+                keepAll: true,
+                reportDir: 'coverage-report',
+                reportFiles: 'index.html',
+                reportName: 'Code coverage report'
+            ]
+	    junit 'junit-test-report.xml'
         }
     }
 }
