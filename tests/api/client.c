@@ -195,6 +195,7 @@ struct work_item {
 	rpc_connection_t	conn;
 	rpc_call_t		call;
 	rpc_object_t		args;
+	rpc_object_t		result;
 	char *			method;
 	int 			ccnt;
 	client_fixture *	fx;
@@ -302,15 +303,15 @@ thread_mestream_func (gpointer data)
 			i = g_rand_int_range (rand, 0, 26);
 
 			res = rpc_object_pack("[s, i, i]",
-			    str + i, 26-i, cnt);
+			    str + i, (int64_t)26-i, (int64_t)cnt);
 			if (rpc_function_yield(cookie, res) != 0)
 				return (rpc_null_create());
 		}
 		rpc_function_end(cookie);
-		return (rpc_null_create());
+		return (RPC_FUNCTION_STILL_RUNNING);
 	});
 
-	value = rpc_object_pack("[s,i]", "callme", n);
+	value = rpc_object_pack("[s,i]", "callme", (int64_t)n);
 	call = rpc_connection_call(conn, NULL, NULL, "stream-me", value, NULL);
 	g_assert(call != NULL);
 	rpc_call_wait(call);
@@ -321,6 +322,7 @@ thread_mestream_func (gpointer data)
 	g_assert_cmpstr(rpc_string_get_string_ptr(result), ==,
 	    "DONE!");
 
+	rpc_call_free(call);
 	rpc_client_close(client);
 	rpc_context_unregister_member(ctx, NULL, "callme");
 	if (ctx != NULL)
@@ -445,43 +447,13 @@ do_stream_work(struct work_item *item)
         }
 done:
 
-	if (!failed) {
-		result = (rpc_string_create("DONE!"));
-		rpc_function_respond(item->call, result);
-	} else
-		rpc_function_error(item->call, EPROTO,
-		    "Error in receiving streamed data");
+	if (!failed)
+		item->result = rpc_string_create("DONE!");
+	else
+		item->result = rpc_error_create(EPROTO,
+		    "Error in receiving streamed data", NULL);
 	rpc_call_free(call);
 	return (cnt);
-}
-
-static void
-client_streams_test(client_fixture *fixture, gconstpointer user_data)
-{
-
-	int ret = 0;
-	__block int64_t ccnt = 0;
-	__block int cnt = 0;
-
-	fixture->resume = true;
-	rpc_context_register_block(fixture->ctx, NULL, "stream-me",	NULL,
-	    ^rpc_object_t (void *cookie, rpc_object_t args) {
-		struct work_item *item;
-		item = g_malloc0(sizeof(*item));
-		item->call = cookie;
-		item->args = args;
-		item->fx = fixture;
-		item->conn = rpc_function_get_connection(cookie);
-		cnt = do_stream_work(item);
-		g_assert(cnt == item->ccnt);
-		ccnt = item->ccnt;
-		g_free(item);
-		return (RPC_FUNCTION_STILL_RUNNING);
-	});
-
-	ret = thread_test(1, &thread_mestream_func, fixture);
-	g_assert(fixture->count + ret == 1);
-	rpc_context_unregister_member(fixture->ctx, NULL, "stream-me");
 }
 
 static void
@@ -493,6 +465,7 @@ stream_worker(void *arg, void *data)
 	item->fx = data;
 	cnt = do_stream_work(item);
 	g_assert(cnt == item->ccnt);
+	rpc_function_respond(item->call, item->result);
 	g_free(item);
 }
 
@@ -566,10 +539,6 @@ client_test_register()
 
 	g_test_add("/client/server-call/tcp", client_fixture, (void *)0,
 	    client_test_single_set_up, client_server_calls_test,
-	    client_test_tear_down);
-
-	g_test_add("/client/streams/tcp", client_fixture, (void *)0,
-	    client_test_single_set_up, client_streams_test,
 	    client_test_tear_down);
 
 	g_test_add("/client/multi-streams/tcp", client_fixture, (void *)0,
