@@ -321,6 +321,8 @@ socket_listen(struct rpc_server *srv, const char *uri,
 					return (-1);
 				}
 			}
+
+			g_object_unref(file);
 		}
 
 		g_socket_listener_add_address(server->ss_listener, addr,

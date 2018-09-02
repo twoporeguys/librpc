@@ -36,7 +36,7 @@
 struct serializer_fixture {
 	rpc_object_t object;
 	const char *type;
-} ;
+};
 
 static void
 serializer_test(struct serializer_fixture *fixture, gconstpointer user_data)
