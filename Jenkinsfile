@@ -81,6 +81,7 @@ pipeline {
 
     post {
         always {
+	    junit 'junit-test-report.xml'
             publishHTML target: [
                 allowMissing: false,
                 alwaysLinkToLastBuild: false,
@@ -89,7 +90,6 @@ pipeline {
                 reportFiles: 'index.html',
                 reportName: 'Code coverage report'
             ]
-	    junit 'junit-test-report.xml'
         }
     }
 }
