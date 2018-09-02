@@ -81,7 +81,7 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts artifacts: 'coverage-report'
+            archiveArtifacts 'coverage-report'
 	    junit 'junit-test-report.xml'
         }
     }
