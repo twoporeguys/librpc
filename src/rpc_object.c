@@ -505,10 +505,6 @@ rpc_release_impl(rpc_object_t object)
 			    true);
 			break;
 
-#if defined(__linux__)
-		case RPC_TYPE_SHMEM:
-			close(object->ro_value.rv_shmem.rsb_fd);
-#endif
 		default:
 			break;
 		}
@@ -689,8 +685,12 @@ rpc_equal(rpc_object_t o1, rpc_object_t o2)
 		return (o1->ro_value.rv_d == o2->ro_value.rv_d);
 
 	case RPC_TYPE_FD:
-		fstat(o1->ro_value.rv_fd, &o1_fdstat);
-		fstat(o2->ro_value.rv_fd, &o2_fdstat);
+		if (fstat(o1->ro_value.rv_fd, &o1_fdstat) != 0)
+			return (false);
+
+		if (fstat(o2->ro_value.rv_fd, &o2_fdstat) != 0)
+			return (false);
+
 		return ((o1_fdstat.st_dev == o2_fdstat.st_dev) &&
 		    (o1_fdstat.st_ino == o2_fdstat.st_ino));
 
@@ -722,8 +722,12 @@ rpc_equal(rpc_object_t o1, rpc_object_t o2)
 
 #if defined(__linux__)
 	case RPC_TYPE_SHMEM:
-		fstat(o1->ro_value.rv_shmem.rsb_fd, &o1_fdstat);
-		fstat(o2->ro_value.rv_shmem.rsb_fd, &o2_fdstat);
+		if (fstat(o1->ro_value.rv_shmem.rsb_fd, &o1_fdstat) != 0)
+			return (false);
+
+		if (fstat(o2->ro_value.rv_shmem.rsb_fd, &o2_fdstat) != 0)
+			return (false);
+
 		return ((o1_fdstat.st_dev == o2_fdstat.st_dev) &&
 		    (o1_fdstat.st_ino == o2_fdstat.st_ino));
 #endif
