@@ -59,13 +59,14 @@ uninstall:
 	make -C build uninstall
 
 test: build-cov
-	./build-cov/test_suite
+	gtester --keep-going -o test-results.xml ./build-cov/test_suite
 	lcov \
 	    --capture \
 	    --gcov-tool $(abspath llvm-gcov.sh) \
 	    --directory build-cov \
 	    -o librpc.cov
 	genhtml librpc.cov -o coverage-report
+	xsltproc -o junit-test-results.xml gtester.xsl test-results.xml
 
 benchmark:
 	mkdir -p build/benchmarks

@@ -71,5 +71,11 @@ pipeline {
                 sh 'chown -v -R 9001:9001 .'
             }
         }
+
+        post {
+            always {
+                junit 'junit-test-report.xml'
+            }
+        }
     }
 }
