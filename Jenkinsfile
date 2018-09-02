@@ -38,6 +38,12 @@ pipeline {
             }
         }
 
+        stage('Run tests') {
+            steps {
+                sh 'make test'
+            }
+        }
+
         stage('Deploy docs') {
             when {
                 expression { "${env.DOCS_PATH}" != "" }
