@@ -543,11 +543,13 @@ static void
 rpct_if_member_free(struct rpct_if_member *member)
 {
 
-	g_free(member->description);
-	g_ptr_array_free(member->arguments, true);
+	if (member->arguments != NULL)
+		g_ptr_array_free(member->arguments, true);
+
 	if (member->result != NULL)
 		rpct_typei_release(member->result);
 
+	g_free(member->description);
 	g_free(member);
 }
 
