@@ -60,7 +60,11 @@ uninstall:
 
 test: build-cov
 	./build-cov/test_suite
-	lcov --capture --directory build-cov -o librpc.cov
+	lcov \
+	    --capture \
+	    --gcov-tool $(abspath llvm-gcov.sh) \
+	    --directory build-cov \
+	    -o librpc.cov
 	genhtml librpc.cov -o coverage-report
 
 benchmark:
