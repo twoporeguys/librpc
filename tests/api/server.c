@@ -355,7 +355,7 @@ thread_test(int n, gpointer(*t_func)(gpointer), server_fixture *fx )
 	for (int i = 0; i < n; i++) {
 		if (fx->iclose > 0 && i == fx->iclose)
 			rpc_server_close(fx->srv);
-		ret += (int)g_thread_join (threads[i]);
+		ret += (int)g_thread_join(threads[i]);
 	}
 
 	return (ret);
