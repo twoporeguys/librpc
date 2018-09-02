@@ -155,25 +155,6 @@ serializer_test_register()
 	    "json", serializer_test_single_set_up, serializer_test,
 	    serializer_test_tear_down);
 
-	g_test_add("/serializer/msgpack/dict", struct serializer_fixture, "msgpack",
-	    serializer_test_dict_set_up, serializer_test,
-	    serializer_test_tear_down);
-	g_test_add("/serializer/msgpack/array", struct serializer_fixture, "msgpack",
-	    serializer_test_array_set_up, serializer_test,
-	    serializer_test_tear_down);
-	g_test_add("/serializer/msgpack/single", struct serializer_fixture, "msgpack",
-	    serializer_test_single_set_up, serializer_test,
-	    serializer_test_tear_down);
-
-	g_test_add("/serializer/yaml/dict", struct serializer_fixture, "yaml",
-	    serializer_test_dict_set_up, serializer_test,
-	    serializer_test_tear_down);
-	g_test_add("/serializer/yaml/array", struct serializer_fixture, "yaml",
-	    serializer_test_array_set_up, serializer_test,
-	    serializer_test_tear_down);
-	g_test_add("/serializer/yaml/single", struct serializer_fixture, "yaml",
-	    serializer_test_single_set_up, serializer_test,
-
 	g_test_add("/serializer/msgpack/dict", struct serializer_fixture,
 	    "msgpack", serializer_test_dict_set_up, serializer_test,
 	    serializer_test_tear_down);
@@ -205,7 +186,6 @@ serializer_test_register()
 	    "yaml", serializer_test_shmem_set_up, serializer_test,
 	    serializer_test_tear_down);
 #endif
-
 }
 
 static struct librpc_test serializer = {
