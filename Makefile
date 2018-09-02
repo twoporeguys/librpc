@@ -59,7 +59,7 @@ uninstall:
 	make -C build uninstall
 
 test: build-cov
-	gtester --keep-going -o test-results.xml ./build-cov/test_suite
+	gtester --keep-going -o test-results.xml ./build-cov/test_suite || true
 	lcov \
 	    --capture \
 	    --gcov-tool $(abspath llvm-gcov.sh) \
