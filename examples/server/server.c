@@ -136,6 +136,10 @@ main(int argc, const char *argv[])
 	}
 
 	rpc_server_set_event_handler(srv, RPC_SERVER_HANDLER(server_event, NULL));
+
+	sleep(2);
+	printf("Resuming server now\n");
+
 	rpc_server_resume(srv);
 	pause();
 	rpc_server_close(srv);

@@ -195,9 +195,9 @@ struct rpc_call
 	rpc_connection_t    	rc_conn;
 	rpc_context_t 		rc_context;
 	rpc_call_type_t        	rc_type;
-	const char *		rc_path;
-	const char *		rc_interface;
-	const char *        	rc_method_name;
+	char *			rc_path;
+	char *			rc_interface;
+	char *        		rc_method_name;
 	rpc_object_t        	rc_id;
 	rpc_object_t        	rc_args;
 	rpc_object_t		rc_err;
@@ -211,7 +211,6 @@ struct rpc_call
 	atomic_int_fast64_t	rc_consumer_seqno; /* also rc_seqno */
 	uint64_t 		rc_prefetch;
 	rpc_instance_t 		rc_instance;
-	rpc_object_t 		rc_frame;
 	rpc_abort_handler_t	rc_abort_handler;
 	struct rpc_if_method *	rc_if_method;
 	void *			rc_m_arg;

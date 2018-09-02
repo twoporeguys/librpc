@@ -356,7 +356,6 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	}
 
 	call->rc_type = RPC_INBOUND_CALL;
-	call->rc_frame = rpc_retain(args);
 
         g_rw_lock_writer_lock(&conn->rco_icall_rwlock);
 	g_hash_table_insert(conn->rco_inbound_calls,
@@ -882,9 +881,9 @@ rpc_call_alloc(rpc_connection_t conn, rpc_object_t id, const char *path,
 	call->rc_prefetch = 1;
 	call->rc_conn = conn;
 	call->rc_context = conn->rco_rpc_context;
-	call->rc_path = path;
-	call->rc_interface = interface;
-	call->rc_method_name = method;
+	call->rc_path = g_strdup(path);
+	call->rc_interface = g_strdup(interface);
+	call->rc_method_name = g_strdup(method);
 	call->rc_args = call_args;
 	call->rc_id = id != NULL ? id : rpc_new_id();
 	g_mutex_init(&call->rc_mtx);
@@ -1085,6 +1084,9 @@ rpc_connection_release_call(struct rpc_call *call)
 	rpc_release(call->rc_err);
 	rpc_release(call->rc_id);
 	rpc_release(call->rc_args);
+	g_free(call->rc_path);
+	g_free(call->rc_interface);
+	g_free(call->rc_method_name);
 	notify_free(&call->rc_notify);
 	g_mutex_clear(&call->rc_mtx);
 

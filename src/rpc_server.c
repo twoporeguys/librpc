@@ -296,7 +296,6 @@ rpc_server_dispatch(rpc_server_t server, struct rpc_call *call)
 	}
 
 	if (server->rs_paused || !g_queue_is_empty(server->rs_calls))  {
-		rpc_retain(call->rc_frame);
 		g_queue_push_tail(server->rs_calls, call);
 		g_mutex_unlock(&server->rs_calls_mtx);
 		return (0);
@@ -312,39 +311,24 @@ static void
 server_queue_purge(rpc_server_t server)
 {
 	struct rpc_call *icall;
-	const char *method = NULL;
-	const char *interface = NULL;
-	const char *path = NULL;
-	rpc_object_t call_args = NULL;
-	rpc_object_t frame;
 
 	while (!g_queue_is_empty(server->rs_calls)) {
 		icall = g_queue_pop_head(server->rs_calls);
-		rpc_object_unpack(icall->rc_frame, "{s,s,s,v}",
-		    "method", &method,
-		    "interface", &interface,
-		    "path", &path,
-		    "args", &call_args);
-
-		icall->rc_method_name = method;
-		icall->rc_interface = interface;
-		icall->rc_path = path;
-		frame = icall->rc_frame;
 
 		if (!server->rs_closed) {
 			if (rpc_context_dispatch(server->rs_context,
-			    icall) == 0) {
-				rpc_release(frame);
+			    icall) == 0)
 				continue;
-			}
-		} else
+		} else {
 			icall->rc_err = rpc_error_create(ECONNRESET,
 			    "Server not active", NULL);
-		rpc_release(frame);
-		if (icall->rc_err != NULL)
+		}
+
+		if (icall->rc_err != NULL) {
 			rpc_function_error(icall,
 			    rpc_error_get_code(icall->rc_err),
 			    rpc_error_get_message(icall->rc_err));
+		}
 
 		rpc_connection_close_inbound_call(icall);
 	}
@@ -356,9 +340,10 @@ rpc_server_resume(rpc_server_t server)
 {
 
 	g_mutex_lock(&server->rs_calls_mtx);
+
 	if (server->rs_closed) {
-		return;
 		g_mutex_unlock(&server->rs_calls_mtx);
+		return;
 	}
 
 	server->rs_paused = false;
