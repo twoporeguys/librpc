@@ -352,7 +352,7 @@ thread_test(int n, gpointer(*t_func)(gpointer), server_fixture *fx )
 	GThread *threads[THREADS];
 
 	for (int i = 0; i < n; i++)
-		threads[i] = g_thread_new ("test", t_func, uris[fx->iuri].cli);
+		threads[i] = g_thread_new("test", t_func, uris[fx->iuri].cli);
 
 	if (fx->resume)
 		rpc_server_resume(fx->srv);
