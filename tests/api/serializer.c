@@ -144,17 +144,17 @@ serializer_test_tear_down(struct serializer_fixture *fixture,
 static void
 serializer_test_register()
 {
-/*
-	g_test_add("/serializer/json/dict", serializer_fixture, "json",
-	    serializer_test_dict_set_up, serializer_test,
+
+	g_test_add("/serializer/json/dict", struct serializer_fixture,
+	    "json", serializer_test_dict_set_up, serializer_test,
 	    serializer_test_tear_down);
-	g_test_add("/serializer/json/array", serializer_fixture, "json",
-	    serializer_test_array_set_up, serializer_test,
+	g_test_add("/serializer/json/array", struct serializer_fixture,
+	    "json", serializer_test_array_set_up, serializer_test,
 	    serializer_test_tear_down);
-	g_test_add("/serializer/json/single", serializer_fixture, "json",
-	    serializer_test_single_set_up, serializer_test,
+	g_test_add("/serializer/json/single", struct serializer_fixture,
+	    "json", serializer_test_single_set_up, serializer_test,
 	    serializer_test_tear_down);
-*/
+
 	g_test_add("/serializer/msgpack/dict", struct serializer_fixture,
 	    "msgpack", serializer_test_dict_set_up, serializer_test,
 	    serializer_test_tear_down);
