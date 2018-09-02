@@ -550,6 +550,7 @@ usb_find(struct libusb_context *libusb, const char *serial, int addr)
 {
 	struct libusb_device_descriptor desc;
 	libusb_device **devices;
+	libusb_device **ptr;
 	libusb_device *dev;
 	libusb_device_handle *handle;
 	uint8_t str[NAME_MAX];
@@ -557,8 +558,8 @@ usb_find(struct libusb_context *libusb, const char *serial, int addr)
 
 	libusb_get_device_list(libusb, &devices);
 
-	for (; *devices != NULL; devices++) {
-		dev = *devices;
+	for (ptr = devices; *ptr != NULL; ptr++) {
+		dev = *ptr;
 		address = libusb_get_device_address(dev);
 		libusb_get_device_descriptor(dev, &desc);
 
@@ -573,6 +574,7 @@ usb_find(struct libusb_context *libusb, const char *serial, int addr)
 			if (libusb_open(dev, &handle) != 0)
 				continue;
 
+			libusb_free_device_list(devices, true);
 			return (handle);
 		}
 
@@ -583,14 +585,17 @@ usb_find(struct libusb_context *libusb, const char *serial, int addr)
 			libusb_get_string_descriptor_ascii(handle,
 			    desc.iSerialNumber, str, sizeof(str));
 
-			if (g_strcmp0((const char *)str, serial) == 0)
+			if (g_strcmp0((const char *)str, serial) == 0) {
+				libusb_free_device_list(devices, true);
 				return (handle);
+			}
 
 			libusb_close(handle);
 			continue;
 		}
 	}
 
+	libusb_free_device_list(devices, true);
 	return (NULL);
 }
 

@@ -436,7 +436,7 @@ rpct_instantiate_type(const char *decl, struct rpct_typei *parent,
 			goto error;
 		}
 
-		splitvars = g_ptr_array_new();
+		splitvars = g_ptr_array_new_with_free_func(g_free);
 		rpct_parse_type(declvars, splitvars);
 
 		if (splitvars->len != type->generic_vars->len)
