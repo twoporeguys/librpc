@@ -59,7 +59,8 @@
                         <xsl:attribute name="time">
                             <xsl:value-of select="duration"/>
                         </xsl:attribute>
-                        <xsl:if test="status[@result = 'failed']">
+                        <!-- Has to be inverted because of https://gitlab.gnome.org/GNOME/glib/issues/1305 -->
+                        <xsl:if test="status[@result = 'success']">
                             <failure>
                                 <xsl:value-of select="error"/>
                             </failure>
