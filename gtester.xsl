@@ -45,16 +45,17 @@
                 </xsl:attribute>
                 <xsl:for-each select="testbinary/testcase[not(@skipped='1')]">
                     <testcase>
-                        <xsl:variable name="name">
+                        <xsl:variable name="classname">
                             <xsl:call-template name="strreplace">
                                 <xsl:with-param name="string" select="substring-after(@path, '/')"/>
                                 <xsl:with-param name="token" select="'/'"/>
                                 <xsl:with-param name="newtoken" select="'.'"/>
                             </xsl:call-template>
                         </xsl:variable>
-                        <xsl:attribute name="name">
+                        <xsl:attribute name="classname">
                             <xsl:value-of select="$classname"/>
                         </xsl:attribute>
+                        <xsl:attribute name="name">g_test</xsl:attribute>
                         <xsl:attribute name="time">
                             <xsl:value-of select="duration"/>
                         </xsl:attribute>
