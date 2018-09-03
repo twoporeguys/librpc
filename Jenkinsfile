@@ -81,7 +81,7 @@ pipeline {
 
     post {
         always {
-	    junit 'junit-test-report.xml'
+	    junit 'junit-test-results.xml'
             publishHTML target: [
                 allowMissing: false,
                 alwaysLinkToLastBuild: false,
