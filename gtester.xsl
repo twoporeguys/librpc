@@ -53,7 +53,7 @@
                             </xsl:call-template>
                         </xsl:variable>
                         <xsl:attribute name="name">
-                            <xsl:value-of select="$classname"/>
+                            <xsl:value-of select="$name"/>
                         </xsl:attribute>
                         <xsl:attribute name="time">
                             <xsl:value-of select="duration"/>

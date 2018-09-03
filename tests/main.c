@@ -37,8 +37,8 @@ main (int argc, char *argv[])
 {
 	struct librpc_test **t;
 
-	g_test_init (&argc, &argv, NULL);
-	g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=");
+	g_test_init(&argc, &argv, NULL);
+	g_test_bug_base("https://github.com/twoporeguys/librpc/issues/");
 
 	SET_FOREACH(t, test_set) {
 		(*t)->register_f();

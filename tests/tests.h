@@ -38,4 +38,4 @@ struct librpc_test
 	void (*register_f)();
 };
 
-#endif //LIBRPC_TESTS_H
+#endif /* LIBRPC_TESTS_H */
