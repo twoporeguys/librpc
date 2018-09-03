@@ -25,13 +25,12 @@
  *
  */
 
-#include "../tests.h"
-#include "../../src/linker_set.h"
 #include <glib.h>
 #include <string.h>
 #include <rpc/object.h>
 #include <rpc/serializer.h>
-
+#include "../../src/linker_set.h"
+#include "../tests.h"
 
 struct serializer_fixture
 {
@@ -190,7 +189,7 @@ serializer_test_register()
 
 static struct librpc_test serializer = {
 	.name = "serializer",
-	.register_f = &serializer_test_register
+	.register_f = serializer_test_register
 };
 
 DECLARE_TEST(serializer);

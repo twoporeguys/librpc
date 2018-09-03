@@ -55,7 +55,7 @@
                         <xsl:attribute name="classname">
                             <xsl:value-of select="$classname"/>
                         </xsl:attribute>
-                        <xsl:attribute name="name">g_test</xsl:attribute>
+                        <xsl:attribute name="name">test</xsl:attribute>
                         <xsl:attribute name="time">
                             <xsl:value-of select="duration"/>
                         </xsl:attribute>
