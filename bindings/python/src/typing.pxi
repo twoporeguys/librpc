@@ -618,7 +618,7 @@ cdef class BaseTypingObject(object):
     @staticmethod
     cdef construct_enum(TypeInstance typei):
         def getter(self):
-            return self.object.unpack()
+            return self.__object__.unpack()
 
         def setter(self, value):
             value = Object(value, typei=self.__typei__)
