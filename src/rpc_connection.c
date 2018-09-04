@@ -772,8 +772,14 @@ rpc_close(rpc_connection_t conn)
 	conn->rco_aborted = true;
 	conn->rco_closed = true;
 	
-	if (conn->rco_error == NULL)
+	if (conn->rco_error == NULL) {
 		conn->rco_error = rpc_get_last_error();
+		/* if not NULL, cleanup can't release this */
+		if (conn->rco_error != NULL)
+			conn->rco_error  = rpc_error_create(
+			    rpc_error_get_code(conn->rco_error),
+			    rpc_error_get_message(conn->rco_error), NULL);
+	}
 
         if (conn->rco_error_handler) {
                 if (conn->rco_error != NULL)
