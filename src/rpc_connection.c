@@ -1169,6 +1169,8 @@ rpc_connection_alloc(rpc_server_t server)
 	g_mutex_init(&conn->rco_send_mtx);
 	g_mutex_init(&conn->rco_mtx);
 	g_mutex_init(&conn->rco_ref_mtx);
+	g_rw_lock_init(&conn->rco_call_rwlock);
+	g_rw_lock_init(&conn->rco_icall_rwlock);
 	rpc_connection_set_default_fn_handlers(conn);
 	return (conn);
 }
@@ -1197,6 +1199,8 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	g_mutex_init(&conn->rco_ref_mtx);
 	g_mutex_init(&conn->rco_send_mtx);
 	g_mutex_init(&conn->rco_subscription_mtx);
+	g_rw_lock_init(&conn->rco_call_rwlock);
+	g_rw_lock_init(&conn->rco_icall_rwlock);
 	conn->rco_flags = transport->flags;
 	conn->rco_params = params;
 	conn->rco_uri = client->rci_uri;
