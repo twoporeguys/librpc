@@ -35,16 +35,19 @@
 
 static int kqueue_fd = -1;
 static int id = 0;
+static GMutex kq_mtx;
 
 void
 notify_init(struct notify *notify)
 {
 	struct kevent kev;
 
+	g_mutex_lock(&kq_mtx);
 	if (kqueue_fd == -1) {
 		kqueue_fd = kqueue();
 		g_assert(kqueue_fd != -1);
 	}
+	g_mutex_unlock(&kq_mtx);
 
 	notify->fd = ++id;
 
