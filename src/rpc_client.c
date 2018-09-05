@@ -98,7 +98,8 @@ rpc_client_close(rpc_client_t client)
 		rpc_connection_close(client->rci_connection);
 		if (rpc_get_last_error() == NULL &&
 		    client->rci_connection->rco_error != NULL)
-			rpc_set_last_rpc_error(client->rci_connection->rco_error);
+			rpc_set_last_rpc_error(
+			    rpc_retain(client->rci_connection->rco_error));
 		rpc_connection_release(client->rci_connection);
         }
 
