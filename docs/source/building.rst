@@ -50,16 +50,17 @@ Following compile-time parameters can be passed to CMake:
 | ``ENABLE_LIBDISPATCH``       | ``OFF``       |                              |
 +------------------------------+---------------+------------------------------+
 
-Debugging in Ubuntu VM 
+Debugging in Ubuntu VM
 ~~~~~~~~~~~~~~~~~~~~~~
 This will show how to setup up development environment within an Ubuntu VM that will allow you to properly debug \
-calls made from momd. 
+calls made from another project using librpc (we'll call it ``rpcd``). This hypothetical service is launched from \
+the command line and requires a configuration file path to passed in through an argument (``rpcd -c <path_to_conf>``).
 
-- Need to have both source folders (``momd``,``librpc``) within the same VSCode Workspace
+- Need to have both source folders (``rpcd``,``librpc``) within the same VSCode Workspace
 - Build/install librpc with ``-DBUILD_TYPE=Debug``
 - Create an ``gdbsudo`` alias so the debugger can call ``gdb`` with studio
 
-``/usr/bin/gdbsudo`` 
+``/usr/bin/gdbsudo``
 ^^^^^^^^^^^^^^^^^^^^
 .. code-block:: bash
 
@@ -81,8 +82,8 @@ calls made from momd.
                 "name": "(gdb) Launch",
                 "type": "cppdbg",
                 "request": "launch",
-                "program": "${workspaceFolder}/build/momd",
-                "args": ["-c", "../etc/momd.conf.dev"],
+                "program": "${workspaceFolder}/build/rpcd",
+                "args": ["-c", "../etc/rpcd.conf.dev"],
                 "stopAtEntry": false,
                 "cwd": "${workspaceFolder}/build",
                 "environment": [],
