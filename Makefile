@@ -10,6 +10,7 @@ RPC_DEBUG ?= OFF
 BUILD_TYPE ?= Release
 BUILD_XPC ?= OFF
 ENABLE_LIBDISPATCH ?= OFF
+BUILD_DOC ?= OFF
 
 .PHONY: all clean bootstrap build build-cov install uninstall test
 
@@ -28,7 +29,8 @@ build:
 	    -DBUILD_TESTS=$(BUILD_TESTS) \
 	    -DBUILD_CPLUSPLUS=$(BUILD_CPLUSPLUS) \
 	    -DBUILD_XPC=$(BUILD_XPC) \
-	    -DENABLE_LIBDISPATCH=$(ENABLE_LIBDISPATCH)
+	    -DENABLE_LIBDISPATCH=$(ENABLE_LIBDISPATCH) \
+		-DBUILD_DOC=$(BUILD_DOC)
 	make -C build
 
 build-cov:
@@ -43,6 +45,7 @@ build-cov:
 	    -DENABLE_LIBDISPATCH=OFF \
 	    -DBUILD_XPC=$(BUILD_XPC) \
 	    -DENABLE_COVERAGE=ON
+		-DBUILD_DOC=$(BUILD_DOC)
 	make -C build-cov
 
 bootstrap:

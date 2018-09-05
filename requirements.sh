@@ -8,7 +8,7 @@ case "`uname -s`" in
         brew install glib libsoup yajl libusb libyaml yajl python3 cmake pkg-config gtk+3
     elif [ -x /opt/local/bin/port ]; then
         echo "I am a Mac.  Using macports to install stuff with sudo"
-        sudo port install glib2 glib-networking libsoup yajl libusb libyaml yajl python36 py36-pip cmake lcov pkgconfig py36-gobject3
+        sudo port install glib2 glib-networking libsoup yajl libusb libyaml yajl python36 py36-pip cmake lcov pkgconfig py36-gobject3 doxygen
         sudo port select --set pip pip36
         sudo ln -fs /opt/local/bin/pip-3.6 /opt/local/bin/pip3
     else
