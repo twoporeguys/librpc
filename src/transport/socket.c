@@ -321,6 +321,8 @@ socket_listen(struct rpc_server *srv, const char *uri,
 					return (-1);
 				}
 			}
+
+			g_object_unref(file);
 		}
 
 		g_socket_listener_add_address(server->ss_listener, addr,
@@ -337,6 +339,7 @@ socket_listen(struct rpc_server *srv, const char *uri,
 	if (err != NULL) {
 		srv->rs_error = rpc_error_create(err->code, err->message, NULL);
 		g_error_free(err);
+		g_object_unref(server->ss_listener);
 		g_free(server->ss_uri);
 		g_free(server);
 		return (-1);
@@ -597,6 +600,7 @@ socket_teardown(struct rpc_server *srv)
 	if (socket_srv->ss_outstanding_accept)
             g_cancellable_cancel (socket_srv->ss_cancellable);
 	g_socket_listener_close(socket_srv->ss_listener);
+	g_object_unref(socket_srv->ss_listener);
 	g_mutex_unlock(&socket_srv->ss_mtx);
 
 	return (0);

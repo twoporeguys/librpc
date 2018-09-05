@@ -91,6 +91,10 @@ rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 
 	server->rs_conn_made++;
 	g_mutex_unlock(&server->rs_mtx);
+
+	if (server->rs_event_handler != NULL)
+		server->rs_event_handler(conn, RPC_SERVER_CLIENT_CONNECT);
+
 	return (0);
 }
 
@@ -99,12 +103,10 @@ void
 rpc_server_disconnect(rpc_server_t server, rpc_connection_t conn)
 {
 
-        GList *iter = NULL;
-        struct rpc_connection *comp = NULL;
-
 	debugf("Disconnecting: %p, closed == %d\n", conn, server->rs_closed);
 
 	g_mutex_lock(&server->rs_mtx);
+
 	if (server->rs_closed) {
 		g_mutex_unlock(&server->rs_mtx);
 		return;
@@ -112,21 +114,15 @@ rpc_server_disconnect(rpc_server_t server, rpc_connection_t conn)
 
 	g_assert(conn->rco_aborted);
 
-        g_rw_lock_writer_lock(&server->rs_connections_rwlock);
-        for (iter = server->rs_connections; iter != NULL; iter = iter->next) {
-                comp = iter->data;
-                if (comp == conn) {
-                        server->rs_connections =
-                            g_list_remove_link(server->rs_connections, iter);
-			rpc_connection_release(conn);
-                        break;
-                }
-        }
- 
+	g_rw_lock_writer_lock(&server->rs_connections_rwlock);
+	server->rs_connections = g_list_remove(server->rs_connections, conn);
 	g_rw_lock_writer_unlock(&server->rs_connections_rwlock);
 	g_mutex_unlock(&server->rs_mtx);
 
-	return;
+	if (server->rs_event_handler != NULL)
+		server->rs_event_handler(conn, RPC_SERVER_CLIENT_DISCONNECT);
+
+	rpc_connection_release(conn);
 }
 
 GMainContext *
@@ -273,6 +269,18 @@ rpc_server_broadcast_event(rpc_server_t server, const char *path,
 	g_rw_lock_reader_unlock(&server->rs_connections_rwlock);
 }
 
+void
+rpc_server_set_event_handler(rpc_server_t server,
+    rpc_server_ev_handler_t handler)
+{
+
+	if (server->rs_event_handler != NULL)
+		Block_release(server->rs_event_handler);
+
+	if (handler != NULL)
+		server->rs_event_handler = Block_copy(handler);
+}
+
 int
 rpc_server_dispatch(rpc_server_t server, struct rpc_call *call)
 {
@@ -288,11 +296,11 @@ rpc_server_dispatch(rpc_server_t server, struct rpc_call *call)
 	}
 
 	if (server->rs_paused || !g_queue_is_empty(server->rs_calls))  {
-		rpc_retain(call->rc_frame);
 		g_queue_push_tail(server->rs_calls, call);
 		g_mutex_unlock(&server->rs_calls_mtx);
 		return (0);
 	}
+
 	ret = rpc_context_dispatch(server->rs_context, call);
 	g_mutex_unlock(&server->rs_calls_mtx);
 	return (ret);
@@ -303,39 +311,24 @@ static void
 server_queue_purge(rpc_server_t server)
 {
 	struct rpc_call *icall;
-	const char *method = NULL;
-	const char *interface = NULL;
-	const char *path = NULL;
-	rpc_object_t call_args = NULL;
-	rpc_object_t frame;
 
 	while (!g_queue_is_empty(server->rs_calls)) {
 		icall = g_queue_pop_head(server->rs_calls);
-		rpc_object_unpack(icall->rc_frame, "{s,s,s,v}",
-		    "method", &method,
-		    "interface", &interface,
-		    "path", &path,
-		    "args", &call_args);
-
-		icall->rc_method_name = method;
-		icall->rc_interface = interface;
-		icall->rc_path = path;
-		frame = icall->rc_frame;
 
 		if (!server->rs_closed) {
 			if (rpc_context_dispatch(server->rs_context,
-			    icall) == 0) {
-				rpc_release(frame);
+			    icall) == 0)
 				continue;
-			}
-		} else
+		} else {
 			icall->rc_err = rpc_error_create(ECONNRESET,
 			    "Server not active", NULL);
-		rpc_release(frame);
-		if (icall->rc_err != NULL)
+		}
+
+		if (icall->rc_err != NULL) {
 			rpc_function_error(icall,
 			    rpc_error_get_code(icall->rc_err),
 			    rpc_error_get_message(icall->rc_err));
+		}
 
 		rpc_connection_close_inbound_call(icall);
 	}
@@ -347,9 +340,10 @@ rpc_server_resume(rpc_server_t server)
 {
 
 	g_mutex_lock(&server->rs_calls_mtx);
+
 	if (server->rs_closed) {
-		return;
 		g_mutex_unlock(&server->rs_calls_mtx);
+		return;
 	}
 
 	server->rs_paused = false;
@@ -445,15 +439,22 @@ rpc_server_close(rpc_server_t server)
 
 #ifdef SYSTEMD_SUPPORT
 int
-rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers)
+rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers,
+    rpc_object_t *rest)
 {
 	rpc_server_t server;
 	rpc_object_t params;
+	const char *uri;
+	char *name;
+	char **names;
 	int nfds;
 	int i;
 	int n = 0;
 
-	nfds = sd_listen_fds(1);
+	if (rest != NULL)
+		*rest = rpc_dictionary_create();
+
+	nfds = sd_listen_fds_with_names(1, &names);
 	if (nfds < 0) {
 		rpc_set_last_errorf(-nfds, "Cannot get listen fds: %s",
 		    strerror(-nfds));
@@ -466,14 +467,30 @@ rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers)
 		if (!sd_is_socket(i, AF_UNSPEC, SOCK_STREAM, 1))
 			continue;
 
+		name = names[i - SD_LISTEN_FDS_START];
+
+		if (g_strcmp0(name, "librpc.socket") == 0 ||
+		    g_strcmp0(name, "librpc") == 0)
+			uri = "socket://";
+		else if (g_strcmp0(name, "librpc.ws") == 0)
+			uri = "ws://";
+		else {
+			if (rest != NULL)
+				rpc_dictionary_set_fd(*rest, name, i);
+
+			free(name);
+			continue;
+		}
+
 		params = rpc_fd_create(i);
-		server = rpc_server_create_ex("socket://", context, params);
+		server = rpc_server_create_ex(uri, context, params);
 		if (server == NULL)
 			continue;
 
 		(*servers)[n++] = server;
 	}
 
+	free(names);
 	return (n);
 }
 #endif

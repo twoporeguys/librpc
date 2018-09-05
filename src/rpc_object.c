@@ -78,7 +78,6 @@ rpc_prim_create(rpc_type_t type, union rpc_value val)
 	ro->ro_type = type;
 	ro->ro_value = val;
 	ro->ro_refcnt = 1;
-
 	return (ro);
 }
 
@@ -506,10 +505,6 @@ rpc_release_impl(rpc_object_t object)
 			    true);
 			break;
 
-#if defined(__linux__)
-		case RPC_TYPE_SHMEM:
-			close(object->ro_value.rv_shmem.rsb_fd);
-#endif
 		default:
 			break;
 		}
@@ -690,8 +685,12 @@ rpc_equal(rpc_object_t o1, rpc_object_t o2)
 		return (o1->ro_value.rv_d == o2->ro_value.rv_d);
 
 	case RPC_TYPE_FD:
-		fstat(o1->ro_value.rv_fd, &o1_fdstat);
-		fstat(o2->ro_value.rv_fd, &o2_fdstat);
+		if (fstat(o1->ro_value.rv_fd, &o1_fdstat) != 0)
+			return (false);
+
+		if (fstat(o2->ro_value.rv_fd, &o2_fdstat) != 0)
+			return (false);
+
 		return ((o1_fdstat.st_dev == o2_fdstat.st_dev) &&
 		    (o1_fdstat.st_ino == o2_fdstat.st_ino));
 
@@ -723,8 +722,12 @@ rpc_equal(rpc_object_t o1, rpc_object_t o2)
 
 #if defined(__linux__)
 	case RPC_TYPE_SHMEM:
-		fstat(o1->ro_value.rv_shmem.rsb_fd, &o1_fdstat);
-		fstat(o2->ro_value.rv_shmem.rsb_fd, &o2_fdstat);
+		if (fstat(o1->ro_value.rv_shmem.rsb_fd, &o1_fdstat) != 0)
+			return (false);
+
+		if (fstat(o2->ro_value.rv_shmem.rsb_fd, &o2_fdstat) != 0)
+			return (false);
+
 		return ((o1_fdstat.st_dev == o2_fdstat.st_dev) &&
 		    (o1_fdstat.st_ino == o2_fdstat.st_ino));
 #endif
@@ -1108,6 +1111,7 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			if (rpc_get_type(container) == RPC_TYPE_ARRAY) {
 				idx = g_queue_pop_tail(idx_q);
 				rpc_array_steal_value(container, *idx, current);
+				g_free(idx);
 			}
 
 			continue;
@@ -1609,7 +1613,6 @@ rpc_error_get_stack(rpc_object_t error)
 
 	return (error->ro_value.rv_error.rev_stack);
 }
-
 
 void
 rpc_error_set_extra(rpc_object_t error, rpc_object_t extra)
@@ -2316,7 +2319,7 @@ rpc_dictionary_get_fd(rpc_object_t dictionary, const char *key)
 	rpc_object_t xfd;
 
 	xfd = rpc_dictionary_get_value(dictionary, key);
-	return ((xfd != NULL) ? rpc_fd_get_value(xfd) : 0);
+	return ((xfd != NULL) ? rpc_fd_get_value(xfd) : -1);
 }
 
 inline int

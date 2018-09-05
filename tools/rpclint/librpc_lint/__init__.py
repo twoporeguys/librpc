@@ -38,10 +38,9 @@ def main():
     parser.add_argument('--system', action='store_true', help='Use system types')
     parser.add_argument('-f', metavar='FILE', action='append', help='IDL file')
     parser.add_argument('-d', metavar='DIRECTORY', action='append', help='IDL directory')
-    parser.add_argument('-o', metavar='FILE', help='Output file', required=True)
     args = parser.parse_args()
 
-    typing = librpc.Typing()
+    typing = librpc.Typing(load_system_types=False)
     paths = []
 
     if args.system:
@@ -60,19 +59,22 @@ def main():
                 typing.read_file(f)
                 paths.append(f)
             except librpc.LibException as err:
-                print('Processing {0} failed: {1}'.format(f, str(err)))
+                print('error: {0}: {1}'.format(f, err.message))
                 continue
 
     for p in paths:
-        typing.load_types(p)
+        try:
+            typing.load_types(p)
+        except librpc.RpcException as err:
+            print('error: loading {0}: {1}'.format(p, err.message))
 
     for typ in typing.types:
         if not typ.description:
-            print('{0}: description missing'.format(typ.name))
+            print('warning: {0}: description missing'.format(typ.name))
 
         for member in typ.members:
             if not member.description:
-                print('{0}: description missing for member "{1}"'.format(
+                print('warning: {0}: description missing for member "{1}"'.format(
                     typ.name,
                     member.name
                 ))

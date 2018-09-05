@@ -43,6 +43,7 @@
 #include <dispatch/dispatch.h>
 #endif
 #include "linker_set.h"
+#include "notify.h"
 
 #ifndef __unused
 #define __unused __attribute__((unused))
@@ -56,6 +57,7 @@
 #define	RPC_TRANSPORT_NO_SERIALIZE		(1 << 0)
 #define	RPC_TRANSPORT_CREDENTIALS		(1 << 1)
 #define RPC_TRANSPORT_FD_PASSING		(1 << 2)
+#define	RPC_TRANSPORT_NO_RPCT_SERIALIZE		(1 << 3)
 
 #if RPC_DEBUG
 #define debugf(...) 				\
@@ -68,7 +70,7 @@
 #define debugf(...)
 #endif
 
-#define	TYPE_REGEX	"(struct|union|type|enum) ([\\w\\.]+)(<(.*)>)?"
+#define	TYPE_REGEX	"(struct|union|type|container|enum) ([\\w\\.]+)(<(.*)>)?"
 #define	INTERFACE_REGEX	"interface (\\w+)"
 #define	INSTANCE_REGEX	"([\\w\\.]+)(<(.*)>)?"
 #define	METHOD_REGEX	"method (\\w+)"
@@ -193,13 +195,13 @@ struct rpc_call
 	rpc_connection_t    	rc_conn;
 	rpc_context_t 		rc_context;
 	rpc_call_type_t        	rc_type;
-	const char *		rc_path;
-	const char *		rc_interface;
-	const char *        	rc_method_name;
+	char *			rc_path;
+	char *			rc_interface;
+	char *        		rc_method_name;
 	rpc_object_t        	rc_id;
 	rpc_object_t        	rc_args;
 	rpc_object_t		rc_err;
-	GCond      		rc_cv;
+	struct notify		rc_notify;
 	GMutex			rc_mtx;
 	GSource *		rc_timeout;
 	GQueue *		rc_queue;
@@ -209,7 +211,6 @@ struct rpc_call
 	atomic_int_fast64_t	rc_consumer_seqno; /* also rc_seqno */
 	uint64_t 		rc_prefetch;
 	rpc_instance_t 		rc_instance;
-	rpc_object_t 		rc_frame;
 	rpc_abort_handler_t	rc_abort_handler;
 	struct rpc_if_method *	rc_if_method;
 	void *			rc_m_arg;
@@ -247,6 +248,7 @@ struct rpc_connection
 	bool			rco_has_creds;
 	bool			rco_supports_fd_passing;
 	const char *        	rco_uri;
+	char *			rco_endpoint_address;
 	rpc_error_handler_t 	rco_error_handler;
 	rpc_handler_t		rco_event_handler;
 	rpc_raw_handler_t 	rco_raw_handler;
@@ -309,6 +311,7 @@ struct rpc_server
 	uint			rs_conn_closed;
 	uint			rs_conn_aborted;
 	rpc_object_t 		rs_params;
+	rpc_server_ev_handler_t rs_event_handler;
 
     	/* Callbacks */
 	rpc_valid_fn_t		rs_valid;
@@ -411,6 +414,7 @@ struct rpct_file
 	char *			path;
 	const char *		description;
 	const char *		ns;
+	bool			loaded;
 	int64_t			version;
 	GPtrArray *		uses;
 	GHashTable *		types;
@@ -430,6 +434,7 @@ struct rpct_type
 	struct rpct_file *	file;
 	struct rpct_type *	parent;
 	struct rpct_typei *	definition;
+	struct rpct_typei *	value_type;
 	bool			generic;
 	GPtrArray *		generic_vars;
 	GHashTable *		members;
@@ -483,6 +488,7 @@ struct rpct_argument
 	struct rpct_typei *	type;
 	char *			name;
 	char *			description;
+	bool			opt;
 };
 
 struct rpct_error_context
@@ -526,7 +532,7 @@ off_t rpc_shmem_get_offset(rpc_object_t shmem);
 
 rpc_object_t rpc_error_create_from_gerror(GError *g_error);
 
-void rpc_abort(const char *fmt, ...);
+_Noreturn void rpc_abort(const char *fmt, ...);
 void rpc_trace(const char *msg, const char *ident, rpc_object_t frame);
 char *rpc_get_backtrace(void);
 char *rpc_generate_v4_uuid(void);

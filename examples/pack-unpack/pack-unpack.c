@@ -62,7 +62,7 @@ main(int argc, const char *argv[])
 
 		(void)cookie;
 
-		rpct_init();
+		rpct_init(true);
 		cnt = rpc_object_unpack(args, "[s,i,b,{nonexistent:v,key:i}]",
 		    &str, &num, &sure, &nonexistent_obj, &dict_num);
 

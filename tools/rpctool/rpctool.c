@@ -41,11 +41,11 @@
 #define USAGE_STRING							\
     "Available commands:\n"						\
     "  tree\n"								\
-    "  inspect <path>\n"						\
-    "  call <path> <interface> <method> [arguments]\n"			\
-    "  get <path> <interface> <property>\n"				\
-    "  set <path> <interface> <property> <value>\n"			\
-    "  listen <path>\n"
+    "  inspect PATH\n"							\
+    "  call PATH INTERFACE METHOD [ARGUMENTS]\n"			\
+    "  get PATH INTERFACE PROPERTY\n"					\
+    "  set PATH INTERFACE PROPERTY VALUE\n"				\
+    "  listen PATH\n"
 
 static int cmd_tree(int argc, char *argv[]);
 static int cmd_inspect(int argc, char *argv[]);
@@ -53,6 +53,7 @@ static int cmd_call(int argc, char *argv[]);
 static int cmd_get(int argc, char *argv[]);
 static int cmd_set(int argc, char *argv[]);
 static int cmd_listen(int argc, char *argv[]);
+static void  usage(GOptionContext *);
 
 static const char *server;
 static const char **idls;
@@ -97,7 +98,7 @@ connect(void)
 		exit(1);
 	}
 
-	rpct_init();
+	rpct_init(true);
 
 	if (idls != NULL) {
 		for (idl = idls; *idl != NULL; idl++)
@@ -317,6 +318,9 @@ cmd_call(int argc, char *argv[])
 				output(rpc_call_result(call));
 				goto done;
 
+			case RPC_CALL_ENDED:
+				goto done;
+
 			case RPC_CALL_ERROR:
 				goto error;
 
@@ -414,6 +418,15 @@ cmd_listen(int argc, char *argv[])
 	return (0);
 }
 
+static void
+usage(GOptionContext *context)
+{
+	g_autofree char *help;
+
+	help = g_option_context_get_help(context, true, NULL);
+	fprintf(stderr, "%s", help);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -427,12 +440,11 @@ main(int argc, char *argv[])
 	g_option_context_set_description(context, USAGE_STRING);
 	g_option_context_add_main_entries(context, options, NULL);
 	if (!g_option_context_parse(context, &argc, &argv, &err)) {
-
+		usage(context);
 	}
 
 	if (args == NULL) {
-		fprintf(stderr, "No command specified. Use \"rpctool -h\" to "
-		    "get help.\n");
+		usage(context);
 		return (1);
 	}
 

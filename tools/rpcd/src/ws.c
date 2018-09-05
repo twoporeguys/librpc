@@ -25,23 +25,25 @@
  *
  */
 
+#include <syslog.h>
 #include <glib.h>
 #include <libsoup/soup.h>
 #include <rpc/object.h>
 #include <rpc/connection.h>
 #include <rpc/client.h>
+#include <rpc/service.h>
 #include "internal.h"
 
 struct ws_server
 {
-	SoupServer *		server;
+	SoupServer *			server;
 };
 
 struct ws_connection
 {
-	rpc_client_t 		client;
-	rpc_connection_t 	conn;
-	SoupWebsocketConnection	ws_conn;
+	rpc_client_t 			client;
+	rpc_connection_t 		conn;
+	SoupWebsocketConnection	*	ws_conn;
 };
 
 static void
@@ -63,14 +65,17 @@ static void
 ws_error(SoupWebsocketConnection *ws __unused, GError *error,
     gpointer user_data)
 {
-	struct ws_connection *conn = user_data;
+	struct ws_connection *wsconn = user_data;
 
+	rpc_connection_close(wsconn->conn);
 }
 
 static void
 ws_close(SoupWebsocketConnection *ws __unused, gpointer user_data)
 {
+	struct ws_connection *wsconn = user_data;
 
+	rpc_connection_close(wsconn->conn);
 }
 
 static void
@@ -89,18 +94,31 @@ ws_process_connection(SoupServer *ss __unused,
 	}
 
 	wsconn = g_malloc0(sizeof(*wsconn));
-	wsconn->client
+	wsconn->client = rpc_client_create(service->uri, NULL);
+	wsconn->conn = rpc_client_get_connection(wsconn->client);
+	wsconn->ws_conn = connection;
 
-	g_object_ref(conn);
-	g_signal_connect(conn->wc_ws, "closed", G_CALLBACK(ws_close), conn);
-	g_signal_connect(conn->wc_ws, "error", G_CALLBACK(ws_error), conn);
-	g_signal_connect(conn->wc_ws, "message",
-	    G_CALLBACK(ws_receive_message), conn);
+	rpc_connection_set_raw_message_handler(wsconn->conn,
+	    ^(const void *msg, size_t len, const int *fds, size_t nfds) {
+		if (soup_websocket_connection_get_state(connection)
+		    != SOUP_WEBSOCKET_STATE_OPEN)
+			return (-1);
+
+		soup_websocket_connection_send_binary(connection, msg, len);
+		return (0);
+	});
+
+	g_object_ref(connection);
+	g_signal_connect(connection, "closed", G_CALLBACK(ws_close), wsconn);
+	g_signal_connect(connection, "error", G_CALLBACK(ws_error), wsconn);
+	g_signal_connect(connection, "message",
+	    G_CALLBACK(ws_receive_message), wsconn);
 }
 
 int
-ws_start(void)
+ws_start(int fd)
 {
+	GError *err = NULL;
 	struct ws_server *server;
 
 	server = g_malloc0(sizeof(*server));
@@ -111,5 +129,11 @@ ws_start(void)
 	soup_server_add_websocket_handler(server->server, NULL, NULL, NULL,
 	    ws_process_connection, server, NULL);
 
+	if (!soup_server_listen_fd(server->server, fd, 0, &err)) {
+		g_object_unref(server->server);
+		syslog(LOG_EMERG, "Cannot listen on fd %d: %s", fd, err->message);
+		return (-1);
+	}
 
+	return (0);
 }

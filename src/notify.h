@@ -25,24 +25,20 @@
  *
  */
 
-#include <stdio.h>
-#include "tests.h"
-#include "../src/linker_set.h"
-#include <glib.h>
+#ifndef LIBRPC_NOTIFY_H
+#define LIBRPC_NOTIFY_H
 
-SET_DECLARE(test_set, struct librpc_test);
+#include <sys/types.h>
 
-int
-main (int argc, char *argv[])
+struct notify
 {
-	struct librpc_test **t;
+	int 	fd;
+};
 
-	g_test_init (&argc, &argv, NULL);
-	g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=");
+void notify_init(struct notify *notify);
+void notify_free(struct notify *notify);
+int notify_wait(struct notify *notify);
+int notify_timedwait(struct notify *notify, const struct timespec *ts);
+int notify_signal(struct notify *notify);
 
-	SET_FOREACH(t, test_set) {
-		(*t)->register_f();
-	}
-
-	return (g_test_run());
-}
+#endif /* LIBRPC_NOTIFY_H */

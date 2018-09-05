@@ -87,6 +87,7 @@ cdef extern from "rpc/object.h" nogil:
     size_t rpc_hash(rpc_object_t object)
     char *rpc_copy_description(rpc_object_t object)
     rpc_type_t rpc_get_type(rpc_object_t object)
+    const char *rpc_get_type_name(rpc_type_t type)
     void rpc_release(rpc_object_t object)
 
     rpc_object_t rpc_null_create()
@@ -271,7 +272,7 @@ cdef extern from "rpc/server.h" nogil:
     int rpc_server_resume(rpc_server_t server)
     int rpc_server_close(rpc_server_t server)
     void rpc_server_broadcast_event(rpc_server_t server, const char *path, const char *interface, const char *name, rpc_object_t args)
-    int rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers)
+    int rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers, rpc_object_t *rest)
 
 cdef extern from "rpc/bus.h" nogil:
     ctypedef enum rpc_bus_event_t:
@@ -352,6 +353,7 @@ cdef extern from "rpc/typing.h" nogil:
         RPC_TYPING_UNION
         RPC_TYPING_ENUM
         RPC_TYPING_TYPEDEF
+        RPC_TYPING_CONTAINER
         RPC_TYPING_BUILTIN
 
     void *RPCT_TYPE_APPLIER(rpct_type_applier_f fn, void *arg)
@@ -359,7 +361,7 @@ cdef extern from "rpc/typing.h" nogil:
     void *RPCT_INTERFACE_APPLIER(rpct_interface_applier_f fn, void *arg)
     void *RPCT_IF_MEMBER_APPLIER(rpct_if_member_applier_f fn, void *args)
 
-    void rpct_init()
+    void rpct_init(bint load_system_types)
     int rpct_read_file(const char *path)
     int rpct_load_types(const char *path)
     int rpct_load_types_dir(const char *path)
@@ -383,6 +385,8 @@ cdef extern from "rpc/typing.h" nogil:
     int rpct_type_get_generic_vars_count(rpct_type_t type)
     const char *rpct_type_get_generic_var(rpct_type_t type, int index)
 
+    bint rpct_typei_get_proxy(rpct_typei_t typei)
+    const char *rpct_typei_get_proxy_variable(rpct_typei_t typei)
     rpct_type_t rpct_typei_get_type(rpct_typei_t typei)
     const char *rpct_typei_get_canonical_form(rpct_typei_t typei)
     rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, const char *name)
@@ -431,7 +435,7 @@ cdef class Object(object):
     cdef object ref
 
     @staticmethod
-    cdef Object wrap(rpc_object_t ptr)
+    cdef wrap(rpc_object_t ptr, bint retain=*)
     cdef rpc_object_t unwrap(self) nogil
 
 
@@ -469,20 +473,23 @@ cdef class Service(object):
 
 
 cdef class RemoteObject(object):
-    cdef object client
-    cdef object path
+    cdef readonly object client
+    cdef readonly object path
+    cdef readonly object name
+    cdef readonly object description
+    cdef readonly object interfaces
 
 
 cdef class RemoteInterface(object):
-    cdef readonly client
-    cdef readonly path
-    cdef readonly name
-    cdef readonly interface
-    cdef readonly methods
-    cdef readonly properties
-    cdef readonly events
-    cdef readonly typed
-    cdef dict __dict__
+    cdef readonly object client
+    cdef readonly object instance
+    cdef readonly object path
+
+
+cdef class RemoteProperty(object):
+    cdef readonly object name
+    cdef readonly object interface
+    cdef readonly object typed
 
 
 cdef class RemoteEvent(object):
@@ -518,6 +525,18 @@ cdef class InterfaceMember(object):
     @staticmethod
     cdef wrap(rpct_if_member_t ptr)
     cdef rpct_if_member_t unwrap(self) nogil
+
+
+cdef class BaseTypingObject(object):
+    cdef readonly Object __object__
+    cdef readonly TypeInstance __typei__
+
+    @staticmethod
+    cdef construct_struct(TypeInstance typei)
+    @staticmethod
+    cdef construct_union(TypeInstance typei)
+    @staticmethod
+    cdef construct_enum(TypeInstance typei)
 
 
 cdef class Call(object):

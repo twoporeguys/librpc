@@ -1,9 +1,10 @@
 export CC := clang
 export CXX := clang++
-PYTHON_VERSION := python3
+PYTHON_VERSION ?= python3
 PREFIX ?= /usr/local
-BUILD_PYTHON ?= ON
 BUILD_CPLUSPLUS ?= OFF
+BUILD_PYTHON ?= ON
+BUILD_TESTS ?= OFF
 BUILD_CLIENT ?= OFF
 RPC_DEBUG ?= OFF
 BUILD_TYPE ?= Release
@@ -24,6 +25,7 @@ build:
 	    -DCMAKE_INSTALL_PREFIX=$(PREFIX) \
 	    -DBUILD_CLIENT=$(BUILD_CLIENT) \
 	    -DBUILD_PYTHON=$(BUILD_PYTHON) \
+	    -DBUILD_TESTS=$(BUILD_TESTS) \
 	    -DBUILD_CPLUSPLUS=$(BUILD_CPLUSPLUS) \
 	    -DBUILD_XPC=$(BUILD_XPC) \
 	    -DENABLE_LIBDISPATCH=$(ENABLE_LIBDISPATCH)
@@ -57,9 +59,14 @@ uninstall:
 	make -C build uninstall
 
 test: build-cov
-	./build-cov/test_suite
-	lcov --capture --directory build-cov -o librpc.cov
+	gtester --keep-going -o test-results.xml ./build-cov/test_suite || true
+	lcov \
+	    --capture \
+	    --gcov-tool $(abspath llvm-gcov.sh) \
+	    --directory build-cov \
+	    -o librpc.cov
 	genhtml librpc.cov -o coverage-report
+	xsltproc -o junit-test-results.xml gtester.xsl test-results.xml
 
 benchmark:
 	mkdir -p build/benchmarks

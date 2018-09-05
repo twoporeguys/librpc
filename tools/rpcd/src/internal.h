@@ -41,5 +41,6 @@ struct rpcd_service
 };
 
 struct rpcd_service *rpcd_find_service(const char *name);
+int ws_start(int port);
 
 #endif /* RPCD_INTERNAL_H */

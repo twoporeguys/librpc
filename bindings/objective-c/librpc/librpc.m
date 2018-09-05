@@ -359,6 +359,11 @@
     }
 }
 
+- (void *)nativeValue
+{
+    return client;
+}
+
 - (NSDictionary *)instances
 {
     return [self instancesForPath:@"/"];
@@ -723,18 +728,48 @@
 {
     self = [super init];
     if (self) {
-        rpct_init();
+        rpct_init(true);
     }
     return self;
 }
 
-- (void)loadTypes:(NSString *)path
+- (BOOL)loadTypes:(NSString *)path error:(NSError **)error
 {
-    rpct_load_types([path UTF8String]);
+    if (rpct_load_types([path UTF8String]) != 0) {
+        if (error != nil)
+            *error = [[RPCObject lastError] value];
+
+        return NO;
+    }
+
+    return YES;
 }
 
-- (void)loadTypesDirectory:(NSString *)directory
+- (BOOL)loadTypesDirectory:(NSString *)directory error:(NSError **)error
 {
-    rpct_load_types_dir([directory UTF8String]);
+    if (rpct_load_types_dir([directory UTF8String]) != 0) {
+        if (error != nil)
+            *error = [[RPCObject lastError] value];
+
+        return NO;
+    }
+
+    return YES;
 }
+
+- (BOOL)loadTypesConnection:(RPCClient *)client error:(NSError **)error
+{
+    rpc_connection_t conn;
+
+    conn = rpc_client_get_connection([client nativeValue]);
+    if (rpct_download_idl(conn) != 0) {
+        if (error != nil)
+            *error = [[RPCObject lastError] value];
+
+        return NO;
+    }
+
+    return YES;
+}
+
 @end

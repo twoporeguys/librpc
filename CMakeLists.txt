@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
+include(GNUInstallDirs)
+include(CPack)
 project(librpc)
 
 if(UNIX AND NOT APPLE)
@@ -17,8 +19,10 @@ option(BUILD_JSON "Build and install JSON serializer" ON)
 option(BUILD_LIBUSB "Build and install libusb transport")
 option(BUILD_XPC "Build and install XPC transport")
 option(BUILD_RPCTOOL "Build and install rpctool" ON)
+option(BUILD_RPCGUI "Build and install rpcgui" ON)
 option(BUILD_RPCD "Build and install rpcd" ON)
 option(BUILD_RPCDOC "Build and install rpcdoc" ON)
+option(BUILD_RPCLINT "Build and install rpclint" ON)
 option(ENABLE_UBSAN "Enable undefined behavior sanitizer")
 option(ENABLE_UBSAN_NULLABILITY "Enable nullability sanitizer")
 option(ENABLE_ASAN "Enable address sanitizer")
@@ -28,10 +32,10 @@ option(ENABLE_COVERAGE "Enable code coverage")
 if(LINUX)
     option(ENABLE_SYSTEMD "Enable systemd support" ON)
     option(BUILD_BUS "Build and install bus transport" ON)
-    option(BUILD_KMOD "Build and install kmod" ON)
+    option(BUILD_KMOD "Build and install kmod")
 endif()
 
-set(PKGCONFIG_C_FLAGS "")
+set(PKGCONFIG_C_FLAGS "-fblocks")
 set(CPACK_PACKAGE_NAME librpc)
 set(CPACK_PACKAGE_VENDOR Two Pore Guys)
 set(CPACK_PACKAGE_VERSION_MAJOR 0)
@@ -53,11 +57,8 @@ if(NOT RELEASE_TAG)
             OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
-include(GNUInstallDirs)
-include(CPack)
-
-find_package (PkgConfig REQUIRED)
-pkg_check_modules (GLIB REQUIRED glib-2.0>=2.40)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GLIB REQUIRED glib-2.0>=2.40)
 pkg_check_modules(SOUP REQUIRED libsoup-2.4)
 pkg_check_modules(YAML REQUIRED yaml-0.1)
 
@@ -78,27 +79,29 @@ if(BUILD_BUS AND LINUX)
 endif()
 
 if(ENABLE_SYSTEMD)
-    pkg_check_modules(SYSTEMD REQUIRED systemd)
+    pkg_check_modules(SYSTEMD REQUIRED libsystemd)
 endif()
 
 if(BUNDLED_BLOCKS_RUNTIME)
     include_directories(contrib/BlocksRuntime)
 endif()
 
-if (ENABLE_UBSAN)
+if(ENABLE_UBSAN)
     set(PKGCONFIG_C_FLAGS "${PKGCONFIG_C_FLAGS} -fsanitize=undefined -fsanitize=integer")
 endif()
 
-if (ENABLE_UBSAN_NULLABILITY)
+if(ENABLE_UBSAN_NULLABILITY)
     set(PKGCONFIG_C_FLAGS "${PKGCONFIG_C_FLAGS} -fsanitize=nullability")
 endif()
 
-if (ENABLE_ASAN)
+if(ENABLE_ASAN)
     set(PKGCONFIG_C_FLAGS "${PKGCONFIG_C_FLAGS} -fsanitize=address")
 endif()
 
-if (ENABLE_COVERAGE)
+if(ENABLE_COVERAGE)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} --coverage")
 endif()
 
 function(python_install SETUP_PY)
@@ -132,8 +135,10 @@ function(python_install SETUP_PY)
 endfunction()
 
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_FLAGS "-fblocks -Wall -Wextra -Wno-unused-parameter -DRPC_TRACE ${PKGCONFIG_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "-fblocks -Wall -Wextra -Wno-unused-parameter -DRPC_TRACE ${PKGCONFIG_C_FLAGS}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fblocks -Wall -Wextra -Wno-unused-parameter -DRPC_TRACE ${PKGCONFIG_C_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -fblocks -Wall -Wextra -Wno-unused-parameter -DRPC_TRACE ${PKGCONFIG_C_FLAGS}")
+set(CMAKE_C_FLAGS_DEBUG "-g -O0")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 include_directories(include)
 include_directories(/usr/local/include)
 include_directories(${CMAKE_BINARY_DIR}/include)
@@ -214,6 +219,7 @@ set(TYPE_CLASS_FILES
         src/class/struct.c
         src/class/union.c
         src/class/typedef.c
+        src/class/container.c
         src/class/enum.c
         src/class/builtin.c)
 
@@ -221,6 +227,14 @@ set(VALIDATOR_FILES
         src/validator/string_length.c
         src/validator/string_regex.c
         src/validator/int64_range.c)
+
+if(LINUX)
+    set(CORE_FILES ${CORE_FILES} src/notify_eventfd.c)
+endif()
+
+if(APPLE)
+    set(CORE_FILES ${CORE_FILES} src/notify_kqueue.c)
+endif()
 
 if(BUILD_JSON)
 	set(SERIALIZER_FILES
@@ -236,7 +250,7 @@ if(BUNDLED_BLOCKS_RUNTIME)
 endif()
 
 if(BUILD_LIBUSB)
-set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/libusb.c)
+    set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/libusb.c)
 endif()
 
 if(BUILD_BUS AND LINUX)
@@ -281,7 +295,7 @@ if(ENABLE_LIBDISPATCH AND NOT APPLE)
 endif()
 
 if(ENABLE_SYSTEMD)
-    target_link_libraries(librpc systemd)
+    target_link_libraries(librpc ${SYSTEMD_LIBRARIES})
 endif()
 
 configure_file(librpc.pc.in ${CMAKE_CURRENT_BINARY_DIR}/librpc.pc @ONLY)
@@ -349,12 +363,20 @@ if(BUILD_RPCTOOL)
     add_subdirectory(tools/rpctool)
 endif()
 
+if(BUILD_RPCTOOL)
+    add_subdirectory(tools/rpcgui)
+endif()
+
 if(BUILD_RPCD AND LINUX)
     add_subdirectory(tools/rpcd)
 endif()
 
 if(BUILD_RPCDOC)
     add_subdirectory(tools/rpcdoc)
+endif()
+
+if(BUILD_RPCLINT)
+    add_subdirectory(tools/rpclint)
 endif()
 
 if(BUILD_PYTHON)

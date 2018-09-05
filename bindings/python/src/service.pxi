@@ -265,6 +265,7 @@ def prop(arg):
     if callable(arg):
         def setter(fn):
             arg.__librpc_setter__ = fn
+            return fn
 
         arg.setter = setter
         arg.__librpc_name__ = arg.__name__

@@ -54,7 +54,7 @@ static int ws_get_fd(void *);
 static void ws_release(void *);
 static int ws_teardown(struct rpc_server *);
 static int ws_teardown_end(struct rpc_server *);
-static gboolean done_waiting (gpointer user_data);
+static gboolean ws_done_waiting (gpointer user_data);
 
 struct rpc_transport ws_transport = {
 	.name = "websocket",
@@ -176,25 +176,31 @@ ws_connect_done(GObject *obj, GAsyncResult *res, gpointer user_data)
 
 static int
 ws_listen(struct rpc_server *srv, const char *uri_str,
-    rpc_object_t args __unused)
+    rpc_object_t args)
 {
 	GError *err = NULL;
 	GSocketAddress *addr = NULL;
 	SoupURI *uri;
 	struct ws_server *server;
+	int fd = -1;
 	int ret = 0;
 
 	uri = soup_uri_new(uri_str);
-        if (uri != NULL)
-		addr = g_inet_socket_address_new_from_string(uri->host,
-	            uri->port);
+	if (uri != NULL) {
+		if (args != NULL && rpc_get_type(args) == RPC_TYPE_FD)
+			fd = rpc_fd_get_value(args);
+		else {
+			addr = g_inet_socket_address_new_from_string(uri->host,
+			    uri->port);
+		}
+	}
 
 	if (addr == NULL) {
-                srv->rs_error = rpc_error_create(ENXIO, "No such address", NULL);
+		srv->rs_error = rpc_error_create(ENXIO, "No such address", NULL);
 		if (uri != NULL)
 			soup_uri_free(uri);
 
-                return(-1);
+		return (-1);
 	}
 
 	server = calloc(1, sizeof(*server));
@@ -221,13 +227,17 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 	    server->ws_uri->path, NULL, NULL, ws_process_connection, server,
 	    NULL);
 
-	soup_server_listen(server->ws_soupserver, addr, 0, &err);
+	if (addr != NULL)
+		soup_server_listen(server->ws_soupserver, addr, 0, &err);
+
+	if (fd != -1)
+		soup_server_listen_fd(server->ws_soupserver, fd, 0, &err);
+
 	if (err != NULL) {
 		srv->rs_error = rpc_error_create(err->code, err->message, NULL);
 		g_error_free(err);
 		soup_uri_free(server->ws_uri);
 		g_object_unref(server->ws_soupserver);
-		g_object_unref(addr);
 		g_free(server);
 		ret = -1;
 	}
@@ -237,7 +247,7 @@ ws_listen(struct rpc_server *srv, const char *uri_str,
 }
 
 static gboolean
-done_waiting (gpointer user_data)
+ws_done_waiting(gpointer user_data)
 {
 	struct ws_server *server = user_data;
 
@@ -251,7 +261,7 @@ done_waiting (gpointer user_data)
 }
 
 static int
-ws_teardown (struct rpc_server *srv)
+ws_teardown(struct rpc_server *srv)
 {
 	struct ws_server *server = srv->rs_arg;
 
@@ -262,15 +272,15 @@ ws_teardown (struct rpc_server *srv)
 
 
 static int
-ws_teardown_end (struct rpc_server *srv)
+ws_teardown_end(struct rpc_server *srv)
 {
 	struct ws_server *server = srv->rs_arg;
         GSource *source = g_idle_source_new ();
 
-        g_source_set_priority (source, G_PRIORITY_LOW);
-        g_source_set_callback (source, done_waiting, server, NULL);
-        g_source_attach (source, srv->rs_g_context);
-        g_source_unref (source);
+        g_source_set_priority(source, G_PRIORITY_LOW);
+        g_source_set_callback(source, ws_done_waiting, server, NULL);
+        g_source_attach(source, srv->rs_g_context);
+        g_source_unref(source);
 
 	g_mutex_lock(&server->ws_mtx);
 	while (!server->ws_done)
@@ -319,9 +329,9 @@ ws_process_connection(SoupServer *ss __unused,
 	g_cond_init(&conn->wc_abort_cv);
 
 	rco = rpc_connection_alloc(server->ws_server);
-	rco->rco_send_msg = &ws_send_message;
-	rco->rco_abort = &ws_abort;
-	rco->rco_get_fd = &ws_get_fd;
+	rco->rco_send_msg = ws_send_message;
+	rco->rco_abort = ws_abort;
+	rco->rco_get_fd = ws_get_fd;
 	rco->rco_arg = conn;
 	conn->wc_parent = rco;
 	rco->rco_release = ws_release;

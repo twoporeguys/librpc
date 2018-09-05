@@ -25,24 +25,68 @@
  *
  */
 
+#define _GNU_SOURCE
 #include <stdio.h>
-#include "tests.h"
-#include "../src/linker_set.h"
-#include <glib.h>
+#include <errno.h>
+#include <unistd.h>
+#include <poll.h>
+#include <sys/types.h>
+#include <sys/eventfd.h>
+#include "notify.h"
 
-SET_DECLARE(test_set, struct librpc_test);
+void
+notify_init(struct notify *notify)
+{
+
+	notify->fd = eventfd(0, 0);
+}
+
+void
+notify_free(struct notify *notify)
+{
+
+	close(notify->fd);
+}
 
 int
-main (int argc, char *argv[])
+notify_wait(struct notify *notify)
 {
-	struct librpc_test **t;
+	eventfd_t value;
 
-	g_test_init (&argc, &argv, NULL);
-	g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=");
+	if (eventfd_read(notify->fd, &value) < 0)
+		return (-1);
 
-	SET_FOREACH(t, test_set) {
-		(*t)->register_f();
+	return ((int)value);
+}
+
+int
+notify_timedwait(struct notify *notify, const struct timespec *ts)
+{
+	struct pollfd pfd;
+	eventfd_t value;
+
+	pfd.fd = notify->fd;
+	pfd.events = POLLIN;
+	pfd.revents = 0;
+
+	switch (ppoll(&pfd, 1, ts, NULL)) {
+	case 1:
+		if (eventfd_read(notify->fd, &value) < 0)
+			return (-1);
+
+		return ((int)value);
+
+	case 0:
+		return (0);
+
+	default:
+		return (-1);
 	}
+}
 
-	return (g_test_run());
+int
+notify_signal(struct notify *notify)
+{
+
+	return (eventfd_write(notify->fd, 1));
 }

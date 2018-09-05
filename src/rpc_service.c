@@ -115,9 +115,12 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 			return;
 	}
 
-	if (!call->rc_streaming)
+	if (!call->rc_streaming) {
 		rpc_function_respond(call, result);
-	else if (!call->rc_ended)
+		return;
+	}
+
+	if (!call->rc_ended)
 		rpc_function_end(data);
 }
 
@@ -127,7 +130,7 @@ rpc_context_create(void)
 	GError *err;
 	rpc_context_t result;
 
-	rpct_init();
+	rpct_init(true);
 
 	result = g_malloc0(sizeof(*result));
 	result->rcx_root = rpc_instance_new(NULL, "/");
@@ -147,6 +150,7 @@ rpc_context_free(rpc_context_t context)
 
 	if (context == NULL)
 		return;
+
 	g_thread_pool_free(context->rcx_threadpool, true, true);
 	rpc_instance_free(context->rcx_root);
 	g_free(context);
@@ -428,6 +432,7 @@ rpc_function_respond_impl(void *cookie, rpc_object_t object)
 	if (!call->rc_responded)
 		rpc_connection_send_response(call->rc_conn,
 		    call->rc_id, object);
+
 	rpc_connection_close_inbound_call(call);
 }
 
@@ -488,8 +493,11 @@ rpc_function_yield_impl(void *cookie, rpc_object_t fragment)
 	g_mutex_lock(&call->rc_mtx);
 
 	while (call->rc_producer_seqno == call->rc_consumer_seqno &&
-	    !call->rc_aborted)
-		g_cond_wait(&call->rc_cv, &call->rc_mtx);
+	    !call->rc_aborted) {
+		g_mutex_unlock(&call->rc_mtx);
+		notify_wait(&call->rc_notify);
+		g_mutex_lock(&call->rc_mtx);
+	}
 
 	if (call->rc_aborted) {
 		if (!call->rc_ended) {
@@ -531,8 +539,11 @@ rpc_function_end_impl(void *cookie)
 	g_mutex_lock(&call->rc_mtx);
 
 	while (call->rc_producer_seqno == call->rc_consumer_seqno &&
-	    !call->rc_aborted)
-		g_cond_wait(&call->rc_cv, &call->rc_mtx);
+	    !call->rc_aborted) {
+		g_mutex_unlock(&call->rc_mtx);
+		notify_wait(&call->rc_notify);
+		g_mutex_lock(&call->rc_mtx);
+	}
 
 	if (call->rc_aborted) {
 		if (!call->rc_ended) {
@@ -571,7 +582,7 @@ rpc_function_kill_impl(void *cookie)
 
 	g_mutex_lock(&call->rc_mtx);
 	call->rc_aborted = true;
-	g_cond_broadcast(&call->rc_cv);
+	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
 }
 
@@ -622,13 +633,14 @@ rpc_instance_new(void *arg, const char *fmt, ...)
 
 	if (!rpc_context_path_is_valid(path)) {
 		rpc_set_last_error(EINVAL, "Invalid path", NULL);
+		g_free(path);
 		return (NULL);
 	}
 
 	result = g_malloc0(sizeof(*result));
 	g_mutex_init(&result->ri_mtx);
 	g_rw_lock_init(&result->ri_rwlock);
-	result->ri_path = g_strdup(path);
+	result->ri_path = path;
 	result->ri_interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 	result->ri_arg = arg;
 

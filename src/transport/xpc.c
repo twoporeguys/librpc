@@ -36,6 +36,7 @@ static int xpc_connect(struct rpc_connection *, const char *, rpc_object_t);
 static int xpc_listen(struct rpc_server *, const char *, rpc_object_t);
 static xpc_object_t xpc_from_rpc(rpc_object_t);
 static rpc_object_t xpc_to_rpc(xpc_object_t);
+static int xpc_send_msg(void *, const void *, size_t, const int *, size_t);
 static int xpc_abort(void *);
 static void xpc_conn_release(void *);
 static bool xpc_supports_fd_passing(struct rpc_connection *);
@@ -220,11 +221,11 @@ xpc_to_rpc(xpc_object_t obj)
 }
 
 static int
-xpc_send_msg(void *arg, void *buf, size_t size __unused,
+xpc_send_msg(void *arg, const void *buf, size_t size __unused,
     const int *fds __unused, size_t nfds __unused)
 {
 	struct xpc_connection *conn = arg;
-	rpc_object_t obj = buf;
+	rpc_object_t obj = (rpc_object_t)buf;
 	xpc_object_t msg;
 
 	msg = xpc_from_rpc(obj);

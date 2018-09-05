@@ -1,5 +1,5 @@
 #
-# Copyright 2017 Two Pore Guys, Inc.
+# Copyright 2018 Two Pore Guys, Inc.
 # All rights reserved
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,51 +24,21 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-import os
-import Cython.Compiler.Options
-Cython.Compiler.Options.annotate = True
-
-from distutils.core import setup
-from Cython.Distutils.extension import Extension
-from Cython.Distutils import build_ext
-
-
-os.environ['CC'] = 'clang'
-os.environ.setdefault('DESTDIR', '/')
-cflags = ['-fblocks', '-Wno-sometimes-uninitialized']
-ldflags = ['-lrpc']
-systemd = os.environ.get('SYSTEMD_SUPPORT') == 'ON'
-
-
-if os.environ.get('CMAKE_BUILD_TYPE') == 'Debug':
-    cflags += ['-g', '-O0']
-
-
-if 'CMAKE_SOURCE_DIR' in os.environ:
-    cflags += [
-        os.path.expandvars('-I${CMAKE_SOURCE_DIR}/include'),
-        os.path.expandvars('-I../../include/')
-    ]
-    ldflags += [
-        os.path.expandvars('-L../..'),
-        os.path.expandvars('-Wl,-rpath'),
-        os.path.expandvars('-Wl,${CMAKE_PREFIX}/lib')
-    ]
+from setuptools import setup
 
 
 setup(
-    name='librpc',
+    name='librpc_gui',
     version='1.0',
-    packages=[''],
-    package_data={'': ['*.html', '*.c', 'librpc.pxd']},
-    cmdclass={'build_ext': build_ext},
-    ext_modules=[
-        Extension(
-            "librpc",
-            ["librpc.pyx"],
-            extra_compile_args=cflags,
-            extra_link_args=ldflags,
-            cython_compile_time_env={'SYSTEMD_SUPPORT': systemd}
-        )
-    ]
+    description='librpc interface browserye',
+    author='Jakub Klama',
+    author_email='jakub.klama@twoporeguys.com',
+    url='https://github.com/twoporeguys/librpc',
+    include_package_data=True,
+    packages=['librpc_gui'],
+    entry_points={
+        'console_scripts': [
+            'rpcgui=librpc_gui:main'
+        ]
+    }
 )

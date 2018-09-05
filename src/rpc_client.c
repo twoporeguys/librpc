@@ -33,7 +33,13 @@
 static void *
 rpc_client_worker(void *arg)
 {
+	sigset_t set;
 	rpc_client_t client = arg;
+
+	sigemptyset(&set);
+	sigaddset(&set, SIGINT);
+	sigaddset(&set, SIGTERM);
+	pthread_sigmask(SIG_BLOCK, &set, NULL);
 
 	g_main_context_push_thread_default(client->rci_g_context);
 	g_main_loop_run(client->rci_g_loop);
@@ -92,7 +98,8 @@ rpc_client_close(rpc_client_t client)
 		rpc_connection_close(client->rci_connection);
 		if (rpc_get_last_error() == NULL &&
 		    client->rci_connection->rco_error != NULL)
-			rpc_set_last_rpc_error(client->rci_connection->rco_error);
+			rpc_set_last_rpc_error(
+			    rpc_retain(client->rci_connection->rco_error));
 		rpc_connection_release(client->rci_connection);
         }
 

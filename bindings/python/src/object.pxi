@@ -161,6 +161,10 @@ cdef class Object(object):
             self.obj = (<Object>value).obj
             rpc_retain(self.obj)
 
+        elif isinstance(value, BaseTypingObject):
+            self.obj = (<BaseTypingObject>value).__object__.unwrap()
+            rpc_retain(self.obj)
+
         elif hasattr(value, '__getstate__'):
             try:
                 child = Object(value.__getstate__())
@@ -174,7 +178,7 @@ cdef class Object(object):
                     try:
                         conv = hook(value)
                         if type(conv) is Object:
-                            self.obj = rpc_copy((<Object>conv).obj)
+                            self.obj = rpc_copy((<Object>conv).unwrap())
                             break
                     except:
                         pass
@@ -182,13 +186,12 @@ cdef class Object(object):
                 raise LibException(errno.EINVAL, "Unknown value type: {0}".format(type(value)))
 
         if typei:
-            if isinstance(value, Object):
-                self.obj = rpc_copy(self.obj)
-
             if not isinstance(typei, TypeInstance):
                 raise TypeError('typei is not a TypeInstance')
 
             self.obj = rpct_set_typei((<TypeInstance>typei).rpctypei, self.obj)
+            if self.obj == <rpc_object_t>NULL:
+                raise TypeError('Invalid typei for the value')
 
     def __repr__(self):
         bdescr = rpc_copy_description(self.obj)
@@ -229,7 +232,7 @@ cdef class Object(object):
             rpc_release(self.obj)
 
     @staticmethod
-    cdef Object wrap(rpc_object_t ptr):
+    cdef wrap(rpc_object_t ptr, bint retain=True):
         cdef Object ret
         cdef rpct_typei_t typei
 
@@ -245,7 +248,10 @@ cdef class Object(object):
         else:
             ret = Object.__new__(Object)
 
-        ret.obj = rpc_retain(ptr)
+        if retain:
+            ptr = rpc_retain(ptr)
+
+        ret.obj = ptr
         typei = rpct_get_typei(ptr)
         if typei != <rpct_typei_t>NULL and rpct_type_get_class(rpct_typei_get_type(typei)) != RPC_TYPING_BUILTIN:
             return TypeInstance.wrap(typei).factory(ret)
@@ -262,9 +268,6 @@ cdef class Object(object):
         :param self:
         :return:
         """
-        if isinstance(self, (BaseStruct, BaseUnion, BaseEnum)):
-            return self
-
         if self.type == ObjectType.FD:
             return fd(self.value)
 
@@ -373,7 +376,7 @@ cdef class Array(Object):
         return <bint>cb(index, Object.wrap(value))
 
     @staticmethod
-    cdef Array wrap(rpc_object_t ptr):
+    cdef Array wrap(rpc_object_t ptr, bint retain=True):
         cdef Array ret
 
         if ptr == <rpc_object_t>NULL:
@@ -382,8 +385,11 @@ cdef class Array(Object):
         if rpc_get_type(ptr) != RPC_TYPE_ARRAY:
             return None
 
+        if retain:
+            ptr = rpc_retain(ptr)
+
         ret = Array.__new__(Array)
-        ret.obj = rpc_retain(ptr)
+        ret.obj = ptr
         return ret
 
     def __applier(self, applier_f):
@@ -538,7 +544,7 @@ cdef class Dictionary(Object):
         return <bint>cb(key.decode('utf-8'), Object.wrap(value))
 
     @staticmethod
-    cdef Dictionary wrap(rpc_object_t ptr):
+    cdef Dictionary wrap(rpc_object_t ptr, bint retain=True):
         cdef Dictionary ret
 
         if ptr == <rpc_object_t>NULL:
@@ -547,8 +553,11 @@ cdef class Dictionary(Object):
         if rpc_get_type(ptr) != RPC_TYPE_DICTIONARY:
             return None
 
+        if retain:
+            ptr = rpc_retain(ptr)
+
         ret = Dictionary.__new__(Dictionary)
-        ret.obj = rpc_retain(ptr)
+        ret.obj = ptr
         return ret
 
     def __applier(self, applier_f):
@@ -628,24 +637,7 @@ cdef class Dictionary(Object):
         return repr(self)
 
     def __contains__(self, value):
-        cdef Object v1
-        cdef Object v2
-        equal = False
-
-        v1 = Object(value)
-
-        def compare(k, v):
-            nonlocal v2
-            nonlocal equal
-            v2 = v
-
-            if v1 == v2:
-                equal = True
-                return False
-            return True
-
-        self.__applier(compare)
-        return equal
+        return value in self.keys()
 
     def __delitem__(self, key):
         rpc_dictionary_remove_key(self.obj, key.encode('utf-8'))
@@ -767,3 +759,6 @@ class fd(int):
     def __repr__(self):
         return 'librpc.fd({0})'.format(self)
 
+
+def rpc_typename(object_type):
+    return str_or_none(rpc_get_type_name(object_type))

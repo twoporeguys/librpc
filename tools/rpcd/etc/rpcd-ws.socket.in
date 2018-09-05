@@ -1,0 +1,11 @@
+[Unit]
+Description=rpcd WebSockets service socket
+PartOf=rpcd.service
+
+[Socket]
+Service=rpcd.service
+ListenStream=0.0.0.0:5003
+FileDescriptorName=websocket
+
+[Install]
+WantedBy=sockets.target

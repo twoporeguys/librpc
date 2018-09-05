@@ -246,7 +246,7 @@ rpcd_load_service(const char *path)
 		return (-1);
 	}
 
-	descriptor = rpc_serializer_load("rpcd", contents, len);
+	descriptor = rpc_serializer_load("yaml", contents, len);
 	if (descriptor == NULL) {
 		syslog(LOG_WARNING, "%s: not a valid YAML", path);
 		g_free(contents);
@@ -319,9 +319,12 @@ main(int argc, char *argv[])
 {
 	GError *err = NULL;
 	GOptionContext *parser;
+	GMainLoop *loop;
 	rpc_server_t srv;
 	rpc_object_t error;
+	rpc_object_t fds = NULL;
 	const char **uri;
+	int ws_fd;
 	int i = 0;
 
 	openlog("rpcd", LOG_PID, LOG_DAEMON);
@@ -339,7 +342,9 @@ main(int argc, char *argv[])
 	rpcd_context = rpc_context_create();
 
 	if (rpcd_use_systemd) {
-		rpcd_nservers = rpc_server_sd_listen(rpcd_context, &rpcd_servers);
+		rpcd_nservers = rpc_server_sd_listen(rpcd_context,
+		    &rpcd_servers, &fds);
+
 		if (rpcd_nservers == 0) {
 			syslog(LOG_EMERG, "No addresses to listen on, exiting");
 			exit(EXIT_FAILURE);
@@ -375,7 +380,15 @@ main(int argc, char *argv[])
 	if (rpcd_service_dirs != NULL)
 		rpcd_load_services();
 
+	if (fds != NULL) {
+		ws_fd = rpc_dictionary_get_fd(fds, "websocket");
+		if (ws_fd != -1)
+			ws_start(ws_fd);
+	}
+
 	syslog(LOG_NOTICE, "Started");
-	pause();
+	loop = g_main_loop_new(NULL, TRUE);
+	g_main_loop_run(loop);
+
 	return (0);
 }

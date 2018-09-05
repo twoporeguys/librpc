@@ -9,33 +9,44 @@ union Optional<T>:
   description: Can hold either a value of type T or null.
   members:
     something:
+      description: Branch containing a value
       type: T
     nothing:
+      description: Branch with no (empty) value
       type: nulltype
 
 
-type List<T>:
+container List<T>:
   description: A list of elements of the same type
   type: array
+  value-type: T
 
 
-type Dict<T>:
+container Dict<T>:
   description: A dictionary of elements of the same type
   type: dictionary
+  value-type: T
 
 
-type Iter<T>:
+container Iter<T>:
   description: Same as list, but meant to denote a streaming response
   type: array
   value-type: T
+
+
+type InstancePath:
+  description: Path to a librpc instance
+  type: string
 
 
 union IPAddress:
   description: Can hold an IP address (either v4 or v6)
   members:
     ipv4:
+      description: IP version 4 address
       type: IPv4Address
     ipv6:
+      description: IP version 6 address
       type: IPv6Address
 
 

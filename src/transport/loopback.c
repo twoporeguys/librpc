@@ -142,27 +142,29 @@ loopback_connect(struct rpc_connection *conn, const char *uri_string,
 
 static int
 loopback_listen(struct rpc_server *srv, const char *uri_string,
-    rpc_object_t extra __unused) {
+    rpc_object_t extra __unused)
+{
 	SoupURI *uri;
 	struct loopback_channel *chan;
-	int host;
+	int host = 0;
 	int fail = false;
 
 	uri = soup_uri_new(uri_string);
 
-	if ((uri == NULL) || (uri->host == NULL) || !strlen(uri->host)) {
+	if ((uri == NULL) || (uri->host == NULL) || !strlen(uri->host))
 		fail = true;
-	} else {
+	else {
 		host = (int)strtoul(uri->host, NULL, 10);
-		if (host == 0 && uri->host[0] != '0') {
+		if (host == 0 && uri->host[0] != '0')
 			fail = true;
-			soup_uri_free(uri);
-		}
 	}
+
+	soup_uri_free(uri);
+
 	if (fail) {
-                srv->rs_error = rpc_error_create(ENXIO, "No Such Address", NULL);
-                debugf("Invalid loopback uri %s", uri_string);
-                return (-1);
+		srv->rs_error = rpc_error_create(ENXIO, "No Such Address", NULL);
+		debugf("Invalid loopback uri %s", uri_string);
+		return (-1);
         }
 
 	chan = g_malloc0(sizeof(*chan));
@@ -200,6 +202,7 @@ loopback_send_msg(void *arg, const void *buf, size_t len __unused,
 	rpc_retain(obj);
 	ret = (peer_conn->rco_recv_msg(peer_conn, (const void *)obj, 0,
 	    (int *)fds, nfds, NULL));
+	rpc_release(obj);
 	rpc_connection_release(peer_conn);
 	return (ret);
 }
@@ -233,8 +236,6 @@ loopback_abort(void *arg)
 		lb->lb_peer->lb_peer = NULL;
 		lb->lb_peer = NULL;
 	}
-
-	debugf("Aborting  conn/arg %p/%p", conn, lb);
 
 	conn = lb->lb_conn;
 	lb->lb_closed = true;
@@ -308,7 +309,8 @@ struct rpc_transport loopback_transport = {
 	.connect = loopback_connect,
 	.listen = loopback_listen,
 	.is_fd_passing = loopback_supports_fd_passing,
-    	.flags = RPC_TRANSPORT_NO_SERIALIZE | RPC_TRANSPORT_FD_PASSING
+	.flags = RPC_TRANSPORT_NO_SERIALIZE | RPC_TRANSPORT_FD_PASSING |
+	    RPC_TRANSPORT_NO_RPCT_SERIALIZE
 };
 
 DECLARE_TRANSPORT(loopback_transport);

@@ -117,6 +117,7 @@ typedef enum {
 	RPC_TYPING_UNION,		/**< A union */
 	RPC_TYPING_ENUM,		/**< An enum */
 	RPC_TYPING_TYPEDEF,		/**< A type alias */
+	RPC_TYPING_CONTAINER,		/**< A container type */
 	RPC_TYPING_BUILTIN		/**< A builtin type */
 } rpct_class_t;
 
@@ -165,7 +166,7 @@ typedef bool (^rpct_if_member_applier_t)(rpct_if_member_t);
  *
  * @return 0 on success, -1 on error
  */
-int rpct_init(void);
+int rpct_init(bool load_system_types);
 
 /**
  * Cleans up all the state associated with RPC type system.
@@ -216,6 +217,13 @@ int rpct_load_types_dir(const char *path);
  * @return 0 on success, -1 on error
  */
 int rpct_load_types_stream(int fd);
+
+/**
+ * Loads type information from files previously loaded by @ref rpct_read_idl.
+ *
+ * @return 0 on success, -1 on error
+ */
+int rpct_load_types_cached(void);
 
 /**
  * Returns the type name.
@@ -324,6 +332,20 @@ rpct_typei_t rpct_typei_retain(rpct_typei_t typei);
 void rpct_typei_release(rpct_typei_t typei);
 
 /**
+ *
+ * @param typei
+ * @return
+ */
+bool rpct_typei_get_proxy(rpct_typei_t typei);
+
+/**
+ *
+ * @param typei
+ * @return
+ */
+const char *rpct_typei_get_proxy_variable(rpct_typei_t typei);
+
+/**
  * Returns base type of a type instance @p typei.
  *
  * @param typei Type instance handle
@@ -357,6 +379,15 @@ const char *rpct_typei_get_canonical_form(rpct_typei_t typei);
  */
 rpct_typei_t rpct_typei_get_member_type(rpct_typei_t typei,
     rpct_member_t member);
+
+/**
+ * Returns @p true if @p decl and @p type are compatible types.
+ *
+ * @param decl First type
+ * @param type Second type
+ * @return @p true if compatible, otherwise @p false
+ */
+bool rpct_typei_is_compatible(rpct_typei_t decl, rpct_typei_t type);
 
 /**
  * Returns the name of a member.

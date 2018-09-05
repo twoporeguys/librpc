@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#include <signal.h>
 #include <glib.h>
 #include <rpc/object.h>
 #include <rpc/service.h>
@@ -36,6 +37,21 @@
 #ifndef __unused
 #define __unused __attribute__((unused))
 #endif
+
+static void
+server_event(void *arg __unused, rpc_connection_t conn,
+    rpc_server_event_t event)
+{
+	const char *addr;
+
+	addr = rpc_connection_get_remote_address(conn);
+
+	if (event == RPC_SERVER_CLIENT_CONNECT)
+		printf("client %s connected\n", addr);
+
+	if (event == RPC_SERVER_CLIENT_DISCONNECT)
+		printf("client %s disconnected\n", addr);
+}
 
 static rpc_object_t
 hello(void *cookie __unused, rpc_object_t args)
@@ -50,12 +66,11 @@ int
 main(int argc, const char *argv[])
 {
 	rpc_context_t ctx;
+	rpc_object_t error;
 	__block rpc_server_t srv;
         __block GRand *rand = g_rand_new();
         __block gint setcnt = g_rand_int_range(rand, 50, 500);
         __block char *strg = g_malloc(27);
-	int ret;
-
 
 	(void)argc;
 	(void)argv;
@@ -71,7 +86,7 @@ main(int argc, const char *argv[])
 
 	rpc_context_register_block(ctx, NULL, "delay",
 	    NULL, ^(void *cookie __unused, rpc_object_t args __unused) {
-		sleep(60);
+		sleep(5);
 		return (rpc_int64_create(42));
 	    });
 
@@ -85,7 +100,7 @@ main(int argc, const char *argv[])
 	    });
 
         strcpy(strg, "abcdefghijklmnopqrstuvwxyz");
-        ret = rpc_context_register_block(ctx, NULL, "stream",
+        rpc_context_register_block(ctx, NULL, "stream",
             NULL, ^rpc_object_t (void *cookie, rpc_object_t args __unused) {
                 int cnt = 0;
                 gint i;
@@ -113,8 +128,20 @@ main(int argc, const char *argv[])
         });
 
 	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
+	if (srv == NULL) {
+		error = rpc_get_last_error();
+		fprintf(stderr, "Cannot create server: %s\n",
+			rpc_error_get_message(error));
+		return (1);
+	}
+
+	rpc_server_set_event_handler(srv, RPC_SERVER_HANDLER(server_event, NULL));
+
+	sleep(2);
+	printf("Resuming server now\n");
+
 	rpc_server_resume(srv);
-	sleep(30);
+	pause();
 	rpc_server_close(srv);
-	return(0);
+	return (0);
 }

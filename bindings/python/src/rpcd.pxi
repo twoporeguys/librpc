@@ -61,3 +61,7 @@ cdef class RPCD(object):
 
         if ret != 0:
             raise_internal_exc()
+
+    @staticmethod
+    def unregister():
+        pass

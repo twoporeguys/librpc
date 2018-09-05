@@ -57,7 +57,7 @@ struct u {
 } uris[] =
 	{{"tcp", "tcp://0.0.0.0:5500", "tcp://127.0.0.1:5500", true},
 	 {"tpp", "tpp://0.0.0.0:5500", "tcp://127.0.0.1:5500", false},
-	 {"tcp", "tcp://0.42.42.42:42", "tcp://127.0.0.1:5500", false},
+	 {"tcp", "tcp://23.42.42.42:42", "tcp://127.0.0.1:5500", false},
 	 {"unix", "unix://test.sock", "unix://test.sock", true},
 	 {"unix", "unix:/", "unix://test.sock", false},
 	 {"ws", "ws://0.0.0.0:6600/ws", "ws://127.0.0.1:6600/ws", true},
@@ -166,7 +166,7 @@ server_test_stream_setup(server_fixture *fix, gconstpointer u_data)
 			i = g_rand_int_range (fixture->rand, 0, 26);
 
 			res = rpc_object_pack("[s, i, i]", 
-			    fixture->str + i, 26-i, cnt);
+			    fixture->str + i, (int64_t)26-i, (int64_t)cnt);
 			if (rpc_function_yield(cookie, res) != 0) {
                         	rpc_function_end(cookie);
                         	return (rpc_null_create());
@@ -347,7 +347,7 @@ thread_test(int n, gpointer(*t_func)(gpointer), server_fixture *fx )
 	GThread *threads[THREADS];
 
 	for (int i = 0; i < n; i++)
-		threads[i] = g_thread_new ("test", t_func, uris[fx->iuri].cli);
+		threads[i] = g_thread_new("test", t_func, uris[fx->iuri].cli);
 
 	if (fx->resume)
 		rpc_server_resume(fx->srv);
@@ -355,7 +355,7 @@ thread_test(int n, gpointer(*t_func)(gpointer), server_fixture *fx )
 	for (int i = 0; i < n; i++) {
 		if (fx->iclose > 0 && i == fx->iclose)
 			rpc_server_close(fx->srv);
-		ret += (int)g_thread_join (threads[i]);
+		ret += (int)g_thread_join(threads[i]);
 	}
 
 	return (ret);

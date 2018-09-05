@@ -34,6 +34,7 @@ import functools
 import traceback
 import datetime
 import uuid
+cimport cython
 from cpython.ref cimport Py_INCREF, Py_DECREF
 from librpc cimport *
 from libc.string cimport strdup

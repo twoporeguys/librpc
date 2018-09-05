@@ -25,8 +25,6 @@
 #
 
 cdef class Client(Connection):
-
-
     def __init__(self):
         super(Client, self).__init__()
         self.uri = None
