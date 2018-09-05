@@ -45,6 +45,7 @@ build-cov:
 	    -DENABLE_LIBDISPATCH=OFF \
 	    -DBUILD_XPC=$(BUILD_XPC) \
 	    -DENABLE_COVERAGE=ON
+		-DBUILD_DOC=$(BUILD_DOC)
 	make -C build-cov
 
 bootstrap:

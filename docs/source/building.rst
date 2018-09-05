@@ -53,23 +53,29 @@ Following compile-time parameters can be passed to CMake:
 Debugging in Ubuntu VM
 ~~~~~~~~~~~~~~~~~~~~~~
 This will show how to setup up development environment within an Ubuntu VM that will allow you to properly debug \
-calls made from another project using librpc (we'll call it ``rpcd``). This hypothetical service is launched from \
-the command line and requires a configuration file path to passed in through an argument (``rpcd -c <path_to_conf>``).
+calls made from another project using librpc (we'll call this other project ``rpcserviced``). This hypothetical service is launched from \
+the command line and requires a configuration file path passed in an argument (e.g. ``rpcserviced -c <path_to_conf>``). First, a couple \
+of requirements. This is assuming you're running VSCode as your IDE within Ubuntu.
 
-- Need to have both source folders (``rpcd``,``librpc``) within the same VSCode Workspace
+- You need to have both source folders (``rpcserviced``, ``librpc``) within the same VSCode Workspace
 - Build/install librpc with ``-DBUILD_TYPE=Debug``
 - Create an ``gdbsudo`` alias so the debugger can call ``gdb`` with studio
 
+Create a file ``/usr/bin/gdbsudo`` on the Server that contains the following:
+
 ``/usr/bin/gdbsudo``
 ^^^^^^^^^^^^^^^^^^^^
+
 .. code-block:: bash
 
     #!/bin/sh
     sudo gdb $@
 
+The following is the ``tasks.json`` within VSCode. This will be used to launch ``rpcserviced``:
 
 ``tasks.json``
-^^^^^^^^^^
+^^^^^^^^^^^^^^
+
 .. code-block:: c
 
     {
@@ -82,8 +88,8 @@ the command line and requires a configuration file path to passed in through an 
                 "name": "(gdb) Launch",
                 "type": "cppdbg",
                 "request": "launch",
-                "program": "${workspaceFolder}/build/rpcd",
-                "args": ["-c", "../etc/rpcd.conf.dev"],
+                "program": "${workspaceFolder}/build/rpcserviced",
+                "args": ["-c", "../etc/rpcserviced.conf.dev"],
                 "stopAtEntry": false,
                 "cwd": "${workspaceFolder}/build",
                 "environment": [],
@@ -107,7 +113,7 @@ Remote debugging with VS Code
 These instructions were adapted from https://medium.com/@spe_/debugging-c-c-programs-remotely-using-visual-studio-code-and-gdbserver-559d3434fb78
 
 Here is the situation. I have a remote Ubuntu host that can run the ``rpcd`` tool and I'm testing connecting rpc services to this host over tcp on my mac. \
-I want to debug the ``rpcd`` service as these connections are happening and be able to edit and make changes to the rpcd code. Follow the instructions in the link.
+I want to debug the ``rpcd`` service as these connections are happening and be able to edit and make changes to the rpcd code. First, follow the instructions in the link.
 Once you have ``gdbserver`` and ``gdb`` running correctly on both machines and with the remote directory containing the ``librpc`` repo mounted (Let's say ``/home/rpc_user/Git/librpc``) to
 a local directory (``/Users/brett/Git/librpc_remote``). First create a script we'll use to launch ``rpcd`` by calling build with the appropriate flags. We'll also use this command to create an ssh tunnel to the gdbserver port.
 This should go in the remotes librpc root directory:
@@ -156,8 +162,8 @@ Now on your local machine, open the local folder in VS Code and create a new Deb
         ]
     }
 
-You'll need to set the arguments of ``"sourceFileMap"`` correctly to have the debugger be able to find the source files the mounted folder. Now we need to create \
-the ``prepare_remote_debug`` task that will launch our shell script we made above. Create a new VS Code task or create a ``tasks.json`` file in the the ``.vscode`` folder with the following:
+You'll need to set the arguments of ``"sourceFileMap"`` correctly to have the debugger be able to find the source files in the mounted folder. Now we need to create \
+the ``prepare_remote_debug`` task that will launch our shell script we made above. Create a new VS Code task or create a ``tasks.json`` file in the ``.vscode`` folder with the following:
 
 .. code-block:: c
 
@@ -195,5 +201,5 @@ the ``prepare_remote_debug`` task that will launch our shell script we made abov
         ]
     }
 
-We use some VS Code trickery here to enable this task to continue to run while still flagging the debug task that it is finished (look at the ``problemMatcher`` entry).
+We use some VS Code trickery here to allow this task to continue to run by flagging the debug task that it is "finished" (look at the ``problemMatcher`` entry).
 Now when you run this debug task it should auto-build and launch the ``rpcd`` service and attach the debugger properly. Have fun!
