@@ -11,7 +11,6 @@ pipeline {
         CXX = 'clang++'
         DEBIAN_FRONTEND = 'noninteractive'
         LANG = 'C'
-        http_proxy = "http://proxy.twoporeguys.com:3128"
         npm_config_cache = "${pwd()}/.npm"
     }
 
