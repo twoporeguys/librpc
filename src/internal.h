@@ -49,6 +49,9 @@
 #define __unused __attribute__((unused))
 #endif
 
+#define STRINGIFY(x)			#x
+#define TOSTRING(x)			STRINGIFY(x)
+
 #define	DECLARE_TRANSPORT(_transport)	DATA_SET(tp_set, _transport)
 #define	DECLARE_SERIALIZER(_serializer)	DATA_SET(sr_set, _serializer)
 #define	DECLARE_VALIDATOR(_validator)	DATA_SET(vr_set, _validator)

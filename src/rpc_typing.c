@@ -31,6 +31,8 @@
 #include <rpc/serializer.h>
 #include "internal.h"
 
+#define SYSTEM_IDL_PATH		TOSTRING(RPC_PREFIX) "/share/idl"
+
 static int rpct_read_meta(struct rpct_file *, rpc_object_t);
 static int rpct_lookup_type(const char *, const char **, rpc_object_t *,
     struct rpct_file **);
@@ -1633,7 +1635,7 @@ rpct_init(bool load_system_types)
 
 	/* Load system-wide types */
 	if (load_system_types)
-		return (rpct_load_types_dir("/usr/local/share/idl"));
+		return (rpct_load_types_dir(SYSTEM_IDL_PATH));
 
 	return (0);
 }
