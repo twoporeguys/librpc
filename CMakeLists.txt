@@ -28,6 +28,7 @@ option(ENABLE_UBSAN_NULLABILITY "Enable nullability sanitizer")
 option(ENABLE_ASAN "Enable address sanitizer")
 option(ENABLE_LIBDISPATCH "Enable libdispatch support")
 option(ENABLE_COVERAGE "Enable code coverage")
+option(ENABLE_RPATH "Enable @rpath on macOS" ON)
 
 if(LINUX)
     option(ENABLE_SYSTEMD "Enable systemd support" ON)
@@ -271,12 +272,15 @@ add_library(librpc SHARED
 
 set_target_properties(librpc PROPERTIES PREFIX "")
 set_target_properties(librpc PROPERTIES SOVERSION 1)
-set_target_properties(librpc PROPERTIES MACOSX_RPATH ON)
 target_link_libraries(librpc ${GLIB_LIBRARIES})
 target_link_libraries(librpc ${GIO_LIBRARIES})
 target_link_libraries(librpc ${SOUP_LIBRARIES})
 target_link_libraries(librpc ${YAJL_LIBRARIES})
 target_link_libraries(librpc ${YAML_LIBRARIES})
+
+if(ENABLE_RPATH)
+    set_target_properties(librpc PROPERTIES MACOSX_RPATH ON)
+endif()
 
 if(BUILD_LIBUSB)
     target_link_libraries(librpc ${LIBUSB_LIBRARIES})

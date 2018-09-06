@@ -10,6 +10,7 @@ RPC_DEBUG ?= OFF
 BUILD_TYPE ?= Release
 BUILD_XPC ?= OFF
 ENABLE_LIBDISPATCH ?= OFF
+ENABLE_RPATH ?= ON
 BUILD_DOC ?= OFF
 
 .PHONY: all clean bootstrap build build-cov install uninstall test
@@ -30,6 +31,7 @@ build:
 	    -DBUILD_CPLUSPLUS=$(BUILD_CPLUSPLUS) \
 	    -DBUILD_XPC=$(BUILD_XPC) \
 	    -DENABLE_LIBDISPATCH=$(ENABLE_LIBDISPATCH) \
+	    -DENABLE_RPATH=$(ENABLE_RPATH) \
 		-DBUILD_DOC=$(BUILD_DOC)
 	make -C build
 
