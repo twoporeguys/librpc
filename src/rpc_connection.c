@@ -112,6 +112,7 @@ static const struct message_handler handlers[] = {
 	{ }
 };
 
+
 static size_t
 rpc_serialize_fds(rpc_object_t obj, int *fds, size_t *nfds, size_t idx)
 {
@@ -368,11 +369,10 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 		res = rpc_context_dispatch(conn->rco_rpc_context, call);
 
         if (res != 0) {
-		if (call->rc_err != NULL) {
+		if (call->rc_err != NULL)
 			rpc_function_error(call,
 			    rpc_error_get_code(call->rc_err),
 			    rpc_error_get_message(call->rc_err));
-		}
 
                 rpc_connection_close_inbound_call(call);
         }
@@ -770,7 +770,8 @@ rpc_close(rpc_connection_t conn)
 	}
 
 	conn->rco_aborted = true;
-	conn->rco_closed = true;
+	if (conn->rco_server != NULL)
+		conn->rco_closed = true;
 	
         if (conn->rco_error_handler) {
                 if (conn->rco_error != NULL)
@@ -797,7 +798,7 @@ rpc_close(rpc_connection_t conn)
 		g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 
-		if (conn->rco_server != NULL) {
+		if (conn->rco_closed) {
 			g_mutex_unlock(&conn->rco_mtx);
 			rpc_connection_close(conn);
 		} else
@@ -1109,7 +1110,7 @@ rpc_connection_close_inbound_call(struct rpc_call *call)
         g_rw_lock_writer_unlock(&conn->rco_icall_rwlock);
         rpc_connection_release_call(call);
 
-        if (conn->rco_closed &&
+        if (conn->rco_aborted && conn->rco_closed &&
             (g_hash_table_size(conn->rco_inbound_calls) == 0) &&
 	    (g_hash_table_size(conn->rco_calls) == 0))
                 rpc_connection_close(conn);
@@ -1280,6 +1281,7 @@ rpc_connection_close(rpc_connection_t conn)
         g_mutex_lock(&conn->rco_mtx);
 
         if ((conn->rco_abort != NULL) && !conn->rco_aborted) {
+		conn->rco_closed = true;
 		abort_func = conn->rco_abort;
 		conn->rco_abort = NULL;
 		g_mutex_unlock(&conn->rco_mtx);
@@ -1300,9 +1302,13 @@ rpc_connection_close(rpc_connection_t conn)
 
 	if (conn->rco_client != NULL) {
 		/*
-		 * if server caused the abort queues might still have calls.
-		 * This function will be called again when they are empty
+		 * If the  server caused the abort queues might still have 
+		 * calls. This function will be called again when they are
+		 * empty. Regardless, don't drop the conn reference if the
+		 * client has not yet called this function.
 		 */
+		if (!conn->rco_closed)
+			goto done;
 		if (g_hash_table_size(conn->rco_calls) > 0 ||
 		    g_hash_table_size(conn->rco_inbound_calls) > 0)
 			goto done;
@@ -1341,25 +1347,29 @@ rpc_connection_is_open(rpc_connection_t conn)
 	return (!(conn->rco_closed || conn->rco_aborted));
 }
 
-void
+int
 rpc_connection_retain(rpc_connection_t conn)
 {
+	int ret;
 
 	if (conn == NULL)
-		return;
+		return (-1);
 
 	g_mutex_lock(&conn->rco_ref_mtx);
 	g_assert(conn->rco_refcnt > 0);
-	conn->rco_refcnt++;
+	ret = ++conn->rco_refcnt;
 	g_mutex_unlock(&conn->rco_ref_mtx);
+
+	return (ret);
 }
 
-void
+int
 rpc_connection_release(rpc_connection_t conn)
 {
+	int ret;
 
 	if (conn == NULL)
-		return;
+		return (-1);
 
 	g_mutex_lock(&conn->rco_ref_mtx);
 	g_assert(conn->rco_refcnt > 0);
@@ -1379,10 +1389,12 @@ rpc_connection_release(rpc_connection_t conn)
 		conn->rco_refcnt = -1;
 		g_mutex_unlock(&conn->rco_ref_mtx);
 		g_free(conn);
-		return;
+		return (0);
 	}
-	conn->rco_refcnt--;
+	ret = --conn->rco_refcnt;
 	g_mutex_unlock(&conn->rco_ref_mtx);
+
+	return (ret);
 }
 
 int
@@ -2111,10 +2123,9 @@ rpc_call_free(rpc_call_t call)
 	    (gpointer)rpc_string_get_string_ptr(call->rc_id));
 	g_rw_lock_writer_unlock(&conn->rco_call_rwlock);
 
-        if (conn->rco_closed &&
+        if (conn->rco_aborted && conn->rco_closed &&
             (g_hash_table_size(conn->rco_calls) == 0) &&
 	    (g_hash_table_size(conn->rco_inbound_calls) == 0)) {
-		g_assert(conn->rco_aborted);
 		g_mutex_unlock(&conn->rco_mtx);
                 rpc_connection_close(conn);
 	} else
