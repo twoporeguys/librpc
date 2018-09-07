@@ -172,10 +172,15 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 	}
 
 	remote = g_socket_connection_get_remote_address(gconn, NULL);
-	if (remote != NULL && G_IS_INET_SOCKET_ADDRESS(remote)) {
-		remote_addr = g_inet_address_to_string(
-		    g_inet_socket_address_get_address(
-		        G_INET_SOCKET_ADDRESS(remote)));
+	if (remote != NULL) {
+		if (G_IS_INET_SOCKET_ADDRESS(remote)) {
+			remote_addr = g_inet_address_to_string(
+			    g_inet_socket_address_get_address(
+			        G_INET_SOCKET_ADDRESS(remote)));
+		}
+
+		if (G_IS_UNIX_SOCKET_ADDRESS(remote))
+			remote_addr = g_strdup("unix");
 	}
 
 	conn = g_malloc0(sizeof(*conn));
