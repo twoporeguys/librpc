@@ -1275,6 +1275,11 @@ rpct_read_idl(const char *name, rpc_object_t idl)
 		return (-1);
 	}
 
+	if (g_hash_table_contains(context->files, name)) {
+		debugf("file %s already loaded", name);
+		return (0);
+	}
+
 	g_hash_table_insert(context->files, g_strdup(name), file);
 	return (0);
 }
