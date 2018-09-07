@@ -153,8 +153,10 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 {
 	struct socket_server *server = data;
 	struct socket_connection *conn = NULL;
+	char *remote_addr = NULL;
 	GError *err = NULL;
 	GSocketConnection *gconn;
+	GSocketAddress *remote;
 	rpc_connection_t rco = NULL;
 	rpc_server_t srv = server->ss_server;
 
@@ -167,6 +169,13 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 			goto done;
 
 		return;
+	}
+
+	remote = g_socket_connection_get_remote_address(gconn, NULL);
+	if (remote != NULL && G_IS_INET_SOCKET_ADDRESS(remote)) {
+		remote_addr = g_inet_address_to_string(
+		    g_inet_socket_address_get_address(
+		        G_INET_SOCKET_ADDRESS(remote)));
 	}
 
 	conn = g_malloc0(sizeof(*conn));
@@ -183,6 +192,7 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 	conn->sc_parent = rco;
 	rco->rco_release = socket_release;
 	rco->rco_abort = socket_abort;
+	rco->rco_endpoint_address = remote_addr;
 
 	if (srv->rs_accept(srv, rco) == 0) {
 		conn->sc_cancellable = g_cancellable_new ();

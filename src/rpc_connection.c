@@ -1264,6 +1264,7 @@ rpc_connection_free_resources(rpc_connection_t conn)
 	}
 
 	rpc_release(conn->rco_error);
+	g_free(conn->rco_endpoint_address);
 	g_rw_lock_clear(&conn->rco_call_rwlock);
 	g_rw_lock_clear(&conn->rco_icall_rwlock);
 }

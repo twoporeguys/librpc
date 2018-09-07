@@ -648,7 +648,6 @@ usb_send_msg_impl(void *arg)
 
 		default:
 			g_assert_not_reached();
-			break;
 		}
 	}
 
