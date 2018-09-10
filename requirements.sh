@@ -2,20 +2,19 @@
 
 case "`uname -s`" in
     Darwin*)
-    if [ -x /usr/local/bin/brew ]; then
+    if [ -x /opt/local/bin/port ]; then
+        echo "I am a Mac.  Using macports to install stuff with sudo"
+        sudo port install glib2 glib-networking libsoup yajl libusb libyaml yajl python36 py36-pip cmake lcov pkgconfig py36-gobject3 doxygen py36-cython
+    elif [ -x /usr/local/bin/brew ]; then
         echo "I am a Mac.  Brew installing stuff."
         echo "Don't worry about warnings of things already installed."
         brew install glib libsoup yajl libusb libyaml yajl python3 cmake pkg-config gtk+3
-    elif [ -x /opt/local/bin/port ]; then
-        echo "I am a Mac.  Using macports to install stuff with sudo"
-        sudo port install glib2 glib-networking libsoup yajl libusb libyaml yajl python36 py36-pip cmake lcov pkgconfig py36-gobject3 doxygen
-        sudo port select --set pip pip36
-        sudo ln -fs /opt/local/bin/pip-3.6 /opt/local/bin/pip3
+        # pip3 is install by default with homebrew's python formula
+        pip3 install cython
     else
         echo "I am a Mac but you have neither macports or brew installed."
         exit 1
     fi
-    sudo pip3 install cython
     ;;
     Linux*)
         echo "I am some kind of Linux, hopefully Ubuntu."
