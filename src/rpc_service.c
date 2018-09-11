@@ -45,6 +45,7 @@ static rpc_object_t rpc_interface_exists(void *, rpc_object_t);
 static rpc_object_t rpc_observable_property_get(void *, rpc_object_t);
 static rpc_object_t rpc_observable_property_get_all(void *, rpc_object_t);
 static rpc_object_t rpc_observable_property_set(void *, rpc_object_t);
+void rpc_interface_free(struct rpc_interface_priv *);
 
 static const struct rpc_if_member rpc_discoverable_vtable[] = {
 	RPC_EVENT(instance_added),
@@ -641,7 +642,8 @@ rpc_instance_new(void *arg, const char *fmt, ...)
 	g_mutex_init(&result->ri_mtx);
 	g_rw_lock_init(&result->ri_rwlock);
 	result->ri_path = path;
-	result->ri_interfaces = g_hash_table_new(g_str_hash, g_str_equal);
+	result->ri_interfaces = g_hash_table_new_full(g_str_hash, g_str_equal,
+	    g_free, (GDestroyNotify)rpc_interface_free);
 	result->ri_arg = arg;
 
 	rpc_instance_register_interface(result, RPC_DISCOVERABLE_INTERFACE,
@@ -693,6 +695,7 @@ rpc_instance_get_path(rpc_instance_t instance)
 void
 rpc_instance_free(rpc_instance_t instance)
 {
+
 	g_assert_nonnull(instance);
 
 	g_free(instance->ri_path);
@@ -750,7 +753,8 @@ rpc_instance_register_interface(rpc_instance_t instance,
 
 	priv = g_malloc0(sizeof(*priv));
 	g_mutex_init(&priv->rip_mtx);
-	priv->rip_members = g_hash_table_new(g_str_hash, g_str_equal);
+	priv->rip_members = g_hash_table_new_full(g_str_hash, g_str_equal,
+	    g_free, g_free);
 	priv->rip_arg = arg;
 	priv->rip_name = g_strdup(interface);
 
@@ -780,6 +784,16 @@ rpc_instance_unregister_interface(rpc_instance_t instance,
 
 	rpc_instance_emit_event(instance, RPC_INTROSPECTABLE_INTERFACE,
 	    "interface_removed", rpc_string_create(interface));
+}
+
+void
+rpc_interface_free(struct rpc_interface_priv *priv)
+{
+
+	g_hash_table_destroy(priv->rip_members);
+	g_mutex_clear(&priv->rip_mtx);
+	g_free(priv->rip_description);
+	g_free(priv);
 }
 
 int rpc_instance_register_member(rpc_instance_t instance, const char *interface,

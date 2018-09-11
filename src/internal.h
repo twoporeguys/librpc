@@ -347,7 +347,7 @@ struct rpc_instance
 
 struct rpc_interface_priv
 {
-	char *			rip_name;
+	const char *		rip_name;
 	char *			rip_description;
 	void *			rip_arg;
 	GHashTable *		rip_members;
