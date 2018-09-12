@@ -80,35 +80,39 @@ main(int argc, const char *argv[])
                 rpc_call_wait(call);
 
                 switch (rpc_call_status(call)) {
-                        case RPC_CALL_MORE_AVAILABLE:
-				result = rpc_call_result(call);
-                                rpc_object_unpack(result, "[s, i, i]",
-				    &buf, &len, &num);
+		case RPC_CALL_STREAM_START:
+			rpc_call_continue(call, false);
+			break;
 
-                                cnt++;
-				fprintf(stderr,
-				    "frag = %s, len = %" PRId64 ", num = %" PRId64 ","
-				    "cnt = %d\n", buf, len, num, cnt);
+		case RPC_CALL_MORE_AVAILABLE:
+			result = rpc_call_result(call);
+			rpc_object_unpack(result, "[s, i, i]",
+			    &buf, &len, &num);
 
-				g_assert(len == (int)strlen(buf));
-                                rpc_call_continue(call, false);
-                                break;
+			cnt++;
+			fprintf(stderr,
+			    "frag = %s, len = %" PRId64 ", num = %" PRId64 ","
+			    "cnt = %d\n", buf, len, num, cnt);
 
-                        case RPC_CALL_DONE:
-                        case RPC_CALL_ENDED:
-				fprintf(stderr, "ENDED at %d\n", cnt);
-                                goto done;
+			g_assert(len == (int)strlen(buf));
+			rpc_call_continue(call, false);
+			break;
 
-                        case RPC_CALL_ERROR:
-				fprintf(stderr, "ERRORED out\n");
-                                goto done;
+		case RPC_CALL_DONE:
+		case RPC_CALL_ENDED:
+			fprintf(stderr, "ENDED at %d\n", cnt);
+			goto done;
 
-			case RPC_CALL_ABORTED:
-				fprintf(stderr, "ABORTED at %d\n", cnt);
-				goto done;
+		case RPC_CALL_ERROR:
+			fprintf(stderr, "ERRORED out\n");
+			goto done;
 
-                        default:
-				break;
+		case RPC_CALL_ABORTED:
+			fprintf(stderr, "ABORTED at %d\n", cnt);
+			goto done;
+
+		default:
+			break;
                 }
         }
 

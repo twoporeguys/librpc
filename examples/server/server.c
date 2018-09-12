@@ -106,6 +106,7 @@ main(int argc, const char *argv[])
                 gint i;
                 rpc_object_t res;
 
+                rpc_function_start_stream(cookie);
                 while (cnt < setcnt) {
                         cnt++;
 

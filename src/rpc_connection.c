@@ -54,6 +54,7 @@ static struct rpc_call *rpc_call_alloc(rpc_connection_t, rpc_object_t,
 static int rpc_send_frame(rpc_connection_t, rpc_object_t);
 static void on_rpc_call(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_rpc_response(rpc_connection_t, rpc_object_t, rpc_object_t);
+static void on_rpc_start_stream(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_rpc_fragment(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_rpc_continue(rpc_connection_t, rpc_object_t, rpc_object_t);
 static void on_rpc_end(rpc_connection_t, rpc_object_t, rpc_object_t);
@@ -100,6 +101,7 @@ struct work_item
 static const struct message_handler handlers[] = {
 	{ "rpc", "call", on_rpc_call },
 	{ "rpc", "response", on_rpc_response },
+	{ "rpc", "start_stream", on_rpc_start_stream },
 	{ "rpc", "fragment", on_rpc_fragment },
 	{ "rpc", "continue", on_rpc_continue },
 	{ "rpc", "end", on_rpc_end },
@@ -229,6 +231,7 @@ rpc_callback_worker(void *arg, void *data)
 	const char *name;
 	rpc_call_t call;
 	rpc_connection_t conn = data;
+	rpc_call_status_t call_status;
 	bool ret;
 
 	if (item->call) {
@@ -239,7 +242,9 @@ rpc_callback_worker(void *arg, void *data)
 
 		ret = call->rc_callback(call);
 
-		if (rpc_call_status(call) == RPC_CALL_MORE_AVAILABLE) {
+		call_status = rpc_call_status(call);
+		if (call_status == RPC_CALL_MORE_AVAILABLE ||
+		    call_status == RPC_CALL_STREAM_START) {
 			if (ret)
 				rpc_call_continue(call, false);
 			else
@@ -414,6 +419,48 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	q_item = g_malloc(sizeof(*q_item));
 	q_item->status = RPC_CALL_DONE;
 	q_item->item = rpc_retain(args);
+
+	g_queue_push_tail(call->rc_queue, q_item);
+	notify_signal(&call->rc_notify);
+	g_mutex_unlock(&call->rc_mtx);
+}
+
+static void
+on_rpc_start_stream(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
+{
+	struct queue_item *q_item;
+	struct work_item *item;
+	rpc_call_t call;
+	int64_t seqno;
+
+	g_rw_lock_reader_lock(&conn->rco_call_rwlock);
+	call = g_hash_table_lookup(conn->rco_calls,
+	    rpc_string_get_string_ptr(id));
+	if (call == NULL) {
+		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
+		return;
+	}
+	g_mutex_lock(&call->rc_mtx);
+	if (cancel_timeout_locked(call) != 0) {
+		g_mutex_unlock(&call->rc_mtx);
+		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
+		return;
+	}
+
+	g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
+
+	seqno = rpc_dictionary_get_int64(args, "seqno");
+
+	if (call->rc_callback) {
+		item = g_malloc0(sizeof(*item));
+		item->call = call;
+		if (!rpc_run_callback(conn, item))
+			g_free(item);
+	}
+
+	q_item = g_malloc(sizeof(*q_item));
+	q_item->status = RPC_CALL_STREAM_START;
+	q_item->item = rpc_null_create();
 
 	g_queue_push_tail(call->rc_queue, q_item);
 	notify_signal(&call->rc_notify);
@@ -1047,6 +1094,19 @@ rpc_connection_send_response(rpc_connection_t conn, rpc_object_t id,
 }
 
 void
+rpc_connection_send_start_stream(rpc_connection_t conn, rpc_object_t id,
+    int64_t seqno)
+{
+	rpc_object_t frame;
+	rpc_object_t args;
+
+	args = rpc_dictionary_create();
+	rpc_dictionary_set_int64(args, "seqno", seqno);
+	frame = rpc_pack_frame("rpc", "start_stream", id, args);
+	rpc_send_frame(conn, frame);
+}
+
+void
 rpc_connection_send_fragment(rpc_connection_t conn, rpc_object_t id,
     int64_t seqno, rpc_object_t fragment)
 {
@@ -1135,6 +1195,7 @@ rpc_connection_set_default_fn_handlers(rpc_connection_t conn)
 	conn->rco_fn_cbs.rcf_fn_respond = rpc_function_respond_impl;
 	conn->rco_fn_cbs.rcf_fn_error = rpc_function_error_impl;
 	conn->rco_fn_cbs.rcf_fn_error_ex = rpc_function_error_ex_impl;
+	conn->rco_fn_cbs.rcf_fn_start_stream = rpc_function_start_stream_impl;
 	conn->rco_fn_cbs.rcf_fn_yield = rpc_function_yield_impl;
 	conn->rco_fn_cbs.rcf_fn_end = rpc_function_end_impl;
 	conn->rco_fn_cbs.rcf_fn_kill = rpc_function_kill_impl;
@@ -1936,7 +1997,8 @@ rpc_call_continue(rpc_call_t call, bool sync)
 	status = rpc_call_status_locked(call);
 
 	if (status != RPC_CALL_IN_PROGRESS &&
-	    status != RPC_CALL_MORE_AVAILABLE) {
+	    status != RPC_CALL_MORE_AVAILABLE &&
+	    status != RPC_CALL_STREAM_START) {
 		rpc_set_last_errorf(ENXIO, "Not an open streaming call");
 		g_mutex_unlock(&call->rc_mtx);
 		return (-1);
@@ -1992,7 +2054,8 @@ rpc_call_abort(rpc_call_t call)
 	status = rpc_call_status_locked(call);
 
 	if (status != RPC_CALL_IN_PROGRESS &&
-	    status != RPC_CALL_MORE_AVAILABLE) {
+	    status != RPC_CALL_MORE_AVAILABLE &&
+	    status != RPC_CALL_STREAM_START) {
 		errno = EINVAL;
 		g_mutex_unlock(&call->rc_mtx);
 		return (-1);

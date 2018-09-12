@@ -477,6 +477,51 @@ rpc_function_error_ex_impl(void *cookie, rpc_object_t exception)
 }
 
 int
+rpc_function_start_stream(void *cookie)
+{
+	struct rpc_call *call = cookie;
+
+	return (call->rc_conn->rco_fn_cbs.rcf_fn_start_stream(cookie));
+}
+
+int
+rpc_function_start_stream_impl(void *cookie)
+{
+	struct rpc_call *call = cookie;
+	struct rpc_context *context = call->rc_context;
+
+	g_mutex_lock(&call->rc_mtx);
+
+	while (call->rc_producer_seqno == call->rc_consumer_seqno &&
+	       !call->rc_aborted) {
+		g_mutex_unlock(&call->rc_mtx);
+		notify_wait(&call->rc_notify);
+		g_mutex_lock(&call->rc_mtx);
+	}
+
+	if (call->rc_aborted) {
+		if (!call->rc_ended) {
+			rpc_function_error(call, ECONNRESET, "Call aborted");
+			call->rc_ended = true;
+		}
+
+		g_mutex_unlock(&call->rc_mtx);
+		return (-1);
+	}
+
+	if (context->rcx_pre_call_hook != NULL) {
+
+	}
+	rpc_connection_send_start_stream(call->rc_conn, call->rc_id,
+	    call->rc_producer_seqno);
+
+	call->rc_producer_seqno++;
+	call->rc_streaming = true;
+	g_mutex_unlock(&call->rc_mtx);
+	return (0);
+}
+
+int
 rpc_function_yield(void *cookie, rpc_object_t fragment)
 {
 	struct rpc_call *call = cookie;
@@ -501,8 +546,7 @@ rpc_function_yield_impl(void *cookie, rpc_object_t fragment)
 
 	if (call->rc_aborted) {
 		if (!call->rc_ended) {
-			rpc_function_error(call, ECONNRESET,
-			    "Call aborted");
+			rpc_function_error(call, ECONNRESET, "Call aborted");
 			call->rc_ended = true;
 		}
 

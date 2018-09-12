@@ -111,6 +111,7 @@ typedef rpc_object_t (*rpct_serialize_fn_t)(rpc_object_t);
 typedef void (*rpc_fn_respond_fn_t)(void *, rpc_object_t);
 typedef void (*rpc_fn_error_fn_t)(void *, int , const char *, va_list ap);
 typedef void (*rpc_fn_error_ex_fn_t)(void *, rpc_object_t);
+typedef int (*rpc_fn_start_strm_fn_t)(void *);
 typedef int (*rpc_fn_yield_fn_t)(void *, rpc_object_t);
 typedef void (*rpc_fn_end_fn_t)(void *);
 typedef void (*rpc_fn_kill_fn_t)(void *);
@@ -235,6 +236,7 @@ struct rpc_fn_callbacks
 	rpc_fn_respond_fn_t	rcf_fn_respond;
 	rpc_fn_error_fn_t	rcf_fn_error;
 	rpc_fn_error_ex_fn_t	rcf_fn_error_ex;
+	rpc_fn_start_strm_fn_t	rcf_fn_start_stream;
 	rpc_fn_yield_fn_t	rcf_fn_yield;
 	rpc_fn_end_fn_t		rcf_fn_end;
 	rpc_fn_kill_fn_t	rcf_fn_kill;
@@ -569,6 +571,7 @@ void rpc_connection_send_err(rpc_connection_t, rpc_object_t, int,
     const char *descr, ...);
 void rpc_connection_send_errx(rpc_connection_t, rpc_object_t, rpc_object_t);
 void rpc_connection_send_response(rpc_connection_t, rpc_object_t, rpc_object_t);
+void rpc_connection_send_start_stream(rpc_connection_t, rpc_object_t, int64_t);
 void rpc_connection_send_fragment(rpc_connection_t, rpc_object_t, int64_t,
     rpc_object_t);
 void rpc_connection_send_end(rpc_connection_t, rpc_object_t, int64_t);
@@ -593,6 +596,7 @@ void rpc_function_respond_impl(void *cookie, rpc_object_t object);
 void rpc_function_error_impl(void *cookie, int code, const char *message,
     va_list ap);
 void rpc_function_error_ex_impl(void *cookie, rpc_object_t exception);
+int rpc_function_start_stream_impl(void *cookie);
 int rpc_function_yield_impl(void *cookie, rpc_object_t fragment);
 void rpc_function_end_impl(void *cookie);
 void rpc_function_kill_impl(void *cookie);

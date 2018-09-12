@@ -298,6 +298,7 @@ thread_mestream_func (gpointer data)
 		gint i;
 		rpc_object_t res;
 
+		rpc_function_start_stream(cookie);
 		while (cnt < n) {
 			cnt++;
 			i = g_rand_int_range (rand, 0, 26);
@@ -420,29 +421,33 @@ do_stream_work(struct work_item *item)
 		rpc_call_wait(call);
 
 		switch (rpc_call_status(call)) {
-			case RPC_CALL_MORE_AVAILABLE:
-				result = rpc_call_result(call);
-				i = rpc_object_unpack(result,
-				    "[s, i, i]", &str, &len, &num);
-				cnt++;
-				g_assert(i == 3);
-				g_assert(len == (int)strlen(str));
-				rpc_call_continue(call, false);
-				break;
+		case RPC_CALL_STREAM_START:
+			rpc_call_continue(call, false);
+			break;
 
-			case RPC_CALL_DONE:
-			case RPC_CALL_ENDED:
-				goto done;
+		case RPC_CALL_MORE_AVAILABLE:
+			result = rpc_call_result(call);
+			i = rpc_object_unpack(result,
+			    "[s, i, i]", &str, &len, &num);
+			cnt++;
+			g_assert(i == 3);
+			g_assert(len == (int)strlen(str));
+			rpc_call_continue(call, false);
+			break;
 
-			case RPC_CALL_ERROR:
-				debugf("Client call error: %s %d",
-				    rpc_error_get_message(rpc_call_result(call)),
-				    rpc_error_get_code(rpc_call_result(call)));
-				failed = true;
-				goto done;
+		case RPC_CALL_DONE:
+		case RPC_CALL_ENDED:
+			goto done;
 
-			default:
-				g_assert_not_reached();
+		case RPC_CALL_ERROR:
+			debugf("Client call error: %s %d",
+			    rpc_error_get_message(rpc_call_result(call)),
+			    rpc_error_get_code(rpc_call_result(call)));
+			failed = true;
+			goto done;
+
+		default:
+			g_assert_not_reached();
                 }
         }
 done:

@@ -288,6 +288,8 @@
 {
     RPCObject *__autoreleasing tmp;
     rpc_call_continue(call, true);
+    if (rpc_call_status(call) == RPC_CALL_STREAM_START)
+        rpc_call_continue(call, true);
 
     state->state = 1;
     state->mutationsPtr = (unsigned long *)call;
@@ -305,6 +307,7 @@
         case RPC_CALL_IN_PROGRESS:
             break;
 
+        case RPC_CALL_STREAM_START:
         case RPC_CALL_ENDED:
         case RPC_CALL_DONE:
         case RPC_CALL_ABORTED:
@@ -432,6 +435,7 @@
 
             return nil;
 
+        case RPC_CALL_STREAM_START:
         case RPC_CALL_MORE_AVAILABLE:
         case RPC_CALL_ENDED:
             if (error != nil) {

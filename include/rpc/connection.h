@@ -71,6 +71,7 @@ typedef enum rpc_error_code
 typedef enum rpc_call_status
 {
 	RPC_CALL_IN_PROGRESS,		/**< Call in progress */
+	RPC_CALL_STREAM_START,		/**< Streaming response, stream starts */
 	RPC_CALL_MORE_AVAILABLE,	/**< Streaming response, more data available */
 	RPC_CALL_DONE,			/**< Call finished, response received */
 	RPC_CALL_ERROR,			/**< Call finished, error received */
