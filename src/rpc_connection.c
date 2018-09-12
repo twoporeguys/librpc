@@ -618,6 +618,23 @@ on_rpc_error(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	    rpc_string_get_string_ptr(id));
 	if (call == NULL) {
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
+
+		// Support for older clients that do not support stream_start message
+		if (rpc_error_get_code(args) == ENXIO) {
+			g_rw_lock_reader_lock(&conn->rco_icall_rwlock);
+			call = g_hash_table_lookup(conn->rco_inbound_calls,
+			    rpc_string_get_string_ptr(id));
+			if (call != NULL) {
+				g_mutex_lock(&call->rc_mtx);
+				g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
+				call->rc_consumer_seqno++;
+				notify_signal(&call->rc_notify);
+				g_mutex_unlock(&call->rc_mtx);
+				return;
+			}
+			g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
+		}
+
 		if (conn->rco_error_handler != NULL)
 			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, id);
 		return;
