@@ -25,6 +25,13 @@
  *
  */
 
+/**
+ * @example client.c
+ *
+ * This is a basic client API example, demonstrating how to handle streaming
+ * and non-streaming calls.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>

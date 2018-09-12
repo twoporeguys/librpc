@@ -25,6 +25,12 @@
  *
  */
 
+/**
+* @example fd-transport.c
+*
+* An example that shows how to use file descriptor (fd) transport.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>

@@ -25,6 +25,13 @@
  *
  */
 
+/**
+* @example shm-client.c
+*
+* An example that shows how to set up a client to receive shared memory
+* segments from the server. Works only on Linux.
+*/
+
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>

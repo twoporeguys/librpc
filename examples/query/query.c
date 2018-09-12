@@ -25,6 +25,12 @@
  *
  */
 
+/**
+* @example query.c
+*
+* An example that shows how to use rpc_query API.
+*/
+
 #include <stdio.h>
 #include <rpc/query.h>
 #include <rpc/object.h>

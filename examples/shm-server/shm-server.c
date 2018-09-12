@@ -25,6 +25,13 @@
  *
  */
 
+/**
+* @example shm-server.c
+*
+* An example that shows how to set up a server to send shared memory
+* segments to clients. Works only on Linux
+*/
+
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>

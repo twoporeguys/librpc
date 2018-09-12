@@ -25,6 +25,12 @@
  *
  */
 
+/**
+* @example loopback.c
+*
+* An example that shows how to use a loopback transport.
+*/
+
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>

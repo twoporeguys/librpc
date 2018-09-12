@@ -25,6 +25,13 @@
  *
  */
 
+/**
+* @example pack-unpack.c
+*
+* An example that shows how to use @ref rpc_object_pack and
+* @ref rpc_object_unpack APIs.
+*/
+
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>

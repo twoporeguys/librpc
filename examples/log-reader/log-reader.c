@@ -25,6 +25,12 @@
  *
  */
 
+/**
+ * @example log-reader.c
+ *
+ * An example that shows how to read logs from a librpc-capable USB device.
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>

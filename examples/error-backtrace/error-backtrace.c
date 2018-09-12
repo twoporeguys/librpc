@@ -25,6 +25,12 @@
  *
  */
 
+/**
+ * @example error-backtrace.c
+ *
+ * This is an example showing librpc stack trace generation capability.
+ */
+
 #include <stdio.h>
 #include <errno.h>
 #include <rpc/object.h>
