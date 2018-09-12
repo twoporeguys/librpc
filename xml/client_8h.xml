@@ -5,146 +5,76 @@
     <includes local="no">stdbool.h</includes>
     <includes refid="connection_8h" local="no">rpc/connection.h</includes>
     <includedby refid="rpc_8h" local="no">/code/include/rpc/rpc.h</includedby>
-    <includedby refid="bus_8c" local="no">/code/examples/bus/bus.c</includedby>
-    <includedby refid="client_8c" local="no">/code/examples/client/client.c</includedby>
-    <includedby refid="event_8c" local="no">/code/examples/event/event.c</includedby>
-    <includedby refid="fd-client_8c" local="no">/code/examples/fd-client/fd-client.c</includedby>
-    <includedby refid="fd-transport_8c" local="no">/code/examples/fd-transport/fd-transport.c</includedby>
-    <includedby refid="libdispatch_8c" local="no">/code/examples/libdispatch/libdispatch.c</includedby>
-    <includedby refid="log-reader_8c" local="no">/code/examples/log-reader/log-reader.c</includedby>
-    <includedby refid="loopback_8c" local="no">/code/examples/loopback/loopback.c</includedby>
-    <includedby refid="pack-unpack_8c" local="no">/code/examples/pack-unpack/pack-unpack.c</includedby>
-    <includedby refid="shm-client_8c" local="no">/code/examples/shm-client/shm-client.c</includedby>
     <incdepgraph>
-      <node id="294">
+      <node id="5">
         <label>stdbool.h</label>
       </node>
-      <node id="301">
+      <node id="12">
         <label>stdarg.h</label>
       </node>
-      <node id="293">
+      <node id="4">
         <label>/code/include/rpc/client.h</label>
         <link refid="client_8h"/>
-        <childnode refid="294" relation="include">
+        <childnode refid="5" relation="include">
         </childnode>
-        <childnode refid="295" relation="include">
+        <childnode refid="6" relation="include">
         </childnode>
       </node>
-      <node id="300">
+      <node id="11">
         <label>stdint.h</label>
       </node>
-      <node id="298">
+      <node id="9">
         <label>rpc/config.h</label>
       </node>
-      <node id="295">
+      <node id="6">
         <label>rpc/connection.h</label>
         <link refid="connection_8h"/>
-        <childnode refid="296" relation="include">
+        <childnode refid="7" relation="include">
         </childnode>
-        <childnode refid="297" relation="include">
+        <childnode refid="8" relation="include">
         </childnode>
-        <childnode refid="298" relation="include">
+        <childnode refid="9" relation="include">
         </childnode>
-        <childnode refid="299" relation="include">
+        <childnode refid="10" relation="include">
         </childnode>
       </node>
-      <node id="303">
+      <node id="14">
         <label>sys/types.h</label>
       </node>
-      <node id="299">
+      <node id="10">
         <label>rpc/object.h</label>
         <link refid="object_8h"/>
-        <childnode refid="300" relation="include">
+        <childnode refid="11" relation="include">
         </childnode>
-        <childnode refid="294" relation="include">
+        <childnode refid="5" relation="include">
         </childnode>
-        <childnode refid="301" relation="include">
+        <childnode refid="12" relation="include">
         </childnode>
-        <childnode refid="302" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
-        <childnode refid="303" relation="include">
+        <childnode refid="14" relation="include">
         </childnode>
       </node>
-      <node id="302">
+      <node id="13">
         <label>sys/uio.h</label>
       </node>
-      <node id="296">
+      <node id="7">
         <label>Block.h</label>
       </node>
-      <node id="297">
+      <node id="8">
         <label>sys/time.h</label>
       </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="310">
-        <label>/code/examples/fd-transport/fd-transport.c</label>
-        <link refid="fd-transport_8c_source"/>
-      </node>
-      <node id="306">
-        <label>/code/examples/bus/bus.c</label>
-        <link refid="bus_8c_source"/>
-      </node>
-      <node id="312">
-        <label>/code/examples/log-reader/log-reader.c</label>
-        <link refid="log-reader_8c_source"/>
-      </node>
-      <node id="304">
+      <node id="15">
         <label>/code/include/rpc/client.h</label>
         <link refid="client_8h"/>
-        <childnode refid="305" relation="include">
-        </childnode>
-        <childnode refid="306" relation="include">
-        </childnode>
-        <childnode refid="307" relation="include">
-        </childnode>
-        <childnode refid="308" relation="include">
-        </childnode>
-        <childnode refid="309" relation="include">
-        </childnode>
-        <childnode refid="310" relation="include">
-        </childnode>
-        <childnode refid="311" relation="include">
-        </childnode>
-        <childnode refid="312" relation="include">
-        </childnode>
-        <childnode refid="313" relation="include">
-        </childnode>
-        <childnode refid="314" relation="include">
-        </childnode>
-        <childnode refid="315" relation="include">
+        <childnode refid="16" relation="include">
         </childnode>
       </node>
-      <node id="314">
-        <label>/code/examples/pack-unpack/pack-unpack.c</label>
-        <link refid="pack-unpack_8c_source"/>
-      </node>
-      <node id="305">
+      <node id="16">
         <label>/code/include/rpc/rpc.h</label>
         <link refid="rpc_8h_source"/>
-      </node>
-      <node id="308">
-        <label>/code/examples/event/event.c</label>
-        <link refid="event_8c_source"/>
-      </node>
-      <node id="315">
-        <label>/code/examples/shm-client/shm-client.c</label>
-        <link refid="shm-client_8c_source"/>
-      </node>
-      <node id="309">
-        <label>/code/examples/fd-client/fd-client.c</label>
-        <link refid="fd-client_8c_source"/>
-      </node>
-      <node id="307">
-        <label>/code/examples/client/client.c</label>
-        <link refid="client_8c_source"/>
-      </node>
-      <node id="313">
-        <label>/code/examples/loopback/loopback.c</label>
-        <link refid="loopback_8c_source"/>
-      </node>
-      <node id="311">
-        <label>/code/examples/libdispatch/libdispatch.c</label>
-        <link refid="libdispatch_8c_source"/>
       </node>
     </invincdepgraph>
       <sectiondef kind="typedef">

@@ -15,7 +15,7 @@ This graph shows which files directly or indirectly include this file\+:
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{service_8h__dep__incl}
+\includegraphics[width=274pt]{service_8h__dep__incl}
 \end{center}
 \end{figure}
 \subsection*{Classes}
@@ -150,6 +150,8 @@ void \hyperlink{service_8h_a8199576424cc9470380ab43248129911}{rpc\+\_\+function\
 \item 
 void \hyperlink{service_8h_a89abe6ee2bcc59409eaccf1955ada0ad}{rpc\+\_\+function\+\_\+error\+\_\+ex} (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} exception)
 \item 
+int \hyperlink{service_8h_ac8e084a977c2598fa35284be241d4d44}{rpc\+\_\+function\+\_\+start\+\_\+stream} (void $\ast$\+\_\+\+Nonnull cookie)
+\item 
 int \hyperlink{service_8h_ac8c50ecedc9e59086e1ab63e1dd6c425}{rpc\+\_\+function\+\_\+yield} (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} fragment)
 \item 
 void \hyperlink{service_8h_a5f0f3252a2c4e12050419519afe64e92}{rpc\+\_\+function\+\_\+end} (void $\ast$\+\_\+\+Nonnull cookie)
@@ -253,10 +255,7 @@ Definition at line 133 of file service.\+h.
         return ((\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t})\_fn(\_cookie, \_args));     \(\backslash\)
     \}
 \end{DoxyCode}
-A macro to convert function pointer into \hyperlink{service_8h_ae49a22468cfcd4adfa558078e9e4e312}{rpc\+\_\+function\+\_\+t} block. \begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{validation_8c-example}{validation.\+c}.\end{Desc}
-
+A macro to convert function pointer into \hyperlink{service_8h_ae49a22468cfcd4adfa558078e9e4e312}{rpc\+\_\+function\+\_\+t} block. 
 
 Definition at line 113 of file service.\+h.
 
@@ -287,10 +286,7 @@ Definition at line 55 of file service.\+h.
                 \}                           \(\backslash\)
     \}
 \end{DoxyCode}
-A convenience macro to declare R\+PC method in the vtable array. \begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{validation_8c-example}{validation.\+c}.\end{Desc}
-
+A convenience macro to declare R\+PC method in the vtable array. 
 
 Definition at line 184 of file service.\+h.
 
@@ -546,9 +542,6 @@ Creates a new R\+PC context.
 \begin{DoxyReturn}{Returns}
 Newly created R\+PC context object. 
 \end{DoxyReturn}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{fd-server_8c-example}{fd-\/server.\+c}, \hyperlink{fd-transport_8c-example}{fd-\/transport.\+c}, \hyperlink{loopback_8c-example}{loopback.\+c}, \hyperlink{pack-unpack_8c-example}{pack-\/unpack.\+c}, \hyperlink{server_8c-example}{server.\+c}, \hyperlink{shm-server_8c-example}{shm-\/server.\+c}, and \hyperlink{validation_8c-example}{validation.\+c}.\end{Desc}
 \mbox{\Hypertarget{service_8h_adf89ac4a7b3a1e436b03a482eb366639}\label{service_8h_adf89ac4a7b3a1e436b03a482eb366639}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+dispatch\+\_\+call@{rpc\+\_\+context\+\_\+dispatch\+\_\+call}}
 \index{rpc\+\_\+context\+\_\+dispatch\+\_\+call@{rpc\+\_\+context\+\_\+dispatch\+\_\+call}!service.\+h@{service.\+h}}
@@ -655,9 +648,6 @@ Registers a given block as a R\+PC method for a given context.
 \begin{DoxyReturn}{Returns}
 Status. 
 \end{DoxyReturn}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{fd-transport_8c-example}{fd-\/transport.\+c}, \hyperlink{loopback_8c-example}{loopback.\+c}, \hyperlink{pack-unpack_8c-example}{pack-\/unpack.\+c}, and \hyperlink{server_8c-example}{server.\+c}.\end{Desc}
 \mbox{\Hypertarget{service_8h_a1aac077f97529f7c26834c139fefc2f5}\label{service_8h_a1aac077f97529f7c26834c139fefc2f5}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+register\+\_\+func@{rpc\+\_\+context\+\_\+register\+\_\+func}}
 \index{rpc\+\_\+context\+\_\+register\+\_\+func@{rpc\+\_\+context\+\_\+register\+\_\+func}!service.\+h@{service.\+h}}
@@ -682,9 +672,6 @@ Registers a given function as a R\+PC method for a given context.
 \begin{DoxyReturn}{Returns}
 Status. 
 \end{DoxyReturn}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{fd-server_8c-example}{fd-\/server.\+c}, \hyperlink{server_8c-example}{server.\+c}, and \hyperlink{shm-server_8c-example}{shm-\/server.\+c}.\end{Desc}
 \mbox{\Hypertarget{service_8h_acfa9c9b0063bd316850e8a58878cb44e}\label{service_8h_acfa9c9b0063bd316850e8a58878cb44e}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+register\+\_\+instance@{rpc\+\_\+context\+\_\+register\+\_\+instance}}
 \index{rpc\+\_\+context\+\_\+register\+\_\+instance@{rpc\+\_\+context\+\_\+register\+\_\+instance}!service.\+h@{service.\+h}}
@@ -703,9 +690,6 @@ Registers a new instance in {\ttfamily context} instance tree.
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on error 
 \end{DoxyReturn}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{validation_8c-example}{validation.\+c}.\end{Desc}
 \mbox{\Hypertarget{service_8h_afdc2720f56729686fea39d6bb498da37}\label{service_8h_afdc2720f56729686fea39d6bb498da37}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+register\+\_\+member@{rpc\+\_\+context\+\_\+register\+\_\+member}}
 \index{rpc\+\_\+context\+\_\+register\+\_\+member@{rpc\+\_\+context\+\_\+register\+\_\+member}!service.\+h@{service.\+h}}
@@ -743,9 +727,6 @@ The hook will be called after an actual implementation of R\+PC function is call
 {\em fn} & Hook function \\
 \hline
 \end{DoxyParams}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{validation_8c-example}{validation.\+c}.\end{Desc}
 \mbox{\Hypertarget{service_8h_a5eb243586ec426274b93ad40f64f0ea5}\label{service_8h_a5eb243586ec426274b93ad40f64f0ea5}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+set\+\_\+pre\+\_\+call\+\_\+hook@{rpc\+\_\+context\+\_\+set\+\_\+pre\+\_\+call\+\_\+hook}}
 \index{rpc\+\_\+context\+\_\+set\+\_\+pre\+\_\+call\+\_\+hook@{rpc\+\_\+context\+\_\+set\+\_\+pre\+\_\+call\+\_\+hook}!service.\+h@{service.\+h}}
@@ -763,9 +744,6 @@ The hook will be called before an actual implementation of R\+PC function gets c
 {\em fn} & Hook function \\
 \hline
 \end{DoxyParams}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{validation_8c-example}{validation.\+c}.\end{Desc}
 \mbox{\Hypertarget{service_8h_ae6d86450498479f51012a50bd973e273}\label{service_8h_ae6d86450498479f51012a50bd973e273}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+unregister\+\_\+instance@{rpc\+\_\+context\+\_\+unregister\+\_\+instance}}
 \index{rpc\+\_\+context\+\_\+unregister\+\_\+instance@{rpc\+\_\+context\+\_\+unregister\+\_\+instance}!service.\+h@{service.\+h}}
@@ -812,9 +790,6 @@ When that function is called, sending further responses (either singular, stream
 {\em cookie} & Running call handle \\
 \hline
 \end{DoxyParams}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{server_8c-example}{server.\+c}.\end{Desc}
 \mbox{\Hypertarget{service_8h_a8199576424cc9470380ab43248129911}\label{service_8h_a8199576424cc9470380ab43248129911}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+error@{rpc\+\_\+function\+\_\+error}}
 \index{rpc\+\_\+function\+\_\+error@{rpc\+\_\+function\+\_\+error}!service.\+h@{service.\+h}}
@@ -838,9 +813,6 @@ When called in a streaming function, implicitly ends streaming response.
 {\em ...} & Format arguments \\
 \hline
 \end{DoxyParams}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{fd-server_8c-example}{fd-\/server.\+c}, and \hyperlink{shm-server_8c-example}{shm-\/server.\+c}.\end{Desc}
 \mbox{\Hypertarget{service_8h_a89abe6ee2bcc59409eaccf1955ada0ad}\label{service_8h_a89abe6ee2bcc59409eaccf1955ada0ad}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+error\+\_\+ex@{rpc\+\_\+function\+\_\+error\+\_\+ex}}
 \index{rpc\+\_\+function\+\_\+error\+\_\+ex@{rpc\+\_\+function\+\_\+error\+\_\+ex}!service.\+h@{service.\+h}}
@@ -1019,6 +991,22 @@ Returns the value of a flag saying whether or not a method should immediately st
 \begin{DoxyReturn}{Returns}
 Whether or not function should abort 
 \end{DoxyReturn}
+\mbox{\Hypertarget{service_8h_ac8e084a977c2598fa35284be241d4d44}\label{service_8h_ac8e084a977c2598fa35284be241d4d44}} 
+\index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+start\+\_\+stream@{rpc\+\_\+function\+\_\+start\+\_\+stream}}
+\index{rpc\+\_\+function\+\_\+start\+\_\+stream@{rpc\+\_\+function\+\_\+start\+\_\+stream}!service.\+h@{service.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+function\+\_\+start\+\_\+stream()}{rpc\_function\_start\_stream()}}
+{\footnotesize\ttfamily int rpc\+\_\+function\+\_\+start\+\_\+stream (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nonnull}]{cookie }\end{DoxyParamCaption})}
+
+Signalizes a start of a streaming response.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cookie} & Running call handle \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Status. Success is reported by returning 0 
+\end{DoxyReturn}
 \mbox{\Hypertarget{service_8h_ac8c50ecedc9e59086e1ab63e1dd6c425}\label{service_8h_ac8c50ecedc9e59086e1ab63e1dd6c425}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+yield@{rpc\+\_\+function\+\_\+yield}}
 \index{rpc\+\_\+function\+\_\+yield@{rpc\+\_\+function\+\_\+yield}!service.\+h@{service.\+h}}
@@ -1037,9 +1025,6 @@ Generates a new value in a streaming response.
 \begin{DoxyReturn}{Returns}
 Status. Success is reported by returning 0 
 \end{DoxyReturn}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{server_8c-example}{server.\+c}.\end{Desc}
 \mbox{\Hypertarget{service_8h_adbf8b5a032c56514343d3ac6ece77db0}\label{service_8h_adbf8b5a032c56514343d3ac6ece77db0}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+emit\+\_\+event@{rpc\+\_\+instance\+\_\+emit\+\_\+event}}
 \index{rpc\+\_\+instance\+\_\+emit\+\_\+event@{rpc\+\_\+instance\+\_\+emit\+\_\+event}!service.\+h@{service.\+h}}
@@ -1176,9 +1161,6 @@ Creates a new instance handle.
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{validation_8c-example}{validation.\+c}.\end{Desc}
 \mbox{\Hypertarget{service_8h_a28d100b9b918d120d3d8c07a0c938932}\label{service_8h_a28d100b9b918d120d3d8c07a0c938932}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+property\+\_\+changed@{rpc\+\_\+instance\+\_\+property\+\_\+changed}}
 \index{rpc\+\_\+instance\+\_\+property\+\_\+changed@{rpc\+\_\+instance\+\_\+property\+\_\+changed}!service.\+h@{service.\+h}}
@@ -1287,9 +1269,6 @@ Registers interface {\ttfamily interface} under {\ttfamily instance}.
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on error 
 \end{DoxyReturn}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{validation_8c-example}{validation.\+c}.\end{Desc}
 \mbox{\Hypertarget{service_8h_a2a53bb90b2a657abd5d5ce7b43134ca1}\label{service_8h_a2a53bb90b2a657abd5d5ce7b43134ca1}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+register\+\_\+member@{rpc\+\_\+instance\+\_\+register\+\_\+member}}
 \index{rpc\+\_\+instance\+\_\+register\+\_\+member@{rpc\+\_\+instance\+\_\+register\+\_\+member}!service.\+h@{service.\+h}}
