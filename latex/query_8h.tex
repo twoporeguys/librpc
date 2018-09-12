@@ -14,7 +14,7 @@ This graph shows which files directly or indirectly include this file\+:
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=217pt]{query_8h__dep__incl}
+\includegraphics[width=350pt]{query_8h__dep__incl}
 \end{center}
 \end{figure}
 \subsection*{Classes}
@@ -214,6 +214,9 @@ The function returns the boolean result of that check.
 \begin{DoxyReturn}{Returns}
 Boolean result of the check. 
 \end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{query_8c-example}{query.\+c}.\end{Desc}
 \mbox{\Hypertarget{query_8h_af59ef4e3522115f09116bf7048738de4}\label{query_8h_af59ef4e3522115f09116bf7048738de4}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+delete@{rpc\+\_\+query\+\_\+delete}}
 \index{rpc\+\_\+query\+\_\+delete@{rpc\+\_\+query\+\_\+delete}!query.\+h@{query.\+h}}
@@ -235,6 +238,9 @@ result = \{some\+:\mbox{[}\{values\+:\mbox{[}null,\{and\+:\{indexes\+:true\}\}\m
 {\em path} & Path to the object to be deleted -\/ \textquotesingle{}.\textquotesingle{} character is required between each key/idx pair. \\
 \hline
 \end{DoxyParams}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{query_8c-example}{query.\+c}.\end{Desc}
 \mbox{\Hypertarget{query_8h_a674e1f4b009fc26f19dd33d0c5d0b10d}\label{query_8h_a674e1f4b009fc26f19dd33d0c5d0b10d}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+fmt@{rpc\+\_\+query\+\_\+fmt}}
 \index{rpc\+\_\+query\+\_\+fmt@{rpc\+\_\+query\+\_\+fmt}!query.\+h@{query.\+h}}
@@ -259,6 +265,9 @@ The function works exactly the same as the rpc\+\_\+query function, but does not
 \begin{DoxyReturn}{Returns}
 Query iterator. 
 \end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{query_8c-example}{query.\+c}.\end{Desc}
 \mbox{\Hypertarget{query_8h_a6b66ceac8404c2581558e4fa3dfc048e}\label{query_8h_a6b66ceac8404c2581558e4fa3dfc048e}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+get@{rpc\+\_\+query\+\_\+get}}
 \index{rpc\+\_\+query\+\_\+get@{rpc\+\_\+query\+\_\+get}!query.\+h@{query.\+h}}
@@ -281,6 +290,9 @@ If the function cannot resolve the whole path (i.\+e. some of intermediate conta
 \begin{DoxyReturn}{Returns}
 Found R\+PC object or the default value. 
 \end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{query_8c-example}{query.\+c}.\end{Desc}
 \mbox{\Hypertarget{query_8h_acfa3a9a25b98a0acd3a64c7c222e5f99}\label{query_8h_acfa3a9a25b98a0acd3a64c7c222e5f99}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+iter\+\_\+free@{rpc\+\_\+query\+\_\+iter\+\_\+free}}
 \index{rpc\+\_\+query\+\_\+iter\+\_\+free@{rpc\+\_\+query\+\_\+iter\+\_\+free}!query.\+h@{query.\+h}}
@@ -294,6 +306,9 @@ Releases internal contents of rpc query iterator structure and then the structur
 {\em iter} & Structure to be freed. \\
 \hline
 \end{DoxyParams}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{query_8c-example}{query.\+c}.\end{Desc}
 \mbox{\Hypertarget{query_8h_a979b1dfd5f0fb3be66501ed3c7df3f78}\label{query_8h_a979b1dfd5f0fb3be66501ed3c7df3f78}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+next@{rpc\+\_\+query\+\_\+next}}
 \index{rpc\+\_\+query\+\_\+next@{rpc\+\_\+query\+\_\+next}!query.\+h@{query.\+h}}
@@ -318,6 +333,9 @@ Function automatically increases reference count of the returned R\+PC object.
 \begin{DoxyReturn}{Returns}
 \char`\"{}\+Continue iteration\char`\"{} boolean flag. 
 \end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{query_8c-example}{query.\+c}.\end{Desc}
 \mbox{\Hypertarget{query_8h_a03159f0ef216c368c85ea63dd5a6cd64}\label{query_8h_a03159f0ef216c368c85ea63dd5a6cd64}} 
 \index{query.\+h@{query.\+h}!rpc\+\_\+query\+\_\+set@{rpc\+\_\+query\+\_\+set}}
 \index{rpc\+\_\+query\+\_\+set@{rpc\+\_\+query\+\_\+set}!query.\+h@{query.\+h}}
@@ -339,3 +357,6 @@ If the provided path does not match a given object, then library error is set.
 {\em steal} & Boolean flag -\/ if set, then the function does not increase refcount of a set value. \\
 \hline
 \end{DoxyParams}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{query_8c-example}{query.\+c}.\end{Desc}

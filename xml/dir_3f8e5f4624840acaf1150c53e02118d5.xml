@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="dir_3f8e5f4624840acaf1150c53e02118d5" kind="dir">
+    <compoundname>/code/examples/pack-unpack</compoundname>
+    <innerfile refid="pack-unpack_8c">pack-unpack.c</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/code/examples/pack-unpack/"/>
+  </compounddef>
+</doxygen>

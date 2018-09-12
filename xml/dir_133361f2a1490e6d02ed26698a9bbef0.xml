@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="dir_133361f2a1490e6d02ed26698a9bbef0" kind="dir">
+    <compoundname>/code/examples/fd-server</compoundname>
+    <innerfile refid="fd-server_8c">fd-server.c</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/code/examples/fd-server/"/>
+  </compounddef>
+</doxygen>
