@@ -1,0 +1,87 @@
+\hypertarget{log-reader_8c-example}{}\section{log-\/reader.\+c}
+An example that shows how to read logs from a librpc-\/capable U\+SB device.
+
+
+\begin{DoxyCodeInclude}
+\textcolor{comment}{/*}
+\textcolor{comment}{ * Copyright 2017 Two Pore Guys, Inc.}
+\textcolor{comment}{ * All rights reserved}
+\textcolor{comment}{ *}
+\textcolor{comment}{ * Redistribution and use in source and binary forms, with or without}
+\textcolor{comment}{ * modification, are permitted providing that the following conditions}
+\textcolor{comment}{ * are met:}
+\textcolor{comment}{ * 1. Redistributions of source code must retain the above copyright}
+\textcolor{comment}{ *    notice, this list of conditions and the following disclaimer.}
+\textcolor{comment}{ * 2. Redistributions in binary form must reproduce the above copyright}
+\textcolor{comment}{ *    notice, this list of conditions and the following disclaimer in the}
+\textcolor{comment}{ *    documentation and/or other materials provided with the distribution.}
+\textcolor{comment}{ *}
+\textcolor{comment}{ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR}
+\textcolor{comment}{ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED}
+\textcolor{comment}{ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE}
+\textcolor{comment}{ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY}
+\textcolor{comment}{ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL}
+\textcolor{comment}{ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS}
+\textcolor{comment}{ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)}
+\textcolor{comment}{ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,}
+\textcolor{comment}{ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING}
+\textcolor{comment}{ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE}
+\textcolor{comment}{ * POSSIBILITY OF SUCH DAMAGE.}
+\textcolor{comment}{ *}
+\textcolor{comment}{ */}
+
+\textcolor{preprocessor}{#include <stdio.h>}
+\textcolor{preprocessor}{#include <string.h>}
+\textcolor{preprocessor}{#include <unistd.h>}
+\textcolor{preprocessor}{#include <errno.h>}
+\textcolor{preprocessor}{#include <\hyperlink{object_8h}{rpc/object.h}>}
+\textcolor{preprocessor}{#include <\hyperlink{client_8h}{rpc/client.h}>}
+\textcolor{preprocessor}{#include <\hyperlink{bus_8h}{rpc/bus.h}>}
+
+\textcolor{preprocessor}{#define BUFSIZE 1024}
+
+\textcolor{keywordtype}{int}
+main(\textcolor{keywordtype}{int} argc, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *argv[])
+\{
+    \hyperlink{client_8h_a4f7230a0c2c07d27a07a88d407a06b70}{rpc\_client\_t} client;
+    ssize\_t nread;
+    \textcolor{keywordtype}{char} buf[BUFSIZE];
+    \textcolor{keywordtype}{int} fds[2];
+
+    \textcolor{keywordflow}{if} (argc < 2) \{
+        fprintf(stderr, \textcolor{stringliteral}{"Usage: log-reader <URI>\(\backslash\)n"});
+        \textcolor{keywordflow}{return} (1);
+    \}
+
+    \textcolor{keywordflow}{if} (pipe(fds) < 0) \{
+        fprintf(stderr, \textcolor{stringliteral}{"pipe() failed: %s\(\backslash\)n"}, strerror(errno));
+        \textcolor{keywordflow}{return} (1);
+    \}
+
+    client = \hyperlink{client_8h_aaf8c4f2be48ef8d79a29e004264f0bf6}{rpc\_client\_create}(argv[1], \hyperlink{object_8h_aa2e6228045667b4e13b9897cfd2dc072}{rpc\_fd\_create}(fds[1]));
+    \textcolor{keywordflow}{if} (client == NULL) \{
+        fprintf(stderr, \textcolor{stringliteral}{"connect failed: %s\(\backslash\)n"}, strerror(errno));
+        \textcolor{keywordflow}{return} (1);
+    \}
+
+    printf(\textcolor{stringliteral}{"(Connected to %s)\(\backslash\)n"}, argv[1]);
+
+    \textcolor{keywordflow}{for} (;;) \{
+        nread = read(fds[0], buf, \textcolor{keyword}{sizeof}(buf));
+        \textcolor{keywordflow}{if} (nread == 0)
+            \textcolor{keywordflow}{break};
+
+        \textcolor{keywordflow}{if} (nread < 0) \{
+            fprintf(stderr, \textcolor{stringliteral}{"read() failed: %s\(\backslash\)n"}, strerror(errno));
+            \textcolor{keywordflow}{return} (1);
+        \}
+
+        printf(\textcolor{stringliteral}{"%*s"}, (\textcolor{keywordtype}{int})nread, buf);
+        fflush(stdout);
+    \}
+
+    \hyperlink{client_8h_ac4404bc6ff0f1d8be969acab48ba543b}{rpc\_client\_close}(client);
+    \textcolor{keywordflow}{return} (0);
+\}
+\end{DoxyCodeInclude}
+ 

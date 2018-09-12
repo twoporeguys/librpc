@@ -1,0 +1,81 @@
+\hypertarget{loopback_8c-example}{}\section{loopback.\+c}
+An example that shows how to use a loopback transport.
+
+
+\begin{DoxyCodeInclude}
+\textcolor{comment}{/*}
+\textcolor{comment}{ * Copyright 2017 Two Pore Guys, Inc.}
+\textcolor{comment}{ * All rights reserved}
+\textcolor{comment}{ *}
+\textcolor{comment}{ * Redistribution and use in source and binary forms, with or without}
+\textcolor{comment}{ * modification, are permitted providing that the following conditions}
+\textcolor{comment}{ * are met:}
+\textcolor{comment}{ * 1. Redistributions of source code must retain the above copyright}
+\textcolor{comment}{ *    notice, this list of conditions and the following disclaimer.}
+\textcolor{comment}{ * 2. Redistributions in binary form must reproduce the above copyright}
+\textcolor{comment}{ *    notice, this list of conditions and the following disclaimer in the}
+\textcolor{comment}{ *    documentation and/or other materials provided with the distribution.}
+\textcolor{comment}{ *}
+\textcolor{comment}{ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR}
+\textcolor{comment}{ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED}
+\textcolor{comment}{ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE}
+\textcolor{comment}{ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY}
+\textcolor{comment}{ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL}
+\textcolor{comment}{ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS}
+\textcolor{comment}{ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)}
+\textcolor{comment}{ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,}
+\textcolor{comment}{ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING}
+\textcolor{comment}{ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE}
+\textcolor{comment}{ * POSSIBILITY OF SUCH DAMAGE.}
+\textcolor{comment}{ *}
+\textcolor{comment}{ */}
+
+\textcolor{preprocessor}{#include <stdio.h>}
+\textcolor{preprocessor}{#include <errno.h>}
+\textcolor{preprocessor}{#include <string.h>}
+\textcolor{preprocessor}{#include <\hyperlink{object_8h}{rpc/object.h}>}
+\textcolor{preprocessor}{#include <\hyperlink{client_8h}{rpc/client.h}>}
+\textcolor{preprocessor}{#include <\hyperlink{server_8h}{rpc/server.h}>}
+\textcolor{preprocessor}{#include <\hyperlink{service_8h}{rpc/service.h}>}
+
+\textcolor{keywordtype}{int}
+main(\textcolor{keywordtype}{int} argc, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *argv[])
+\{
+    \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\_context\_t} ctx;
+    \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\_server\_t} server;
+    \hyperlink{client_8h_a4f7230a0c2c07d27a07a88d407a06b70}{rpc\_client\_t} client;
+    \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\_connection\_t} conn;
+    \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} result;
+
+    ctx = \hyperlink{service_8h_aa53a346b1f60759fabc2f047e75fdb90}{rpc\_context\_create}();
+
+    \hyperlink{service_8h_ac0a7c2d5e6bb7464de61d346f97c0b04}{rpc\_context\_register\_block}(ctx, NULL, \textcolor{stringliteral}{"hello"}, NULL,
+        ^(\textcolor{keywordtype}{void} *cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} args) \{
+            \textcolor{keywordflow}{return} \hyperlink{object_8h_ae7ba5d4d5a269764aaac74170be2884c}{rpc\_string\_create}(\textcolor{stringliteral}{"world"});
+    \});
+
+    server = \hyperlink{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}{rpc\_server\_create}(\textcolor{stringliteral}{"loopback://0"}, ctx);
+    \textcolor{keywordflow}{if} (server == NULL) \{
+        fprintf(stderr, \textcolor{stringliteral}{"cannot create server: %s"}, strerror(errno));
+        \textcolor{keywordflow}{return} (1);
+    \}
+
+    client = \hyperlink{client_8h_aaf8c4f2be48ef8d79a29e004264f0bf6}{rpc\_client\_create}(\textcolor{stringliteral}{"loopback://0"}, 0);
+    \textcolor{keywordflow}{if} (client == NULL) \{
+        fprintf(stderr, \textcolor{stringliteral}{"cannot connect: %s"}, strerror(errno));
+        \textcolor{keywordflow}{return} (1);
+    \}
+
+    \hyperlink{server_8h_a52667e1f1ad29521541c60aae34dcf02}{rpc\_server\_resume}(server);
+
+    conn = \hyperlink{client_8h_a9e840cab717dbd16e7913f6c143c4804}{rpc\_client\_get\_connection}(client);
+    result = \hyperlink{connection_8h_aa36b47feae14a4114bacf6f049fc1696}{rpc\_connection\_call\_simple}(conn, \textcolor{stringliteral}{"hello"}, \textcolor{stringliteral}{"[s]"}, \textcolor{stringliteral}{"world"});
+    printf(\textcolor{stringliteral}{"result = %s\(\backslash\)n"}, \hyperlink{object_8h_a04a698c1f5f736ef71bc81ccf91be52d}{rpc\_string\_get\_string\_ptr}(result));
+    \hyperlink{object_8h_aac19be935f72b35eeb2851bc509eabb2}{rpc\_release}(result);
+
+    \hyperlink{client_8h_ac4404bc6ff0f1d8be969acab48ba543b}{rpc\_client\_close}(client);
+    \hyperlink{server_8h_a1bf6070b1bb3b31d394f3862405eaf8c}{rpc\_server\_close}(server);
+    \textcolor{keywordflow}{return} (0);
+\}
+\end{DoxyCodeInclude}
+ 

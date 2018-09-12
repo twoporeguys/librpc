@@ -31,6 +31,69 @@
     <member refid="structrpc__query__params_1a39c5b870500ba92953fa1794510223e8" kind="variable"><name>sort</name></member>
     <member refid="structrpc__query__params_1ad0cf32046078f82f707dc9d656bcfe01" kind="variable"><name>callback</name></member>
   </compound>
+  <compound refid="bus_8c" kind="file"><name>bus.c</name>
+    <member refid="bus_8c_1ac0f2228420376f4db7e1274f2b41667c" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="client_8c" kind="file"><name>client.c</name>
+    <member refid="client_8c_1ac0f2228420376f4db7e1274f2b41667c" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="error-backtrace_8c" kind="file"><name>error-backtrace.c</name>
+    <member refid="error-backtrace_8c_1ac209140b7f33c21a701ee5a679883056" kind="function"><name>fun_a</name></member>
+    <member refid="error-backtrace_8c_1a565e0bb67904c4e972d1ced2c3a3aea5" kind="function"><name>fun_b</name></member>
+    <member refid="error-backtrace_8c_1a488204963c89fb88e3548566dc85c385" kind="function"><name>fun_c</name></member>
+    <member refid="error-backtrace_8c_1ac0f2228420376f4db7e1274f2b41667c" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="event_8c" kind="file"><name>event.c</name>
+    <member refid="event_8c_1ac0f2228420376f4db7e1274f2b41667c" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="fd-client_8c" kind="file"><name>fd-client.c</name>
+    <member refid="fd-client_8c_1ac0f2228420376f4db7e1274f2b41667c" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="fd-server_8c" kind="file"><name>fd-server.c</name>
+    <member refid="fd-server_8c_1a8d6babe9ce82bec54a968b06a66b35ff" kind="function"><name>write_to_pipe</name></member>
+    <member refid="fd-server_8c_1ac0f2228420376f4db7e1274f2b41667c" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="fd-transport_8c" kind="file"><name>fd-transport.c</name>
+    <member refid="fd-transport_8c_1ac0f2228420376f4db7e1274f2b41667c" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="instance_8c" kind="file"><name>instance.c</name>
+  </compound>
+  <compound refid="libdispatch_8c" kind="file"><name>libdispatch.c</name>
+    <member refid="libdispatch_8c_1ac0f2228420376f4db7e1274f2b41667c" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="log-reader_8c" kind="file"><name>log-reader.c</name>
+    <member refid="log-reader_8c_1aeca034f67218340ecb2261a22c2f3dcd" kind="define"><name>BUFSIZE</name></member>
+    <member refid="log-reader_8c_1ac0f2228420376f4db7e1274f2b41667c" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="loopback_8c" kind="file"><name>loopback.c</name>
+    <member refid="loopback_8c_1ac0f2228420376f4db7e1274f2b41667c" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="pack-unpack_8c" kind="file"><name>pack-unpack.c</name>
+    <member refid="pack-unpack_8c_1ac0f2228420376f4db7e1274f2b41667c" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="query_8c" kind="file"><name>query.c</name>
+    <member refid="query_8c_1ac0f2228420376f4db7e1274f2b41667c" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="server_8c" kind="file"><name>server.c</name>
+    <member refid="server_8c_1a2e3484535ee610c8e19e9859563abe48" kind="define"><name>__unused</name></member>
+    <member refid="server_8c_1a3ab91eeec801d49a911b6f7bfc45a6ad" kind="function"><name>server_event</name></member>
+    <member refid="server_8c_1a114054b68f1d9624a6fd9543b8d75afd" kind="function"><name>hello</name></member>
+    <member refid="server_8c_1ac0f2228420376f4db7e1274f2b41667c" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="shm-client_8c" kind="file"><name>shm-client.c</name>
+    <member refid="shm-client_8c_1ad51ded0bbd705f02f73fc60c0b721ced" kind="define"><name>BLOCK_SIZE</name></member>
+    <member refid="shm-client_8c_1ac0f2228420376f4db7e1274f2b41667c" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="shm-server_8c" kind="file"><name>shm-server.c</name>
+    <member refid="shm-server_8c_1a6825ec35ebfceb2b5af4fb2fa840d39f" kind="function"><name>exchange_blob</name></member>
+    <member refid="shm-server_8c_1ac0f2228420376f4db7e1274f2b41667c" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="validation_8c" kind="file"><name>validation.c</name>
+    <member refid="validation_8c_1a2e3484535ee610c8e19e9859563abe48" kind="define"><name>__unused</name></member>
+    <member refid="validation_8c_1a0add1e0a791a9f96bf9fe7ac125d2770" kind="variable"><name>animal_manager_vtable</name></member>
+    <member refid="validation_8c_1a0343b9d355f19b2db400d9a527ef84d0" kind="function"><name>animal_manager_create</name></member>
+    <member refid="validation_8c_1ae2fe7ede237c87081a7a9ea640fcccbd" kind="function"><name>main</name></member>
+  </compound>
   <compound refid="bus_8h" kind="file"><name>bus.h</name>
     <member refid="bus_8h_1aaa8f0d5a3405318f9df38fc2ae8dd587" kind="define"><name>RPC_BUS_EVENT_HANDLER</name></member>
     <member refid="bus_8h_1a38a66d3c4093e9ca458510dd2eea7ba7" kind="enum"><name>rpc_bus_event_t</name></member>
@@ -503,8 +566,74 @@
   </compound>
   <compound refid="vtable_8h" kind="file"><name>vtable.h</name>
   </compound>
+  <compound refid="dir_aa03e62e9ffe748bfd75a46ccb4421cd" kind="dir"><name>/code/examples/bus</name>
+  </compound>
+  <compound refid="dir_203d4d556f0b43667aeffd628b7d55e3" kind="dir"><name>/code/examples/client</name>
+  </compound>
+  <compound refid="dir_2146392227a0f211600405271e341870" kind="dir"><name>/code/examples/error-backtrace</name>
+  </compound>
+  <compound refid="dir_37179c68804b0235bcbb5e5ae8d3eb2e" kind="dir"><name>/code/examples/event</name>
+  </compound>
+  <compound refid="dir_d28a4824dc47e487b107a5db32ef43c4" kind="dir"><name>/code/examples</name>
+  </compound>
+  <compound refid="dir_2465f10c4668733736ce272b9e766cac" kind="dir"><name>/code/examples/fd-client</name>
+  </compound>
+  <compound refid="dir_133361f2a1490e6d02ed26698a9bbef0" kind="dir"><name>/code/examples/fd-server</name>
+  </compound>
+  <compound refid="dir_213df0c97a4d4509b7adab236d0528c0" kind="dir"><name>/code/examples/fd-transport</name>
+  </compound>
   <compound refid="dir_d44c64559bbebec7f509842c48db8b23" kind="dir"><name>/code/include</name>
   </compound>
+  <compound refid="dir_eae7848d30327d7bac683f4e9d7585df" kind="dir"><name>/code/examples/instance</name>
+  </compound>
+  <compound refid="dir_0857a1da5b8e58b426125fc9a353f6e2" kind="dir"><name>/code/examples/libdispatch</name>
+  </compound>
+  <compound refid="dir_d0724a4ba22dd8807ba741c246d71cf9" kind="dir"><name>/code/examples/log-reader</name>
+  </compound>
+  <compound refid="dir_a2bdf9a24f7d90fcaeb19f1903ec2e3d" kind="dir"><name>/code/examples/loopback</name>
+  </compound>
+  <compound refid="dir_3f8e5f4624840acaf1150c53e02118d5" kind="dir"><name>/code/examples/pack-unpack</name>
+  </compound>
+  <compound refid="dir_a1682b4f269efdb6ccfa396f3169c6c0" kind="dir"><name>/code/examples/query</name>
+  </compound>
   <compound refid="dir_26df6c18271b4ec683b70d44ac22bed0" kind="dir"><name>/code/include/rpc</name>
+  </compound>
+  <compound refid="dir_6f80f7e3831db8be44a1c083dda45589" kind="dir"><name>/code/examples/server</name>
+  </compound>
+  <compound refid="dir_c0981fdac23f0b29dd1a9f868eda1309" kind="dir"><name>/code/examples/shm-client</name>
+  </compound>
+  <compound refid="dir_17358ff44bb8eeea897f379982121e3d" kind="dir"><name>/code/examples/shm-server</name>
+  </compound>
+  <compound refid="dir_062d25667a35a29351bda4cfb9cefc99" kind="dir"><name>/code/examples/validation</name>
+  </compound>
+  <compound refid="bus_8c-example" kind="example"><name>bus.c</name>
+  </compound>
+  <compound refid="client_8c-example" kind="example"><name>client.c</name>
+  </compound>
+  <compound refid="error-backtrace_8c-example" kind="example"><name>error-backtrace.c</name>
+  </compound>
+  <compound refid="fd-client_8c-example" kind="example"><name>fd-client.c</name>
+  </compound>
+  <compound refid="fd-server_8c-example" kind="example"><name>fd-server.c</name>
+  </compound>
+  <compound refid="fd-transport_8c-example" kind="example"><name>fd-transport.c</name>
+  </compound>
+  <compound refid="libdispatch_8c-example" kind="example"><name>libdispatch.c</name>
+  </compound>
+  <compound refid="log-reader_8c-example" kind="example"><name>log-reader.c</name>
+  </compound>
+  <compound refid="loopback_8c-example" kind="example"><name>loopback.c</name>
+  </compound>
+  <compound refid="pack-unpack_8c-example" kind="example"><name>pack-unpack.c</name>
+  </compound>
+  <compound refid="query_8c-example" kind="example"><name>query.c</name>
+  </compound>
+  <compound refid="server_8c-example" kind="example"><name>server.c</name>
+  </compound>
+  <compound refid="shm-client_8c-example" kind="example"><name>shm-client.c</name>
+  </compound>
+  <compound refid="shm-server_8c-example" kind="example"><name>shm-server.c</name>
+  </compound>
+  <compound refid="validation_8c-example" kind="example"><name>validation.c</name>
   </compound>
 </doxygenindex>

@@ -4,26 +4,40 @@
     <compoundname>bus.h</compoundname>
     <includes local="no">stdint.h</includes>
     <includedby refid="rpc_8h" local="no">/code/include/rpc/rpc.h</includedby>
+    <includedby refid="bus_8c" local="no">/code/examples/bus/bus.c</includedby>
+    <includedby refid="log-reader_8c" local="no">/code/examples/log-reader/log-reader.c</includedby>
     <incdepgraph>
-      <node id="1">
+      <node id="288">
         <label>stdint.h</label>
       </node>
-      <node id="0">
+      <node id="287">
         <label>/code/include/rpc/bus.h</label>
         <link refid="bus_8h"/>
-        <childnode refid="1" relation="include">
+        <childnode refid="288" relation="include">
         </childnode>
       </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="3">
+      <node id="291">
+        <label>/code/examples/bus/bus.c</label>
+        <link refid="bus_8c_source"/>
+      </node>
+      <node id="292">
+        <label>/code/examples/log-reader/log-reader.c</label>
+        <link refid="log-reader_8c_source"/>
+      </node>
+      <node id="290">
         <label>/code/include/rpc/rpc.h</label>
         <link refid="rpc_8h_source"/>
       </node>
-      <node id="2">
+      <node id="289">
         <label>/code/include/rpc/bus.h</label>
         <link refid="bus_8h"/>
-        <childnode refid="3" relation="include">
+        <childnode refid="290" relation="include">
+        </childnode>
+        <childnode refid="291" relation="include">
+        </childnode>
+        <childnode refid="292" relation="include">
         </childnode>
       </node>
     </invincdepgraph>

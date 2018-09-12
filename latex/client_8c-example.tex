@@ -1,0 +1,132 @@
+\hypertarget{client_8c-example}{}\section{client.\+c}
+This is a basic client A\+PI example, demonstrating how to handle streaming and non-\/streaming calls.
+
+
+\begin{DoxyCodeInclude}
+\textcolor{comment}{/*}
+\textcolor{comment}{ * Copyright 2017 Two Pore Guys, Inc.}
+\textcolor{comment}{ * All rights reserved}
+\textcolor{comment}{ *}
+\textcolor{comment}{ * Redistribution and use in source and binary forms, with or without}
+\textcolor{comment}{ * modification, are permitted providing that the following conditions}
+\textcolor{comment}{ * are met:}
+\textcolor{comment}{ * 1. Redistributions of source code must retain the above copyright}
+\textcolor{comment}{ *    notice, this list of conditions and the following disclaimer.}
+\textcolor{comment}{ * 2. Redistributions in binary form must reproduce the above copyright}
+\textcolor{comment}{ *    notice, this list of conditions and the following disclaimer in the}
+\textcolor{comment}{ *    documentation and/or other materials provided with the distribution.}
+\textcolor{comment}{ *}
+\textcolor{comment}{ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR}
+\textcolor{comment}{ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED}
+\textcolor{comment}{ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE}
+\textcolor{comment}{ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY}
+\textcolor{comment}{ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL}
+\textcolor{comment}{ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS}
+\textcolor{comment}{ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)}
+\textcolor{comment}{ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,}
+\textcolor{comment}{ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING}
+\textcolor{comment}{ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE}
+\textcolor{comment}{ * POSSIBILITY OF SUCH DAMAGE.}
+\textcolor{comment}{ *}
+\textcolor{comment}{ */}
+
+\textcolor{preprocessor}{#include <stdio.h>}
+\textcolor{preprocessor}{#include <stdlib.h>}
+\textcolor{preprocessor}{#include <inttypes.h>}
+\textcolor{preprocessor}{#include <unistd.h>}
+\textcolor{preprocessor}{#include <glib.h>}
+\textcolor{preprocessor}{#include <errno.h>}
+\textcolor{preprocessor}{#include <string.h>}
+\textcolor{preprocessor}{#include <\hyperlink{object_8h}{rpc/object.h}>}
+\textcolor{preprocessor}{#include <\hyperlink{client_8h}{rpc/client.h}>}
+
+\textcolor{keywordtype}{int}
+main(\textcolor{keywordtype}{int} argc, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *argv[])
+\{
+    \hyperlink{client_8h_a4f7230a0c2c07d27a07a88d407a06b70}{rpc\_client\_t} client;
+    \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\_connection\_t} conn;
+    \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} result;
+    \hyperlink{connection_8h_aeb6f25e395cc04930537960ef6b50106}{rpc\_call\_t} call;
+    \textcolor{keyword}{const} \textcolor{keywordtype}{char} *buf;
+    int64\_t len;
+    int64\_t num;
+    \textcolor{keywordtype}{int} cnt = 0;
+
+    (void)argc;
+    (void)argv;
+
+    client = \hyperlink{client_8h_aaf8c4f2be48ef8d79a29e004264f0bf6}{rpc\_client\_create}(\textcolor{stringliteral}{"tcp://127.0.0.1:5000"}, 0);
+    \textcolor{keywordflow}{if} (client == NULL) \{
+        result = \hyperlink{object_8h_a45800949eb1b61b3af02051c780244fe}{rpc\_get\_last\_error}();
+        fprintf(stderr, \textcolor{stringliteral}{"cannot connect: %s\(\backslash\)n"},
+            \hyperlink{object_8h_ac35bbbc0527c6590bdf50e55e7f08b6e}{rpc\_error\_get\_message}(result));
+        \textcolor{keywordflow}{return} (1);
+    \}
+
+    conn = \hyperlink{client_8h_a9e840cab717dbd16e7913f6c143c4804}{rpc\_client\_get\_connection}(client);
+    result = \hyperlink{connection_8h_aa36b47feae14a4114bacf6f049fc1696}{rpc\_connection\_call\_simple}(conn, \textcolor{stringliteral}{"hello"}, \textcolor{stringliteral}{"[s]"}, \textcolor{stringliteral}{"world"});
+    printf(\textcolor{stringliteral}{"result = %s\(\backslash\)n"}, \hyperlink{object_8h_a04a698c1f5f736ef71bc81ccf91be52d}{rpc\_string\_get\_string\_ptr}(result));
+    \hyperlink{object_8h_aac19be935f72b35eeb2851bc509eabb2}{rpc\_release}(result);
+
+    result = \hyperlink{connection_8h_aa36b47feae14a4114bacf6f049fc1696}{rpc\_connection\_call\_simple}(conn, \textcolor{stringliteral}{"hello"}, \textcolor{stringliteral}{"[s]"}, \textcolor{stringliteral}{"world"});
+    printf(\textcolor{stringliteral}{"result = %s\(\backslash\)n"}, \hyperlink{object_8h_a04a698c1f5f736ef71bc81ccf91be52d}{rpc\_string\_get\_string\_ptr}(result));
+    \hyperlink{object_8h_aac19be935f72b35eeb2851bc509eabb2}{rpc\_release}(result);
+
+        call = \hyperlink{connection_8h_ad5e74986e0e4bcd402fbc1f565a7dd3d}{rpc\_connection\_call}(conn, NULL, NULL, \textcolor{stringliteral}{"stream"}, 
+      \hyperlink{object_8h_ae543b86020ed2e2e8fd483c38e31552a}{rpc\_array\_create}(), NULL);
+        \textcolor{keywordflow}{if} (call == NULL) \{
+                fprintf(stderr, \textcolor{stringliteral}{"Stream call failed\(\backslash\)n"});
+                \hyperlink{client_8h_ac4404bc6ff0f1d8be969acab48ba543b}{rpc\_client\_close}(client);
+                \textcolor{keywordflow}{return} (1);
+        \}
+
+        \hyperlink{connection_8h_ad3d465fd37962695f644cfd3b24a2022}{rpc\_call\_set\_prefetch}(call, 10);
+
+        \textcolor{keywordflow}{for} (;;) \{
+                \hyperlink{connection_8h_a55b86b7f9f1957a23b422837e9953dab}{rpc\_call\_wait}(call);
+
+                \textcolor{keywordflow}{switch} (\hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\_call\_status}(call)) \{
+        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410a3983354b73277eb1ac71ea3b105900fb}{RPC\_CALL\_STREAM\_START}:
+            \hyperlink{connection_8h_aaa5cabcf5efe1e9a94e97d63c0b4a388}{rpc\_call\_continue}(call, \textcolor{keyword}{false});
+            \textcolor{keywordflow}{break};
+
+        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f}{RPC\_CALL\_MORE\_AVAILABLE}:
+            result = \hyperlink{connection_8h_a0e64ae2b6592deff82999556318858dd}{rpc\_call\_result}(call);
+            \hyperlink{object_8h_a6ff01b9e6d71ba03e2dff76ede7366f6}{rpc\_object\_unpack}(result, \textcolor{stringliteral}{"[s, i, i]"},
+                &buf, &len, &num);
+
+            cnt++;
+            fprintf(stderr,
+                \textcolor{stringliteral}{"frag = %s, len = %"} PRId64 \textcolor{stringliteral}{", num = %"} PRId64 \textcolor{stringliteral}{","}
+                \textcolor{stringliteral}{"cnt = %d\(\backslash\)n"}, buf, len, num, cnt);
+
+            g\_assert(len == (\textcolor{keywordtype}{int})strlen(buf));
+            \hyperlink{connection_8h_aaa5cabcf5efe1e9a94e97d63c0b4a388}{rpc\_call\_continue}(call, \textcolor{keyword}{false});
+            \textcolor{keywordflow}{break};
+
+        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d}{RPC\_CALL\_DONE}:
+        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410aefeace6607a011c0ea3bb12990abbd1c}{RPC\_CALL\_ENDED}:
+            fprintf(stderr, \textcolor{stringliteral}{"ENDED at %d\(\backslash\)n"}, cnt);
+            \textcolor{keywordflow}{goto} done;
+
+        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856}{RPC\_CALL\_ERROR}:
+            fprintf(stderr, \textcolor{stringliteral}{"ERRORED out\(\backslash\)n"});
+            \textcolor{keywordflow}{goto} done;
+
+        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410a6c33a14b8aa6d0797cb614b890e9c741}{RPC\_CALL\_ABORTED}:
+            fprintf(stderr, \textcolor{stringliteral}{"ABORTED at %d\(\backslash\)n"}, cnt);
+            \textcolor{keywordflow}{goto} done;
+
+        \textcolor{keywordflow}{default}:
+            \textcolor{keywordflow}{break};
+                \}
+        \}
+
+done:
+        fprintf(stderr, \textcolor{stringliteral}{"CLOSING client conn %p, cnt = %d\(\backslash\)n"}, conn, cnt);
+
+    \hyperlink{client_8h_ac4404bc6ff0f1d8be969acab48ba543b}{rpc\_client\_close}(client);
+    \textcolor{keywordflow}{return} (0);
+\}
+\end{DoxyCodeInclude}
+ 

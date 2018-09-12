@@ -13,107 +13,273 @@
     <includedby refid="serializer_8h" local="no">/code/include/rpc/serializer.h</includedby>
     <includedby refid="service_8h" local="no">/code/include/rpc/service.h</includedby>
     <includedby refid="typing_8h" local="no">/code/include/rpc/typing.h</includedby>
+    <includedby refid="bus_8c" local="no">/code/examples/bus/bus.c</includedby>
+    <includedby refid="client_8c" local="no">/code/examples/client/client.c</includedby>
+    <includedby refid="error-backtrace_8c" local="no">/code/examples/error-backtrace/error-backtrace.c</includedby>
+    <includedby refid="event_8c" local="no">/code/examples/event/event.c</includedby>
+    <includedby refid="fd-client_8c" local="no">/code/examples/fd-client/fd-client.c</includedby>
+    <includedby refid="fd-server_8c" local="no">/code/examples/fd-server/fd-server.c</includedby>
+    <includedby refid="fd-transport_8c" local="no">/code/examples/fd-transport/fd-transport.c</includedby>
+    <includedby refid="libdispatch_8c" local="no">/code/examples/libdispatch/libdispatch.c</includedby>
+    <includedby refid="log-reader_8c" local="no">/code/examples/log-reader/log-reader.c</includedby>
+    <includedby refid="loopback_8c" local="no">/code/examples/loopback/loopback.c</includedby>
+    <includedby refid="pack-unpack_8c" local="no">/code/examples/pack-unpack/pack-unpack.c</includedby>
+    <includedby refid="query_8c" local="no">/code/examples/query/query.c</includedby>
+    <includedby refid="server_8c" local="no">/code/examples/server/server.c</includedby>
+    <includedby refid="shm-client_8c" local="no">/code/examples/shm-client/shm-client.c</includedby>
+    <includedby refid="shm-server_8c" local="no">/code/examples/shm-server/shm-server.c</includedby>
+    <includedby refid="validation_8c" local="no">/code/examples/validation/validation.c</includedby>
     <incdepgraph>
-      <node id="34">
+      <node id="347">
         <label>stdbool.h</label>
       </node>
-      <node id="35">
+      <node id="348">
         <label>stdarg.h</label>
       </node>
-      <node id="33">
+      <node id="346">
         <label>stdint.h</label>
       </node>
-      <node id="37">
+      <node id="350">
         <label>sys/types.h</label>
       </node>
-      <node id="32">
+      <node id="345">
         <label>/code/include/rpc/object.h</label>
         <link refid="object_8h"/>
-        <childnode refid="33" relation="include">
+        <childnode refid="346" relation="include">
         </childnode>
-        <childnode refid="34" relation="include">
+        <childnode refid="347" relation="include">
         </childnode>
-        <childnode refid="35" relation="include">
+        <childnode refid="348" relation="include">
         </childnode>
-        <childnode refid="36" relation="include">
+        <childnode refid="349" relation="include">
         </childnode>
-        <childnode refid="37" relation="include">
+        <childnode refid="350" relation="include">
         </childnode>
       </node>
-      <node id="36">
+      <node id="349">
         <label>sys/uio.h</label>
       </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="44">
+      <node id="371">
         <label>/code/include/rpc/query.h</label>
         <link refid="query_8h"/>
-        <childnode refid="41" relation="include">
+        <childnode refid="354" relation="include">
+        </childnode>
+        <childnode refid="372" relation="include">
         </childnode>
       </node>
-      <node id="40">
+      <node id="359">
+        <label>/code/examples/fd-transport/fd-transport.c</label>
+        <link refid="fd-transport_8c_source"/>
+      </node>
+      <node id="372">
+        <label>/code/examples/query/query.c</label>
+        <link refid="query_8c_source"/>
+      </node>
+      <node id="367">
+        <label>/code/examples/server/server.c</label>
+        <link refid="server_8c_source"/>
+      </node>
+      <node id="355">
+        <label>/code/examples/bus/bus.c</label>
+        <link refid="bus_8c_source"/>
+      </node>
+      <node id="361">
+        <label>/code/examples/log-reader/log-reader.c</label>
+        <link refid="log-reader_8c_source"/>
+      </node>
+      <node id="353">
         <label>/code/include/rpc/client.h</label>
         <link refid="client_8h"/>
-        <childnode refid="41" relation="include">
+        <childnode refid="354" relation="include">
+        </childnode>
+        <childnode refid="355" relation="include">
+        </childnode>
+        <childnode refid="356" relation="include">
+        </childnode>
+        <childnode refid="357" relation="include">
+        </childnode>
+        <childnode refid="358" relation="include">
+        </childnode>
+        <childnode refid="359" relation="include">
+        </childnode>
+        <childnode refid="360" relation="include">
+        </childnode>
+        <childnode refid="361" relation="include">
+        </childnode>
+        <childnode refid="362" relation="include">
+        </childnode>
+        <childnode refid="363" relation="include">
+        </childnode>
+        <childnode refid="364" relation="include">
         </childnode>
       </node>
-      <node id="46">
+      <node id="363">
+        <label>/code/examples/pack-unpack/pack-unpack.c</label>
+        <link refid="pack-unpack_8c_source"/>
+      </node>
+      <node id="374">
         <label>/code/include/rpc/typing.h</label>
         <link refid="typing_8h"/>
-        <childnode refid="41" relation="include">
+        <childnode refid="354" relation="include">
+        </childnode>
+        <childnode refid="363" relation="include">
+        </childnode>
+        <childnode refid="369" relation="include">
         </childnode>
       </node>
-      <node id="45">
+      <node id="375">
+        <label>/code/examples/error-backtrace/error-backtrace.c</label>
+        <link refid="error-backtrace_8c_source"/>
+      </node>
+      <node id="368">
+        <label>/code/examples/shm-server/shm-server.c</label>
+        <link refid="shm-server_8c_source"/>
+      </node>
+      <node id="373">
         <label>/code/include/rpc/serializer.h</label>
         <link refid="serializer_8h"/>
-        <childnode refid="41" relation="include">
+        <childnode refid="354" relation="include">
         </childnode>
       </node>
-      <node id="39">
+      <node id="352">
         <label>/code/include/rpc/connection.h</label>
         <link refid="connection_8h"/>
-        <childnode refid="40" relation="include">
+        <childnode refid="353" relation="include">
         </childnode>
-        <childnode refid="41" relation="include">
+        <childnode refid="354" relation="include">
         </childnode>
-        <childnode refid="42" relation="include">
+        <childnode refid="365" relation="include">
         </childnode>
-        <childnode refid="43" relation="include">
+        <childnode refid="370" relation="include">
         </childnode>
       </node>
-      <node id="42">
+      <node id="365">
         <label>/code/include/rpc/server.h</label>
         <link refid="server_8h"/>
-        <childnode refid="41" relation="include">
+        <childnode refid="354" relation="include">
+        </childnode>
+        <childnode refid="366" relation="include">
+        </childnode>
+        <childnode refid="359" relation="include">
+        </childnode>
+        <childnode refid="362" relation="include">
+        </childnode>
+        <childnode refid="363" relation="include">
+        </childnode>
+        <childnode refid="367" relation="include">
+        </childnode>
+        <childnode refid="368" relation="include">
+        </childnode>
+        <childnode refid="369" relation="include">
         </childnode>
       </node>
-      <node id="41">
+      <node id="354">
         <label>/code/include/rpc/rpc.h</label>
         <link refid="rpc_8h_source"/>
       </node>
-      <node id="38">
+      <node id="351">
         <label>/code/include/rpc/object.h</label>
         <link refid="object_8h"/>
-        <childnode refid="39" relation="include">
+        <childnode refid="352" relation="include">
         </childnode>
-        <childnode refid="44" relation="include">
+        <childnode refid="371" relation="include">
         </childnode>
-        <childnode refid="41" relation="include">
+        <childnode refid="354" relation="include">
         </childnode>
-        <childnode refid="45" relation="include">
+        <childnode refid="373" relation="include">
         </childnode>
-        <childnode refid="43" relation="include">
+        <childnode refid="370" relation="include">
         </childnode>
-        <childnode refid="46" relation="include">
+        <childnode refid="374" relation="include">
+        </childnode>
+        <childnode refid="355" relation="include">
+        </childnode>
+        <childnode refid="356" relation="include">
+        </childnode>
+        <childnode refid="375" relation="include">
+        </childnode>
+        <childnode refid="357" relation="include">
+        </childnode>
+        <childnode refid="358" relation="include">
+        </childnode>
+        <childnode refid="366" relation="include">
+        </childnode>
+        <childnode refid="359" relation="include">
+        </childnode>
+        <childnode refid="360" relation="include">
+        </childnode>
+        <childnode refid="361" relation="include">
+        </childnode>
+        <childnode refid="362" relation="include">
+        </childnode>
+        <childnode refid="363" relation="include">
+        </childnode>
+        <childnode refid="372" relation="include">
+        </childnode>
+        <childnode refid="367" relation="include">
+        </childnode>
+        <childnode refid="364" relation="include">
+        </childnode>
+        <childnode refid="368" relation="include">
+        </childnode>
+        <childnode refid="369" relation="include">
         </childnode>
       </node>
-      <node id="43">
+      <node id="357">
+        <label>/code/examples/event/event.c</label>
+        <link refid="event_8c_source"/>
+      </node>
+      <node id="364">
+        <label>/code/examples/shm-client/shm-client.c</label>
+        <link refid="shm-client_8c_source"/>
+      </node>
+      <node id="369">
+        <label>/code/examples/validation/validation.c</label>
+        <link refid="validation_8c_source"/>
+      </node>
+      <node id="358">
+        <label>/code/examples/fd-client/fd-client.c</label>
+        <link refid="fd-client_8c_source"/>
+      </node>
+      <node id="366">
+        <label>/code/examples/fd-server/fd-server.c</label>
+        <link refid="fd-server_8c_source"/>
+      </node>
+      <node id="356">
+        <label>/code/examples/client/client.c</label>
+        <link refid="client_8c_source"/>
+      </node>
+      <node id="370">
         <label>/code/include/rpc/service.h</label>
         <link refid="service_8h"/>
-        <childnode refid="41" relation="include">
+        <childnode refid="354" relation="include">
         </childnode>
-        <childnode refid="42" relation="include">
+        <childnode refid="365" relation="include">
         </childnode>
+        <childnode refid="366" relation="include">
+        </childnode>
+        <childnode refid="359" relation="include">
+        </childnode>
+        <childnode refid="362" relation="include">
+        </childnode>
+        <childnode refid="363" relation="include">
+        </childnode>
+        <childnode refid="367" relation="include">
+        </childnode>
+        <childnode refid="368" relation="include">
+        </childnode>
+        <childnode refid="369" relation="include">
+        </childnode>
+      </node>
+      <node id="362">
+        <label>/code/examples/loopback/loopback.c</label>
+        <link refid="loopback_8c_source"/>
+      </node>
+      <node id="360">
+        <label>/code/examples/libdispatch/libdispatch.c</label>
+        <link refid="libdispatch_8c_source"/>
       </node>
     </invincdepgraph>
       <sectiondef kind="define">

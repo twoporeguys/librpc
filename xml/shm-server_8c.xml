@@ -1,0 +1,320 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="shm-server_8c" kind="file" language="C++">
+    <compoundname>shm-server.c</compoundname>
+    <includes local="no">stdio.h</includes>
+    <includes local="no">unistd.h</includes>
+    <includes local="no">string.h</includes>
+    <includes local="no">errno.h</includes>
+    <includes refid="object_8h" local="no">rpc/object.h</includes>
+    <includes refid="service_8h" local="no">rpc/service.h</includes>
+    <includes refid="server_8h" local="no">rpc/server.h</includes>
+    <includes local="yes">../../src/internal.h</includes>
+    <includes local="no">stdatomic.h</includes>
+    <includes local="no">glib.h</includes>
+    <includes local="no">rpc/object.h</includes>
+    <includes local="no">rpc/query.h</includes>
+    <includes local="no">rpc/client.h</includes>
+    <includes local="no">rpc/connection.h</includes>
+    <includes local="no">rpc/service.h</includes>
+    <includes local="no">rpc/server.h</includes>
+    <includes local="no">rpc/bus.h</includes>
+    <includes local="no">rpc/typing.h</includes>
+    <includes local="yes">/code/src/linker_set.h</includes>
+    <includes local="yes">/code/src/notify.h</includes>
+    <includes local="no">sys/types.h</includes>
+    <incdepgraph>
+      <node id="246">
+        <label>stdbool.h</label>
+      </node>
+      <node id="247">
+        <label>stdarg.h</label>
+      </node>
+      <node id="257">
+        <label>stdatomic.h</label>
+      </node>
+      <node id="265">
+        <label>rpc/bus.h</label>
+      </node>
+      <node id="266">
+        <label>rpc/typing.h</label>
+      </node>
+      <node id="245">
+        <label>stdint.h</label>
+      </node>
+      <node id="254">
+        <label>rpc/config.h</label>
+      </node>
+      <node id="243">
+        <label>errno.h</label>
+      </node>
+      <node id="268">
+        <label>/code/src/notify.h</label>
+      </node>
+      <node id="239">
+        <label>/code/examples/shm-server/shm-server.c</label>
+        <link refid="shm-server_8c"/>
+        <childnode refid="240" relation="include">
+        </childnode>
+        <childnode refid="241" relation="include">
+        </childnode>
+        <childnode refid="242" relation="include">
+        </childnode>
+        <childnode refid="243" relation="include">
+        </childnode>
+        <childnode refid="244" relation="include">
+        </childnode>
+        <childnode refid="250" relation="include">
+        </childnode>
+        <childnode refid="255" relation="include">
+        </childnode>
+        <childnode refid="256" relation="include">
+        </childnode>
+        <childnode refid="257" relation="include">
+        </childnode>
+        <childnode refid="258" relation="include">
+        </childnode>
+        <childnode refid="259" relation="include">
+        </childnode>
+        <childnode refid="260" relation="include">
+        </childnode>
+        <childnode refid="261" relation="include">
+        </childnode>
+        <childnode refid="262" relation="include">
+        </childnode>
+        <childnode refid="263" relation="include">
+        </childnode>
+        <childnode refid="264" relation="include">
+        </childnode>
+        <childnode refid="265" relation="include">
+        </childnode>
+        <childnode refid="266" relation="include">
+        </childnode>
+        <childnode refid="267" relation="include">
+        </childnode>
+        <childnode refid="268" relation="include">
+        </childnode>
+        <childnode refid="249" relation="include">
+        </childnode>
+      </node>
+      <node id="264">
+        <label>rpc/server.h</label>
+      </node>
+      <node id="259">
+        <label>rpc/object.h</label>
+      </node>
+      <node id="251">
+        <label>rpc/connection.h</label>
+        <link refid="connection_8h"/>
+        <childnode refid="252" relation="include">
+        </childnode>
+        <childnode refid="253" relation="include">
+        </childnode>
+        <childnode refid="254" relation="include">
+        </childnode>
+        <childnode refid="244" relation="include">
+        </childnode>
+      </node>
+      <node id="256">
+        <label>../../src/internal.h</label>
+      </node>
+      <node id="260">
+        <label>rpc/query.h</label>
+      </node>
+      <node id="255">
+        <label>rpc/server.h</label>
+        <link refid="server_8h"/>
+        <childnode refid="246" relation="include">
+        </childnode>
+        <childnode refid="250" relation="include">
+        </childnode>
+        <childnode refid="251" relation="include">
+        </childnode>
+      </node>
+      <node id="262">
+        <label>rpc/connection.h</label>
+      </node>
+      <node id="249">
+        <label>sys/types.h</label>
+      </node>
+      <node id="242">
+        <label>string.h</label>
+      </node>
+      <node id="244">
+        <label>rpc/object.h</label>
+        <link refid="object_8h"/>
+        <childnode refid="245" relation="include">
+        </childnode>
+        <childnode refid="246" relation="include">
+        </childnode>
+        <childnode refid="247" relation="include">
+        </childnode>
+        <childnode refid="248" relation="include">
+        </childnode>
+        <childnode refid="249" relation="include">
+        </childnode>
+      </node>
+      <node id="241">
+        <label>unistd.h</label>
+      </node>
+      <node id="248">
+        <label>sys/uio.h</label>
+      </node>
+      <node id="252">
+        <label>Block.h</label>
+      </node>
+      <node id="258">
+        <label>glib.h</label>
+      </node>
+      <node id="263">
+        <label>rpc/service.h</label>
+      </node>
+      <node id="253">
+        <label>sys/time.h</label>
+      </node>
+      <node id="267">
+        <label>/code/src/linker_set.h</label>
+      </node>
+      <node id="250">
+        <label>rpc/service.h</label>
+        <link refid="service_8h"/>
+        <childnode refid="244" relation="include">
+        </childnode>
+        <childnode refid="251" relation="include">
+        </childnode>
+      </node>
+      <node id="261">
+        <label>rpc/client.h</label>
+      </node>
+      <node id="240">
+        <label>stdio.h</label>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="shm-server_8c_1a6825ec35ebfceb2b5af4fb2fa840d39f" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+        <definition>static rpc_object_t exchange_blob</definition>
+        <argsstring>(void *cookie, rpc_object_t args)</argsstring>
+        <name>exchange_blob</name>
+        <param>
+          <type>void *</type>
+          <declname>cookie</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/examples/shm-server/shm-server.c" line="45" column="1" bodyfile="/code/examples/shm-server/shm-server.c" bodystart="45" bodyend="64"/>
+      </memberdef>
+      <memberdef kind="function" id="shm-server_8c_1ac0f2228420376f4db7e1274f2b41667c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int main</definition>
+        <argsstring>(int argc, const char *argv[])</argsstring>
+        <name>main</name>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>argv</declname>
+          <array>[]</array>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/examples/shm-server/shm-server.c" line="67" column="1" bodyfile="/code/examples/shm-server/shm-server.c" bodystart="67" bodyend="81"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2017<sp/>Two<sp/>Pore<sp/>Guys,<sp/>Inc.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*<sp/>All<sp/>rights<sp/>reserved</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>Redistribution<sp/>and<sp/>use<sp/>in<sp/>source<sp/>and<sp/>binary<sp/>forms,<sp/>with<sp/>or<sp/>without</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>modification,<sp/>are<sp/>permitted<sp/>providing<sp/>that<sp/>the<sp/>following<sp/>conditions</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/>are<sp/>met:</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>1.<sp/>Redistributions<sp/>of<sp/>source<sp/>code<sp/>must<sp/>retain<sp/>the<sp/>above<sp/>copyright</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/>notice,<sp/>this<sp/>list<sp/>of<sp/>conditions<sp/>and<sp/>the<sp/>following<sp/>disclaimer.</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>2.<sp/>Redistributions<sp/>in<sp/>binary<sp/>form<sp/>must<sp/>reproduce<sp/>the<sp/>above<sp/>copyright</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/>notice,<sp/>this<sp/>list<sp/>of<sp/>conditions<sp/>and<sp/>the<sp/>following<sp/>disclaimer<sp/>in<sp/>the</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/>documentation<sp/>and/or<sp/>other<sp/>materials<sp/>provided<sp/>with<sp/>the<sp/>distribution.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>THIS<sp/>SOFTWARE<sp/>IS<sp/>PROVIDED<sp/>BY<sp/>THE<sp/>AUTHOR<sp/>``AS<sp/>IS&apos;&apos;<sp/>AND<sp/>ANY<sp/>EXPRESS<sp/>OR</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*<sp/>IMPLIED<sp/>WARRANTIES,<sp/>INCLUDING,<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO,<sp/>THE<sp/>IMPLIED</highlight></codeline>
+<codeline lineno="16"><highlight class="comment"><sp/>*<sp/>WARRANTIES<sp/>OF<sp/>MERCHANTABILITY<sp/>AND<sp/>FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"><sp/>*<sp/>ARE<sp/>DISCLAIMED.<sp/><sp/>IN<sp/>NO<sp/>EVENT<sp/>SHALL<sp/>THE<sp/>AUTHOR<sp/>BE<sp/>LIABLE<sp/>FOR<sp/>ANY</highlight></codeline>
+<codeline lineno="18"><highlight class="comment"><sp/>*<sp/>DIRECT,<sp/>INDIRECT,<sp/>INCIDENTAL,<sp/>SPECIAL,<sp/>EXEMPLARY,<sp/>OR<sp/>CONSEQUENTIAL</highlight></codeline>
+<codeline lineno="19"><highlight class="comment"><sp/>*<sp/>DAMAGES<sp/>(INCLUDING,<sp/>BUT<sp/>NOT<sp/>LIMITED<sp/>TO,<sp/>PROCUREMENT<sp/>OF<sp/>SUBSTITUTE<sp/>GOODS</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"><sp/>*<sp/>OR<sp/>SERVICES;<sp/>LOSS<sp/>OF<sp/>USE,<sp/>DATA,<sp/>OR<sp/>PROFITS;<sp/>OR<sp/>BUSINESS<sp/>INTERRUPTION)</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"><sp/>*<sp/>HOWEVER<sp/>CAUSED<sp/>AND<sp/>ON<sp/>ANY<sp/>THEORY<sp/>OF<sp/>LIABILITY,<sp/>WHETHER<sp/>IN<sp/>CONTRACT,</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"><sp/>*<sp/>STRICT<sp/>LIABILITY,<sp/>OR<sp/>TORT<sp/>(INCLUDING<sp/>NEGLIGENCE<sp/>OR<sp/>OTHERWISE)<sp/>ARISING</highlight></codeline>
+<codeline lineno="23"><highlight class="comment"><sp/>*<sp/>IN<sp/>ANY<sp/>WAY<sp/>OUT<sp/>OF<sp/>THE<sp/>USE<sp/>OF<sp/>THIS<sp/>SOFTWARE,<sp/>EVEN<sp/>IF<sp/>ADVISED<sp/>OF<sp/>THE</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"><sp/>*<sp/>POSSIBILITY<sp/>OF<sp/>SUCH<sp/>DAMAGE.</highlight></codeline>
+<codeline lineno="25"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="preprocessor">#include<sp/>&lt;stdio.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;unistd.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;errno.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="object_8h" kindref="compound">rpc/object.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="service_8h" kindref="compound">rpc/service.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="server_8h" kindref="compound">rpc/server.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;../../src/internal.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref></highlight></codeline>
+<codeline lineno="45"><highlight class="normal">exchange_blob(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*cookie,<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args)</highlight></codeline>
+<codeline lineno="46"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>shmem;</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*addr;</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="object_8h_1a6ff01b9e6d71ba03e2dff76ede7366f6" kindref="member">rpc_object_unpack</ref>(args,<sp/></highlight><highlight class="stringliteral">&quot;[v]&quot;</highlight><highlight class="normal">,<sp/>&amp;shmem)<sp/>&lt;<sp/>1)<sp/>{</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="service_8h_1a8199576424cc9470380ab43248129911" kindref="member">rpc_function_error</ref>(cookie,<sp/>EINVAL,<sp/></highlight><highlight class="stringliteral">&quot;Invalid<sp/>arguments<sp/>passed&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(NULL);</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;Received<sp/>%zu<sp/>bytes<sp/>long<sp/>shared<sp/>memory<sp/>block\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>rpc_shmem_get_size(shmem));</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/>addr<sp/>=<sp/>rpc_shmem_map(shmem);</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/>memset(addr,<sp/></highlight><highlight class="charliteral">&apos;B&apos;</highlight><highlight class="normal">,<sp/>rpc_shmem_get_size(shmem));</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/>rpc_shmem_unmap(shmem,<sp/>addr);</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(shmem);</highlight></codeline>
+<codeline lineno="64"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal">main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*argv[])</highlight></codeline>
+<codeline lineno="68"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="service_8h_1a55087f28cb63ff45b6c798a5dabaedd7" kindref="member">rpc_context_t</ref><sp/>ctx;</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="server_8h_1a46fd27cbcf75a54103df9d51d90a7fca" kindref="member">rpc_server_t</ref><sp/>srv;</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/>(void)argc;</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/>(void)argv;</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/>ctx<sp/>=<sp/><ref refid="service_8h_1aa53a346b1f60759fabc2f047e75fdb90" kindref="member">rpc_context_create</ref>();</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="service_8h_1a1aac077f97529f7c26834c139fefc2f5" kindref="member">rpc_context_register_func</ref>(ctx,<sp/>NULL,<sp/></highlight><highlight class="stringliteral">&quot;exchange_blob&quot;</highlight><highlight class="normal">,<sp/>NULL,</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>exchange_blob);</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/>srv<sp/>=<sp/><ref refid="server_8h_1a2d524c3d5822d34b46f1d8552bf7ede0" kindref="member">rpc_server_create</ref>(</highlight><highlight class="stringliteral">&quot;unix:///tmp/server.sock&quot;</highlight><highlight class="normal">,<sp/>ctx);</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="server_8h_1a52667e1f1ad29521541c60aae34dcf02" kindref="member">rpc_server_resume</ref>(srv);</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/>pause();</highlight></codeline>
+<codeline lineno="81"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="/code/examples/shm-server/shm-server.c"/>
+  </compounddef>
+</doxygen>

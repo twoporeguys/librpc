@@ -1,0 +1,156 @@
+\hypertarget{server_8c-example}{}\section{server.\+c}
+An example that shows how to set up a basic librpc server and register methods on it.
+
+
+\begin{DoxyCodeInclude}
+\textcolor{comment}{/*}
+\textcolor{comment}{ * Copyright 2017 Two Pore Guys, Inc.}
+\textcolor{comment}{ * All rights reserved}
+\textcolor{comment}{ *}
+\textcolor{comment}{ * Redistribution and use in source and binary forms, with or without}
+\textcolor{comment}{ * modification, are permitted providing that the following conditions}
+\textcolor{comment}{ * are met:}
+\textcolor{comment}{ * 1. Redistributions of source code must retain the above copyright}
+\textcolor{comment}{ *    notice, this list of conditions and the following disclaimer.}
+\textcolor{comment}{ * 2. Redistributions in binary form must reproduce the above copyright}
+\textcolor{comment}{ *    notice, this list of conditions and the following disclaimer in the}
+\textcolor{comment}{ *    documentation and/or other materials provided with the distribution.}
+\textcolor{comment}{ *}
+\textcolor{comment}{ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR}
+\textcolor{comment}{ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED}
+\textcolor{comment}{ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE}
+\textcolor{comment}{ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY}
+\textcolor{comment}{ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL}
+\textcolor{comment}{ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS}
+\textcolor{comment}{ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)}
+\textcolor{comment}{ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,}
+\textcolor{comment}{ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING}
+\textcolor{comment}{ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE}
+\textcolor{comment}{ * POSSIBILITY OF SUCH DAMAGE.}
+\textcolor{comment}{ *}
+\textcolor{comment}{ */}
+
+\textcolor{preprocessor}{#include <unistd.h>}
+\textcolor{preprocessor}{#include <stdio.h>}
+\textcolor{preprocessor}{#include <string.h>}
+\textcolor{preprocessor}{#include <signal.h>}
+\textcolor{preprocessor}{#include <glib.h>}
+\textcolor{preprocessor}{#include <\hyperlink{object_8h}{rpc/object.h}>}
+\textcolor{preprocessor}{#include <\hyperlink{service_8h}{rpc/service.h}>}
+\textcolor{preprocessor}{#include <\hyperlink{server_8h}{rpc/server.h}>}
+
+\textcolor{preprocessor}{#ifndef \_\_unused}
+\textcolor{preprocessor}{#define \_\_unused \_\_attribute\_\_((unused))}
+\textcolor{preprocessor}{#endif}
+
+\textcolor{keyword}{static} \textcolor{keywordtype}{void}
+server\_event(\textcolor{keywordtype}{void} *arg \_\_unused, \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\_connection\_t} conn,
+    rpc\_server\_event\_t event)
+\{
+    \textcolor{keyword}{const} \textcolor{keywordtype}{char} *addr;
+
+    addr = \hyperlink{connection_8h_ab74f1419e8a907d1c99dbef5358b6dd2}{rpc\_connection\_get\_remote\_address}(conn);
+
+    \textcolor{keywordflow}{if} (event == RPC\_SERVER\_CLIENT\_CONNECT)
+        printf(\textcolor{stringliteral}{"client %s connected\(\backslash\)n"}, addr);
+
+    \textcolor{keywordflow}{if} (event == RPC\_SERVER\_CLIENT\_DISCONNECT)
+        printf(\textcolor{stringliteral}{"client %s disconnected\(\backslash\)n"}, addr);
+\}
+
+\textcolor{keyword}{static} \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t}
+hello(\textcolor{keywordtype}{void} *cookie \_\_unused, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} args)
+\{
+    (void)cookie;
+
+    \textcolor{keywordflow}{return} \hyperlink{object_8h_a90b42194b061a3f7c010cfbd67e43e06}{rpc\_string\_create\_with\_format}(\textcolor{stringliteral}{"hello %s!"},
+        \hyperlink{object_8h_a98483eea7ea6929d45d04b987a4c8f1c}{rpc\_array\_get\_string}(args, 0));
+\}
+
+\textcolor{keywordtype}{int}
+main(\textcolor{keywordtype}{int} argc, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *argv[])
+\{
+    \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\_context\_t} ctx;
+    \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} error;
+    \_\_block \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\_server\_t} srv;
+        \_\_block GRand *rand = g\_rand\_new();
+        \_\_block gint setcnt = g\_rand\_int\_range(rand, 50, 500);
+        \_\_block \textcolor{keywordtype}{char} *strg = g\_malloc(27);
+
+    (void)argc;
+    (void)argv;
+
+    ctx = \hyperlink{service_8h_aa53a346b1f60759fabc2f047e75fdb90}{rpc\_context\_create}();
+    \hyperlink{service_8h_a1aac077f97529f7c26834c139fefc2f5}{rpc\_context\_register\_func}(ctx, NULL, \textcolor{stringliteral}{"hello"},
+        NULL, hello);
+
+    \hyperlink{service_8h_ac0a7c2d5e6bb7464de61d346f97c0b04}{rpc\_context\_register\_block}(ctx, NULL, \textcolor{stringliteral}{"block"},
+        NULL, ^(\textcolor{keywordtype}{void} *cookie \_\_unused, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} args \_\_unused) \{
+        \textcolor{keywordflow}{return} (\hyperlink{object_8h_ae7ba5d4d5a269764aaac74170be2884c}{rpc\_string\_create}(\textcolor{stringliteral}{"haha lol"}));
+        \});
+
+    \hyperlink{service_8h_ac0a7c2d5e6bb7464de61d346f97c0b04}{rpc\_context\_register\_block}(ctx, NULL, \textcolor{stringliteral}{"delay"},
+        NULL, ^(\textcolor{keywordtype}{void} *cookie \_\_unused, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} args \_\_unused) \{
+        sleep(5);
+        \textcolor{keywordflow}{return} (\hyperlink{object_8h_a8c515bb8b1add8dbe86e615f048182a2}{rpc\_int64\_create}(42));
+        \});
+
+    \hyperlink{service_8h_ac0a7c2d5e6bb7464de61d346f97c0b04}{rpc\_context\_register\_block}(ctx, NULL, \textcolor{stringliteral}{"event"},
+        NULL, ^(\textcolor{keywordtype}{void} *cookie \_\_unused, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} args \_\_unused) \{
+        \hyperlink{server_8h_a28eeff2b8ec73f31f1af9feff11cb698}{rpc\_server\_broadcast\_event}(srv, NULL, NULL, \textcolor{stringliteral}{"server.hello"},
+            \hyperlink{object_8h_ae7ba5d4d5a269764aaac74170be2884c}{rpc\_string\_create}(\textcolor{stringliteral}{"world"}));
+        \hyperlink{server_8h_a28eeff2b8ec73f31f1af9feff11cb698}{rpc\_server\_broadcast\_event}(srv, NULL, NULL, \textcolor{stringliteral}{"oh\_noes"},
+            \hyperlink{object_8h_a8c515bb8b1add8dbe86e615f048182a2}{rpc\_int64\_create}(-1));
+        \textcolor{keywordflow}{return} (\hyperlink{object_8h_af71ab5e00bfb82e6733e59c42e3ed157}{rpc\_null\_create}());
+        \});
+
+        strcpy(strg, \textcolor{stringliteral}{"abcdefghijklmnopqrstuvwxyz"});
+        \hyperlink{service_8h_ac0a7c2d5e6bb7464de61d346f97c0b04}{rpc\_context\_register\_block}(ctx, NULL, \textcolor{stringliteral}{"stream"},
+            NULL, ^\hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} (\textcolor{keywordtype}{void} *cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} args \_\_unused) \{
+                \textcolor{keywordtype}{int} cnt = 0;
+                gint i;
+                \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} res;
+
+                \hyperlink{service_8h_ac8e084a977c2598fa35284be241d4d44}{rpc\_function\_start\_stream}(cookie);
+                \textcolor{keywordflow}{while} (cnt < setcnt) \{
+                        cnt++;
+
+                        i = g\_rand\_int\_range (rand, 0, 26);
+
+                        res = \hyperlink{object_8h_a8a8454f12dcde323f5daba961febea97}{rpc\_object\_pack}(\textcolor{stringliteral}{"[s, i, i]"},
+                            strg + i, 26-i, cnt);
+
+                        fprintf(stderr, \textcolor{stringliteral}{"returning %s,  %d letters, %d of %d\(\backslash\)n"},
+                            \hyperlink{object_8h_a98483eea7ea6929d45d04b987a4c8f1c}{rpc\_array\_get\_string}(res, 0), 26-i, cnt, setcnt);
+
+                        \textcolor{keywordflow}{if} (\hyperlink{service_8h_ac8c50ecedc9e59086e1ab63e1dd6c425}{rpc\_function\_yield}(cookie, res) != 0) \{
+                                fprintf(stderr, \textcolor{stringliteral}{"yield failed\(\backslash\)n"});
+                                \hyperlink{service_8h_a5f0f3252a2c4e12050419519afe64e92}{rpc\_function\_end}(cookie);
+                                \textcolor{keywordflow}{return} (\hyperlink{object_8h_af71ab5e00bfb82e6733e59c42e3ed157}{rpc\_null\_create}());
+                        \}
+                \}
+                \hyperlink{service_8h_a5f0f3252a2c4e12050419519afe64e92}{rpc\_function\_end}(cookie);
+        \textcolor{keywordflow}{return} (\hyperlink{object_8h_af71ab5e00bfb82e6733e59c42e3ed157}{rpc\_null\_create}());
+        \});
+
+    srv = \hyperlink{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}{rpc\_server\_create}(\textcolor{stringliteral}{"tcp://0.0.0.0:5000"}, ctx);
+    \textcolor{keywordflow}{if} (srv == NULL) \{
+        error = \hyperlink{object_8h_a45800949eb1b61b3af02051c780244fe}{rpc\_get\_last\_error}();
+        fprintf(stderr, \textcolor{stringliteral}{"Cannot create server: %s\(\backslash\)n"},
+            \hyperlink{object_8h_ac35bbbc0527c6590bdf50e55e7f08b6e}{rpc\_error\_get\_message}(error));
+        \textcolor{keywordflow}{return} (1);
+    \}
+
+    \hyperlink{server_8h_a1dd5a060b892c8a4f554ca13291d9645}{rpc\_server\_set\_event\_handler}(srv, 
+      \hyperlink{server_8h_a34749fc2472ddb06c6d36006e2a948c3}{RPC\_SERVER\_HANDLER}(server\_event, NULL));
+
+    sleep(2);
+    printf(\textcolor{stringliteral}{"Resuming server now\(\backslash\)n"});
+
+    \hyperlink{server_8h_a52667e1f1ad29521541c60aae34dcf02}{rpc\_server\_resume}(srv);
+    pause();
+    \hyperlink{server_8h_a1bf6070b1bb3b31d394f3862405eaf8c}{rpc\_server\_close}(srv);
+    \textcolor{keywordflow}{return} (0);
+\}
+\end{DoxyCodeInclude}
+ 

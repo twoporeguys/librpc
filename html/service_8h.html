@@ -88,8 +88,15 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="service_8h__dep__incl.png" border="0" usemap="#_2code_2include_2rpc_2service_8hdep" alt=""/></div>
 <map name="_2code_2include_2rpc_2service_8hdep" id="_2code_2include_2rpc_2service_8hdep">
-<area shape="rect" id="node2" href="rpc_8h_source.html" title="/code/include/rpc/rpc.h" alt="" coords="19,155,187,181"/>
-<area shape="rect" id="node3" href="server_8h.html" title="/code/include/rpc/server.h" alt="" coords="75,80,263,107"/>
+<area shape="rect" id="node2" href="rpc_8h_source.html" title="/code/include/rpc/rpc.h" alt="" coords="5,162,173,189"/>
+<area shape="rect" id="node3" href="server_8h.html" title="/code/include/rpc/server.h" alt="" coords="739,80,927,107"/>
+<area shape="rect" id="node4" href="fd-server_8c_source.html" title="/code/examples/fd&#45;server\l/fd&#45;server.c" alt="" coords="198,155,386,196"/>
+<area shape="rect" id="node5" href="fd-transport_8c_source.html" title="/code/examples/fd&#45;transport\l/fd&#45;transport.c" alt="" coords="410,155,617,196"/>
+<area shape="rect" id="node6" href="loopback_8c_source.html" title="/code/examples/loopback\l/loopback.c" alt="" coords="641,155,829,196"/>
+<area shape="rect" id="node7" href="pack-unpack_8c_source.html" title="/code/examples/pack\l&#45;unpack/pack&#45;unpack.c" alt="" coords="853,155,1025,196"/>
+<area shape="rect" id="node8" href="server_8c_source.html" title="/code/examples/server\l/server.c" alt="" coords="1049,155,1220,196"/>
+<area shape="rect" id="node9" href="shm-server_8c_source.html" title="/code/examples/shm\l&#45;server/shm&#45;server.c" alt="" coords="1244,155,1401,196"/>
+<area shape="rect" id="node10" href="validation_8c_source.html" title="/code/examples/validation\l/validation.c" alt="" coords="1425,155,1620,196"/>
 </map>
 </div>
 </div>
@@ -354,7 +361,8 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">^(<span class="keywordtype">void</span> *_cookie, <a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> _args) {              \</div><div class="line">        return ((<a class="code" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>)_fn(_cookie, _args));     \</div><div class="line">    }</div><div class="ttc" id="object_8h_html_ab365f726b4975c0c8376b808d111d01b"><div class="ttname"><a href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a></div><div class="ttdeci">struct rpc_object * rpc_object_t</div><div class="ttdef"><b>Definition:</b> <a href="object_8h_source.html#l00073">object.h:73</a></div></div>
 </div><!-- fragment --><p>A macro to convert function pointer into <a class="el" href="service_8h.html#ae49a22468cfcd4adfa558078e9e4e312">rpc_function_t</a> block. </p>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="validation_8c-example.html#a9">validation.c</a>.</dd>
+</dl>
 <p class="definition">Definition at line <a class="el" href="service_8h_source.html#l00113">113</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
 </div>
@@ -404,7 +412,8 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">{                               \</div><div class="line">        .rim_type = <a class="code" href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a3b8dba044cf7b9b552bc4e3a3437a94a">RPC_MEMBER_METHOD</a>,              \</div><div class="line">        .rim_name = (#_name),                   \</div><div class="line">        .rim_method = {                     \</div><div class="line">                        .rm_block = <a class="code" href="service_8h.html#a5484afe5b3f646a7989ad91e011cc5b1">RPC_FUNCTION</a>(_fn),          \</div><div class="line">            .rm_arg = NULL                  \</div><div class="line">                }                           \</div><div class="line">    }</div><div class="ttc" id="service_8h_html_a543850b4e1fac65207114c51d9c3f1a4a3b8dba044cf7b9b552bc4e3a3437a94a"><div class="ttname"><a href="service_8h.html#a543850b4e1fac65207114c51d9c3f1a4a3b8dba044cf7b9b552bc4e3a3437a94a">RPC_MEMBER_METHOD</a></div><div class="ttdef"><b>Definition:</b> <a href="service_8h_source.html#l00216">service.h:216</a></div></div>
 <div class="ttc" id="service_8h_html_a5484afe5b3f646a7989ad91e011cc5b1"><div class="ttname"><a href="service_8h.html#a5484afe5b3f646a7989ad91e011cc5b1">RPC_FUNCTION</a></div><div class="ttdeci">#define RPC_FUNCTION(_fn)</div><div class="ttdef"><b>Definition:</b> <a href="service_8h_source.html#l00113">service.h:113</a></div></div>
 </div><!-- fragment --><p>A convenience macro to declare RPC method in the vtable array. </p>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="validation_8c-example.html#a1">validation.c</a>.</dd>
+</dl>
 <p class="definition">Definition at line <a class="el" href="service_8h_source.html#l00184">184</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
 </div>
@@ -772,7 +781,8 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Creates a new RPC context.</p>
 <dl class="section return"><dt>Returns</dt><dd>Newly created RPC context object. </dd></dl>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="fd-server_8c-example.html#a2">fd-server.c</a>, <a class="el" href="fd-transport_8c-example.html#a0">fd-transport.c</a>, <a class="el" href="loopback_8c-example.html#a0">loopback.c</a>, <a class="el" href="pack-unpack_8c-example.html#a1">pack-unpack.c</a>, <a class="el" href="server_8c-example.html#a3">server.c</a>, <a class="el" href="shm-server_8c-example.html#a2">shm-server.c</a>, and <a class="el" href="validation_8c-example.html#a6">validation.c</a>.</dd>
+</dl>
 </div>
 </div>
 <a id="adf89ac4a7b3a1e436b03a482eb366639"></a>
@@ -1016,7 +1026,8 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Status. </dd></dl>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="fd-transport_8c-example.html#a1">fd-transport.c</a>, <a class="el" href="loopback_8c-example.html#a1">loopback.c</a>, <a class="el" href="pack-unpack_8c-example.html#a2">pack-unpack.c</a>, and <a class="el" href="server_8c-example.html#a5">server.c</a>.</dd>
+</dl>
 </div>
 </div>
 <a id="a1aac077f97529f7c26834c139fefc2f5"></a>
@@ -1074,7 +1085,8 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Status. </dd></dl>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="fd-server_8c-example.html#a3">fd-server.c</a>, <a class="el" href="server_8c-example.html#a4">server.c</a>, and <a class="el" href="shm-server_8c-example.html#a3">shm-server.c</a>.</dd>
+</dl>
 </div>
 </div>
 <a id="acfa9c9b0063bd316850e8a58878cb44e"></a>
@@ -1111,7 +1123,8 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="validation_8c-example.html#a15">validation.c</a>.</dd>
+</dl>
 </div>
 </div>
 <a id="afdc2720f56729686fea39d6bb498da37"></a>
@@ -1192,7 +1205,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="validation_8c-example.html#a11">validation.c</a>.</dd>
+</dl>
 </div>
 </div>
 <a id="a5eb243586ec426274b93ad40f64f0ea5"></a>
@@ -1229,7 +1243,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="validation_8c-example.html#a8">validation.c</a>.</dd>
+</dl>
 </div>
 </div>
 <a id="ae6d86450498479f51012a50bd973e273"></a>
@@ -1333,7 +1348,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="server_8c-example.html#a13">server.c</a>.</dd>
+</dl>
 </div>
 </div>
 <a id="a8199576424cc9470380ab43248129911"></a>
@@ -1385,7 +1401,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="fd-server_8c-example.html#a1">fd-server.c</a>, and <a class="el" href="shm-server_8c-example.html#a1">shm-server.c</a>.</dd>
+</dl>
 </div>
 </div>
 <a id="a89abe6ee2bcc59409eaccf1955ada0ad"></a>
@@ -1750,7 +1767,8 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Status. Success is reported by returning 0 </dd></dl>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="server_8c-example.html#a10">server.c</a>.</dd>
+</dl>
 </div>
 </div>
 <a id="ac8c50ecedc9e59086e1ab63e1dd6c425"></a>
@@ -1787,7 +1805,8 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Status. Success is reported by returning 0 </dd></dl>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="server_8c-example.html#a12">server.c</a>.</dd>
+</dl>
 </div>
 </div>
 <a id="adbf8b5a032c56514343d3ac6ece77db0"></a>
@@ -2080,7 +2099,8 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="validation_8c-example.html#a13">validation.c</a>.</dd>
+</dl>
 </div>
 </div>
 <a id="a28d100b9b918d120d3d8c07a0c938932"></a>
@@ -2341,7 +2361,8 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="validation_8c-example.html#a14">validation.c</a>.</dd>
+</dl>
 </div>
 </div>
 <a id="a2a53bb90b2a657abd5d5ce7b43134ca1"></a>
