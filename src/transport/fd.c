@@ -55,7 +55,7 @@ static const struct rpc_transport fd_transport = {
 	.listen = fd_listen,
 };
 
-ssize_t
+static ssize_t
 xread(int fd, void *buf, size_t nbytes)
 {
 	ssize_t ret, done = 0;
@@ -78,7 +78,7 @@ xread(int fd, void *buf, size_t nbytes)
 	return (done);
 }
 
-ssize_t
+static ssize_t
 xwrite(int fd, const void *buf, size_t nbytes)
 {
 	ssize_t ret, done = 0;
