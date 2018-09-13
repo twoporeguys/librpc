@@ -916,7 +916,6 @@ rpc_instance_unregister_member(rpc_instance_t instance, const char *interface,
 	else if (member->rim_type == RPC_MEMBER_METHOD) {
 		Block_release(member->rim_method.rm_block);
 		g_free((void *)member->rim_name);
-		g_free(member);
 	}
 
 	g_hash_table_remove(priv->rip_members, name);
