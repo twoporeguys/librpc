@@ -401,6 +401,9 @@ R\+P\+C\+\_\+\+C\+A\+L\+L\+\_\+\+E\+N\+D\+ED&Streaming call ended \\
 \hline
 
 \end{DoxyEnumFields}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{client_8c-example}{client.\+c}.\end{Desc}
 
 
 Definition at line 71 of file connection.\+h.
@@ -508,6 +511,9 @@ When sync is set to true the function waits until the call finishes and returns 
 \begin{DoxyReturn}{Returns}
 1 for successfully completed R\+PC when sync flag was set, otherwise 0 
 \end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{client_8c-example}{client.\+c}.\end{Desc}
 \mbox{\Hypertarget{connection_8h_aeba8ba3e9dc7e1310568709cbcae22da}\label{connection_8h_aeba8ba3e9dc7e1310568709cbcae22da}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+free@{rpc\+\_\+call\+\_\+free}}
 \index{rpc\+\_\+call\+\_\+free@{rpc\+\_\+call\+\_\+free}!connection.\+h@{connection.\+h}}
@@ -537,6 +543,9 @@ Returns a call result (or a current fragment).
 \begin{DoxyReturn}{Returns}
 Result 
 \end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{client_8c-example}{client.\+c}, and \hyperlink{libdispatch_8c-example}{libdispatch.\+c}.\end{Desc}
 \mbox{\Hypertarget{connection_8h_ad3d465fd37962695f644cfd3b24a2022}\label{connection_8h_ad3d465fd37962695f644cfd3b24a2022}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+set\+\_\+prefetch@{rpc\+\_\+call\+\_\+set\+\_\+prefetch}}
 \index{rpc\+\_\+call\+\_\+set\+\_\+prefetch@{rpc\+\_\+call\+\_\+set\+\_\+prefetch}!connection.\+h@{connection.\+h}}
@@ -555,6 +564,9 @@ Sets how many items librpc should prefetch in a streaming call.
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{client_8c-example}{client.\+c}.\end{Desc}
 \mbox{\Hypertarget{connection_8h_abe0779419fef32d1760633db2b8d3c29}\label{connection_8h_abe0779419fef32d1760633db2b8d3c29}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+call\+\_\+status@{rpc\+\_\+call\+\_\+status}}
 \index{rpc\+\_\+call\+\_\+status@{rpc\+\_\+call\+\_\+status}!connection.\+h@{connection.\+h}}
@@ -623,6 +635,9 @@ Waits for a call to change status.
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on failure. 
 \end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{client_8c-example}{client.\+c}.\end{Desc}
 \mbox{\Hypertarget{connection_8h_ad5e74986e0e4bcd402fbc1f565a7dd3d}\label{connection_8h_ad5e74986e0e4bcd402fbc1f565a7dd3d}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call@{rpc\+\_\+connection\+\_\+call}}
 \index{rpc\+\_\+connection\+\_\+call@{rpc\+\_\+connection\+\_\+call}!connection.\+h@{connection.\+h}}
@@ -649,6 +664,9 @@ Function supports a callback argument of rpc\+\_\+callback\+\_\+t type, which is
 \begin{DoxyReturn}{Returns}
 R\+PC call object 
 \end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{client_8c-example}{client.\+c}, and \hyperlink{libdispatch_8c-example}{libdispatch.\+c}.\end{Desc}
 \mbox{\Hypertarget{connection_8h_aa36b47feae14a4114bacf6f049fc1696}\label{connection_8h_aa36b47feae14a4114bacf6f049fc1696}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+simple@{rpc\+\_\+connection\+\_\+call\+\_\+simple}}
 \index{rpc\+\_\+connection\+\_\+call\+\_\+simple@{rpc\+\_\+connection\+\_\+call\+\_\+simple}!connection.\+h@{connection.\+h}}
@@ -673,6 +691,9 @@ This function can be only used to call pure functions (not operating on objects,
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{client_8c-example}{client.\+c}, \hyperlink{fd-transport_8c-example}{fd-\/transport.\+c}, \hyperlink{loopback_8c-example}{loopback.\+c}, \hyperlink{pack-unpack_8c-example}{pack-\/unpack.\+c}, and \hyperlink{shm-client_8c-example}{shm-\/client.\+c}.\end{Desc}
 \mbox{\Hypertarget{connection_8h_af5e8d63da05fa221ac8bb51ff22e7f3b}\label{connection_8h_af5e8d63da05fa221ac8bb51ff22e7f3b}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+sync@{rpc\+\_\+connection\+\_\+call\+\_\+sync}}
 \index{rpc\+\_\+connection\+\_\+call\+\_\+sync@{rpc\+\_\+connection\+\_\+call\+\_\+sync}!connection.\+h@{connection.\+h}}
@@ -697,6 +718,9 @@ Method call arguments need to be rpc\+\_\+object\+\_\+t instances, followed with
 \begin{DoxyReturn}{Returns}
 Result of the call 
 \end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{fd-client_8c-example}{fd-\/client.\+c}.\end{Desc}
 \mbox{\Hypertarget{connection_8h_ac214ac69b1360a8d08d5ecc89d3013ee}\label{connection_8h_ac214ac69b1360a8d08d5ecc89d3013ee}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+call\+\_\+syncp@{rpc\+\_\+connection\+\_\+call\+\_\+syncp}}
 \index{rpc\+\_\+connection\+\_\+call\+\_\+syncp@{rpc\+\_\+connection\+\_\+call\+\_\+syncp}!connection.\+h@{connection.\+h}}
@@ -884,6 +908,9 @@ File descriptor number
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{server_8c-example}{server.\+c}.\end{Desc}
 \mbox{\Hypertarget{connection_8h_adf5617e400a0a91ffefc45d19dda2531}\label{connection_8h_adf5617e400a0a91ffefc45d19dda2531}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid}}
 \index{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+gid}!connection.\+h@{connection.\+h}}

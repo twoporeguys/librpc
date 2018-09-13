@@ -1,0 +1,88 @@
+\hypertarget{validation_8c-example}{}\section{validation.\+c}
+An example that shows how to use librpc typing A\+PI to validate arguments and values passed over the connection.
+
+
+\begin{DoxyCodeInclude}
+\textcolor{comment}{/*}
+\textcolor{comment}{ * Copyright 2017 Two Pore Guys, Inc.}
+\textcolor{comment}{ * All rights reserved}
+\textcolor{comment}{ *}
+\textcolor{comment}{ * Redistribution and use in source and binary forms, with or without}
+\textcolor{comment}{ * modification, are permitted providing that the following conditions}
+\textcolor{comment}{ * are met:}
+\textcolor{comment}{ * 1. Redistributions of source code must retain the above copyright}
+\textcolor{comment}{ *    notice, this list of conditions and the following disclaimer.}
+\textcolor{comment}{ * 2. Redistributions in binary form must reproduce the above copyright}
+\textcolor{comment}{ *    notice, this list of conditions and the following disclaimer in the}
+\textcolor{comment}{ *    documentation and/or other materials provided with the distribution.}
+\textcolor{comment}{ *}
+\textcolor{comment}{ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR}
+\textcolor{comment}{ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED}
+\textcolor{comment}{ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE}
+\textcolor{comment}{ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY}
+\textcolor{comment}{ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL}
+\textcolor{comment}{ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS}
+\textcolor{comment}{ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)}
+\textcolor{comment}{ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,}
+\textcolor{comment}{ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING}
+\textcolor{comment}{ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE}
+\textcolor{comment}{ * POSSIBILITY OF SUCH DAMAGE.}
+\textcolor{comment}{ *}
+\textcolor{comment}{ */}
+
+
+\textcolor{preprocessor}{#include <stdio.h>}
+\textcolor{preprocessor}{#include <unistd.h>}
+\textcolor{preprocessor}{#include <\hyperlink{object_8h}{rpc/object.h}>}
+\textcolor{preprocessor}{#include <\hyperlink{service_8h}{rpc/service.h}>}
+\textcolor{preprocessor}{#include <\hyperlink{server_8h}{rpc/server.h}>}
+\textcolor{preprocessor}{#include <\hyperlink{typing_8h}{rpc/typing.h}>}
+
+\textcolor{preprocessor}{#ifndef \_\_unused}
+\textcolor{preprocessor}{#define \_\_unused \_\_attribute\_\_((unused))}
+\textcolor{preprocessor}{#endif}
+
+\textcolor{keyword}{static} \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} animal\_manager\_create(\textcolor{keywordtype}{void} *, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t});
+
+\textcolor{keyword}{static} \textcolor{keyword}{const} \textcolor{keyword}{struct }\hyperlink{structrpc__if__member}{rpc\_if\_member} animal\_manager\_vtable[] = \{
+    \hyperlink{service_8h_a3b7ed0fba131ae55d90cbf5deb8cba5d}{RPC\_METHOD}(create, animal\_manager\_create),
+    RPC\_MEMBER\_END
+\};
+
+\textcolor{keyword}{static} \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t}
+animal\_manager\_create(\textcolor{keywordtype}{void} *cookie, \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\_object\_t} args)
+\{
+    printf(\textcolor{stringliteral}{"Called with:\(\backslash\)n"});
+    printf(\textcolor{stringliteral}{"%s\(\backslash\)n"}, \hyperlink{object_8h_ac3266a5b20add52514c1b2c70a4a5878}{rpc\_copy\_description}(args));
+
+    \textcolor{keywordflow}{return} (\hyperlink{object_8h_ae7ba5d4d5a269764aaac74170be2884c}{rpc\_string\_create}(\textcolor{stringliteral}{"OK"}));
+\}
+
+\textcolor{keywordtype}{int}
+main(\textcolor{keywordtype}{int} argc \_\_unused, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *argv[] \_\_unused)
+\{
+    \hyperlink{server_8h_a46fd27cbcf75a54103df9d51d90a7fca}{rpc\_server\_t} srv;
+    \hyperlink{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}{rpc\_context\_t} ctx;
+    \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\_instance\_t} manager;
+
+    \hyperlink{typing_8h_a62ae3e30a3b7c5accf5e2f2f710a65f9}{rpct\_init}(\textcolor{keyword}{true});
+    \hyperlink{typing_8h_a614a4cc99f03ed23893a73d097f26bdc}{rpct\_load\_types}(\textcolor{stringliteral}{"validation.yaml"});
+
+    ctx = \hyperlink{service_8h_aa53a346b1f60759fabc2f047e75fdb90}{rpc\_context\_create}();
+    \hyperlink{typing_8h_a4812f96b7d0bca64c415aa3aa99182be}{rpct\_allow\_idl\_download}(ctx);
+    \hyperlink{service_8h_a5eb243586ec426274b93ad40f64f0ea5}{rpc\_context\_set\_pre\_call\_hook}(ctx, \hyperlink{service_8h_a5484afe5b3f646a7989ad91e011cc5b1}{RPC\_FUNCTION}(
+      \hyperlink{typing_8h_a07cecc265f9dd575d5ff4904f13b5fac}{rpct\_pre\_call\_hook}));
+    \hyperlink{service_8h_a6b62e56dbc71d17c4094d2cfec863712}{rpc\_context\_set\_post\_call\_hook}(ctx, 
+      \hyperlink{service_8h_a5484afe5b3f646a7989ad91e011cc5b1}{RPC\_FUNCTION}(\hyperlink{typing_8h_afa62adf9fe6a415494c529254b030086}{rpct\_post\_call\_hook}));
+
+    manager = \hyperlink{service_8h_a805d705c1a9f94cf4aa04bb71a46a928}{rpc\_instance\_new}(NULL, \textcolor{stringliteral}{"/animals"});
+    \hyperlink{service_8h_abca1b1b9d6d4a7ca012ca242e0adeafd}{rpc\_instance\_register\_interface}(manager,
+        \textcolor{stringliteral}{"com.twoporeguys.librpc.examples.AnimalManager"},
+        animal\_manager\_vtable, NULL);
+
+    \hyperlink{service_8h_acfa9c9b0063bd316850e8a58878cb44e}{rpc\_context\_register\_instance}(ctx, manager);
+    srv = \hyperlink{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}{rpc\_server\_create}(\textcolor{stringliteral}{"tcp://0.0.0.0:5000"}, ctx);
+    pause();
+\}
+\end{DoxyCodeInclude}
+ 
