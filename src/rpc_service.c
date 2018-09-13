@@ -220,7 +220,7 @@ rpc_context_find_instance(rpc_context_t context, const char *path)
 	g_rw_lock_reader_lock(&context->rcx_rwlock);
 	result = path == NULL
 	    ? context->rcx_root
-	    : g_hash_table_lookup(context->rcx_instances, path));
+	    : g_hash_table_lookup(context->rcx_instances, path);
 
 	g_rw_lock_reader_unlock(&context->rcx_rwlock);
 	return (result);
