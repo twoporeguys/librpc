@@ -25,6 +25,12 @@
  *
  */
 
+/**
+ * @example client.c
+ *
+ * This is an example of using client API to receive events from the server.
+ */
+
 #include <stdio.h>
 #include <rpc/object.h>
 #include <rpc/client.h>

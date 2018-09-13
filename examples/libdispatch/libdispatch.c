@@ -25,6 +25,12 @@
  *
  */
 
+/**
+* @example libdispatch.c
+*
+* An example that shows how to integrate librpc with libdispatch.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>

@@ -25,6 +25,13 @@
  *
  */
 
+/**
+ * @example bus.c
+ *
+ * This is an example of using RPC bus API to enumerate librpc-capable
+ * USB devices in the system.
+ */
+
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>

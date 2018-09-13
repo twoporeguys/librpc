@@ -25,6 +25,13 @@
  *
  */
 
+/**
+* @example server.c
+*
+* An example that shows how to set up a basic librpc server and register
+* methods on it.
+*/
+
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>

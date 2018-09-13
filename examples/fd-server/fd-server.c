@@ -25,6 +25,13 @@
  *
  */
 
+/**
+* @example fd-server.c
+*
+* An example that shows how to send a file descriptor to a client
+* over librpc connection.
+*/
+
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>

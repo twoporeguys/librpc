@@ -25,6 +25,14 @@
  *
  */
 
+
+/**
+* @example validation.c
+*
+* An example that shows how to use librpc typing API to validate
+* arguments and values passed over the connection.
+*/
+
 #include <stdio.h>
 #include <unistd.h>
 #include <rpc/object.h>
