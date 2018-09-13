@@ -36,11 +36,19 @@ from Cython.Distutils import build_ext
 os.environ['CC'] = 'clang'
 os.environ.setdefault('DESTDIR', '/')
 cflags = ['-fblocks', '-Wno-sometimes-uninitialized']
-ldflags = ['-g', '-lrpc']
+ldflags = ['-lrpc']
+systemd = os.environ.get('SYSTEMD_SUPPORT') == 'ON'
+
+
+if os.environ.get('CMAKE_BUILD_TYPE') == 'Debug':
+    cflags += ['-g', '-O0']
 
 
 if 'CMAKE_SOURCE_DIR' in os.environ:
-    cflags += [os.path.expandvars('-I${CMAKE_SOURCE_DIR}/include')]
+    cflags += [
+        os.path.expandvars('-I${CMAKE_SOURCE_DIR}/include'),
+        os.path.expandvars('-I../../include/')
+    ]
     ldflags += [
         os.path.expandvars('-L../..'),
         os.path.expandvars('-Wl,-rpath'),
@@ -59,7 +67,8 @@ setup(
             "librpc",
             ["librpc.pyx"],
             extra_compile_args=cflags,
-            extra_link_args=ldflags
+            extra_link_args=ldflags,
+            cython_compile_time_env={'SYSTEMD_SUPPORT': systemd}
         )
     ]
 )

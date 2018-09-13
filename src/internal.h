@@ -28,24 +28,29 @@
 #ifndef LIBRPC_INTERNAL_H
 #define LIBRPC_INTERNAL_H
 
+#include <stdatomic.h>
+#include <stdio.h>
+#include <glib.h>
 #include <rpc/object.h>
 #include <rpc/query.h>
+#include <rpc/client.h>
 #include <rpc/connection.h>
 #include <rpc/service.h>
 #include <rpc/server.h>
 #include <rpc/bus.h>
 #include <rpc/typing.h>
-#include <stdio.h>
-#include <setjmp.h>
-#include <glib.h>
 #ifdef LIBDISPATCH_SUPPORT
 #include <dispatch/dispatch.h>
 #endif
 #include "linker_set.h"
+#include "notify.h"
 
 #ifndef __unused
 #define __unused __attribute__((unused))
 #endif
+
+#define STRINGIFY(x)			#x
+#define TOSTRING(x)			STRINGIFY(x)
 
 #define	DECLARE_TRANSPORT(_transport)	DATA_SET(tp_set, _transport)
 #define	DECLARE_SERIALIZER(_serializer)	DATA_SET(sr_set, _serializer)
@@ -55,6 +60,7 @@
 #define	RPC_TRANSPORT_NO_SERIALIZE		(1 << 0)
 #define	RPC_TRANSPORT_CREDENTIALS		(1 << 1)
 #define RPC_TRANSPORT_FD_PASSING		(1 << 2)
+#define	RPC_TRANSPORT_NO_RPCT_SERIALIZE		(1 << 3)
 
 #if RPC_DEBUG
 #define debugf(...) 				\
@@ -67,7 +73,7 @@
 #define debugf(...)
 #endif
 
-#define	TYPE_REGEX	"(struct|union|type|enum) ([\\w\\.]+)(<(.*)>)?"
+#define	TYPE_REGEX	"(struct|union|type|container|enum) ([\\w\\.]+)(<(.*)>)?"
 #define	INTERFACE_REGEX	"interface (\\w+)"
 #define	INSTANCE_REGEX	"([\\w\\.]+)(<(.*)>)?"
 #define	METHOD_REGEX	"method (\\w+)"
@@ -87,12 +93,13 @@ struct rpct_error_context;
 
 typedef int (*rpc_recv_msg_fn_t)(struct rpc_connection *, const void *, size_t,
     int *, size_t, struct rpc_credentials *);
-typedef int (*rpc_send_msg_fn_t)(void *, void *, size_t, const int *, size_t);
+typedef int (*rpc_send_msg_fn_t)(void *, const void *, size_t, const int *, size_t);
 typedef int (*rpc_abort_fn_t)(void *);
 typedef int (*rpc_get_fd_fn_t)(void *);
 typedef void (*rpc_release_fn_t)(void *);
 typedef int (*rpc_close_fn_t)(struct rpc_connection *);
 typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
+typedef bool (*rpc_valid_fn_t)(struct rpc_server *);
 typedef int (*rpc_teardown_fn_t)(struct rpc_server *);
 
 typedef struct rpct_member *(*rpct_member_fn_t)(const char *, rpc_object_t,
@@ -100,6 +107,15 @@ typedef struct rpct_member *(*rpct_member_fn_t)(const char *, rpc_object_t,
 typedef bool (*rpct_validate_fn_t)(struct rpct_typei *, rpc_object_t,
     struct rpct_error_context *);
 typedef rpc_object_t (*rpct_serialize_fn_t)(rpc_object_t);
+
+typedef void (*rpc_fn_respond_fn_t)(void *, rpc_object_t);
+typedef void (*rpc_fn_error_fn_t)(void *, int , const char *, va_list ap);
+typedef void (*rpc_fn_error_ex_fn_t)(void *, rpc_object_t);
+typedef int (*rpc_fn_yield_fn_t)(void *, rpc_object_t);
+typedef void (*rpc_fn_end_fn_t)(void *);
+typedef void (*rpc_fn_kill_fn_t)(void *);
+typedef bool (*rpc_fn_should_abt_fn_t)(void *);
+typedef void (*rpc_fn_set_abt_h_fn_t)(void *, rpc_abort_handler_t);
 
 struct rpc_query_iter
 {
@@ -162,25 +178,6 @@ struct rpc_object
 	struct rpct_typei *	ro_typei;
 };
 
-struct rpc_call
-{
-	rpc_connection_t    	rc_conn;
-	const char *        	rc_type;
-	const char *		rc_path;
-	const char *		rc_interface;
-	const char *        	rc_method;
-	rpc_object_t        	rc_id;
-	rpc_object_t        	rc_args;
-	rpc_call_status_t   	rc_status;
-	rpc_object_t        	rc_result;
-	GCond      		rc_cv;
-	GMutex			rc_mtx;
-    	GAsyncQueue *		rc_queue;
-    	GSource *		rc_timeout;
-	rpc_callback_t    	rc_callback;
-	uint64_t               	rc_seqno;
-};
-
 struct rpc_subscription
 {
 	const char *		rsu_name;
@@ -196,28 +193,34 @@ struct rpc_subscription_handler
 	rpc_handler_t 		rsh_handler;
 };
 
-struct rpc_inbound_call
+struct rpc_call
 {
-	rpc_context_t 		ric_context;
-    	rpc_connection_t    	ric_conn;
-	rpc_instance_t 		ric_instance;
-	rpc_object_t 		ric_frame;
-	rpc_object_t        	ric_id;
-	rpc_object_t        	ric_args;
-	rpc_abort_handler_t	ric_abort_handler;
-	const char *        	ric_name;
-	const char *		ric_interface;
-	const char *		ric_path;
-	struct rpc_if_method *	ric_method;
-    	GMutex			ric_mtx;
-    	GCond			ric_cv;
-    	volatile int64_t	ric_producer_seqno;
-    	volatile int64_t	ric_consumer_seqno;
-    	void *			ric_arg;
-    	bool			ric_streaming;
-    	bool			ric_responded;
-    	bool			ric_ended;
-    	bool			ric_aborted;
+	rpc_connection_t    	rc_conn;
+	rpc_context_t 		rc_context;
+	rpc_call_type_t        	rc_type;
+	char *			rc_path;
+	char *			rc_interface;
+	char *        		rc_method_name;
+	rpc_object_t        	rc_id;
+	rpc_object_t        	rc_args;
+	rpc_object_t		rc_err;
+	struct notify		rc_notify;
+	GMutex			rc_mtx;
+	GSource *		rc_timeout;
+	GQueue *		rc_queue;
+	bool			rc_timedout;
+	rpc_callback_t    	rc_callback;
+	atomic_int_fast64_t	rc_producer_seqno;
+	atomic_int_fast64_t	rc_consumer_seqno; /* also rc_seqno */
+	uint64_t 		rc_prefetch;
+	rpc_instance_t 		rc_instance;
+	rpc_abort_handler_t	rc_abort_handler;
+	struct rpc_if_method *	rc_if_method;
+	void *			rc_m_arg;
+	bool			rc_streaming;
+	bool			rc_responded;
+	bool			rc_ended;
+	bool			rc_aborted;
 };
 
 struct rpc_credentials
@@ -227,27 +230,50 @@ struct rpc_credentials
     	pid_t 			rcc_pid;
 };
 
+struct rpc_fn_callbacks
+{
+	rpc_fn_respond_fn_t	rcf_fn_respond;
+	rpc_fn_error_fn_t	rcf_fn_error;
+	rpc_fn_error_ex_fn_t	rcf_fn_error_ex;
+	rpc_fn_yield_fn_t	rcf_fn_yield;
+	rpc_fn_end_fn_t		rcf_fn_end;
+	rpc_fn_kill_fn_t	rcf_fn_kill;
+	rpc_fn_should_abt_fn_t	rcf_should_abort;
+	rpc_fn_set_abt_h_fn_t	rcf_set_async_abort_handler;
+};
+
 struct rpc_connection
 {
 	struct rpc_server *	rco_server;
-    	struct rpc_client *	rco_client;
+	struct rpc_client *	rco_client;
+	struct rpc_context *	rco_rpc_context;
     	struct rpc_credentials	rco_creds;
 	bool			rco_has_creds;
+	bool			rco_supports_fd_passing;
 	const char *        	rco_uri;
+	char *			rco_endpoint_address;
 	rpc_error_handler_t 	rco_error_handler;
 	rpc_handler_t		rco_event_handler;
+	rpc_raw_handler_t 	rco_raw_handler;
 	guint                 	rco_rpc_timeout;
 	GHashTable *		rco_calls;
 	GHashTable *		rco_inbound_calls;
     	GPtrArray *		rco_subscriptions;
     	GMutex			rco_subscription_mtx;
-    	GMutex			rco_send_mtx;
-	GMutex			rco_call_mtx;
-    	GMainContext *		rco_mainloop;
+	GMutex			rco_mtx;
+	GMutex			rco_ref_mtx;
+	GMutex			rco_send_mtx;
+	GRWLock			rco_icall_rwlock;
+	GRWLock			rco_call_rwlock;
+	GMainContext *		rco_main_context;
+	rpc_object_t            rco_error;
     	GThreadPool *		rco_callback_pool;
 	rpc_object_t 		rco_params;
     	int			rco_flags;
 	bool			rco_closed;
+	bool			rco_aborted;
+	bool			rco_server_released;
+	int			rco_refcnt;
 #if LIBDISPATCH_SUPPORT
 	dispatch_queue_t	rco_dispatch_queue;
 #endif
@@ -260,6 +286,7 @@ struct rpc_connection
     	rpc_get_fd_fn_t 	rco_get_fd;
 	rpc_release_fn_t	rco_release;
 	void *			rco_arg;
+	struct rpc_fn_callbacks rco_fn_cbs;
 };
 
 struct rpc_server
@@ -268,17 +295,32 @@ struct rpc_server
     	GMainLoop *		rs_g_loop;
     	GThread *		rs_thread;
     	GList *			rs_connections;
+	GQueue *		rs_calls;
     	GMutex			rs_mtx;
+	GMutex			rs_calls_mtx;
     	GCond			rs_cv;
+	GRWLock			rs_connections_rwlock;
 	struct rpc_context *	rs_context;
     	const char *		rs_uri;
     	int 			rs_flags;
     	bool			rs_operational;
 	bool			rs_paused;
+	bool			rs_closed;
+	bool			rs_threaded_teardown;
+        rpc_object_t            rs_error;
+	uint			rs_refcnt;
+	uint			rs_conn_made;
+	uint			rs_conn_refused;
+	uint			rs_conn_closed;
+	uint			rs_conn_aborted;
+	rpc_object_t 		rs_params;
+	rpc_server_ev_handler_t rs_event_handler;
 
     	/* Callbacks */
+	rpc_valid_fn_t		rs_valid;
     	rpc_accept_fn_t		rs_accept;
     	rpc_teardown_fn_t	rs_teardown;
+	rpc_teardown_fn_t	rs_teardown_end;
     	void *			rs_arg;
 };
 
@@ -299,9 +341,6 @@ struct rpc_instance
 	void *			ri_arg;
 	rpc_context_t 		ri_context;
 	GHashTable *		ri_interfaces;
-	GHashTable *		ri_children;
-	GHashTable *		ri_subscriptions;
-	GHashTable *		ri_properties;
 	GMutex			ri_mtx;
 	GRWLock			ri_rwlock;
 };
@@ -329,6 +368,7 @@ struct rpc_context
 	GHashTable *		rcx_instances;
 	GPtrArray * 		rcx_servers;
 	GRWLock			rcx_rwlock;
+	GRWLock			rcx_server_rwlock;
 	rpc_instance_t 		rcx_root;
 
 	/* Hooks */
@@ -348,6 +388,7 @@ struct rpc_transport
 {
 	int (*connect)(struct rpc_connection *, const char *, rpc_object_t);
 	int (*listen)(struct rpc_server *, const char *, rpc_object_t);
+	bool (*is_fd_passing)(struct rpc_connection *);
     	int flags;
         const struct rpc_bus_transport *bus_ops;
 	const char *name;
@@ -376,6 +417,7 @@ struct rpct_file
 	char *			path;
 	const char *		description;
 	const char *		ns;
+	bool			loaded;
 	int64_t			version;
 	GPtrArray *		uses;
 	GHashTable *		types;
@@ -395,6 +437,7 @@ struct rpct_type
 	struct rpct_file *	file;
 	struct rpct_type *	parent;
 	struct rpct_typei *	definition;
+	struct rpct_typei *	value_type;
 	bool			generic;
 	GPtrArray *		generic_vars;
 	GHashTable *		members;
@@ -448,6 +491,7 @@ struct rpct_argument
 	struct rpct_typei *	type;
 	char *			name;
 	char *			description;
+	bool			opt;
 };
 
 struct rpct_error_context
@@ -491,7 +535,7 @@ off_t rpc_shmem_get_offset(rpc_object_t shmem);
 
 rpc_object_t rpc_error_create_from_gerror(GError *g_error);
 
-void rpc_abort(const char *fmt, ...);
+_Noreturn void rpc_abort(const char *fmt, ...);
 void rpc_trace(const char *msg, const char *ident, rpc_object_t frame);
 char *rpc_get_backtrace(void);
 char *rpc_generate_v4_uuid(void);
@@ -508,11 +552,19 @@ const struct rpct_class_handler *rpc_find_class_handler(const char *name,
 void rpc_set_last_error(int code, const char *msg, rpc_object_t extra);
 void rpc_set_last_rpc_error(rpc_object_t rpc_error);
 void rpc_set_last_gerror(GError *error);
-void rpc_set_last_errorf(int code, const char *fmt, ...);
+void rpc_set_last_errorf(int code, const char *fmt, ...) __attribute__((__format__(__printf__, 2, 3)));
 rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
-int rpc_context_dispatch(rpc_context_t, struct rpc_inbound_call *);
-int rpc_server_dispatch(rpc_server_t, struct rpc_inbound_call *);
+int rpc_connection_retain(rpc_connection_t);
+int rpc_connection_release(rpc_connection_t);
+int rpc_context_dispatch(rpc_context_t, struct rpc_call *);
+int rpc_server_dispatch(rpc_server_t, struct rpc_call *);
+void rpc_server_release(rpc_server_t);
+void rpc_server_quit(rpc_server_t);
+void rpc_server_disconnect(rpc_server_t, rpc_connection_t);
+GMainContext *rpc_server_get_main_context(rpc_server_t);
+GMainContext *rpc_client_get_main_context(rpc_client_t);
+
 void rpc_connection_send_err(rpc_connection_t, rpc_object_t, int,
     const char *descr, ...);
 void rpc_connection_send_errx(rpc_connection_t, rpc_object_t, rpc_object_t);
@@ -520,7 +572,7 @@ void rpc_connection_send_response(rpc_connection_t, rpc_object_t, rpc_object_t);
 void rpc_connection_send_fragment(rpc_connection_t, rpc_object_t, int64_t,
     rpc_object_t);
 void rpc_connection_send_end(rpc_connection_t, rpc_object_t, int64_t);
-void rpc_connection_close_inbound_call(struct rpc_inbound_call *);
+void rpc_connection_close_inbound_call(struct rpc_call *);
 
 void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 
@@ -536,5 +588,16 @@ bool rpct_run_validators(struct rpct_typei *typei, rpc_object_t obj,
 struct rpct_typei *rpct_instantiate_type(const char *decl,
     struct rpct_typei *parent, struct rpct_type *ptype,
     struct rpct_file *origin);
+
+void rpc_function_respond_impl(void *cookie, rpc_object_t object);
+void rpc_function_error_impl(void *cookie, int code, const char *message,
+    va_list ap);
+void rpc_function_error_ex_impl(void *cookie, rpc_object_t exception);
+int rpc_function_yield_impl(void *cookie, rpc_object_t fragment);
+void rpc_function_end_impl(void *cookie);
+void rpc_function_kill_impl(void *cookie);
+bool rpc_function_should_abort_impl(void *cookie);
+void rpc_function_set_async_abort_handler_impl(void *cookie,
+    rpc_abort_handler_t handler);
 
 #endif /* LIBRPC_INTERNAL_H */

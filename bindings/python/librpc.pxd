@@ -29,6 +29,7 @@ from libc.stdint cimport *
 
 ctypedef bint (*rpc_dictionary_applier_f)(void *arg, const char *key, rpc_object_t value)
 ctypedef bint (*rpc_array_applier_f)(void *arg, size_t index, rpc_object_t value)
+ctypedef int (*rpc_array_cmp_f)(void *arg, rpc_object_t o1, rpc_object_t o2)
 ctypedef void (*rpc_binary_destructor_f)(void *buffer)
 ctypedef void (*rpc_binary_destructor_arg_f)(void *arg, void *buffer)
 ctypedef void (*rpc_handler_f)(void *arg, const char *path, const char *interface, const char *name, rpc_object_t args)
@@ -42,6 +43,7 @@ ctypedef bint (*rpct_if_member_applier_f)(void *arg, rpct_if_member_t if_member)
 ctypedef rpc_object_t (*rpc_property_getter_f)(void *cookie)
 ctypedef void (*rpc_property_setter_f)(void *cookie, rpc_object_t value)
 ctypedef void (*rpc_property_handler_f)(void *cookie, rpc_object_t value)
+ctypedef rpc_object_t (*rpc_query_cb_f)(void *arg, rpc_object_t object)
 
 
 cdef extern from "rpc/object.h" nogil:
@@ -73,6 +75,7 @@ cdef extern from "rpc/object.h" nogil:
 
     void *RPC_DICTIONARY_APPLIER(rpc_dictionary_applier_f fn, void *arg)
     void *RPC_ARRAY_APPLIER(rpc_array_applier_f fn, void *arg)
+    void *RPC_ARRAY_CMP(rpc_array_cmp_f fn, void *arg)
     void *RPC_BINARY_DESTRUCTOR_ARG(rpc_binary_destructor_arg_f fn, void *arg)
 
     rpc_object_t rpc_get_last_error()
@@ -84,6 +87,7 @@ cdef extern from "rpc/object.h" nogil:
     size_t rpc_hash(rpc_object_t object)
     char *rpc_copy_description(rpc_object_t object)
     rpc_type_t rpc_get_type(rpc_object_t object)
+    const char *rpc_get_type_name(rpc_type_t type)
     void rpc_release(rpc_object_t object)
 
     rpc_object_t rpc_null_create()
@@ -128,6 +132,7 @@ cdef extern from "rpc/object.h" nogil:
     rpc_object_t rpc_array_get_value(rpc_object_t array, size_t index)
     size_t rpc_array_get_count(rpc_object_t array)
     void rpc_array_remove_index(rpc_object_t array, size_t index)
+    void rpc_array_remove_all(rpc_object_t array)
 
     rpc_object_t rpc_dictionary_create()
     rpc_object_t rpc_dictionary_get_value(rpc_object_t dictionary,
@@ -137,6 +142,7 @@ cdef extern from "rpc/object.h" nogil:
     bint rpc_dictionary_apply(rpc_object_t dictionary, void *applier)
     size_t rpc_dictionary_get_count(rpc_object_t dictionary)
     void rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key)
+    void rpc_dictionary_remove_all(rpc_object_t dictionary)
 
 
 cdef extern from "rpc/connection.h" nogil:
@@ -161,6 +167,8 @@ cdef extern from "rpc/connection.h" nogil:
 
     rpc_connection_t rpc_connection_create(void *cookie, rpc_object_t params)
     int rpc_connection_close(rpc_connection_t conn)
+    rpc_context_t rpc_connection_get_context(rpc_connection_t conn)
+    int rpc_connection_set_context(rpc_connection_t conn, rpc_context_t ctx)
     int rpc_connection_subscribe_event(rpc_connection_t conn, const char *name)
     int rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *name)
     rpc_object_t rpc_connection_call_sync(rpc_connection_t conn,
@@ -260,12 +268,11 @@ cdef extern from "rpc/server.h" nogil:
 
     ctypedef rpc_server *rpc_server_t
 
-    rpc_server_t rpc_server_create(const char *uri, rpc_context_t context);
-    int rpc_server_resume(rpc_server_t server);
-    int rpc_server_close(rpc_server_t server);
-
+    rpc_server_t rpc_server_create_ex(const char *uri, rpc_context_t context, rpc_object_t params);
+    int rpc_server_resume(rpc_server_t server)
+    int rpc_server_close(rpc_server_t server)
     void rpc_server_broadcast_event(rpc_server_t server, const char *path, const char *interface, const char *name, rpc_object_t args)
-
+    int rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers, rpc_object_t *rest)
 
 cdef extern from "rpc/bus.h" nogil:
     ctypedef enum rpc_bus_event_t:
@@ -295,6 +302,33 @@ cdef extern from "rpc/serializer.h" nogil:
     int rpc_serializer_dump(const char *serializer, rpc_object_t obj, void **framep, size_t *lenp)
 
 
+cdef extern from "rpc/query.h" nogil:
+    cdef struct rpc_query_params:
+        bint single
+        bint count
+        uint64_t offset
+        uint64_t limit
+        bint reverse
+        void *sort
+        void *callback
+
+    ctypedef struct rpc_query_iter:
+        pass
+
+    ctypedef rpc_query_iter *rpc_query_iter_t
+    ctypedef rpc_query_params *rpc_query_params_t
+
+    void *RPC_QUERY_CB(rpc_query_cb_f fn, void *arg)
+
+    rpc_object_t rpc_query_get(rpc_object_t object, const char *path, rpc_object_t default_val)
+    void rpc_query_set(rpc_object_t object, const char *path, rpc_object_t value, bint steal)
+    void rpc_query_delete(rpc_object_t object, const char *path)
+    bint rpc_query_contains(rpc_object_t object, const char *path)
+    rpc_query_iter_t rpc_query(rpc_object_t object, rpc_query_params_t params, rpc_object_t rules)
+    bint rpc_query_next(rpc_query_iter_t iter, rpc_object_t *chunk)
+    void rpc_query_iter_free(rpc_query_iter_t iter)
+
+
 cdef extern from "rpc/typing.h" nogil:
     ctypedef struct rpct_type_t:
         pass
@@ -319,6 +353,7 @@ cdef extern from "rpc/typing.h" nogil:
         RPC_TYPING_UNION
         RPC_TYPING_ENUM
         RPC_TYPING_TYPEDEF
+        RPC_TYPING_CONTAINER
         RPC_TYPING_BUILTIN
 
     void *RPCT_TYPE_APPLIER(rpct_type_applier_f fn, void *arg)
@@ -326,7 +361,7 @@ cdef extern from "rpc/typing.h" nogil:
     void *RPCT_INTERFACE_APPLIER(rpct_interface_applier_f fn, void *arg)
     void *RPCT_IF_MEMBER_APPLIER(rpct_if_member_applier_f fn, void *args)
 
-    void rpct_init()
+    void rpct_init(bint load_system_types)
     int rpct_read_file(const char *path)
     int rpct_load_types(const char *path)
     int rpct_load_types_dir(const char *path)
@@ -350,6 +385,8 @@ cdef extern from "rpc/typing.h" nogil:
     int rpct_type_get_generic_vars_count(rpct_type_t type)
     const char *rpct_type_get_generic_var(rpct_type_t type, int index)
 
+    bint rpct_typei_get_proxy(rpct_typei_t typei)
+    const char *rpct_typei_get_proxy_variable(rpct_typei_t typei)
     rpct_type_t rpct_typei_get_type(rpct_typei_t typei)
     const char *rpct_typei_get_canonical_form(rpct_typei_t typei)
     rpct_typei_t rpct_typei_get_generic_var(rpct_typei_t typei, const char *name)
@@ -388,13 +425,18 @@ cdef extern from "rpc/typing.h" nogil:
     bint rpct_validate(rpct_typei_t typei, rpc_object_t obj, rpc_object_t *errors)
 
 
+cdef extern from "rpc/rpcd.h" nogil:
+    rpc_client_t rpcd_connect_to(const char *name)
+    int rpcd_register(const char *uri, const char *name, const char *description)
+
+
 cdef class Object(object):
     cdef rpc_object_t obj
     cdef object ref
 
     @staticmethod
-    cdef Object wrap(rpc_object_t ptr)
-    cdef rpc_object_t unwrap(self)
+    cdef wrap(rpc_object_t ptr, bint retain=*)
+    cdef rpc_object_t unwrap(self) nogil
 
 
 cdef class Context(object):
@@ -405,7 +447,7 @@ cdef class Context(object):
 
     @staticmethod
     cdef Context wrap(rpc_context_t ptr)
-    cdef rpc_context_t unwrap(self)
+    cdef rpc_context_t unwrap(self) nogil
 
 
 cdef class Instance(object):
@@ -416,7 +458,7 @@ cdef class Instance(object):
 
     @staticmethod
     cdef Instance wrap(rpc_instance_t ptr)
-    cdef rpc_instance_t unwrap(self)
+    cdef rpc_instance_t unwrap(self) nogil
     @staticmethod
     cdef rpc_object_t c_property_getter(void *cookie) with gil
     @staticmethod
@@ -431,26 +473,32 @@ cdef class Service(object):
 
 
 cdef class RemoteObject(object):
-    cdef object client
-    cdef object path
+    cdef readonly object client
+    cdef readonly object path
+    cdef readonly object name
+    cdef readonly object description
+    cdef readonly object interfaces
 
 
 cdef class RemoteInterface(object):
-    cdef readonly client
-    cdef readonly path
-    cdef readonly name
-    cdef readonly interface
-    cdef readonly methods
-    cdef readonly properties
-    cdef readonly events
-    cdef readonly typed
-    cdef dict __dict__
+    cdef readonly object client
+    cdef readonly object instance
+    cdef readonly object path
+
+
+cdef class RemoteProperty(object):
+    cdef readonly object name
+    cdef readonly object interface
+    cdef readonly object typed
 
 
 cdef class RemoteEvent(object):
     cdef object handlers
+    cdef readonly object name
+    cdef readonly object interface
+    cdef readonly object typed
 
-    cdef emit(self, name, Object args)
+    cdef emit(self, Object args)
 
 
 cdef class TypeInstance(object):
@@ -458,7 +506,7 @@ cdef class TypeInstance(object):
 
     @staticmethod
     cdef TypeInstance wrap(rpct_typei_t typei)
-    cdef rpct_typei_t unwrap(self)
+    cdef rpct_typei_t unwrap(self) nogil
 
 
 cdef class Interface(object):
@@ -466,7 +514,7 @@ cdef class Interface(object):
 
     @staticmethod
     cdef Interface wrap(rpct_interface_t ptr)
-    cdef rpct_interface_t unwrap(self)
+    cdef rpct_interface_t unwrap(self) nogil
     @staticmethod
     cdef bint c_iter(void *arg, rpct_if_member_t val)
 
@@ -476,7 +524,19 @@ cdef class InterfaceMember(object):
 
     @staticmethod
     cdef wrap(rpct_if_member_t ptr)
-    cdef rpct_if_member_t unwrap(self)
+    cdef rpct_if_member_t unwrap(self) nogil
+
+
+cdef class BaseTypingObject(object):
+    cdef readonly Object __object__
+    cdef readonly TypeInstance __typei__
+
+    @staticmethod
+    cdef construct_struct(TypeInstance typei)
+    @staticmethod
+    cdef construct_union(TypeInstance typei)
+    @staticmethod
+    cdef construct_enum(TypeInstance typei)
 
 
 cdef class Call(object):
@@ -485,7 +545,7 @@ cdef class Call(object):
 
     @staticmethod
     cdef Call wrap(rpc_call_t ptr)
-    cdef rpc_call_t unwrap(self)
+    cdef rpc_call_t unwrap(self) nogil
 
 
 cdef class Connection(object):
@@ -498,7 +558,7 @@ cdef class Connection(object):
 
     @staticmethod
     cdef Connection wrap(rpc_connection_t ptr)
-    cdef rpc_connection_t unwrap(self)
+    cdef rpc_connection_t unwrap(self) nogil
     @staticmethod
     cdef void c_ev_handler(void *arg, const char *path, const char *inteface, const char *name, rpc_object_t args) with gil
     @staticmethod
@@ -507,8 +567,31 @@ cdef class Connection(object):
     cdef void c_error_handler(void *arg, rpc_error_code_t code, rpc_object_t args) with gil
 
 
+cdef class Client(Connection):
+    cdef rpc_client_t client
+    cdef object uri
+
+    @staticmethod
+    cdef Client wrap(rpc_client_t ptr)
+
+
 cdef class Bus(object):
     cdef object event_fn
 
     @staticmethod
     cdef void c_ev_handler(void *arg, rpc_bus_event_t ev, rpc_bus_node *bn) with gil
+
+
+cdef class QueryIterator(object):
+    cdef rpc_query_iter_t iter
+    cdef object sort_cb
+    cdef object postprocess_cb
+    cdef object cnt
+    cdef object unpack
+
+    @staticmethod
+    cdef QueryIterator wrap(rpc_query_iter_t iter, object sort, object cb, object unpack)
+    @staticmethod
+    cdef rpc_object_t c_callback(void *arg, rpc_object_t object)
+    @staticmethod
+    cdef int c_sort(void *arg, rpc_object_t o1, rpc_object_t o2)

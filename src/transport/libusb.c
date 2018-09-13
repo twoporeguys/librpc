@@ -50,7 +50,7 @@ static int usb_hotplug_callback(libusb_context *, libusb_device *,
 static gboolean usb_hotplug_impl(void *);
 static bool usb_valid_pid(uint16_t);
 static int usb_connect(struct rpc_connection *, const char *, rpc_object_t);
-static int usb_send_msg(void *, void *, size_t, const int *fds, size_t nfds);
+static int usb_send_msg(void *, const void *, size_t, const int *fds, size_t nfds);
 static int usb_abort(void *);
 static int usb_get_fd(void *);
 static int usb_ping(void *, const char *);
@@ -164,6 +164,7 @@ static const struct rpc_transport libusb_transport = {
 static const uint16_t libusb_valid_pids[] = {
 	0xfeed,
 	0xfeee,
+	0xbabe,
 };
 
 static GMutex usb_request_mtx;
@@ -358,7 +359,7 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	conn->uc_event_source = g_timeout_source_new(500);
 	g_source_set_callback(conn->uc_event_source, usb_event_impl, conn,
 	    NULL);
-	g_source_attach(conn->uc_event_source, rco->rco_mainloop);
+	g_source_attach(conn->uc_event_source, rco->rco_main_context);
 
 	conn->uc_logsize = ident.log_size;
 	conn->uc_rco = rco;
@@ -380,7 +381,7 @@ error:
 }
 
 static int
-usb_send_msg(void *arg, void *buf, size_t len, const int *fds __unused,
+usb_send_msg(void *arg, const void *buf, size_t len, const int *fds __unused,
     size_t nfds __unused)
 {
 
@@ -390,7 +391,7 @@ usb_send_msg(void *arg, void *buf, size_t len, const int *fds __unused,
 	send->uss_buf = g_memdup(buf, (guint)len);
 	send->uss_len = len;
 	send->uss_conn = conn;
-	g_main_context_invoke(conn->uc_rco->rco_mainloop, usb_send_msg_impl,
+	g_main_context_invoke(conn->uc_rco->rco_main_context, usb_send_msg_impl,
 	    send);
 	return (0);
 }
@@ -499,6 +500,7 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 	struct usb_context *ctx = arg;
 	struct libusb_device_descriptor desc;
 	libusb_device **devices;
+	libusb_device **ptr;
 	libusb_device *dev;
 	struct rpc_bus_node node;
 
@@ -506,8 +508,8 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 	*resultp = NULL;
 	libusb_get_device_list(ctx->uc_libusb, &devices);
 
-	for (; *devices != NULL; devices++) {
-		dev = *devices;
+	for (ptr = devices; *ptr != NULL; ptr++) {
+		dev = *ptr;
 		libusb_get_device_descriptor(dev, &desc);
 
 		debugf("trying device %d (vid=0x%04x, pid=0x%04x)",
@@ -523,6 +525,7 @@ usb_enumerate(void *arg, struct rpc_bus_node **resultp, size_t *countp)
 		(*countp)++;
 	}
 
+	libusb_free_device_list(devices, true);
 	return (0);
 }
 
@@ -547,6 +550,7 @@ usb_find(struct libusb_context *libusb, const char *serial, int addr)
 {
 	struct libusb_device_descriptor desc;
 	libusb_device **devices;
+	libusb_device **ptr;
 	libusb_device *dev;
 	libusb_device_handle *handle;
 	uint8_t str[NAME_MAX];
@@ -554,8 +558,8 @@ usb_find(struct libusb_context *libusb, const char *serial, int addr)
 
 	libusb_get_device_list(libusb, &devices);
 
-	for (; *devices != NULL; devices++) {
-		dev = *devices;
+	for (ptr = devices; *ptr != NULL; ptr++) {
+		dev = *ptr;
 		address = libusb_get_device_address(dev);
 		libusb_get_device_descriptor(dev, &desc);
 
@@ -570,6 +574,7 @@ usb_find(struct libusb_context *libusb, const char *serial, int addr)
 			if (libusb_open(dev, &handle) != 0)
 				continue;
 
+			libusb_free_device_list(devices, true);
 			return (handle);
 		}
 
@@ -580,14 +585,17 @@ usb_find(struct libusb_context *libusb, const char *serial, int addr)
 			libusb_get_string_descriptor_ascii(handle,
 			    desc.iSerialNumber, str, sizeof(str));
 
-			if (g_strcmp0((const char *)str, serial) == 0)
+			if (g_strcmp0((const char *)str, serial) == 0) {
+				libusb_free_device_list(devices, true);
 				return (handle);
+			}
 
 			libusb_close(handle);
 			continue;
 		}
 	}
 
+	libusb_free_device_list(devices, true);
 	return (NULL);
 }
 
@@ -640,7 +648,6 @@ usb_send_msg_impl(void *arg)
 
 		default:
 			g_assert_not_reached();
-			break;
 		}
 	}
 

@@ -410,7 +410,7 @@ rpc_yaml_write_object(yaml_emitter_t *emitter, rpc_object_t object)
 			break;
 
 		key = YAML_SHMEM_LEN;
-		value = g_strdup_printf("%li", rpc_shmem_get_size(object));
+		value = g_strdup_printf("%zu", rpc_shmem_get_size(object));
 		status = rpc_yaml_write_kv(emitter, key, value);
 		g_free(value);
 		if (status != 1)
@@ -637,7 +637,7 @@ rpc_yaml_deserialize(const void *frame, size_t size)
 
 		case RPC_TYPE_DICTIONARY:
 			key = g_queue_pop_head(keys);
-			rpc_dictionary_set_value(container, key, current);
+			rpc_dictionary_steal_value(container, key, current);
 			g_free(key);
 			read_key = true;
 			break;

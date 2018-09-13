@@ -62,7 +62,7 @@ main(int argc, const char *argv[])
 
 		(void)cookie;
 
-		rpct_init();
+		rpct_init(true);
 		cnt = rpc_object_unpack(args, "[s,i,b,{nonexistent:v,key:i}]",
 		    &str, &num, &sure, &nonexistent_obj, &dict_num);
 
@@ -75,7 +75,7 @@ main(int argc, const char *argv[])
 		    ", sure = %s\n", str, num, dict_num,
 		    sure ? "true" : "false");
 
-	    	return rpc_object_pack("{s,i,uint:u,b,n,array:[i,5:i,<int64>i,{s}]}",
+	    	return rpc_object_pack("{inline:'inline_string',s,i,uint:u,b,n,array:['inline',i,5:i,<int64>i,{s}]}",
 		    "hello", "world",
 		    "int", -12345L,
 		    0x80808080L,
@@ -85,6 +85,7 @@ main(int argc, const char *argv[])
 	});
 
 	server = rpc_server_create("loopback://0", ctx);
+	rpc_server_resume(server);
 	if (server == NULL) {
 		fprintf(stderr, "cannot create server: %s", strerror(errno));
 		return (1);

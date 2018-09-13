@@ -53,4 +53,4 @@ rpc_object_t rpc_msgpack_deserialize(const void *, size_t);
 }
 #endif
 
-#endif //LIBRPC_MSGPACK_H
+#endif /* LIBRPC_MSGPACK_H */

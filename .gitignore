@@ -36,6 +36,12 @@
 cmake-build-debug
 
 # Build directory
+build
+build-cov
+
+# Code coverage output
+librpc.cov
+coverage-report
 
 # Idea directory
 .idea

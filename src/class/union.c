@@ -70,8 +70,39 @@ static bool
 union_validate(struct rpct_typei *typei, rpc_object_t obj,
     struct rpct_error_context *errctx)
 {
+	__block struct rpct_typei *mtypei;
+	__block rpc_object_t interior = NULL;
+	bool ret;
 
-	return (rpct_run_validators(typei, obj, errctx));
+	ret = rpct_members_apply(typei->type, ^(struct rpct_member *member) {
+
+		struct rpct_error_context newctx = {
+			.path = errctx->path,
+			.errors = g_ptr_array_new()
+		};
+
+		mtypei = rpct_typei_get_member_type(typei, member);
+		interior = rpc_copy(obj);
+		rpct_set_typei(mtypei, interior);
+
+		if (rpct_validate_instance(mtypei, interior, &newctx)) {
+			g_ptr_array_free(newctx.errors, true);
+			return ((bool)false);
+		}
+
+		g_ptr_array_free(newctx.errors, true);
+		return ((bool)true);
+	});
+
+	if (!ret) {
+		rpct_add_error(errctx, NULL,
+		    "None of the union branches matches the object");
+		return (false);
+	}
+
+	ret = rpct_run_validators(mtypei, interior, errctx);
+	rpc_release(interior);
+	return (ret);
 }
 
 static rpc_object_t

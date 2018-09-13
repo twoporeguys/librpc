@@ -257,7 +257,7 @@ librpc_usb_read_log(struct librpc_usb_device *rpcusbdev)
 	int rpipe = usb_rcvctrlpipe(rpcusbdev->udev, 0);
 	int ret;
 
-	while (1) {
+	for (;;) {
 		ret = usb_control_msg(udev, rpipe, LIBRPC_USB_READ_LOG,
 		    USB_TYPE_VENDOR | USB_DIR_IN, 0, 0, rpcusbdev->log,
 		    sizeof(*rpcusbdev->log) + LIBRPC_MAX_MSGSIZE, 500);
@@ -291,6 +291,8 @@ librpc_usb_thread(void *arg)
 
 static struct usb_device_id librpc_usb_id_table[] = {
         { USB_DEVICE_INTERFACE_NUMBER(0xbeef, 0xfeed, 0x00) },
+        { USB_DEVICE_INTERFACE_NUMBER(0xbeef, 0xfeee, 0x00) },
+        { USB_DEVICE_INTERFACE_NUMBER(0xbeef, 0xbabe, 0x00) },
         { }
 };
 

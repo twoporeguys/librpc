@@ -44,5 +44,5 @@ main (int argc, char *argv[])
 		(*t)->register_f();
 	}
 
-	return g_test_run ();
+	return (g_test_run());
 }

@@ -49,7 +49,7 @@
 #endif
 
 static const char *rpc_types[] = {
-    [RPC_TYPE_NULL] = "null",
+    [RPC_TYPE_NULL] = "nulltype",
     [RPC_TYPE_BOOL] = "bool",
     [RPC_TYPE_UINT64] = "uint64",
     [RPC_TYPE_INT64] = "int64",
@@ -78,7 +78,6 @@ rpc_prim_create(rpc_type_t type, union rpc_value val)
 	ro->ro_type = type;
 	ro->ro_value = val;
 	ro->ro_refcnt = 1;
-
 	return (ro);
 }
 
@@ -506,10 +505,6 @@ rpc_release_impl(rpc_object_t object)
 			    true);
 			break;
 
-#if defined(__linux__)
-		case RPC_TYPE_SHMEM:
-			close(object->ro_value.rv_shmem.rsb_fd);
-#endif
 		default:
 			break;
 		}
@@ -599,7 +594,7 @@ rpc_copy(rpc_object_t object)
 		break;
 
 	case RPC_TYPE_FD:
-		result = rpc_fd_create(rpc_fd_dup(object));
+		result = rpc_fd_create(object->ro_value.rv_fd);
 		break;
 
 	case RPC_TYPE_STRING:
@@ -616,7 +611,7 @@ rpc_copy(rpc_object_t object)
 #if defined(__linux__)
 	case RPC_TYPE_SHMEM:
 		result = rpc_shmem_recreate(
-		    dup(object->ro_value.rv_shmem.rsb_fd),
+		    object->ro_value.rv_shmem.rsb_fd,
 		    object->ro_value.rv_shmem.rsb_offset,
 		    object->ro_value.rv_shmem.rsb_size);
 		break;
@@ -690,8 +685,12 @@ rpc_equal(rpc_object_t o1, rpc_object_t o2)
 		return (o1->ro_value.rv_d == o2->ro_value.rv_d);
 
 	case RPC_TYPE_FD:
-		fstat(o1->ro_value.rv_fd, &o1_fdstat);
-		fstat(o2->ro_value.rv_fd, &o2_fdstat);
+		if (fstat(o1->ro_value.rv_fd, &o1_fdstat) != 0)
+			return (false);
+
+		if (fstat(o2->ro_value.rv_fd, &o2_fdstat) != 0)
+			return (false);
+
 		return ((o1_fdstat.st_dev == o2_fdstat.st_dev) &&
 		    (o1_fdstat.st_ino == o2_fdstat.st_ino));
 
@@ -723,8 +722,12 @@ rpc_equal(rpc_object_t o1, rpc_object_t o2)
 
 #if defined(__linux__)
 	case RPC_TYPE_SHMEM:
-		fstat(o1->ro_value.rv_shmem.rsb_fd, &o1_fdstat);
-		fstat(o2->ro_value.rv_shmem.rsb_fd, &o2_fdstat);
+		if (fstat(o1->ro_value.rv_shmem.rsb_fd, &o1_fdstat) != 0)
+			return (false);
+
+		if (fstat(o2->ro_value.rv_shmem.rsb_fd, &o2_fdstat) != 0)
+			return (false);
+
 		return ((o1_fdstat.st_dev == o2_fdstat.st_dev) &&
 		    (o1_fdstat.st_ino == o2_fdstat.st_ino));
 #endif
@@ -857,7 +860,8 @@ rpc_object_t
 rpc_object_vpack(const char *fmt, va_list ap)
 {
 	GQueue *stack = g_queue_new();
-	GQueue *keys = g_queue_new();
+	GQueue *key_q = g_queue_new();
+	GQueue *idx_q = g_queue_new();
 	rpc_object_t current = NULL;
 	rpc_object_t container = NULL;
 	rpc_object_t tmp;
@@ -871,7 +875,7 @@ rpc_object_vpack(const char *fmt, va_list ap)
 	char *type = NULL;
 	char ch;
 	char delim;
-	size_t idx = 0;
+	size_t *idx;
 	uint32_t nesting;
 
 	for (ptr = fmt; *ptr != '\0'; ptr++) {
@@ -912,30 +916,35 @@ rpc_object_vpack(const char *fmt, va_list ap)
 				if (*search_ptr == '}')
 					break;
 
+				if (*search_ptr == '\'')
+					break;
+
 				search_ptr++;
 			}
 
 			if (rpc_get_type(container) == RPC_TYPE_ARRAY) {
+				idx = g_malloc0(sizeof(size_t));
 				if (colon_ptr != NULL) {
-					idx = (size_t)strtol(ptr,
+					*idx = (size_t)strtol(ptr,
 					    &idx_end_ptr, 10);
 
 					if (idx_end_ptr != colon_ptr)
 						goto error;
 				} else {
-					idx = rpc_array_get_count(
+					*idx = rpc_array_get_count(
 					    container);
 				}
+				g_queue_push_tail(idx_q, idx);
 			} else {
 				if (colon_ptr != NULL) {
-					g_queue_push_tail(keys,
+					g_queue_push_tail(key_q,
 					    g_strndup(ptr,
 					    (colon_ptr - ptr)));
 
 				} else {
 					key = g_strdup(
 					    va_arg(ap, const char *));
-					g_queue_push_tail(keys,
+					g_queue_push_tail(key_q,
 					    (gpointer)key);
 				}
 			}
@@ -1012,6 +1021,16 @@ rpc_object_vpack(const char *fmt, va_list ap)
 			current = rpc_string_create(va_arg(ap, const char *));
 			break;
 
+		case '\'':
+			search_ptr = strchr(ptr + 1, '\'');
+			if (search_ptr == NULL)
+				goto error;
+
+			current = rpc_string_create_len(ptr + 1,
+			    search_ptr - ptr - 1);
+			ptr = search_ptr + 1;
+			break;
+
 		case '<':
 			type_start = ptr + 1;
 			nesting = 1;
@@ -1061,6 +1080,9 @@ rpc_object_vpack(const char *fmt, va_list ap)
 
 		case '}':
 		case ']':
+			if (*(ptr + 1) == ',')
+				ptr++;
+
 			current = g_queue_pop_tail(stack);
 			container = g_queue_peek_tail(stack);
 			break;
@@ -1080,21 +1102,24 @@ rpc_object_vpack(const char *fmt, va_list ap)
 
 		if (container != NULL) {
 			if (rpc_get_type(container) == RPC_TYPE_DICTIONARY) {
-				key = g_queue_pop_tail(keys);
+				key = g_queue_pop_tail(key_q);
 				rpc_dictionary_steal_value(container, key,
 				    current);
 				g_free(key);
 			}
 
 			if (rpc_get_type(container) == RPC_TYPE_ARRAY) {
-				rpc_array_steal_value(container, idx, current);
+				idx = g_queue_pop_tail(idx_q);
+				rpc_array_steal_value(container, *idx, current);
+				g_free(idx);
 			}
 
 			continue;
 		}
 
 		g_queue_free(stack);
-		g_queue_free_full(keys, g_free);
+		g_queue_free_full(key_q, g_free);
+		g_queue_free_full(idx_q, g_free);
 
 		return (current);
 	}
@@ -1103,7 +1128,8 @@ error:
 	rpc_release(current);
 
 	g_queue_free(stack);
-	g_queue_free_full(keys, g_free);
+	g_queue_free_full(key_q, g_free);
+	g_queue_free_full(idx_q, g_free);
 	errno = EINVAL;
 
 	return (NULL);
@@ -1588,10 +1614,10 @@ rpc_error_get_stack(rpc_object_t error)
 	return (error->ro_value.rv_error.rev_stack);
 }
 
-
 void
 rpc_error_set_extra(rpc_object_t error, rpc_object_t extra)
 {
+
 	if (rpc_get_type(error) != RPC_TYPE_ERROR)
 		return;
 
@@ -1632,6 +1658,7 @@ rpc_array_create_ex(const rpc_object_t *objects, size_t count, bool steal)
 inline void
 rpc_array_set_value(rpc_object_t array, size_t index, rpc_object_t value)
 {
+
 	if (value == NULL)
 		rpc_array_remove_index(array, index);
 	else {
@@ -1644,19 +1671,19 @@ inline void
 rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value)
 {
 	rpc_object_t *ro;
-	int i;
+	int64_t i;
 
 	if (array->ro_type != RPC_TYPE_ARRAY)
 		rpc_abort("Trying array API on non-array object");
 
-	for (i = (int)(index - array->ro_value.rv_list->len); i > 0; i--) {
+	for (i = (index - array->ro_value.rv_list->len); i > 0; i--) {
 		rpc_array_append_stolen_value(
 		    array,
 		    rpc_null_create()
 		);
 	}
 
-	if (index == array->ro_value.rv_list->len) {
+	if (index == (size_t)-1 || index == array->ro_value.rv_list->len) {
 		rpc_array_append_stolen_value(array, value);
 		return;
 	}
@@ -1669,6 +1696,7 @@ rpc_array_steal_value(rpc_object_t array, size_t index, rpc_object_t value)
 inline void
 rpc_array_remove_index(rpc_object_t array, size_t index)
 {
+
 	if (array->ro_type != RPC_TYPE_ARRAY)
 		rpc_abort("Trying array API on non-array object");
 
@@ -1678,6 +1706,20 @@ rpc_array_remove_index(rpc_object_t array, size_t index)
 	g_ptr_array_remove_index(array->ro_value.rv_list, (guint)index);
 }
 
+inline void
+rpc_array_remove_all(rpc_object_t array)
+{
+	size_t cnt;
+
+	if (array->ro_type != RPC_TYPE_ARRAY)
+		rpc_abort("Trying array API on non-array object");
+
+	cnt = rpc_array_get_count(array);
+	if (cnt == 0)
+		return;
+
+	g_ptr_array_remove_range(array->ro_value.rv_list, 0, (guint)cnt);
+}
 
 inline void
 rpc_array_append_value(rpc_object_t array, rpc_object_t value)
@@ -2028,12 +2070,36 @@ rpc_dictionary_steal_value(rpc_object_t dictionary, const char *key,
 }
 
 inline void
+rpc_dictionary_steal_value_internal(rpc_object_t dictionary, const char *key,
+    rpc_object_t value)
+{
+
+	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
+		rpc_abort("Trying dictionary API on non-dictionary object");
+
+	g_hash_table_insert(dictionary->ro_value.rv_dict,
+	    (gpointer)g_strdup(key), value);
+}
+
+inline void
 rpc_dictionary_remove_key(rpc_object_t dictionary, const char *key)
 {
+
 	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
 		rpc_abort("Trying dictionary API on non-dictionary object");
 
 	g_hash_table_remove(dictionary->ro_value.rv_dict, key);
+}
+
+inline void
+rpc_dictionary_remove_all(rpc_object_t dictionary)
+{
+
+	if (dictionary->ro_type != RPC_TYPE_DICTIONARY)
+		rpc_abort("Trying dictionary API on non-dictionary object");
+
+	g_hash_table_remove_all(dictionary->ro_value.rv_dict);
+
 }
 
 inline rpc_object_t
@@ -2253,7 +2319,7 @@ rpc_dictionary_get_fd(rpc_object_t dictionary, const char *key)
 	rpc_object_t xfd;
 
 	xfd = rpc_dictionary_get_value(dictionary, key);
-	return ((xfd != NULL) ? rpc_fd_get_value(xfd) : 0);
+	return ((xfd != NULL) ? rpc_fd_get_value(xfd) : -1);
 }
 
 inline int

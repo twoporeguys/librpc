@@ -33,7 +33,13 @@
 static void *
 rpc_client_worker(void *arg)
 {
+	sigset_t set;
 	rpc_client_t client = arg;
+
+	sigemptyset(&set);
+	sigaddset(&set, SIGINT);
+	sigaddset(&set, SIGTERM);
+	pthread_sigmask(SIG_BLOCK, &set, NULL);
 
 	g_main_context_push_thread_default(client->rci_g_context);
 	g_main_loop_run(client->rci_g_loop);
@@ -62,9 +68,14 @@ rpc_client_create(const char *uri, rpc_object_t params)
 		return (NULL);
 	}
 
-	client->rci_connection->rco_mainloop = client->rci_g_context;
-	client->rci_connection->rco_client = client;
 	return (client);
+}
+
+GMainContext *
+rpc_client_get_main_context(rpc_client_t client)
+{
+
+	return (client->rci_g_context);
 }
 
 rpc_connection_t
@@ -77,8 +88,20 @@ rpc_client_get_connection(rpc_client_t client)
 void
 rpc_client_close(rpc_client_t client)
 {
-	if (client->rci_connection != NULL)
+
+	if (client->rci_connection != NULL) {
+		/* must hold a reference to retain the connection until it
+		 * is completely closed and cleaned up. Otherwise closing the
+		 * client thread below may prevent cleanup from happening.
+		 */
+		rpc_connection_retain(client->rci_connection);
 		rpc_connection_close(client->rci_connection);
+		if (rpc_get_last_error() == NULL &&
+		    client->rci_connection->rco_error != NULL)
+			rpc_set_last_rpc_error(
+			    rpc_retain(client->rci_connection->rco_error));
+		rpc_connection_release(client->rci_connection);
+        }
 
 	g_main_context_invoke(client->rci_g_context,
 	    (GSourceFunc)rpc_kill_main_loop, client->rci_g_loop);

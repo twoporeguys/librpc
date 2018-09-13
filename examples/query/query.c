@@ -52,6 +52,12 @@ main(int argc, const char *argv[])
 
 	printf("start dictionary: %s\n\n", rpc_copy_description(start_object));
 
+	printf("adding nonexistent containers with set function\n");
+	rpc_query_set(start_object, "a.0.bunch.1.of.2.nonexistent.3.values", rpc_bool_create(true), true);
+	retval = rpc_query_get(start_object, "a", NULL);
+	printf("generated tree: %s\n\n", rpc_copy_description(retval));
+	rpc_query_delete(start_object, "a");
+
 	retval = rpc_query_get(start_object, "array.0", NULL);
 	printf("array.0 (1): %s\n\n", rpc_copy_description(retval));
 

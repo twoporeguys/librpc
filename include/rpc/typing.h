@@ -117,6 +117,7 @@ typedef enum {
 	RPC_TYPING_UNION,		/**< A union */
 	RPC_TYPING_ENUM,		/**< An enum */
 	RPC_TYPING_TYPEDEF,		/**< A type alias */
+	RPC_TYPING_CONTAINER,		/**< A container type */
 	RPC_TYPING_BUILTIN		/**< A builtin type */
 } rpct_class_t;
 
@@ -131,12 +132,12 @@ typedef bool (^rpct_type_applier_t)(rpct_type_t);
 typedef bool (^rpct_member_applier_t)(rpct_member_t);
 
 /**
- * Block type used as a callback in @ref rpc_interface_apply.
+ * Block type used as a callback in @ref rpct_interface_apply.
  */
 typedef bool (^rpct_interface_applier_t)(rpct_interface_t);
 
 /**
- * Block type used as a callback in @ref rpc_if_member_apply.
+ * Block type used as a callback in @ref rpct_if_member_apply.
  */
 typedef bool (^rpct_if_member_applier_t)(rpct_if_member_t);
 
@@ -165,7 +166,7 @@ typedef bool (^rpct_if_member_applier_t)(rpct_if_member_t);
  *
  * @return 0 on success, -1 on error
  */
-int rpct_init(void);
+int rpct_init(bool load_system_types);
 
 /**
  * Cleans up all the state associated with RPC type system.
@@ -173,7 +174,7 @@ int rpct_init(void);
 void rpct_free(void);
 
 /**
- * Reads IDL file without parsing it. @ref rpc_load_types must be called
+ * Reads IDL file without parsing it. @ref rpct_load_types must be called
  * on the same path again to load the associated types.
  *
  * @param path Path to the IDL file
@@ -182,7 +183,7 @@ void rpct_free(void);
 int rpct_read_file(const char *path);
 
 /**
- * Reads IDL object without parsing it. @ref rpc_load_types must be called
+ * Reads IDL object without parsing it. @ref rpct_load_types must be called
  * on the same name again to load the associated types.
  *
  * @param name Name of the IDL blob
@@ -216,6 +217,13 @@ int rpct_load_types_dir(const char *path);
  * @return 0 on success, -1 on error
  */
 int rpct_load_types_stream(int fd);
+
+/**
+ * Loads type information from files previously loaded by @ref rpct_read_idl.
+ *
+ * @return 0 on success, -1 on error
+ */
+int rpct_load_types_cached(void);
 
 /**
  * Returns the type name.
@@ -324,6 +332,20 @@ rpct_typei_t rpct_typei_retain(rpct_typei_t typei);
 void rpct_typei_release(rpct_typei_t typei);
 
 /**
+ *
+ * @param typei
+ * @return
+ */
+bool rpct_typei_get_proxy(rpct_typei_t typei);
+
+/**
+ *
+ * @param typei
+ * @return
+ */
+const char *rpct_typei_get_proxy_variable(rpct_typei_t typei);
+
+/**
  * Returns base type of a type instance @p typei.
  *
  * @param typei Type instance handle
@@ -357,6 +379,15 @@ const char *rpct_typei_get_canonical_form(rpct_typei_t typei);
  */
 rpct_typei_t rpct_typei_get_member_type(rpct_typei_t typei,
     rpct_member_t member);
+
+/**
+ * Returns @p true if @p decl and @p type are compatible types.
+ *
+ * @param decl First type
+ * @param type Second type
+ * @return @p true if compatible, otherwise @p false
+ */
+bool rpct_typei_is_compatible(rpct_typei_t decl, rpct_typei_t type);
 
 /**
  * Returns the name of a member.
@@ -437,7 +468,7 @@ const char *rpct_if_member_get_description(rpct_if_member_t member);
 /**
  * Returns the type instance handle representing return type of a function.
  *
- * @param func Function handle
+ * @param method Method handle
  * @return Return type instance handle
  */
 rpct_typei_t rpct_method_get_return_type(rpct_if_member_t method);
@@ -445,7 +476,7 @@ rpct_typei_t rpct_method_get_return_type(rpct_if_member_t method);
 /**
  * Returns number of arguments a function takes.
  *
- * @param func Function handle
+ * @param method Method handle
  * @return Number of arguments
  */
 int rpct_method_get_arguments_count(rpct_if_member_t method);
@@ -495,7 +526,7 @@ rpct_typei_t rpct_argument_get_typei(rpct_argument_t arg);
  * Iterates over the defined types.
  *
  * @param applier
- * @return
+ * @return @p true if iteration was terminated, otherwise @p false
  */
 bool rpct_types_apply(rpct_type_applier_t applier);
 
@@ -503,7 +534,7 @@ bool rpct_types_apply(rpct_type_applier_t applier);
  * Iterates over the members of a given type.
  * @param type
  * @param applier
- * @return
+ * @return @p true if iteration was terminated, otherwise @p false
  */
 bool rpct_members_apply(rpct_type_t type, rpct_member_applier_t applier);
 
@@ -511,7 +542,7 @@ bool rpct_members_apply(rpct_type_t type, rpct_member_applier_t applier);
  * Iterates over the defined functions.
  *
  * @param applier
- * @return
+ * @return @p true if iteration was terminated, otherwise @p false
  */
 bool rpct_interface_apply(rpct_interface_applier_t applier);
 
@@ -519,7 +550,7 @@ bool rpct_interface_apply(rpct_interface_applier_t applier);
  * Iterates over members of an interface.
  *
  * @param applier Callback function
- * @return
+ * @return @p true if iteration was terminated, otherwise @p false
  */
 bool rpct_if_member_apply(rpct_interface_t iface, rpct_if_member_applier_t applier);
 

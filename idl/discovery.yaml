@@ -7,12 +7,23 @@ meta:
     - com.twoporeguys.librpc.types
 
 
+struct DiscoveryInstance:
+  description: Represents a single instance
+  members:
+    path:
+      type: string
+    description:
+      type: string
+
+
 struct DiscoveryMethodArgument:
   description: Represents a single function argument
   members:
     name:
+      description: Argument name
       type: string
     description:
+      description: Argument description
       type: string
 
 
@@ -20,20 +31,21 @@ struct DiscoveryMethod:
   description: Represents a single defined function
   members:
     name:
+      description: Method name
       type: string
     description:
+      description: Method description
       type: string
-    arguments:
-      type: List<DiscoveryMethodArgument>
-      description: List of arguments the function takes
 
 
 struct PropertyDescriptor:
   description: Describes a single property and its value
   members:
     name:
+      description: Property name
       type: string
     value:
+      description: Property value
       type: any
 
 
@@ -41,10 +53,13 @@ struct PropertyChangeNotification:
   description: Describes a changed property value
   members:
     interface:
+      description: Interface name the property belongs to
       type: string
     name:
+      description: Property name
       type: string
     value:
+      description: Property value
       type: any
 
 
@@ -53,7 +68,7 @@ interface Discoverable:
     description: |
       Returns a list of objects registered on the server.
     return:
-      type: List<DiscoveryMethod>
+      type: List<any>
 
 
 interface Introspectable:
@@ -66,6 +81,10 @@ interface Introspectable:
   method get_methods:
     description: |
       Returns a list of interface methods.
+    args:
+      - name: interface
+        type: string
+        description: Interface name
     return:
       type: List<string>
 
@@ -73,14 +92,17 @@ interface Introspectable:
     description: |
       Returns true if specified interface is registered on the object,
       otherwise false.
+    args:
+      - name: interface
+        type: string
+        description: Interface name
     return:
       type: bool
 
 
 interface Observable:
   method get:
-    description: |
-      Returns value of a property.
+    description: Returns value of a property.
     args:
       - type: string
         name: interface
@@ -92,8 +114,7 @@ interface Observable:
       type: any
 
   method get_all:
-    description: |
-      Returns values of all properties of a given interface.
+    description: Returns values of all properties of a given interface.
     args:
       - type: string
         name: interface
@@ -102,8 +123,7 @@ interface Observable:
       type: List<PropertyDescriptor>
 
   method set:
-    description: |
-      Sets a value of a property
+    description: Sets the value of a property
     args:
       - type: string
         name: interface
@@ -116,6 +136,5 @@ interface Observable:
         description: Property value
 
   event changed:
-    description: |
-      Notifies about property change
+    description: Motifies about property change.
     type: PropertyChangeNotification

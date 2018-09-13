@@ -1,17 +1,19 @@
-.PHONY: all clean bootstrap install uninstall
-
 export CC := clang
 export CXX := clang++
-PYTHON_VERSION := python3
+PYTHON_VERSION ?= python3
 PREFIX ?= /usr/local
-BUILD_PYTHON ?= ON
 BUILD_CPLUSPLUS ?= OFF
+BUILD_PYTHON ?= ON
+BUILD_TESTS ?= OFF
 BUILD_CLIENT ?= OFF
+RPC_DEBUG ?= OFF
 BUILD_TYPE ?= Release
 BUILD_XPC ?= OFF
 ENABLE_LIBDISPATCH ?= OFF
+ENABLE_RPATH ?= ON
+BUILD_DOC ?= OFF
 
-.PHONY: build build-cov bootstrap clean install uninstall test
+.PHONY: all clean bootstrap build build-cov install uninstall test
 
 all: build
 
@@ -20,13 +22,17 @@ build:
 	cd build && cmake .. \
 	    -DBUILD_LIBUSB=ON \
 	    -DPYTHON_VERSION=$(PYTHON_VERSION) \
+	    -DRPC_DEBUG=$(RPC_DEBUG) \
 	    -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) \
 	    -DCMAKE_INSTALL_PREFIX=$(PREFIX) \
 	    -DBUILD_CLIENT=$(BUILD_CLIENT) \
 	    -DBUILD_PYTHON=$(BUILD_PYTHON) \
+	    -DBUILD_TESTS=$(BUILD_TESTS) \
 	    -DBUILD_CPLUSPLUS=$(BUILD_CPLUSPLUS) \
 	    -DBUILD_XPC=$(BUILD_XPC) \
-	    -DENABLE_LIBDISPATCH=$(ENABLE_LIBDISPATCH)
+	    -DENABLE_LIBDISPATCH=$(ENABLE_LIBDISPATCH) \
+	    -DENABLE_RPATH=$(ENABLE_RPATH) \
+	    -DBUILD_DOC=$(BUILD_DOC)
 	make -C build
 
 build-cov:
@@ -41,6 +47,7 @@ build-cov:
 	    -DENABLE_LIBDISPATCH=OFF \
 	    -DBUILD_XPC=$(BUILD_XPC) \
 	    -DENABLE_COVERAGE=ON
+	    -DBUILD_DOC=$(BUILD_DOC)
 	make -C build-cov
 
 bootstrap:
@@ -57,6 +64,17 @@ uninstall:
 	make -C build uninstall
 
 test: build-cov
-	./build-cov/test_suite
-	lcov --capture --directory build-cov -o librpc.cov
+	gtester --keep-going -o test-results.xml ./build-cov/test_suite || true
+	lcov \
+	    --capture \
+	    --gcov-tool $(abspath llvm-gcov.sh) \
+	    --directory build-cov \
+	    -o librpc.cov
 	genhtml librpc.cov -o coverage-report
+	xsltproc -o junit-test-results.xml gtester.xsl test-results.xml
+
+benchmark:
+	mkdir -p build/benchmarks
+	cd build/benchmarks && cmake ../../tests/benchmarks
+	cd build/benchmarks && make
+	cd build/benchmarks && ../../tests/benchmarks/run.py -o ../../output

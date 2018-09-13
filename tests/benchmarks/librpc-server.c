@@ -88,7 +88,7 @@ usage(const char *argv0)
 }
 
 int
-main(int argc, char * const argv[])
+main(int argc, char *const argv[])
 {
 	rpc_context_t context;
 	rpc_server_t server;

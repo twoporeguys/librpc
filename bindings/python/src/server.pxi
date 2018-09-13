@@ -29,13 +29,28 @@ cdef class Server(object):
     cdef Context context
     cdef object uri
 
-    def __init__(self, uri, context):
+    def __init__(self, uri, context, params=None):
         if not uri:
             raise RuntimeError('URI cannot be empty')
 
         self.uri = uri.encode('utf-8')
         self.context = context
-        self.server = rpc_server_create(self.uri, self.context.context)
+        self.server = rpc_server_create_ex(
+            self.uri,
+            self.context.unwrap(),
+            Object(params).unwrap()
+        )
+
+        if self.server == <rpc_server_t>NULL:
+            raise_internal_exc()
+
+    @staticmethod
+    cdef wrap(rpc_server_t c_server):
+        cdef Server result
+
+        result = Server.__new__(Server)
+        result.server = c_server
+        return result
 
     def broadcast_event(self, name, args, path='/', interface=None):
         cdef Object rpc_args
@@ -43,6 +58,7 @@ cdef class Server(object):
         cdef const char *c_path
         cdef const char *c_interface = NULL
 
+        rpc_args = Object(args)
         b_name = name.encode('utf-8')
         c_name = b_name
         b_path = path.encode('utf-8')
@@ -52,17 +68,47 @@ cdef class Server(object):
             b_interface = interface.encode('utf-8')
             c_interface = b_interface
 
-        if isinstance(args, Object):
-            rpc_args = args
-        else:
-            rpc_args = Object(args)
-            rpc_retain(rpc_args.obj)
-
         with nogil:
-            rpc_server_broadcast_event(self.server, c_path, c_interface, c_name, rpc_args.obj)
+            rpc_server_broadcast_event(
+                self.server,
+                c_path,
+                c_interface,
+                c_name,
+                rpc_args.unwrap()
+            )
 
     def resume(self):
         rpc_server_resume(self.server)
 
     def close(self):
         rpc_server_close(self.server)
+
+    def __str__(self):
+        return repr(self)
+
+    def __repr__(self):
+        return "<librpc.Server at '{0}'>".format(self.uri)
+
+    IF SYSTEMD_SUPPORT:
+        @staticmethod
+        def systemd_listen(Context context):
+            cdef Server server
+            cdef int nservers
+            cdef rpc_server_t *servers
+            cdef rpc_object_t rest = <rpc_object_t>NULL
+            cdef rpc_context_t c_context = context.unwrap()
+
+            with nogil:
+                nservers = rpc_server_sd_listen(c_context, &servers, &rest)
+
+            if nservers < 0:
+                raise_internal_exc()
+
+            result = []
+            for i in range(nservers):
+                server = Server.wrap(servers[i])
+                server.uri = None
+                server.context = context
+                result.append(server)
+
+            return result, Object.wrap(rest).unpack()

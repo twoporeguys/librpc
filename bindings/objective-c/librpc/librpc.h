@@ -190,6 +190,13 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
 - (void)abort;
 
 /**
+ * Sets prefetch size for a streaming call.
+ *
+ * @param len Number of items to prefetch.
+ */
+- (void)setPrefetch:(NSInteger)len;
+
+/**
  * Returns the result of the call.
  *
  * In case of a streaming call, it returns last chunk of data
@@ -229,6 +236,13 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
 - (void)disconnect;
 
 /**
+ * Returns a C pointer to @p rpc_client_t handle.
+ *
+ * @return Pointer to a @p rpc_client_t handle.
+ */
+- (void *)nativeValue;
+
+/**
  * Returns a dictionary of instances found on the server.
  */
 - (nonnull NSDictionary<NSString *, RPCInstance *> *)instances;
@@ -248,7 +262,7 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
 /**
  * Issues a call to the server.
  */
-- (nonnull RPCCall *)call:(nonnull NSString *)method
+- (nullable RPCCall *)call:(nonnull NSString *)method
                      path:(nullable NSString *)path
                 interface:(nullable NSString *)interface
                      args:(nullable RPCObject *)args
@@ -409,7 +423,8 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
 @end
 
 @interface RPCTyping : NSObject
-+ (void)init;
-+ (void)loadTypes:(nonnull NSString *)path;
-+ (void)loadTypesDirectory:(nonnull NSString *)directory;
++ (instancetype)shared;
+- (BOOL)loadTypes:(nonnull NSString *)path error:(NSError *_Nullable *_Nullable)error;
+- (BOOL)loadTypesDirectory:(nonnull NSString *)directory error:(NSError *_Nullable *_Nullable)error;
+- (BOOL)loadTypesConnection:(nonnull RPCClient *)client error:(NSError *_Nullable *_Nullable)error;
 @end

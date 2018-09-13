@@ -169,7 +169,7 @@ librpc_device_answer(struct device *dev, void *arg, const void *buf,
 	    char response[length];
 	} packet;
 
-	printk("librpc_device_answer: buf=%p, length=%ld\n", buf, sizeof(packet));
+	printk("librpc_device_answer: buf=%p, length=%zu\n", buf, sizeof(packet));
 	print_hex_dump(KERN_INFO, "response: ", DUMP_PREFIX_ADDRESS, 16,
 	    1, buf, length, true);
 
@@ -234,7 +234,7 @@ void
 librpc_device_log(struct device *dev, const char *log, size_t len)
 {
 
-	dev_dbg(dev, "librpc_device_log: len=%ld, buf=%p\n", len, log);
+	dev_dbg(dev, "librpc_device_log: len=%zu, buf=%p\n", len, log);
 	dev_info(dev, "%*s\n", (int)len, log);
 }
 

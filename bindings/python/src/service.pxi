@@ -42,6 +42,9 @@ cdef class Context(object):
         ret.context = ptr
         return ret
 
+    cdef rpc_context_t unwrap(self) nogil:
+        return self.context
+
     def register_instance(self, obj):
         cdef Instance instance
 
@@ -51,12 +54,9 @@ cdef class Context(object):
         if isinstance(obj, Instance):
             instance = <Instance>obj
 
-        self.instances[instance.path] = instance
+        self.instances[instance.path] = obj
         if rpc_context_register_instance(self.context, instance.instance) != 0:
             raise_internal_exc()
-
-    cdef rpc_context_t unwrap(self):
-        return self.context
 
     def register_method(self, name, fn, interface=None):
         self.methods[name] = fn
@@ -88,7 +88,7 @@ cdef class Instance(object):
         result.instance = ptr
         return result
 
-    cdef rpc_instance_t unwrap(self):
+    cdef rpc_instance_t unwrap(self) nogil:
         return self.instance
 
     @staticmethod
@@ -100,10 +100,7 @@ cdef class Instance(object):
 
         try:
             result = getter()
-            if not isinstance(result, Object):
-                raise ValueError('returned value is not librpc.Object')
-
-            return rpc_retain((<Object>result).obj)
+            return rpc_retain(Object(result).unwrap())
         except RpcException as err:
             rpc_property_error(cookie, err.code, err.message.encode('utf-8'))
             return <rpc_object_t>NULL
@@ -268,6 +265,7 @@ def prop(arg):
     if callable(arg):
         def setter(fn):
             arg.__librpc_setter__ = fn
+            return fn
 
         arg.setter = setter
         arg.__librpc_name__ = arg.__name__

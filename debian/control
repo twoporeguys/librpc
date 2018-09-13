@@ -4,12 +4,14 @@ Priority: optional
 Maintainer: Jakub Klama <jakub.klama@twoporeguys.com>
 Build-Depends: debhelper (>=10), cmake, clang, pkg-config,
  libglib2.0-dev, libsoup2.4-dev, libblocksruntime-dev, libyaml-dev,
- libyajl-dev, libudev-dev, libusb-1.0-0-dev, python3-dev, cython3
+ libyajl-dev, libudev-dev, libusb-1.0-0-dev, systemd, libsystemd-dev,
+ python3-dev, cython3, python3-setuptools
 Standards-Version: 4.0.0
 Homepage: https://github.com/twoporeguys/librpc
 
 Package: librpc1
 Architecture: any
+Multi-Arch: foreign
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: RPC library
@@ -30,3 +32,19 @@ Architecture: any
 Depends: librpc1(= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, python3
 Description: Python 3 bindings for librpc
  Python 3 library wrapping librpc functionality.
+
+Package: librpc-tools
+Section: libs
+Multi-Arch: foreign
+Architecture: any
+Depends: librpc1(= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: librpc utilities
+ Command-line utilities for librpc
+
+Package: rpcd
+Section: libs
+Multi-Arch: foreign
+Architecture: any
+Depends: librpc1(= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: librpc name service daemon
+ Name service daemon providing a central directory of librpc servers

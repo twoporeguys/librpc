@@ -30,8 +30,9 @@
 
 #include <Block.h>
 #include <sys/time.h>
+#include <rpc/config.h>
 #include <rpc/object.h>
-#ifdef LIBDISPATCH_SUPPORT
+#ifdef ENABLE_LIBDISPATCH
 #include <dispatch/dispatch.h>
 #endif
 
@@ -45,6 +46,7 @@
 extern "C" {
 #endif
 
+struct rpc_context;
 struct rpc_connection;
 struct rpc_call;
 
@@ -77,6 +79,15 @@ typedef enum rpc_call_status
 } rpc_call_status_t;
 
 /**
+ * Enumerates possible remote procedure call status values.
+ */
+typedef enum rpc_call_type
+{
+	RPC_OUTBOUND_CALL,		/**< Call that is made by requestor */
+	RPC_INBOUND_CALL,		/**< Call to be delivered to responder */
+} rpc_call_type_t;
+
+/**
  * Definition of RPC connection pointer.
  */
 typedef struct rpc_connection *rpc_connection_t;
@@ -103,6 +114,12 @@ typedef void (^rpc_property_handler_t)(_Nonnull rpc_object_t value);
  */
 typedef void (^rpc_error_handler_t)(rpc_error_code_t code,
     _Nullable rpc_object_t args);
+
+/**
+ * Definition of raw message handler block type.
+ */
+typedef int (^rpc_raw_handler_t)(const void *_Nonnull msg, size_t len,
+    const int *_Nullable fds, size_t nfds);
 
 /**
  * Definition of RPC callback block type.
@@ -135,12 +152,25 @@ typedef bool (^rpc_callback_t)(_Nonnull rpc_call_t call);
 	}
 
 /**
+ * Converts function pointer to a @ref rpc_message_handler_t block type.
+ */
+#define RPC_RAW_HANDLER(_fn, _arg)					\
+	^(const void *_msg, size_t _len, const int *_fds, size_t _nfd) {\
+		return (_fn(_arg, _msg, _len, _fds, _nfd));		\
+	}
+
+/**
  * Converts function pointer to a @ref rpc_callback_t block type.
  */
 #define	RPC_CALLBACK(_fn, _arg) 					\
 	^(rpc_object_t _args, rpc_call_status_t _status) {		\
 		return ((bool)_fn(_arg, _args, _status));		\
 	}
+
+/**
+ * Definition of Null-argument fmt to pass to rpc_connection_call_simple()
+ */
+#define RPC_NULL_FORMAT "[]"
 
 /**
  * Creates a new connection from the provided opaque cookie.
@@ -161,6 +191,29 @@ _Nullable rpc_connection_t rpc_connection_create(void *_Nonnull cookie,
 int rpc_connection_close(_Nonnull rpc_connection_t conn);
 
 /**
+ * Returns context associated with the connection.
+ *
+ * @param conn Client connection
+ * @return Context handle or @p NULL if not set
+ */
+struct rpc_context *_Nullable rpc_connection_get_context(
+    _Nonnull rpc_connection_t conn);
+
+/**
+ * Sets a context into the connection structure to allow a client to receive
+ * calls.
+ *
+ * It is an error to submit a new context for a server-side connection or for
+ * a connection that is not open.
+ *
+ * @param conn Client connection
+ * @param ctx Client context
+ * @return 0 on success, -1 on failure.
+ */
+int rpc_connection_set_context(_Nonnull rpc_connection_t conn,
+    struct rpc_context *_Nonnull ctx);
+
+/**
  * Returns @p true if connection is open, otherwise @p false.
  *
  * @param conn Connection handle
@@ -169,13 +222,21 @@ int rpc_connection_close(_Nonnull rpc_connection_t conn);
 bool rpc_connection_is_open(_Nonnull rpc_connection_t conn);
 
 /**
+ * Returns file descriptor associated with the connection.
+ *
+ * @param conn Connection handle
+ * @return File descriptor number
+ */
+int rpc_connection_get_fd(_Nonnull rpc_connection_t conn);
+
+/**
  * Frees resources associated with @ref rpc_connection_t.
  *
  * @param conn Connection handle
  */
 void rpc_connection_free(_Nonnull rpc_connection_t conn);
 
-#ifdef LIBDISPATCH_SUPPORT
+#ifdef ENABLE_LIBDISPATCH
 /**
  * Assigns a libdispatch queue to the connection.
  *
@@ -222,7 +283,7 @@ int rpc_connection_subscribe_event(_Nonnull rpc_connection_t conn,
  * @return 0 on success, -1 on failure
  */
 int rpc_connection_unsubscribe_event(_Nonnull rpc_connection_t conn,
-    const char *_Nullable path, const char *_Nonnull interface,
+    const char *_Nullable path, const char *_Nullable interface,
     const char *_Nonnull name);
 
 /**
@@ -296,13 +357,13 @@ _Nullable rpc_object_t rpc_connection_call_syncv(_Nonnull rpc_connection_t conn,
  *
  * @param conn Connection handle
  * @param method Name of a method to be called
- * @param fmt Format strin
+ * @param fmt Format string
  * @param ... Called method arguments
  * @return Result of the call
  */
 _Nullable rpc_object_t rpc_connection_call_syncp(_Nonnull rpc_connection_t conn,
     const char *_Nullable path, const char *_Nullable interface,
-    const char *_Nonnull method, const char *_Nullable fmt, ...);
+    const char *_Nonnull method, const char *_Nonnull fmt, ...);
 
 /**
  * A variation of @ref rpc_connection_call_syncp that takes a @p va_list
@@ -319,7 +380,7 @@ _Nullable rpc_object_t rpc_connection_call_syncp(_Nonnull rpc_connection_t conn,
 _Nullable rpc_object_t rpc_connection_call_syncpv(
     _Nonnull rpc_connection_t conn, const char *_Nullable path,
     const char *_Nullable interface, const char *_Nonnull method,
-    const char *_Nullable fmt, va_list ap);
+    const char *_Nonnull fmt, va_list ap);
 
 /**
  * Performs a synchronous RPC function call using a given connection.
@@ -329,7 +390,8 @@ _Nullable rpc_object_t rpc_connection_call_syncpv(
  *
  * This function can be only used to call pure functions (not operating
  * on objects, that is, like rpc_connection_call_syncp() but with path
- * and interface parameters set to NULL).
+ * and interface parameters set to NULL). Use RPC_NULL_FORMAT to indicate
+ * a null format string.
  *
  * @param name
  * @param fmt
@@ -338,7 +400,7 @@ _Nullable rpc_object_t rpc_connection_call_syncpv(
  */
 _Nullable rpc_object_t rpc_connection_call_simple(
     _Nonnull rpc_connection_t conn, const char *_Nonnull name,
-    const char *_Nullable fmt, ...);
+    const char *_Nonnull fmt, ...);
 
 /**
  * Performs a RPC method call using a given connection.
@@ -371,7 +433,7 @@ _Nullable rpc_call_t rpc_connection_call(_Nonnull rpc_connection_t conn,
  */
 _Nullable rpc_object_t rpc_connection_get_property(
     _Nonnull rpc_connection_t conn, const char *_Nullable path,
-    const char *_Nonnull interface, const char *_Nonnull name);
+    const char *_Nullable interface, const char *_Nonnull name);
 
 /**
  *
@@ -384,7 +446,7 @@ _Nullable rpc_object_t rpc_connection_get_property(
  */
 _Nullable rpc_object_t rpc_connection_set_property(
     _Nonnull rpc_connection_t conn, const char *_Nullable path,
-    const char *_Nonnull interface, const char *_Nonnull name,
+    const char *_Nullable interface, const char *_Nonnull name,
     rpc_object_t _Nonnull value);
 
 
@@ -415,7 +477,7 @@ _Nullable rpc_object_t rpc_connection_set_propertyp(
  */
 _Nullable rpc_object_t rpc_connection_set_propertypv(
     _Nonnull rpc_connection_t conn, const char *_Nullable path,
-    const char *_Nonnull interface, const char *_Nonnull name,
+    const char *_Nullable interface, const char *_Nonnull name,
     const char *_Nonnull fmt, va_list ap);
 
 /**
@@ -428,8 +490,8 @@ _Nullable rpc_object_t rpc_connection_set_propertypv(
  * @return
  */
 void *_Nullable rpc_connection_watch_property(
-    _Nonnull rpc_connection_t conn, const char *_Nonnull path,
-    const char *_Nonnull interface, const char *_Nonnull property,
+    _Nonnull rpc_connection_t conn, const char *_Nullable path,
+    const char *_Nullable interface, const char *_Nonnull property,
     _Nonnull rpc_property_handler_t handler);
 
 /**
@@ -448,6 +510,28 @@ int rpc_connection_send_event(_Nonnull rpc_connection_t conn,
  * Ping the other end of a connection.
  */
 int rpc_connection_ping(_Nonnull rpc_connection_t conn);
+
+/**
+ *
+ * @param conn
+ * @param msg
+ * @param len
+ * @param fds
+ * @param nfds
+ * @return
+ */
+int rpc_connection_send_raw_message(_Nonnull rpc_connection_t conn,
+    const void *_Nonnull msg, size_t len, const int *_Nullable fds,
+    size_t nfds);
+
+/**
+ *
+ * @param conn
+ * @param handler
+ * @return
+ */
+void rpc_connection_set_raw_message_handler(_Nonnull rpc_connection_t conn,
+    _Nullable rpc_raw_handler_t handler);
 
 /**
  * Sets global event handler for a connection.
@@ -474,6 +558,22 @@ void rpc_connection_set_error_handler(_Nonnull rpc_connection_t conn,
  */
 const char *_Nullable rpc_connection_get_remote_address(
     _Nonnull rpc_connection_t conn);
+
+/**
+ * Checks whether a given connection does support file descriptor passing.
+ *
+ * @param conn Connection handle
+ * @return true if fd passing is supported, otherwise false
+ */
+bool rpc_connection_supports_fd_passing(_Nonnull rpc_connection_t conn);
+
+/**
+ * Checks whether a given connection does support credentials.
+ *
+ * @param conn Connection handle
+ * @return true if credentials are supported, otherwise false
+ */
+bool rpc_connection_supports_credentials(_Nonnull rpc_connection_t conn);
 
 /**
  * Returns true if a connection has associated remote credentials information.
@@ -535,6 +635,15 @@ int rpc_call_continue(_Nonnull rpc_call_t call, bool sync);
 int rpc_call_abort(_Nonnull rpc_call_t call);
 
 /**
+ * Sets how many items librpc should prefetch in a streaming call.
+ *
+ * @param call
+ * @param nitems
+ * @return
+ */
+int rpc_call_set_prefetch(_Nonnull rpc_call_t call, size_t nitems);
+
+/**
  * Waits for a call to change status.
  *
  * If a timeout specified by a ts argument occurs, before a call
@@ -545,7 +654,7 @@ int rpc_call_abort(_Nonnull rpc_call_t call);
  * @return 0 on success, -1 on failure or timeout
  */
 int rpc_call_timedwait(_Nonnull rpc_call_t call,
-    const struct timeval *_Nonnull ts);
+    const struct timespec *_Nonnull ts);
 
 /**
  * Checks whether a call has been completed successfully.
@@ -562,7 +671,7 @@ int rpc_call_success(_Nonnull rpc_call_t call);
  * @param call Call to be checked
  * @return Call status
  */
-int rpc_call_status(_Nonnull rpc_call_t call);
+rpc_call_status_t rpc_call_status(_Nonnull rpc_call_t call);
 
 /**
  * Returns a call result (or a current fragment).
@@ -583,4 +692,4 @@ void rpc_call_free(_Nonnull rpc_call_t call);
 }
 #endif
 
-#endif //LIBRPC_CONNECTION_H
+#endif /* LIBRPC_CONNECTION_H */

@@ -157,6 +157,15 @@ void rpc_query_set(_Nonnull rpc_object_t object, const char *_Nonnull path,
  * If the provided path does not match a given object, then library error
  * is set.
  *
+ * rpc_query_set always tries to automatically add missing pieces
+ * of the provided path.
+ * Example:
+ * object = {}
+ * path = "some.0.values.1.and.indexes"
+ * value = true
+ *
+ * result = {some:[{values:[null,{and:{indexes:true}}]}]}
+ *
  * @param object Object to perform the lookup on.
  * @param path Path to the object to be deleted - '.' character is required
  * between each key/idx pair.

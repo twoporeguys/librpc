@@ -63,4 +63,4 @@ rpc_object_t rpc_json_deserialize(const void *, size_t);
 }
 #endif
 
-#endif //LIBRPC_JSON_H
+#endif /* LIBRPC_JSON_H */

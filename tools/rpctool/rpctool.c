@@ -38,12 +38,22 @@
 #include <rpc/serializer.h>
 #include <rpc/typing.h>
 
+#define USAGE_STRING							\
+    "Available commands:\n"						\
+    "  tree\n"								\
+    "  inspect PATH\n"							\
+    "  call PATH INTERFACE METHOD [ARGUMENTS]\n"			\
+    "  get PATH INTERFACE PROPERTY\n"					\
+    "  set PATH INTERFACE PROPERTY VALUE\n"				\
+    "  listen PATH\n"
+
 static int cmd_tree(int argc, char *argv[]);
 static int cmd_inspect(int argc, char *argv[]);
 static int cmd_call(int argc, char *argv[]);
 static int cmd_get(int argc, char *argv[]);
 static int cmd_set(int argc, char *argv[]);
 static int cmd_listen(int argc, char *argv[]);
+static void  usage(GOptionContext *);
 
 static const char *server;
 static const char **idls;
@@ -88,7 +98,7 @@ connect(void)
 		exit(1);
 	}
 
-	rpct_init();
+	rpct_init(true);
 
 	if (idls != NULL) {
 		for (idl = idls; *idl != NULL; idl++)
@@ -176,44 +186,19 @@ inspect_properties(rpc_connection_t conn, const char *path, const char *interfac
 static int
 inspect_interface(rpc_connection_t conn, const char *path, const char *interface)
 {
-	rpc_object_t args;
-	rpc_call_t call;
-	int ret = 0;
+	rpc_object_t methods;
 
-	args = rpc_object_pack("[s]", interface);
-	call = rpc_connection_call(conn, path, RPC_INTROSPECTABLE_INTERFACE,
-	    "get_methods", args, NULL);
+	methods = rpc_connection_call_syncp(conn, path,
+	    RPC_INTROSPECTABLE_INTERFACE, "get_methods", "[s]", interface);
 
 	printf("  Methods:\n");
 
-	for (;;) {
-		rpc_call_wait(call);
+	rpc_array_apply(methods, ^(size_t idx, rpc_object_t value) {
+		printf("    %s\n", rpc_string_get_string_ptr(value));
+		return ((bool)true);
+	});
 
-		switch (rpc_call_status(call)) {
-			case RPC_CALL_MORE_AVAILABLE:
-				printf("    %s\n", rpc_string_get_string_ptr(
-				    rpc_call_result(call)));
-				rpc_call_continue(call, false);
-				break;
-
-			case RPC_CALL_DONE:
-			case RPC_CALL_ENDED:
-				goto done;
-
-			case RPC_CALL_ERROR:
-				ret = 1;
-				goto error;
-
-			default:
-				g_assert_not_reached();
-		}
-	}
-
-done:
-	ret = inspect_properties(conn, path, interface);
-
-error:
-	return (ret);
+	return (inspect_properties(conn, path, interface));
 }
 
 static int
@@ -265,6 +250,11 @@ cmd_inspect(int argc, char *argv[])
 	rpc_object_t result;
 	int ret = 0;
 
+	if (argc < 1) {
+		fprintf(stderr, "Not enough arguments provided\n");
+		return (1);
+	}
+
 	conn = connect();
 	result = rpc_connection_call_syncp(conn, argv[0],
 	    RPC_INTROSPECTABLE_INTERFACE, "get_interfaces", "[]");
@@ -297,7 +287,6 @@ cmd_call(int argc, char *argv[])
 	rpc_call_t call;
 	rpc_object_t args;
 	rpc_object_t error;
-	int ret = 0;
 
 	if (argc < 4) {
 		fprintf(stderr, "Not enough arguments provided\n");
@@ -329,8 +318,10 @@ cmd_call(int argc, char *argv[])
 				output(rpc_call_result(call));
 				goto done;
 
+			case RPC_CALL_ENDED:
+				goto done;
+
 			case RPC_CALL_ERROR:
-				ret = 1;
 				goto error;
 
 			default:
@@ -352,7 +343,8 @@ cmd_get(int argc, char *argv[])
 	rpc_object_t result;
 
 	if (argc != 3) {
-
+		fprintf(stderr, "Not enough arguments provided\n");
+		return (1);
 	}
 
 	conn = connect();
@@ -370,7 +362,8 @@ cmd_set(int argc, char *argv[])
 	rpc_object_t result;
 
 	if (argc != 4) {
-
+		fprintf(stderr, "Not enough arguments provided\n");
+		return (1);
 	}
 
 	value = rpc_serializer_load("json", argv[3], strlen(argv[3]));
@@ -394,6 +387,11 @@ cmd_listen(int argc, char *argv[])
 {
 	__block GMutex mtx;
 	rpc_connection_t conn;
+
+	if (argc < 1) {
+		fprintf(stderr, "Not enough arguments provided\n");
+		return (1);
+	}
 
 	g_mutex_init(&mtx);
 	conn = connect();
@@ -420,6 +418,15 @@ cmd_listen(int argc, char *argv[])
 	return (0);
 }
 
+static void
+usage(GOptionContext *context)
+{
+	g_autofree char *help;
+
+	help = g_option_context_get_help(context, true, NULL);
+	fprintf(stderr, "%s", help);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -429,15 +436,15 @@ main(int argc, char *argv[])
 	int nargs;
 	size_t i;
 
-	context = g_option_context_new(" - interact with librpc server");
+	context = g_option_context_new("<COMMAND> [ARGUMENTS...] - interact with librpc server");
+	g_option_context_set_description(context, USAGE_STRING);
 	g_option_context_add_main_entries(context, options, NULL);
 	if (!g_option_context_parse(context, &argc, &argv, &err)) {
-
+		usage(context);
 	}
 
 	if (args == NULL) {
-		fprintf(stderr, "No command specified. Use \"rpctool -h\" to "
-		    "get help.\n");
+		usage(context);
 		return (1);
 	}
 

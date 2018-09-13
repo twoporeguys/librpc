@@ -56,13 +56,9 @@ cdef class Serializer(object):
         cdef int ret
         cdef Object rpc_obj
 
-        if isinstance(obj, Object):
-            rpc_obj = <Object>obj
-        else:
-            rpc_obj = Object(obj)
-
+        rpc_obj = Object(obj)
         with nogil:
-            ret = rpc_serializer_dump(self.type, rpc_obj.obj, &frame, &len)
+            ret = rpc_serializer_dump(self.type, rpc_obj.unwrap(), &frame, &len)
 
         if ret != 0:
             raise_internal_exc()

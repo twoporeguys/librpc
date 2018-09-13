@@ -1,19 +1,31 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'ubuntu:18.04'
+            args "-u root:sudo -v ${env.DOCS_PATH}:${env.DOCS_PATH}"
+        }
+    }
 
     environment {
         CC = 'clang'
         CXX = 'clang++'
-        http_proxy = "http://proxy.twoporeguys.com:3128"
+        DEBIAN_FRONTEND = 'noninteractive'
+        LANG = 'C'
         npm_config_cache = "${pwd()}/.npm"
     }
 
     stages {
+        stage('Build Supermom') {
+            steps {
+                build job: 'supermom/master', wait: false
+            }
+        }
+
         stage('Bootstrap') {
             steps {
-                lock('apt-get') {
-	                sh 'sudo make bootstrap'
-                }
+                sh 'apt-get update'
+                sh 'apt-get -y install build-essential'
+                sh 'make bootstrap'
             }
         }
 
@@ -22,6 +34,12 @@ pipeline {
                 sh 'mkdir -p build'
                 sh 'cd build && cmake .. -DBUILD_LIBUSB=ON -DBUILD_DOC=ON'
                 sh 'cd build && make'
+            }
+        }
+
+        stage('Run tests') {
+            steps {
+                sh 'make test'
             }
         }
 
@@ -38,7 +56,7 @@ pipeline {
 
         stage('Generate typescript docs') {
             steps {
-                sh 'cd bindings/typescript && make doc'
+                sh 'make -C bindings/typescript doc'
             }
         }
 
@@ -53,10 +71,24 @@ pipeline {
             }
         }
 
-        stage('Build Supermom'){
-          steps{
-               build job: 'supermom/master', wait: false
+        stage('Cleanup') {
+            steps {
+                sh 'chown -v -R 9001:9001 .'
             }
+        }
+    }
+
+    post {
+        always {
+	    junit 'junit-test-results.xml'
+            publishHTML target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: false,
+                keepAll: true,
+                reportDir: 'coverage-report',
+                reportFiles: 'index.html',
+                reportName: 'Code coverage report'
+            ]
         }
     }
 }

@@ -37,47 +37,6 @@
 static bool eval_rule(rpc_object_t obj, rpc_object_t rule);
 
 static rpc_object_t
-rpc_query_steal_get(rpc_object_t object, const char *path,
-    rpc_object_t default_val)
-{
-	char *split_path = g_strdup(path);
-	char *token;
-	rpc_object_t leaf = object;
-	rpc_object_t retval = default_val;
-	bool error = false;
-
-	token = strtok(split_path, ".");
-	while (token != NULL) {
-		switch(rpc_get_type(leaf)) {
-			case RPC_TYPE_DICTIONARY:
-				leaf = rpc_dictionary_get_value(leaf, token);
-				break;
-
-			case RPC_TYPE_ARRAY:
-				leaf = rpc_array_get_value(leaf, (size_t)atoi(token));
-				break;
-
-			default:
-				retval = NULL;
-				error = true;
-				break;
-		}
-
-		if (error)
-			break;
-
-		token = strtok(NULL, ".");
-	}
-
-	if ((!error) && (leaf != NULL))
-		retval = leaf;
-
-	g_free(split_path);
-
-	return (retval);
-}
-
-static rpc_object_t
 rpc_query_get_parent(rpc_object_t object, const char *path,
     const char **child, rpc_object_t default_val)
 {
@@ -86,10 +45,16 @@ rpc_query_get_parent(rpc_object_t object, const char *path,
 	rpc_object_t parent;
 	char *last_segment;
 
-	last_segment = g_strrstr(path, ".") + 1;
+	last_segment = g_strrstr(path, ".");
+	if (last_segment == NULL) {
+		*child = path;
+		return (object);
+	}
+
+	last_segment += 1;
 	get_path_len = strlen(path) - strlen(last_segment) - 1;
 	get_path = g_strndup(path, get_path_len);
-	parent = rpc_query_steal_get(object, (const char *)get_path,
+	parent = rpc_query_get(object, (const char *)get_path,
 	    default_val);
 
 	g_free(get_path);
@@ -150,11 +115,16 @@ eval_logic_operator(rpc_object_t obj, rpc_object_t rule)
 {
 	const char *op;
 	rpc_object_t lst;
+	rpc_object_t op_val;
 
 	if (rpc_get_type(rule) != RPC_TYPE_ARRAY)
 		return (false);
 
-	op = rpc_array_get_string(rule, 0);
+	op_val = rpc_array_get_value(rule, 0);
+	if (rpc_get_type(op_val) == RPC_TYPE_ARRAY)
+		return (eval_logic_and(obj, rule));
+
+	op = rpc_string_get_string_ptr(op_val);
 	lst = rpc_array_get_value(rule, 1);
 
 	if (!g_strcmp0(op, "or"))
@@ -196,7 +166,7 @@ eval_field_operator(rpc_object_t obj, rpc_object_t rule)
 	op = rpc_array_get_string(rule, 1);
 	right = rpc_array_get_value(rule, 2);
 
-	item = rpc_query_steal_get(obj, left, NULL);
+	item = rpc_query_get(obj, left, NULL);
 
 	if (!g_strcmp0(op, "="))
 		return (rpc_equal(item, right));
@@ -320,11 +290,43 @@ rpc_query_find_next(rpc_query_iter_t iter)
 rpc_object_t
 rpc_query_get(rpc_object_t object, const char *path, rpc_object_t default_val)
 {
-	rpc_object_t retval;
+	char *split_path;
+	char *token;
+	rpc_object_t leaf = object;
+	rpc_object_t retval = default_val;
+	bool error = false;
 
-	retval = rpc_query_steal_get(object, path, default_val);
-	if (retval != NULL)
-		rpc_retain(retval);
+	if (path == NULL)
+		return (NULL);
+
+	split_path = g_strdup(path);
+	token = strtok(split_path, ".");
+	while (token != NULL) {
+		switch(rpc_get_type(leaf)) {
+		case RPC_TYPE_DICTIONARY:
+			leaf = rpc_dictionary_get_value(leaf, token);
+			break;
+
+		case RPC_TYPE_ARRAY:
+			leaf = rpc_array_get_value(leaf, (size_t)atoi(token));
+			break;
+
+		default:
+			retval = NULL;
+			error = true;
+			break;
+		}
+
+		if (error)
+			break;
+
+		token = strtok(NULL, ".");
+	}
+
+	if ((!error) && (leaf != NULL))
+		retval = leaf;
+
+	g_free(split_path);
 
 	return (retval);
 }
@@ -333,39 +335,87 @@ void
 rpc_query_set(rpc_object_t object, const char *path, rpc_object_t value,
     bool steal)
 {
-	rpc_object_t container;
-	const char *child;
+	rpc_object_t container = object;
+	rpc_object_t temp;
 	size_t idx;
-	char *next_char;
+	char *endptr;
+	char **tokens;
+	char *token;
+	char *next_token;
+	size_t tok_ptr = 0;
 
-	container = rpc_query_get_parent(object, path, &child, NULL);
-	if (container == NULL) {
-		rpc_set_last_error(ENOENT, "SET: Parent object not found.",
-		    NULL);
+	g_assert_nonnull(object);
+	g_assert_nonnull(value);
+
+	if (strlen(path) == 0) {
+		rpc_set_last_errorf(EINVAL, "SET: Path is empty");
 		return;
 	}
 
-	if (child == NULL) {
-		rpc_set_last_error(ENOENT,
-		    "SET: Path too short - specify target for the value.",
-		    NULL);
-		return;
+	tokens = g_strsplit(path, ".", 0);
+	token = tokens[0];
+
+	while (tokens[tok_ptr + 1] != NULL) {
+		switch(rpc_get_type(container)) {
+		case RPC_TYPE_DICTIONARY:
+			temp = rpc_dictionary_get_value(container, token);
+			break;
+		case RPC_TYPE_ARRAY:
+			idx = (size_t)g_ascii_strtoull(token, &endptr, 10);
+			if ((idx == 0) && (token == endptr)) {
+				rpc_set_last_errorf(EINVAL,
+				    "SET: Token %s is not a number", token);
+				goto error;
+			}
+
+			temp = rpc_array_get_value(container, idx);
+			break;
+		default:
+			rpc_set_last_errorf(EINVAL,
+			    "SET: Unsupported type of container");
+			goto error;
+		}
+
+		if (temp == NULL) {
+			next_token = tokens[tok_ptr + 1];
+
+			idx = (size_t)g_ascii_strtoull(next_token, &endptr, 10);
+			if ((idx == 0) && (next_token == endptr))
+				temp = rpc_dictionary_create();
+			else
+				temp = rpc_array_create();
+
+			if (rpc_get_type(container) == RPC_TYPE_DICTIONARY) {
+				rpc_dictionary_steal_value(container, token,
+				    temp);
+			} else {
+				idx = (size_t)g_ascii_strtoull(token, &endptr,
+				    10);
+				rpc_array_steal_value(container, idx, temp);
+			}
+		}
+
+		container = temp;
+		tok_ptr++;
+		token = tokens[tok_ptr];
 	}
 
 	switch(rpc_get_type(container)) {
 	case RPC_TYPE_DICTIONARY:
 		if (steal)
-			rpc_dictionary_steal_value(container, child, value);
+			rpc_dictionary_steal_value(container, token, value);
 		else
-			rpc_dictionary_set_value(container, child, value);
+			rpc_dictionary_set_value(container, token, value);
 
 		break;
 
 	case RPC_TYPE_ARRAY:
-		idx = (size_t)strtol(child, &next_char, 10);
-		if (next_char != NULL)
-			rpc_set_last_error(ENOENT,
-			    "SET: String to index conversion failed.", NULL);
+		idx = (size_t)g_ascii_strtoull(token, &endptr, 10);
+		if ((idx == 0) && (token == endptr)) {
+			rpc_set_last_errorf(EINVAL,
+			    "SET: Token %s is not a number", token);
+			goto error;
+		}
 
 		if (steal)
 			rpc_array_steal_value(container, idx, value);
@@ -379,6 +429,9 @@ rpc_query_set(rpc_object_t object, const char *path, rpc_object_t value,
 		    "SET: Cannot navigate through non-container types.", NULL);
 		break;
 	}
+
+error:
+	g_strfreev(tokens);
 }
 
 void
@@ -428,7 +481,7 @@ rpc_query_delete(rpc_object_t object, const char *path)
 bool
 rpc_query_contains(rpc_object_t object, const char *path)
 {
-	rpc_object_t target = rpc_query_steal_get(object, path, NULL);
+	rpc_object_t target = rpc_query_get(object, path, NULL);
 
 	return (target != NULL);
 }
@@ -445,9 +498,8 @@ rpc_query(rpc_object_t object, rpc_query_params_t params, rpc_object_t rules)
 		return (NULL);
 	}
 
-	iter = (rpc_query_iter_t)g_malloc(sizeof(*iter));
-
-	local_params = (rpc_query_params_t)g_malloc(sizeof(*local_params));
+	iter = g_malloc(sizeof(*iter));
+	local_params = g_malloc(sizeof(*local_params));
 
 	if (params != NULL)
 		*local_params = *params;

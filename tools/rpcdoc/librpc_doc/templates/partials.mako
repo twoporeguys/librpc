@@ -7,10 +7,16 @@
                 ${generic_vars_type(t)}
             </span>
         %else:
-            <span class="type">
-                <a href="type-${t.type.name}.html">${t.type.name}</a>
-                ${generic_vars(t)}
-            </span>
+            % if t.proxy:
+                <span class="type">${t.proxy_variable}</span.
+            %else:
+                <span class="type">
+                    %if t.type:
+                        <a href="type-${t.type.name}.html">${t.type.name}</a>
+                        ${generic_vars(t)}
+                    %endif
+                </span>
+            %endif
         %endif
     %endif
 </%def>
@@ -76,15 +82,17 @@
 </%def>
 
 <%def name="generic_vars_type(t)">
-    %if t.generic:
-        &lt;
-        %for v in t.generic_variables:
-            <span class="type">${v}</span>
-            %if not loop.last:
-                ,
-            %endif
-        %endfor
-        &gt;
+    %if t:
+        %if t.generic:
+            &lt;
+            %for v in t.generic_variables:
+                <span class="type">${v}</span>
+                %if not loop.last:
+                    ,
+                %endif
+            %endfor
+            &gt;
+       %endif
     %endif
 </%def>
 

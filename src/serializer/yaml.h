@@ -59,4 +59,4 @@ rpc_object_t rpc_yaml_deserialize(const void *, size_t);
 }
 #endif
 
-#endif //LIBRPC_YAML_H
+#endif /* LIBRPC_YAML_H */

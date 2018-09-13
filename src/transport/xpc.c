@@ -36,8 +36,10 @@ static int xpc_connect(struct rpc_connection *, const char *, rpc_object_t);
 static int xpc_listen(struct rpc_server *, const char *, rpc_object_t);
 static xpc_object_t xpc_from_rpc(rpc_object_t);
 static rpc_object_t xpc_to_rpc(xpc_object_t);
+static int xpc_send_msg(void *, const void *, size_t, const int *, size_t);
 static int xpc_abort(void *);
 static void xpc_conn_release(void *);
+static bool xpc_supports_fd_passing(struct rpc_connection *);
 
 struct xpc_server
 {
@@ -54,10 +56,12 @@ struct xpc_connection
 
 static const struct rpc_transport xpc_transport = {
 	.name = "xpc",
-	.schemas = {"xpc", NULL},
+	.schemas = {"xpc", "xpc+mach", NULL},
 	.connect = xpc_connect,
 	.listen = xpc_listen,
-	.flags = RPC_TRANSPORT_NO_SERIALIZE
+	.is_fd_passing = xpc_supports_fd_passing,
+	.flags = RPC_TRANSPORT_NO_SERIALIZE | RPC_TRANSPORT_FD_PASSING |
+	    RPC_TRANSPORT_CREDENTIALS
 };
 
 static xpc_object_t
@@ -100,7 +104,9 @@ xpc_from_rpc(rpc_object_t obj)
 	case RPC_TYPE_ARRAY:
 		ret = xpc_array_create(NULL, 0);
 		rpc_array_apply(obj, ^(size_t idx, rpc_object_t value) {
-			xpc_array_append_value(ret, xpc_from_rpc(value));
+			xpc_object_t item = xpc_from_rpc(value);
+			xpc_array_append_value(ret, item);
+			xpc_release(item);
 			return ((bool)true);
 		});
 
@@ -109,7 +115,9 @@ xpc_from_rpc(rpc_object_t obj)
 	case RPC_TYPE_DICTIONARY:
 		ret = xpc_dictionary_create(NULL, NULL, 0);
 		rpc_dictionary_apply(obj, ^(const char *key, rpc_object_t value) {
-			xpc_dictionary_set_value(ret, key,  xpc_from_rpc(value));
+			xpc_object_t item = xpc_from_rpc(value);
+			xpc_dictionary_set_value(ret, key, item);
+			xpc_release(item);
 			return ((bool)true);
 		});
 
@@ -213,14 +221,16 @@ xpc_to_rpc(xpc_object_t obj)
 }
 
 static int
-xpc_send_msg(void *arg, void *buf, size_t size, const int *fds, size_t nfds)
+xpc_send_msg(void *arg, const void *buf, size_t size __unused,
+    const int *fds __unused, size_t nfds __unused)
 {
 	struct xpc_connection *conn = arg;
-	rpc_object_t obj = buf;
+	rpc_object_t obj = (rpc_object_t)buf;
 	xpc_object_t msg;
 
 	msg = xpc_from_rpc(obj);
 	xpc_connection_send_message(conn->xpc_handle, msg);
+	xpc_release(msg);
 	return (0);
 }
 
@@ -254,7 +264,10 @@ xpc_connect(struct rpc_connection *conn, const char *uri_string,
 
 	xconn = g_malloc0(sizeof(*xconn));
 	xconn->queue = dispatch_queue_create("xpc client", DISPATCH_QUEUE_SERIAL);
-	xconn->xpc_handle = xpc_connection_create(uri->host, xconn->queue);
+	xconn->xpc_handle = g_strcmp0(uri->scheme, "xpc") == 0
+	    ? xpc_connection_create(uri->host, xconn->queue)
+	    : xpc_connection_create_mach_service(uri->host, xconn->queue, 0);
+
 	conn->rco_send_msg = xpc_send_msg;
 	conn->rco_abort = xpc_abort;
 	conn->rco_release = xpc_conn_release;
@@ -268,6 +281,7 @@ xpc_connect(struct rpc_connection *conn, const char *uri_string,
 
 		rpc_object_t obj = xpc_to_rpc(msg);
 		conn->rco_recv_msg(conn, obj, 0, NULL, 0, NULL);
+		rpc_release(obj);
 	});
 
 	xpc_connection_resume(xconn->xpc_handle);
@@ -283,7 +297,7 @@ xpc_listen(struct rpc_server *conn, const char *uri_string,
 
 	uri = soup_uri_new(uri_string);
 	if (uri == NULL) {
-		rpc_set_last_errorf(EINVAL, "Invalid URI");
+		conn->rs_error = rpc_error_create(EINVAL, "Invalid URI", NULL);
 		return (-1);
 	}
 
@@ -319,6 +333,13 @@ xpc_listen(struct rpc_server *conn, const char *uri_string,
 
 	xpc_connection_resume(xserver->xpc_handle);
 	return (0);
+}
+
+static bool
+xpc_supports_fd_passing(struct rpc_connection *rpc_conn __unused)
+{
+
+	return (true);
 }
 
 DECLARE_TRANSPORT(xpc_transport);

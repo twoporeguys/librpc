@@ -34,6 +34,7 @@ import functools
 import traceback
 import datetime
 import uuid
+cimport cython
 from cpython.ref cimport Py_INCREF, Py_DECREF
 from librpc cimport *
 from libc.string cimport strdup
@@ -53,6 +54,8 @@ include "src/server.pxi"
 include "src/bus.pxi"
 include "src/serializer.pxi"
 include "src/typing.pxi"
+include "src/rpcd.pxi"
+include "src/query.pxi"
 
 
 cdef str_or_none(const char *val):
