@@ -211,11 +211,19 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_call *call)
 rpc_instance_t
 rpc_context_find_instance(rpc_context_t context, const char *path)
 {
+	rpc_instance_t result;
 
 	if (context == NULL)
 		return (NULL);
-	return ((path == NULL) ? context->rcx_root :
-	    (g_hash_table_lookup(context->rcx_instances, path)));
+
+
+	g_rw_lock_reader_lock(&context->rcx_rwlock);
+	result = path == NULL
+	    ? context->rcx_root
+	    : g_hash_table_lookup(context->rcx_instances, path));
+
+	g_rw_lock_reader_unlock(&context->rcx_rwlock);
+	return (result);
 }
 
 rpc_instance_t
@@ -713,10 +721,13 @@ rpc_instance_find_member(rpc_instance_t instance, const char *interface,
 	if (name == NULL)
 		return (NULL);
 
-        if (interface == NULL)
-                interface = RPC_DEFAULT_INTERFACE;
+	if (interface == NULL)
+		interface = RPC_DEFAULT_INTERFACE;
 
+	g_rw_lock_reader_lock(&instance->ri_rwlock);
 	iface = g_hash_table_lookup(instance->ri_interfaces, interface);
+	g_rw_lock_reader_unlock(&instance->ri_rwlock);
+
 	if (iface == NULL) {
 		debugf("member %s not found on %s\n", name,
 		    interface);
