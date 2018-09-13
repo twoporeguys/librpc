@@ -16,7 +16,7 @@ This graph shows which files directly or indirectly include this file\+:
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{server_8h__dep__incl}
+\includegraphics[width=221pt]{server_8h__dep__incl}
 \end{center}
 \end{figure}
 \subsection*{Macros}
@@ -81,10 +81,7 @@ R\+PC server A\+PI.
         \_fn(\_arg, \_conn, \_event);               \(\backslash\)
     \}
 \end{DoxyCode}
-Converts function pointer to a \hyperlink{server_8h_ae6bdcb22a936d564f9d2e8bb2fb3bda8}{rpc\+\_\+server\+\_\+ev\+\_\+handler\+\_\+t} block type. \begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{server_8c-example}{server.\+c}.\end{Desc}
-
+Converts function pointer to a \hyperlink{server_8h_ae6bdcb22a936d564f9d2e8bb2fb3bda8}{rpc\+\_\+server\+\_\+ev\+\_\+handler\+\_\+t} block type. 
 
 Definition at line 70 of file server.\+h.
 
@@ -131,9 +128,6 @@ Broadcasts an event of a given name among its subscribers.
 {\em args} & Event arguments \\
 \hline
 \end{DoxyParams}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{server_8c-example}{server.\+c}.\end{Desc}
 \mbox{\Hypertarget{server_8h_a1bf6070b1bb3b31d394f3862405eaf8c}\label{server_8h_a1bf6070b1bb3b31d394f3862405eaf8c}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+close@{rpc\+\_\+server\+\_\+close}}
 \index{rpc\+\_\+server\+\_\+close@{rpc\+\_\+server\+\_\+close}!server.\+h@{server.\+h}}
@@ -150,9 +144,6 @@ Closes a given R\+PC server.
 \begin{DoxyReturn}{Returns}
 0 on successful teardown 
 \end{DoxyReturn}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{fd-transport_8c-example}{fd-\/transport.\+c}, \hyperlink{loopback_8c-example}{loopback.\+c}, \hyperlink{pack-unpack_8c-example}{pack-\/unpack.\+c}, and \hyperlink{server_8c-example}{server.\+c}.\end{Desc}
 \mbox{\Hypertarget{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}\label{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+create@{rpc\+\_\+server\+\_\+create}}
 \index{rpc\+\_\+server\+\_\+create@{rpc\+\_\+server\+\_\+create}!server.\+h@{server.\+h}}
@@ -171,9 +162,6 @@ Creates a server instance listening on a given U\+RI.
 \begin{DoxyReturn}{Returns}
 Server handle 
 \end{DoxyReturn}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{fd-server_8c-example}{fd-\/server.\+c}, \hyperlink{fd-transport_8c-example}{fd-\/transport.\+c}, \hyperlink{loopback_8c-example}{loopback.\+c}, \hyperlink{pack-unpack_8c-example}{pack-\/unpack.\+c}, \hyperlink{server_8c-example}{server.\+c}, \hyperlink{shm-server_8c-example}{shm-\/server.\+c}, and \hyperlink{validation_8c-example}{validation.\+c}.\end{Desc}
 \mbox{\Hypertarget{server_8h_a6fc757c49776a73e093b37e7b073c9a6}\label{server_8h_a6fc757c49776a73e093b37e7b073c9a6}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+create\+\_\+ex@{rpc\+\_\+server\+\_\+create\+\_\+ex}}
 \index{rpc\+\_\+server\+\_\+create\+\_\+ex@{rpc\+\_\+server\+\_\+create\+\_\+ex}!server.\+h@{server.\+h}}
@@ -242,9 +230,6 @@ Server instance keeps all the incoming requests queued and on hold until this fu
 {\em server} & Server handle \\
 \hline
 \end{DoxyParams}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{fd-server_8c-example}{fd-\/server.\+c}, \hyperlink{fd-transport_8c-example}{fd-\/transport.\+c}, \hyperlink{loopback_8c-example}{loopback.\+c}, \hyperlink{pack-unpack_8c-example}{pack-\/unpack.\+c}, \hyperlink{server_8c-example}{server.\+c}, and \hyperlink{shm-server_8c-example}{shm-\/server.\+c}.\end{Desc}
 \mbox{\Hypertarget{server_8h_acedadccc0d8807f6840fb5224f260636}\label{server_8h_acedadccc0d8807f6840fb5224f260636}} 
 \index{server.\+h@{server.\+h}!rpc\+\_\+server\+\_\+sd\+\_\+listen@{rpc\+\_\+server\+\_\+sd\+\_\+listen}}
 \index{rpc\+\_\+server\+\_\+sd\+\_\+listen@{rpc\+\_\+server\+\_\+sd\+\_\+listen}!server.\+h@{server.\+h}}
@@ -276,6 +261,3 @@ Creates an event handler internal to a server for an event of a given name.
 {\em handler} & \\
 \hline
 \end{DoxyParams}
-\begin{Desc}
-\item[Examples\+: ]\par
-\hyperlink{server_8c-example}{server.\+c}.\end{Desc}

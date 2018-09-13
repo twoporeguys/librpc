@@ -6,147 +6,84 @@
     <includes refid="connection_8h" local="no">rpc/connection.h</includes>
     <includedby refid="rpc_8h" local="no">/code/include/rpc/rpc.h</includedby>
     <includedby refid="server_8h" local="no">/code/include/rpc/server.h</includedby>
-    <includedby refid="fd-server_8c" local="no">/code/examples/fd-server/fd-server.c</includedby>
-    <includedby refid="fd-transport_8c" local="no">/code/examples/fd-transport/fd-transport.c</includedby>
-    <includedby refid="loopback_8c" local="no">/code/examples/loopback/loopback.c</includedby>
-    <includedby refid="pack-unpack_8c" local="no">/code/examples/pack-unpack/pack-unpack.c</includedby>
-    <includedby refid="server_8c" local="no">/code/examples/server/server.c</includedby>
-    <includedby refid="shm-server_8c" local="no">/code/examples/shm-server/shm-server.c</includedby>
-    <includedby refid="validation_8c" local="no">/code/examples/validation/validation.c</includedby>
     <incdepgraph>
-      <node id="442">
+      <node id="105">
         <label>stdbool.h</label>
       </node>
-      <node id="443">
+      <node id="106">
         <label>stdarg.h</label>
       </node>
-      <node id="441">
+      <node id="104">
         <label>stdint.h</label>
       </node>
-      <node id="449">
+      <node id="112">
         <label>rpc/config.h</label>
       </node>
-      <node id="446">
+      <node id="109">
         <label>rpc/connection.h</label>
         <link refid="connection_8h"/>
-        <childnode refid="447" relation="include">
+        <childnode refid="110" relation="include">
         </childnode>
-        <childnode refid="448" relation="include">
+        <childnode refid="111" relation="include">
         </childnode>
-        <childnode refid="449" relation="include">
+        <childnode refid="112" relation="include">
         </childnode>
-        <childnode refid="440" relation="include">
+        <childnode refid="103" relation="include">
         </childnode>
       </node>
-      <node id="445">
+      <node id="108">
         <label>sys/types.h</label>
       </node>
-      <node id="440">
+      <node id="103">
         <label>rpc/object.h</label>
         <link refid="object_8h"/>
-        <childnode refid="441" relation="include">
+        <childnode refid="104" relation="include">
         </childnode>
-        <childnode refid="442" relation="include">
+        <childnode refid="105" relation="include">
         </childnode>
-        <childnode refid="443" relation="include">
+        <childnode refid="106" relation="include">
         </childnode>
-        <childnode refid="444" relation="include">
+        <childnode refid="107" relation="include">
         </childnode>
-        <childnode refid="445" relation="include">
+        <childnode refid="108" relation="include">
         </childnode>
       </node>
-      <node id="444">
+      <node id="107">
         <label>sys/uio.h</label>
       </node>
-      <node id="447">
+      <node id="110">
         <label>Block.h</label>
       </node>
-      <node id="448">
+      <node id="111">
         <label>sys/time.h</label>
       </node>
-      <node id="439">
+      <node id="102">
         <label>/code/include/rpc/service.h</label>
         <link refid="service_8h"/>
-        <childnode refid="440" relation="include">
+        <childnode refid="103" relation="include">
         </childnode>
-        <childnode refid="446" relation="include">
+        <childnode refid="109" relation="include">
         </childnode>
       </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="454">
-        <label>/code/examples/fd-transport/fd-transport.c</label>
-        <link refid="fd-transport_8c_source"/>
-      </node>
-      <node id="457">
-        <label>/code/examples/server/server.c</label>
-        <link refid="server_8c_source"/>
-      </node>
-      <node id="456">
-        <label>/code/examples/pack-unpack/pack-unpack.c</label>
-        <link refid="pack-unpack_8c_source"/>
-      </node>
-      <node id="458">
-        <label>/code/examples/shm-server/shm-server.c</label>
-        <link refid="shm-server_8c_source"/>
-      </node>
-      <node id="452">
+      <node id="115">
         <label>/code/include/rpc/server.h</label>
         <link refid="server_8h"/>
-        <childnode refid="451" relation="include">
-        </childnode>
-        <childnode refid="453" relation="include">
-        </childnode>
-        <childnode refid="454" relation="include">
-        </childnode>
-        <childnode refid="455" relation="include">
-        </childnode>
-        <childnode refid="456" relation="include">
-        </childnode>
-        <childnode refid="457" relation="include">
-        </childnode>
-        <childnode refid="458" relation="include">
-        </childnode>
-        <childnode refid="459" relation="include">
+        <childnode refid="114" relation="include">
         </childnode>
       </node>
-      <node id="451">
+      <node id="114">
         <label>/code/include/rpc/rpc.h</label>
         <link refid="rpc_8h_source"/>
       </node>
-      <node id="459">
-        <label>/code/examples/validation/validation.c</label>
-        <link refid="validation_8c_source"/>
-      </node>
-      <node id="453">
-        <label>/code/examples/fd-server/fd-server.c</label>
-        <link refid="fd-server_8c_source"/>
-      </node>
-      <node id="450">
+      <node id="113">
         <label>/code/include/rpc/service.h</label>
         <link refid="service_8h"/>
-        <childnode refid="451" relation="include">
+        <childnode refid="114" relation="include">
         </childnode>
-        <childnode refid="452" relation="include">
+        <childnode refid="115" relation="include">
         </childnode>
-        <childnode refid="453" relation="include">
-        </childnode>
-        <childnode refid="454" relation="include">
-        </childnode>
-        <childnode refid="455" relation="include">
-        </childnode>
-        <childnode refid="456" relation="include">
-        </childnode>
-        <childnode refid="457" relation="include">
-        </childnode>
-        <childnode refid="458" relation="include">
-        </childnode>
-        <childnode refid="459" relation="include">
-        </childnode>
-      </node>
-      <node id="455">
-        <label>/code/examples/loopback/loopback.c</label>
-        <link refid="loopback_8c_source"/>
       </node>
     </invincdepgraph>
     <innerclass refid="structrpc__if__method" prot="public">rpc_if_method</innerclass>
@@ -1447,32 +1384,6 @@
         </inbodydescription>
         <location file="/code/include/rpc/service.h" line="495" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="service_8h_1ac8e084a977c2598fa35284be241d4d44" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>int</type>
-        <definition>int rpc_function_start_stream</definition>
-        <argsstring>(void *_Nonnull cookie)</argsstring>
-        <name>rpc_function_start_stream</name>
-        <param>
-          <type>void *_Nonnull</type>
-          <declname>cookie</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Signalizes a start of a streaming response.</para><para><parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>cookie</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>Running call handle </para></parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>Status. Success is reported by returning 0 </para></simplesect>
-</para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="504" column="1"/>
-      </memberdef>
       <memberdef kind="function" id="service_8h_1ac8c50ecedc9e59086e1ab63e1dd6c425" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
         <definition>int rpc_function_yield</definition>
@@ -1508,7 +1419,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="513" column="1"/>
+        <location file="/code/include/rpc/service.h" line="505" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1a5f0f3252a2c4e12050419519afe64e92" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -1533,7 +1444,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="524" column="1"/>
+        <location file="/code/include/rpc/service.h" line="516" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1a6018b6f71a3d1af7494125b8ba22f981" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -1558,7 +1469,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="534" column="1"/>
+        <location file="/code/include/rpc/service.h" line="526" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1ad0185b8a60875843d91ca00b3e8d4886" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>bool</type>
@@ -1584,7 +1495,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="543" column="1"/>
+        <location file="/code/include/rpc/service.h" line="535" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1a4b6ceb43e090fda8928a3a46e7da614a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -1620,7 +1531,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="552" column="1"/>
+        <location file="/code/include/rpc/service.h" line="544" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1a805d705c1a9f94cf4aa04bb71a46a928" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>_Nullable <ref refid="service_8h_1afd1294bd7ea02592ecc002e1576ef290" kindref="member">rpc_instance_t</ref></type>
@@ -1660,7 +1571,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="562" column="1"/>
+        <location file="/code/include/rpc/service.h" line="554" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1a913a58356a0366081127227d15a74cc4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -1706,7 +1617,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="572" column="1"/>
+        <location file="/code/include/rpc/service.h" line="564" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1a661c65e4aa798fd4b63851e267f5c018" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void *_Nullable</type>
@@ -1732,7 +1643,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="581" column="1"/>
+        <location file="/code/include/rpc/service.h" line="573" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1ad1901375c6ba0463bd572396682ed36f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>const char *_Nonnull</type>
@@ -1758,7 +1669,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="589" column="1"/>
+        <location file="/code/include/rpc/service.h" line="581" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1abca1b1b9d6d4a7ca012ca242e0adeafd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -1817,7 +1728,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="600" column="1"/>
+        <location file="/code/include/rpc/service.h" line="592" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1aab9955f657aeadeee70c6472300eb695" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -1853,7 +1764,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="611" column="1"/>
+        <location file="/code/include/rpc/service.h" line="603" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1a2a53bb90b2a657abd5d5ce7b43134ca1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -1901,7 +1812,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="622" column="1"/>
+        <location file="/code/include/rpc/service.h" line="614" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1af75d5ffb28bdd8ea72d2470ca29ad46a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -1949,7 +1860,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="635" column="1"/>
+        <location file="/code/include/rpc/service.h" line="627" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1a2b399f37ac7a85287074efb1b3cec060" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -2019,7 +1930,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="649" column="1"/>
+        <location file="/code/include/rpc/service.h" line="641" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1a1407f4e75b0d153d1692e4ba27489728" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -2088,7 +1999,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="663" column="1"/>
+        <location file="/code/include/rpc/service.h" line="655" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1ade5ebee7e5e8e06a3b41b667a6c2af6b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>struct <ref refid="structrpc__if__member" kindref="compound">rpc_if_member</ref> *_Nullable</type>
@@ -2136,7 +2047,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="675" column="1"/>
+        <location file="/code/include/rpc/service.h" line="667" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1a8ad4da2277db627163ebae9ddb55582c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>bool</type>
@@ -2173,7 +2084,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="686" column="1"/>
+        <location file="/code/include/rpc/service.h" line="678" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1adbf8b5a032c56514343d3ac6ece77db0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -2224,7 +2135,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="695" column="1"/>
+        <location file="/code/include/rpc/service.h" line="687" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1a31ae88657323ba7713051b80164eb061" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -2307,7 +2218,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="716" column="1"/>
+        <location file="/code/include/rpc/service.h" line="708" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1a7224c3ccac52a67ec034c6cc06e7a8b7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -2355,7 +2266,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="730" column="1"/>
+        <location file="/code/include/rpc/service.h" line="722" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1ad35c5259de4e86303083623ac0e762b8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -2403,7 +2314,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="740" column="1"/>
+        <location file="/code/include/rpc/service.h" line="732" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1a28d100b9b918d120d3d8c07a0c938932" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -2461,7 +2372,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="757" column="1"/>
+        <location file="/code/include/rpc/service.h" line="749" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1abec6b729eadcc1b83dd99b764db53a54" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>_Nonnull <ref refid="service_8h_1afd1294bd7ea02592ecc002e1576ef290" kindref="member">rpc_instance_t</ref></type>
@@ -2487,7 +2398,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="767" column="1"/>
+        <location file="/code/include/rpc/service.h" line="759" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1a2829cbce768c9d60ac83d0547dc837ed" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void *_Nullable</type>
@@ -2513,7 +2424,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="776" column="1"/>
+        <location file="/code/include/rpc/service.h" line="768" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1af119057c34e0ac7b5ce6238d2551e3af" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -2570,7 +2481,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="788" column="1"/>
+        <location file="/code/include/rpc/service.h" line="780" column="1"/>
       </memberdef>
       <memberdef kind="function" id="service_8h_1aecd81447bced207f9d62b7fbf55cb4c1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -2595,7 +2506,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/service.h" line="796" column="1"/>
+        <location file="/code/include/rpc/service.h" line="788" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -2852,91 +2763,89 @@
 <codeline lineno="495"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a89abe6ee2bcc59409eaccf1955ada0ad" kindref="member">rpc_function_error_ex</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie,</highlight></codeline>
 <codeline lineno="496"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>exception);</highlight></codeline>
 <codeline lineno="497"><highlight class="normal"></highlight></codeline>
-<codeline lineno="504"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1ac8e084a977c2598fa35284be241d4d44" kindref="member">rpc_function_start_stream</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie);</highlight></codeline>
-<codeline lineno="505"><highlight class="normal"></highlight></codeline>
-<codeline lineno="513"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1ac8c50ecedc9e59086e1ab63e1dd6c425" kindref="member">rpc_function_yield</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie,<sp/>_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>fragment);</highlight></codeline>
-<codeline lineno="514"><highlight class="normal"></highlight></codeline>
-<codeline lineno="524"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a5f0f3252a2c4e12050419519afe64e92" kindref="member">rpc_function_end</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie);</highlight></codeline>
-<codeline lineno="525"><highlight class="normal"></highlight></codeline>
-<codeline lineno="534"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a6018b6f71a3d1af7494125b8ba22f981" kindref="member">rpc_function_kill</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie);</highlight></codeline>
-<codeline lineno="535"><highlight class="normal"></highlight></codeline>
-<codeline lineno="543"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="service_8h_1ad0185b8a60875843d91ca00b3e8d4886" kindref="member">rpc_function_should_abort</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie);</highlight></codeline>
-<codeline lineno="544"><highlight class="normal"></highlight></codeline>
-<codeline lineno="552"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a4b6ceb43e090fda8928a3a46e7da614a" kindref="member">rpc_function_set_async_abort_handler</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie,</highlight></codeline>
-<codeline lineno="553"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="service_8h_1aebbaf8e39f128b6655d23aad6a8ab634" kindref="member">rpc_abort_handler_t</ref><sp/>handler);</highlight></codeline>
-<codeline lineno="554"><highlight class="normal"></highlight></codeline>
-<codeline lineno="562"><highlight class="normal">_Nullable<sp/>rpc_instance_t<sp/><ref refid="service_8h_1a805d705c1a9f94cf4aa04bb71a46a928" kindref="member">rpc_instance_new</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>arg,</highlight></codeline>
-<codeline lineno="563"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>fmt,<sp/>...);</highlight></codeline>
-<codeline lineno="564"><highlight class="normal"></highlight></codeline>
-<codeline lineno="572"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a913a58356a0366081127227d15a74cc4" kindref="member">rpc_instance_set_description</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
-<codeline lineno="573"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>fmt,<sp/>...);</highlight></codeline>
+<codeline lineno="505"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1ac8c50ecedc9e59086e1ab63e1dd6c425" kindref="member">rpc_function_yield</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie,<sp/>_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>fragment);</highlight></codeline>
+<codeline lineno="506"><highlight class="normal"></highlight></codeline>
+<codeline lineno="516"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a5f0f3252a2c4e12050419519afe64e92" kindref="member">rpc_function_end</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie);</highlight></codeline>
+<codeline lineno="517"><highlight class="normal"></highlight></codeline>
+<codeline lineno="526"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a6018b6f71a3d1af7494125b8ba22f981" kindref="member">rpc_function_kill</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie);</highlight></codeline>
+<codeline lineno="527"><highlight class="normal"></highlight></codeline>
+<codeline lineno="535"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="service_8h_1ad0185b8a60875843d91ca00b3e8d4886" kindref="member">rpc_function_should_abort</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie);</highlight></codeline>
+<codeline lineno="536"><highlight class="normal"></highlight></codeline>
+<codeline lineno="544"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a4b6ceb43e090fda8928a3a46e7da614a" kindref="member">rpc_function_set_async_abort_handler</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie,</highlight></codeline>
+<codeline lineno="545"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="service_8h_1aebbaf8e39f128b6655d23aad6a8ab634" kindref="member">rpc_abort_handler_t</ref><sp/>handler);</highlight></codeline>
+<codeline lineno="546"><highlight class="normal"></highlight></codeline>
+<codeline lineno="554"><highlight class="normal">_Nullable<sp/>rpc_instance_t<sp/><ref refid="service_8h_1a805d705c1a9f94cf4aa04bb71a46a928" kindref="member">rpc_instance_new</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>arg,</highlight></codeline>
+<codeline lineno="555"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>fmt,<sp/>...);</highlight></codeline>
+<codeline lineno="556"><highlight class="normal"></highlight></codeline>
+<codeline lineno="564"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a913a58356a0366081127227d15a74cc4" kindref="member">rpc_instance_set_description</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
+<codeline lineno="565"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>fmt,<sp/>...);</highlight></codeline>
+<codeline lineno="566"><highlight class="normal"></highlight></codeline>
+<codeline lineno="573"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/><ref refid="service_8h_1a661c65e4aa798fd4b63851e267f5c018" kindref="member">rpc_instance_get_arg</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance);</highlight></codeline>
 <codeline lineno="574"><highlight class="normal"></highlight></codeline>
-<codeline lineno="581"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/><ref refid="service_8h_1a661c65e4aa798fd4b63851e267f5c018" kindref="member">rpc_instance_get_arg</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance);</highlight></codeline>
+<codeline lineno="581"><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/><ref refid="service_8h_1ad1901375c6ba0463bd572396682ed36f" kindref="member">rpc_instance_get_path</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance);</highlight></codeline>
 <codeline lineno="582"><highlight class="normal"></highlight></codeline>
-<codeline lineno="589"><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/><ref refid="service_8h_1ad1901375c6ba0463bd572396682ed36f" kindref="member">rpc_instance_get_path</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance);</highlight></codeline>
-<codeline lineno="590"><highlight class="normal"></highlight></codeline>
-<codeline lineno="600"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1abca1b1b9d6d4a7ca012ca242e0adeafd" kindref="member">rpc_instance_register_interface</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
-<codeline lineno="601"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,</highlight></codeline>
-<codeline lineno="602"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structrpc__if__member" kindref="compound">rpc_if_member</ref><sp/>*_Nullable<sp/>vtable,<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>arg);</highlight></codeline>
-<codeline lineno="603"><highlight class="normal"></highlight></codeline>
-<codeline lineno="611"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1aab9955f657aeadeee70c6472300eb695" kindref="member">rpc_instance_unregister_interface</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
-<codeline lineno="612"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface);</highlight></codeline>
-<codeline lineno="613"><highlight class="normal"></highlight></codeline>
-<codeline lineno="622"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a2a53bb90b2a657abd5d5ce7b43134ca1" kindref="member">rpc_instance_register_member</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
-<codeline lineno="623"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,</highlight></codeline>
-<codeline lineno="624"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structrpc__if__member" kindref="compound">rpc_if_member</ref><sp/>*_Nonnull<sp/>member);</highlight></codeline>
-<codeline lineno="625"><highlight class="normal"></highlight></codeline>
-<codeline lineno="635"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1af75d5ffb28bdd8ea72d2470ca29ad46a" kindref="member">rpc_instance_unregister_member</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
-<codeline lineno="636"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name);</highlight></codeline>
-<codeline lineno="637"><highlight class="normal"></highlight></codeline>
-<codeline lineno="649"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a2b399f37ac7a85287074efb1b3cec060" kindref="member">rpc_instance_register_block</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
-<codeline lineno="650"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
-<codeline lineno="651"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>arg,<sp/>_Nonnull<sp/><ref refid="service_8h_1ae49a22468cfcd4adfa558078e9e4e312" kindref="member">rpc_function_t</ref><sp/>fn);</highlight></codeline>
-<codeline lineno="652"><highlight class="normal"></highlight></codeline>
-<codeline lineno="663"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a1407f4e75b0d153d1692e4ba27489728" kindref="member">rpc_instance_register_func</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
-<codeline lineno="664"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
-<codeline lineno="665"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>arg,<sp/>_Nonnull<sp/><ref refid="service_8h_1add2d357ed7db564684628b3467048431" kindref="member">rpc_function_f</ref><sp/>fn);</highlight></codeline>
-<codeline lineno="666"><highlight class="normal"></highlight></codeline>
-<codeline lineno="675"><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structrpc__if__member" kindref="compound">rpc_if_member</ref><sp/>*_Nullable<sp/><ref refid="service_8h_1ade5ebee7e5e8e06a3b41b667a6c2af6b" kindref="member">rpc_instance_find_member</ref>(</highlight></codeline>
-<codeline lineno="676"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/>rpc_instance_t<sp/>instance,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>interface,</highlight></codeline>
-<codeline lineno="677"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name);</highlight></codeline>
-<codeline lineno="678"><highlight class="normal"></highlight></codeline>
-<codeline lineno="686"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a8ad4da2277db627163ebae9ddb55582c" kindref="member">rpc_instance_has_interface</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
-<codeline lineno="687"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface);</highlight></codeline>
-<codeline lineno="688"><highlight class="normal"></highlight></codeline>
-<codeline lineno="695"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1adbf8b5a032c56514343d3ac6ece77db0" kindref="member">rpc_instance_emit_event</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
-<codeline lineno="696"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
-<codeline lineno="697"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
-<codeline lineno="698"><highlight class="normal"></highlight></codeline>
-<codeline lineno="716"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a31ae88657323ba7713051b80164eb061" kindref="member">rpc_instance_register_property</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
-<codeline lineno="717"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
-<codeline lineno="718"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>arg,<sp/>_Nullable<sp/><ref refid="service_8h_1ab438f0c33f3f3876f1c9a23d62134f16" kindref="member">rpc_property_getter_t</ref><sp/>getter,</highlight></codeline>
-<codeline lineno="719"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="service_8h_1aa8b38d8ab3bafe79a96edaebafe13b8d" kindref="member">rpc_property_setter_t</ref><sp/>setter);</highlight></codeline>
-<codeline lineno="720"><highlight class="normal"></highlight></codeline>
-<codeline lineno="730"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a7224c3ccac52a67ec034c6cc06e7a8b7" kindref="member">rpc_instance_get_property_rights</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
-<codeline lineno="731"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name);</highlight></codeline>
-<codeline lineno="732"><highlight class="normal"></highlight></codeline>
-<codeline lineno="740"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1ad35c5259de4e86303083623ac0e762b8" kindref="member">rpc_instance_register_event</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
-<codeline lineno="741"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name);</highlight></codeline>
-<codeline lineno="742"><highlight class="normal"></highlight></codeline>
-<codeline lineno="757"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a28d100b9b918d120d3d8c07a0c938932" kindref="member">rpc_instance_property_changed</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
-<codeline lineno="758"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
-<codeline lineno="759"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>value);</highlight></codeline>
+<codeline lineno="592"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1abca1b1b9d6d4a7ca012ca242e0adeafd" kindref="member">rpc_instance_register_interface</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
+<codeline lineno="593"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,</highlight></codeline>
+<codeline lineno="594"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structrpc__if__member" kindref="compound">rpc_if_member</ref><sp/>*_Nullable<sp/>vtable,<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>arg);</highlight></codeline>
+<codeline lineno="595"><highlight class="normal"></highlight></codeline>
+<codeline lineno="603"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1aab9955f657aeadeee70c6472300eb695" kindref="member">rpc_instance_unregister_interface</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
+<codeline lineno="604"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface);</highlight></codeline>
+<codeline lineno="605"><highlight class="normal"></highlight></codeline>
+<codeline lineno="614"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a2a53bb90b2a657abd5d5ce7b43134ca1" kindref="member">rpc_instance_register_member</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
+<codeline lineno="615"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,</highlight></codeline>
+<codeline lineno="616"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structrpc__if__member" kindref="compound">rpc_if_member</ref><sp/>*_Nonnull<sp/>member);</highlight></codeline>
+<codeline lineno="617"><highlight class="normal"></highlight></codeline>
+<codeline lineno="627"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1af75d5ffb28bdd8ea72d2470ca29ad46a" kindref="member">rpc_instance_unregister_member</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
+<codeline lineno="628"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name);</highlight></codeline>
+<codeline lineno="629"><highlight class="normal"></highlight></codeline>
+<codeline lineno="641"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a2b399f37ac7a85287074efb1b3cec060" kindref="member">rpc_instance_register_block</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
+<codeline lineno="642"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
+<codeline lineno="643"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>arg,<sp/>_Nonnull<sp/><ref refid="service_8h_1ae49a22468cfcd4adfa558078e9e4e312" kindref="member">rpc_function_t</ref><sp/>fn);</highlight></codeline>
+<codeline lineno="644"><highlight class="normal"></highlight></codeline>
+<codeline lineno="655"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a1407f4e75b0d153d1692e4ba27489728" kindref="member">rpc_instance_register_func</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
+<codeline lineno="656"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
+<codeline lineno="657"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>arg,<sp/>_Nonnull<sp/><ref refid="service_8h_1add2d357ed7db564684628b3467048431" kindref="member">rpc_function_f</ref><sp/>fn);</highlight></codeline>
+<codeline lineno="658"><highlight class="normal"></highlight></codeline>
+<codeline lineno="667"><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structrpc__if__member" kindref="compound">rpc_if_member</ref><sp/>*_Nullable<sp/><ref refid="service_8h_1ade5ebee7e5e8e06a3b41b667a6c2af6b" kindref="member">rpc_instance_find_member</ref>(</highlight></codeline>
+<codeline lineno="668"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/>rpc_instance_t<sp/>instance,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>interface,</highlight></codeline>
+<codeline lineno="669"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name);</highlight></codeline>
+<codeline lineno="670"><highlight class="normal"></highlight></codeline>
+<codeline lineno="678"><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a8ad4da2277db627163ebae9ddb55582c" kindref="member">rpc_instance_has_interface</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
+<codeline lineno="679"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface);</highlight></codeline>
+<codeline lineno="680"><highlight class="normal"></highlight></codeline>
+<codeline lineno="687"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1adbf8b5a032c56514343d3ac6ece77db0" kindref="member">rpc_instance_emit_event</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
+<codeline lineno="688"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
+<codeline lineno="689"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>args);</highlight></codeline>
+<codeline lineno="690"><highlight class="normal"></highlight></codeline>
+<codeline lineno="708"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a31ae88657323ba7713051b80164eb061" kindref="member">rpc_instance_register_property</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
+<codeline lineno="709"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
+<codeline lineno="710"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>arg,<sp/>_Nullable<sp/><ref refid="service_8h_1ab438f0c33f3f3876f1c9a23d62134f16" kindref="member">rpc_property_getter_t</ref><sp/>getter,</highlight></codeline>
+<codeline lineno="711"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="service_8h_1aa8b38d8ab3bafe79a96edaebafe13b8d" kindref="member">rpc_property_setter_t</ref><sp/>setter);</highlight></codeline>
+<codeline lineno="712"><highlight class="normal"></highlight></codeline>
+<codeline lineno="722"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a7224c3ccac52a67ec034c6cc06e7a8b7" kindref="member">rpc_instance_get_property_rights</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
+<codeline lineno="723"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name);</highlight></codeline>
+<codeline lineno="724"><highlight class="normal"></highlight></codeline>
+<codeline lineno="732"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="service_8h_1ad35c5259de4e86303083623ac0e762b8" kindref="member">rpc_instance_register_event</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
+<codeline lineno="733"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name);</highlight></codeline>
+<codeline lineno="734"><highlight class="normal"></highlight></codeline>
+<codeline lineno="749"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1a28d100b9b918d120d3d8c07a0c938932" kindref="member">rpc_instance_property_changed</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance,</highlight></codeline>
+<codeline lineno="750"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>interface,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
+<codeline lineno="751"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="object_8h_1ab365f726b4975c0c8376b808d111d01b" kindref="member">rpc_object_t</ref><sp/>value);</highlight></codeline>
+<codeline lineno="752"><highlight class="normal"></highlight></codeline>
+<codeline lineno="759"><highlight class="normal">_Nonnull<sp/>rpc_instance_t<sp/><ref refid="service_8h_1abec6b729eadcc1b83dd99b764db53a54" kindref="member">rpc_property_get_instance</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie);</highlight></codeline>
 <codeline lineno="760"><highlight class="normal"></highlight></codeline>
-<codeline lineno="767"><highlight class="normal">_Nonnull<sp/>rpc_instance_t<sp/><ref refid="service_8h_1abec6b729eadcc1b83dd99b764db53a54" kindref="member">rpc_property_get_instance</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie);</highlight></codeline>
-<codeline lineno="768"><highlight class="normal"></highlight></codeline>
-<codeline lineno="776"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/><ref refid="service_8h_1a2829cbce768c9d60ac83d0547dc837ed" kindref="member">rpc_property_get_arg</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie);</highlight></codeline>
-<codeline lineno="777"><highlight class="normal"></highlight></codeline>
-<codeline lineno="788"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1af119057c34e0ac7b5ce6238d2551e3af" kindref="member">rpc_property_error</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>code,</highlight></codeline>
-<codeline lineno="789"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>fmt,<sp/>...);</highlight></codeline>
-<codeline lineno="790"><highlight class="normal"></highlight></codeline>
-<codeline lineno="796"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1aecd81447bced207f9d62b7fbf55cb4c1" kindref="member">rpc_instance_free</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance);</highlight></codeline>
-<codeline lineno="797"><highlight class="normal"></highlight></codeline>
-<codeline lineno="798"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="799"><highlight class="normal">}</highlight></codeline>
-<codeline lineno="800"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="801"><highlight class="normal"></highlight></codeline>
-<codeline lineno="802"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>LIBRPC_SERVICE_H<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+<codeline lineno="768"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/><ref refid="service_8h_1a2829cbce768c9d60ac83d0547dc837ed" kindref="member">rpc_property_get_arg</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie);</highlight></codeline>
+<codeline lineno="769"><highlight class="normal"></highlight></codeline>
+<codeline lineno="780"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1af119057c34e0ac7b5ce6238d2551e3af" kindref="member">rpc_property_error</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>cookie,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>code,</highlight></codeline>
+<codeline lineno="781"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>fmt,<sp/>...);</highlight></codeline>
+<codeline lineno="782"><highlight class="normal"></highlight></codeline>
+<codeline lineno="788"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1aecd81447bced207f9d62b7fbf55cb4c1" kindref="member">rpc_instance_free</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance);</highlight></codeline>
+<codeline lineno="789"><highlight class="normal"></highlight></codeline>
+<codeline lineno="790"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="791"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="792"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="793"><highlight class="normal"></highlight></codeline>
+<codeline lineno="794"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>LIBRPC_SERVICE_H<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
     </programlisting>
     <location file="/code/include/rpc/service.h"/>
   </compounddef>

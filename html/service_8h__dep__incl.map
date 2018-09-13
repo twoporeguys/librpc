@@ -1,11 +1,4 @@
 <map id="/code/include/rpc/service.h" name="/code/include/rpc/service.h">
-<area shape="rect" id="node2" href="$rpc_8h_source.html" title="/code/include/rpc/rpc.h" alt="" coords="5,162,173,189"/>
-<area shape="rect" id="node3" href="$server_8h.html" title="/code/include/rpc/server.h" alt="" coords="739,80,927,107"/>
-<area shape="rect" id="node4" href="$fd-server_8c_source.html" title="/code/examples/fd&#45;server\l/fd&#45;server.c" alt="" coords="198,155,386,196"/>
-<area shape="rect" id="node5" href="$fd-transport_8c_source.html" title="/code/examples/fd&#45;transport\l/fd&#45;transport.c" alt="" coords="410,155,617,196"/>
-<area shape="rect" id="node6" href="$loopback_8c_source.html" title="/code/examples/loopback\l/loopback.c" alt="" coords="641,155,829,196"/>
-<area shape="rect" id="node7" href="$pack-unpack_8c_source.html" title="/code/examples/pack\l&#45;unpack/pack&#45;unpack.c" alt="" coords="853,155,1025,196"/>
-<area shape="rect" id="node8" href="$server_8c_source.html" title="/code/examples/server\l/server.c" alt="" coords="1049,155,1220,196"/>
-<area shape="rect" id="node9" href="$shm-server_8c_source.html" title="/code/examples/shm\l&#45;server/shm&#45;server.c" alt="" coords="1244,155,1401,196"/>
-<area shape="rect" id="node10" href="$validation_8c_source.html" title="/code/examples/validation\l/validation.c" alt="" coords="1425,155,1620,196"/>
+<area shape="rect" id="node2" href="$rpc_8h_source.html" title="/code/include/rpc/rpc.h" alt="" coords="19,155,187,181"/>
+<area shape="rect" id="node3" href="$server_8h.html" title="/code/include/rpc/server.h" alt="" coords="75,80,263,107"/>
 </map>
