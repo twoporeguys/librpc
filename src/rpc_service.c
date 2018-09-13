@@ -770,7 +770,8 @@ rpc_instance_register_interface(rpc_instance_t instance,
 	priv->rip_name = g_strdup(interface);
 
 	g_rw_lock_writer_lock(&instance->ri_rwlock);
-	g_hash_table_insert(instance->ri_interfaces, priv->rip_name, priv);
+	g_hash_table_insert(instance->ri_interfaces, g_strdup(priv->rip_name),
+	    priv);
 	g_rw_lock_writer_unlock(&instance->ri_rwlock);
 
 	rpc_instance_emit_event(instance, RPC_INTROSPECTABLE_INTERFACE,
