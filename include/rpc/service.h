@@ -496,6 +496,14 @@ void rpc_function_error_ex(void *_Nonnull cookie,
     _Nonnull rpc_object_t exception);
 
 /**
+ * Signalizes a start of a streaming response.
+ *
+ * @param cookie Running call handle
+ * @return Status. Success is reported by returning 0
+ */
+int rpc_function_start_stream(void *_Nonnull cookie);
+
+/**
  * Generates a new value in a streaming response.
  *
  * @param cookie Running call handle

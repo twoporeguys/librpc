@@ -154,6 +154,7 @@ server_test_stream_setup(server_fixture *fix, gconstpointer u_data)
 		gint i;
 		rpc_object_t res;
 
+		rpc_function_start_stream(cookie);
 		while (cnt < fixture->count) {
 			cnt++;
 			if (cnt == fixture->close) {
@@ -256,25 +257,29 @@ thread_stream_func (gpointer data)
                 rpc_call_wait(call);
 
                 switch (rpc_call_status(call)) {
-                        case RPC_CALL_MORE_AVAILABLE:
-				result = rpc_call_result(call);
-				i = rpc_object_unpack(result,
-				    "[s, i, i]", &str, &len, &num);
-				cnt++;
-				g_assert(i == 3);
-				g_assert(len == (int)strlen(str));
-                                rpc_call_continue(call, false);
-                                break;
+		case RPC_CALL_STREAM_START:
+			rpc_call_continue(call, false);
+			break;
 
-                        case RPC_CALL_DONE:
-                        case RPC_CALL_ENDED:
-                                goto done;
+		case RPC_CALL_MORE_AVAILABLE:
+			result = rpc_call_result(call);
+			i = rpc_object_unpack(result,
+			    "[s, i, i]", &str, &len, &num);
+			cnt++;
+			g_assert(i == 3);
+			g_assert(len == (int)strlen(str));
+			rpc_call_continue(call, false);
+			break;
 
-                        case RPC_CALL_ERROR:
-                                goto done;
+		case RPC_CALL_DONE:
+		case RPC_CALL_ENDED:
+			goto done;
 
-                        default:
-                                g_assert_not_reached();
+		case RPC_CALL_ERROR:
+			goto done;
+
+		default:
+			g_assert_not_reached();
                 }
         }
 

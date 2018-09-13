@@ -71,6 +71,7 @@ benchmark_stream(void *cookie, rpc_object_t args)
 
 	memset(buffer, 0x55, msgsize);
 
+	rpc_function_start_stream(cookie);
 	while (cycles--) {
 		if (rpc_function_yield(cookie, rpc_retain(data)) < 0)
 			break;

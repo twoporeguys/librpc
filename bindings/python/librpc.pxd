@@ -148,6 +148,7 @@ cdef extern from "rpc/object.h" nogil:
 cdef extern from "rpc/connection.h" nogil:
     ctypedef enum rpc_call_status_t:
         RPC_CALL_IN_PROGRESS
+        RPC_CALL_STREAM_START
         RPC_CALL_MORE_AVAILABLE
         RPC_CALL_DONE
         RPC_CALL_ERROR
@@ -227,6 +228,7 @@ cdef extern from "rpc/service.h" nogil:
     void rpc_function_respond(void *cookie, rpc_object_t object)
     void rpc_function_error(void *cookie, int code, const char *message, ...)
     void rpc_function_error_ex(void *cookie, rpc_object_t exception)
+    int rpc_function_start_stream(void *cookie)
     int rpc_function_yield(void *cookie, rpc_object_t fragment)
     void rpc_function_produce(void *cookie, rpc_object_t fragment)
     void rpc_function_end(void *cookie)

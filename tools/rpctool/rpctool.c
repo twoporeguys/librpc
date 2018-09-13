@@ -309,23 +309,27 @@ cmd_call(int argc, char *argv[])
 		rpc_call_wait(call);
 
 		switch (rpc_call_status(call)) {
-			case RPC_CALL_MORE_AVAILABLE:
-				output(rpc_call_result(call));
-				rpc_call_continue(call, false);
-				break;
+		case RPC_CALL_STREAM_START:
+			rpc_call_continue(call, false);
+			break;
 
-			case RPC_CALL_DONE:
-				output(rpc_call_result(call));
-				goto done;
+		case RPC_CALL_MORE_AVAILABLE:
+			output(rpc_call_result(call));
+			rpc_call_continue(call, false);
+			break;
 
-			case RPC_CALL_ENDED:
-				goto done;
+		case RPC_CALL_DONE:
+			output(rpc_call_result(call));
+			goto done;
 
-			case RPC_CALL_ERROR:
-				goto error;
+		case RPC_CALL_ENDED:
+			goto done;
 
-			default:
-				g_assert_not_reached();
+		case RPC_CALL_ERROR:
+			goto error;
+
+		default:
+			g_assert_not_reached();
 		}
 	}
 

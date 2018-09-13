@@ -115,6 +115,7 @@ typedef bool (*rpct_validator_fn_t)(rpc_object_t, rpc_object_t,
 typedef void (*rpc_fn_respond_fn_t)(void *, rpc_object_t);
 typedef void (*rpc_fn_error_fn_t)(void *, int , const char *, va_list ap);
 typedef void (*rpc_fn_error_ex_fn_t)(void *, rpc_object_t);
+typedef int (*rpc_fn_start_strm_fn_t)(void *);
 typedef int (*rpc_fn_yield_fn_t)(void *, rpc_object_t);
 typedef void (*rpc_fn_end_fn_t)(void *);
 typedef void (*rpc_fn_kill_fn_t)(void *);
@@ -239,6 +240,7 @@ struct rpc_fn_callbacks
 	rpc_fn_respond_fn_t	rcf_fn_respond;
 	rpc_fn_error_fn_t	rcf_fn_error;
 	rpc_fn_error_ex_fn_t	rcf_fn_error_ex;
+	rpc_fn_start_strm_fn_t	rcf_fn_start_stream;
 	rpc_fn_yield_fn_t	rcf_fn_yield;
 	rpc_fn_end_fn_t		rcf_fn_end;
 	rpc_fn_kill_fn_t	rcf_fn_kill;
@@ -584,6 +586,8 @@ INTERNAL_LINKAGE void rpc_connection_send_errx(rpc_connection_t, rpc_object_t,
     rpc_object_t);
 INTERNAL_LINKAGE void rpc_connection_send_response(rpc_connection_t,
     rpc_object_t, rpc_object_t);
+INTERNAL_LINKAGE void rpc_connection_send_start_stream(rpc_connection_t,
+    rpc_object_t, int64_t);
 INTERNAL_LINKAGE void rpc_connection_send_fragment(rpc_connection_t,
     rpc_object_t, int64_t, rpc_object_t);
 INTERNAL_LINKAGE void rpc_connection_send_end(rpc_connection_t, rpc_object_t,
@@ -613,6 +617,7 @@ INTERNAL_LINKAGE void rpc_function_error_impl(void *cookie, int code,
     const char *message, va_list ap);
 INTERNAL_LINKAGE void rpc_function_error_ex_impl(void *cookie,
     rpc_object_t exception);
+INTERNAL_LINKAGE int rpc_function_start_stream_impl(void *cookie);
 INTERNAL_LINKAGE int rpc_function_yield_impl(void *cookie,
     rpc_object_t fragment);
 INTERNAL_LINKAGE void rpc_function_end_impl(void *cookie);

@@ -145,6 +145,10 @@ main(int argc, char * const argv[])
 
 next:
 	switch (rpc_call_status(call)) {
+	case RPC_CALL_STREAM_START:
+		rpc_call_continue(call, true);
+		goto next;
+
 	case RPC_CALL_MORE_AVAILABLE:
 		cycles++;
 		item = rpc_call_result(call);

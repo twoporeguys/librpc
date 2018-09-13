@@ -42,6 +42,7 @@ class CallStatus(enum.IntEnum):
     Enumeration of possible call object states.
     """
     IN_PROGRESS = RPC_CALL_IN_PROGRESS,
+    STREAM_START = RPC_CALL_STREAM_START,
     MORE_AVAILABLE = RPC_CALL_MORE_AVAILABLE,
     DONE = RPC_CALL_DONE,
     ERROR = RPC_CALL_ERROR
@@ -288,6 +289,15 @@ cdef class Connection(object):
             nonlocal call_status
 
             try:
+                if call_status == CallStatus.STREAM_START:
+                    with nogil:
+                        ret = rpc_call_continue(call, True)
+
+                    if ret < 0:
+                        raise_internal_exc()
+
+                    call_status = rpc_call_status(call)
+
                 while call_status == CallStatus.MORE_AVAILABLE:
                     yield get_chunk()
                     with nogil:
@@ -312,7 +322,7 @@ cdef class Connection(object):
             rpc_call_free(call)
             return result
 
-        if call_status in (CallStatus.MORE_AVAILABLE, CallStatus.ENDED):
+        if call_status in (CallStatus.STREAM_START, CallStatus.MORE_AVAILABLE, CallStatus.ENDED):
             return iter_chunk()
 
         raise AssertionError('Impossible call status {0}'.format(call_status))
@@ -672,6 +682,12 @@ cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil:
     try:
         output = cb(*[a for a in args_array])
         if isinstance(output, types.GeneratorType):
+            with nogil:
+                ret = rpc_function_start_stream(cookie)
+
+            if ret:
+                return <rpc_object_t>NULL
+
             for chunk in output:
                 rpc_obj = Object(chunk)
 
