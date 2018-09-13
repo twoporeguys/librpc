@@ -49,6 +49,7 @@
 #define __unused __attribute__((unused))
 #endif
 
+#define INTERNAL_LINKAGE		__attribute__((visibility("hidden")))
 #define STRINGIFY(x)			#x
 #define TOSTRING(x)			STRINGIFY(x)
 
@@ -107,6 +108,9 @@ typedef struct rpct_member *(*rpct_member_fn_t)(const char *, rpc_object_t,
 typedef bool (*rpct_validate_fn_t)(struct rpct_typei *, rpc_object_t,
     struct rpct_error_context *);
 typedef rpc_object_t (*rpct_serialize_fn_t)(rpc_object_t);
+
+typedef bool (*rpct_validator_fn_t)(rpc_object_t, rpc_object_t,
+    struct rpct_typei *, struct rpct_error_context *);
 
 typedef void (*rpc_fn_respond_fn_t)(void *, rpc_object_t);
 typedef void (*rpc_fn_error_fn_t)(void *, int , const char *, va_list ap);
@@ -522,82 +526,99 @@ struct rpct_validator
 {
 	const char *		type;
 	const char * 		name;
-	bool (*validate)(rpc_object_t, rpc_object_t, struct rpct_typei *, struct rpct_error_context *);
+	rpct_validator_fn_t 	validate;
 };
 
-rpc_object_t rpc_prim_create(rpc_type_t type, union rpc_value val);
+INTERNAL_LINKAGE rpc_object_t rpc_prim_create(rpc_type_t type,
+    union rpc_value val);
 
 #if defined(__linux__)
-rpc_object_t rpc_shmem_recreate(int fd, off_t offset, size_t size);
-int rpc_shmem_get_fd(rpc_object_t shmem);
-off_t rpc_shmem_get_offset(rpc_object_t shmem);
+INTERNAL_LINKAGE rpc_object_t rpc_shmem_recreate(int fd, off_t offset,
+    size_t size);
+INTERNAL_LINKAGE int rpc_shmem_get_fd(rpc_object_t shmem);
+INTERNAL_LINKAGE off_t rpc_shmem_get_offset(rpc_object_t shmem);
 #endif
 
-rpc_object_t rpc_error_create_from_gerror(GError *g_error);
+INTERNAL_LINKAGE rpc_object_t rpc_error_create_from_gerror(GError *g_error);
 
-_Noreturn void rpc_abort(const char *fmt, ...);
-void rpc_trace(const char *msg, const char *ident, rpc_object_t frame);
-char *rpc_get_backtrace(void);
-char *rpc_generate_v4_uuid(void);
-gboolean rpc_kill_main_loop(void *arg);
-int rpc_ptr_array_string_index(GPtrArray *arr, const char *str);
+INTERNAL_LINKAGE _Noreturn void rpc_abort(const char *fmt, ...);
+INTERNAL_LINKAGE void rpc_trace(const char *msg, const char *ident,
+    rpc_object_t frame);
+INTERNAL_LINKAGE char *rpc_get_backtrace(void);
+INTERNAL_LINKAGE char *rpc_generate_v4_uuid(void);
+INTERNAL_LINKAGE gboolean rpc_kill_main_loop(void *arg);
+INTERNAL_LINKAGE int rpc_ptr_array_string_index(GPtrArray *arr,
+    const char *str);
 
-const struct rpc_transport *rpc_find_transport(const char *scheme);
-const struct rpc_serializer *rpc_find_serializer(const char *name);
-const struct rpct_validator *rpc_find_validator(const char *type,
+INTERNAL_LINKAGE const struct rpc_transport *rpc_find_transport(
+    const char *scheme);
+INTERNAL_LINKAGE const struct rpc_serializer *rpc_find_serializer(
     const char *name);
-const struct rpct_class_handler *rpc_find_class_handler(const char *name,
-    rpct_class_t cls);
+INTERNAL_LINKAGE const struct rpct_validator *rpc_find_validator(
+    const char *type,
+    const char *name);
+INTERNAL_LINKAGE const struct rpct_class_handler *rpc_find_class_handler(
+    const char *name, rpct_class_t cls);
 
-void rpc_set_last_error(int code, const char *msg, rpc_object_t extra);
-void rpc_set_last_rpc_error(rpc_object_t rpc_error);
-void rpc_set_last_gerror(GError *error);
-void rpc_set_last_errorf(int code, const char *fmt, ...) __attribute__((__format__(__printf__, 2, 3)));
-rpc_connection_t rpc_connection_alloc(rpc_server_t server);
-void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
-int rpc_connection_retain(rpc_connection_t);
-int rpc_connection_release(rpc_connection_t);
-int rpc_context_dispatch(rpc_context_t, struct rpc_call *);
-int rpc_server_dispatch(rpc_server_t, struct rpc_call *);
-void rpc_server_release(rpc_server_t);
-void rpc_server_quit(rpc_server_t);
-void rpc_server_disconnect(rpc_server_t, rpc_connection_t);
-GMainContext *rpc_server_get_main_context(rpc_server_t);
-GMainContext *rpc_client_get_main_context(rpc_client_t);
+INTERNAL_LINKAGE void rpc_set_last_error(int code, const char *msg,
+    rpc_object_t extra);
+INTERNAL_LINKAGE void rpc_set_last_rpc_error(rpc_object_t rpc_error);
+INTERNAL_LINKAGE void rpc_set_last_gerror(GError *error);
+INTERNAL_LINKAGE void rpc_set_last_errorf(int code, const char *fmt, ...)
+    __attribute__((__format__(__printf__, 2, 3)));
+INTERNAL_LINKAGE rpc_connection_t rpc_connection_alloc(rpc_server_t server);
+INTERNAL_LINKAGE void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
+INTERNAL_LINKAGE int rpc_connection_retain(rpc_connection_t);
+INTERNAL_LINKAGE int rpc_connection_release(rpc_connection_t);
+INTERNAL_LINKAGE int rpc_context_dispatch(rpc_context_t, struct rpc_call *);
+INTERNAL_LINKAGE int rpc_server_dispatch(rpc_server_t, struct rpc_call *);
+INTERNAL_LINKAGE void rpc_server_release(rpc_server_t);
+INTERNAL_LINKAGE void rpc_server_quit(rpc_server_t);
+INTERNAL_LINKAGE void rpc_server_disconnect(rpc_server_t, rpc_connection_t);
+INTERNAL_LINKAGE GMainContext *rpc_server_get_main_context(rpc_server_t);
+INTERNAL_LINKAGE GMainContext *rpc_client_get_main_context(rpc_client_t);
 
-void rpc_connection_send_err(rpc_connection_t, rpc_object_t, int,
-    const char *descr, ...);
-void rpc_connection_send_errx(rpc_connection_t, rpc_object_t, rpc_object_t);
-void rpc_connection_send_response(rpc_connection_t, rpc_object_t, rpc_object_t);
-void rpc_connection_send_fragment(rpc_connection_t, rpc_object_t, int64_t,
+INTERNAL_LINKAGE void rpc_connection_send_err(rpc_connection_t, rpc_object_t,
+    int, const char *descr, ...);
+INTERNAL_LINKAGE void rpc_connection_send_errx(rpc_connection_t, rpc_object_t,
     rpc_object_t);
-void rpc_connection_send_end(rpc_connection_t, rpc_object_t, int64_t);
-void rpc_connection_close_inbound_call(struct rpc_call *);
+INTERNAL_LINKAGE void rpc_connection_send_response(rpc_connection_t,
+    rpc_object_t, rpc_object_t);
+INTERNAL_LINKAGE void rpc_connection_send_fragment(rpc_connection_t,
+    rpc_object_t, int64_t, rpc_object_t);
+INTERNAL_LINKAGE void rpc_connection_send_end(rpc_connection_t, rpc_object_t,
+    int64_t);
+INTERNAL_LINKAGE void rpc_connection_close_inbound_call(struct rpc_call *);
 
-void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
+INTERNAL_LINKAGE void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 
-void rpct_add_error(struct rpct_error_context *ctx, rpc_object_t extra,
-    const char *fmt, ...);
-void rpct_derive_error_context(struct rpct_error_context *newctx,
-    struct rpct_error_context *oldctx, const char *name);
-void rpct_release_error_context(struct rpct_error_context *ctx);
-bool rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
-    struct rpct_error_context *errctx);
-bool rpct_run_validators(struct rpct_typei *typei, rpc_object_t obj,
-    struct rpct_error_context *errctx);
-struct rpct_typei *rpct_instantiate_type(const char *decl,
+INTERNAL_LINKAGE void rpct_add_error(struct rpct_error_context *ctx,
+    rpc_object_t extra,  const char *fmt, ...);
+INTERNAL_LINKAGE void rpct_derive_error_context(
+    struct rpct_error_context *newctx, struct rpct_error_context *oldctx,
+    const char *name);
+INTERNAL_LINKAGE void rpct_release_error_context(
+    struct rpct_error_context *ctx);
+INTERNAL_LINKAGE bool rpct_validate_instance(struct rpct_typei *typei,
+    rpc_object_t obj, struct rpct_error_context *errctx);
+INTERNAL_LINKAGE bool rpct_run_validators(struct rpct_typei *typei,
+    rpc_object_t obj, struct rpct_error_context *errctx);
+INTERNAL_LINKAGE struct rpct_typei *rpct_instantiate_type(const char *decl,
     struct rpct_typei *parent, struct rpct_type *ptype,
     struct rpct_file *origin);
 
-void rpc_function_respond_impl(void *cookie, rpc_object_t object);
-void rpc_function_error_impl(void *cookie, int code, const char *message,
-    va_list ap);
-void rpc_function_error_ex_impl(void *cookie, rpc_object_t exception);
-int rpc_function_yield_impl(void *cookie, rpc_object_t fragment);
-void rpc_function_end_impl(void *cookie);
-void rpc_function_kill_impl(void *cookie);
-bool rpc_function_should_abort_impl(void *cookie);
-void rpc_function_set_async_abort_handler_impl(void *cookie,
+INTERNAL_LINKAGE void rpc_function_respond_impl(void *cookie,
+    rpc_object_t object);
+INTERNAL_LINKAGE void rpc_function_error_impl(void *cookie, int code,
+    const char *message, va_list ap);
+INTERNAL_LINKAGE void rpc_function_error_ex_impl(void *cookie,
+    rpc_object_t exception);
+INTERNAL_LINKAGE int rpc_function_yield_impl(void *cookie,
+    rpc_object_t fragment);
+INTERNAL_LINKAGE void rpc_function_end_impl(void *cookie);
+INTERNAL_LINKAGE void rpc_function_kill_impl(void *cookie);
+INTERNAL_LINKAGE bool rpc_function_should_abort_impl(void *cookie);
+INTERNAL_LINKAGE void rpc_function_set_async_abort_handler_impl(void *cookie,
     rpc_abort_handler_t handler);
 
 #endif /* LIBRPC_INTERNAL_H */
