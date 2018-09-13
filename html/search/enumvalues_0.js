@@ -8,7 +8,6 @@ var searchData=
   ['rpc_5fcall_5ferror',['RPC_CALL_ERROR',['../connection_8h.html#a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856',1,'connection.h']]],
   ['rpc_5fcall_5fin_5fprogress',['RPC_CALL_IN_PROGRESS',['../connection_8h.html#a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1',1,'connection.h']]],
   ['rpc_5fcall_5fmore_5favailable',['RPC_CALL_MORE_AVAILABLE',['../connection_8h.html#a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f',1,'connection.h']]],
-  ['rpc_5fcall_5fstream_5fstart',['RPC_CALL_STREAM_START',['../connection_8h.html#a22306445a7503bab94835382d07e0410a3983354b73277eb1ac71ea3b105900fb',1,'connection.h']]],
   ['rpc_5fcall_5ftimeout',['RPC_CALL_TIMEOUT',['../connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda51853f66b918b83f313c330c02452c70',1,'connection.h']]],
   ['rpc_5fconnection_5fclosed',['RPC_CONNECTION_CLOSED',['../connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccdab6000475e99b77735aac87708b4aacb0',1,'connection.h']]],
   ['rpc_5fconnection_5ftimeout',['RPC_CONNECTION_TIMEOUT',['../connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55',1,'connection.h']]],

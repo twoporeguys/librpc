@@ -86,39 +86,35 @@ main(\textcolor{keywordtype}{int} argc, \textcolor{keyword}{const} \textcolor{ke
                 \hyperlink{connection_8h_a55b86b7f9f1957a23b422837e9953dab}{rpc\_call\_wait}(call);
 
                 \textcolor{keywordflow}{switch} (\hyperlink{connection_8h_a22306445a7503bab94835382d07e0410}{rpc\_call\_status}(call)) \{
-        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410a3983354b73277eb1ac71ea3b105900fb}{RPC\_CALL\_STREAM\_START}:
-            \hyperlink{connection_8h_aaa5cabcf5efe1e9a94e97d63c0b4a388}{rpc\_call\_continue}(call, \textcolor{keyword}{false});
-            \textcolor{keywordflow}{break};
+                        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f}{RPC\_CALL\_MORE\_AVAILABLE}:
+                result = \hyperlink{connection_8h_a0e64ae2b6592deff82999556318858dd}{rpc\_call\_result}(call);
+                                \hyperlink{object_8h_a6ff01b9e6d71ba03e2dff76ede7366f6}{rpc\_object\_unpack}(result, \textcolor{stringliteral}{"[s, i, i]"},
+                    &buf, &len, &num);
 
-        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f}{RPC\_CALL\_MORE\_AVAILABLE}:
-            result = \hyperlink{connection_8h_a0e64ae2b6592deff82999556318858dd}{rpc\_call\_result}(call);
-            \hyperlink{object_8h_a6ff01b9e6d71ba03e2dff76ede7366f6}{rpc\_object\_unpack}(result, \textcolor{stringliteral}{"[s, i, i]"},
-                &buf, &len, &num);
+                                cnt++;
+                fprintf(stderr,
+                    \textcolor{stringliteral}{"frag = %s, len = %"} PRId64 \textcolor{stringliteral}{", num = %"} PRId64 \textcolor{stringliteral}{","}
+                    \textcolor{stringliteral}{"cnt = %d\(\backslash\)n"}, buf, len, num, cnt);
 
-            cnt++;
-            fprintf(stderr,
-                \textcolor{stringliteral}{"frag = %s, len = %"} PRId64 \textcolor{stringliteral}{", num = %"} PRId64 \textcolor{stringliteral}{","}
-                \textcolor{stringliteral}{"cnt = %d\(\backslash\)n"}, buf, len, num, cnt);
+                g\_assert(len == (\textcolor{keywordtype}{int})strlen(buf));
+                                \hyperlink{connection_8h_aaa5cabcf5efe1e9a94e97d63c0b4a388}{rpc\_call\_continue}(call, \textcolor{keyword}{false});
+                                \textcolor{keywordflow}{break};
 
-            g\_assert(len == (\textcolor{keywordtype}{int})strlen(buf));
-            \hyperlink{connection_8h_aaa5cabcf5efe1e9a94e97d63c0b4a388}{rpc\_call\_continue}(call, \textcolor{keyword}{false});
-            \textcolor{keywordflow}{break};
+                        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d}{RPC\_CALL\_DONE}:
+                        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410aefeace6607a011c0ea3bb12990abbd1c}{RPC\_CALL\_ENDED}:
+                fprintf(stderr, \textcolor{stringliteral}{"ENDED at %d\(\backslash\)n"}, cnt);
+                                \textcolor{keywordflow}{goto} done;
 
-        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d}{RPC\_CALL\_DONE}:
-        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410aefeace6607a011c0ea3bb12990abbd1c}{RPC\_CALL\_ENDED}:
-            fprintf(stderr, \textcolor{stringliteral}{"ENDED at %d\(\backslash\)n"}, cnt);
-            \textcolor{keywordflow}{goto} done;
+                        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856}{RPC\_CALL\_ERROR}:
+                fprintf(stderr, \textcolor{stringliteral}{"ERRORED out\(\backslash\)n"});
+                                \textcolor{keywordflow}{goto} done;
 
-        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856}{RPC\_CALL\_ERROR}:
-            fprintf(stderr, \textcolor{stringliteral}{"ERRORED out\(\backslash\)n"});
-            \textcolor{keywordflow}{goto} done;
+            \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410a6c33a14b8aa6d0797cb614b890e9c741}{RPC\_CALL\_ABORTED}:
+                fprintf(stderr, \textcolor{stringliteral}{"ABORTED at %d\(\backslash\)n"}, cnt);
+                \textcolor{keywordflow}{goto} done;
 
-        \textcolor{keywordflow}{case} \hyperlink{connection_8h_a22306445a7503bab94835382d07e0410a6c33a14b8aa6d0797cb614b890e9c741}{RPC\_CALL\_ABORTED}:
-            fprintf(stderr, \textcolor{stringliteral}{"ABORTED at %d\(\backslash\)n"}, cnt);
-            \textcolor{keywordflow}{goto} done;
-
-        \textcolor{keywordflow}{default}:
-            \textcolor{keywordflow}{break};
+                        \textcolor{keywordflow}{default}:
+                \textcolor{keywordflow}{break};
                 \}
         \}
 
