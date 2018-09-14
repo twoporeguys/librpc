@@ -857,14 +857,18 @@ void
 rpc_if_member_free(struct rpc_if_member *member)
 {
 
-	if (member->rim_method.rm_block != NULL)
-		Block_release(member->rim_method.rm_block);
+	if (member->rim_type == RPC_MEMBER_METHOD) {
+		if (member->rim_method.rm_block != NULL)
+			Block_release(member->rim_method.rm_block);
+	}
 
-	if (member->rim_property.rp_getter != NULL)
-		Block_release(member->rim_property.rp_getter);
+	if (member->rim_type == RPC_MEMBER_PROPERTY) {
+		if (member->rim_property.rp_getter != NULL)
+			Block_release(member->rim_property.rp_getter);
 
-	if (member->rim_property.rp_setter != NULL)
-		Block_release(member->rim_property.rp_setter);
+		if (member->rim_property.rp_setter != NULL)
+			Block_release(member->rim_property.rp_setter);
+	}
 
 	g_free((void *)member->rim_name);
 	g_free(member);
