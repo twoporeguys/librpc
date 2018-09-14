@@ -46,6 +46,7 @@ static rpc_object_t rpc_observable_property_get(void *, rpc_object_t);
 static rpc_object_t rpc_observable_property_get_all(void *, rpc_object_t);
 static rpc_object_t rpc_observable_property_set(void *, rpc_object_t);
 void rpc_interface_free(struct rpc_interface_priv *);
+void rpc_if_member_free(struct rpc_if_member *);
 
 static const struct rpc_if_member rpc_discoverable_vtable[] = {
 	RPC_EVENT(instance_added),
@@ -765,7 +766,7 @@ rpc_instance_register_interface(rpc_instance_t instance,
 	priv = g_malloc0(sizeof(*priv));
 	g_mutex_init(&priv->rip_mtx);
 	priv->rip_members = g_hash_table_new_full(g_str_hash, g_str_equal,
-	    g_free, g_free);
+	    g_free, (GDestroyNotify)rpc_if_member_free);
 	priv->rip_arg = arg;
 	priv->rip_name = g_strdup(interface);
 
@@ -806,6 +807,23 @@ rpc_interface_free(struct rpc_interface_priv *priv)
 	g_mutex_clear(&priv->rip_mtx);
 	g_free(priv->rip_description);
 	g_free(priv);
+}
+
+void
+rpc_if_member_free(struct rpc_if_member *member)
+{
+
+	if (member->rim_method.rm_block != NULL)
+		Block_release(member->rim_method.rm_block);
+
+	if (member->rim_property.rp_getter != NULL)
+		Block_release(member->rim_property.rp_getter);
+
+	if (member->rim_property.rp_setter != NULL)
+		Block_release(member->rim_property.rp_setter);
+
+	g_free((void *)member->rim_name);
+	g_free(member);
 }
 
 int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
