@@ -75,7 +75,6 @@ union_validate(struct rpct_typei *typei, rpc_object_t obj,
 	bool ret;
 
 	ret = rpct_members_apply(typei->type, ^(struct rpct_member *member) {
-
 		struct rpct_error_context newctx = {
 			.path = errctx->path,
 			.errors = g_ptr_array_new()

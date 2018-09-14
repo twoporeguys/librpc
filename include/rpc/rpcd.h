@@ -43,7 +43,8 @@
  * @param service_name FQDN name of the service
  * @return RPC client handle or NULL in case of an error
  */
-_Nullable rpc_client_t rpcd_connect_to(const char *_Nonnull service_name);
+_Nullable rpc_client_t rpcd_connect_to(const char *_Nullable rpcd_uri,
+    const char *_Nonnull service_name);
 
 /**
  *

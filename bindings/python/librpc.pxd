@@ -428,7 +428,7 @@ cdef extern from "rpc/typing.h" nogil:
 
 
 cdef extern from "rpc/rpcd.h" nogil:
-    rpc_client_t rpcd_connect_to(const char *name)
+    rpc_client_t rpcd_connect_to(const char *rpcd_uri, const char *name)
     int rpcd_register(const char *uri, const char *name, const char *description)
 
 

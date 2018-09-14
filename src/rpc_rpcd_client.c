@@ -32,15 +32,32 @@
 #include <rpc/rpcd.h>
 #include "internal.h"
 
+static const char *rpcd_get_socket_location(void);
+
+static const char *
+rpcd_get_socket_location(void)
+{
+	const char *location;
+
+	location = getenv(RPCD_SOCKET_ENV);
+	if (location == NULL)
+		return (RPCD_SOCKET_LOCATION);
+
+	return (location);
+}
+
 rpc_client_t
-rpcd_connect_to(const char *service_name)
+rpcd_connect_to(const char *rpcd_uri, const char *service_name)
 {
 	rpc_client_t client;
 	rpc_connection_t conn;
 	rpc_auto_object_t result = NULL;
 	char *path;
 
-	client = rpc_client_create(RPCD_SOCKET_LOCATION, NULL);
+	if (rpcd_uri == NULL)
+		rpcd_uri = rpcd_get_socket_location();
+
+	client = rpc_client_create(rpcd_uri, NULL);
 	if (client == NULL)
 		return (NULL);
 
@@ -82,7 +99,7 @@ rpcd_register(const char *uri, const char *name, const char *description)
 	rpc_connection_t conn;
 	rpc_auto_object_t result = NULL;
 
-	client = rpc_client_create(RPCD_SOCKET_LOCATION, NULL);
+	client = rpc_client_create(rpcd_get_socket_location(), NULL);
 	if (client == NULL)
 		return (-1);
 
@@ -115,7 +132,7 @@ rpcd_unregister(const char *name)
 	rpc_connection_t conn;
 	rpc_auto_object_t result = NULL;
 
-	client = rpc_client_create(RPCD_SOCKET_LOCATION, NULL);
+	client = rpc_client_create(rpcd_get_socket_location(), NULL);
 	if (client == NULL)
 		return (-1);
 
