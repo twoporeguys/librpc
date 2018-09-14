@@ -928,12 +928,10 @@ rpc_instance_unregister_member(rpc_instance_t instance, const char *interface,
 		return (-1);
 	}
 
-	if (member->rim_type == RPC_MEMBER_PROPERTY)
+	if (member->rim_type == RPC_MEMBER_PROPERTY) {
 		rpc_instance_emit_event(instance, "librpc.Observable",
-		    "property_removed", rpc_object_pack("{s}", "name", name));
-	else if (member->rim_type == RPC_MEMBER_METHOD) {
-		Block_release(member->rim_method.rm_block);
-		g_free((void *)member->rim_name);
+		    "property_removed",
+		    rpc_object_pack("{s}", "name", name));
 	}
 
 	g_hash_table_remove(priv->rip_members, name);
