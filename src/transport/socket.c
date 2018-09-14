@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/socket.h>
 #include <gio/gio.h>
 #ifndef _WIN32
 #include <gio/gunixcredentialsmessage.h>
@@ -171,6 +172,15 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 		return;
 	}
 
+	if (!g_socket_set_option(g_socket_connection_get_socket(gconn),
+	    SOL_SOCKET, SO_PASSCRED, true, &err)) {
+		g_error_free(err);
+		if (srv->rs_valid(srv))
+			goto done;
+
+		return;
+	}
+
 	remote = g_socket_connection_get_remote_address(gconn, NULL);
 	if (remote != NULL) {
 		if (G_IS_INET_SOCKET_ADDRESS(remote)) {
@@ -208,7 +218,7 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 		return;
 	}
 done:
-	/* Schedule next accept if server isn't closing*/
+	/* Schedule next accept if server isn't closing */
 	g_mutex_lock(&server->ss_mtx);
 	g_cancellable_reset (server->ss_cancellable);
 	g_socket_listener_accept_async(server->ss_listener,
@@ -253,6 +263,15 @@ socket_connect(struct rpc_connection *rco, const char *uri,
 	if (err != NULL) {
 		rpc_set_last_gerror(err);
 		g_object_unref(addr);
+		g_object_unref(sock);
+		g_error_free(err);
+		return (-1);
+	}
+
+	if (!g_socket_set_option(sock, SOL_SOCKET, SO_PASSCRED, true, &err)) {
+		rpc_set_last_gerror(err);
+		g_object_unref(addr);
+		g_object_unref(sock);
 		g_error_free(err);
 		return (-1);
 	}
