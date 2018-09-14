@@ -233,6 +233,8 @@ Functions</h2></td></tr>
 <tr class="separator:a8199576424cc9470380ab43248129911"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89abe6ee2bcc59409eaccf1955ada0ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a89abe6ee2bcc59409eaccf1955ada0ad">rpc_function_error_ex</a> (void *_Nonnull cookie, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> exception)</td></tr>
 <tr class="separator:a89abe6ee2bcc59409eaccf1955ada0ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8e084a977c2598fa35284be241d4d44"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ac8e084a977c2598fa35284be241d4d44">rpc_function_start_stream</a> (void *_Nonnull cookie)</td></tr>
+<tr class="separator:ac8e084a977c2598fa35284be241d4d44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8c50ecedc9e59086e1ab63e1dd6c425"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ac8c50ecedc9e59086e1ab63e1dd6c425">rpc_function_yield</a> (void *_Nonnull cookie, _Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> fragment)</td></tr>
 <tr class="separator:ac8c50ecedc9e59086e1ab63e1dd6c425"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f0f3252a2c4e12050419519afe64e92"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a5f0f3252a2c4e12050419519afe64e92">rpc_function_end</a> (void *_Nonnull cookie)</td></tr>
@@ -1346,7 +1348,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="server_8c-example.html#a12">server.c</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="server_8c-example.html#a13">server.c</a>.</dd>
 </dl>
 </div>
 </div>
@@ -1742,6 +1744,33 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ac8e084a977c2598fa35284be241d4d44"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8e084a977c2598fa35284be241d4d44">&#9670;&nbsp;</a></span>rpc_function_start_stream()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_function_start_stream </td>
+          <td>(</td>
+          <td class="paramtype">void *_Nonnull&#160;</td>
+          <td class="paramname"><em>cookie</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Signalizes a start of a streaming response.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cookie</td><td>Running call handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Status. Success is reported by returning 0 </dd></dl>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="server_8c-example.html#a10">server.c</a>.</dd>
+</dl>
+</div>
+</div>
 <a id="ac8c50ecedc9e59086e1ab63e1dd6c425"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac8c50ecedc9e59086e1ab63e1dd6c425">&#9670;&nbsp;</a></span>rpc_function_yield()</h2>
 
@@ -1776,7 +1805,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Status. Success is reported by returning 0 </dd></dl>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="server_8c-example.html#a11">server.c</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="server_8c-example.html#a12">server.c</a>.</dd>
 </dl>
 </div>
 </div>

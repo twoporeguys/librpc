@@ -150,6 +150,8 @@ void \hyperlink{service_8h_a8199576424cc9470380ab43248129911}{rpc\+\_\+function\
 \item 
 void \hyperlink{service_8h_a89abe6ee2bcc59409eaccf1955ada0ad}{rpc\+\_\+function\+\_\+error\+\_\+ex} (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} exception)
 \item 
+int \hyperlink{service_8h_ac8e084a977c2598fa35284be241d4d44}{rpc\+\_\+function\+\_\+start\+\_\+stream} (void $\ast$\+\_\+\+Nonnull cookie)
+\item 
 int \hyperlink{service_8h_ac8c50ecedc9e59086e1ab63e1dd6c425}{rpc\+\_\+function\+\_\+yield} (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} fragment)
 \item 
 void \hyperlink{service_8h_a5f0f3252a2c4e12050419519afe64e92}{rpc\+\_\+function\+\_\+end} (void $\ast$\+\_\+\+Nonnull cookie)
@@ -1019,6 +1021,25 @@ Returns the value of a flag saying whether or not a method should immediately st
 \begin{DoxyReturn}{Returns}
 Whether or not function should abort 
 \end{DoxyReturn}
+\mbox{\Hypertarget{service_8h_ac8e084a977c2598fa35284be241d4d44}\label{service_8h_ac8e084a977c2598fa35284be241d4d44}} 
+\index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+start\+\_\+stream@{rpc\+\_\+function\+\_\+start\+\_\+stream}}
+\index{rpc\+\_\+function\+\_\+start\+\_\+stream@{rpc\+\_\+function\+\_\+start\+\_\+stream}!service.\+h@{service.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+function\+\_\+start\+\_\+stream()}{rpc\_function\_start\_stream()}}
+{\footnotesize\ttfamily int rpc\+\_\+function\+\_\+start\+\_\+stream (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nonnull}]{cookie }\end{DoxyParamCaption})}
+
+Signalizes a start of a streaming response.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cookie} & Running call handle \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Status. Success is reported by returning 0 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{server_8c-example}{server.\+c}.\end{Desc}
 \mbox{\Hypertarget{service_8h_ac8c50ecedc9e59086e1ab63e1dd6c425}\label{service_8h_ac8c50ecedc9e59086e1ab63e1dd6c425}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+yield@{rpc\+\_\+function\+\_\+yield}}
 \index{rpc\+\_\+function\+\_\+yield@{rpc\+\_\+function\+\_\+yield}!service.\+h@{service.\+h}}
