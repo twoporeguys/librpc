@@ -468,16 +468,16 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
     int **fds, size_t *nfds, struct rpc_credentials *creds)
 {
 	GError *err = NULL;
-	GSocketControlMessage **cmsg;
+	GSocketControlMessage **cmsg = NULL;
 	GCredentials *cr;
 	GInputVector iov[2];
 	uint32_t header[4];
 	ssize_t step;
-	size_t length;
+	size_t length = 0;
 	size_t done = 0;
 	size_t tmp;
 	bool have_header = false;
-	int ncmsg, i;
+	int ncmsg = 0, i;
 	int nfds_i;
 
 	*nfds = 0;
@@ -550,10 +550,15 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 			*nfds = (size_t)nfds_i;
 			continue;
 		}
+
+		g_object_unref(cmsg[i]);
 	}
 #endif
 
-	g_cancellable_reset (conn->sc_cancellable);
+	if (cmsg != NULL)
+		g_free(cmsg);
+
+	g_cancellable_reset(conn->sc_cancellable);
 	return (0);
 }
 
