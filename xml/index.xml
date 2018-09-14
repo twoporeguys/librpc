@@ -132,7 +132,6 @@
     <member refid="connection_8h_1a88bd06a910a4ce0b9046b9beb4af5ccda90324cd01756fadc8e9784079af790c1" kind="enumvalue"><name>RPC_OTHER</name></member>
     <member refid="connection_8h_1a22306445a7503bab94835382d07e0410" kind="enum"><name>rpc_call_status</name></member>
     <member refid="connection_8h_1a22306445a7503bab94835382d07e0410a1773d93b43fed839dc871589691fdef1" kind="enumvalue"><name>RPC_CALL_IN_PROGRESS</name></member>
-    <member refid="connection_8h_1a22306445a7503bab94835382d07e0410a3983354b73277eb1ac71ea3b105900fb" kind="enumvalue"><name>RPC_CALL_STREAM_START</name></member>
     <member refid="connection_8h_1a22306445a7503bab94835382d07e0410ab6194e76e0430da03cedbe2541889e6f" kind="enumvalue"><name>RPC_CALL_MORE_AVAILABLE</name></member>
     <member refid="connection_8h_1a22306445a7503bab94835382d07e0410a251c1dd2588db7249fc6321f8be6988d" kind="enumvalue"><name>RPC_CALL_DONE</name></member>
     <member refid="connection_8h_1a22306445a7503bab94835382d07e0410aa86df1455d84a8c7c3b4f918cb626856" kind="enumvalue"><name>RPC_CALL_ERROR</name></member>
@@ -444,7 +443,6 @@
     <member refid="service_8h_1a1c8603d576553224db42579cb9180d8d" kind="function"><name>rpc_function_respond</name></member>
     <member refid="service_8h_1a8199576424cc9470380ab43248129911" kind="function"><name>rpc_function_error</name></member>
     <member refid="service_8h_1a89abe6ee2bcc59409eaccf1955ada0ad" kind="function"><name>rpc_function_error_ex</name></member>
-    <member refid="service_8h_1ac8e084a977c2598fa35284be241d4d44" kind="function"><name>rpc_function_start_stream</name></member>
     <member refid="service_8h_1ac8c50ecedc9e59086e1ab63e1dd6c425" kind="function"><name>rpc_function_yield</name></member>
     <member refid="service_8h_1a5f0f3252a2c4e12050419519afe64e92" kind="function"><name>rpc_function_end</name></member>
     <member refid="service_8h_1a6018b6f71a3d1af7494125b8ba22f981" kind="function"><name>rpc_function_kill</name></member>
