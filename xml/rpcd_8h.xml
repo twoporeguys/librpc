@@ -62,11 +62,15 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
-      <memberdef kind="function" id="rpcd_8h_1a7383f6110b0b5282dbd32af694ae397c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="rpcd_8h_1a50e734ca08a873f594953d7bf11710cf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>_Nullable <ref refid="client_8h_1a4f7230a0c2c07d27a07a88d407a06b70" kindref="member">rpc_client_t</ref></type>
         <definition>_Nullable rpc_client_t rpcd_connect_to</definition>
-        <argsstring>(const char *_Nonnull service_name)</argsstring>
+        <argsstring>(const char *_Nullable rpcd_uri, const char *_Nonnull service_name)</argsstring>
         <name>rpcd_connect_to</name>
+        <param>
+          <type>const char *_Nullable</type>
+          <declname>rpcd_uri</declname>
+        </param>
         <param>
           <type>const char *_Nonnull</type>
           <declname>service_name</declname>
@@ -134,7 +138,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/rpcd.h" line="55" column="1"/>
+        <location file="/code/include/rpc/rpcd.h" line="56" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -177,12 +181,13 @@
 <codeline lineno="37"><highlight class="preprocessor">#define<sp/>RPCD_MANAGER_INTERFACE<sp/><sp/>&quot;com.twoporeguys.rpcd.ServiceManager&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="38"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>RPCD_SERVICE_INTERFACE<sp/><sp/>&quot;com.twoporeguys.rpcd.Service&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="39"><highlight class="normal"></highlight></codeline>
-<codeline lineno="46"><highlight class="normal">_Nullable<sp/><ref refid="client_8h_1a4f7230a0c2c07d27a07a88d407a06b70" kindref="member">rpc_client_t</ref><sp/><ref refid="rpcd_8h_1a7383f6110b0b5282dbd32af694ae397c" kindref="member">rpcd_connect_to</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>service_name);</highlight></codeline>
-<codeline lineno="47"><highlight class="normal"></highlight></codeline>
-<codeline lineno="55"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="rpcd_8h_1a4d56e4d9fa1dac691aa3aef6f02b9cf8" kindref="member">rpcd_register</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>uri,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
-<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>description);</highlight></codeline>
-<codeline lineno="57"><highlight class="normal"></highlight></codeline>
-<codeline lineno="58"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>LIBRPC_RPCD_H<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal">_Nullable<sp/><ref refid="client_8h_1a4f7230a0c2c07d27a07a88d407a06b70" kindref="member">rpc_client_t</ref><sp/><ref refid="rpcd_8h_1a50e734ca08a873f594953d7bf11710cf" kindref="member">rpcd_connect_to</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>rpcd_uri,</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>service_name);</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="rpcd_8h_1a4d56e4d9fa1dac691aa3aef6f02b9cf8" kindref="member">rpcd_register</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>uri,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>description);</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>LIBRPC_RPCD_H<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
     </programlisting>
     <location file="/code/include/rpc/rpcd.h"/>
   </compounddef>

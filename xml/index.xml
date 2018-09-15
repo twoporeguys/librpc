@@ -362,7 +362,7 @@
     <member refid="rpcd_8h_1a9823ef133db1543c07651a2d9da925f3" kind="define"><name>RPCD_SOCKET_LOCATION</name></member>
     <member refid="rpcd_8h_1a68e362732de142780476f22612f534da" kind="define"><name>RPCD_MANAGER_INTERFACE</name></member>
     <member refid="rpcd_8h_1a91d602efd501a39579b00e9a1cc0c945" kind="define"><name>RPCD_SERVICE_INTERFACE</name></member>
-    <member refid="rpcd_8h_1a7383f6110b0b5282dbd32af694ae397c" kind="function"><name>rpcd_connect_to</name></member>
+    <member refid="rpcd_8h_1a50e734ca08a873f594953d7bf11710cf" kind="function"><name>rpcd_connect_to</name></member>
     <member refid="rpcd_8h_1a4d56e4d9fa1dac691aa3aef6f02b9cf8" kind="function"><name>rpcd_register</name></member>
   </compound>
   <compound refid="serializer_8h" kind="file"><name>serializer.h</name>
