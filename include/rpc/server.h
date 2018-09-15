@@ -158,7 +158,7 @@ int rpc_server_close(_Nonnull rpc_server_t server);
  * @param rest
  * @return Number of servers created or -1 on error
  */
-int rpc_server_sd_listen(_Nonnull rpc_context_t context,
+int rpc_server_socket_activate(_Nonnull rpc_context_t context,
     _Nonnull rpc_server_t *_Nonnull *_Nonnull servers,
     _Nullable rpc_object_t *_Nullable rest);
 

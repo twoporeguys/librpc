@@ -33,6 +33,9 @@
 #ifdef SYSTEMD_SUPPORT
 #include <systemd/sd-daemon.h>
 #endif
+#ifdef LAUNCHD_SUPPORT
+#include <launch.h>
+#endif
 #include "internal.h"
 
 static int rpc_server_accept(rpc_server_t, rpc_connection_t);
@@ -439,7 +442,7 @@ rpc_server_close(rpc_server_t server)
 
 #ifdef SYSTEMD_SUPPORT
 int
-rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers,
+rpc_server_socket_activate(rpc_context_t context, rpc_server_t **servers,
     rpc_object_t *rest)
 {
 	rpc_server_t server;
@@ -491,6 +494,66 @@ rpc_server_sd_listen(rpc_context_t context, rpc_server_t **servers,
 	}
 
 	free(names);
+	return (n);
+}
+#endif
+
+#ifdef LAUNCHD_SUPPORT
+int
+rpc_server_socket_activate(rpc_context_t context, rpc_server_t **servers,
+    rpc_object_t *rest)
+{
+	rpc_server_t server;
+	rpc_object_t params;
+	int *sock_fds = NULL;
+	int *ws_fds = NULL;
+	size_t n_sock = 0;
+	size_t n_ws = 0;
+	size_t i;
+	int n = 0;
+
+	if (launch_activate_socket("librpc.socket", &sock_fds, &n_sock) != 0) {
+		if (errno != ENOENT) {
+			rpc_set_last_errorf(errno, "Cannot get listen fds: %s",
+			    strerror(errno));
+			return (-1);
+		}
+	}
+
+	if (launch_activate_socket("librpc.ws", &ws_fds, &n_ws) != 0) {
+		if (errno != ENOENT) {
+			rpc_set_last_errorf(errno, "Cannot get listen fds: %s",
+			    strerror(errno));
+			free(sock_fds);
+			return (-1);
+		}
+	}
+
+	*servers = g_malloc0(sizeof(rpc_server_t) * (n_sock + n_ws));
+
+	for (i = 0; i < n_sock; i++) {
+		params = rpc_fd_create(sock_fds[i]);
+		server = rpc_server_create_ex("socket://", context, params);
+		if (server == NULL)
+			continue;
+
+		(*servers)[n++] = server;
+	}
+
+	for (i = 0; i < n_ws; i++) {
+		params = rpc_fd_create(sock_fds[i]);
+		server = rpc_server_create_ex("ws://", context, params);
+		if (server == NULL)
+			continue;
+
+		(*servers)[n++] = server;
+	}
+
+	if (rest != NULL)
+		*rest = rpc_dictionary_create();
+
+	free(sock_fds);
+	free(ws_fds);
 	return (n);
 }
 #endif

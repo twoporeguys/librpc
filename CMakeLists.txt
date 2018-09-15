@@ -36,6 +36,10 @@ if(LINUX)
     option(BUILD_KMOD "Build and install kmod")
 endif()
 
+if(APPLE)
+    option(ENABLE_LAUNCHD "Enable launchd support" ON)
+endif()
+
 set(PKGCONFIG_C_FLAGS "-fblocks")
 set(CPACK_PACKAGE_NAME librpc)
 set(CPACK_PACKAGE_VENDOR Two Pore Guys)
@@ -174,6 +178,10 @@ if(ENABLE_SYSTEMD)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSYSTEMD_SUPPORT")
     include_directories(${SYSTEMD_INCLUDE_DIRS})
     link_directories(${SYSTEMD_LIBRARY_DIRS})
+endif()
+
+if(ENABLE_LAUNCHD)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DLAUNCHD_SUPPORT")
 endif()
 
 set(HEADERS
