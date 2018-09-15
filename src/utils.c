@@ -146,7 +146,7 @@ rpc_set_last_rpc_error(rpc_object_t rpc_error)
 	if (rpc_get_type(rpc_error) != RPC_TYPE_ERROR)
 		return;
 
-        g_private_replace(&rpc_last_error, rpc_error);
+        g_private_replace(&rpc_last_error, rpc_retain(rpc_error));
 }
 
 
