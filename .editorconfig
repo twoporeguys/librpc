@@ -15,4 +15,4 @@ indent_size = 8
 [*.{c,h,cc,hh,cpp,hpp}]
 indent_style = tab
 indent_size = 8
-
+max_line_length = 80
