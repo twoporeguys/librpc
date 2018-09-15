@@ -1,0 +1,18 @@
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+[*.{py,pyx,pxi,pxd}]
+indent_style = space
+indent_size = 4
+
+[Makefile]
+indent_style = tab
+indent_size = 8
+
+[*.{c,h,cc,hh,cpp,hpp}]
+indent_style = tab
+indent_size = 8
+
