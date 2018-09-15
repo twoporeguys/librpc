@@ -543,7 +543,7 @@ INTERNAL_LINKAGE off_t rpc_shmem_get_offset(rpc_object_t shmem);
 
 INTERNAL_LINKAGE rpc_object_t rpc_error_create_from_gerror(GError *g_error);
 
-INTERNAL_LINKAGE _Noreturn void rpc_abort(const char *fmt, ...);
+INTERNAL_LINKAGE void rpc_abort(const char *fmt, ...);
 INTERNAL_LINKAGE void rpc_trace(const char *msg, const char *ident,
     rpc_object_t frame);
 INTERNAL_LINKAGE char *rpc_get_backtrace(void);

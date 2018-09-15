@@ -342,7 +342,7 @@ main(int argc, char *argv[])
 	rpcd_context = rpc_context_create();
 
 	if (rpcd_use_systemd) {
-		rpcd_nservers = rpc_server_sd_listen(rpcd_context,
+		rpcd_nservers = rpc_server_socket_activate(rpcd_context,
 		    &rpcd_servers, &fds);
 
 		if (rpcd_nservers == 0) {

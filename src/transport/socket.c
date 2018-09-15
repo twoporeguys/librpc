@@ -172,6 +172,7 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 		return;
 	}
 
+#if defined(__linux__)
 	if (!g_socket_set_option(g_socket_connection_get_socket(gconn),
 	    SOL_SOCKET, SO_PASSCRED, true, &err)) {
 		g_error_free(err);
@@ -180,6 +181,7 @@ socket_accept(GObject *source __unused, GAsyncResult *result, void *data)
 
 		return;
 	}
+#endif
 
 	remote = g_socket_connection_get_remote_address(gconn, NULL);
 	if (remote != NULL) {
@@ -268,6 +270,7 @@ socket_connect(struct rpc_connection *rco, const char *uri,
 		return (-1);
 	}
 
+#if defined(__linux__)
 	if (!g_socket_set_option(sock, SOL_SOCKET, SO_PASSCRED, true, &err)) {
 		rpc_set_last_gerror(err);
 		g_object_unref(addr);
@@ -275,6 +278,7 @@ socket_connect(struct rpc_connection *rco, const char *uri,
 		g_error_free(err);
 		return (-1);
 	}
+#endif
 
 	conn = g_malloc0(sizeof(*conn));
 	conn->sc_parent = rco;
