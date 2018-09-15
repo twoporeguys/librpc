@@ -472,16 +472,16 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
     int **fds, size_t *nfds, struct rpc_credentials *creds)
 {
 	GError *err = NULL;
-	GSocketControlMessage **cmsg;
+	GSocketControlMessage **cmsg = NULL;
 	GCredentials *cr;
 	GInputVector iov[2];
 	uint32_t header[4];
 	ssize_t step;
-	size_t length;
+	size_t length = 0;
 	size_t done = 0;
 	size_t tmp;
 	bool have_header = false;
-	int ncmsg, i;
+	int ncmsg = 0, i;
 	int nfds_i;
 
 	*nfds = 0;
@@ -545,19 +545,22 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 			creds->rcc_gid = (gid_t)-1;
 			debugf("remote pid=%d, uid=%d, gid=%d", creds->rcc_pid,
 			    creds->rcc_uid, creds->rcc_gid);
-			continue;
 		}
 
 		if (G_IS_UNIX_FD_MESSAGE(cmsg[i])) {
 			*fds = g_unix_fd_message_steal_fds(
 			    G_UNIX_FD_MESSAGE(cmsg[i]), &nfds_i);
 			*nfds = (size_t)nfds_i;
-			continue;
 		}
+
+		g_object_unref(cmsg[i]);
 	}
 #endif
 
-	g_cancellable_reset (conn->sc_cancellable);
+	if (cmsg != NULL)
+		g_free(cmsg);
+
+	g_cancellable_reset(conn->sc_cancellable);
 	return (0);
 }
 
