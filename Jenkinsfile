@@ -38,6 +38,9 @@ pipeline {
         }
 
         stage('Run tests') {
+            options {
+                timeout(time: 30)
+            }
             steps {
                 sh 'make test'
             }
