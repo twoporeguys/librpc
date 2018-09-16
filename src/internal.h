@@ -278,7 +278,7 @@ struct rpc_connection
     	int			rco_flags;
 	bool			rco_closed;
 	bool			rco_aborted;
-	bool			rco_server_released;
+	bool			rco_released;
 	int			rco_refcnt;
 #if LIBDISPATCH_SUPPORT
 	dispatch_queue_t	rco_dispatch_queue;

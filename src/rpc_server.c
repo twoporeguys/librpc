@@ -78,7 +78,7 @@ rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 	g_mutex_lock(&server->rs_mtx);
 	if (server->rs_closed) {
 		server->rs_conn_refused++;
-		conn->rco_server_released = true;
+		conn->rco_released = true;
 		g_mutex_unlock(&server->rs_mtx);
 		return (-1);
 	}
@@ -423,9 +423,11 @@ rpc_server_close(rpc_server_t server)
 			conn = iter->data;
 			deref = rpc_connection_close(conn);
 			server->rs_conn_aborted++;
-
-			if (deref == -1) /* disconnect must fail, deref here */
-				rpc_connection_release(conn);
+			/* Once the rs_closed flag has been set calls to
+			 * rpc_server_disconnect() will fail. Drop the server's
+			 * ref on the connection here.
+			 */
+			rpc_connection_release(conn);
 		}
 	}
 	if (server->rs_threaded_teardown) {

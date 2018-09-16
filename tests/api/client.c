@@ -306,7 +306,8 @@ thread_mestream_func (gpointer data)
 			res = rpc_object_pack("[s, i, i]",
 			    str + i, (int64_t)26-i, (int64_t)cnt);
 			if (rpc_function_yield(cookie, res) != 0)
-				return (rpc_null_create());
+				//return (rpc_null_create());
+				return(false);
 		}
 		rpc_function_end(cookie);
 		return (RPC_FUNCTION_STILL_RUNNING);
