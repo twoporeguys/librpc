@@ -63,10 +63,11 @@ struct_read_member(const char *decl, rpc_object_t obj, struct rpct_type *type)
 	    g_free, (GDestroyNotify)rpc_release_impl);
 
 	if (constraints != NULL) {
-		rpc_dictionary_apply(constraints, ^(const char *key, rpc_object_t value) {
-		    g_hash_table_insert(member->constraints, g_strdup(key),
-		        value);
-		    return ((bool)true);
+		rpc_dictionary_apply(constraints, ^(const char *key,
+		    rpc_object_t value) {
+			g_hash_table_insert(member->constraints, g_strdup(key),
+			    value);
+			return ((bool)true);
 		});
 	}
 

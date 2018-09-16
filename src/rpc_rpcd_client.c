@@ -89,7 +89,41 @@ rpcd_connect_to(const char *rpcd_uri, const char *service_name)
 	}
 
 	g_assert_not_reached();
+}
 
+int
+rpcd_services_apply(const char *rpcd_uri, rpcd_service_applier_t applier)
+{
+	rpc_client_t client;
+	rpc_connection_t conn;
+	rpc_auto_object_t result = NULL;
+	if (rpcd_uri == NULL)
+		rpcd_uri = rpcd_get_socket_location();
+
+	client = rpc_client_create(rpcd_uri, NULL);
+	if (client == NULL)
+		return (-1);
+
+	conn = rpc_client_get_connection(client);
+	result = rpc_connection_call_syncp(conn, "/",
+	    RPC_DISCOVERABLE_INTERFACE, "get_instances", "[]");
+
+	rpc_array_apply(result, ^(size_t idx, rpc_object_t value) {
+		const char *path;
+		rpc_auto_object_t name;
+		rpc_auto_object_t description;
+
+		path = rpc_dictionary_get_string(value, "name");
+		name = rpc_connection_get_property(conn, path,
+		    RPCD_SERVICE_INTERFACE, "name");
+		description = rpc_connection_get_property(conn, path,
+		    RPCD_SERVICE_INTERFACE, "description");
+		applier(rpc_string_get_string_ptr(name),
+		    rpc_string_get_string_ptr(description));
+		return ((bool)true);
+	});
+
+	return (0);
 }
 
 int

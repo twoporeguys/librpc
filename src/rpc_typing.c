@@ -976,6 +976,7 @@ rpct_read_property(struct rpct_file *file, struct rpct_interface *iface,
 	prop = g_malloc0(sizeof(*prop));
 	prop->member.rim_name = g_strdup(name);
 	prop->member.rim_type = RPC_MEMBER_PROPERTY;
+	prop->member.rim_property.rp_notify = notify;
 	prop->description = g_strdup(description);
 
 	if (!read_only && !write_only && !read_write) {

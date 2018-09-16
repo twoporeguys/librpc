@@ -28,6 +28,8 @@
 #ifndef LIBRPC_RPCD_H
 #define LIBRPC_RPCD_H
 
+#include <rpc/client.h>
+
 /**
  * @file rpcd.h
  */
@@ -38,13 +40,30 @@
 #define	RPCD_SERVICE_INTERFACE	"com.twoporeguys.rpcd.Service"
 
 /**
+ *
+ */
+typedef void (^rpcd_service_applier_t)(const char *_Nonnull name,
+    const char *_Nullable description);
+
+/**
  * Looks up a service with given name and connects to it.
  *
+ * @param rpcd_uri URI of the rpcd server
  * @param service_name FQDN name of the service
  * @return RPC client handle or NULL in case of an error
  */
 _Nullable rpc_client_t rpcd_connect_to(const char *_Nullable rpcd_uri,
     const char *_Nonnull service_name);
+
+/**
+ * Iterates through services found on a rpcd server at @p rpcd_uri.
+ *
+ * @param rpcd_uri URI of the rpcd server
+ * @param applier Callback block called for every service count
+ * @return 0 on success, -1 on error
+ */
+int rpcd_services_apply(const char *_Nullable rpcd_uri,
+    _Nonnull rpcd_service_applier_t applier);
 
 /**
  *
@@ -55,5 +74,12 @@ _Nullable rpc_client_t rpcd_connect_to(const char *_Nullable rpcd_uri,
  */
 int rpcd_register(const char *_Nonnull uri, const char *_Nonnull name,
     const char *_Nullable description);
+
+/**
+ *
+ * @param name
+ * @return
+ */
+int rpcd_unregister(const char *_Nonnull name);
 
 #endif /* LIBRPC_RPCD_H */

@@ -243,6 +243,7 @@ struct rpc_if_property
 	__unsafe_unretained _Nullable rpc_property_getter_t rp_getter;
 	__unsafe_unretained _Nullable rpc_property_setter_t rp_setter;
 	void *_Nullable rp_arg;
+	bool rp_notify;
 };
 
 /**
