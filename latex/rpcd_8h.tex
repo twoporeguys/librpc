@@ -1,5 +1,14 @@
 \hypertarget{rpcd_8h}{}\section{/code/include/rpc/rpcd.h File Reference}
 \label{rpcd_8h}\index{/code/include/rpc/rpcd.\+h@{/code/include/rpc/rpcd.\+h}}
+{\ttfamily \#include $<$rpc/client.\+h$>$}\newline
+Include dependency graph for rpcd.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{rpcd_8h__incl}
+\end{center}
+\end{figure}
 This graph shows which files directly or indirectly include this file\+:
 \nopagebreak
 \begin{figure}[H]
@@ -23,12 +32,22 @@ This graph shows which files directly or indirectly include this file\+:
 \mbox{\Hypertarget{rpcd_8h_a91d602efd501a39579b00e9a1cc0c945}\label{rpcd_8h_a91d602efd501a39579b00e9a1cc0c945}} 
 \#define {\bfseries R\+P\+C\+D\+\_\+\+S\+E\+R\+V\+I\+C\+E\+\_\+\+I\+N\+T\+E\+R\+F\+A\+CE}~\char`\"{}com.\+twoporeguys.\+rpcd.\+Service\char`\"{}
 \end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{rpcd_8h_a22440751e807ef7d98598e4b8c588711}\label{rpcd_8h_a22440751e807ef7d98598e4b8c588711}} 
+typedef void($^\wedge$ {\bfseries rpcd\+\_\+service\+\_\+applier\+\_\+t}) (const char $\ast$\+\_\+\+Nonnull name, const char $\ast$\+\_\+\+Nullable description)
+\end{DoxyCompactItemize}
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
 \+\_\+\+Nullable \hyperlink{client_8h_a4f7230a0c2c07d27a07a88d407a06b70}{rpc\+\_\+client\+\_\+t} \hyperlink{rpcd_8h_a50e734ca08a873f594953d7bf11710cf}{rpcd\+\_\+connect\+\_\+to} (const char $\ast$\+\_\+\+Nullable rpcd\+\_\+uri, const char $\ast$\+\_\+\+Nonnull service\+\_\+name)
 \item 
+int \hyperlink{rpcd_8h_a0890dc205e622a17677dc48b5f69493d}{rpcd\+\_\+services\+\_\+apply} (const char $\ast$\+\_\+\+Nullable rpcd\+\_\+uri, \+\_\+\+Nonnull rpcd\+\_\+service\+\_\+applier\+\_\+t applier)
+\item 
 int \hyperlink{rpcd_8h_a4d56e4d9fa1dac691aa3aef6f02b9cf8}{rpcd\+\_\+register} (const char $\ast$\+\_\+\+Nonnull uri, const char $\ast$\+\_\+\+Nonnull name, const char $\ast$\+\_\+\+Nullable description)
+\item 
+int \hyperlink{rpcd_8h_ab081263316ed1f11d8b72aff477e21bc}{rpcd\+\_\+unregister} (const char $\ast$\+\_\+\+Nonnull name)
 \end{DoxyCompactItemize}
 
 
@@ -43,6 +62,8 @@ Looks up a service with given name and connects to it.
 
 
 \begin{DoxyParams}{Parameters}
+{\em rpcd\+\_\+uri} & U\+RI of the rpcd server \\
+\hline
 {\em service\+\_\+name} & F\+Q\+DN name of the service \\
 \hline
 \end{DoxyParams}
@@ -62,6 +83,38 @@ R\+PC client handle or N\+U\+LL in case of an error
 {\em name} & \\
 \hline
 {\em description} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{rpcd_8h_a0890dc205e622a17677dc48b5f69493d}\label{rpcd_8h_a0890dc205e622a17677dc48b5f69493d}} 
+\index{rpcd.\+h@{rpcd.\+h}!rpcd\+\_\+services\+\_\+apply@{rpcd\+\_\+services\+\_\+apply}}
+\index{rpcd\+\_\+services\+\_\+apply@{rpcd\+\_\+services\+\_\+apply}!rpcd.\+h@{rpcd.\+h}}
+\subsubsection{\texorpdfstring{rpcd\+\_\+services\+\_\+apply()}{rpcd\_services\_apply()}}
+{\footnotesize\ttfamily int rpcd\+\_\+services\+\_\+apply (\begin{DoxyParamCaption}\item[{const char $\ast$\+\_\+\+Nullable}]{rpcd\+\_\+uri,  }\item[{\+\_\+\+Nonnull rpcd\+\_\+service\+\_\+applier\+\_\+t}]{applier }\end{DoxyParamCaption})}
+
+Iterates through services found on a rpcd server at {\ttfamily rpcd\+\_\+uri}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em rpcd\+\_\+uri} & U\+RI of the rpcd server \\
+\hline
+{\em applier} & Callback block called for every service count \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on error 
+\end{DoxyReturn}
+\mbox{\Hypertarget{rpcd_8h_ab081263316ed1f11d8b72aff477e21bc}\label{rpcd_8h_ab081263316ed1f11d8b72aff477e21bc}} 
+\index{rpcd.\+h@{rpcd.\+h}!rpcd\+\_\+unregister@{rpcd\+\_\+unregister}}
+\index{rpcd\+\_\+unregister@{rpcd\+\_\+unregister}!rpcd.\+h@{rpcd.\+h}}
+\subsubsection{\texorpdfstring{rpcd\+\_\+unregister()}{rpcd\_unregister()}}
+{\footnotesize\ttfamily int rpcd\+\_\+unregister (\begin{DoxyParamCaption}\item[{const char $\ast$\+\_\+\+Nonnull}]{name }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}

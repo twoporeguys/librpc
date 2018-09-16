@@ -5,6 +5,7 @@
     <includes local="no">stdbool.h</includes>
     <includes refid="connection_8h" local="no">rpc/connection.h</includes>
     <includedby refid="rpc_8h" local="no">/code/include/rpc/rpc.h</includedby>
+    <includedby refid="rpcd_8h" local="no">/code/include/rpc/rpcd.h</includedby>
     <includedby refid="bus_8c" local="no">/code/examples/bus/bus.c</includedby>
     <includedby refid="client_8c" local="no">/code/examples/client/client.c</includedby>
     <includedby refid="event_8c" local="no">/code/examples/event/event.c</includedby>
@@ -76,15 +77,15 @@
       </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="310">
+      <node id="311">
         <label>/code/examples/fd-transport/fd-transport.c</label>
         <link refid="fd-transport_8c_source"/>
       </node>
-      <node id="306">
+      <node id="307">
         <label>/code/examples/bus/bus.c</label>
         <link refid="bus_8c_source"/>
       </node>
-      <node id="312">
+      <node id="313">
         <label>/code/examples/log-reader/log-reader.c</label>
         <link refid="log-reader_8c_source"/>
       </node>
@@ -113,36 +114,44 @@
         </childnode>
         <childnode refid="315" relation="include">
         </childnode>
+        <childnode refid="316" relation="include">
+        </childnode>
       </node>
-      <node id="314">
+      <node id="315">
         <label>/code/examples/pack-unpack/pack-unpack.c</label>
         <link refid="pack-unpack_8c_source"/>
+      </node>
+      <node id="306">
+        <label>/code/include/rpc/rpcd.h</label>
+        <link refid="rpcd_8h"/>
+        <childnode refid="305" relation="include">
+        </childnode>
       </node>
       <node id="305">
         <label>/code/include/rpc/rpc.h</label>
         <link refid="rpc_8h_source"/>
       </node>
-      <node id="308">
+      <node id="309">
         <label>/code/examples/event/event.c</label>
         <link refid="event_8c_source"/>
       </node>
-      <node id="315">
+      <node id="316">
         <label>/code/examples/shm-client/shm-client.c</label>
         <link refid="shm-client_8c_source"/>
       </node>
-      <node id="309">
+      <node id="310">
         <label>/code/examples/fd-client/fd-client.c</label>
         <link refid="fd-client_8c_source"/>
       </node>
-      <node id="307">
+      <node id="308">
         <label>/code/examples/client/client.c</label>
         <link refid="client_8c_source"/>
       </node>
-      <node id="313">
+      <node id="314">
         <label>/code/examples/loopback/loopback.c</label>
         <link refid="loopback_8c_source"/>
       </node>
-      <node id="311">
+      <node id="312">
         <label>/code/examples/libdispatch/libdispatch.c</label>
         <link refid="libdispatch_8c_source"/>
       </node>

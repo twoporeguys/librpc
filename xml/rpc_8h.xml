@@ -14,87 +14,83 @@
     <includes refid="typing_8h" local="no">rpc/typing.h</includes>
     <includes refid="rpcd_8h" local="no">rpc/rpcd.h</includes>
     <incdepgraph>
-      <node id="402">
+      <node id="405">
         <label>rpc/query.h</label>
         <link refid="query_8h"/>
-        <childnode refid="388" relation="include">
-        </childnode>
-      </node>
-      <node id="390">
-        <label>stdbool.h</label>
-      </node>
-      <node id="391">
-        <label>stdarg.h</label>
-      </node>
-      <node id="397">
-        <label>rpc/client.h</label>
-        <link refid="client_8h"/>
-        <childnode refid="390" relation="include">
-        </childnode>
-        <childnode refid="394" relation="include">
-        </childnode>
-      </node>
-      <node id="389">
-        <label>stdint.h</label>
-      </node>
-      <node id="387">
-        <label>rpc/config.h</label>
-      </node>
-      <node id="403">
-        <label>rpc/typing.h</label>
-        <link refid="typing_8h"/>
-        <childnode refid="388" relation="include">
-        </childnode>
-      </node>
-      <node id="404">
-        <label>rpc/rpcd.h</label>
-        <link refid="rpcd_8h"/>
-      </node>
-      <node id="401">
-        <label>rpc/serializer.h</label>
-        <link refid="serializer_8h"/>
-        <childnode refid="388" relation="include">
-        </childnode>
-      </node>
-      <node id="394">
-        <label>rpc/connection.h</label>
-        <link refid="connection_8h"/>
-        <childnode refid="395" relation="include">
-        </childnode>
-        <childnode refid="396" relation="include">
-        </childnode>
-        <childnode refid="387" relation="include">
-        </childnode>
-        <childnode refid="388" relation="include">
-        </childnode>
-      </node>
-      <node id="399">
-        <label>rpc/server.h</label>
-        <link refid="server_8h"/>
-        <childnode refid="390" relation="include">
-        </childnode>
-        <childnode refid="398" relation="include">
-        </childnode>
-        <childnode refid="394" relation="include">
+        <childnode refid="391" relation="include">
         </childnode>
       </node>
       <node id="393">
-        <label>sys/types.h</label>
+        <label>stdbool.h</label>
       </node>
-      <node id="386">
-        <label>/code/include/rpc/rpc.h</label>
-        <link refid="rpc_8h"/>
-        <childnode refid="387" relation="include">
-        </childnode>
-        <childnode refid="388" relation="include">
-        </childnode>
-        <childnode refid="394" relation="include">
+      <node id="394">
+        <label>stdarg.h</label>
+      </node>
+      <node id="400">
+        <label>rpc/client.h</label>
+        <link refid="client_8h"/>
+        <childnode refid="393" relation="include">
         </childnode>
         <childnode refid="397" relation="include">
         </childnode>
+      </node>
+      <node id="392">
+        <label>stdint.h</label>
+      </node>
+      <node id="390">
+        <label>rpc/config.h</label>
+      </node>
+      <node id="406">
+        <label>rpc/typing.h</label>
+        <link refid="typing_8h"/>
+        <childnode refid="391" relation="include">
+        </childnode>
+      </node>
+      <node id="407">
+        <label>rpc/rpcd.h</label>
+        <link refid="rpcd_8h"/>
+        <childnode refid="400" relation="include">
+        </childnode>
+      </node>
+      <node id="404">
+        <label>rpc/serializer.h</label>
+        <link refid="serializer_8h"/>
+        <childnode refid="391" relation="include">
+        </childnode>
+      </node>
+      <node id="397">
+        <label>rpc/connection.h</label>
+        <link refid="connection_8h"/>
         <childnode refid="398" relation="include">
         </childnode>
         <childnode refid="399" relation="include">
+        </childnode>
+        <childnode refid="390" relation="include">
+        </childnode>
+        <childnode refid="391" relation="include">
+        </childnode>
+      </node>
+      <node id="402">
+        <label>rpc/server.h</label>
+        <link refid="server_8h"/>
+        <childnode refid="393" relation="include">
+        </childnode>
+        <childnode refid="401" relation="include">
+        </childnode>
+        <childnode refid="397" relation="include">
+        </childnode>
+      </node>
+      <node id="396">
+        <label>sys/types.h</label>
+      </node>
+      <node id="389">
+        <label>/code/include/rpc/rpc.h</label>
+        <link refid="rpc_8h"/>
+        <childnode refid="390" relation="include">
+        </childnode>
+        <childnode refid="391" relation="include">
+        </childnode>
+        <childnode refid="397" relation="include">
         </childnode>
         <childnode refid="400" relation="include">
         </childnode>
@@ -106,42 +102,48 @@
         </childnode>
         <childnode refid="404" relation="include">
         </childnode>
+        <childnode refid="405" relation="include">
+        </childnode>
+        <childnode refid="406" relation="include">
+        </childnode>
+        <childnode refid="407" relation="include">
+        </childnode>
       </node>
-      <node id="388">
+      <node id="391">
         <label>rpc/object.h</label>
         <link refid="object_8h"/>
-        <childnode refid="389" relation="include">
-        </childnode>
-        <childnode refid="390" relation="include">
-        </childnode>
-        <childnode refid="391" relation="include">
-        </childnode>
         <childnode refid="392" relation="include">
         </childnode>
         <childnode refid="393" relation="include">
         </childnode>
-      </node>
-      <node id="392">
-        <label>sys/uio.h</label>
+        <childnode refid="394" relation="include">
+        </childnode>
+        <childnode refid="395" relation="include">
+        </childnode>
+        <childnode refid="396" relation="include">
+        </childnode>
       </node>
       <node id="395">
-        <label>Block.h</label>
-      </node>
-      <node id="400">
-        <label>rpc/bus.h</label>
-        <link refid="bus_8h"/>
-        <childnode refid="389" relation="include">
-        </childnode>
-      </node>
-      <node id="396">
-        <label>sys/time.h</label>
+        <label>sys/uio.h</label>
       </node>
       <node id="398">
+        <label>Block.h</label>
+      </node>
+      <node id="403">
+        <label>rpc/bus.h</label>
+        <link refid="bus_8h"/>
+        <childnode refid="392" relation="include">
+        </childnode>
+      </node>
+      <node id="399">
+        <label>sys/time.h</label>
+      </node>
+      <node id="401">
         <label>rpc/service.h</label>
         <link refid="service_8h"/>
-        <childnode refid="388" relation="include">
+        <childnode refid="391" relation="include">
         </childnode>
-        <childnode refid="394" relation="include">
+        <childnode refid="397" relation="include">
         </childnode>
       </node>
     </incdepgraph>

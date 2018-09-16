@@ -21,6 +21,7 @@
     <member refid="structrpc__if__property_1ae19b459a98e396cb5f6f8e4938d6c018" kind="variable"><name>rp_getter</name></member>
     <member refid="structrpc__if__property_1a45fe384e6ad2355ba81781fe16b9d421" kind="variable"><name>rp_setter</name></member>
     <member refid="structrpc__if__property_1a81d2953a7a4bdff1775330c29992546b" kind="variable"><name>rp_arg</name></member>
+    <member refid="structrpc__if__property_1ac8c71dd42b3981bc522dc1bbb3534b39" kind="variable"><name>rp_notify</name></member>
   </compound>
   <compound refid="structrpc__query__params" kind="struct"><name>rpc_query_params</name>
     <member refid="structrpc__query__params_1a6e4eafac062b7f7490a4983d56296385" kind="variable"><name>single</name></member>
@@ -362,8 +363,11 @@
     <member refid="rpcd_8h_1a9823ef133db1543c07651a2d9da925f3" kind="define"><name>RPCD_SOCKET_LOCATION</name></member>
     <member refid="rpcd_8h_1a68e362732de142780476f22612f534da" kind="define"><name>RPCD_MANAGER_INTERFACE</name></member>
     <member refid="rpcd_8h_1a91d602efd501a39579b00e9a1cc0c945" kind="define"><name>RPCD_SERVICE_INTERFACE</name></member>
+    <member refid="rpcd_8h_1a22440751e807ef7d98598e4b8c588711" kind="typedef"><name>rpcd_service_applier_t</name></member>
     <member refid="rpcd_8h_1a50e734ca08a873f594953d7bf11710cf" kind="function"><name>rpcd_connect_to</name></member>
+    <member refid="rpcd_8h_1a0890dc205e622a17677dc48b5f69493d" kind="function"><name>rpcd_services_apply</name></member>
     <member refid="rpcd_8h_1a4d56e4d9fa1dac691aa3aef6f02b9cf8" kind="function"><name>rpcd_register</name></member>
+    <member refid="rpcd_8h_1ab081263316ed1f11d8b72aff477e21bc" kind="function"><name>rpcd_unregister</name></member>
   </compound>
   <compound refid="serializer_8h" kind="file"><name>serializer.h</name>
     <member refid="serializer_8h_1aab2daa65954ec29b20ac84a12946e154" kind="function"><name>rpc_serializer_exists</name></member>

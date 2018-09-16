@@ -64,12 +64,24 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">rpcd.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><div class="dynheader">
+<div class="textblock"><code>#include &lt;<a class="el" href="client_8h_source.html">rpc/client.h</a>&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for rpcd.h:</div>
+<div class="dyncontent">
+<div class="center"><img src="rpcd_8h__incl.png" border="0" usemap="#_2code_2include_2rpc_2rpcd_8h" alt=""/></div>
+<map name="_2code_2include_2rpc_2rpcd_8h" id="_2code_2include_2rpc_2rpcd_8h">
+<area shape="rect" id="node2" href="client_8h.html" title="rpc/client.h" alt="" coords="46,80,141,107"/>
+<area shape="rect" id="node4" href="connection_8h.html" title="rpc/connection.h" alt="" coords="118,155,247,181"/>
+<area shape="rect" id="node8" href="object_8h.html" title="rpc/object.h" alt="" coords="375,229,473,256"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="rpcd_8h__dep__incl.png" border="0" usemap="#_2code_2include_2rpc_2rpcd_8hdep" alt=""/></div>
@@ -95,12 +107,22 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>RPCD_SERVICE_INTERFACE</b>&#160;&#160;&#160;&quot;com.twoporeguys.rpcd.Service&quot;</td></tr>
 <tr class="separator:a91d602efd501a39579b00e9a1cc0c945"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a22440751e807ef7d98598e4b8c588711"><td class="memItemLeft" align="right" valign="top"><a id="a22440751e807ef7d98598e4b8c588711"></a>
+typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><b>rpcd_service_applier_t</b>) (const char *_Nonnull name, const char *_Nullable description)</td></tr>
+<tr class="separator:a22440751e807ef7d98598e4b8c588711"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a50e734ca08a873f594953d7bf11710cf"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="client_8h.html#a4f7230a0c2c07d27a07a88d407a06b70">rpc_client_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rpcd_8h.html#a50e734ca08a873f594953d7bf11710cf">rpcd_connect_to</a> (const char *_Nullable rpcd_uri, const char *_Nonnull service_name)</td></tr>
 <tr class="separator:a50e734ca08a873f594953d7bf11710cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0890dc205e622a17677dc48b5f69493d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rpcd_8h.html#a0890dc205e622a17677dc48b5f69493d">rpcd_services_apply</a> (const char *_Nullable rpcd_uri, _Nonnull rpcd_service_applier_t applier)</td></tr>
+<tr class="separator:a0890dc205e622a17677dc48b5f69493d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d56e4d9fa1dac691aa3aef6f02b9cf8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rpcd_8h.html#a4d56e4d9fa1dac691aa3aef6f02b9cf8">rpcd_register</a> (const char *_Nonnull uri, const char *_Nonnull name, const char *_Nullable description)</td></tr>
 <tr class="separator:a4d56e4d9fa1dac691aa3aef6f02b9cf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab081263316ed1f11d8b72aff477e21bc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rpcd_8h.html#ab081263316ed1f11d8b72aff477e21bc">rpcd_unregister</a> (const char *_Nonnull name)</td></tr>
+<tr class="separator:ab081263316ed1f11d8b72aff477e21bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a50e734ca08a873f594953d7bf11710cf"></a>
@@ -131,6 +153,7 @@ Functions</h2></td></tr>
 <p>Looks up a service with given name and connects to it.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">rpcd_uri</td><td>URI of the rpcd server </td></tr>
     <tr><td class="paramname">service_name</td><td>FQDN name of the service </td></tr>
   </table>
   </dd>
@@ -175,6 +198,68 @@ Functions</h2></td></tr>
     <tr><td class="paramname">uri</td><td></td></tr>
     <tr><td class="paramname">name</td><td></td></tr>
     <tr><td class="paramname">description</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a0890dc205e622a17677dc48b5f69493d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0890dc205e622a17677dc48b5f69493d">&#9670;&nbsp;</a></span>rpcd_services_apply()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpcd_services_apply </td>
+          <td>(</td>
+          <td class="paramtype">const char *_Nullable&#160;</td>
+          <td class="paramname"><em>rpcd_uri</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">_Nonnull rpcd_service_applier_t&#160;</td>
+          <td class="paramname"><em>applier</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Iterates through services found on a rpcd server at <code>rpcd_uri</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rpcd_uri</td><td>URI of the rpcd server </td></tr>
+    <tr><td class="paramname">applier</td><td>Callback block called for every service count </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
+
+</div>
+</div>
+<a id="ab081263316ed1f11d8b72aff477e21bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab081263316ed1f11d8b72aff477e21bc">&#9670;&nbsp;</a></span>rpcd_unregister()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpcd_unregister </td>
+          <td>(</td>
+          <td class="paramtype">const char *_Nonnull&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td></td></tr>
   </table>
   </dd>
 </dl>

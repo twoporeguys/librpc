@@ -1,13 +1,14 @@
 <map id="/code/include/rpc/client.h" name="/code/include/rpc/client.h">
-<area shape="rect" id="node2" href="$rpc_8h_source.html" title="/code/include/rpc/rpc.h" alt="" coords="5,87,173,114"/>
-<area shape="rect" id="node3" href="$bus_8c_source.html" title="/code/examples/bus\l/bus.c" alt="" coords="197,80,349,121"/>
-<area shape="rect" id="node4" href="$client_8c_source.html" title="/code/examples/client\l/client.c" alt="" coords="373,80,539,121"/>
-<area shape="rect" id="node5" href="$event_8c_source.html" title="/code/examples/event\l/event.c" alt="" coords="563,80,730,121"/>
-<area shape="rect" id="node6" href="$fd-client_8c_source.html" title="/code/examples/fd&#45;client\l/fd&#45;client.c" alt="" coords="754,80,937,121"/>
-<area shape="rect" id="node7" href="$fd-transport_8c_source.html" title="/code/examples/fd&#45;transport\l/fd&#45;transport.c" alt="" coords="961,80,1167,121"/>
-<area shape="rect" id="node8" href="$libdispatch_8c_source.html" title="/code/examples/libdispatch\l/libdispatch.c" alt="" coords="1192,80,1392,121"/>
-<area shape="rect" id="node9" href="$log-reader_8c_source.html" title="/code/examples/log\l&#45;reader/log&#45;reader.c" alt="" coords="1417,80,1567,121"/>
-<area shape="rect" id="node10" href="$loopback_8c_source.html" title="/code/examples/loopback\l/loopback.c" alt="" coords="1591,80,1779,121"/>
-<area shape="rect" id="node11" href="$pack-unpack_8c_source.html" title="/code/examples/pack\l&#45;unpack/pack&#45;unpack.c" alt="" coords="1803,80,1975,121"/>
-<area shape="rect" id="node12" href="$shm-client_8c_source.html" title="/code/examples/shm\l&#45;client/shm&#45;client.c" alt="" coords="2000,80,2157,121"/>
+<area shape="rect" id="node2" href="$rpc_8h_source.html" title="/code/include/rpc/rpc.h" alt="" coords="5,169,173,196"/>
+<area shape="rect" id="node3" href="$rpcd_8h.html" title="/code/include/rpc/rpcd.h" alt="" coords="64,87,240,114"/>
+<area shape="rect" id="node4" href="$bus_8c_source.html" title="/code/examples/bus\l/bus.c" alt="" coords="264,80,416,121"/>
+<area shape="rect" id="node5" href="$client_8c_source.html" title="/code/examples/client\l/client.c" alt="" coords="440,80,605,121"/>
+<area shape="rect" id="node6" href="$event_8c_source.html" title="/code/examples/event\l/event.c" alt="" coords="630,80,797,121"/>
+<area shape="rect" id="node7" href="$fd-client_8c_source.html" title="/code/examples/fd&#45;client\l/fd&#45;client.c" alt="" coords="821,80,1003,121"/>
+<area shape="rect" id="node8" href="$fd-transport_8c_source.html" title="/code/examples/fd&#45;transport\l/fd&#45;transport.c" alt="" coords="1027,80,1234,121"/>
+<area shape="rect" id="node9" href="$libdispatch_8c_source.html" title="/code/examples/libdispatch\l/libdispatch.c" alt="" coords="1259,80,1459,121"/>
+<area shape="rect" id="node10" href="$log-reader_8c_source.html" title="/code/examples/log\l&#45;reader/log&#45;reader.c" alt="" coords="1483,80,1634,121"/>
+<area shape="rect" id="node11" href="$loopback_8c_source.html" title="/code/examples/loopback\l/loopback.c" alt="" coords="1658,80,1846,121"/>
+<area shape="rect" id="node12" href="$pack-unpack_8c_source.html" title="/code/examples/pack\l&#45;unpack/pack&#45;unpack.c" alt="" coords="1870,80,2042,121"/>
+<area shape="rect" id="node13" href="$shm-client_8c_source.html" title="/code/examples/shm\l&#45;client/shm&#45;client.c" alt="" coords="2067,80,2224,121"/>
 </map>

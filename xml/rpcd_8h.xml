@@ -2,15 +2,82 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
   <compounddef id="rpcd_8h" kind="file" language="C++">
     <compoundname>rpcd.h</compoundname>
+    <includes refid="client_8h" local="no">rpc/client.h</includes>
     <includedby refid="rpc_8h" local="no">/code/include/rpc/rpc.h</includedby>
-    <invincdepgraph>
-      <node id="407">
-        <label>/code/include/rpc/rpcd.h</label>
-        <link refid="rpcd_8h"/>
-        <childnode refid="408" relation="include">
+    <incdepgraph>
+      <node id="411">
+        <label>stdbool.h</label>
+      </node>
+      <node id="418">
+        <label>stdarg.h</label>
+      </node>
+      <node id="410">
+        <label>rpc/client.h</label>
+        <link refid="client_8h"/>
+        <childnode refid="411" relation="include">
+        </childnode>
+        <childnode refid="412" relation="include">
         </childnode>
       </node>
-      <node id="408">
+      <node id="417">
+        <label>stdint.h</label>
+      </node>
+      <node id="415">
+        <label>rpc/config.h</label>
+      </node>
+      <node id="409">
+        <label>/code/include/rpc/rpcd.h</label>
+        <link refid="rpcd_8h"/>
+        <childnode refid="410" relation="include">
+        </childnode>
+      </node>
+      <node id="412">
+        <label>rpc/connection.h</label>
+        <link refid="connection_8h"/>
+        <childnode refid="413" relation="include">
+        </childnode>
+        <childnode refid="414" relation="include">
+        </childnode>
+        <childnode refid="415" relation="include">
+        </childnode>
+        <childnode refid="416" relation="include">
+        </childnode>
+      </node>
+      <node id="420">
+        <label>sys/types.h</label>
+      </node>
+      <node id="416">
+        <label>rpc/object.h</label>
+        <link refid="object_8h"/>
+        <childnode refid="417" relation="include">
+        </childnode>
+        <childnode refid="411" relation="include">
+        </childnode>
+        <childnode refid="418" relation="include">
+        </childnode>
+        <childnode refid="419" relation="include">
+        </childnode>
+        <childnode refid="420" relation="include">
+        </childnode>
+      </node>
+      <node id="419">
+        <label>sys/uio.h</label>
+      </node>
+      <node id="413">
+        <label>Block.h</label>
+      </node>
+      <node id="414">
+        <label>sys/time.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="421">
+        <label>/code/include/rpc/rpcd.h</label>
+        <link refid="rpcd_8h"/>
+        <childnode refid="422" relation="include">
+        </childnode>
+      </node>
+      <node id="422">
         <label>/code/include/rpc/rpc.h</label>
         <link refid="rpc_8h_source"/>
       </node>
@@ -25,7 +92,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/rpcd.h" line="35" column="9" bodyfile="/code/include/rpc/rpcd.h" bodystart="35" bodyend="-1"/>
+        <location file="/code/include/rpc/rpcd.h" line="37" column="9" bodyfile="/code/include/rpc/rpcd.h" bodystart="37" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="rpcd_8h_1a9823ef133db1543c07651a2d9da925f3" prot="public" static="no">
         <name>RPCD_SOCKET_LOCATION</name>
@@ -36,7 +103,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/rpcd.h" line="36" column="9" bodyfile="/code/include/rpc/rpcd.h" bodystart="36" bodyend="-1"/>
+        <location file="/code/include/rpc/rpcd.h" line="38" column="9" bodyfile="/code/include/rpc/rpcd.h" bodystart="38" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="rpcd_8h_1a68e362732de142780476f22612f534da" prot="public" static="no">
         <name>RPCD_MANAGER_INTERFACE</name>
@@ -47,7 +114,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/rpcd.h" line="37" column="9" bodyfile="/code/include/rpc/rpcd.h" bodystart="37" bodyend="-1"/>
+        <location file="/code/include/rpc/rpcd.h" line="39" column="9" bodyfile="/code/include/rpc/rpcd.h" bodystart="39" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="rpcd_8h_1a91d602efd501a39579b00e9a1cc0c945" prot="public" static="no">
         <name>RPCD_SERVICE_INTERFACE</name>
@@ -58,7 +125,22 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/rpcd.h" line="38" column="9" bodyfile="/code/include/rpc/rpcd.h" bodystart="38" bodyend="-1"/>
+        <location file="/code/include/rpc/rpcd.h" line="40" column="9" bodyfile="/code/include/rpc/rpcd.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="rpcd_8h_1a22440751e807ef7d98598e4b8c588711" prot="public" static="no">
+        <type>void(^</type>
+        <definition>typedef void(^ rpcd_service_applier_t) (const char *_Nonnull name, const char *_Nullable description)</definition>
+        <argsstring>)(const char *_Nonnull name, const char *_Nullable description)</argsstring>
+        <name>rpcd_service_applier_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/rpcd.h" line="45" column="1" bodyfile="/code/include/rpc/rpcd.h" bodystart="45" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
@@ -80,6 +162,13 @@
         <detaileddescription>
 <para>Looks up a service with given name and connects to it.</para><para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
+<parametername>rpcd_uri</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>URI of the rpcd server </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
 <parametername>service_name</parametername>
 </parameternamelist>
 <parameterdescription>
@@ -90,7 +179,44 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/rpcd.h" line="46" column="1"/>
+        <location file="/code/include/rpc/rpcd.h" line="55" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rpcd_8h_1a0890dc205e622a17677dc48b5f69493d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int rpcd_services_apply</definition>
+        <argsstring>(const char *_Nullable rpcd_uri, _Nonnull rpcd_service_applier_t applier)</argsstring>
+        <name>rpcd_services_apply</name>
+        <param>
+          <type>const char *_Nullable</type>
+          <declname>rpcd_uri</declname>
+        </param>
+        <param>
+          <type>_Nonnull rpcd_service_applier_t</type>
+          <declname>applier</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Iterates through services found on a rpcd server at <computeroutput>rpcd_uri</computeroutput>.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>rpcd_uri</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>URI of the rpcd server </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>applier</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Callback block called for every service count </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 on success, -1 on error </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/rpcd.h" line="65" column="1"/>
       </memberdef>
       <memberdef kind="function" id="rpcd_8h_1a4d56e4d9fa1dac691aa3aef6f02b9cf8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -138,7 +264,33 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/code/include/rpc/rpcd.h" line="56" column="1"/>
+        <location file="/code/include/rpc/rpcd.h" line="75" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rpcd_8h_1ab081263316ed1f11d8b72aff477e21bc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int rpcd_unregister</definition>
+        <argsstring>(const char *_Nonnull name)</argsstring>
+        <name>rpcd_unregister</name>
+        <param>
+          <type>const char *_Nonnull</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para></para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/code/include/rpc/rpcd.h" line="83" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -176,18 +328,28 @@
 <codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>LIBRPC_RPCD_H</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>LIBRPC_RPCD_H</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="30"><highlight class="normal"></highlight></codeline>
-<codeline lineno="35"><highlight class="preprocessor">#define<sp/>RPCD_SOCKET_ENV<sp/><sp/><sp/><sp/><sp/>&quot;RPCD_SOCKET_LOCATION&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="36"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>RPCD_SOCKET_LOCATION<sp/><sp/><sp/><sp/>&quot;unix:</highlight></codeline>
-<codeline lineno="37"><highlight class="preprocessor">#define<sp/>RPCD_MANAGER_INTERFACE<sp/><sp/>&quot;com.twoporeguys.rpcd.ServiceManager&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="38"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>RPCD_SERVICE_INTERFACE<sp/><sp/>&quot;com.twoporeguys.rpcd.Service&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="39"><highlight class="normal"></highlight></codeline>
-<codeline lineno="46"><highlight class="normal">_Nullable<sp/><ref refid="client_8h_1a4f7230a0c2c07d27a07a88d407a06b70" kindref="member">rpc_client_t</ref><sp/><ref refid="rpcd_8h_1a50e734ca08a873f594953d7bf11710cf" kindref="member">rpcd_connect_to</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>rpcd_uri,</highlight></codeline>
-<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>service_name);</highlight></codeline>
-<codeline lineno="48"><highlight class="normal"></highlight></codeline>
-<codeline lineno="56"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="rpcd_8h_1a4d56e4d9fa1dac691aa3aef6f02b9cf8" kindref="member">rpcd_register</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>uri,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
-<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>description);</highlight></codeline>
-<codeline lineno="58"><highlight class="normal"></highlight></codeline>
-<codeline lineno="59"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>LIBRPC_RPCD_H<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="client_8h" kindref="compound">rpc/client.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="preprocessor">#define<sp/>RPCD_SOCKET_ENV<sp/><sp/><sp/><sp/><sp/>&quot;RPCD_SOCKET_LOCATION&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>RPCD_SOCKET_LOCATION<sp/><sp/><sp/><sp/>&quot;unix:</highlight></codeline>
+<codeline lineno="39"><highlight class="preprocessor">#define<sp/>RPCD_MANAGER_INTERFACE<sp/><sp/>&quot;com.twoporeguys.rpcd.ServiceManager&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>RPCD_SERVICE_INTERFACE<sp/><sp/>&quot;com.twoporeguys.rpcd.Service&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void<sp/>(^rpcd_service_applier_t)(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>description);</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal">_Nullable<sp/><ref refid="client_8h_1a4f7230a0c2c07d27a07a88d407a06b70" kindref="member">rpc_client_t</ref><sp/><ref refid="rpcd_8h_1a50e734ca08a873f594953d7bf11710cf" kindref="member">rpcd_connect_to</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>rpcd_uri,</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>service_name);</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="rpcd_8h_1a0890dc205e622a17677dc48b5f69493d" kindref="member">rpcd_services_apply</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>rpcd_uri,</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nonnull<sp/>rpcd_service_applier_t<sp/>applier);</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="rpcd_8h_1a4d56e4d9fa1dac691aa3aef6f02b9cf8" kindref="member">rpcd_register</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>uri,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name,</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nullable<sp/>description);</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="rpcd_8h_1ab081263316ed1f11d8b72aff477e21bc" kindref="member">rpcd_unregister</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>name);</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>LIBRPC_RPCD_H<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
     </programlisting>
     <location file="/code/include/rpc/rpcd.h"/>
   </compounddef>
