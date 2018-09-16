@@ -91,7 +91,7 @@ cdef class Server(object):
 
     IF SYSTEMD_SUPPORT:
         @staticmethod
-        def systemd_listen(Context context):
+        def socket_activate(Context context):
             cdef Server server
             cdef int nservers
             cdef rpc_server_t *servers
@@ -99,7 +99,7 @@ cdef class Server(object):
             cdef rpc_context_t c_context = context.unwrap()
 
             with nogil:
-                nservers = rpc_server_sd_listen(c_context, &servers, &rest)
+                nservers = rpc_server_socket_activate(c_context, &servers, &rest)
 
             if nservers < 0:
                 raise_internal_exc()
