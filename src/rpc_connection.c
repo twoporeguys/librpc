@@ -1353,38 +1353,39 @@ rpc_connection_do_close(rpc_connection_t conn, rpc_close_source_t source)
 	    conn->rco_aborted, conn, conn->rco_refcnt,
 	    conn->rco_arg, conn->rco_closed, source);
 
-        g_mutex_lock(&conn->rco_mtx);
+	g_mutex_lock(&conn->rco_mtx);
 
-        if ((conn->rco_abort != NULL) && !conn->rco_aborted) {
+	if ((conn->rco_abort != NULL) && !conn->rco_aborted) {
 		abort_func = conn->rco_abort;
 		conn->rco_abort = NULL;
 		g_mutex_unlock(&conn->rco_mtx);
 
 		rpc_connection_retain(conn);
-                abort_func(conn->rco_arg);
+		abort_func(conn->rco_arg);
 		rpc_connection_release(conn);
 		return (0);
-        }
+	}
 	if (conn->rco_released)
 		goto done;
 
 	if (conn->rco_client != NULL) {
 		if (!conn->rco_closed)
 			goto done;
+
 		conn->rco_released = true;
 		g_mutex_unlock(&conn->rco_mtx);
+
 	} else if (conn->rco_server != NULL) {
-		if (conn->rco_released)
-			goto done;
-                conn->rco_server->rs_conn_closed++;
+		conn->rco_server->rs_conn_closed++;
 		conn->rco_released = true;
-                g_mutex_unlock(&conn->rco_mtx);
-		/* if server isn't close this will undo server's ref */
-                rpc_server_disconnect(conn->rco_server, conn);
-		/* undo connections ref on server */
-                rpc_server_release(conn->rco_server);
+		g_mutex_unlock(&conn->rco_mtx);
+
+		/* if server isn't closed this will undo server's ref */
+		rpc_server_disconnect(conn->rco_server, conn);
+		/* undo connection's ref on server */
+		rpc_server_release(conn->rco_server);
 	}
-	/* undo creation-time reference */
+	/* undo connection's initial reference */
 	rpc_connection_release(conn);
 	return (0);
 done:
