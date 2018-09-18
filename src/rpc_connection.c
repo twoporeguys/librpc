@@ -1227,7 +1227,6 @@ rpc_connection_alloc(rpc_server_t server)
 	conn->rco_closed = false;
 	conn->rco_aborted = false;
 	conn->rco_refcnt = 1;
-	conn->rco_abort = rpc_connection_abort;
 	conn->rco_arg = conn;
 	g_mutex_init(&conn->rco_send_mtx);
 	g_mutex_init(&conn->rco_mtx);
@@ -1274,7 +1273,6 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	conn->rco_rpc_timeout = DEFAULT_RPC_TIMEOUT;
 	conn->rco_recv_msg = rpc_recv_msg;
 	conn->rco_close = rpc_close;
-	conn->rco_abort = rpc_connection_abort;
 	conn->rco_arg = conn;
 	conn->rco_refcnt = 1;
 	conn->rco_callback_pool = g_thread_pool_new(&rpc_callback_worker, conn,
@@ -1390,18 +1388,6 @@ rpc_connection_do_close(rpc_connection_t conn, rpc_close_source_t source)
 	return (0);
 done:
 	g_mutex_unlock(&conn->rco_mtx);
-	return (0);
-}
-
-
-static int
-rpc_connection_abort(void *arg)
-{
-	/* this should be removed, there is nothing safe for it to do.
-	 * Implement cleanly if anybody needs it.
-	 */
-
-	g_assert_not_reached();
 	return (0);
 }
 

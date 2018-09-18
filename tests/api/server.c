@@ -159,11 +159,9 @@ server_test_stream_setup(server_fixture *fix, gconstpointer u_data)
 			cnt++;
 			if (cnt == fixture->close) {
 				rpc_server_close(fixture->srv);
-				//return (rpc_null_create());
 				return (false);
 			} else if (cnt == fixture->abort) {
 				rpc_function_kill(cookie);
-				//return (rpc_null_create());
 				return (false);
 			}
 			i = g_rand_int_range (fixture->rand, 0, 26);
@@ -172,12 +170,10 @@ server_test_stream_setup(server_fixture *fix, gconstpointer u_data)
 			    fixture->str + i, (int64_t)26-i, (int64_t)cnt);
 			if (rpc_function_yield(cookie, res) != 0) {
                         	rpc_function_end(cookie);
-				//return (rpc_null_create());
 				return (false);
                 	}
 		}	
 		rpc_function_end(cookie);
-		//return (rpc_null_create());
 		return (false);
             });
 	g_assert(res == 0);
