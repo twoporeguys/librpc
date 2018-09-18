@@ -278,8 +278,8 @@ struct rpc_connection
     	int			rco_flags;
 	bool			rco_closed;
 	bool			rco_aborted;
-	bool			rco_server_released;
-	int			rco_refcnt;
+	bool			rco_released;
+	volatile int		rco_refcnt;
 #if LIBDISPATCH_SUPPORT
 	dispatch_queue_t	rco_dispatch_queue;
 #endif
@@ -314,7 +314,7 @@ struct rpc_server
 	bool			rs_closed;
 	bool			rs_threaded_teardown;
         rpc_object_t            rs_error;
-	uint			rs_refcnt;
+	volatile uint		rs_refcnt;
 	uint			rs_conn_made;
 	uint			rs_conn_refused;
 	uint			rs_conn_closed;

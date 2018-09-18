@@ -604,11 +604,10 @@ rpc_function_end_impl(void *cookie)
 			rpc_function_error(call, ECONNRESET,
                             "Call aborted");
 			call->rc_ended = true;
-			g_mutex_unlock(&call->rc_mtx);
-		} else {
-			g_mutex_unlock(&call->rc_mtx);
-			rpc_connection_close_inbound_call(call);
 		}
+		g_mutex_unlock(&call->rc_mtx);
+		rpc_connection_close_inbound_call(call);
+
 		return;
 	}
 
