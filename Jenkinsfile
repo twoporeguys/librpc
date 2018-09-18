@@ -83,15 +83,16 @@ pipeline {
 
     post {
         always {
-	    junit 'junit-test-results.xml'
-            publishHTML target: [
-                allowMissing: false,
-                alwaysLinkToLastBuild: false,
-                keepAll: true,
-                reportDir: 'coverage-report',
-                reportFiles: 'index.html',
-                reportName: 'Code coverage report'
-            ]
+            build job: 'ports/master', wait: false
+            junit 'junit-test-results.xml'
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: 'coverage-report',
+                    reportFiles: 'index.html',
+                    reportName: 'Code coverage report'
+                ]
         }
     }
 }
