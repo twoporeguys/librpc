@@ -79,12 +79,12 @@ static int rpc_connection_subscribe_event_locked(rpc_connection_t, const char *,
 static struct rpc_subscription *rpc_connection_find_subscription(rpc_connection_t,
     const char *, const char *, const char *);
 static void rpc_connection_free_resources(rpc_connection_t);
-static int rpc_connection_abort(void *);
 static void rpc_connection_release_call(struct rpc_call *call);
 static int cancel_timeout_locked(rpc_call_t call);
 static void rpc_connection_set_default_fn_handlers(rpc_connection_t);
 static inline rpc_object_t rpc_call_result_save(rpc_call_t call);
 static int rpc_connection_do_close(rpc_connection_t conn, rpc_close_source_t);
+static int rpc_set_creds(rpc_connection_t conn, pid_t pid, uid_t uid, gid_t gid);
 
 struct message_handler
 {
@@ -773,8 +773,29 @@ on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args,
 }
 
 static int
+rpc_set_creds(rpc_connection_t conn, pid_t pid, uid_t uid, gid_t gid)
+{
+
+	if (!rpc_connection_is_open(conn)) {
+		debugf("Rejecting msg, conn %p is closed", conn);
+		return (-1);
+	}
+	g_assert(rpc_connection_supports_credentials(conn));
+	g_assert(!conn->rco_has_creds);
+	g_mutex_lock(&conn->rco_mtx);
+
+	conn->rco_has_creds = true;
+	conn->rco_creds.rcc_pid = pid;
+	conn->rco_creds.rcc_uid = uid;
+	conn->rco_creds.rcc_gid = gid;
+
+	g_mutex_unlock(&conn->rco_mtx);
+	return (0);
+}
+
+static int
 rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
-    int *fds, size_t nfds, struct rpc_credentials *creds)
+    int *fds, size_t nfds)
 {
 	rpc_object_t msg = (rpc_object_t)frame;
 	rpc_object_t msgt;
@@ -817,9 +838,6 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 
 		return (-1);
 	}
-
-	if (creds != NULL)
-		conn->rco_creds = *creds;
 
 	rpc_restore_fds(msgt, fds, nfds);
 	rpc_connection_dispatch(conn, msgt);
@@ -1224,6 +1242,8 @@ rpc_connection_alloc(rpc_server_t server)
 	conn->rco_rpc_timeout = DEFAULT_RPC_TIMEOUT;
 	conn->rco_recv_msg = rpc_recv_msg;
 	conn->rco_close = rpc_close;
+	if (rpc_connection_supports_credentials(conn))
+		conn->rco_set_creds = rpc_set_creds;
 	conn->rco_closed = false;
 	conn->rco_aborted = false;
 	conn->rco_refcnt = 1;
@@ -1273,6 +1293,8 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	conn->rco_rpc_timeout = DEFAULT_RPC_TIMEOUT;
 	conn->rco_recv_msg = rpc_recv_msg;
 	conn->rco_close = rpc_close;
+	if (rpc_connection_supports_credentials(conn))
+		conn->rco_set_creds = rpc_set_creds;
 	conn->rco_arg = conn;
 	conn->rco_refcnt = 1;
 	conn->rco_callback_pool = g_thread_pool_new(&rpc_callback_worker, conn,

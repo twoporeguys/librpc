@@ -634,8 +634,7 @@ usb_send_msg_impl(void *arg)
 		switch (packet.status) {
 		case LIBRPC_USB_OK:
 			conn->uc_rco->rco_recv_msg(conn->uc_rco,
-			    &packet.request, (size_t)ret, NULL,
-			    0, NULL);
+			    &packet.request, (size_t)ret, NULL, 0);
 			goto out;
 
 		case LIBRPC_USB_NOT_READY:

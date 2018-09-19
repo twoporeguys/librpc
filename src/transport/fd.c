@@ -175,7 +175,7 @@ fd_reader(void *arg)
 			break;
 
 		if (fdconn->parent->rco_recv_msg(fdconn->parent, frame, len,
-		    NULL, 0, NULL) != 0) {
+		    NULL, 0) != 0) {
 			g_free(frame);
 			break;
 		}
