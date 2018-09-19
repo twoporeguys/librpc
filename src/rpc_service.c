@@ -820,10 +820,11 @@ rpc_instance_register_interface(rpc_instance_t instance,
 	    priv);
 	g_rw_lock_writer_unlock(&instance->ri_rwlock);
 
-	if (vtable != NULL)
+	if (vtable != NULL) {
 		for (member = &vtable[0]; member->rim_name != NULL; member++)
 			rpc_instance_register_member(instance, interface, 
 			    member);
+	}
 
 	rpc_instance_emit_event(instance, RPC_INTROSPECTABLE_INTERFACE,
 	    "interface_added", rpc_string_create(interface));
