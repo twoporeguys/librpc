@@ -470,6 +470,9 @@ rpc_server_socket_activate(rpc_context_t context, rpc_server_t **servers,
 		return (-1);
 	}
 
+	if (nfds == 0)
+		return (0);
+
 	*servers = g_malloc0(sizeof(rpc_server_t) * nfds);
 
 	for (i = SD_LISTEN_FDS_START; i < nfds + SD_LISTEN_FDS_START; i++) {
