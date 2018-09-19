@@ -820,14 +820,14 @@ rpc_instance_register_interface(rpc_instance_t instance,
 	    priv);
 	g_rw_lock_writer_unlock(&instance->ri_rwlock);
 
-	rpc_instance_emit_event(instance, RPC_INTROSPECTABLE_INTERFACE,
-	    "interface_added", rpc_string_create(interface));
-
 	if (vtable == NULL)
 		return (0);
 
 	for (member = &vtable[0]; member->rim_name != NULL; member++)
 		rpc_instance_register_member(instance, interface, member);
+
+	rpc_instance_emit_event(instance, RPC_INTROSPECTABLE_INTERFACE,
+	    "interface_added", rpc_string_create(interface));
 
 	return (0);
 }
@@ -915,13 +915,6 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 		if (copy->rim_property.rp_arg == NULL)
 			copy->rim_property.rp_arg = priv->rip_arg;
 
-		/* Emit property added event */
-		rpc_instance_emit_event(instance, RPC_OBSERVABLE_INTERFACE,
-		    "property_added", rpc_object_pack("{s,b,b}",
-		        "name", member->rim_name,
-		        "readable", member->rim_property.rp_getter != NULL,
-		        "writable", member->rim_property.rp_setter != NULL));
-
 	}
 
 	g_mutex_lock(&priv->rip_mtx);
@@ -975,12 +968,6 @@ rpc_instance_unregister_member(rpc_instance_t instance, const char *interface,
 	if (member == NULL) {
 		rpc_set_last_error(ENOENT, "Member not found", NULL);
 		return (-1);
-	}
-
-	if (member->rim_type == RPC_MEMBER_PROPERTY) {
-		rpc_instance_emit_event(instance, "librpc.Observable",
-		    "property_removed",
-		    rpc_object_pack("{s}", "name", name));
 	}
 
 	g_hash_table_remove(priv->rip_members, name);
