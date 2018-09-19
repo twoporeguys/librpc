@@ -480,7 +480,7 @@
     rpc_client_close(client);
 }
 
-- (void)callAsync:(NSString *)method
+- (RPCCall *)callAsync:(NSString *)method
              path:(NSString *)path
         interface:(NSString *)interface
              args:(RPCObject *)args
@@ -498,6 +498,7 @@
            [[RPCObject alloc] initFromNativeObject:rpc_call_result(call)]);
         return (bool)true;
     });
+    return [[RPCCall alloc] initFromNativeObject:call];
 }
 
 - (nonnull RPCListenHandle *)eventObserver:(NSString *)method
