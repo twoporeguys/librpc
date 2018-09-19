@@ -282,10 +282,10 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
  * there's a response available.
  */
 - (RPCCall *)callAsync:(nonnull NSString *)method
-                    path:(nullable NSString *)path
-               interface:(nullable NSString *)interface
-                    args:(nullable RPCObject *)args
-                callback:(nonnull RPCFunctionCallback)cb;
+                  path:(nullable NSString *)path
+             interface:(nullable NSString *)interface
+                  args:(nullable RPCObject *)args
+              callback:(nonnull RPCFunctionCallback)cb;
 
 /**
  * Sets up a callback to be fired whenever specified event occurs on

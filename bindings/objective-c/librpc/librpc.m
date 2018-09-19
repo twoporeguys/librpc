@@ -481,10 +481,10 @@
 }
 
 - (RPCCall *)callAsync:(NSString *)method
-             path:(NSString *)path
-        interface:(NSString *)interface
-             args:(RPCObject *)args
-         callback:(RPCFunctionCallback)cb
+                  path:(NSString *)path
+             interface:(NSString *)interface
+                  args:(RPCObject *)args
+              callback:(RPCFunctionCallback)cb
 {
     __block rpc_call_t call;
     
