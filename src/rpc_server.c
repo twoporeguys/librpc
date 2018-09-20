@@ -390,8 +390,8 @@ rpc_server_release(rpc_server_t server)
 	}
 	server->rs_refcnt--;
 	if (server->rs_refcnt == 1)
-		g_assert(server->rs_conn_made ==
-		    server->rs_conn_closed);
+		g_assert(server->rs_closed || (server->rs_conn_made ==
+		    server->rs_conn_closed));
 	g_mutex_unlock(&server->rs_mtx);
 }
 

@@ -79,7 +79,6 @@ static int rpc_connection_subscribe_event_locked(rpc_connection_t, const char *,
 static struct rpc_subscription *rpc_connection_find_subscription(rpc_connection_t,
     const char *, const char *, const char *);
 static void rpc_connection_free_resources(rpc_connection_t);
-static int rpc_connection_abort(void *);
 static void rpc_connection_release_call(struct rpc_call *call);
 static int cancel_timeout_locked(rpc_call_t call);
 static void rpc_connection_set_default_fn_handlers(rpc_connection_t);
