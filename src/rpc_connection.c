@@ -1373,7 +1373,7 @@ rpc_connection_do_close(rpc_connection_t conn, rpc_close_source_t source)
 		g_mutex_unlock(&conn->rco_mtx);
 
 	} else if (conn->rco_server != NULL) {
-		conn->rco_server->rs_conn_closed++;
+		g_atomic_int_inc(&conn->rco_server->rs_conn_closed);
 		conn->rco_released = true;
 		g_mutex_unlock(&conn->rco_mtx);
 
