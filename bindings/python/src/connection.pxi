@@ -166,13 +166,21 @@ cdef class Connection(object):
 
     property instances:
         def __get__(self):
+            result = {}
             objects = self.call_sync(
                 'get_instances',
                 interface='com.twoporeguys.librpc.Discoverable',
                 path='/'
             )
 
-            return {o['path']: RemoteObject.construct(self, o['path']) for o in objects}
+            for o in objects:
+                try:
+                    inst = RemoteObject.construct(self, o['path'])
+                    result[o['path']] = inst
+                except LibException:
+                    pass
+
+            return result
 
     @staticmethod
     cdef Connection wrap(rpc_connection_t ptr):
