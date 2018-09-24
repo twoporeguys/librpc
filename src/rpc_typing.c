@@ -1264,6 +1264,7 @@ int
 rpct_read_idl(const char *name, rpc_object_t idl)
 {
 	struct rpct_file *file;
+	rpc_object_t error;
 
 	file = g_malloc0(sizeof(*file));
 	file->body = rpc_retain(idl);
@@ -1273,6 +1274,11 @@ rpct_read_idl(const char *name, rpc_object_t idl)
 	file->interfaces = g_hash_table_new(g_str_hash, g_str_equal);
 
 	if (rpct_read_meta(file, rpc_dictionary_get_value(idl, "meta")) < 0) {
+		error = rpc_get_last_error();
+		rpc_set_last_errorf(rpc_error_get_code(error),
+		    "Cannot read file %s: %s", name,
+		    rpc_error_get_message(error));
+
 		rpct_file_free(file);
 		return (-1);
 	}
