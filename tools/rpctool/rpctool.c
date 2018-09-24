@@ -150,12 +150,13 @@ output(rpc_object_t obj)
 }
 
 static int
-inspect_properties(rpc_connection_t conn, const char *path, const char *interface)
+inspect_properties(rpc_connection_t conn, const char *path,
+    const char *interface)
 {
 	rpc_object_t properties;
 
-	properties = rpc_connection_call_syncp(conn, path, RPC_OBSERVABLE_INTERFACE,
-	    "get_all", "[s]", interface);
+	properties = rpc_connection_call_syncp(conn, path,
+	    RPC_OBSERVABLE_INTERFACE, "get_all", "[s]", interface);
 
 	if (rpc_is_error(properties)) {
 		fprintf(stderr, "Failed to read properties: %s\n",
@@ -184,7 +185,8 @@ inspect_properties(rpc_connection_t conn, const char *path, const char *interfac
 }
 
 static int
-inspect_interface(rpc_connection_t conn, const char *path, const char *interface)
+inspect_interface(rpc_connection_t conn, const char *path,
+    const char *interface)
 {
 	rpc_object_t methods;
 
@@ -413,7 +415,8 @@ cmd_listen(int argc, char *argv[])
 			return;
 
 		g_mutex_lock(&mtx);
-		printf("New value of property %s.%s: ", prop_interface, prop_name);
+		printf("New value of property %s.%s: ", prop_interface,
+		    prop_name);
 		g_mutex_unlock(&mtx);
 		output(value);
 	});
@@ -440,7 +443,8 @@ main(int argc, char *argv[])
 	int nargs;
 	size_t i;
 
-	context = g_option_context_new("<COMMAND> [ARGUMENTS...] - interact with librpc server");
+	context = g_option_context_new(
+	    "<COMMAND> [ARGUMENTS...] - interact with librpc server");
 	g_option_context_set_description(context, USAGE_STRING);
 	g_option_context_add_main_entries(context, options, NULL);
 	if (!g_option_context_parse(context, &argc, &argv, &err)) {
