@@ -25,11 +25,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-import os
 import argparse
 import glob
-import shutil
-import mako.lookup
 import librpc
 
 
@@ -44,7 +41,7 @@ def main():
     paths = []
 
     if args.system:
-        for p in ('/usr/share/idl', '/usr/local/share/idl'):
+        for p in ('/usr/share/idl', '/usr/local/share/idl', '/opt/local/share/idl'):
             for f in glob.iglob('{0}/*.yaml'.format(p)):
                 typing.read_file(f)
                 paths.append(f)
