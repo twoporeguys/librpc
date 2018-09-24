@@ -156,6 +156,8 @@ static void
 rpc_service_handle_error(void *arg, rpc_error_code_t code, rpc_object_t args)
 {
 
+	if (code == RPC_CONNECTION_CLOSED)
+		rpc_connection_close(arg);
 }
 
 static rpc_object_t
