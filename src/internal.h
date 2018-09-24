@@ -314,11 +314,11 @@ struct rpc_server
 	bool			rs_closed;
 	bool			rs_threaded_teardown;
         rpc_object_t            rs_error;
-	volatile uint		rs_refcnt;
-	uint			rs_conn_made;
-	uint			rs_conn_refused;
-	volatile uint		rs_conn_closed;
-	uint			rs_conn_aborted;
+	volatile int		rs_refcnt;
+	int			rs_conn_made;
+	int			rs_conn_refused;
+	volatile int		rs_conn_closed;
+	int			rs_conn_aborted;
 	rpc_object_t 		rs_params;
 	rpc_server_ev_handler_t rs_event_handler;
 
