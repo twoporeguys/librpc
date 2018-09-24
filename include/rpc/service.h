@@ -564,6 +564,27 @@ void rpc_function_set_async_abort_handler(void *_Nonnull cookie,
     _Nullable rpc_abort_handler_t handler);
 
 /**
+ * Increments the refcount on a call.
+ *
+ * Indicates that the caller has an interest in tha call and it cannot be
+ * freed until that interest is released.
+ *
+ * @param cookie Running call handle
+ * @return 0 if the call is retained or -1 if the call is no longer valid.
+ */
+int rpc_function_retain(void *_Nonnull cookie);
+
+/**
+ * Decrements the refcount on a call.
+ *
+ * Releases the callers interest in the call.
+ *
+ * @param cookie Running call handle
+ * @return 0 on success or -1 if the call is no longer valid.
+ */
+int  rpc_function_release(void *_Nonnull cookie);
+
+/**
  * Creates a new instance handle.
  *
  * Newly created instance handle has a reference count of 1. In order
