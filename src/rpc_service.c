@@ -663,6 +663,7 @@ rpc_function_kill_impl(void *cookie)
 
 	g_mutex_lock(&call->rc_mtx);
 	if (call->rc_ended || call->rc_aborted || call->rc_responded) {
+		call->rc_aborted = true;
 		g_mutex_unlock(&call->rc_mtx);
 		return;
 	}
