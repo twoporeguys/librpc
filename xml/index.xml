@@ -454,6 +454,8 @@
     <member refid="service_8h_1a6018b6f71a3d1af7494125b8ba22f981" kind="function"><name>rpc_function_kill</name></member>
     <member refid="service_8h_1ad0185b8a60875843d91ca00b3e8d4886" kind="function"><name>rpc_function_should_abort</name></member>
     <member refid="service_8h_1a4b6ceb43e090fda8928a3a46e7da614a" kind="function"><name>rpc_function_set_async_abort_handler</name></member>
+    <member refid="service_8h_1a2d72136304739c0feb680794fee9c826" kind="function"><name>rpc_function_retain</name></member>
+    <member refid="service_8h_1a8b103fc6babf355762234407d3c4326d" kind="function"><name>rpc_function_release</name></member>
     <member refid="service_8h_1a805d705c1a9f94cf4aa04bb71a46a928" kind="function"><name>rpc_instance_new</name></member>
     <member refid="service_8h_1a913a58356a0366081127227d15a74cc4" kind="function"><name>rpc_instance_set_description</name></member>
     <member refid="service_8h_1a661c65e4aa798fd4b63851e267f5c018" kind="function"><name>rpc_instance_get_arg</name></member>

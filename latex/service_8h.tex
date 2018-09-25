@@ -162,6 +162,10 @@ bool \hyperlink{service_8h_ad0185b8a60875843d91ca00b3e8d4886}{rpc\+\_\+function\
 \item 
 void \hyperlink{service_8h_a4b6ceb43e090fda8928a3a46e7da614a}{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler} (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nullable \hyperlink{service_8h_aebbaf8e39f128b6655d23aad6a8ab634}{rpc\+\_\+abort\+\_\+handler\+\_\+t} handler)
 \item 
+int \hyperlink{service_8h_a2d72136304739c0feb680794fee9c826}{rpc\+\_\+function\+\_\+retain} (void $\ast$\+\_\+\+Nonnull cookie)
+\item 
+int \hyperlink{service_8h_a8b103fc6babf355762234407d3c4326d}{rpc\+\_\+function\+\_\+release} (void $\ast$\+\_\+\+Nonnull cookie)
+\item 
 \+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_a805d705c1a9f94cf4aa04bb71a46a928}{rpc\+\_\+instance\+\_\+new} (void $\ast$\+\_\+\+Nullable arg, const char $\ast$\+\_\+\+Nonnull fmt,...)
 \item 
 void \hyperlink{service_8h_a913a58356a0366081127227d15a74cc4}{rpc\+\_\+instance\+\_\+set\+\_\+description} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull fmt,...)
@@ -973,6 +977,24 @@ This function makes \hyperlink{service_8h_ad0185b8a60875843d91ca00b3e8d4886}{rpc
 {\em cookie} & Running call handle \\
 \hline
 \end{DoxyParams}
+\mbox{\Hypertarget{service_8h_a8b103fc6babf355762234407d3c4326d}\label{service_8h_a8b103fc6babf355762234407d3c4326d}} 
+\index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+release@{rpc\+\_\+function\+\_\+release}}
+\index{rpc\+\_\+function\+\_\+release@{rpc\+\_\+function\+\_\+release}!service.\+h@{service.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+function\+\_\+release()}{rpc\_function\_release()}}
+{\footnotesize\ttfamily int rpc\+\_\+function\+\_\+release (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nonnull}]{cookie }\end{DoxyParamCaption})}
+
+Decrements the refcount on a call.
+
+Releases the callers interest in the call.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cookie} & Running call handle \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success or -\/1 if the call is no longer valid. 
+\end{DoxyReturn}
 \mbox{\Hypertarget{service_8h_a1c8603d576553224db42579cb9180d8d}\label{service_8h_a1c8603d576553224db42579cb9180d8d}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+respond@{rpc\+\_\+function\+\_\+respond}}
 \index{rpc\+\_\+function\+\_\+respond@{rpc\+\_\+function\+\_\+respond}!service.\+h@{service.\+h}}
@@ -990,6 +1012,24 @@ This function may be called only once during the lifetime of a single call (for 
 {\em object} & Response. \\
 \hline
 \end{DoxyParams}
+\mbox{\Hypertarget{service_8h_a2d72136304739c0feb680794fee9c826}\label{service_8h_a2d72136304739c0feb680794fee9c826}} 
+\index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+retain@{rpc\+\_\+function\+\_\+retain}}
+\index{rpc\+\_\+function\+\_\+retain@{rpc\+\_\+function\+\_\+retain}!service.\+h@{service.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+function\+\_\+retain()}{rpc\_function\_retain()}}
+{\footnotesize\ttfamily int rpc\+\_\+function\+\_\+retain (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nonnull}]{cookie }\end{DoxyParamCaption})}
+
+Increments the refcount on a call.
+
+Indicates that the caller has an interest in tha call and it cannot be freed until that interest is released.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cookie} & Running call handle \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if the call is retained or -\/1 if the call is no longer valid. 
+\end{DoxyReturn}
 \mbox{\Hypertarget{service_8h_a4b6ceb43e090fda8928a3a46e7da614a}\label{service_8h_a4b6ceb43e090fda8928a3a46e7da614a}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler@{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler}}
 \index{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler@{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler}!service.\+h@{service.\+h}}

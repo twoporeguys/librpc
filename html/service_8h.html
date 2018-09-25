@@ -245,6 +245,10 @@ Functions</h2></td></tr>
 <tr class="separator:ad0185b8a60875843d91ca00b3e8d4886"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b6ceb43e090fda8928a3a46e7da614a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a4b6ceb43e090fda8928a3a46e7da614a">rpc_function_set_async_abort_handler</a> (void *_Nonnull cookie, _Nullable <a class="el" href="service_8h.html#aebbaf8e39f128b6655d23aad6a8ab634">rpc_abort_handler_t</a> handler)</td></tr>
 <tr class="separator:a4b6ceb43e090fda8928a3a46e7da614a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d72136304739c0feb680794fee9c826"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a2d72136304739c0feb680794fee9c826">rpc_function_retain</a> (void *_Nonnull cookie)</td></tr>
+<tr class="separator:a2d72136304739c0feb680794fee9c826"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b103fc6babf355762234407d3c4326d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a8b103fc6babf355762234407d3c4326d">rpc_function_release</a> (void *_Nonnull cookie)</td></tr>
+<tr class="separator:a8b103fc6babf355762234407d3c4326d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a805d705c1a9f94cf4aa04bb71a46a928"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a805d705c1a9f94cf4aa04bb71a46a928">rpc_instance_new</a> (void *_Nullable arg, const char *_Nonnull fmt,...)</td></tr>
 <tr class="separator:a805d705c1a9f94cf4aa04bb71a46a928"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a913a58356a0366081127227d15a74cc4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a913a58356a0366081127227d15a74cc4">rpc_instance_set_description</a> (_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a> instance, const char *_Nonnull fmt,...)</td></tr>
@@ -1645,6 +1649,33 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a8b103fc6babf355762234407d3c4326d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b103fc6babf355762234407d3c4326d">&#9670;&nbsp;</a></span>rpc_function_release()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_function_release </td>
+          <td>(</td>
+          <td class="paramtype">void *_Nonnull&#160;</td>
+          <td class="paramname"><em>cookie</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Decrements the refcount on a call.</p>
+<p>Releases the callers interest in the call.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cookie</td><td>Running call handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success or -1 if the call is no longer valid. </dd></dl>
+
+</div>
+</div>
 <a id="a1c8603d576553224db42579cb9180d8d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1c8603d576553224db42579cb9180d8d">&#9670;&nbsp;</a></span>rpc_function_respond()</h2>
 
@@ -1679,6 +1710,33 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a2d72136304739c0feb680794fee9c826"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d72136304739c0feb680794fee9c826">&#9670;&nbsp;</a></span>rpc_function_retain()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_function_retain </td>
+          <td>(</td>
+          <td class="paramtype">void *_Nonnull&#160;</td>
+          <td class="paramname"><em>cookie</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Increments the refcount on a call.</p>
+<p>Indicates that the caller has an interest in tha call and it cannot be freed until that interest is released.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cookie</td><td>Running call handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 if the call is retained or -1 if the call is no longer valid. </dd></dl>
 
 </div>
 </div>
