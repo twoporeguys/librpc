@@ -471,6 +471,7 @@ stream_worker(void *arg, void *data)
 	cnt = do_stream_work(item);
 	g_assert(cnt == item->ccnt);
 	rpc_function_respond(item->call, item->result);
+	rpc_function_release(item->call);
 	g_free(item);
 }
 
@@ -492,6 +493,7 @@ client_multi_streams_test(client_fixture *fixture, gconstpointer user_data)
 		struct work_item *item;
 		GError *error = NULL;
 
+		rpc_function_retain(cookie);
 		item = g_malloc0(sizeof(*item));
 		item->call = cookie;
 		item->args = args;

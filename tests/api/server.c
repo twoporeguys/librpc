@@ -159,22 +159,21 @@ server_test_stream_setup(server_fixture *fix, gconstpointer u_data)
 			cnt++;
 			if (cnt == fixture->close) {
 				rpc_server_close(fixture->srv);
+				rpc_function_error(cookie, cnt, "CLOSED");
 				return (false);
 			} else if (cnt == fixture->abort) {
-				rpc_function_kill(cookie);
+				rpc_function_error(cookie, cnt, "ABORTED");
 				return (false);
 			}
 			i = g_rand_int_range (fixture->rand, 0, 26);
 
 			res = rpc_object_pack("[s, i, i]", 
 			    fixture->str + i, (int64_t)26-i, (int64_t)cnt);
-			if (rpc_function_yield(cookie, res) != 0) {
-                        	rpc_function_end(cookie);
-				return (false);
-                	}
+			if (rpc_function_yield(cookie, res) != 0)
+				break;
 		}	
 		rpc_function_end(cookie);
-		return (false);
+		return (RPC_FUNCTION_STILL_RUNNING);
             });
 	g_assert(res == 0);
 

@@ -93,11 +93,13 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 		return;
 	}
 
+	if (rpc_connection_call_retain(call) < 0) {
+		debugf("Can't dispatch call %p, not valid", call);
+		return;
+	}
+
 	g_assert(call->rc_type == RPC_INBOUND_CALL);
 	call->rc_m_arg = method->rm_arg;
-
-	rpc_connection_call_retain(call);
-
 	call->rc_context = context;
 	call->rc_consumer_seqno = 1;
 
@@ -624,7 +626,7 @@ rpc_function_end_impl(void *cookie)
 	}
 
 	if (call->rc_aborted) {
-		if (!call->rc_ended) {
+		if (!call->rc_ended && !call->rc_responded) {
 			rpc_function_error(call, ECONNRESET,
                             "Call aborted");
 			call->rc_ended = true;

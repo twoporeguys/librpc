@@ -1143,8 +1143,8 @@ int
 rpc_connection_call_retain(struct rpc_call *call)
 {
 
-	g_mutex_lock(&call->rc_ref_mtx);
 	g_assert(call->rc_refcount > 0);
+	g_mutex_lock(&call->rc_ref_mtx);
 	if (call->rc_refcount < 1) {
 		g_mutex_unlock(&call->rc_ref_mtx);
 		return (-1);
@@ -1159,8 +1159,8 @@ int
 rpc_connection_call_release(struct rpc_call *call)
 {
 
-	g_mutex_lock(&call->rc_ref_mtx);
 	g_assert(call->rc_refcount > 0);
+	g_mutex_lock(&call->rc_ref_mtx);
 	if (call->rc_refcount > 1) {
 		--call->rc_refcount;
 		g_mutex_unlock(&call->rc_ref_mtx);
