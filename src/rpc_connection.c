@@ -1200,10 +1200,12 @@ rpc_connection_close_inbound_call(struct rpc_call *call)
 
         g_rw_lock_writer_lock(&conn->rco_icall_rwlock);
 
-	g_assert(g_hash_table_contains(conn->rco_inbound_calls,
-	    rpc_string_get_string_ptr(call->rc_id)));
-	g_hash_table_remove(conn->rco_inbound_calls, rpc_string_get_string_ptr(
-	    call->rc_id));
+	if (!g_hash_table_remove(conn->rco_inbound_calls, rpc_string_get_string_ptr(
+	    call->rc_id))) {
+		g_rw_lock_writer_unlock(&conn->rco_icall_rwlock);
+		rpc_connection_release(conn);
+		return;
+	}
 	rpc_connection_release(conn); /*drop the call's ref */
 
         g_rw_lock_writer_unlock(&conn->rco_icall_rwlock);

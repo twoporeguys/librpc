@@ -662,11 +662,6 @@ rpc_function_kill_impl(void *cookie)
 	struct rpc_call *call = cookie;
 
 	g_mutex_lock(&call->rc_mtx);
-	if (call->rc_ended || call->rc_aborted || call->rc_responded) {
-		call->rc_aborted = true;
-		g_mutex_unlock(&call->rc_mtx);
-		return;
-	}
 	call->rc_aborted = true;
 	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
