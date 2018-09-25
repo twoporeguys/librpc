@@ -81,6 +81,7 @@ typedef struct {
 	char *		str;
 	int		close;
 	int		abort;
+	bool		kill;
 } server_fixture;
 
 static void
@@ -129,6 +130,16 @@ valid_server_set_up(server_fixture *fixture, gconstpointer u_data)
 	fixture->srv = rpc_server_create(uris[fixture->iuri].srv, fixture->ctx);
 }
 
+static gpointer
+thread_kill_call (gpointer data)
+{
+	rpc_call_t call = data;
+	rpc_function_kill(call);
+	rpc_function_release(call);
+	g_thread_exit (GINT_TO_POINTER (0));
+	return (NULL);
+}
+
 static void
 server_test_stream_setup(server_fixture *fix, gconstpointer u_data)
 {
@@ -153,6 +164,7 @@ server_test_stream_setup(server_fixture *fix, gconstpointer u_data)
 		int cnt = 0;	
 		gint i;
 		rpc_object_t res;
+		GThread * thd;
 
 		rpc_function_start_stream(cookie);
 		while (cnt < fixture->count) {
@@ -172,7 +184,13 @@ server_test_stream_setup(server_fixture *fix, gconstpointer u_data)
 			if (rpc_function_yield(cookie, res) != 0)
 				break;
 		}	
+		if (fixture->kill)
+			rpc_function_retain(cookie);
 		rpc_function_end(cookie);
+		if (fixture->kill) {
+			thd = g_thread_new("kill", thread_kill_call, cookie);
+			g_thread_unref(thd);
+		}
 		return (RPC_FUNCTION_STILL_RUNNING);
             });
 	g_assert(res == 0);
@@ -396,6 +414,16 @@ server_test_stream_abort(server_fixture *fixture, gconstpointer user_data)
 }
 
 static void
+server_test_stream_kill(server_fixture *fixture, gconstpointer user_data)
+{
+	int ret;
+
+	rpc_server_resume(fixture->srv);
+	fixture->kill = 1;
+	ret = thread_test(1, &thread_stream_func, fixture);
+}
+
+static void
 server_test_flush(server_fixture *fixture, gconstpointer user_data)
 {
 	GRand *rand = g_rand_new ();
@@ -567,6 +595,10 @@ server_test_register()
 
 	g_test_add("/server/stream/abort", server_fixture, (void *)0,
 	    server_test_stream_setup, server_test_stream_abort,
+	    server_test_stream_tear_down);
+
+	g_test_add("/server/stream/kill", server_fixture, (void *)0,
+	    server_test_stream_setup, server_test_stream_kill,
 	    server_test_stream_tear_down);
 
 	g_test_add("/server/flush/loopback", server_fixture, (void *)7,
