@@ -355,14 +355,14 @@ cdef class Connection(object):
         with nogil:
             rpc_connection_send_event(self.connection, c_path, c_interface, c_name, data.obj)
 
-    def register_event_handler(self, name, fn, path='/', interface=None):
+    def register_event_handler(self, name, fn, path='/', interface='com.twoporeguys.librpc.Default'):
         cdef void *cookie
 
         if self.connection == <rpc_connection_t>NULL:
             raise RuntimeError("Not connected")
 
         b_path = path.encode('utf-8')
-        b_interface = path.encode('utf-8')
+        b_interface = interface.encode('utf-8')
         b_name = name.encode('utf-8')
 
         self.ev_handlers.append(fn)
