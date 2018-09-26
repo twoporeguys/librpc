@@ -92,6 +92,11 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 		rpc_connection_close_inbound_call(call);
 		return;
 	}
+	if (rpc_connection_call_retain(call) < 0) {
+		debugf("Can't dispatch call %p, not valid", call);
+		return;
+	}
+
 	g_assert(call->rc_type == RPC_INBOUND_CALL);
 
 	call->rc_m_arg = method->rm_arg;
@@ -102,28 +107,33 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 
 	if (context->rcx_pre_call_hook != NULL) {
 		context->rcx_pre_call_hook(call, call->rc_args);
-		if (call->rc_responded)
+		if (call->rc_responded) {
+			rpc_connection_call_release(call);
 			return;
+		}
 	}
 
 	result = method->rm_block((void *)call, call->rc_args);
 
-	if (result == RPC_FUNCTION_STILL_RUNNING)
+	if (result == RPC_FUNCTION_STILL_RUNNING) {
+		rpc_connection_call_release(call);
 		return;
+	}
 
 	if (context->rcx_post_call_hook != NULL) {
 		context->rcx_post_call_hook(call, result);
-		if (call->rc_responded)
+		if (call->rc_responded) {
+			rpc_connection_call_release(call);
 			return;
+		}
 	}
 
-	if (!call->rc_streaming) {
+	if (!call->rc_streaming)
 		rpc_function_respond(call, result);
-		return;
-	}
-
-	if (!call->rc_ended)
+	else if (!call->rc_ended)
 		rpc_function_end(data);
+
+	rpc_connection_call_release(call);
 }
 
 rpc_context_t
@@ -577,6 +587,22 @@ rpc_function_yield_impl(void *cookie, rpc_object_t fragment)
 	return (0);
 }
 
+int
+rpc_function_retain(void *cookie)
+{
+	struct rpc_call *call = cookie;
+
+	return (rpc_connection_call_retain(call));
+}
+
+int
+rpc_function_release(void *cookie)
+{
+	struct rpc_call *call = cookie;
+
+	return (rpc_connection_call_release(call));
+}
+
 void
 rpc_function_end(void *cookie)
 {
@@ -600,7 +626,7 @@ rpc_function_end_impl(void *cookie)
 	}
 
 	if (call->rc_aborted) {
-		if (!call->rc_ended) {
+		if (!call->rc_ended && !call->rc_responded) {
 			rpc_function_error(call, ECONNRESET,
                             "Call aborted");
 			call->rc_ended = true;
