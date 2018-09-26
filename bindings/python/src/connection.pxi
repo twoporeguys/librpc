@@ -355,7 +355,7 @@ cdef class Connection(object):
         with nogil:
             rpc_connection_send_event(self.connection, c_path, c_interface, c_name, data.obj)
 
-    def register_event_handler(self, name, fn, path='/', interface=''):
+    def register_event_handler(self, name, fn, path='/', interface='com.twoporeguys.librpc.Default'):
         cdef void *cookie
 
         if self.connection == <rpc_connection_t>NULL:
