@@ -36,6 +36,7 @@ cdef class Client(Connection):
         cdef Client ret
 
         ret = Client.__new__(Client)
+        super(Client, ret).__init__()
         ret.borrowed = True
         ret.connection = rpc_client_get_connection(ptr)
         return ret
