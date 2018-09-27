@@ -108,6 +108,11 @@ typedef void (^rpc_property_setter_t)(void *_Nonnull cookie,
 typedef void (^rpc_abort_handler_t)(void);
 
 /**
+ * Private data destructor block type.
+ */
+typedef void (^rpc_arg_destructor_t)(void);
+
+/**
  * A macro to convert function pointer into @ref rpc_function_t block.
  */
 #define	RPC_FUNCTION(_fn)						\
@@ -127,6 +132,11 @@ typedef void (^rpc_abort_handler_t)(void);
 
 #define	RPC_ABORT_HANDLER(_fn, _arg)					\
 	^(void *_cookie) {						\
+		_fn(_arg);						\
+	}
+
+#define	RPC_ARG_DESTRUCTOR(_fn, _arg)					\
+	^{								\
 		_fn(_arg);						\
 	}
 
@@ -556,12 +566,34 @@ void rpc_function_set_async_abort_handler(void *_Nonnull cookie,
 /**
  * Creates a new instance handle.
  *
+ * Newly created instance handle has a reference count of 1. In order
+ * to dispose it, @ref rpc_instance_release must be called.
+ *
  * @param path Instance path
  * @param arg User data pointer
  * @return
  */
 _Nullable rpc_instance_t rpc_instance_new(void *_Nullable arg,
-    const char *_Nonnull fmt, ...);
+    _Nullable rpc_arg_destructor_t dtor, const char *_Nonnull fmt, ...);
+
+/**
+ * Retains the instance.
+ *
+ * All calls to this function must be paired with @ref rpc_instance_release.
+ *
+ * @param instance Instance handle
+ */
+void rpc_instance_retain(_Nonnull rpc_instance_t instance);
+
+/**
+ * Releases the instance.
+ *
+ * When reference count of the instance drops to 0, instance is freed
+ * and destructor for @p arg is run.
+ *
+ * @param instance Instance handle
+ */
+void rpc_instance_release(_Nonnull rpc_instance_t instance);
 
 /**
  * Sets the description string of an instance.
@@ -788,13 +820,6 @@ void *_Nullable rpc_property_get_arg(void *_Nonnull cookie);
  */
 void rpc_property_error(void *_Nonnull cookie, int code,
     const char *_Nonnull fmt, ...);
-
-/**
- * Releases instance handle.
- *
- * @param instance Instance handle
- */
-void rpc_instance_free(_Nonnull rpc_instance_t instance);
 
 #ifdef __cplusplus
 }

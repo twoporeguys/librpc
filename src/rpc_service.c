@@ -92,8 +92,8 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 		rpc_connection_close_inbound_call(call);
 		return;
 	}
-	g_assert(call->rc_type == RPC_INBOUND_CALL);
 
+	g_assert(call->rc_type == RPC_INBOUND_CALL);
 	call->rc_m_arg = method->rm_arg;
 	call->rc_context = context;
 	call->rc_consumer_seqno = 1;
@@ -135,7 +135,7 @@ rpc_context_create(void)
 	rpct_init(true);
 
 	result = g_malloc0(sizeof(*result));
-	result->rcx_root = rpc_instance_new(NULL, "/");
+	result->rcx_root = rpc_instance_new(NULL, NULL, "/");
 	result->rcx_servers = g_ptr_array_new();
 	result->rcx_instances = g_hash_table_new(g_str_hash, g_str_equal);
 	result->rcx_threadpool = g_thread_pool_new(rpc_context_tp_handler,
@@ -154,7 +154,7 @@ rpc_context_free(rpc_context_t context)
 		return;
 
 	g_thread_pool_free(context->rcx_threadpool, true, true);
-	rpc_instance_free(context->rcx_root);
+	rpc_instance_release(context->rcx_root);
 	g_free(context);
 }
 
@@ -676,7 +676,7 @@ void rpc_function_set_async_abort_handler_impl(void *cookie,
 }
 
 rpc_instance_t
-rpc_instance_new(void *arg, const char *fmt, ...)
+rpc_instance_new(void *arg, rpc_arg_destructor_t dtor, const char *fmt, ...)
 {
 	va_list ap;
 	rpc_instance_t result;
@@ -695,6 +695,8 @@ rpc_instance_new(void *arg, const char *fmt, ...)
 	result = g_malloc0(sizeof(*result));
 	g_mutex_init(&result->ri_mtx);
 	g_rw_lock_init(&result->ri_rwlock);
+	result->ri_dtor = Block_copy(dtor);
+	result->ri_refcnt = 1;
 	result->ri_path = path;
 	result->ri_interfaces = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    g_free, (GDestroyNotify)rpc_interface_free);
@@ -713,6 +715,31 @@ rpc_instance_new(void *arg, const char *fmt, ...)
 	    rpc_observable_vtable, NULL);
 
 	return (result);
+}
+
+void
+rpc_instance_retain(rpc_instance_t instance)
+{
+
+	g_atomic_int_inc(&instance->ri_refcnt);
+}
+
+void
+rpc_instance_release(rpc_instance_t instance)
+{
+	g_assert_nonnull(instance);
+	g_assert(g_atomic_int_get(&instance->ri_refcnt) > 0);
+
+	if (g_atomic_int_dec_and_test(&instance->ri_refcnt)) {
+		if (instance->ri_dtor != NULL) {
+			instance->ri_dtor();
+			Block_release(instance->ri_dtor);
+		}
+
+		g_free(instance->ri_path);
+		g_hash_table_destroy(instance->ri_interfaces);
+		g_free(instance);
+	}
 }
 
 void
@@ -744,17 +771,6 @@ rpc_instance_get_path(rpc_instance_t instance)
 	g_assert_nonnull(instance);
 
 	return (instance->ri_path);
-}
-
-void
-rpc_instance_free(rpc_instance_t instance)
-{
-
-	g_assert_nonnull(instance);
-
-	g_free(instance->ri_path);
-	g_hash_table_destroy(instance->ri_interfaces);
-	g_free(instance);
 }
 
 struct rpc_if_member *

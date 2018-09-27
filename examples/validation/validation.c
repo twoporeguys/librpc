@@ -75,7 +75,7 @@ main(int argc __unused, const char *argv[] __unused)
 	rpc_context_set_pre_call_hook(ctx, RPC_FUNCTION(rpct_pre_call_hook));
 	rpc_context_set_post_call_hook(ctx, RPC_FUNCTION(rpct_post_call_hook));
 
-	manager = rpc_instance_new(NULL, "/animals");
+	manager = rpc_instance_new(NULL, NULL, "/animals");
 	rpc_instance_register_interface(manager,
 	    "com.twoporeguys.librpc.examples.AnimalManager",
 	    animal_manager_vtable, NULL);
