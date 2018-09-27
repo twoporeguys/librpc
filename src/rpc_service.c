@@ -732,7 +732,7 @@ rpc_instance_release(rpc_instance_t instance)
 
 	if (g_atomic_int_dec_and_test(&instance->ri_refcnt)) {
 		if (instance->ri_dtor != NULL) {
-			instance->ri_dtor();
+			instance->ri_dtor(instance->ri_arg);
 			Block_release(instance->ri_dtor);
 		}
 

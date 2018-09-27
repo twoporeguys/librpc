@@ -44,11 +44,11 @@ static rpc_object_t rpcd_service_connect(void *, rpc_object_t);
 static rpc_object_t rpcd_service_unregister(void *, rpc_object_t);
 static rpc_object_t rpcd_service_get_name(void *);
 static rpc_object_t rpcd_service_get_description(void *);
+static void rpcd_service_dtor(void *);
 
 static rpc_context_t rpcd_context;
 static int rpcd_nservers;
 static rpc_server_t *rpcd_servers;
-static GHashTable *rpcd_services;
 static int rpcd_log_level;
 static const char **rpcd_service_dirs;
 static const char **rpcd_listen;
@@ -105,8 +105,14 @@ static const struct rpc_if_member rpcd_service_vtable[] = {
 struct rpcd_service *
 rpcd_find_service(const char *name)
 {
+	rpc_instance_t inst;
+	g_autofree char *path = g_strdup_printf("/%s", name);
 
-	return (g_hash_table_lookup(rpcd_services, name));
+	inst = rpc_context_find_instance(rpcd_context, path);
+	if (inst == NULL)
+		return (NULL);
+
+	return (rpc_instance_get_arg(inst));
 }
 
 static rpc_object_t
@@ -127,7 +133,9 @@ rpcd_register_service(void *cookie, rpc_object_t args)
 	service->uri = g_strdup(uri);
 	service->name = g_strdup(name);
 	service->description = g_strdup(description);
-	service->instance = rpc_instance_new(service, "/%s", name);
+	service->instance = rpc_instance_new(service,
+	    RPC_ARG_DESTRUCTOR(rpcd_service_dtor), "/%s", name);
+
 	if (service->instance == NULL) {
 		rpc_function_error_ex(cookie, rpc_get_last_error());
 		return (NULL);
@@ -136,9 +144,7 @@ rpcd_register_service(void *cookie, rpc_object_t args)
 	rpc_instance_register_interface(service->instance,
 	    "com.twoporeguys.rpcd.Service", rpcd_service_vtable, service);
 
-	g_hash_table_insert(rpcd_services, g_strdup(service->name), service);
 	rpc_context_register_instance(rpcd_context, service->instance);
-
 	syslog(LOG_NOTICE, "Registered service %s", service->name);
 
 	return (rpc_string_create(rpc_instance_get_path(service->instance)));
@@ -158,6 +164,15 @@ rpc_service_handle_error(void *arg, rpc_error_code_t code, rpc_object_t args)
 
 	if (code == RPC_CONNECTION_CLOSED)
 		rpc_connection_close(arg);
+}
+
+static void
+rpcd_service_dtor(void *arg)
+{
+	struct rpcd_service *service = arg;
+
+	rpc_release(service->manifest);
+	g_free(service);
 }
 
 static rpc_object_t
@@ -208,8 +223,6 @@ rpcd_service_unregister(void *cookie, rpc_object_t args __unused)
 	service = rpc_function_get_arg(cookie);
 	rpc_context_unregister_instance(rpcd_context,
 	    rpc_instance_get_path(service->instance));
-
-	g_hash_table_remove(rpcd_services, service->name);
 	return (NULL);
 }
 
@@ -267,7 +280,9 @@ rpcd_load_service(const char *path)
 	}
 
 	service->manifest = descriptor;
-	service->instance = rpc_instance_new(service, "/%s", service->name);
+	service->instance = rpc_instance_new(service,
+	    RPC_ARG_DESTRUCTOR(rpcd_service_dtor), "/%s", service->name);
+
 	if (service->instance == NULL) {
 		error = rpc_get_last_error();
 		syslog(LOG_WARNING, "%s: %s", path, rpc_error_get_message(error));
@@ -279,7 +294,6 @@ rpcd_load_service(const char *path)
 	rpc_instance_register_interface(service->instance,
 	    "com.twoporeguys.rpcd.Service", rpcd_service_vtable, service);
 
-	g_hash_table_insert(rpcd_services, g_strdup(service->name), service);
 	rpc_context_register_instance(rpcd_context, service->instance);
 	return (0);
 }
@@ -340,7 +354,6 @@ main(int argc, char *argv[])
 		return (1);
 	}
 
-	rpcd_services = g_hash_table_new(g_str_hash, g_str_equal);
 	rpcd_context = rpc_context_create();
 
 	if (rpcd_use_systemd) {

@@ -43,6 +43,7 @@ ctypedef bint (*rpct_if_member_applier_f)(void *arg, rpct_if_member_t if_member)
 ctypedef rpc_object_t (*rpc_property_getter_f)(void *cookie)
 ctypedef void (*rpc_property_setter_f)(void *cookie, rpc_object_t value)
 ctypedef void (*rpc_property_handler_f)(void *cookie, rpc_object_t value)
+ctypedef void (*rpc_arg_destructor_f)(void *arg)
 ctypedef rpc_object_t (*rpc_query_cb_f)(void *arg, rpc_object_t object)
 
 
@@ -202,6 +203,7 @@ cdef extern from "rpc/service.h" nogil:
 
     void *RPC_PROPERTY_GETTER(rpc_property_getter_f getter)
     void *RPC_PROPERTY_SETTER(rpc_property_setter_f setter)
+    void *RPC_ARG_DESTRUCTOR(rpc_arg_destructor_f fn)
 
     cdef struct rpc_if_member:
         const char *rim_name
@@ -236,7 +238,7 @@ cdef extern from "rpc/service.h" nogil:
     void *rpc_property_get_arg(void *cookie)
     void rpc_property_error(void *cookie, int code, const char *fmt)
 
-    rpc_instance_t rpc_instance_new(void *arg, const char *path)
+    rpc_instance_t rpc_instance_new(void *arg, void *dtor, const char *path)
     void rpc_instance_set_description(rpc_instance_t instance, const char *description)
     void *rpc_instance_get_arg(rpc_instance_t instance)
     const char *rpc_instance_get_path(rpc_instance_t instance)

@@ -110,7 +110,7 @@ typedef void (^rpc_abort_handler_t)(void);
 /**
  * Private data destructor block type.
  */
-typedef void (^rpc_arg_destructor_t)(void);
+typedef void (^rpc_arg_destructor_t)(void *_Nonnull arg);
 
 /**
  * A macro to convert function pointer into @ref rpc_function_t block.
@@ -135,8 +135,8 @@ typedef void (^rpc_arg_destructor_t)(void);
 		_fn(_arg);						\
 	}
 
-#define	RPC_ARG_DESTRUCTOR(_fn, _arg)					\
-	^{								\
+#define	RPC_ARG_DESTRUCTOR(_fn)						\
+	^(void *_arg){							\
 		_fn(_arg);						\
 	}
 

@@ -124,7 +124,7 @@ cdef class Instance(object):
 
     def __init__(self, path, description=None):
         b_path = path.encode('utf-8')
-        self.instance = rpc_instance_new(NULL, b_path)
+        self.instance = rpc_instance_new(NULL, NULL, b_path)
         self.properties = []
 
         if description:
