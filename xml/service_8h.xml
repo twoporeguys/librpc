@@ -275,11 +275,10 @@
         </inbodydescription>
         <location file="/code/include/rpc/service.h" line="133" column="9" bodyfile="/code/include/rpc/service.h" bodystart="133" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="define" id="service_8h_1a99fb5cbcbf297a17fa4d2f554f8678d6" prot="public" static="no">
+      <memberdef kind="define" id="service_8h_1a015694f7a0131dce620948975985a373" prot="public" static="no">
         <name>RPC_ARG_DESTRUCTOR</name>
         <param><defname>_fn</defname></param>
-        <param><defname>_arg</defname></param>
-        <initializer>^{								\
+        <initializer>^(void *_arg){							\
 		_fn(_arg);						\
 	}</initializer>
         <briefdescription>
@@ -571,10 +570,10 @@
         </inbodydescription>
         <location file="/code/include/rpc/service.h" line="108" column="1" bodyfile="/code/include/rpc/service.h" bodystart="108" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="service_8h_1a85c9272a7e346cff50197475033a58f8" prot="public" static="no">
+      <memberdef kind="typedef" id="service_8h_1ac6f09ee9c6e6f5b72f9dc40bbaef99ac" prot="public" static="no">
         <type>void(^</type>
-        <definition>typedef void(^ rpc_arg_destructor_t) (void)</definition>
-        <argsstring>)(void)</argsstring>
+        <definition>typedef void(^ rpc_arg_destructor_t) (void *_Nonnull arg)</definition>
+        <argsstring>)(void *_Nonnull arg)</argsstring>
         <name>rpc_arg_destructor_t</name>
         <briefdescription>
         </briefdescription>
@@ -1660,7 +1659,7 @@
           <declname>arg</declname>
         </param>
         <param>
-          <type>_Nullable <ref refid="service_8h_1a85c9272a7e346cff50197475033a58f8" kindref="member">rpc_arg_destructor_t</ref></type>
+          <type>_Nullable <ref refid="service_8h_1ac6f09ee9c6e6f5b72f9dc40bbaef99ac" kindref="member">rpc_arg_destructor_t</ref></type>
           <declname>dtor</declname>
         </param>
         <param>
@@ -2729,7 +2728,7 @@
 <codeline lineno="104"><highlight class="normal"></highlight></codeline>
 <codeline lineno="108" refid="service_8h_1aebbaf8e39f128b6655d23aad6a8ab634" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void<sp/>(^<ref refid="service_8h_1aebbaf8e39f128b6655d23aad6a8ab634" kindref="member">rpc_abort_handler_t</ref>)(void);</highlight></codeline>
 <codeline lineno="109"><highlight class="normal"></highlight></codeline>
-<codeline lineno="113" refid="service_8h_1a85c9272a7e346cff50197475033a58f8" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void<sp/>(^<ref refid="service_8h_1a85c9272a7e346cff50197475033a58f8" kindref="member">rpc_arg_destructor_t</ref>)(void);</highlight></codeline>
+<codeline lineno="113" refid="service_8h_1ac6f09ee9c6e6f5b72f9dc40bbaef99ac" refkind="member"><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>void<sp/>(^<ref refid="service_8h_1ac6f09ee9c6e6f5b72f9dc40bbaef99ac" kindref="member">rpc_arg_destructor_t</ref>)(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>arg);</highlight></codeline>
 <codeline lineno="114"><highlight class="normal"></highlight></codeline>
 <codeline lineno="118" refid="service_8h_1a5484afe5b3f646a7989ad91e011cc5b1" refkind="member"><highlight class="preprocessor">#define<sp/>RPC_FUNCTION(_fn)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
 <codeline lineno="119"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>^(void<sp/>*_cookie,<sp/>rpc_object_t<sp/>_args)<sp/>{<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
@@ -2751,8 +2750,8 @@
 <codeline lineno="135"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>_fn(_arg);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
 <codeline lineno="136"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="137"><highlight class="normal"></highlight></codeline>
-<codeline lineno="138"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>RPC_ARG_DESTRUCTOR(_fn,<sp/>_arg)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
-<codeline lineno="139"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>^{<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>RPC_ARG_DESTRUCTOR(_fn)<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="139"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>^(void<sp/>*_arg){<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
 <codeline lineno="140"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>_fn(_arg);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
 <codeline lineno="141"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="142"><highlight class="normal"></highlight></codeline>
@@ -2931,7 +2930,7 @@
 <codeline lineno="564"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="service_8h_1aebbaf8e39f128b6655d23aad6a8ab634" kindref="member">rpc_abort_handler_t</ref><sp/>handler);</highlight></codeline>
 <codeline lineno="565"><highlight class="normal"></highlight></codeline>
 <codeline lineno="576"><highlight class="normal">_Nullable<sp/>rpc_instance_t<sp/><ref refid="service_8h_1aba6a4c2c0d1ce3f680d3dc8c0d32a0ca" kindref="member">rpc_instance_new</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*_Nullable<sp/>arg,</highlight></codeline>
-<codeline lineno="577"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="service_8h_1a85c9272a7e346cff50197475033a58f8" kindref="member">rpc_arg_destructor_t</ref><sp/>dtor,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>fmt,<sp/>...);</highlight></codeline>
+<codeline lineno="577"><highlight class="normal"><sp/><sp/><sp/><sp/>_Nullable<sp/><ref refid="service_8h_1ac6f09ee9c6e6f5b72f9dc40bbaef99ac" kindref="member">rpc_arg_destructor_t</ref><sp/>dtor,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*_Nonnull<sp/>fmt,<sp/>...);</highlight></codeline>
 <codeline lineno="578"><highlight class="normal"></highlight></codeline>
 <codeline lineno="586"><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="service_8h_1ad1a7c221ad68ca7a5b940d74f0fd5fc2" kindref="member">rpc_instance_retain</ref>(_Nonnull<sp/>rpc_instance_t<sp/>instance);</highlight></codeline>
 <codeline lineno="587"><highlight class="normal"></highlight></codeline>

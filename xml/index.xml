@@ -403,7 +403,7 @@
     <member refid="service_8h_1a9f26d5c3cd4053019f402fa48d59d4c7" kind="define"><name>RPC_PROPERTY_GETTER</name></member>
     <member refid="service_8h_1ae4fea18e9501ac8051f8c674a81d5432" kind="define"><name>RPC_PROPERTY_SETTER</name></member>
     <member refid="service_8h_1a48571f82fd8c922efdce9b1a13c782df" kind="define"><name>RPC_ABORT_HANDLER</name></member>
-    <member refid="service_8h_1a99fb5cbcbf297a17fa4d2f554f8678d6" kind="define"><name>RPC_ARG_DESTRUCTOR</name></member>
+    <member refid="service_8h_1a015694f7a0131dce620948975985a373" kind="define"><name>RPC_ARG_DESTRUCTOR</name></member>
     <member refid="service_8h_1a311d28feffd55aea4c79aba5c45ef34f" kind="define"><name>RPC_EVENT</name></member>
     <member refid="service_8h_1acbb40848a04a99a67fa65f1a103af208" kind="define"><name>RPC_PROPERTY_RO</name></member>
     <member refid="service_8h_1a6ea5b0d468e84170d93e3afeaed4d5b6" kind="define"><name>RPC_PROPERTY_WO</name></member>
@@ -425,7 +425,7 @@
     <member refid="service_8h_1ab438f0c33f3f3876f1c9a23d62134f16" kind="typedef"><name>rpc_property_getter_t</name></member>
     <member refid="service_8h_1aa8b38d8ab3bafe79a96edaebafe13b8d" kind="typedef"><name>rpc_property_setter_t</name></member>
     <member refid="service_8h_1aebbaf8e39f128b6655d23aad6a8ab634" kind="typedef"><name>rpc_abort_handler_t</name></member>
-    <member refid="service_8h_1a85c9272a7e346cff50197475033a58f8" kind="typedef"><name>rpc_arg_destructor_t</name></member>
+    <member refid="service_8h_1ac6f09ee9c6e6f5b72f9dc40bbaef99ac" kind="typedef"><name>rpc_arg_destructor_t</name></member>
     <member refid="service_8h_1aa53a346b1f60759fabc2f047e75fdb90" kind="function"><name>rpc_context_create</name></member>
     <member refid="service_8h_1a4f63ab83623a2f407eac2fe9b7f80023" kind="function"><name>rpc_context_free</name></member>
     <member refid="service_8h_1a125f2739087a2d4f89384d24fadb6cde" kind="function"><name>rpc_context_find_instance</name></member>

@@ -138,8 +138,8 @@ Macros</h2></td></tr>
 <tr class="separator:ae4fea18e9501ac8051f8c674a81d5432"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48571f82fd8c922efdce9b1a13c782df"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>RPC_ABORT_HANDLER</b>(_fn,  _arg)</td></tr>
 <tr class="separator:a48571f82fd8c922efdce9b1a13c782df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99fb5cbcbf297a17fa4d2f554f8678d6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>RPC_ARG_DESTRUCTOR</b>(_fn,  _arg)</td></tr>
-<tr class="separator:a99fb5cbcbf297a17fa4d2f554f8678d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a015694f7a0131dce620948975985a373"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>RPC_ARG_DESTRUCTOR</b>(_fn)</td></tr>
+<tr class="separator:a015694f7a0131dce620948975985a373"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a311d28feffd55aea4c79aba5c45ef34f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>RPC_EVENT</b>(_name)</td></tr>
 <tr class="separator:a311d28feffd55aea4c79aba5c45ef34f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acbb40848a04a99a67fa65f1a103af208"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#acbb40848a04a99a67fa65f1a103af208">RPC_PROPERTY_RO</a>(_name,  _getter)</td></tr>
@@ -172,8 +172,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:aa8b38d8ab3bafe79a96edaebafe13b8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebbaf8e39f128b6655d23aad6a8ab634"><td class="memItemLeft" align="right" valign="top">typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#aebbaf8e39f128b6655d23aad6a8ab634">rpc_abort_handler_t</a>) (void)</td></tr>
 <tr class="separator:aebbaf8e39f128b6655d23aad6a8ab634"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85c9272a7e346cff50197475033a58f8"><td class="memItemLeft" align="right" valign="top">typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a85c9272a7e346cff50197475033a58f8">rpc_arg_destructor_t</a>) (void)</td></tr>
-<tr class="separator:a85c9272a7e346cff50197475033a58f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6f09ee9c6e6f5b72f9dc40bbaef99ac"><td class="memItemLeft" align="right" valign="top">typedef void(^&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ac6f09ee9c6e6f5b72f9dc40bbaef99ac">rpc_arg_destructor_t</a>) (void *_Nonnull arg)</td></tr>
+<tr class="separator:ac6f09ee9c6e6f5b72f9dc40bbaef99ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -249,7 +249,7 @@ Functions</h2></td></tr>
 <tr class="separator:ad0185b8a60875843d91ca00b3e8d4886"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b6ceb43e090fda8928a3a46e7da614a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#a4b6ceb43e090fda8928a3a46e7da614a">rpc_function_set_async_abort_handler</a> (void *_Nonnull cookie, _Nullable <a class="el" href="service_8h.html#aebbaf8e39f128b6655d23aad6a8ab634">rpc_abort_handler_t</a> handler)</td></tr>
 <tr class="separator:a4b6ceb43e090fda8928a3a46e7da614a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba6a4c2c0d1ce3f680d3dc8c0d32a0ca"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#aba6a4c2c0d1ce3f680d3dc8c0d32a0ca">rpc_instance_new</a> (void *_Nullable arg, _Nullable <a class="el" href="service_8h.html#a85c9272a7e346cff50197475033a58f8">rpc_arg_destructor_t</a> dtor, const char *_Nonnull fmt,...)</td></tr>
+<tr class="memitem:aba6a4c2c0d1ce3f680d3dc8c0d32a0ca"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#aba6a4c2c0d1ce3f680d3dc8c0d32a0ca">rpc_instance_new</a> (void *_Nullable arg, _Nullable <a class="el" href="service_8h.html#ac6f09ee9c6e6f5b72f9dc40bbaef99ac">rpc_arg_destructor_t</a> dtor, const char *_Nonnull fmt,...)</td></tr>
 <tr class="separator:aba6a4c2c0d1ce3f680d3dc8c0d32a0ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1a7c221ad68ca7a5b940d74f0fd5fc2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="service_8h.html#ad1a7c221ad68ca7a5b940d74f0fd5fc2">rpc_instance_retain</a> (_Nonnull <a class="el" href="service_8h.html#afd1294bd7ea02592ecc002e1576ef290">rpc_instance_t</a> instance)</td></tr>
 <tr class="separator:ad1a7c221ad68ca7a5b940d74f0fd5fc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -329,8 +329,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a99fb5cbcbf297a17fa4d2f554f8678d6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a99fb5cbcbf297a17fa4d2f554f8678d6">&#9670;&nbsp;</a></span>RPC_ARG_DESTRUCTOR</h2>
+<a id="a015694f7a0131dce620948975985a373"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a015694f7a0131dce620948975985a373">&#9670;&nbsp;</a></span>RPC_ARG_DESTRUCTOR</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -339,22 +339,12 @@ Functions</h2></td></tr>
           <td class="memname">#define RPC_ARG_DESTRUCTOR</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">_fn, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname">_fn</td><td>)</td>
           <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">_arg&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">^{                              \</div><div class="line">        _fn(_arg);                      \</div><div class="line">    }</div></div><!-- fragment -->
+<b>Value:</b><div class="fragment"><div class="line">^(<span class="keywordtype">void</span> *_arg){                          \</div><div class="line">        _fn(_arg);                      \</div><div class="line">    }</div></div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="service_8h_source.html#l00138">138</a> of file <a class="el" href="service_8h_source.html">service.h</a>.</p>
 
 </div>
@@ -648,14 +638,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a85c9272a7e346cff50197475033a58f8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a85c9272a7e346cff50197475033a58f8">&#9670;&nbsp;</a></span>rpc_arg_destructor_t</h2>
+<a id="ac6f09ee9c6e6f5b72f9dc40bbaef99ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6f09ee9c6e6f5b72f9dc40bbaef99ac">&#9670;&nbsp;</a></span>rpc_arg_destructor_t</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef void(^ rpc_arg_destructor_t) (void)</td>
+          <td class="memname">typedef void(^ rpc_arg_destructor_t) (void *_Nonnull arg)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -2102,7 +2092,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">_Nullable <a class="el" href="service_8h.html#a85c9272a7e346cff50197475033a58f8">rpc_arg_destructor_t</a>&#160;</td>
+          <td class="paramtype">_Nullable <a class="el" href="service_8h.html#ac6f09ee9c6e6f5b72f9dc40bbaef99ac">rpc_arg_destructor_t</a>&#160;</td>
           <td class="paramname"><em>dtor</em>, </td>
         </tr>
         <tr>

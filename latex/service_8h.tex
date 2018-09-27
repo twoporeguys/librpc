@@ -55,7 +55,7 @@ struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member}
 \item 
 \#define {\bfseries R\+P\+C\+\_\+\+A\+B\+O\+R\+T\+\_\+\+H\+A\+N\+D\+L\+ER}(\+\_\+fn,  \+\_\+arg)
 \item 
-\#define {\bfseries R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}(\+\_\+fn,  \+\_\+arg)
+\#define {\bfseries R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}(\+\_\+fn)
 \item 
 \#define {\bfseries R\+P\+C\+\_\+\+E\+V\+E\+NT}(\+\_\+name)
 \item 
@@ -89,7 +89,7 @@ typedef void($^\wedge$ \hyperlink{service_8h_aa8b38d8ab3bafe79a96edaebafe13b8d}{
 \item 
 typedef void($^\wedge$ \hyperlink{service_8h_aebbaf8e39f128b6655d23aad6a8ab634}{rpc\+\_\+abort\+\_\+handler\+\_\+t}) (void)
 \item 
-typedef void($^\wedge$ \hyperlink{service_8h_a85c9272a7e346cff50197475033a58f8}{rpc\+\_\+arg\+\_\+destructor\+\_\+t}) (void)
+typedef void($^\wedge$ \hyperlink{service_8h_ac6f09ee9c6e6f5b72f9dc40bbaef99ac}{rpc\+\_\+arg\+\_\+destructor\+\_\+t}) (void $\ast$\+\_\+\+Nonnull arg)
 \end{DoxyCompactItemize}
 \subsection*{Enumerations}
 \begin{DoxyCompactItemize}
@@ -166,7 +166,7 @@ bool \hyperlink{service_8h_ad0185b8a60875843d91ca00b3e8d4886}{rpc\+\_\+function\
 \item 
 void \hyperlink{service_8h_a4b6ceb43e090fda8928a3a46e7da614a}{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler} (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nullable \hyperlink{service_8h_aebbaf8e39f128b6655d23aad6a8ab634}{rpc\+\_\+abort\+\_\+handler\+\_\+t} handler)
 \item 
-\+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_aba6a4c2c0d1ce3f680d3dc8c0d32a0ca}{rpc\+\_\+instance\+\_\+new} (void $\ast$\+\_\+\+Nullable arg, \+\_\+\+Nullable \hyperlink{service_8h_a85c9272a7e346cff50197475033a58f8}{rpc\+\_\+arg\+\_\+destructor\+\_\+t} dtor, const char $\ast$\+\_\+\+Nonnull fmt,...)
+\+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_aba6a4c2c0d1ce3f680d3dc8c0d32a0ca}{rpc\+\_\+instance\+\_\+new} (void $\ast$\+\_\+\+Nullable arg, \+\_\+\+Nullable \hyperlink{service_8h_ac6f09ee9c6e6f5b72f9dc40bbaef99ac}{rpc\+\_\+arg\+\_\+destructor\+\_\+t} dtor, const char $\ast$\+\_\+\+Nonnull fmt,...)
 \item 
 void \hyperlink{service_8h_ad1a7c221ad68ca7a5b940d74f0fd5fc2}{rpc\+\_\+instance\+\_\+retain} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance)
 \item 
@@ -232,15 +232,15 @@ R\+PC service A\+PI.
 
 Definition at line 133 of file service.\+h.
 
-\mbox{\Hypertarget{service_8h_a99fb5cbcbf297a17fa4d2f554f8678d6}\label{service_8h_a99fb5cbcbf297a17fa4d2f554f8678d6}} 
+\mbox{\Hypertarget{service_8h_a015694f7a0131dce620948975985a373}\label{service_8h_a015694f7a0131dce620948975985a373}} 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR@{R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}}
 \index{R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR@{R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}{RPC\_ARG\_DESTRUCTOR}}
-{\footnotesize\ttfamily \#define R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR(\begin{DoxyParamCaption}\item[{}]{\+\_\+fn,  }\item[{}]{\+\_\+arg }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \#define R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR(\begin{DoxyParamCaption}\item[{}]{\+\_\+fn }\end{DoxyParamCaption})}
 
 {\bfseries Value\+:}
 \begin{DoxyCode}
-^\{                              \(\backslash\)
+^(\textcolor{keywordtype}{void} *\_arg)\{                          \(\backslash\)
         \_fn(\_arg);                      \(\backslash\)
     \}
 \end{DoxyCode}
@@ -449,11 +449,11 @@ Asynchronous abort handler block type.
 
 Definition at line 108 of file service.\+h.
 
-\mbox{\Hypertarget{service_8h_a85c9272a7e346cff50197475033a58f8}\label{service_8h_a85c9272a7e346cff50197475033a58f8}} 
+\mbox{\Hypertarget{service_8h_ac6f09ee9c6e6f5b72f9dc40bbaef99ac}\label{service_8h_ac6f09ee9c6e6f5b72f9dc40bbaef99ac}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+arg\+\_\+destructor\+\_\+t@{rpc\+\_\+arg\+\_\+destructor\+\_\+t}}
 \index{rpc\+\_\+arg\+\_\+destructor\+\_\+t@{rpc\+\_\+arg\+\_\+destructor\+\_\+t}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+arg\+\_\+destructor\+\_\+t}{rpc\_arg\_destructor\_t}}
-{\footnotesize\ttfamily typedef void($^\wedge$ rpc\+\_\+arg\+\_\+destructor\+\_\+t) (void)}
+{\footnotesize\ttfamily typedef void($^\wedge$ rpc\+\_\+arg\+\_\+destructor\+\_\+t) (void $\ast$\+\_\+\+Nonnull arg)}
 
 Private data destructor block type. 
 
@@ -1202,7 +1202,7 @@ Tells whether or not {\ttfamily instance} implements interface {\ttfamily interf
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+new@{rpc\+\_\+instance\+\_\+new}}
 \index{rpc\+\_\+instance\+\_\+new@{rpc\+\_\+instance\+\_\+new}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+new()}{rpc\_instance\_new()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} rpc\+\_\+instance\+\_\+new (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nullable}]{arg,  }\item[{\+\_\+\+Nullable \hyperlink{service_8h_a85c9272a7e346cff50197475033a58f8}{rpc\+\_\+arg\+\_\+destructor\+\_\+t}}]{dtor,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{fmt,  }\item[{}]{... }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} rpc\+\_\+instance\+\_\+new (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nullable}]{arg,  }\item[{\+\_\+\+Nullable \hyperlink{service_8h_ac6f09ee9c6e6f5b72f9dc40bbaef99ac}{rpc\+\_\+arg\+\_\+destructor\+\_\+t}}]{dtor,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{fmt,  }\item[{}]{... }\end{DoxyParamCaption})}
 
 Creates a new instance handle.
 
