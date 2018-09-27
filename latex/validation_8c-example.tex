@@ -75,7 +75,7 @@ main(\textcolor{keywordtype}{int} argc \_\_unused, \textcolor{keyword}{const} \t
     \hyperlink{service_8h_a6b62e56dbc71d17c4094d2cfec863712}{rpc\_context\_set\_post\_call\_hook}(ctx, 
       \hyperlink{service_8h_a5484afe5b3f646a7989ad91e011cc5b1}{RPC\_FUNCTION}(\hyperlink{typing_8h_afa62adf9fe6a415494c529254b030086}{rpct\_post\_call\_hook}));
 
-    manager = \hyperlink{service_8h_a805d705c1a9f94cf4aa04bb71a46a928}{rpc\_instance\_new}(NULL, \textcolor{stringliteral}{"/animals"});
+    manager = \hyperlink{service_8h_aba6a4c2c0d1ce3f680d3dc8c0d32a0ca}{rpc\_instance\_new}(NULL, NULL, \textcolor{stringliteral}{"/animals"});
     \hyperlink{service_8h_abca1b1b9d6d4a7ca012ca242e0adeafd}{rpc\_instance\_register\_interface}(manager,
         \textcolor{stringliteral}{"com.twoporeguys.librpc.examples.AnimalManager"},
         animal\_manager\_vtable, NULL);

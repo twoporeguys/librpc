@@ -55,6 +55,8 @@ struct \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member}
 \item 
 \#define {\bfseries R\+P\+C\+\_\+\+A\+B\+O\+R\+T\+\_\+\+H\+A\+N\+D\+L\+ER}(\+\_\+fn,  \+\_\+arg)
 \item 
+\#define {\bfseries R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}(\+\_\+fn,  \+\_\+arg)
+\item 
 \#define {\bfseries R\+P\+C\+\_\+\+E\+V\+E\+NT}(\+\_\+name)
 \item 
 \#define \hyperlink{service_8h_acbb40848a04a99a67fa65f1a103af208}{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+RO}(\+\_\+name,  \+\_\+getter)
@@ -86,6 +88,8 @@ typedef \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}
 typedef void($^\wedge$ \hyperlink{service_8h_aa8b38d8ab3bafe79a96edaebafe13b8d}{rpc\+\_\+property\+\_\+setter\+\_\+t}) (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} value)
 \item 
 typedef void($^\wedge$ \hyperlink{service_8h_aebbaf8e39f128b6655d23aad6a8ab634}{rpc\+\_\+abort\+\_\+handler\+\_\+t}) (void)
+\item 
+typedef void($^\wedge$ \hyperlink{service_8h_a85c9272a7e346cff50197475033a58f8}{rpc\+\_\+arg\+\_\+destructor\+\_\+t}) (void)
 \end{DoxyCompactItemize}
 \subsection*{Enumerations}
 \begin{DoxyCompactItemize}
@@ -162,11 +166,11 @@ bool \hyperlink{service_8h_ad0185b8a60875843d91ca00b3e8d4886}{rpc\+\_\+function\
 \item 
 void \hyperlink{service_8h_a4b6ceb43e090fda8928a3a46e7da614a}{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler} (void $\ast$\+\_\+\+Nonnull cookie, \+\_\+\+Nullable \hyperlink{service_8h_aebbaf8e39f128b6655d23aad6a8ab634}{rpc\+\_\+abort\+\_\+handler\+\_\+t} handler)
 \item 
-int \hyperlink{service_8h_a2d72136304739c0feb680794fee9c826}{rpc\+\_\+function\+\_\+retain} (void $\ast$\+\_\+\+Nonnull cookie)
+\+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_aba6a4c2c0d1ce3f680d3dc8c0d32a0ca}{rpc\+\_\+instance\+\_\+new} (void $\ast$\+\_\+\+Nullable arg, \+\_\+\+Nullable \hyperlink{service_8h_a85c9272a7e346cff50197475033a58f8}{rpc\+\_\+arg\+\_\+destructor\+\_\+t} dtor, const char $\ast$\+\_\+\+Nonnull fmt,...)
 \item 
-int \hyperlink{service_8h_a8b103fc6babf355762234407d3c4326d}{rpc\+\_\+function\+\_\+release} (void $\ast$\+\_\+\+Nonnull cookie)
+void \hyperlink{service_8h_ad1a7c221ad68ca7a5b940d74f0fd5fc2}{rpc\+\_\+instance\+\_\+retain} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance)
 \item 
-\+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} \hyperlink{service_8h_a805d705c1a9f94cf4aa04bb71a46a928}{rpc\+\_\+instance\+\_\+new} (void $\ast$\+\_\+\+Nullable arg, const char $\ast$\+\_\+\+Nonnull fmt,...)
+void \hyperlink{service_8h_a689e93a949d252fc28cdc39f9a0e7d45}{rpc\+\_\+instance\+\_\+release} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance)
 \item 
 void \hyperlink{service_8h_a913a58356a0366081127227d15a74cc4}{rpc\+\_\+instance\+\_\+set\+\_\+description} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance, const char $\ast$\+\_\+\+Nonnull fmt,...)
 \item 
@@ -205,8 +209,6 @@ void \hyperlink{service_8h_a28d100b9b918d120d3d8c07a0c938932}{rpc\+\_\+instance\
 void $\ast$\+\_\+\+Nullable \hyperlink{service_8h_a2829cbce768c9d60ac83d0547dc837ed}{rpc\+\_\+property\+\_\+get\+\_\+arg} (void $\ast$\+\_\+\+Nonnull cookie)
 \item 
 void \hyperlink{service_8h_af119057c34e0ac7b5ce6238d2551e3af}{rpc\+\_\+property\+\_\+error} (void $\ast$\+\_\+\+Nonnull cookie, int code, const char $\ast$\+\_\+\+Nonnull fmt,...)
-\item 
-void \hyperlink{service_8h_aecd81447bced207f9d62b7fbf55cb4c1}{rpc\+\_\+instance\+\_\+free} (\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} instance)
 \end{DoxyCompactItemize}
 
 
@@ -228,7 +230,23 @@ R\+PC service A\+PI.
 \end{DoxyCode}
 
 
-Definition at line 128 of file service.\+h.
+Definition at line 133 of file service.\+h.
+
+\mbox{\Hypertarget{service_8h_a99fb5cbcbf297a17fa4d2f554f8678d6}\label{service_8h_a99fb5cbcbf297a17fa4d2f554f8678d6}} 
+\index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR@{R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}}
+\index{R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR@{R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}!service.\+h@{service.\+h}}
+\subsubsection{\texorpdfstring{R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}{RPC\_ARG\_DESTRUCTOR}}
+{\footnotesize\ttfamily \#define R\+P\+C\+\_\+\+A\+R\+G\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR(\begin{DoxyParamCaption}\item[{}]{\+\_\+fn,  }\item[{}]{\+\_\+arg }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+^\{                              \(\backslash\)
+        \_fn(\_arg);                      \(\backslash\)
+    \}
+\end{DoxyCode}
+
+
+Definition at line 138 of file service.\+h.
 
 \mbox{\Hypertarget{service_8h_a311d28feffd55aea4c79aba5c45ef34f}\label{service_8h_a311d28feffd55aea4c79aba5c45ef34f}} 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+E\+V\+E\+NT@{R\+P\+C\+\_\+\+E\+V\+E\+NT}}
@@ -245,7 +263,7 @@ Definition at line 128 of file service.\+h.
 \end{DoxyCode}
 
 
-Definition at line 133 of file service.\+h.
+Definition at line 143 of file service.\+h.
 
 \mbox{\Hypertarget{service_8h_a5484afe5b3f646a7989ad91e011cc5b1}\label{service_8h_a5484afe5b3f646a7989ad91e011cc5b1}} 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+F\+U\+N\+C\+T\+I\+ON@{R\+P\+C\+\_\+\+F\+U\+N\+C\+T\+I\+ON}}
@@ -264,7 +282,7 @@ A macro to convert function pointer into \hyperlink{service_8h_ae49a22468cfcd4ad
 \hyperlink{validation_8c-example}{validation.\+c}.\end{Desc}
 
 
-Definition at line 113 of file service.\+h.
+Definition at line 118 of file service.\+h.
 
 \mbox{\Hypertarget{service_8h_a4c7094875a0bd8cc87e7c1d24a4481a6}\label{service_8h_a4c7094875a0bd8cc87e7c1d24a4481a6}} 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+F\+U\+N\+C\+T\+I\+O\+N\+\_\+\+S\+T\+I\+L\+L\+\_\+\+R\+U\+N\+N\+I\+NG@{R\+P\+C\+\_\+\+F\+U\+N\+C\+T\+I\+O\+N\+\_\+\+S\+T\+I\+L\+L\+\_\+\+R\+U\+N\+N\+I\+NG}}
@@ -298,7 +316,7 @@ A convenience macro to declare R\+PC method in the vtable array. \begin{Desc}
 \hyperlink{validation_8c-example}{validation.\+c}.\end{Desc}
 
 
-Definition at line 184 of file service.\+h.
+Definition at line 194 of file service.\+h.
 
 \mbox{\Hypertarget{service_8h_a1b9446e9faacdac7aae6e9e8601ebff3}\label{service_8h_a1b9446e9faacdac7aae6e9e8601ebff3}} 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+M\+E\+T\+H\+O\+D\+\_\+\+B\+L\+O\+CK@{R\+P\+C\+\_\+\+M\+E\+T\+H\+O\+D\+\_\+\+B\+L\+O\+CK}}
@@ -318,7 +336,7 @@ Definition at line 184 of file service.\+h.
 \end{DoxyCode}
 Same as \hyperlink{service_8h_a3b7ed0fba131ae55d90cbf5deb8cba5d}{R\+P\+C\+\_\+\+M\+E\+T\+H\+OD}, but takes a block instead of a function pointer. 
 
-Definition at line 198 of file service.\+h.
+Definition at line 208 of file service.\+h.
 
 \mbox{\Hypertarget{service_8h_a9f26d5c3cd4053019f402fa48d59d4c7}\label{service_8h_a9f26d5c3cd4053019f402fa48d59d4c7}} 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+G\+E\+T\+T\+ER@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+G\+E\+T\+T\+ER}}
@@ -334,7 +352,7 @@ Definition at line 198 of file service.\+h.
 \end{DoxyCode}
 
 
-Definition at line 118 of file service.\+h.
+Definition at line 123 of file service.\+h.
 
 \mbox{\Hypertarget{service_8h_acbb40848a04a99a67fa65f1a103af208}\label{service_8h_acbb40848a04a99a67fa65f1a103af208}} 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+RO@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+RO}}
@@ -356,7 +374,7 @@ Definition at line 118 of file service.\+h.
 \end{DoxyCode}
 A convenience macro to declare read-\/only property in the vtable array. 
 
-Definition at line 142 of file service.\+h.
+Definition at line 152 of file service.\+h.
 
 \mbox{\Hypertarget{service_8h_a6f39d78ec8fde43f05f7805fddc525d4}\label{service_8h_a6f39d78ec8fde43f05f7805fddc525d4}} 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+RW@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+RW}}
@@ -378,7 +396,7 @@ Definition at line 142 of file service.\+h.
 \end{DoxyCode}
 A convenience macro to declare read-\/write property in the vtable array. 
 
-Definition at line 170 of file service.\+h.
+Definition at line 180 of file service.\+h.
 
 \mbox{\Hypertarget{service_8h_ae4fea18e9501ac8051f8c674a81d5432}\label{service_8h_ae4fea18e9501ac8051f8c674a81d5432}} 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+S\+E\+T\+T\+ER@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+S\+E\+T\+T\+ER}}
@@ -394,7 +412,7 @@ Definition at line 170 of file service.\+h.
 \end{DoxyCode}
 
 
-Definition at line 123 of file service.\+h.
+Definition at line 128 of file service.\+h.
 
 \mbox{\Hypertarget{service_8h_a6ea5b0d468e84170d93e3afeaed4d5b6}\label{service_8h_a6ea5b0d468e84170d93e3afeaed4d5b6}} 
 \index{service.\+h@{service.\+h}!R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+WO@{R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+WO}}
@@ -416,7 +434,7 @@ Definition at line 123 of file service.\+h.
 \end{DoxyCode}
 A convenience macro to declare write-\/only property in the vtable array. 
 
-Definition at line 156 of file service.\+h.
+Definition at line 166 of file service.\+h.
 
 
 
@@ -430,6 +448,16 @@ Definition at line 156 of file service.\+h.
 Asynchronous abort handler block type. 
 
 Definition at line 108 of file service.\+h.
+
+\mbox{\Hypertarget{service_8h_a85c9272a7e346cff50197475033a58f8}\label{service_8h_a85c9272a7e346cff50197475033a58f8}} 
+\index{service.\+h@{service.\+h}!rpc\+\_\+arg\+\_\+destructor\+\_\+t@{rpc\+\_\+arg\+\_\+destructor\+\_\+t}}
+\index{rpc\+\_\+arg\+\_\+destructor\+\_\+t@{rpc\+\_\+arg\+\_\+destructor\+\_\+t}!service.\+h@{service.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+arg\+\_\+destructor\+\_\+t}{rpc\_arg\_destructor\_t}}
+{\footnotesize\ttfamily typedef void($^\wedge$ rpc\+\_\+arg\+\_\+destructor\+\_\+t) (void)}
+
+Private data destructor block type. 
+
+Definition at line 113 of file service.\+h.
 
 \mbox{\Hypertarget{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}\label{service_8h_a55087f28cb63ff45b6c798a5dabaedd7}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+context\+\_\+t@{rpc\+\_\+context\+\_\+t}}
@@ -516,7 +544,7 @@ R\+P\+C\+\_\+\+M\+E\+M\+B\+E\+R\+\_\+\+M\+E\+T\+H\+OD&Method member \\
 \end{DoxyEnumFields}
 
 
-Definition at line 212 of file service.\+h.
+Definition at line 222 of file service.\+h.
 
 \mbox{\Hypertarget{service_8h_ae93cefa938d7efd2095f73e9dcdf8926}\label{service_8h_ae93cefa938d7efd2095f73e9dcdf8926}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+property\+\_\+rights@{rpc\+\_\+property\+\_\+rights}}
@@ -536,7 +564,7 @@ R\+P\+C\+\_\+\+P\+R\+O\+P\+E\+R\+T\+Y\+\_\+\+W\+R\+I\+TE&Property is writable \\
 \end{DoxyEnumFields}
 
 
-Definition at line 222 of file service.\+h.
+Definition at line 232 of file service.\+h.
 
 
 
@@ -977,24 +1005,6 @@ This function makes \hyperlink{service_8h_ad0185b8a60875843d91ca00b3e8d4886}{rpc
 {\em cookie} & Running call handle \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{service_8h_a8b103fc6babf355762234407d3c4326d}\label{service_8h_a8b103fc6babf355762234407d3c4326d}} 
-\index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+release@{rpc\+\_\+function\+\_\+release}}
-\index{rpc\+\_\+function\+\_\+release@{rpc\+\_\+function\+\_\+release}!service.\+h@{service.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+function\+\_\+release()}{rpc\_function\_release()}}
-{\footnotesize\ttfamily int rpc\+\_\+function\+\_\+release (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nonnull}]{cookie }\end{DoxyParamCaption})}
-
-Decrements the refcount on a call.
-
-Releases the callers interest in the call.
-
-
-\begin{DoxyParams}{Parameters}
-{\em cookie} & Running call handle \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-0 on success or -\/1 if the call is no longer valid. 
-\end{DoxyReturn}
 \mbox{\Hypertarget{service_8h_a1c8603d576553224db42579cb9180d8d}\label{service_8h_a1c8603d576553224db42579cb9180d8d}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+respond@{rpc\+\_\+function\+\_\+respond}}
 \index{rpc\+\_\+function\+\_\+respond@{rpc\+\_\+function\+\_\+respond}!service.\+h@{service.\+h}}
@@ -1012,24 +1022,6 @@ This function may be called only once during the lifetime of a single call (for 
 {\em object} & Response. \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{service_8h_a2d72136304739c0feb680794fee9c826}\label{service_8h_a2d72136304739c0feb680794fee9c826}} 
-\index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+retain@{rpc\+\_\+function\+\_\+retain}}
-\index{rpc\+\_\+function\+\_\+retain@{rpc\+\_\+function\+\_\+retain}!service.\+h@{service.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+function\+\_\+retain()}{rpc\_function\_retain()}}
-{\footnotesize\ttfamily int rpc\+\_\+function\+\_\+retain (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nonnull}]{cookie }\end{DoxyParamCaption})}
-
-Increments the refcount on a call.
-
-Indicates that the caller has an interest in tha call and it cannot be freed until that interest is released.
-
-
-\begin{DoxyParams}{Parameters}
-{\em cookie} & Running call handle \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-0 if the call is retained or -\/1 if the call is no longer valid. 
-\end{DoxyReturn}
 \mbox{\Hypertarget{service_8h_a4b6ceb43e090fda8928a3a46e7da614a}\label{service_8h_a4b6ceb43e090fda8928a3a46e7da614a}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler@{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler}}
 \index{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler@{rpc\+\_\+function\+\_\+set\+\_\+async\+\_\+abort\+\_\+handler}!service.\+h@{service.\+h}}
@@ -1136,19 +1128,6 @@ Finds member called {\ttfamily name} belonging to a {\ttfamily interface} in {\t
 \begin{DoxyReturn}{Returns}
 \hyperlink{structrpc__if__member}{rpc\+\_\+if\+\_\+member} structure pointer or {\ttfamily N\+U\+LL} if not found. 
 \end{DoxyReturn}
-\mbox{\Hypertarget{service_8h_aecd81447bced207f9d62b7fbf55cb4c1}\label{service_8h_aecd81447bced207f9d62b7fbf55cb4c1}} 
-\index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+free@{rpc\+\_\+instance\+\_\+free}}
-\index{rpc\+\_\+instance\+\_\+free@{rpc\+\_\+instance\+\_\+free}!service.\+h@{service.\+h}}
-\subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+free()}{rpc\_instance\_free()}}
-{\footnotesize\ttfamily void rpc\+\_\+instance\+\_\+free (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance }\end{DoxyParamCaption})}
-
-Releases instance handle.
-
-
-\begin{DoxyParams}{Parameters}
-{\em instance} & Instance handle \\
-\hline
-\end{DoxyParams}
 \mbox{\Hypertarget{service_8h_a661c65e4aa798fd4b63851e267f5c018}\label{service_8h_a661c65e4aa798fd4b63851e267f5c018}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+get\+\_\+arg@{rpc\+\_\+instance\+\_\+get\+\_\+arg}}
 \index{rpc\+\_\+instance\+\_\+get\+\_\+arg@{rpc\+\_\+instance\+\_\+get\+\_\+arg}!service.\+h@{service.\+h}}
@@ -1219,13 +1198,15 @@ Tells whether or not {\ttfamily instance} implements interface {\ttfamily interf
 \begin{DoxyReturn}{Returns}
 {\ttfamily true} if implemented, otherwise {\ttfamily false} 
 \end{DoxyReturn}
-\mbox{\Hypertarget{service_8h_a805d705c1a9f94cf4aa04bb71a46a928}\label{service_8h_a805d705c1a9f94cf4aa04bb71a46a928}} 
+\mbox{\Hypertarget{service_8h_aba6a4c2c0d1ce3f680d3dc8c0d32a0ca}\label{service_8h_aba6a4c2c0d1ce3f680d3dc8c0d32a0ca}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+new@{rpc\+\_\+instance\+\_\+new}}
 \index{rpc\+\_\+instance\+\_\+new@{rpc\+\_\+instance\+\_\+new}!service.\+h@{service.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+new()}{rpc\_instance\_new()}}
-{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} rpc\+\_\+instance\+\_\+new (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nullable}]{arg,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{fmt,  }\item[{}]{... }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \+\_\+\+Nullable \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t} rpc\+\_\+instance\+\_\+new (\begin{DoxyParamCaption}\item[{void $\ast$\+\_\+\+Nullable}]{arg,  }\item[{\+\_\+\+Nullable \hyperlink{service_8h_a85c9272a7e346cff50197475033a58f8}{rpc\+\_\+arg\+\_\+destructor\+\_\+t}}]{dtor,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{fmt,  }\item[{}]{... }\end{DoxyParamCaption})}
 
 Creates a new instance handle.
+
+Newly created instance handle has a reference count of 1. In order to dispose it, \hyperlink{service_8h_a689e93a949d252fc28cdc39f9a0e7d45}{rpc\+\_\+instance\+\_\+release} must be called.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1404,6 +1385,36 @@ The property can be\+:
 \begin{DoxyReturn}{Returns}
 0 on success, -\/1 on error 
 \end{DoxyReturn}
+\mbox{\Hypertarget{service_8h_a689e93a949d252fc28cdc39f9a0e7d45}\label{service_8h_a689e93a949d252fc28cdc39f9a0e7d45}} 
+\index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+release@{rpc\+\_\+instance\+\_\+release}}
+\index{rpc\+\_\+instance\+\_\+release@{rpc\+\_\+instance\+\_\+release}!service.\+h@{service.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+release()}{rpc\_instance\_release()}}
+{\footnotesize\ttfamily void rpc\+\_\+instance\+\_\+release (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance }\end{DoxyParamCaption})}
+
+Releases the instance.
+
+When reference count of the instance drops to 0, instance is freed and destructor for {\ttfamily arg} is run.
+
+
+\begin{DoxyParams}{Parameters}
+{\em instance} & Instance handle \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{service_8h_ad1a7c221ad68ca7a5b940d74f0fd5fc2}\label{service_8h_ad1a7c221ad68ca7a5b940d74f0fd5fc2}} 
+\index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+retain@{rpc\+\_\+instance\+\_\+retain}}
+\index{rpc\+\_\+instance\+\_\+retain@{rpc\+\_\+instance\+\_\+retain}!service.\+h@{service.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+instance\+\_\+retain()}{rpc\_instance\_retain()}}
+{\footnotesize\ttfamily void rpc\+\_\+instance\+\_\+retain (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{service_8h_afd1294bd7ea02592ecc002e1576ef290}{rpc\+\_\+instance\+\_\+t}}]{instance }\end{DoxyParamCaption})}
+
+Retains the instance.
+
+All calls to this function must be paired with \hyperlink{service_8h_a689e93a949d252fc28cdc39f9a0e7d45}{rpc\+\_\+instance\+\_\+release}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em instance} & Instance handle \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{service_8h_a913a58356a0366081127227d15a74cc4}\label{service_8h_a913a58356a0366081127227d15a74cc4}} 
 \index{service.\+h@{service.\+h}!rpc\+\_\+instance\+\_\+set\+\_\+description@{rpc\+\_\+instance\+\_\+set\+\_\+description}}
 \index{rpc\+\_\+instance\+\_\+set\+\_\+description@{rpc\+\_\+instance\+\_\+set\+\_\+description}!service.\+h@{service.\+h}}
