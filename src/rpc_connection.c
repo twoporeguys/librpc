@@ -42,6 +42,7 @@
 
 #define	DEFAULT_RPC_TIMEOUT	60
 #define	MAX_FDS			128
+#define CALLS_INC_CNT		10
 
 typedef enum rpc_close_source
 {
@@ -83,6 +84,8 @@ static int cancel_timeout_locked(rpc_call_t call);
 static void rpc_connection_set_default_fn_handlers(rpc_connection_t);
 static inline rpc_object_t rpc_call_result_save(rpc_call_t call);
 static int rpc_connection_do_close(rpc_connection_t conn, rpc_close_source_t);
+static void rpc_call_clean(struct rpc_call *call);
+static rpc_connection_t rpc_conn_init(void);
 
 struct message_handler
 {
@@ -909,6 +912,7 @@ rpc_call_alloc(rpc_connection_t conn, rpc_object_t id, const char *path,
 {
 	struct rpc_call *call;
 	rpc_object_t call_args;
+	rpc_call_t *callsp;
 
 	if (method == NULL) {
 		rpc_set_last_errorf(EINVAL,
@@ -926,7 +930,25 @@ rpc_call_alloc(rpc_connection_t conn, rpc_object_t id, const char *path,
 	} else
 		call_args = rpc_array_create();
 
-	call = g_malloc0(sizeof(*call));
+	//call = g_malloc0(sizeof(*call));
+
+	g_mutex_lock(&conn->rco_queue_mtx);
+	if (g_queue_is_empty(conn->rco_free_queue)) {
+		callsp = g_malloc0(CALLS_INC_CNT * sizeof(struct rpc_call));
+		for (int i = 0; i < CALLS_INC_CNT; ++i) {
+			call = callsp[i];			
+			g_queue_push_tail(conn->rco_free_queue, call);
+			conn->rco_free_calls++;
+		}
+		conn->rco_total_calls += CALLS_INC_CNT;
+	}
+	call = g_queue_pop_head(conn->rco_free_queue);
+	--conn->rco_free_calls;
+	g_mutex_unlock(&conn->rco_queue_mtx);
+
+	if (call->rc_refcount != 0)
+		rpc_call_clean(call);
+	call->rc_in_use = true;
 	call->rc_refcount = 1;
 	call->rc_queue = g_queue_new();
 	call->rc_prefetch = 1;
@@ -1155,9 +1177,26 @@ rpc_connection_call_retain(struct rpc_call *call)
 	return (0);
 }
 
+static void
+rpc_call_clean(struct rpc_call *call)
+{
+
+	rpc_release(call->rc_err);
+	rpc_release(call->rc_id);
+	rpc_release(call->rc_args);
+	g_free(call->rc_path);
+	g_free(call->rc_interface);
+	g_free(call->rc_method_name);
+	if (call->rc_conn && call->rc_conn->rco_refcnt == -1)
+		g_free(call);
+	else
+		memset(call, 0, sizeof(*call));
+}
+
 int
 rpc_connection_call_release(struct rpc_call *call)
 {
+	rpc_connection_t conn = call->rc_conn;
 
 	g_assert(call->rc_refcount > 0);
 	g_mutex_lock(&call->rc_ref_mtx);
@@ -1170,16 +1209,11 @@ rpc_connection_call_release(struct rpc_call *call)
 		return (-1);
 	}
 	call->rc_refcount = -1;
+	call->rc_in_use = false;
 	g_mutex_unlock(&call->rc_ref_mtx);
 	if (call->rc_callback != NULL)
 		Block_release(call->rc_callback);
 
-	rpc_release(call->rc_err);
-	rpc_release(call->rc_id);
-	rpc_release(call->rc_args);
-	g_free(call->rc_path);
-	g_free(call->rc_interface);
-	g_free(call->rc_method_name);
 	notify_free(&call->rc_notify);
 	g_mutex_clear(&call->rc_mtx);
 	g_mutex_clear(&call->rc_ref_mtx);
@@ -1187,7 +1221,13 @@ rpc_connection_call_release(struct rpc_call *call)
 	if (call->rc_queue != NULL)
 		g_queue_free(call->rc_queue);
 
-	g_free(call);
+	/*g_free(call);*/
+
+	g_mutex_lock(&conn->rco_queue_mtx);
+	g_queue_push_tail(conn->rco_free_queue, call);
+	++conn->rco_free_calls;
+	g_mutex_unlock(&conn->rco_queue_mtx);
+
 	return (0);
 }
 
@@ -1240,16 +1280,19 @@ rpc_connection_set_default_fn_handlers(rpc_connection_t conn)
 	    rpc_function_set_async_abort_handler_impl;
 }
 
-rpc_connection_t
-rpc_connection_alloc(rpc_server_t server)
+static rpc_connection_t
+rpc_conn_init(void)
 {
-	struct rpc_connection *conn = NULL;
+	struct rpc_connection *conn = g_malloc0(sizeof(*conn));
 
-	conn = g_malloc0(sizeof(*conn));
-	conn->rco_uri = server->rs_uri;
-	conn->rco_flags = server->rs_flags;
-	conn->rco_server = server;
-	conn->rco_main_context = rpc_server_get_main_context(server);
+	g_mutex_init(&conn->rco_mtx);
+	g_mutex_init(&conn->rco_ref_mtx);
+	g_mutex_init(&conn->rco_send_mtx);
+	g_mutex_init(&conn->rco_subscription_mtx);
+	g_mutex_init(&conn->rco_queue_mtx);
+	g_rw_lock_init(&conn->rco_call_rwlock);
+	g_rw_lock_init(&conn->rco_icall_rwlock);
+
 	conn->rco_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_inbound_calls = g_hash_table_new(g_str_hash, g_str_equal);
 	conn->rco_subscriptions = g_ptr_array_new();
@@ -1260,12 +1303,23 @@ rpc_connection_alloc(rpc_server_t server)
 	conn->rco_aborted = false;
 	conn->rco_refcnt = 1;
 	conn->rco_arg = conn;
-	g_mutex_init(&conn->rco_send_mtx);
-	g_mutex_init(&conn->rco_mtx);
-	g_mutex_init(&conn->rco_ref_mtx);
-	g_rw_lock_init(&conn->rco_call_rwlock);
-	g_rw_lock_init(&conn->rco_icall_rwlock);
+	conn->rco_free_queue = g_queue_new();
 	rpc_connection_set_default_fn_handlers(conn);
+
+	return (conn);
+}
+
+rpc_connection_t
+rpc_connection_alloc(rpc_server_t server)
+{
+	struct rpc_connection *conn = NULL;
+
+	conn = rpc_conn_init();
+
+	conn->rco_uri = server->rs_uri;
+	conn->rco_flags = server->rs_flags;
+	conn->rco_server = server;
+	conn->rco_main_context = rpc_server_get_main_context(server);
 	return (conn);
 }
 
@@ -1287,29 +1341,15 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 		return (NULL);
 	}
 
-	conn = g_malloc0(sizeof(*conn));
+	conn = rpc_conn_init();
 	conn->rco_client = client;
-	g_mutex_init(&conn->rco_mtx);
-	g_mutex_init(&conn->rco_ref_mtx);
-	g_mutex_init(&conn->rco_send_mtx);
-	g_mutex_init(&conn->rco_subscription_mtx);
-	g_rw_lock_init(&conn->rco_call_rwlock);
-	g_rw_lock_init(&conn->rco_icall_rwlock);
 	conn->rco_flags = transport->flags;
 	conn->rco_params = params;
 	conn->rco_uri = client->rci_uri;
 	conn->rco_main_context = rpc_client_get_main_context(client);
-	conn->rco_calls = g_hash_table_new(g_str_hash, g_str_equal);
-	conn->rco_inbound_calls = g_hash_table_new(g_str_hash, g_str_equal);
-	conn->rco_subscriptions = g_ptr_array_new();
-	conn->rco_rpc_timeout = DEFAULT_RPC_TIMEOUT;
-	conn->rco_recv_msg = rpc_recv_msg;
-	conn->rco_close = rpc_close;
-	conn->rco_arg = conn;
-	conn->rco_refcnt = 1;
+
 	conn->rco_callback_pool = g_thread_pool_new(&rpc_callback_worker, conn,
 	    g_get_num_processors(), false, &err);
-	rpc_connection_set_default_fn_handlers(conn);
 
 	if (err != NULL)
 		goto fail;
@@ -1362,6 +1402,14 @@ rpc_connection_free_resources(rpc_connection_t conn)
 	g_free(conn->rco_endpoint_address);
 	g_rw_lock_clear(&conn->rco_call_rwlock);
 	g_rw_lock_clear(&conn->rco_icall_rwlock);
+
+	g_queue_free_full(conn->rco_free_queue, (GDestroyNotify)rpc_call_clean);
+	g_mutex_clear(&conn->rco_queue_mtx);
+	g_mutex_clear(&conn->rco_mtx);
+	g_mutex_clear(&conn->rco_ref_mtx);
+	g_mutex_clear(&conn->rco_send_mtx);
+	g_mutex_clear(&conn->rco_subscription_mtx);
+
 }
 
 int

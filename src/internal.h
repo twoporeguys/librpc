@@ -202,6 +202,7 @@ struct rpc_call
 {
 	rpc_connection_t    	rc_conn;
 	rpc_context_t 		rc_context;
+	volatile int		rc_refcount;
 	rpc_call_type_t        	rc_type;
 	char *			rc_path;
 	char *			rc_interface;
@@ -209,7 +210,6 @@ struct rpc_call
 	rpc_object_t        	rc_id;
 	rpc_object_t        	rc_args;
 	rpc_object_t		rc_err;
-	volatile int		rc_refcount;
 	struct notify		rc_notify;
 	GMutex			rc_mtx;
 	GMutex			rc_ref_mtx;
@@ -224,6 +224,7 @@ struct rpc_call
 	rpc_abort_handler_t	rc_abort_handler;
 	struct rpc_if_method *	rc_if_method;
 	void *			rc_m_arg;
+	bool			rc_in_use;
 	bool			rc_streaming;
 	bool			rc_responded;
 	bool			rc_ended;
@@ -266,6 +267,10 @@ struct rpc_connection
 	guint                 	rco_rpc_timeout;
 	GHashTable *		rco_calls;
 	GHashTable *		rco_inbound_calls;
+	GQueue *		rco_free_queue;
+	GMutex			rco_queue_mtx;
+	int			rco_total_calls;
+	int			rco_free_calls;
     	GPtrArray *		rco_subscriptions;
     	GMutex			rco_subscription_mtx;
 	GMutex			rco_mtx;
@@ -293,8 +298,9 @@ struct rpc_connection
 	rpc_close_fn_t		rco_close;
     	rpc_get_fd_fn_t 	rco_get_fd;
 	rpc_release_fn_t	rco_release;
-	void *			rco_arg;
 	struct rpc_fn_callbacks rco_fn_cbs;
+	void *			rco_arg;
+	GHashTableIter		rco_iter;
 };
 
 struct rpc_server
