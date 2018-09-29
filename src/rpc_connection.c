@@ -374,7 +374,6 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
         g_rw_lock_writer_lock(&conn->rco_icall_rwlock);
 	g_hash_table_insert(conn->rco_inbound_calls,
 	    (gpointer)rpc_string_get_string_ptr(id), call);
-	rpc_connection_retain(conn);
         g_rw_lock_writer_unlock(&conn->rco_icall_rwlock);
 
 	if (conn->rco_server != NULL)
@@ -912,7 +911,7 @@ rpc_call_alloc(rpc_connection_t conn, rpc_object_t id, const char *path,
 {
 	struct rpc_call *call;
 	rpc_object_t call_args;
-	rpc_call_t *callsp;
+	rpc_call_t callsp;
 
 	if (method == NULL) {
 		rpc_set_last_errorf(EINVAL,
@@ -932,11 +931,12 @@ rpc_call_alloc(rpc_connection_t conn, rpc_object_t id, const char *path,
 
 	//call = g_malloc0(sizeof(*call));
 
+	rpc_connection_retain(conn);
 	g_mutex_lock(&conn->rco_queue_mtx);
 	if (g_queue_is_empty(conn->rco_free_queue)) {
 		callsp = g_malloc0(CALLS_INC_CNT * sizeof(struct rpc_call));
-		for (int i = 0; i < CALLS_INC_CNT; ++i) {
-			call = callsp[i];			
+		for (int i = 0; i < CALLS_INC_CNT; ++i, ++callsp) {
+			call = callsp;
 			g_queue_push_tail(conn->rco_free_queue, call);
 			conn->rco_free_calls++;
 		}
@@ -1228,6 +1228,7 @@ rpc_connection_call_release(struct rpc_call *call)
 	++conn->rco_free_calls;
 	g_mutex_unlock(&conn->rco_queue_mtx);
 
+	rpc_connection_release(conn); /*drop the call's ref */
 	return (0);
 }
 
@@ -1246,7 +1247,6 @@ rpc_connection_close_inbound_call(struct rpc_call *call)
 		rpc_connection_release(conn);
 		return;
 	}
-	rpc_connection_release(conn); /*drop the call's ref */
 
         g_rw_lock_writer_unlock(&conn->rco_icall_rwlock);
 
@@ -1406,7 +1406,6 @@ rpc_connection_free_resources(rpc_connection_t conn)
 	g_queue_free_full(conn->rco_free_queue, (GDestroyNotify)rpc_call_clean);
 	g_mutex_clear(&conn->rco_queue_mtx);
 	g_mutex_clear(&conn->rco_mtx);
-	g_mutex_clear(&conn->rco_ref_mtx);
 	g_mutex_clear(&conn->rco_send_mtx);
 	g_mutex_clear(&conn->rco_subscription_mtx);
 
@@ -1519,6 +1518,7 @@ rpc_connection_release(rpc_connection_t conn)
 
 		conn->rco_refcnt = -1;
 		g_mutex_unlock(&conn->rco_ref_mtx);
+		g_mutex_clear(&conn->rco_ref_mtx);
 		g_free(conn);
 		return (0);
 	}
@@ -1823,7 +1823,6 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	g_rw_lock_writer_lock(&conn->rco_call_rwlock);
 	g_hash_table_insert(conn->rco_calls,
 	    (gpointer)rpc_string_get_string_ptr(call->rc_id), call);
-	rpc_connection_retain(conn);
 	g_rw_lock_writer_unlock(&conn->rco_call_rwlock);
 
 	call->rc_timeout = g_timeout_source_new_seconds(conn->rco_rpc_timeout);
@@ -2254,7 +2253,6 @@ rpc_call_free(rpc_call_t call)
 	g_rw_lock_writer_lock(&conn->rco_call_rwlock);
 	g_hash_table_remove(conn->rco_calls,
 	    (gpointer)rpc_string_get_string_ptr(call->rc_id));
-	rpc_connection_release(conn);
 	g_rw_lock_writer_unlock(&conn->rco_call_rwlock);
 
 	rpc_connection_call_release(call);
