@@ -234,6 +234,7 @@ server_test_stream_tear_down(server_fixture *fixture, gconstpointer user_data)
 		g_rand_free(fixture->rand);
 	if (fixture->str)
 		g_free(fixture->str);
+	sleep(10);
 	rpc_context_unregister_member(fixture->ctx, NULL, "stream");
 	server_test_valid_server_tear_down(fixture, user_data);
 }
