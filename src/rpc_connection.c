@@ -86,6 +86,8 @@ static inline rpc_object_t rpc_call_result_save(rpc_call_t call);
 static int rpc_connection_do_close(rpc_connection_t conn, rpc_close_source_t);
 static void rpc_call_clean(struct rpc_call *call);
 static rpc_connection_t rpc_conn_init(void);
+static void rpc_abort_worker(void *arg, void *data);
+static inline void call_abort_locked(struct rpc_call *call);
 
 struct message_handler
 {
@@ -606,13 +608,9 @@ on_rpc_abort(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 	call->rc_ended = true;
 	call->rc_aborted = true;
 	notify_signal(&call->rc_notify);
+	if (call->rc_abort_handler)
+		call_abort_locked(call);
 	g_mutex_unlock(&call->rc_mtx);
-
-	if (call->rc_abort_handler) {
-		call->rc_abort_handler();
-		Block_release(call->rc_abort_handler);
-		call->rc_abort_handler = NULL;
-	}
 }
 
 static void
@@ -826,6 +824,32 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 	return (0);
 }
 
+static inline void
+call_abort_locked(struct rpc_call *call)
+{
+	rpc_abort_handler_t abt_fn;
+
+	abt_fn = call->rc_abort_handler;
+	call->rc_abort_handler = NULL;
+	g_mutex_unlock(&call->rc_mtx);
+	abt_fn();
+	Block_release(abt_fn);
+}
+
+static void
+rpc_abort_worker(void *arg, void *data)
+{
+	struct rpc_call *call = arg;
+	struct rpc_connection *conn = data;
+
+	g_mutex_lock(&call->rc_mtx);
+	g_assert(call->rc_conn == conn);
+	if (call->rc_abort_handler)
+		call_abort_locked(call);
+	else
+		g_mutex_unlock(&call->rc_mtx);
+}
+
 static int
 rpc_close(rpc_connection_t conn)
 {
@@ -833,7 +857,9 @@ rpc_close(rpc_connection_t conn)
 	struct rpc_call *call;
 	struct queue_item *q_item;
 	char *key;
+	GError *err = NULL;
 
+	fprintf(stderr, "RPC_CLOSE CALLED on %p\n", conn);
 	g_mutex_lock(&conn->rco_mtx);
 	if (conn->rco_aborted) {
 		g_mutex_unlock(&conn->rco_mtx); /*another thread called first*/
@@ -865,13 +891,17 @@ rpc_close(rpc_connection_t conn)
 	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&call)) {
 		g_mutex_lock(&call->rc_mtx);
 		call->rc_aborted = true;
+		fprintf(stderr, "Signalling inbound call %p\n", call);
 		notify_signal(&call->rc_notify);
 		g_mutex_unlock(&call->rc_mtx);
 
 		if (call->rc_abort_handler) {
-			call->rc_abort_handler();
-			Block_release(call->rc_abort_handler);
-			call->rc_abort_handler = NULL;
+			g_thread_pool_push(conn->rco_callback_pool, call, &err);
+			if (err != NULL) {
+				g_error_free(err);
+				Block_release(call->rc_abort_handler);
+				call->rc_abort_handler = NULL;
+			}
 		}
 	}
 	g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
@@ -1173,6 +1203,7 @@ rpc_connection_call_retain(struct rpc_call *call)
 	}
 
 	++call->rc_refcount;
+
 	g_mutex_unlock(&call->rc_ref_mtx);
 	return (0);
 }
@@ -1313,6 +1344,7 @@ rpc_connection_t
 rpc_connection_alloc(rpc_server_t server)
 {
 	struct rpc_connection *conn = NULL;
+	GError *err = NULL;
 
 	conn = rpc_conn_init();
 
@@ -1320,6 +1352,13 @@ rpc_connection_alloc(rpc_server_t server)
 	conn->rco_flags = server->rs_flags;
 	conn->rco_server = server;
 	conn->rco_main_context = rpc_server_get_main_context(server);
+	conn->rco_callback_pool = g_thread_pool_new(&rpc_abort_worker, conn,
+	    g_get_num_processors(), false, &err);
+	if (err != NULL) {
+		g_free(err);
+		rpc_connection_free_resources(conn);
+		return NULL;
+	}
 	return (conn);
 }
 
@@ -1351,9 +1390,10 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	conn->rco_callback_pool = g_thread_pool_new(&rpc_callback_worker, conn,
 	    g_get_num_processors(), false, &err);
 
-	if (err != NULL)
+	if (err != NULL) {
+		g_free(err);
 		goto fail;
-
+	}
 	if (transport->connect(conn, conn->rco_uri, params) != 0)
 		goto fail;
 
@@ -1425,10 +1465,16 @@ rpc_connection_do_close(rpc_connection_t conn, rpc_close_source_t source)
 	rpc_abort_fn_t abort_func;
 
 	debugf("%s aborted: %d conn: %p refcnt: %d  arg: %p, closed %d"
-	    " source: %d",
+	    " released: %d, source: %d",
 	    conn->rco_server ? "Server" : "Client",
 	    conn->rco_aborted, conn, conn->rco_refcnt,
-	    conn->rco_arg, conn->rco_closed, source);
+	    conn->rco_arg, conn->rco_closed, conn->rco_released, source);
+
+	fprintf(stderr, "%s aborted: %d conn: %p refcnt: %d  arg: %p, closed %d"
+	    " released: %d, source: %d\n",
+	    conn->rco_server ? "Server" : "Client",
+	    conn->rco_aborted, conn, conn->rco_refcnt,
+	    conn->rco_arg, conn->rco_closed, conn->rco_released, source);
 
 	g_mutex_lock(&conn->rco_mtx);
 
