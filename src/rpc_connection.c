@@ -1212,6 +1212,7 @@ static void
 rpc_call_clean(struct rpc_call *call)
 {
 
+	g_mutex_clear(&call->rc_mtx);
 	rpc_release(call->rc_err);
 	rpc_release(call->rc_id);
 	rpc_release(call->rc_args);
@@ -1246,13 +1247,10 @@ rpc_connection_call_release(struct rpc_call *call)
 		Block_release(call->rc_callback);
 
 	notify_free(&call->rc_notify);
-	g_mutex_clear(&call->rc_mtx);
 	g_mutex_clear(&call->rc_ref_mtx);
 
 	if (call->rc_queue != NULL)
 		g_queue_free(call->rc_queue);
-
-	/*g_free(call);*/
 
 	g_mutex_lock(&conn->rco_queue_mtx);
 	g_queue_push_tail(conn->rco_free_queue, call);
