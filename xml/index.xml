@@ -403,6 +403,7 @@
     <member refid="service_8h_1a9f26d5c3cd4053019f402fa48d59d4c7" kind="define"><name>RPC_PROPERTY_GETTER</name></member>
     <member refid="service_8h_1ae4fea18e9501ac8051f8c674a81d5432" kind="define"><name>RPC_PROPERTY_SETTER</name></member>
     <member refid="service_8h_1a48571f82fd8c922efdce9b1a13c782df" kind="define"><name>RPC_ABORT_HANDLER</name></member>
+    <member refid="service_8h_1a015694f7a0131dce620948975985a373" kind="define"><name>RPC_ARG_DESTRUCTOR</name></member>
     <member refid="service_8h_1a311d28feffd55aea4c79aba5c45ef34f" kind="define"><name>RPC_EVENT</name></member>
     <member refid="service_8h_1acbb40848a04a99a67fa65f1a103af208" kind="define"><name>RPC_PROPERTY_RO</name></member>
     <member refid="service_8h_1a6ea5b0d468e84170d93e3afeaed4d5b6" kind="define"><name>RPC_PROPERTY_WO</name></member>
@@ -424,6 +425,7 @@
     <member refid="service_8h_1ab438f0c33f3f3876f1c9a23d62134f16" kind="typedef"><name>rpc_property_getter_t</name></member>
     <member refid="service_8h_1aa8b38d8ab3bafe79a96edaebafe13b8d" kind="typedef"><name>rpc_property_setter_t</name></member>
     <member refid="service_8h_1aebbaf8e39f128b6655d23aad6a8ab634" kind="typedef"><name>rpc_abort_handler_t</name></member>
+    <member refid="service_8h_1ac6f09ee9c6e6f5b72f9dc40bbaef99ac" kind="typedef"><name>rpc_arg_destructor_t</name></member>
     <member refid="service_8h_1aa53a346b1f60759fabc2f047e75fdb90" kind="function"><name>rpc_context_create</name></member>
     <member refid="service_8h_1a4f63ab83623a2f407eac2fe9b7f80023" kind="function"><name>rpc_context_free</name></member>
     <member refid="service_8h_1a125f2739087a2d4f89384d24fadb6cde" kind="function"><name>rpc_context_find_instance</name></member>
@@ -456,7 +458,9 @@
     <member refid="service_8h_1a4b6ceb43e090fda8928a3a46e7da614a" kind="function"><name>rpc_function_set_async_abort_handler</name></member>
     <member refid="service_8h_1a2d72136304739c0feb680794fee9c826" kind="function"><name>rpc_function_retain</name></member>
     <member refid="service_8h_1a8b103fc6babf355762234407d3c4326d" kind="function"><name>rpc_function_release</name></member>
-    <member refid="service_8h_1a805d705c1a9f94cf4aa04bb71a46a928" kind="function"><name>rpc_instance_new</name></member>
+    <member refid="service_8h_1aba6a4c2c0d1ce3f680d3dc8c0d32a0ca" kind="function"><name>rpc_instance_new</name></member>
+    <member refid="service_8h_1ad1a7c221ad68ca7a5b940d74f0fd5fc2" kind="function"><name>rpc_instance_retain</name></member>
+    <member refid="service_8h_1a689e93a949d252fc28cdc39f9a0e7d45" kind="function"><name>rpc_instance_release</name></member>
     <member refid="service_8h_1a913a58356a0366081127227d15a74cc4" kind="function"><name>rpc_instance_set_description</name></member>
     <member refid="service_8h_1a661c65e4aa798fd4b63851e267f5c018" kind="function"><name>rpc_instance_get_arg</name></member>
     <member refid="service_8h_1ad1901375c6ba0463bd572396682ed36f" kind="function"><name>rpc_instance_get_path</name></member>
@@ -476,7 +480,6 @@
     <member refid="service_8h_1abec6b729eadcc1b83dd99b764db53a54" kind="function"><name>rpc_property_get_instance</name></member>
     <member refid="service_8h_1a2829cbce768c9d60ac83d0547dc837ed" kind="function"><name>rpc_property_get_arg</name></member>
     <member refid="service_8h_1af119057c34e0ac7b5ce6238d2551e3af" kind="function"><name>rpc_property_error</name></member>
-    <member refid="service_8h_1aecd81447bced207f9d62b7fbf55cb4c1" kind="function"><name>rpc_instance_free</name></member>
   </compound>
   <compound refid="typing_8h" kind="file"><name>typing.h</name>
     <member refid="typing_8h_1a9f52c34e595aa02ca85cf623c1ebe6c9" kind="define"><name>RPCT_TYPING_INTERFACE</name></member>
