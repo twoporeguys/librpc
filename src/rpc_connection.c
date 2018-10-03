@@ -865,7 +865,6 @@ rpc_close(rpc_connection_t conn)
 	char *key;
 	GError *err = NULL;
 
-	fprintf(stderr, "RPC_CLOSE CALLED on %p\n", conn);
 	g_mutex_lock(&conn->rco_mtx);
 	if (conn->rco_aborted) {
 		g_mutex_unlock(&conn->rco_mtx); /*another thread called first*/
@@ -897,7 +896,6 @@ rpc_close(rpc_connection_t conn)
 	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&call)) {
 		g_mutex_lock(&call->rc_mtx);
 		call->rc_aborted = true;
-		fprintf(stderr, "Signalling inbound call %p\n", call);
 		notify_signal(&call->rc_notify);
 
 		if (call->rc_abort_handler) {
@@ -1432,12 +1430,6 @@ rpc_connection_do_close(rpc_connection_t conn, rpc_close_source_t source)
 
 	debugf("%s aborted: %d conn: %p refcnt: %d  arg: %p, closed %d"
 	    " released: %d, source: %d",
-	    conn->rco_server ? "Server" : "Client",
-	    conn->rco_aborted, conn, conn->rco_refcnt,
-	    conn->rco_arg, conn->rco_closed, conn->rco_released, source);
-
-	fprintf(stderr, "%s aborted: %d conn: %p refcnt: %d  arg: %p, closed %d"
-	    " released: %d, source: %d\n",
 	    conn->rco_server ? "Server" : "Client",
 	    conn->rco_aborted, conn, conn->rco_refcnt,
 	    conn->rco_arg, conn->rco_closed, conn->rco_released, source);
