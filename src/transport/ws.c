@@ -257,7 +257,7 @@ ws_done_waiting(gpointer user_data)
 	g_cond_broadcast(&server->ws_cv);
 	g_mutex_unlock(&server->ws_mtx);
 
-        return false;
+        return (false);
 }
 
 static int
@@ -275,7 +275,7 @@ static int
 ws_teardown_end(struct rpc_server *srv)
 {
 	struct ws_server *server = srv->rs_arg;
-        GSource *source = g_idle_source_new ();
+        GSource *source = g_idle_source_new();
 
         g_source_set_priority(source, G_PRIORITY_LOW);
         g_source_set_callback(source, ws_done_waiting, server, NULL);
