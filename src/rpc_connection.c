@@ -1405,7 +1405,7 @@ rpc_connection_free_resources(rpc_connection_t conn)
 		g_ptr_array_free(conn->rco_subscriptions, true);
 
 	if (conn->rco_callback_pool != NULL) {
-		g_thread_pool_free(conn->rco_callback_pool, true, true);
+		g_thread_pool_free(conn->rco_callback_pool, true, false);
 		conn->rco_callback_pool = NULL;
 	}
 
