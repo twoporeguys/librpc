@@ -347,9 +347,12 @@ struct rpc_instance
 	char *			ri_path;
 	char *			ri_descr;
 	void *			ri_arg;
+	bool			ri_destroyed;
+	int	 		ri_refcnt;
 	rpc_context_t 		ri_context;
 	GHashTable *		ri_interfaces;
 	GMutex			ri_mtx;
+	GCond			ri_cv;
 	GRWLock			ri_rwlock;
 };
 
@@ -597,6 +600,9 @@ INTERNAL_LINKAGE void rpc_connection_send_end(rpc_connection_t, rpc_object_t,
 INTERNAL_LINKAGE void rpc_connection_close_inbound_call(struct rpc_call *);
 INTERNAL_LINKAGE int rpc_connection_call_retain(struct rpc_call *call);
 INTERNAL_LINKAGE int rpc_connection_call_release(struct rpc_call *call);
+
+INTERNAL_LINKAGE rpc_instance_t rpc_instance_retain(rpc_instance_t);
+INTERNAL_LINKAGE void rpc_instance_release(rpc_instance_t);
 
 INTERNAL_LINKAGE void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 

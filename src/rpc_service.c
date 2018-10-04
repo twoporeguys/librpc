@@ -92,6 +92,7 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 		rpc_connection_close_inbound_call(call);
 		return;
 	}
+
 	if (rpc_connection_call_retain(call) < 0) {
 		debugf("Can't dispatch call %p, not valid", call);
 		return;
@@ -186,13 +187,13 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_call *call)
 	if (instance == NULL)
 		instance = rpc_context_find_instance(context, call->rc_path);
 
-	if (instance == NULL) {
+	if (instance == NULL || instance->ri_destroyed) {
 		call->rc_err = rpc_error_create(ENOENT, "Instance not found",
 		    NULL);
 		return (-1);
 	}
 
-	call->rc_instance = instance;
+	call->rc_instance = rpc_instance_retain(instance);
 
 	member = rpc_instance_find_member(instance,
 	    call->rc_interface, call->rc_method_name);
@@ -720,6 +721,7 @@ rpc_instance_new(void *arg, const char *fmt, ...)
 
 	result = g_malloc0(sizeof(*result));
 	g_mutex_init(&result->ri_mtx);
+	g_cond_init(&result->ri_cv);
 	g_rw_lock_init(&result->ri_rwlock);
 	result->ri_path = path;
 	result->ri_interfaces = g_hash_table_new_full(g_str_hash, g_str_equal,
@@ -778,6 +780,15 @@ rpc_instance_free(rpc_instance_t instance)
 
 	g_assert_nonnull(instance);
 
+	g_mutex_lock(&instance->ri_mtx);
+	instance->ri_destroyed = true;
+	while (instance->ri_refcnt > 0)
+		g_cond_wait(&instance->ri_cv, &instance->ri_mtx);
+
+	g_mutex_unlock(&instance->ri_mtx);
+	g_cond_clear(&instance->ri_cv);
+	g_mutex_clear(&instance->ri_mtx);
+	g_rw_lock_clear(&instance->ri_rwlock);
 	g_free(instance->ri_path);
 	g_hash_table_destroy(instance->ri_interfaces);
 	g_free(instance);
@@ -1419,4 +1430,25 @@ rpc_context_path_is_valid(const char *path)
 		return (false);
 
 	return (true);
+}
+
+rpc_instance_t
+rpc_instance_retain(rpc_instance_t inst)
+{
+
+	g_mutex_lock(&inst->ri_mtx);
+	inst->ri_refcnt++;
+	g_cond_broadcast(&inst->ri_cv);
+	g_mutex_unlock(&inst->ri_mtx);
+	return (inst);
+}
+
+void
+rpc_instance_release(rpc_instance_t inst)
+{
+
+	g_mutex_lock(&inst->ri_mtx);
+	inst->ri_refcnt--;
+	g_cond_broadcast(&inst->ri_cv);
+	g_mutex_unlock(&inst->ri_mtx);
 }
