@@ -371,24 +371,24 @@ on_rpc_call(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 
 	call->rc_type = RPC_INBOUND_CALL;
 
-        g_rw_lock_writer_lock(&conn->rco_icall_rwlock);
+	g_rw_lock_writer_lock(&conn->rco_icall_rwlock);
 	g_hash_table_insert(conn->rco_inbound_calls,
 	    (gpointer)rpc_string_get_string_ptr(id), call);
-        g_rw_lock_writer_unlock(&conn->rco_icall_rwlock);
+	g_rw_lock_writer_unlock(&conn->rco_icall_rwlock);
 
 	if (conn->rco_server != NULL)
 		res = rpc_server_dispatch(conn->rco_server, call);
 	else
 		res = rpc_context_dispatch(conn->rco_rpc_context, call);
 
-        if (res != 0) {
-		if (call->rc_err != NULL)
+	if (res != 0) {
+		if (call->rc_err != NULL) {
 			rpc_function_error(call,
 			    rpc_error_get_code(call->rc_err),
 			    rpc_error_get_message(call->rc_err));
-
-                rpc_connection_close_inbound_call(call);
-        }
+		}
+		rpc_connection_close_inbound_call(call);
+	}
 }
 
 static void
@@ -875,15 +875,15 @@ rpc_close(rpc_connection_t conn)
 	if (conn->rco_server != NULL)
 		conn->rco_closed = true;
 	
-        if (conn->rco_error_handler) {
-                if (conn->rco_error != NULL)
-                        conn->rco_error_handler(RPC_TRANSPORT_ERROR,
-                            conn->rco_error);
-
-                conn->rco_error_handler(RPC_CONNECTION_CLOSED, NULL);
-                Block_release(conn->rco_error_handler);
-                conn->rco_error_handler = NULL;
-        }
+	if (conn->rco_error_handler) {
+		if (conn->rco_error != NULL) {
+			conn->rco_error_handler(RPC_TRANSPORT_ERROR,
+			    conn->rco_error);
+		}
+		conn->rco_error_handler(RPC_CONNECTION_CLOSED, NULL);
+		Block_release(conn->rco_error_handler);
+		conn->rco_error_handler = NULL;
+	}
 
 	rpc_connection_retain(conn);
 
@@ -1240,7 +1240,7 @@ rpc_connection_close_inbound_call(struct rpc_call *call)
 
 	rpc_connection_retain(conn);
 
-        g_rw_lock_writer_lock(&conn->rco_icall_rwlock);
+	g_rw_lock_writer_lock(&conn->rco_icall_rwlock);
 
 	if (!g_hash_table_remove(conn->rco_inbound_calls, rpc_string_get_string_ptr(
 	    call->rc_id))) {
@@ -1249,9 +1249,9 @@ rpc_connection_close_inbound_call(struct rpc_call *call)
 		return;
 	}
 
-        g_rw_lock_writer_unlock(&conn->rco_icall_rwlock);
+	g_rw_lock_writer_unlock(&conn->rco_icall_rwlock);
 
-        rpc_connection_call_release(call);
+	rpc_connection_call_release(call);
 	rpc_connection_release(conn);
 }
 
@@ -1373,7 +1373,7 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 
 	return (conn);
 fail:
-        if (conn != NULL)
+	if (conn != NULL)
 		rpc_connection_free_resources(conn);
 	return (NULL);
 }
@@ -1400,8 +1400,8 @@ rpc_connection_free_resources(rpc_connection_t conn)
 	g_hash_table_destroy(conn->rco_calls);
 	g_hash_table_destroy(conn->rco_inbound_calls);
 
-        /* rpc_free_subscription_resources() TODO, foreach, strings and all */
-        if (conn->rco_subscriptions != NULL)
+	/* rpc_free_subscription_resources() TODO, foreach, strings and all */
+	if (conn->rco_subscriptions != NULL)
 		g_ptr_array_free(conn->rco_subscriptions, true);
 
 	if (conn->rco_callback_pool != NULL) {
