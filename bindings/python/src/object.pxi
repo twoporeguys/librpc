@@ -237,7 +237,7 @@ cdef class Object(object):
         cdef rpct_typei_t typei
 
         if ptr == <rpc_object_t>NULL:
-            return None
+            return Object(None)
 
         if rpc_get_type(ptr) == RPC_TYPE_DICTIONARY:
             ret = Dictionary.__new__(Dictionary)
