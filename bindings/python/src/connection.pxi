@@ -679,13 +679,10 @@ cdef class RemoteInterface(object):
 
 
 cdef rpc_object_t c_cb_function(void *cookie, rpc_object_t args) with gil:
-    cdef Array args_array
+    cdef Array args_array = Object.wrap(args)
     cdef Object rpc_obj
     cdef object cb = <object>rpc_function_get_arg(cookie)
     cdef int ret
-
-    args_array = Array.__new__(Array)
-    args_array.obj = args
 
     try:
         output = cb(*[a for a in args_array])
