@@ -187,6 +187,7 @@ cdef class Connection(object):
         cdef Connection ret
 
         ret = Connection.__new__(Connection)
+        ret.__init__()
         ret.borrowed = True
         ret.connection = ptr
         return ret
