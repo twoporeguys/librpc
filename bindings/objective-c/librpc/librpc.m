@@ -50,7 +50,17 @@
         } else if ([value isKindOfClass:[RPCObject class]]) {
             _obj = rpc_retain([(RPCObject *)value nativeValue]);
         } else if ([value isKindOfClass:[NSNumber class]]) {
-            _obj = rpc_int64_create([(NSNumber *)value integerValue]);
+            if (strcmp([value objCType], @encode(BOOL)) == 0) {
+                _obj = rpc_bool_create([(NSNumber *)value boolValue]);
+            } else if (strcmp([value objCType], @encode(int)) == 0) {
+                _obj = rpc_int64_create([(NSNumber *)value integerValue]);
+            } else if (strcmp([value objCType], @encode(uint)) == 0) {
+                _obj = rpc_int64_create([(NSNumber *)value unsignedIntegerValue]);
+            } else if (strcmp([value objCType], @encode(double)) == 0) {
+                _obj = rpc_double_create([(NSNumber *)value doubleValue]);
+            } else { // default case 
+                _obj = rpc_int64_create([(NSNumber *)value integerValue]);
+            }
         } else if ([value isKindOfClass:[NSString class]]) {
             _obj = rpc_string_create([(NSString *)value UTF8String]);
         } else if ([value isKindOfClass:[NSDate class]]) {
