@@ -409,9 +409,7 @@ bus_netlink_recv(struct bus_netlink *bn)
 
 	switch (nlh->nlmsg_type) {
 		case NLMSG_ERROR:
-			out = NULL;
-			payload = NULL;
-			break;
+			return (-1);
 
 		case NLMSG_DONE:
 			out = g_malloc(sizeof(*out));
