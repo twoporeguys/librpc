@@ -401,6 +401,9 @@ bus_netlink_recv(struct bus_netlink *bn)
 	msglen = recv(bn->bn_sock, buf, BUS_NL_MSGSIZE, 0);
 	nlh = (struct nlmsghdr *)buf;
 
+	if (msglen <= 0)
+		return (-1);
+
 	debugf("message: type=%d, seq=%d, len=%d", nlh->nlmsg_type, cn->seq,
 	    cn->len);
 
