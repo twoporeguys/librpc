@@ -150,7 +150,7 @@ rpc_context_create(void)
 	result->rcx_servers = g_ptr_array_new();
 	result->rcx_instances = g_hash_table_new(g_str_hash, g_str_equal);
 	result->rcx_threadpool = g_thread_pool_new(rpc_context_tp_handler,
-	    result, g_get_num_processors() * 4, true, &err);
+	    result, -1, false, &err);
 
 	rpc_instance_set_description(result->rcx_root, "Root object");
 	rpc_context_register_instance(result, result->rcx_root);
