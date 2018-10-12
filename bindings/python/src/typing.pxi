@@ -510,7 +510,7 @@ cdef class BaseTypingObject(object):
             value = Object(value, typei=member.type)
             result, errors = member.type.validate(value)
             if not result:
-                raise LibException(errno.EINVAL, 'Validation failed', errors.unpack())
+                raise LibException(errno.EINVAL, 'Validation failed for member {0}: {1}'.format(member.name, errors.unpack()), errors.unpack())
 
             self.__object__[member.name] = value
 
