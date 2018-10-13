@@ -630,14 +630,16 @@ rpct_typei_is_compatible(struct rpct_typei *decl, struct rpct_typei *type)
 	if (!compatible)
 		return (false);
 
-	/*for (guint i = 0; i < type->specializations->len; i++) {
+#if 0
+	for (guint i = 0; i < type->specializations->len; i++) {
 		compatible = rpct_type_is_compatible(
 		    g_ptr_array_index(decl->specializations, i),
 		    g_ptr_array_index(type->specializations, i));
 
 		if (!compatible)
 			break;
-	}*/
+	}
+#endif
 
 	return (compatible);
 }
@@ -1385,7 +1387,8 @@ rpct_validate_instance(struct rpct_typei *typei, rpc_object_t obj,
 	}
 
 	/* Step 2: check type */
-	if (!rpct_typei_is_compatible(raw_typei, obj->ro_typei)) {
+	if (!rpct_typei_is_compatible(raw_typei,
+	    rpct_unwind_typei(obj->ro_typei))) {
 		rpct_add_error(errctx, NULL,
 		    "Incompatible type %s, should be %s",
 		    obj->ro_typei->canonical_form,
