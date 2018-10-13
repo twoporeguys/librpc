@@ -442,10 +442,10 @@ rpc_json_write_object_ext(yajl_gen gen, rpc_object_t object,
 
 	case RPC_TYPE_BINARY:
 		data_buf = rpc_data_get_bytes_ptr(object);
-		if (data_buf == NULL) {
-			base64_data = g_strdup_printf("");
-		} else {
-			base64_data = g_base64_encode((const guchar *) data_buf,
+		if (data_buf == NULL)
+			base64_data = g_strdup("");
+		else {
+			base64_data = g_base64_encode((const guchar *)data_buf,
 			    object->ro_value.rv_bin.rbv_length);
 		}
 
