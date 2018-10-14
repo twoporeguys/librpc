@@ -546,11 +546,13 @@ on_rpc_continue(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 		return;
 	}
 
+	rpc_connection_call_retain(call);
 	g_mutex_lock(&call->rc_mtx);
 	g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
 	call->rc_consumer_seqno += increment;
 	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
+	rpc_connection_call_release(call);
 }
 
 static void
@@ -568,10 +570,12 @@ on_rpc_end(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, id);
 		return;
 	}
+	rpc_connection_call_retain(call);
 	g_mutex_lock(&call->rc_mtx);
 	if (cancel_timeout_locked(call) != 0) {
 		g_mutex_unlock(&call->rc_mtx);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
+		rpc_connection_call_release(call);
 		return;
 	}
 
@@ -584,6 +588,7 @@ on_rpc_end(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 	g_queue_push_tail(call->rc_queue, q_item);
 	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
+	rpc_connection_call_release(call);
 }
 
 static void
@@ -601,11 +606,11 @@ on_rpc_abort(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 		return;
 	}
 
+	rpc_connection_call_retain(call);
 	g_mutex_lock(&call->rc_mtx);
 	g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
 	call->rc_ended = true;
 	call->rc_aborted = true;
-	rpc_connection_call_retain(call);
 	notify_signal(&call->rc_notify);
 	if (call->rc_abort_handler)
 		call_abort_locked(call);
