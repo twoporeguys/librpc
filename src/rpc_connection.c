@@ -407,11 +407,14 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	}
 
 	g_assert(call->rc_type == RPC_OUTBOUND_CALL);
+
+	rpc_connection_call_retain(call);
 	g_mutex_lock(&call->rc_mtx);
 
 	if (cancel_timeout_locked(call) != 0) {
 		g_mutex_unlock(&call->rc_mtx);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
+		rpc_connection_call_release(call);
 		return;
 	}
 
@@ -431,6 +434,7 @@ on_rpc_response(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	g_queue_push_tail(call->rc_queue, q_item);
 	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
+	rpc_connection_call_release(call);
 }
 
 static void
@@ -448,10 +452,12 @@ on_rpc_start_stream(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
 	}
+	rpc_connection_call_retain(call);
 	g_mutex_lock(&call->rc_mtx);
 	if (cancel_timeout_locked(call) != 0) {
 		g_mutex_unlock(&call->rc_mtx);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
+		rpc_connection_call_release(call);
 		return;
 	}
 
@@ -473,6 +479,7 @@ on_rpc_start_stream(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	g_queue_push_tail(call->rc_queue, q_item);
 	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
+	rpc_connection_call_release(call);
 }
 
 static void
@@ -491,10 +498,13 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 		return;
 	}
+
+	rpc_connection_call_retain(call);
 	g_mutex_lock(&call->rc_mtx);
 	if (cancel_timeout_locked(call) != 0) {
 		g_mutex_unlock(&call->rc_mtx);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
+		rpc_connection_call_release(call);
 		return;
 	}
 
@@ -506,6 +516,7 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	if (payload == NULL) {
 		debugf("Fragment with no payload received on %p", conn);
 		g_mutex_unlock(&call->rc_mtx);
+		rpc_connection_call_release(call);
 		return;
 	}
 
@@ -523,6 +534,7 @@ on_rpc_fragment(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	g_queue_push_tail(call->rc_queue, q_item);
 	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
+	rpc_connection_call_release(call);
 }
 
 static void
@@ -570,6 +582,7 @@ on_rpc_end(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, id);
 		return;
 	}
+
 	rpc_connection_call_retain(call);
 	g_mutex_lock(&call->rc_mtx);
 	if (cancel_timeout_locked(call) != 0) {
@@ -612,9 +625,10 @@ on_rpc_abort(rpc_connection_t conn, rpc_object_t args __unused, rpc_object_t id)
 	call->rc_ended = true;
 	call->rc_aborted = true;
 	notify_signal(&call->rc_notify);
-	if (call->rc_abort_handler)
+	if (call->rc_abort_handler) {
+		/* call_abort_locked() will cause the call release */
 		call_abort_locked(call);
-	else {
+	} else {
 		g_mutex_unlock(&call->rc_mtx);
 		rpc_connection_call_release(call);
 	}
@@ -638,11 +652,13 @@ on_rpc_error(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 			call = g_hash_table_lookup(conn->rco_inbound_calls,
 			    rpc_string_get_string_ptr(id));
 			if (call != NULL) {
+				rpc_connection_call_retain(call);
 				g_mutex_lock(&call->rc_mtx);
 				g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
 				call->rc_consumer_seqno++;
 				notify_signal(&call->rc_notify);
 				g_mutex_unlock(&call->rc_mtx);
+				rpc_connection_call_release(call);
 				return;
 			}
 			g_rw_lock_reader_unlock(&conn->rco_icall_rwlock);
@@ -652,10 +668,13 @@ on_rpc_error(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 			conn->rco_error_handler(RPC_SPURIOUS_RESPONSE, id);
 		return;
 	}
+
+	rpc_connection_call_retain(call);
 	g_mutex_lock(&call->rc_mtx);
 	if (cancel_timeout_locked(call) != 0) {
 		g_mutex_unlock(&call->rc_mtx);
 		g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
+		rpc_connection_call_release(call);
 		return;
 	}
 
@@ -668,6 +687,7 @@ on_rpc_error(rpc_connection_t conn, rpc_object_t args, rpc_object_t id)
 	g_queue_push_tail(call->rc_queue, q_item);
 	notify_signal(&call->rc_notify);
 	g_mutex_unlock(&call->rc_mtx);
+	rpc_connection_call_release(call);
 }
 
 static void
