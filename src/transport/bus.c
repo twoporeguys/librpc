@@ -35,7 +35,7 @@
 #include <sys/poll.h>
 #include <sys/ioctl.h>
 #include <glib.h>
-#include <libsoup/soup.h>
+#include <yuarel.h>
 #include <libudev.h>
 #include <linux/netlink.h>
 #include <linux/connector.h>
