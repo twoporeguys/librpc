@@ -137,10 +137,15 @@ static int
 bus_connect(struct rpc_connection *rco, const char *uri_string,
     rpc_object_t args __unused)
 {
-	SoupURI *uri;
+	g_autofree char *uri_copy = g_strdup(uri_string);
+	struct yuarel uri;
 	struct bus_connection *conn;
 
-	uri = soup_uri_new(uri_string);
+	if (yuarel_parse(&uri, uri_copy) != 0) {
+		rpc_set_last_errorf(EINVAL, "Cannot parse URI");
+		return (-1);
+	}
+
 	conn = g_malloc0(sizeof(struct bus_connection));
 	conn->bc_parent = rco;
 

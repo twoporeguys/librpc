@@ -29,13 +29,14 @@
 #include <string.h>
 #include <errno.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <gio/gio.h>
 #ifndef _WIN32
 #include <gio/gunixcredentialsmessage.h>
 #include <gio/gunixfdmessage.h>
 #include <gio/gunixsocketaddress.h>
 #endif
-#include <libsoup/soup.h>
+#include <yuarel.h>
 #include "../linker_set.h"
 #include "../internal.h"
 
@@ -93,26 +94,27 @@ socket_parse_uri(const char *uri_string)
 	GResolver *resolver;
 	GError *err = NULL;
 	GList *addresses;
-	SoupURI *uri;
+	struct yuarel uri;
+	char *uri_copy = g_strdup(uri_string);
 	char *host;
 	char *upath;
 
-	uri = soup_uri_new(uri_string);
-	if (uri == NULL) {
+	if (yuarel_parse(&uri, uri_copy) != 0) {
 		rpc_set_last_errorf(EINVAL, "Cannot parse URI");
 		return (NULL);
 	}
 
-	if (!g_strcmp0(uri->scheme, "socket")) {
-		soup_uri_free(uri);
+	if (!g_strcmp0(uri.scheme, "socket")) {
+		g_free(uri_copy);
 		rpc_set_last_errorf(EINVAL,
 		    "socket:// may be used only with file descriptors");
 		return (NULL);
 	}
 
-	if (!g_strcmp0(uri->scheme, "tcp")) {
+	if (!g_strcmp0(uri.scheme, "tcp")) {
 		resolver = g_resolver_get_default();
-		addresses = g_resolver_lookup_by_name(resolver, uri->host, NULL, &err);
+		addresses = g_resolver_lookup_by_name(resolver, uri.host,
+		    NULL, &err);
 		g_object_unref(resolver);
 
 		if (addresses == NULL || addresses->data == NULL) {
@@ -122,7 +124,7 @@ socket_parse_uri(const char *uri_string)
 		}
 
 		host = g_inet_address_to_string(addresses->data);
-		addr = g_inet_socket_address_new_from_string(host, uri->port);
+		addr = g_inet_socket_address_new_from_string(host, uri.port);
 
 		g_free(host);
 		g_list_free_full(addresses, g_object_unref);
@@ -130,14 +132,14 @@ socket_parse_uri(const char *uri_string)
 	}
 
 #ifndef _WIN32
-	if (!g_strcmp0(uri->scheme, "unix")) {
-		if (uri->host == NULL || uri->path ==NULL)
+	if (!g_strcmp0(uri.scheme, "unix")) {
+		if (uri.host == NULL || uri.path ==NULL)
 			return NULL;
 
-		if (strlen(uri->host) + strlen(uri->path) == 0)
+		if (strlen(uri.host) + strlen(uri.path) == 0)
 			return (NULL);
 
-		upath = g_strdup_printf("%s%s", uri->host, uri->path);
+		upath = g_strdup_printf("%s%s", uri.host, uri.path);
 		addr = g_unix_socket_address_new(upath);
 		g_free(upath);
 		goto done;
@@ -145,7 +147,7 @@ socket_parse_uri(const char *uri_string)
 #endif
 
 done:
-	soup_uri_free(uri);
+	g_free(uri_copy);
 	return (addr);
 }
 
@@ -305,11 +307,12 @@ socket_listen(struct rpc_server *srv, const char *uri,
     rpc_object_t args)
 {
 	GError *err = NULL;
-	GFile *file;
+	GFile *file = NULL;
 	GUnixSocketAddress *uaddr;
 	GSocketAddress *addr = NULL;
 	GSocket *sock = NULL;
 	struct socket_server *server;
+	mode_t unix_socket_mode = 0660;
 
 	if (args != NULL && rpc_get_type(args) == RPC_TYPE_FD) {
 		sock = g_socket_new_from_fd(rpc_fd_get_value(args), &err);
@@ -326,6 +329,9 @@ socket_listen(struct rpc_server *srv, const char *uri,
 			    "No Such Address", NULL);
 			return (-1);
 		}
+
+		if (args != NULL && rpc_get_type(args) == RPC_TYPE_INT64)
+			unix_socket_mode = (mode_t)rpc_int64_get_value(args);
 	}
 
 	server = g_malloc0(sizeof(*server));
@@ -343,9 +349,9 @@ socket_listen(struct rpc_server *srv, const char *uri,
 	 */
 	if (addr != NULL) {
 		if (g_socket_address_get_family(addr) == G_SOCKET_FAMILY_UNIX) {
-			uaddr = G_UNIX_SOCKET_ADDRESS (addr);
-			file = 
-			    g_file_new_for_path(g_unix_socket_address_get_path(uaddr));
+			uaddr = G_UNIX_SOCKET_ADDRESS(addr);
+			file = g_file_new_for_path(
+			    g_unix_socket_address_get_path(uaddr));
 
 			if (g_file_query_exists(file, NULL)) {
 				g_file_delete(file, NULL, &err);
@@ -360,12 +366,16 @@ socket_listen(struct rpc_server *srv, const char *uri,
 				}
 			}
 
-			g_object_unref(file);
 		}
 
 		g_socket_listener_add_address(server->ss_listener, addr,
 		    G_SOCKET_TYPE_STREAM, G_SOCKET_PROTOCOL_DEFAULT, NULL,
 		    NULL, &err);
+
+		if (file != NULL) {
+			chmod(g_file_get_path(file), unix_socket_mode);
+			g_object_unref(file);
+		}
 
 		g_object_unref(addr);
 	}
@@ -384,7 +394,7 @@ socket_listen(struct rpc_server *srv, const char *uri,
 	}
 
 	/* Schedule first accept */
-	server->ss_cancellable = g_cancellable_new ();
+	server->ss_cancellable = g_cancellable_new();
 
 	g_mutex_lock(&server->ss_mtx);
 	g_socket_listener_accept_async(server->ss_listener,

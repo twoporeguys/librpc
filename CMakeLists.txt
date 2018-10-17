@@ -149,6 +149,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -fblocks -Wall -Wextra -Wno-unused-paramet
 set(CMAKE_C_FLAGS_DEBUG "-g -O0")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 include_directories(include)
+include_directories(contrib/libyuarel)
 include_directories(/usr/local/include)
 include_directories(${CMAKE_BINARY_DIR}/include)
 include_directories (${GLIB_INCLUDE_DIRS})
@@ -216,7 +217,9 @@ set(CORE_FILES
         src/utils.c
         src/internal.h
         src/linker_set.h
-        src/memfd.h)
+        src/memfd.h
+        contrib/libyuarel/yuarel.c
+        contrib/libyuarel/yuarel.h)
 
 set(TRANSPORT_FILES
         src/transport/socket.c
