@@ -383,11 +383,11 @@ if(BUILD_RPCD AND LINUX)
     add_subdirectory(tools/rpcd)
 endif()
 
-if(BUILD_RPCDOC)
+if(BUILD_PYTHON AND BUILD_RPCDOC)
     add_subdirectory(tools/rpcdoc)
 endif()
 
-if(BUILD_RPCLINT)
+if(BUILD_PYTHON AND BUILD_RPCLINT)
     add_subdirectory(tools/rpclint)
 endif()
 
