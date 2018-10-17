@@ -375,7 +375,7 @@ if(BUILD_RPCTOOL)
     add_subdirectory(tools/rpctool)
 endif()
 
-if(BUILD_RPCTOOL)
+if(BUILD_PYTHON AND BUILD_RPCGUI)
     add_subdirectory(tools/rpcgui)
 endif()
 
