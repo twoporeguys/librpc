@@ -27,6 +27,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <unistd.h>
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -149,7 +150,7 @@ bus_connect(struct rpc_connection *rco, const char *uri_string,
 	conn = g_malloc0(sizeof(struct bus_connection));
 	conn->bc_parent = rco;
 
-	if (bus_lookup_address(uri->host, &conn->bc_address) != 0) {
+	if (bus_lookup_address(uri.host, &conn->bc_address) != 0) {
 		rpc_set_last_error(ENOENT, "Cannot find device", NULL);
 		g_free(conn);
 		return (-1);
