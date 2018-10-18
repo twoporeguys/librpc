@@ -295,7 +295,7 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
  * @param path Path of the instance to watch
  * @param interface Interface name containing the @p event
  */
-- (nonnull RPCListenHandle *)eventObserver:(nonnull NSString *)event
+- (nullable RPCListenHandle *)eventObserver:(nonnull NSString *)event
                                       path:(nonnull NSString *)path
                                  interface:(nonnull NSString *)interface
                                   callback:(nullable RPCEventCallback)cb;
@@ -310,7 +310,7 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
  * @param path Path of the instance to watch
  * @param interface Interface name containing the property
  */
-- (nonnull RPCListenHandle *)observeProperty:(nonnull NSString *)name
+- (nullable RPCListenHandle *)observeProperty:(nonnull NSString *)name
                                         path:(nonnull NSString *)path
                                    interface:(nonnull NSString *)interface
                                     callback:(nullable RPCPropertyCallback)cb;
