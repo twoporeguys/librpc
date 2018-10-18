@@ -30,6 +30,7 @@
 #include <glib.h>
 #include <libsoup/soup.h>
 #include <libusb.h>
+#include <yuarel.h>
 #include <rpc/object.h>
 #include "../internal.h"
 #include "../linker_set.h"
@@ -318,11 +319,15 @@ static int
 usb_connect(struct rpc_connection *rco, const char *uri_string,
     rpc_object_t args)
 {
-	SoupURI *uri;
+	g_autofree char *uri_copy = g_strdup(uri_string);
+	struct yuarel uri;
 	struct usb_connection *conn;
 	struct librpc_usb_identification ident;
 
-	uri = soup_uri_new(uri_string);
+	if (yuarel_parse(&uri, uri_copy) != 0) {
+		rpc_set_last_errorf(EINVAL, "Cannot parse URI");
+		return (-1);
+	}
 
 	conn = g_malloc0(sizeof(*conn));
 	conn->uc_logfd = -1;
@@ -336,13 +341,11 @@ usb_connect(struct rpc_connection *rco, const char *uri_string,
 	conn->uc_libusb_thread = g_thread_new("libusb worker",
 	    usb_libusb_thread, &conn->uc_state);
 
-	if (uri->host != NULL)
-		conn->uc_handle = usb_find(conn->uc_libusb, uri->host, -1);
+	if (uri.host != NULL)
+		conn->uc_handle = usb_find(conn->uc_libusb, uri.host, -1);
 
-	if (uri->port != 0)
-		conn->uc_handle = usb_find(conn->uc_libusb, NULL, uri->port);
-
-	soup_uri_free(uri);
+	if (uri.port != 0)
+		conn->uc_handle = usb_find(conn->uc_libusb, NULL, uri.port);
 
 	if (conn->uc_handle == NULL) {
 		rpc_set_last_error(ENOENT, "Cannot find device", NULL);

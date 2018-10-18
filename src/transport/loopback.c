@@ -29,7 +29,7 @@
 #include <errno.h>
 #include <glib.h>
 #include <string.h>
-#include <libsoup/soup.h>
+#include <yuarel.h>
 #include "../../src/linker_set.h"
 #include "../../src/internal.h"
 
@@ -117,20 +117,18 @@ static int
 loopback_connect(struct rpc_connection *conn, const char *uri_string,
     rpc_object_t extra __unused)
 {
-	SoupURI *uri;
+	struct yuarel uri;
 	struct loopback_channel *chan;
+	g_autofree char *uri_copy = g_strdup(uri_string);
 	int number;
 
-	uri = soup_uri_new(uri_string);
-	if (uri == NULL) {
+	if (yuarel_parse(&uri, uri_copy) != 0) {
 		rpc_set_last_error(EINVAL, "Invalid URI", NULL);
 		return (-1);
 	}
 
-	number = (int)strtoul(uri->host, NULL, 10);
+	number = (int)strtoul(uri.host, NULL, 10);
 	chan = g_hash_table_lookup(loopback_channels, GINT_TO_POINTER(number));
-
-	soup_uri_free(uri);
 
 	if (chan == NULL) {
 		rpc_set_last_error(ENOENT, "Channel not found", NULL);
@@ -144,22 +142,24 @@ static int
 loopback_listen(struct rpc_server *srv, const char *uri_string,
     rpc_object_t extra __unused)
 {
-	SoupURI *uri;
+	g_autofree char *uri_copy = g_strdup(uri_string);
+	struct yuarel uri;
 	struct loopback_channel *chan;
 	int host = 0;
 	int fail = false;
 
-	uri = soup_uri_new(uri_string);
-
-	if ((uri == NULL) || (uri->host == NULL) || !strlen(uri->host))
-		fail = true;
-	else {
-		host = (int)strtoul(uri->host, NULL, 10);
-		if (host == 0 && uri->host[0] != '0')
-			fail = true;
+	if (yuarel_parse(&uri, uri_copy) != 0) {
+		rpc_set_last_errorf(EINVAL, "Cannot parse URI");
+		return (-1);
 	}
 
-	soup_uri_free(uri);
+	if (uri.host == NULL || !strlen(uri.host))
+		fail = true;
+	else {
+		host = (int)strtoul(uri.host, NULL, 10);
+		if (host == 0 && uri.host[0] != '0')
+			fail = true;
+	}
 
 	if (fail) {
 		srv->rs_error = rpc_error_create(ENXIO, "No Such Address", NULL);
@@ -176,8 +176,8 @@ loopback_listen(struct rpc_server *srv, const char *uri_string,
 	if (loopback_channels == NULL)
 		loopback_channels = g_hash_table_new(NULL, NULL);
 
-	g_hash_table_insert(loopback_channels, GINT_TO_POINTER(chan->lc_number),
-	    chan);
+	g_hash_table_insert(loopback_channels,
+	    GINT_TO_POINTER(chan->lc_number), chan);
 	return (0);
 }
 
