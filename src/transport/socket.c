@@ -133,8 +133,6 @@ socket_parse_uri(const char *uri_string)
 
 #ifndef _WIN32
 	if (!g_strcmp0(uri.scheme, "unix")) {
-		if (uri.host == NULL || uri.path ==NULL)
-			return NULL;
 
 		if (strlen(uri.host) + strlen(uri.path) == 0)
 			return (NULL);
