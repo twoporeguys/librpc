@@ -466,11 +466,7 @@
 
         default:
             if (error != nil) {
-                userInfo = @{NSLocalizedDescriptionKey: @"Invalid RPC call state"};
-                
-                *error = [NSError errorWithDomain:NSPOSIXErrorDomain
-                                             code:EINVAL
-                                         userInfo:userInfo];
+                *error = [[RPCObject lastError] value];
             }
             return nil;
     }
