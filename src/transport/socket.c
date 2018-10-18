@@ -134,7 +134,7 @@ socket_parse_uri(const char *uri_string)
 #ifndef _WIN32
 	if (!g_strcmp0(uri.scheme, "unix")) {
 
-		if (strlen(uri.host) + strlen(uri.path) == 0)
+		if (uri.host == NULL && uri.path ==NULL)
 			return (NULL);
 
 		upath = g_strdup_printf("%s%s", uri.host, uri.path);
