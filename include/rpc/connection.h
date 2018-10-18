@@ -292,11 +292,14 @@ int rpc_connection_unsubscribe_event(_Nonnull rpc_connection_t conn,
  *
  * Each time an event occurs, a handler block is going to be called.
  *
+ * If the connection is no longer valid a NULL cookie will be returned.
+ *
  * @param conn Connection to register an event handler for
  * @param name Name of an event to be handled
  * @param handler Event handler of rpc_handler_t type
+ * @return Cookie for @ref rpc_connection_unregister_event_handler or NULL.
  */
-void *_Nonnull rpc_connection_register_event_handler(
+void *_Nullable rpc_connection_register_event_handler(
     _Nonnull rpc_connection_t conn, const char *_Nullable path,
     const char *_Nullable interface, const char *_Nonnull name,
     _Nullable rpc_handler_t handler);

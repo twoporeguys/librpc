@@ -86,6 +86,7 @@ static int rpc_connection_do_close(rpc_connection_t conn, rpc_close_source_t);
 static rpc_connection_t rpc_connection_init(void);
 static void rpc_abort_worker(void *arg, void *data);
 static void call_abort_locked(struct rpc_call *call);
+static bool rpc_connection_retain_if_open(rpc_connection_t conn);
 
 struct message_handler
 {
@@ -207,7 +208,7 @@ rpc_run_callback(rpc_connection_t conn, struct work_item *item)
 {
 	GError *err = NULL;
 
-	if (conn->rco_closed)
+	if (!rpc_connection_is_open(conn))
 		return (false);
 
 #ifdef ENABLE_LIBDISPATCH
@@ -263,21 +264,25 @@ rpc_callback_worker(void *arg, void *data)
 	}
 
 	if (item->event) {
-		path = rpc_dictionary_get_string(item->event, "path");
-		interface = rpc_dictionary_get_string(item->event, "interface");
-		name = rpc_dictionary_get_string(item->event, "name");
-		data = rpc_dictionary_get_value(item->event, "args");
-		sub = rpc_connection_find_subscription(conn, path, interface, name);
+		if (rpc_connection_retain_if_open(conn)) {
 
-		if (sub != NULL) {
-			for (guint i = 0; i < sub->rsu_handlers->len; i++) {
-				handler = g_ptr_array_index(sub->rsu_handlers, i);
-				handler->rsh_handler(path, interface, name, data);
+			path = rpc_dictionary_get_string(item->event, "path");
+			interface = rpc_dictionary_get_string(item->event, "interface");
+			name = rpc_dictionary_get_string(item->event, "name");
+			data = rpc_dictionary_get_value(item->event, "args");
+			sub = rpc_connection_find_subscription(conn, path, interface, name);
+
+			if (sub != NULL) {
+				for (guint i = 0; i < sub->rsu_handlers->len; i++) {
+					handler = g_ptr_array_index(sub->rsu_handlers, i);
+					handler->rsh_handler(path, interface, name, data);
+				}
 			}
-		}
 
-		if (conn->rco_event_handler != NULL)
-			conn->rco_event_handler(path, interface, name, data);
+			if (conn->rco_event_handler != NULL)
+				conn->rco_event_handler(path, interface, name, data);
+			rpc_connection_release(conn);
+		}
 
 		rpc_release(item->event);
 	}
@@ -1509,7 +1514,7 @@ bool
 rpc_connection_is_open(rpc_connection_t conn)
 {
 
-	return (!(conn->rco_closed || conn->rco_aborted));
+	return (!(conn->rco_closed || conn->rco_aborted || conn->rco_refcnt < 1));
 }
 
 int
@@ -1698,12 +1703,31 @@ rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *path,
 	return (0);
 }
 
+static bool
+rpc_connection_retain_if_open(rpc_connection_t conn)
+{
+
+	g_mutex_lock(&conn->rco_mtx);
+	if (!rpc_connection_is_open(conn)) {
+		g_mutex_unlock(&conn->rco_mtx);
+		debugf("connection not open");
+		rpc_set_last_error(ECONNRESET, "Connection closed", NULL);
+		return (false);
+	}
+	rpc_connection_retain(conn);
+	g_mutex_unlock(&conn->rco_mtx);
+	return (true);
+}
+
 void *
 rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
     const char *interface, const char *name, rpc_handler_t handler)
 {
 	struct rpc_subscription *sub;
 	struct rpc_subscription_handler *rsh;
+
+	if (!rpc_connection_retain_if_open(conn))
+		return (NULL);
 
 	g_mutex_lock(&conn->rco_subscription_mtx);
 
@@ -1714,6 +1738,7 @@ rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
 	rsh->rsh_handler = Block_copy(handler);
 	g_ptr_array_add(sub->rsu_handlers, rsh);
 	g_mutex_unlock(&conn->rco_subscription_mtx);
+	rpc_connection_release(conn);
 	return (rsh);
 }
 
@@ -1722,9 +1747,13 @@ rpc_connection_unregister_event_handler(rpc_connection_t conn, void *cookie)
 {
 	struct rpc_subscription_handler *rsh = cookie;
 
+	if (!rpc_connection_retain_if_open(conn))
+		return;
+
 	g_mutex_lock(&conn->rco_subscription_mtx);
 	g_ptr_array_remove(rsh->rsh_parent->rsu_handlers, cookie);
 	g_mutex_unlock(&conn->rco_subscription_mtx);
+	rpc_connection_release(conn);
 
 }
 
@@ -1827,17 +1856,14 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	rpc_object_t payload;
 	rpc_object_t frame;
 
-	g_mutex_lock(&conn->rco_mtx);
-	if (!rpc_connection_is_open(conn)) {
-		g_mutex_unlock(&conn->rco_mtx);
-		debugf("connection not open");
-		rpc_set_last_error(ECONNRESET, "Connection closed", NULL);
+	if (!rpc_connection_retain_if_open(conn))
 		return (NULL);
-	}
 
 	call = rpc_call_alloc(conn, NULL, path, interface, name, args);
-	if (call == NULL)
+	if (call == NULL) {
+		rpc_connection_release(conn);
 		return (NULL);
+	}
 
 	call->rc_type = RPC_OUTBOUND_CALL;
 	call->rc_callback = callback != NULL ? Block_copy(callback) : NULL;
@@ -1861,15 +1887,18 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 
 	call->rc_timeout = g_timeout_source_new_seconds(conn->rco_rpc_timeout);
 	g_source_set_callback(call->rc_timeout, &rpc_call_timeout, call, NULL);
+	g_mutex_lock(&conn->rco_mtx);
 	g_source_attach(call->rc_timeout, conn->rco_main_context);
 	g_mutex_unlock(&call->rc_mtx);
 	g_mutex_unlock(&conn->rco_mtx);
 
 	if (rpc_send_frame(conn, frame) != 0) {
 		rpc_call_free(call);
+		rpc_connection_release(conn);
 		return (NULL);
 	}
 
+	rpc_connection_release(conn);
 	return (call);
 }
 
