@@ -98,6 +98,7 @@ socket_parse_uri(const char *uri_string)
 	char *uri_copy = g_strdup(uri_string);
 	char *host;
 	char *upath;
+	char *ptr = NULL;
 
 	if (yuarel_parse(&uri, uri_copy) != 0) {
 		rpc_set_last_errorf(EINVAL, "Cannot parse URI");
@@ -112,6 +113,24 @@ socket_parse_uri(const char *uri_string)
 	}
 
 	if (!g_strcmp0(uri.scheme, "tcp")) {
+		if (uri.host[0] == '[') {
+			uri.port = 0;
+			ptr = strchr(uri_string, ']');
+			if (ptr) {
+				ptr += 1;
+				if (*ptr == ':') {
+					uri.port = atoi(ptr+1);
+				}
+			}
+			if (ptr == NULL || uri.port == 0) {
+				g_free(uri_copy);
+				rpc_set_last_errorf(EINVAL,
+				    "Missing tcp port");
+					return (NULL);
+			}
+			uri.host = "::";
+		}
+
 		resolver = g_resolver_get_default();
 		addresses = g_resolver_lookup_by_name(resolver, uri.host,
 		    NULL, &err);
@@ -120,6 +139,7 @@ socket_parse_uri(const char *uri_string)
 		if (addresses == NULL || addresses->data == NULL) {
 			rpc_set_last_gerror(err);
 			g_error_free(err);
+			g_free(uri_copy);
 			return (NULL);
 		}
 
@@ -134,10 +154,10 @@ socket_parse_uri(const char *uri_string)
 #ifndef _WIN32
 	if (!g_strcmp0(uri.scheme, "unix")) {
 
-		if (uri.host == NULL && uri.path ==NULL)
+		if (uri.host == NULL)
 			return (NULL);
 
-		upath = g_strdup_printf("%s%s", uri.host, uri.path);
+		upath = g_strdup_printf("%s", uri.host);
 		addr = g_unix_socket_address_new(upath);
 		g_free(upath);
 		goto done;
