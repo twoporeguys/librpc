@@ -165,7 +165,7 @@ yuarel_parse(struct yuarel *url, char *u)
 			return -1;
 		}
 		url->host = u;
-		if (url->host[0] == '/' && !strcmp(url->scheme, "unix"))
+		if (!strcmp(url->scheme, "unix"))
 			return 0;
 
 		/* (Path) */
