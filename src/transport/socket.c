@@ -144,7 +144,8 @@ socket_parse_uri(const char *uri_string)
 		}
 
 		host = g_inet_address_to_string(addresses->data);
-		addr = g_inet_socket_address_new_from_string(host, uri.port);
+		addr = g_inet_socket_address_new_from_string(host,
+		    (guint)uri.port);
 
 		g_free(host);
 		g_list_free_full(addresses, g_object_unref);
@@ -374,8 +375,8 @@ socket_listen(struct rpc_server *srv, const char *uri,
 			if (g_file_query_exists(file, NULL)) {
 				g_file_delete(file, NULL, &err);
 				if (err != NULL) {
-					srv->rs_error = rpc_error_create(err->code,
-					    err->message, NULL);
+					srv->rs_error = rpc_error_create(
+					    err->code, err->message, NULL);
 					g_object_unref(addr);
 					g_error_free(err);
 					g_free(server->ss_uri);
