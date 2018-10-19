@@ -16,6 +16,7 @@ option(BUILD_EXAMPLES "Build and install example programs" ON)
 option(BUILD_PYTHON "Build and install Python extension" ON)
 option(BUILD_CPLUSPLUS "Build and install C++ library")
 option(BUILD_JSON "Build and install JSON serializer" ON)
+option(BUILD_WS "Build and install WebSockets transport" ON)
 option(BUILD_LIBUSB "Build and install libusb transport")
 option(BUILD_XPC "Build and install XPC transport")
 option(BUILD_RPCTOOL "Build and install rpctool" ON)
@@ -64,7 +65,6 @@ endif()
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GLIB REQUIRED glib-2.0>=2.40)
-pkg_check_modules(SOUP REQUIRED libsoup-2.4)
 pkg_check_modules(YAML REQUIRED yaml-0.1)
 
 if(BUILD_JSON)
@@ -77,6 +77,10 @@ endif()
 
 if(BUILD_LIBUSB)
     pkg_check_modules(LIBUSB REQUIRED libusb-1.0)
+endif()
+
+if(BUILD_WS)
+    pkg_check_modules(SOUP REQUIRED libsoup-2.4)
 endif()
 
 if(BUILD_BUS AND LINUX)
@@ -145,14 +149,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -fblocks -Wall -Wextra -Wno-unused-paramet
 set(CMAKE_C_FLAGS_DEBUG "-g -O0")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 include_directories(include)
+include_directories(contrib/libyuarel)
 include_directories(/usr/local/include)
 include_directories(${CMAKE_BINARY_DIR}/include)
 include_directories (${GLIB_INCLUDE_DIRS})
 link_directories(${GLIB_LIBRARY_DIRS})
 include_directories(${GIO_INCLUDE_DIRS})
 link_directories(${GIO_LIBRARY_DIRS})
-include_directories(${SOUP_INCLUDE_DIRS})
-link_directories(${SOUP_LIBRARY_DIRS})
 include_directories(${YAML_INCLUDE_DIRS})
 link_directories(${YAML_LIBRARY_DIRS})
 
@@ -167,6 +170,11 @@ endif()
 if(BUILD_JSON)
     include_directories(${YAJL_INCLUDE_DIRS})
     link_directories(${YAJL_LIBRARY_DIRS})
+endif()
+
+if(BUILD_WS)
+    include_directories(${SOUP_INCLUDE_DIRS})
+    link_directories(${SOUP_LIBRARY_DIRS})
 endif()
 
 if(BUILD_LIBUSB)
@@ -209,11 +217,12 @@ set(CORE_FILES
         src/utils.c
         src/internal.h
         src/linker_set.h
-        src/memfd.h)
+        src/memfd.h
+        contrib/libyuarel/yuarel.c
+        contrib/libyuarel/yuarel.h)
 
 set(TRANSPORT_FILES
         src/transport/socket.c
-        src/transport/ws.c
         src/transport/loopback.c
         src/transport/fd.c)
 
@@ -262,6 +271,10 @@ if(BUILD_LIBUSB)
     set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/libusb.c)
 endif()
 
+if(BUILD_LIBUSB)
+    set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/ws.c)
+endif()
+
 if(BUILD_BUS AND LINUX)
     set(TRANSPORT_FILES ${TRANSPORT_FILES} src/transport/bus.c)
 endif()
@@ -282,12 +295,16 @@ set_target_properties(librpc PROPERTIES PREFIX "")
 set_target_properties(librpc PROPERTIES SOVERSION 1)
 target_link_libraries(librpc ${GLIB_LIBRARIES})
 target_link_libraries(librpc ${GIO_LIBRARIES})
-target_link_libraries(librpc ${SOUP_LIBRARIES})
+
 target_link_libraries(librpc ${YAJL_LIBRARIES})
 target_link_libraries(librpc ${YAML_LIBRARIES})
 
 if(ENABLE_RPATH)
     set_target_properties(librpc PROPERTIES MACOSX_RPATH ON)
+endif()
+
+if(BUILD_WS)
+    target_link_libraries(librpc ${SOUP_LIBRARIES})
 endif()
 
 if(BUILD_LIBUSB)
@@ -375,7 +392,7 @@ if(BUILD_RPCTOOL)
     add_subdirectory(tools/rpctool)
 endif()
 
-if(BUILD_RPCTOOL)
+if(BUILD_PYTHON AND BUILD_RPCGUI)
     add_subdirectory(tools/rpcgui)
 endif()
 
@@ -383,11 +400,11 @@ if(BUILD_RPCD AND LINUX)
     add_subdirectory(tools/rpcd)
 endif()
 
-if(BUILD_RPCDOC)
+if(BUILD_PYTHON AND BUILD_RPCDOC)
     add_subdirectory(tools/rpcdoc)
 endif()
 
-if(BUILD_RPCLINT)
+if(BUILD_PYTHON AND BUILD_RPCLINT)
     add_subdirectory(tools/rpclint)
 endif()
 

@@ -51,8 +51,12 @@ enum_validate(struct rpct_typei *typei, rpc_object_t obj,
 	const char *value;
 
 	value = rpc_string_get_string_ptr(obj);
-	mem = rpct_type_get_member(typei->type, value);
+	if (value == NULL) {
+		rpct_add_error(errctx, NULL, "Enum value is not a string");
+		return (false);
+	}
 
+	mem = rpct_type_get_member(typei->type, value);
 	if (mem == NULL) {
 		rpct_add_error(errctx, NULL, "Enum member %s not found", value);
 		return (false);
