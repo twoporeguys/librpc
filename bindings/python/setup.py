@@ -25,7 +25,6 @@
 #
 
 import os
-import sys
 import Cython.Compiler.Options
 Cython.Compiler.Options.annotate = True
 
@@ -69,7 +68,7 @@ setup(
             extra_compile_args=cflags,
             extra_link_args=ldflags,
             cython_compile_time_env={'SYSTEMD_SUPPORT': systemd},
-            cython_directives={'language_level': sys.version_info[0]}
+            cython_directives={'language_level': 3}
         )
     ]
 )
