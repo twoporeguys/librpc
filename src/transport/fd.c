@@ -28,7 +28,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <glib.h>
-#include <libsoup/soup.h>
+#include <yuarel.h>
 #include "../linker_set.h"
 #include "../internal.h"
 
@@ -199,19 +199,20 @@ static int
 fd_connect(struct rpc_connection *rco, const char *uri_string,
     rpc_object_t params)
 {
-	SoupURI *uri;
+	g_autofree char *uri_copy = g_strdup(uri_string);
+	struct yuarel uri;
 	struct fd_connection *fdconn;
 	int fd;
 
 	if (params != NULL)
 		fd = rpc_fd_get_value(params);
 	else {
-		uri = soup_uri_new(uri_string);
-		if (uri == NULL)
+		if (yuarel_parse(&uri, uri_copy) != 0) {
+			rpc_set_last_errorf(EINVAL, "Cannot parse URI");
 			return (-1);
+		}
 
-		fd = (int)strtoul(uri->host, NULL, 10);
-		soup_uri_free(uri);
+		fd = (int)strtoul(uri.host, NULL, 10);
 	}
 
 	fdconn = g_malloc0(sizeof(*fdconn));
@@ -231,7 +232,8 @@ int
 fd_listen(struct rpc_server *srv, const char *uri_string,
     rpc_object_t params)
 {
-	SoupURI *uri;
+	g_autofree char *uri_copy = g_strdup(uri_string);
+	struct yuarel uri;
 	struct fd_server *fdsrv;
 	int fd;
 
@@ -239,12 +241,13 @@ fd_listen(struct rpc_server *srv, const char *uri_string,
 	if (params != NULL)
 		fd = rpc_fd_get_value(params);
 	else {
-		uri = soup_uri_new(uri_string);
-		if (uri == NULL)
+		if (yuarel_parse(&uri, uri_copy) != 0) {
+			rpc_set_last_errorf(EINVAL, "Cannot parse URI");
 			return (-1);
+		}
 
-		fd = (int)strtoul(uri->host, NULL, 10);
-		soup_uri_free(uri);
+
+		fd = (int)strtoul(uri.host, NULL, 10);
 	}
 
 	fdsrv = g_malloc0(sizeof(*fdsrv));

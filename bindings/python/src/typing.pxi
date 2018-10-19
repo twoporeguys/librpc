@@ -176,7 +176,7 @@ cdef class TypeInstance(object):
                 if self.type.definition.canonical == 'array':
                     return Array
 
-                if self.type.definition.canonical == 'dict':
+                if self.type.definition.canonical == 'dictionary':
                     return Dictionary
 
                 raise AssertionError('Unknown container type')

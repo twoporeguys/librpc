@@ -26,7 +26,7 @@
 
 #include <errno.h>
 #include <glib.h>
-#include <libsoup/soup.h>
+#include <yuarel.h>
 #include <dispatch/dispatch.h>
 #include <xpc/xpc.h>
 #include "../linker_set.h"
@@ -253,20 +253,20 @@ static int
 xpc_connect(struct rpc_connection *conn, const char *uri_string,
     rpc_object_t params __unused)
 {
-	SoupURI *uri;
+	g_autofree char *uri_copy = g_strdup(uri_string);
+	struct yuarel uri;
 	struct xpc_connection *xconn;
 
-	uri = soup_uri_new(uri_string);
-	if (uri == NULL) {
-		rpc_set_last_errorf(EINVAL, "Invalid URI");
+	if (yuarel_parse(&uri, uri_copy) != 0) {
+		rpc_set_last_errorf(EINVAL, "Cannot parse URI");
 		return (-1);
 	}
 
 	xconn = g_malloc0(sizeof(*xconn));
 	xconn->queue = dispatch_queue_create("xpc client", DISPATCH_QUEUE_SERIAL);
-	xconn->xpc_handle = g_strcmp0(uri->scheme, "xpc") == 0
-	    ? xpc_connection_create(uri->host, xconn->queue)
-	    : xpc_connection_create_mach_service(uri->host, xconn->queue, 0);
+	xconn->xpc_handle = g_strcmp0(uri.scheme, "xpc") == 0
+	    ? xpc_connection_create(uri.host, xconn->queue)
+	    : xpc_connection_create_mach_service(uri.host, xconn->queue, 0);
 
 	conn->rco_send_msg = xpc_send_msg;
 	conn->rco_abort = xpc_abort;
@@ -292,18 +292,18 @@ static int
 xpc_listen(struct rpc_server *conn, const char *uri_string,
     rpc_object_t params __unused)
 {
-	SoupURI *uri;
+	g_autofree char *uri_copy = g_strdup(uri_string);
+	struct yuarel uri;
 	struct xpc_server *xserver;
 
-	uri = soup_uri_new(uri_string);
-	if (uri == NULL) {
-		conn->rs_error = rpc_error_create(EINVAL, "Invalid URI", NULL);
+	if (yuarel_parse(&uri, uri_copy) != 0) {
+		rpc_set_last_errorf(EINVAL, "Cannot parse URI");
 		return (-1);
 	}
 
 	xserver = g_malloc0(sizeof(*xserver));
 	xserver->queue = dispatch_queue_create("xpc server", DISPATCH_QUEUE_CONCURRENT);
-	xserver->xpc_handle = xpc_connection_create_mach_service(uri->host,
+	xserver->xpc_handle = xpc_connection_create_mach_service(uri.host,
 	    NULL, XPC_CONNECTION_MACH_SERVICE_LISTENER);
 
 	xpc_connection_set_event_handler(xserver->xpc_handle, ^(xpc_object_t peer) {

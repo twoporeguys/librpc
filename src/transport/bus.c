@@ -27,6 +27,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <unistd.h>
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -35,7 +36,7 @@
 #include <sys/poll.h>
 #include <sys/ioctl.h>
 #include <glib.h>
-#include <libsoup/soup.h>
+#include <yuarel.h>
 #include <libudev.h>
 #include <linux/netlink.h>
 #include <linux/connector.h>
@@ -137,14 +138,19 @@ static int
 bus_connect(struct rpc_connection *rco, const char *uri_string,
     rpc_object_t args __unused)
 {
-	SoupURI *uri;
+	g_autofree char *uri_copy = g_strdup(uri_string);
+	struct yuarel uri;
 	struct bus_connection *conn;
 
-	uri = soup_uri_new(uri_string);
+	if (yuarel_parse(&uri, uri_copy) != 0) {
+		rpc_set_last_errorf(EINVAL, "Cannot parse URI");
+		return (-1);
+	}
+
 	conn = g_malloc0(sizeof(struct bus_connection));
 	conn->bc_parent = rco;
 
-	if (bus_lookup_address(uri->host, &conn->bc_address) != 0) {
+	if (bus_lookup_address(uri.host, &conn->bc_address) != 0) {
 		rpc_set_last_error(ENOENT, "Cannot find device", NULL);
 		g_free(conn);
 		return (-1);
