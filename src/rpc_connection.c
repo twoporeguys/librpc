@@ -1726,8 +1726,12 @@ rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
 	struct rpc_subscription *sub;
 	struct rpc_subscription_handler *rsh;
 
-	if (!rpc_connection_retain_if_open(conn))
+	//if (!rpc_connection_retain_if_open(conn))
+		//return (NULL);
+	if (!rpc_connection_retain_if_open(conn)) {
+		fprintf(stderr, "register_event_handler RETURNING null\n");
 		return (NULL);
+	}
 
 	g_mutex_lock(&conn->rco_subscription_mtx);
 
@@ -1738,6 +1742,10 @@ rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
 	rsh->rsh_handler = Block_copy(handler);
 	g_ptr_array_add(sub->rsu_handlers, rsh);
 	g_mutex_unlock(&conn->rco_subscription_mtx);
+
+	if (conn->rco_refcnt == 1)
+		fprintf(stderr, "CONN WOULD BE GONE\n");
+
 	rpc_connection_release(conn);
 	return (rsh);
 }

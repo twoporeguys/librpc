@@ -184,13 +184,15 @@ server_test_stream_setup(server_fixture *fix, gconstpointer u_data)
 			if (rpc_function_yield(cookie, res) != 0)
 				break;
 		}	
-		if (fixture->kill)
-			rpc_function_retain(cookie);
+		/* retain call across call to rpc_function_end */
+		rpc_function_retain(cookie);
 		rpc_function_end(cookie);
 		if (fixture->kill) {
+			/* thread will release call */
 			thd = g_thread_new("kill", thread_kill_call, cookie);
 			g_thread_unref(thd);
 		}
+		rpc_function_release(cookie);
 		return (RPC_FUNCTION_STILL_RUNNING);
             });
 	g_assert(res == 0);
