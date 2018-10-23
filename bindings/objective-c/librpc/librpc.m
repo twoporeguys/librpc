@@ -35,7 +35,7 @@
 
 #pragma mark - RPCObject
 @interface RPCObject ()
-@property (nonatomic, readonly, unsafe_unretained) rpc_object_t obj;
+@property (nonatomic, readonly, assign) rpc_object_t obj;
 
 @end
 

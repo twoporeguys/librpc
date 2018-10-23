@@ -1499,8 +1499,6 @@ rpc_connection_do_close(rpc_connection_t conn, rpc_close_source_t source)
 
 		/* if server isn't closed this will undo server's ref */
 		rpc_server_disconnect(conn->rco_server, conn);
-		/* undo connection's ref on server */
-		rpc_server_release(conn->rco_server);
 	}
 	/* undo connection's initial reference */
 	rpc_connection_release(conn);
@@ -1558,6 +1556,11 @@ rpc_connection_release(rpc_connection_t conn)
 
 		conn->rco_refcnt = -1;
 		g_mutex_unlock(&conn->rco_ref_mtx);
+
+		if (conn->rco_server != NULL) {
+			/* undo connection's ref on server */
+			rpc_server_release(conn->rco_server);
+		}
 		g_free(conn);
 		return (0);
 	}

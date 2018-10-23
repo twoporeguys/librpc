@@ -145,7 +145,7 @@ server_test_stream_setup(server_fixture *fix, gconstpointer u_data)
 {
         GRand *rand = g_rand_new ();
         gint n = g_rand_int_range (rand, 1, STREAMS);
-	__block server_fixture *fixture = fix;
+	server_fixture *fixture = fix;
 	int res;
 
 	base = args[0];
@@ -191,8 +191,9 @@ server_test_stream_setup(server_fixture *fix, gconstpointer u_data)
 			/* thread will release call */
 			thd = g_thread_new("kill", thread_kill_call, cookie);
 			g_thread_unref(thd);
+		} else {
+			rpc_function_release(cookie);
 		}
-		rpc_function_release(cookie);
 		return (RPC_FUNCTION_STILL_RUNNING);
             });
 	g_assert(res == 0);
