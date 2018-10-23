@@ -202,8 +202,8 @@ Functions</h2></td></tr>
 <tr class="separator:ae62dee58a622eb6e1501c8c3342a1530"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11876d99f4c813328cb3a4dbbbc8bab5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a11876d99f4c813328cb3a4dbbbc8bab5">rpc_connection_unsubscribe_event</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name)</td></tr>
 <tr class="separator:a11876d99f4c813328cb3a4dbbbc8bab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab223ffd9a03ab35ac0369f4fde934c49"><td class="memItemLeft" align="right" valign="top">void *_Nonnull&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ab223ffd9a03ab35ac0369f4fde934c49">rpc_connection_register_event_handler</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name, _Nullable <a class="el" href="connection_8h.html#abd97c34e4cc24dce96eb2944a3cf5aad">rpc_handler_t</a> handler)</td></tr>
-<tr class="separator:ab223ffd9a03ab35ac0369f4fde934c49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f79ef869bd9d72e5cffbdb6dae2aef1"><td class="memItemLeft" align="right" valign="top">void *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a6f79ef869bd9d72e5cffbdb6dae2aef1">rpc_connection_register_event_handler</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name, _Nullable <a class="el" href="connection_8h.html#abd97c34e4cc24dce96eb2944a3cf5aad">rpc_handler_t</a> handler)</td></tr>
+<tr class="separator:a6f79ef869bd9d72e5cffbdb6dae2aef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a102ad5fd1ab895a56319a25f43060a20"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a102ad5fd1ab895a56319a25f43060a20">rpc_connection_unregister_event_handler</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, void *_Nonnull cookie)</td></tr>
 <tr class="separator:a102ad5fd1ab895a56319a25f43060a20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5e8d63da05fa221ac8bb51ff22e7f3b"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#af5e8d63da05fa221ac8bb51ff22e7f3b">rpc_connection_call_sync</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull method,...)</td></tr>
@@ -1714,14 +1714,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ab223ffd9a03ab35ac0369f4fde934c49"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab223ffd9a03ab35ac0369f4fde934c49">&#9670;&nbsp;</a></span>rpc_connection_register_event_handler()</h2>
+<a id="a6f79ef869bd9d72e5cffbdb6dae2aef1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f79ef869bd9d72e5cffbdb6dae2aef1">&#9670;&nbsp;</a></span>rpc_connection_register_event_handler()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void* _Nonnull rpc_connection_register_event_handler </td>
+          <td class="memname">void* _Nullable rpc_connection_register_event_handler </td>
           <td>(</td>
           <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
           <td class="paramname"><em>conn</em>, </td>
@@ -1759,6 +1759,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Registers an event handler block for an event of a given name.</p>
 <p>Each time an event occurs, a handler block is going to be called.</p>
+<p>If the connection is no longer valid a NULL cookie will be returned.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">conn</td><td>Connection to register an event handler for </td></tr>
@@ -1767,6 +1768,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>Cookie for <a class="el" href="connection_8h.html#a102ad5fd1ab895a56319a25f43060a20">rpc_connection_unregister_event_handler</a> or NULL. </dd></dl>
 
 </div>
 </div>

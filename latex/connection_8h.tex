@@ -109,7 +109,7 @@ int \hyperlink{connection_8h_ae62dee58a622eb6e1501c8c3342a1530}{rpc\+\_\+connect
 \item 
 int \hyperlink{connection_8h_a11876d99f4c813328cb3a4dbbbc8bab5}{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name)
 \item 
-void $\ast$\+\_\+\+Nonnull \hyperlink{connection_8h_ab223ffd9a03ab35ac0369f4fde934c49}{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nullable \hyperlink{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}{rpc\+\_\+handler\+\_\+t} handler)
+void $\ast$\+\_\+\+Nullable \hyperlink{connection_8h_a6f79ef869bd9d72e5cffbdb6dae2aef1}{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nullable \hyperlink{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}{rpc\+\_\+handler\+\_\+t} handler)
 \item 
 void \hyperlink{connection_8h_a102ad5fd1ab895a56319a25f43060a20}{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, void $\ast$\+\_\+\+Nonnull cookie)
 \item 
@@ -998,15 +998,17 @@ Returns {\ttfamily true} if connection is open, otherwise {\ttfamily false}.
 \subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+ping()}{rpc\_connection\_ping()}}
 {\footnotesize\ttfamily int rpc\+\_\+connection\+\_\+ping (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
 
-Ping the other end of a connection. \mbox{\Hypertarget{connection_8h_ab223ffd9a03ab35ac0369f4fde934c49}\label{connection_8h_ab223ffd9a03ab35ac0369f4fde934c49}} 
+Ping the other end of a connection. \mbox{\Hypertarget{connection_8h_a6f79ef869bd9d72e5cffbdb6dae2aef1}\label{connection_8h_a6f79ef869bd9d72e5cffbdb6dae2aef1}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler}}
 \index{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler}!connection.\+h@{connection.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler()}{rpc\_connection\_register\_event\_handler()}}
-{\footnotesize\ttfamily void$\ast$ \+\_\+\+Nonnull rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{\+\_\+\+Nullable \hyperlink{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}{rpc\+\_\+handler\+\_\+t}}]{handler }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void$\ast$ \+\_\+\+Nullable rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{const char $\ast$\+\_\+\+Nullable}]{path,  }\item[{const char $\ast$\+\_\+\+Nullable}]{interface,  }\item[{const char $\ast$\+\_\+\+Nonnull}]{name,  }\item[{\+\_\+\+Nullable \hyperlink{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}{rpc\+\_\+handler\+\_\+t}}]{handler }\end{DoxyParamCaption})}
 
 Registers an event handler block for an event of a given name.
 
 Each time an event occurs, a handler block is going to be called.
+
+If the connection is no longer valid a N\+U\+LL cookie will be returned.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1017,6 +1019,9 @@ Each time an event occurs, a handler block is going to be called.
 {\em handler} & Event handler of rpc\+\_\+handler\+\_\+t type \\
 \hline
 \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Cookie for \hyperlink{connection_8h_a102ad5fd1ab895a56319a25f43060a20}{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler} or N\+U\+LL. 
+\end{DoxyReturn}
 \mbox{\Hypertarget{connection_8h_abd699ca36e45ca40ff561c8243cbc99e}\label{connection_8h_abd699ca36e45ca40ff561c8243cbc99e}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+send\+\_\+event@{rpc\+\_\+connection\+\_\+send\+\_\+event}}
 \index{rpc\+\_\+connection\+\_\+send\+\_\+event@{rpc\+\_\+connection\+\_\+send\+\_\+event}!connection.\+h@{connection.\+h}}
