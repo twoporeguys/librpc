@@ -425,6 +425,7 @@ rpc_server_close(rpc_server_t server)
 	debugf("TORNDOWN");
 
 	/* Drop all connections */
+	g_rw_lock_reader_lock(&server->rs_connections_rwlock);
 	if (server->rs_connections != NULL) {
 		for (iter = server->rs_connections; iter != NULL; iter = iter->next) {
 			conn = iter->data;
@@ -437,6 +438,7 @@ rpc_server_close(rpc_server_t server)
 			rpc_connection_release(conn);
 		}
 	}
+	g_rw_lock_reader_unlock(&server->rs_connections_rwlock);
 	if (server->rs_threaded_teardown) {
 		if (server->rs_teardown_end != NULL && ret == 0)
 			server->rs_teardown_end(server);

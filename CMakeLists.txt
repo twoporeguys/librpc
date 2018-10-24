@@ -341,11 +341,11 @@ if(BUILD_TESTS)
 			tests/tests.h
 			tests/main.c
 			tests/api/bus.c
-			tests/api/client.c
+#			tests/api/client.c
 			tests/api/connection.c
 			tests/api/object.c
 			tests/api/query.c
-			tests/api/serializer.c
+#			tests/api/serializer.c
 			tests/api/server.c
 			tests/api/service.c
 			tests/api/typing.c
