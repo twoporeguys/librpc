@@ -1729,25 +1729,23 @@ rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
 	struct rpc_subscription *sub;
 	struct rpc_subscription_handler *rsh;
 
-	//if (!rpc_connection_retain_if_open(conn))
-		//return (NULL);
-	if (!rpc_connection_retain_if_open(conn)) {
-		fprintf(stderr, "register_event_handler RETURNING null\n");
+	if (!rpc_connection_retain_if_open(conn))
 		return (NULL);
-	}
 
 	g_mutex_lock(&conn->rco_subscription_mtx);
 
-	rpc_connection_subscribe_event_locked(conn, path, interface, name);
+	if (rpc_connection_subscribe_event_locked(
+	    conn, path, interface, name) != 0) {
+		/* Couldn't inform server, subscription not completed */
+		rpc_connection_release(conn);
+		return (NULL);
+	}
 	sub = rpc_connection_find_subscription(conn, path, interface, name);
 	rsh = g_malloc0(sizeof(*rsh));
 	rsh->rsh_parent = sub;
 	rsh->rsh_handler = Block_copy(handler);
 	g_ptr_array_add(sub->rsu_handlers, rsh);
 	g_mutex_unlock(&conn->rco_subscription_mtx);
-
-	if (conn->rco_refcnt == 1)
-		fprintf(stderr, "CONN WOULD BE GONE\n");
 
 	rpc_connection_release(conn);
 	return (rsh);
