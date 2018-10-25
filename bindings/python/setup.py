@@ -54,7 +54,6 @@ if 'CMAKE_SOURCE_DIR' in os.environ:
         os.path.expandvars('-Wl,${CMAKE_PREFIX}/lib')
     ]
 
-
 setup(
     name='librpc',
     version='1.0',
