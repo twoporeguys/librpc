@@ -68,7 +68,7 @@ struct u {
 
 typedef struct {
 	rpc_context_t	ctx;
-        int 		iuri;
+	int 		iuri;
 	volatile int 	count;
 	rpc_server_t 	srv;
 	bool 		resume;
@@ -97,7 +97,7 @@ server_test_basic_set_up(server_fixture *fixture, gconstpointer user_data)
 {
 
 	fixture->ctx = rpc_context_create();
-        fixture->iuri = (int)user_data;
+	fixture->iuri = (int)user_data;
 	fixture->count = 0;
 	fixture->srv = NULL;
 }
@@ -107,25 +107,25 @@ valid_server_set_up(server_fixture *fixture, gconstpointer u_data)
 {
 
 	fixture->ctx = rpc_context_create();
-        fixture->iuri = (int)u_data;
+	fixture->iuri = (int)u_data;
 	fixture->count = 0;
 	fixture->iclose = 0;
 
-        rpc_context_register_block(fixture->ctx, base.interface, "hi",
-            NULL, ^(void *cookie __unused, rpc_object_t args) {
+	rpc_context_register_block(fixture->ctx, base.interface, "hi",
+	    NULL, ^(void *cookie __unused, rpc_object_t args) {
 		g_atomic_int_inc(&fixture->count);
-                return rpc_string_create_with_format("hello %s!",
-                    rpc_array_get_string(args, 0));
-            });
+		return rpc_string_create_with_format("hello %s!",
+		    rpc_array_get_string(args, 0));
+	    });
 
-        rpc_context_register_block(fixture->ctx, base.interface, "block",
-            NULL, ^(void *cookie __unused,
+	rpc_context_register_block(fixture->ctx, base.interface, "block",
+	    NULL, ^(void *cookie __unused,
 		rpc_object_t args __unused) {
 		g_atomic_int_inc(&fixture->called);
 		sleep(fixture->called * 2);
 		g_atomic_int_inc(&fixture->woke);
-                return (rpc_string_create("haha lol"));
-            });
+		return (rpc_string_create("haha lol"));
+	    });
 
 	rpc_context_register_block(fixture->ctx, NULL, "event",
 	    NULL, ^(void *cookie __unused, rpc_object_t args __unused) {
@@ -150,8 +150,8 @@ thread_kill_call (gpointer data)
 static void
 server_test_stream_setup(server_fixture *fix, gconstpointer u_data)
 {
-        GRand *rand = g_rand_new ();
-        gint n = g_rand_int_range (rand, 1, STREAMS);
+	GRand *rand = g_rand_new ();
+	gint n = g_rand_int_range (rand, 1, STREAMS);
 	server_fixture *fixture = fix;
 	int res;
 
@@ -166,8 +166,8 @@ server_test_stream_setup(server_fixture *fix, gconstpointer u_data)
 	else if (fixture->abort > 0)
 		fixture->abort = g_rand_int_range (rand, 1, n);
 	
-        res = rpc_context_register_block(fixture->ctx, base.interface, "stream",
-            NULL, ^rpc_object_t (void *cookie, rpc_object_t args __unused) {
+	res = rpc_context_register_block(fixture->ctx, base.interface, "stream",
+	    NULL, ^rpc_object_t (void *cookie, rpc_object_t args __unused) {
 		int cnt = 0;	
 		gint i;
 		rpc_object_t res;
@@ -202,7 +202,7 @@ server_test_stream_setup(server_fixture *fix, gconstpointer u_data)
 			rpc_function_release(cookie);
 		}
 		return (RPC_FUNCTION_STILL_RUNNING);
-            });
+	    });
 	g_assert(res == 0);
 
 }
@@ -231,9 +231,9 @@ server_test_valid_server_tear_down(server_fixture *fixture, gconstpointer user_d
 		rpc_server_close(fixture->srv);
 
 	server_wait(fixture->ctx, uris[fixture->iuri].srv);
-        rpc_context_unregister_member(fixture->ctx, NULL, "hi");
-        rpc_context_unregister_member(fixture->ctx, NULL, "block");
-        rpc_context_unregister_member(fixture->ctx, NULL, "event");
+	rpc_context_unregister_member(fixture->ctx, NULL, "hi");
+	rpc_context_unregister_member(fixture->ctx, NULL, "block");
+	rpc_context_unregister_member(fixture->ctx, NULL, "event");
 	rpc_context_free(fixture->ctx);
 }
 
@@ -281,10 +281,10 @@ thread_stream_func (gpointer data)
 		rpc_client_close(client);
 		g_thread_exit (GINT_TO_POINTER (0));
 	}
-        for (;;) {
-                rpc_call_wait(call);
+	for (;;) {
+		rpc_call_wait(call);
 
-                switch (rpc_call_status(call)) {
+		switch (rpc_call_status(call)) {
 		case RPC_CALL_STREAM_START:
 			rpc_call_continue(call, false);
 			break;
@@ -308,8 +308,8 @@ thread_stream_func (gpointer data)
 
 		default:
 			g_assert_not_reached();
-                }
-        }
+		}
+	}
 
 done:
 	rpc_call_free(call);
@@ -398,21 +398,18 @@ thread_func_event (gpointer data)
 		g_assert_cmpstr(rpc_string_get_string_ptr(args), ==, "world");
 		*resp = 1;
 	    });
-	g_assert(handle != NULL || !rpc_connection_is_open(conn));
+
 	if (handle == NULL) {
-		fprintf(stderr, "NO handle\n");
 		rpc_client_close(client);
 		g_thread_exit (GINT_TO_POINTER (1));
 	}
 	result = rpc_connection_call_simple(conn, "event", RPC_NULL_FORMAT);
 
 	if (result == NULL) {
-		fprintf(stderr, "NO result\n");
 		rpc_client_close(client);
 		g_thread_exit (GINT_TO_POINTER (1));
 
 	} else if (rpc_is_error(result)) {
-		fprintf(stderr, "BAD result\n");
 		rpc_client_close(client);
 		g_thread_exit (GINT_TO_POINTER (1));
 	}
@@ -421,7 +418,6 @@ thread_func_event (gpointer data)
 		sleep(5);
 
 	rpc_client_close(client);
-	//fprintf(stderr, "exiting\n");
 	g_thread_exit (GINT_TO_POINTER (0));
 	return (NULL);
 }
@@ -568,12 +564,12 @@ server_test_nullables(server_fixture *fixture, gconstpointer user_data)
 	rpc_call_t call2;
 
 	rpc_server_resume(fixture->srv);
-        client = rpc_client_create(uris[fixture->iuri].cli, 0);
-        if (client == NULL)
-                g_thread_exit (GINT_TO_POINTER (1));
+	client = rpc_client_create(uris[fixture->iuri].cli, 0);
+	if (client == NULL)
+		g_thread_exit (GINT_TO_POINTER (1));
  
-        conn = rpc_client_get_connection(client);
-        result = rpc_connection_call_simple(conn, "hi", "[s]", "world");
+	conn = rpc_client_get_connection(client);
+	result = rpc_connection_call_simple(conn, "hi", "[s]", "world");
 	g_assert(result != NULL && !(rpc_is_error(result)));
 	g_assert_cmpstr("hello world!", ==, rpc_string_get_string_ptr(result));
 
@@ -581,13 +577,13 @@ server_test_nullables(server_fixture *fixture, gconstpointer user_data)
 
 	call_args1 = rpc_object_pack("[s]", args[0].interface);
 	call1 = rpc_connection_call(conn, args[0].path, RPC_INTROSPECTABLE_INTERFACE,
-            "get_methods", call_args1, NULL);
+	    "get_methods", call_args1, NULL);
 	rpc_call_wait(call1);
 	g_assert(!rpc_is_error(rpc_call_result(call1)));
 
 	call_args2 = rpc_object_pack("[s]", args[1].interface);
 	call2 = rpc_connection_call(conn, args[1].path, RPC_INTROSPECTABLE_INTERFACE,
-            "get_methods", call_args2, NULL);
+	    "get_methods", call_args2, NULL);
 	rpc_call_wait(call2);
 
 	g_assert(!rpc_is_error(rpc_call_result(call2)));
