@@ -297,6 +297,10 @@ rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
 	while (g_hash_table_iter_next(&iter, (gpointer)&key, NULL))
 		rpc_array_append_stolen_value(ifaces, rpc_string_create(key));
 
+	instance->ri_context = context;
+
+	g_hash_table_insert(context->rcx_instances, instance->ri_path, instance);
+
 	payload = rpc_object_pack("{s,v}",
 	    "path", instance->ri_path,
 	    "interfaces", ifaces);
@@ -304,9 +308,6 @@ rpc_context_register_instance(rpc_context_t context, rpc_instance_t instance)
 	rpc_context_emit_event(context, "/", RPC_DISCOVERABLE_INTERFACE,
 	    "instance_added", payload);
 
-	instance->ri_context = context;
-
-	g_hash_table_insert(context->rcx_instances, instance->ri_path, instance);
 	g_rw_lock_writer_unlock(&context->rcx_rwlock);
 	return (0);
 }
@@ -859,7 +860,7 @@ rpc_instance_register_interface(rpc_instance_t instance,
 
 	if (vtable != NULL) {
 		for (member = &vtable[0]; member->rim_name != NULL; member++)
-			rpc_instance_register_member(instance, interface, 
+			rpc_instance_register_member(instance, interface,
 			    member);
 	}
 
