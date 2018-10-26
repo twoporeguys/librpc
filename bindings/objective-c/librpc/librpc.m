@@ -41,10 +41,11 @@
 
 @implementation RPCObject
 
-- (instancetype)initWithValue:(id)value
+- (instancetype)initWithValue:(id)value error:(NSError **)error
 {
     self = [super init];
     if (self) {
+        NSError *error;
         if (value == nil) {
             _obj = rpc_null_create();
         } else if ([value isKindOfClass:[RPCObject class]]) {
@@ -72,25 +73,29 @@
         } else if ([value isKindOfClass:[NSArray class]]) {
             _obj = rpc_array_create();
             for (id object in (NSArray *)value) {
-                RPCObject *robj = [[RPCObject alloc] initWithValue:object];
+                
+                RPCObject *robj = [[RPCObject alloc] initWithValue:object error:&error];
                 rpc_array_append_value(_obj, robj->_obj);
             }
         } else if ([value isKindOfClass:[NSDictionary class]]) {
             _obj = rpc_dictionary_create();
             for (NSString *key in (NSDictionary *)value) {
                 NSObject *val = [(NSDictionary *)value valueForKey:key];
-                RPCObject *robj = [[RPCObject alloc] initWithValue:val];
+                RPCObject *robj = [[RPCObject alloc] initWithValue:val error:&error];
                 rpc_dictionary_set_value(_obj, [key UTF8String], robj->_obj);
             }
-        } else {
-            NSLog(@"Value does not correspond to any rpc_object classes");
-            self = nil;
+        }
+        if (error) {
+            error = [NSError errorWithDomain:NSPOSIXErrorDomain
+                                             code:ESRCH
+                                         userInfo:@{NSLocalizedFailureReasonErrorKey:
+                                                        @"Value does not correspond to any rpc_object classes"}];
         }
     }
     return self;
 }
 
-- (instancetype)initWithValue:(id)value andType:(RPCType)type
+- (instancetype)initWithValue:(id)value andType:(RPCType)type error:(NSError**)error
 {
     switch (type) {
         case RPCTypeBoolean:
@@ -118,7 +123,7 @@
         case RPCTypeBinary:
         case RPCTypeArray:
         case RPCTypeDictionary:
-            return [[RPCObject alloc] initWithValue:value];
+            return [[RPCObject alloc] initWithValue:value error:error];
             
         default:
             return nil;
@@ -241,21 +246,21 @@
 @implementation RPCUnsignedInt
 - (instancetype)init:(NSNumber *)value
 {
-    return [super initWithValue:value andType:RPCTypeUInt64];
+    return [super initWithValue:value andType:RPCTypeUInt64 error:nil];
 }
 @end
 
 @implementation RPCDouble
 - (instancetype)init:(NSNumber *)value
 {
-    return [super initWithValue:value andType:RPCTypeDouble];
+    return [super initWithValue:value andType:RPCTypeDouble error:nil];
 }
 @end
 
 @implementation RPCBool
 - (instancetype)init:(BOOL)value
 {
-    return [super initWithValue:@(value) andType:RPCTypeBoolean];
+    return [super initWithValue:@(value) andType:RPCTypeBoolean error:nil];
 }
 @end
 
@@ -338,10 +343,12 @@
     void *_cookie;
 }
 
-- (instancetype)initWithConn:(rpc_connection_t)conn andCookie:(void *)cookie
+- (instancetype)initWithConn:(rpc_connection_t)conn andCookie:(void *)cookie error:(NSError **)error
 {
     if (!cookie || !conn) {
-        NSLog(@"Could not establish connection. Missing parameters");
+        if (error != nil) {
+            *error = [[RPCObject lastError] value];
+        }
         return nil;
     }
     _conn = conn;
@@ -520,6 +527,7 @@
 - (nullable RPCListenHandle *)eventObserver:(NSString *)method
                  path:(NSString *)path
             interface:(NSString *)interface
+                error:(NSError**)error
              callback:(RPCEventCallback)cb
 {
     void *cookie;
@@ -534,16 +542,24 @@
                [[NSString alloc] initWithString:@(methodReturn)]);
         });
     if (!cookie) {
-        NSLog(@"rpc_connection_register_event_handler() unavailable");
+        if (error != nil) {
+            NSDictionary *userInfo = @{
+                         NSLocalizedDescriptionKey: @"rpc_connection_register_event_handler() unavailable"};
+            
+            *error = [NSError errorWithDomain:NSPOSIXErrorDomain
+                                         code:EINVAL
+                                     userInfo:userInfo];
+        }
         return nil;
     }
     return [[RPCListenHandle alloc] initWithConn:conn andCookie:cookie];
 }
 
 - (nullable RPCListenHandle *)observeProperty:(NSString *)name
-                   path:(NSString *)path
-              interface:(NSString *)interface
-               callback:(RPCPropertyCallback)cb
+                                         path:(NSString *)path
+                                    interface:(NSString *)interface
+                                        error:(NSError **)error
+                                     callback:(RPCPropertyCallback)cb
 {
     void *cookie;
 
@@ -553,7 +569,14 @@
     });
 
     if (!cookie) {
-        NSLog(@"rpc_connection_watch_property() unavailable");
+        if (error != nil) {
+            NSDictionary *userInfo = @{
+                                       NSLocalizedDescriptionKey: @"rpc_connection_watch_property() unavailable"};
+            
+            *error = [NSError errorWithDomain:NSPOSIXErrorDomain
+                                         code:EINVAL
+                                     userInfo:userInfo];
+        }
         return nil;
     }
     
@@ -629,7 +652,7 @@
 {
     NSError *error = nil;
     NSMutableArray *result = [[NSMutableArray alloc] init];
-    RPCObject *args = [[RPCObject alloc] initWithValue:@[_interface]];
+    RPCObject *args = [[RPCObject alloc] initWithValue:@[_interface] error:&error];
     RPCObject *i = [_client callSync:@"get_all"
                                 path:_path
                            interface:@(RPC_OBSERVABLE_INTERFACE)
@@ -642,9 +665,15 @@
     return result.copy;
 }
 
-- (nonnull RPCListenHandle *)observeProperty:(NSString *)name callback:(RPCPropertyCallback)cb
+- (nonnull RPCListenHandle *)observeProperty:(NSString *)name
+                                       error:(NSError **)error
+                                    callback:(RPCPropertyCallback)cb
 {
-    return [_client observeProperty:name path:_path interface:_interface callback:cb];
+    return [_client observeProperty:name
+                               path:_path
+                          interface:_interface
+                              error:error
+                           callback:cb];
 }
 
 - (id)recursivelyUnpackProperties:(id)container
@@ -688,7 +717,7 @@
     
     obj = [_client callSync:@"get_methods"
                        path:_path interface:@(RPC_INTROSPECTABLE_INTERFACE)
-                       args:[[RPCObject alloc] initWithValue:@[_interface]]
+                       args:[[RPCObject alloc] initWithValue:@[_interface] error:&callError]
                       error:&callError];
     
     if (!result)
@@ -709,7 +738,7 @@
     return [_client callSync:method
                         path:_path
                    interface:_interface
-                        args:[[RPCObject alloc]initWithValue:args]
+                        args:[[RPCObject alloc]initWithValue:args error:error]
                        error:error];
 }
 
@@ -723,7 +752,7 @@
     return [_client callSync:@"get"
                         path:_path
                    interface:@(RPC_OBSERVABLE_INTERFACE)
-                        args:[[RPCObject alloc] initWithValue:@[_interface, property]]
+                        args:[[RPCObject alloc] initWithValue:@[_interface, property] error:error]
                        error:error];
 }
 
@@ -734,7 +763,7 @@
     return [_client callSync:@"set"
                         path:_path
                    interface:@(RPC_OBSERVABLE_INTERFACE)
-                        args:[[RPCObject alloc] initWithValue:@[_interface, property, value]]
+                        args:[[RPCObject alloc] initWithValue:@[_interface, property, value] error:error]
                        error:error];
 }
 @end

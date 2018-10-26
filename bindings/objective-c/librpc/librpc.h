@@ -64,7 +64,7 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
  * @param value Value
  * @return Boxed RPCObject
  */
-- (nonnull instancetype)initWithValue:(nullable id)value;
+- (nonnull instancetype)initWithValue:(nullable id)value error:(NSError **)error;
 
 /**
  * Creates a new RPCObject from NSObject-based value with specific type.
@@ -76,7 +76,7 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
  * @param value Value
  * @return Boxed RPCObject
  */
-- (nonnull instancetype)initWithValue:(nullable id)value andType:(RPCType)type;
+- (nonnull instancetype)initWithValue:(nullable id)value andType:(RPCType)type error:(NSError **)error;
 
 /**
  * Initializes a new RPCObject from a C-based @ref rpc_object_t handle.
@@ -297,7 +297,8 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
  */
 - (nullable RPCListenHandle *)eventObserver:(nonnull NSString *)event
                                       path:(nonnull NSString *)path
-                                 interface:(nonnull NSString *)interface
+                                  interface:(nonnull NSString *)interface
+                                      error:(NSError**)error
                                   callback:(nullable RPCEventCallback)cb;
 
 /**
@@ -313,6 +314,7 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
 - (nullable RPCListenHandle *)observeProperty:(nonnull NSString *)name
                                         path:(nonnull NSString *)path
                                    interface:(nonnull NSString *)interface
+                                        error:(NSError**)error
                                     callback:(nullable RPCPropertyCallback)cb;
 
 @end
@@ -375,6 +377,7 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
  * @param cb Callback to call whenever property value changes
  */
 - (nonnull RPCListenHandle *)observeProperty:(nonnull NSString *)name
+                                       error:(NSError**)error
                                     callback:(nonnull RPCPropertyCallback)cb;
 
 /**
