@@ -628,7 +628,6 @@ static void
 server_test_register()
 {
 
-/*
 	g_test_add("/server/resume/tcp", server_fixture, (void *)0,
 	    server_test_valid_server_set_up, server_test_resume,
 	    server_test_valid_server_tear_down);
@@ -663,11 +662,9 @@ server_test_register()
 	    server_test_valid_server_set_up, server_test_flush,
 	    server_test_valid_server_tear_down);
 
-*/
 	g_test_add("/server/flush/event", server_fixture, (void *)0,
 	    server_test_valid_server_set_up, server_test_event,
 	    server_test_valid_server_tear_down);
-/*
 
 	g_test_add("/server/stream/one", server_fixture, (void *)7,
 	    server_test_stream_setup, server_test_stream_run,
@@ -688,7 +685,6 @@ server_test_register()
 	g_test_add("/server/flush/loopback", server_fixture, (void *)7,
 	    server_test_valid_server_set_up, server_test_flush,
 	    server_test_valid_server_tear_down);
-*/
 }
 
 static struct librpc_test server = {
