@@ -43,7 +43,6 @@ systemd = os.environ.get('SYSTEMD_SUPPORT') == 'ON'
 if os.environ.get('CMAKE_BUILD_TYPE') == 'Debug':
     cflags += ['-g', '-O0']
 
-
 if 'CMAKE_SOURCE_DIR' in os.environ:
     cflags += [
         os.path.expandvars('-I${CMAKE_SOURCE_DIR}/include'),
@@ -54,7 +53,6 @@ if 'CMAKE_SOURCE_DIR' in os.environ:
         os.path.expandvars('-Wl,-rpath'),
         os.path.expandvars('-Wl,${CMAKE_PREFIX}/lib')
     ]
-
 
 setup(
     name='librpc',
@@ -68,7 +66,8 @@ setup(
             ["librpc.pyx"],
             extra_compile_args=cflags,
             extra_link_args=ldflags,
-            cython_compile_time_env={'SYSTEMD_SUPPORT': systemd}
+            cython_compile_time_env={'SYSTEMD_SUPPORT': systemd},
+            cython_directives={'language_level': 3}
         )
     ]
 )
