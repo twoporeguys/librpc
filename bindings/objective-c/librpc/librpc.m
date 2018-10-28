@@ -83,7 +83,7 @@
                 rpc_dictionary_set_value(_obj, [key UTF8String], robj->_obj);
             }
         } else {
-            NSLog(@"Value does not correspond to any rpc_object classes");
+            NSAssert(YES, @"Value does not correspond to any rpc_object classes"); 
             self = nil;
         }
     }
@@ -340,10 +340,6 @@
 
 - (instancetype)initWithConn:(rpc_connection_t)conn andCookie:(void *)cookie
 {
-    if (!cookie || !conn) {
-        NSLog(@"Could not establish connection. Missing parameters");
-        return nil;
-    }
     _conn = conn;
     _cookie = cookie;
     return self;
@@ -465,9 +461,7 @@
             return nil;
 
         default:
-            if (error != nil) {
-                *error = [[RPCObject lastError] value];
-            }
+            NSAssert(true, @"Invalid RPC call state");
             return nil;
     }
 }
@@ -517,7 +511,7 @@
     return [[RPCCall alloc] initFromNativeObject:call];
 }
 
-- (nullable RPCListenHandle *)eventObserver:(NSString *)method
+- (nonnull RPCListenHandle *)eventObserver:(NSString *)method
                  path:(NSString *)path
             interface:(NSString *)interface
              callback:(RPCEventCallback)cb
@@ -533,14 +527,11 @@
                [[NSString alloc] initWithString:@(interfaceReturn)],
                [[NSString alloc] initWithString:@(methodReturn)]);
         });
-    if (!cookie) {
-        NSLog(@"rpc_connection_register_event_handler() unavailable");
-        return nil;
-    }
+    NSAssert(cookie != NULL, @"rpc_connection_register_event_handler() failure");
     return [[RPCListenHandle alloc] initWithConn:conn andCookie:cookie];
 }
 
-- (nullable RPCListenHandle *)observeProperty:(NSString *)name
+- (nonnull RPCListenHandle *)observeProperty:(NSString *)name
                    path:(NSString *)path
               interface:(NSString *)interface
                callback:(RPCPropertyCallback)cb
@@ -552,11 +543,7 @@
         cb([[RPCObject alloc] initFromNativeObject:v]);
     });
 
-    if (!cookie) {
-        NSLog(@"rpc_connection_watch_property() unavailable");
-        return nil;
-    }
-    
+    NSAssert(cookie != NULL, @"rpc_connection_watch_property() failure");
     return [[RPCListenHandle alloc] initWithConn:conn andCookie:cookie];
 }
 @end
