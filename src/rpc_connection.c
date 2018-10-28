@@ -86,6 +86,7 @@ static int rpc_connection_do_close(rpc_connection_t conn, rpc_close_source_t);
 static rpc_connection_t rpc_connection_init(void);
 static void rpc_abort_worker(void *arg, void *data);
 static void call_abort_locked(struct rpc_call *call);
+static void rpc_connection_subscription_release(struct rpc_subscription *sub);
 
 struct message_handler
 {
@@ -207,7 +208,7 @@ rpc_run_callback(rpc_connection_t conn, struct work_item *item)
 {
 	GError *err = NULL;
 
-	if (conn->rco_closed)
+	if (!rpc_connection_is_open(conn))
 		return (false);
 
 #ifdef ENABLE_LIBDISPATCH
@@ -746,17 +747,32 @@ on_events_subscribe(rpc_connection_t conn, rpc_object_t args,
 		if (instance == NULL)
 			return ((bool)true);
 
-		g_mutex_lock(&instance->ri_mtx);
+		//g_mutex_lock(&instance->ri_mtx);
+		g_mutex_lock(&conn->rco_subscription_mtx);
 		sub = rpc_connection_find_subscription(conn, path, interface, name);
 		if (sub == NULL) {
 			sub = g_malloc0(sizeof(*sub));
+			sub->rsu_path = g_strdup(path);
+			sub->rsu_interface = g_strdup(interface);
+			sub->rsu_name = g_strdup(name);
 			g_ptr_array_add(conn->rco_subscriptions, sub);
 		}
 
 		sub->rsu_refcount++;
-		g_mutex_unlock(&instance->ri_mtx);
+		//g_mutex_unlock(&instance->ri_mtx);
+		g_mutex_unlock(&conn->rco_subscription_mtx);
 		return ((bool)true);
 	});
+}
+
+static void 
+rpc_connection_subscription_release(struct rpc_subscription *sub)
+{
+
+	g_free(sub->rsu_path);
+	g_free(sub->rsu_interface);
+	g_gree(sub->rsu_name);
+	g_free(sub);
 }
 
 static void
@@ -785,13 +801,21 @@ on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args,
 		if (instance == NULL)
 			return ((bool)true);
 
-		g_mutex_lock(&instance->ri_mtx);
+		//g_mutex_lock(&instance->ri_mtx);
+		g_mutex_lock(&conn->rco_subscription_mtx);
 		sub = rpc_connection_find_subscription(conn, path, interface, name);
 		if (sub == NULL)
 			return ((bool)true);
 
 		sub->rsu_refcount--;
-		g_mutex_unlock(&instance->ri_mtx);
+		if (sub->rsu_refcount == 0) {
+			conn->rco_subscriptions =
+				g_list_remove(conn->rco_subscriptions, sub);
+			rpc_connection_subscription_release(sub);	
+		}
+
+		//g_mutex_unlock(&instance->ri_mtx);
+		g_mutex_unlock(&conn->rco_subscription_mtx);
 		return ((bool)true);
 	});
 
@@ -1425,14 +1449,19 @@ rpc_connection_register_context(rpc_connection_t conn, rpc_context_t ctx)
 static void
 rpc_connection_free_resources(rpc_connection_t conn)
 {
+	struct rpc_subscription *result;
+	guint i;
 
 	g_assert_cmpint(g_hash_table_size(conn->rco_calls), ==, 0);
 	g_assert_cmpint(g_hash_table_size(conn->rco_inbound_calls), ==, 0);
 	g_hash_table_destroy(conn->rco_calls);
 	g_hash_table_destroy(conn->rco_inbound_calls);
 
-	/* rpc_free_subscription_resources() TODO, foreach, strings and all */
-	if (conn->rco_subscriptions != NULL)
+	if (conn->rco_subscriptions != NULL) {
+		for (i = 0; i < conn->rco_subscriptions->len; i++) {
+			sub = g_ptr_array_index(conn->rco_subscriptions, i);
+			rpc_connection_subscription_release(sub);
+		}
 		g_ptr_array_free(conn->rco_subscriptions, true);
 
 	if (conn->rco_callback_pool != NULL) {
@@ -1682,8 +1711,38 @@ int
 rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *path,
     const char *interface, const char *name)
 {
+	struct rpc_subscription *sub;
+
+	if (!rpc_connection_is_open(conn)) /* TODO SET ERROR */
+		return (-1);
+
+	rpc_connection_retain(conn);
+
+	g_mutex_lock(&conn->rco_subscription_mtx);
+	sub = rpc_connection_find_subscription(conn, path, interface, name);
+	if (sub == NULL) {
+		g_mutex_unlock(&conn->rco_subscription_mtx);
+		rpc_connection_release(conn);
+		return (-1);  /* TODO SET ERROR */
+	}
+	ret = rpc_connection_unsubscribe_event_locked(sub);
+	rpc_connection_release(conn);
+	g_mutex_unlock(&conn->rco_subscription_mtx);
+	return (ret);
+}
+
+int
+rpc_connection_unsubscribe_event_locked(rpc_connection_t conn,
+    struct rpc_subscription *sub)
+{
 	rpc_object_t frame;
 	rpc_object_t args;
+
+	/* MUST be called retained and subs locked  */
+DEC SUB REFCOUNT
+IF GOES TO ZERO
+    INFORM SERVER
+    REMOVE SUB FROM CONN AND CLEAN IT UP
 
 	args = rpc_object_pack("{s,s,s}",
 	    "path", path,
@@ -1721,12 +1780,23 @@ void
 rpc_connection_unregister_event_handler(rpc_connection_t conn, void *cookie)
 {
 	struct rpc_subscription_handler *rsh = cookie;
+	struct rpc_subscription *sub;
 
+	if (!rpc_connection_is_open(conn) || cookie == NULL)
+		return;
+	sub = rsh->rsh_parent;
 	g_mutex_lock(&conn->rco_subscription_mtx);
 	g_ptr_array_remove(rsh->rsh_parent->rsu_handlers, cookie);
+
+HERE FREE RSH RESOURCES THEN .... CALL rpc_connection_unsubscribe_event_locked WITH CONN AND SUB  
+
 	g_mutex_unlock(&conn->rco_subscription_mtx);
 
 }
+
+
+NOTE IN CONN CLEANUP MUST WALK EACH SUB ->rsu_handlers BY INDEX AND FREE THEN ->rsu_handlers ITSELF THEN THE SUB CAN BE FREED
+
 
 rpc_object_t
 rpc_connection_call_syncv(rpc_connection_t conn, const char *path,
@@ -1959,6 +2029,12 @@ rpc_connection_send_event(rpc_connection_t conn, const char *path,
 {
 	rpc_object_t frame;
 	rpc_object_t event;
+	struct rpc_subscription *sub;
+
+	/* Any listeners? */
+	sub = rpc_connection_find_subscription(conn, path, interface, name);
+	if (sub == NULL)
+		return (0);
 
 	event = rpc_object_pack("{s,s,s,v}",
 	    "path", path,
