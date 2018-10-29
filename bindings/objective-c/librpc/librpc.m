@@ -83,8 +83,8 @@
                 rpc_dictionary_set_value(_obj, [key UTF8String], robj->_obj);
             }
         } else {
-            NSAssert(YES, @"Value does not correspond to any rpc_object classes");
-                self = nil;
+            NSAssert(YES, @"Value does not correspond to any rpc_object classes"); 
+            self = nil;
         }
     }
     return self;
@@ -527,7 +527,6 @@
                [[NSString alloc] initWithString:@(interfaceReturn)],
                [[NSString alloc] initWithString:@(methodReturn)]);
         });
-
     NSAssert(cookie != NULL, @"rpc_connection_register_event_handler() failure");
     return [[RPCListenHandle alloc] initWithConn:conn andCookie:cookie];
 }

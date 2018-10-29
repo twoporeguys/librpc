@@ -81,7 +81,7 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	struct rpc_if_method *method = call->rc_if_method;
 	rpc_object_t result;
 
-	if (call->rc_conn->rco_closed) {
+	if (!rpc_connection_is_open(call->rc_conn)) {
 		debugf("Can't dispatch call, conn %p closed", call->rc_conn);
 		rpc_connection_close_inbound_call(call);
 		return;
