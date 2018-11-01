@@ -277,9 +277,9 @@ thread_mestream_func (gpointer data)
 	rpc_context_t ctx = NULL;
 	rpc_object_t result;
 	rpc_object_t value;
-        __block GRand *rand = g_rand_new ();
-        __block gint n = g_rand_int_range (rand, 1, STREAMS);
-	__block char *str = g_malloc(27);
+	GRand *rand = g_rand_new ();
+	gint n = g_rand_int_range (rand, 1, STREAMS);
+	char *str = g_malloc(27);
 	__block int cnt = 0;
 	rpc_call_t call;
 
@@ -314,7 +314,8 @@ thread_mestream_func (gpointer data)
 
 	value = rpc_object_pack("[s,i]", "callme", (int64_t)n);
 	call = rpc_connection_call(conn, NULL, NULL, "stream-me", value, NULL);
-	g_assert(call != NULL);
+	if (call == NULL)
+		g_thread_exit (GINT_TO_POINTER (1));
 	rpc_call_wait(call);
 	result = rpc_call_result(call);
 
@@ -417,7 +418,7 @@ do_stream_work(struct work_item *item)
 		rpc_function_error(item->call, EINVAL, "Unable to make call");
 		return (0);
 	}
-        for (;;) {
+	for (;;) {
 		rpc_call_wait(call);
 
 		switch (rpc_call_status(call)) {
@@ -448,8 +449,8 @@ do_stream_work(struct work_item *item)
 
 		default:
 			g_assert_not_reached();
-                }
-        }
+		}
+	}
 done:
 
 	if (!failed)

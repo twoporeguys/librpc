@@ -267,7 +267,7 @@ struct rpc_connection
 	GHashTable *		rco_calls;
 	GHashTable *		rco_inbound_calls;
     	GPtrArray *		rco_subscriptions;
-    	GMutex			rco_subscription_mtx;
+    	GRWLock			rco_subscription_rwlock;
 	GMutex			rco_mtx;
 	GMutex			rco_ref_mtx;
 	GMutex			rco_send_mtx;
@@ -600,7 +600,7 @@ INTERNAL_LINKAGE void rpc_connection_send_end(rpc_connection_t, rpc_object_t,
 INTERNAL_LINKAGE void rpc_connection_close_inbound_call(struct rpc_call *);
 INTERNAL_LINKAGE int rpc_connection_call_retain(struct rpc_call *call);
 INTERNAL_LINKAGE int rpc_connection_call_release(struct rpc_call *call);
-
+INTERNAL_LINKAGE int rpc_connection_get_subscription_count(rpc_connection_t conn);
 INTERNAL_LINKAGE rpc_instance_t rpc_instance_retain(rpc_instance_t);
 INTERNAL_LINKAGE void rpc_instance_release(rpc_instance_t);
 
