@@ -1779,7 +1779,7 @@ rpc_connection_unsubscribe_event_locked(rpc_connection_t conn,
 	if (sub->rsu_refcount > 0)
 		return (0);
  
-	args = rpc_object_pack("{s,s,s}",
+	args = rpc_object_pack("[{s,s,s}]",
 	    "path", sub->rsu_path,
 	    "interface", sub->rsu_interface,
 	    "name", sub->rsu_name);
