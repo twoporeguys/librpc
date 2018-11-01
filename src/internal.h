@@ -267,7 +267,7 @@ struct rpc_connection
 	GHashTable *		rco_calls;
 	GHashTable *		rco_inbound_calls;
     	GPtrArray *		rco_subscriptions;
-    	GRWLock			rco_subscription_rwlock;
+	GRWLock			rco_subscription_rwlock;
 	GMutex			rco_mtx;
 	GMutex			rco_ref_mtx;
 	GMutex			rco_send_mtx;
