@@ -189,6 +189,8 @@ struct rpc_subscription
 	const char *		rsu_path;
 	const char *		rsu_interface;
     	int 			rsu_refcount;
+	bool			rsu_busy;
+	GMutex			rsu_iter_mtx;
     	GPtrArray *		rsu_handlers;
 };
 

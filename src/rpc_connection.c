@@ -275,20 +275,27 @@ rpc_callback_worker(void *arg, void *data)
 		interface = rpc_dictionary_get_string(item->event, "interface");
 		name = rpc_dictionary_get_string(item->event, "name");
 		data = rpc_dictionary_get_value(item->event, "args");
-		g_rw_lock_reader_lock(&conn->rco_subscription_rwlock);
+		g_rw_lock_writer_lock(&conn->rco_subscription_rwlock);
 		sub = rpc_connection_find_subscription(conn, path, interface, name);
 
 		if (sub != NULL) {
+			sub->rsu_busy = true;
+			g_mutex_lock(&sub->rsu_iter_mtx);
+			g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
 			for (guint i = 0; i < sub->rsu_handlers->len; i++) {
 				handler = g_ptr_array_index(sub->rsu_handlers, i);
 				handler->rsh_handler(path, interface, name, data);
 			}
+			g_rw_lock_writer_lock(&conn->rco_subscription_rwlock);
+			sub->rsu_busy = false;
+			g_mutex_unlock(&sub->rsu_iter_mtx);
+
 		}
+		g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
 
 		if (conn->rco_event_handler != NULL)
 			conn->rco_event_handler(path, interface, name, data);
 
-		g_rw_lock_reader_unlock(&conn->rco_subscription_rwlock);
 		rpc_release(item->event);
 	}
 
@@ -780,8 +787,10 @@ rpc_subscription_release(struct rpc_subscription *sub)
 	g_free((gpointer)sub->rsu_path);
 	g_free((gpointer)sub->rsu_interface);
 	g_free((gpointer)sub->rsu_name);
-	if (sub->rsu_handlers != NULL)
+	if (sub->rsu_handlers != NULL) {
+		g_mutex_clear(&sub->rsu_iter_mtx);
 		g_ptr_array_free(sub->rsu_handlers, true);
+	}
 	g_free(sub);
 }
 
@@ -1697,6 +1706,7 @@ rpc_connection_subscribe_event_locked(rpc_connection_t conn, const char *path,
 		sub->rsu_path = g_strdup(path);
 		sub->rsu_interface = g_strdup(interface);
 		sub->rsu_name = g_strdup(name);
+		g_mutex_init(&sub->rsu_iter_mtx);
 		sub->rsu_handlers = g_ptr_array_new_with_free_func((GDestroyNotify)rpc_rsh_release);
 		args = rpc_object_pack("[{s,s,s}]",
 		    "path", path,
@@ -1813,47 +1823,63 @@ rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
     const char *interface, const char *name, rpc_handler_t handler)
 {
 	struct rpc_subscription *sub;
-	struct rpc_subscription_handler *rsh;
+	struct rpc_subscription_handler *rsh = NULL;
 
-	if (!rpc_connection_retain_if_open(conn))
+	if (!rpc_connection_retain_if_open(conn)) {
+		rpc_set_last_error(ECONNRESET, "Connection closed", NULL);
 		return (NULL);
+	}
 
 	g_rw_lock_writer_lock(&conn->rco_subscription_rwlock);
 
 	sub = rpc_connection_subscribe_event_locked(conn, path, interface,
 	    name);
 	if (sub == NULL) {
-		/* Couldn't inform server, subscription not completed */
-		g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
-		rpc_connection_release(conn);
-		return (NULL);
+		/* Couldn't inform server, error has been set */
+		goto done;
+	}
+	if (sub->rsu_busy) {
+		rpc_set_last_error(EBUSY, "Subscription locked, retry", NULL);
+		goto done;
 	}
 	rsh = g_malloc0(sizeof(*rsh));
 	rsh->rsh_parent = sub;
 	rsh->rsh_handler = Block_copy(handler);
 	g_ptr_array_add(sub->rsu_handlers, rsh);
+done:
 	g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
-
 	rpc_connection_release(conn);
+
 	return (rsh);
 }
 
-void
+int
 rpc_connection_unregister_event_handler(rpc_connection_t conn, void *cookie)
 {
 	struct rpc_subscription_handler *rsh = cookie;
 	struct rpc_subscription *sub;
+	int ret = 0;
 
-	if (cookie == NULL || !rpc_connection_retain_if_open(conn))
-		return;
+	if (!rpc_connection_retain_if_open(conn)) {
+		rpc_set_last_error(ECONNRESET, "Connection closed", NULL);
+		return (-1);
+	}
+
 	sub = rsh->rsh_parent;
 
 	g_rw_lock_writer_lock(&conn->rco_subscription_rwlock);
+	if (sub->rsu_busy) {
+		ret = -1;
+		rpc_set_last_error(EBUSY, "Subscription locked, retry", NULL);
+		goto done;
+	}
 	if (g_ptr_array_remove(sub->rsu_handlers, rsh))
 		rpc_connection_unsubscribe_event_locked(conn, sub);
 
+done:
 	g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
 	rpc_connection_release(conn);
+	return ret;
 }
 
 rpc_object_t
