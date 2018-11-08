@@ -98,8 +98,6 @@ socket_parse_uri(const char *uri_string)
 	char *uri_copy = g_strdup(uri_string);
 	char *host;
 	char *upath;
-	char *ptr = NULL;
-	char *sptr = NULL;
 
 	if (yuarel_parse(&uri, uri_copy) != 0) {
 		rpc_set_last_errorf(EINVAL, "Cannot parse URI");
@@ -114,26 +112,6 @@ socket_parse_uri(const char *uri_string)
 	}
 
 	if (!g_strcmp0(uri.scheme, "tcp")) {
-		if (uri.host[0] == '[') {
-			g_free(uri_copy);
-			uri_copy = g_strdup(uri_string);
-			uri.port = 0;
-			sptr = strchr(uri_copy, '[');
-			ptr = strchr(uri_copy, ']');
-			if (ptr) {
-				if (*(ptr + 1) == ':') {
-					uri.port = atoi(ptr + 2);
-					*ptr = '\0';
-				}
-			}
-			if (ptr == NULL || uri.port == 0) {
-				g_free(uri_copy);
-				rpc_set_last_errorf(EINVAL,
-				    "Missing tcp port");
-					return (NULL);
-			}
-			uri.host = sptr + 1;
-		}
 
 		resolver = g_resolver_get_default();
 		addresses = g_resolver_lookup_by_name(resolver, uri.host,
