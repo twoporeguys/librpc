@@ -531,11 +531,15 @@ static void
 client_test_tear_down(client_fixture *fixture, gconstpointer user_data)
 {
 
-	if (fixture->srv)
+	if (fixture->srv) {
 		rpc_server_close(fixture->srv);
+		while (rpc_server_find(uris_[fixture->iuri].srv, fixture->ctx) != NULL)
+			sleep(5);
+	}
 	rpc_context_unregister_member(fixture->ctx, NULL, "hi");
 	rpc_context_free(fixture->ctx);
 }
+
 
 static void
 client_test_register()
