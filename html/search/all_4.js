@@ -124,7 +124,7 @@ var searchData=
   ['rpc_5fconnection_5fsupports_5ffd_5fpassing',['rpc_connection_supports_fd_passing',['../connection_8h.html#ab9cd83235082c4a5c4a6ba5c59651709',1,'connection.h']]],
   ['rpc_5fconnection_5ft',['rpc_connection_t',['../connection_8h.html#a70838cb106c3464db299522c5fe2782d',1,'connection.h']]],
   ['rpc_5fconnection_5ftimeout',['RPC_CONNECTION_TIMEOUT',['../connection_8h.html#a88bd06a910a4ce0b9046b9beb4af5ccda68a960230d093e43260efb62951a6d55',1,'connection.h']]],
-  ['rpc_5fconnection_5funregister_5fevent_5fhandler',['rpc_connection_unregister_event_handler',['../connection_8h.html#acbd3258860547585d56e70d5b14cb4de',1,'connection.h']]],
+  ['rpc_5fconnection_5funregister_5fevent_5fhandler',['rpc_connection_unregister_event_handler',['../connection_8h.html#a102ad5fd1ab895a56319a25f43060a20',1,'connection.h']]],
   ['rpc_5fconnection_5funsubscribe_5fevent',['rpc_connection_unsubscribe_event',['../connection_8h.html#a11876d99f4c813328cb3a4dbbbc8bab5',1,'connection.h']]],
   ['rpc_5fconnection_5fwatch_5fproperty',['rpc_connection_watch_property',['../connection_8h.html#a4560bfb571379ff9cdbb10f1de968e7a',1,'connection.h']]],
   ['rpc_5fcontext_5fcreate',['rpc_context_create',['../service_8h.html#aa53a346b1f60759fabc2f047e75fdb90',1,'service.h']]],
