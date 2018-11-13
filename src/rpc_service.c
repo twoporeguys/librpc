@@ -817,9 +817,9 @@ rpc_instance_find_member(rpc_instance_t instance, const char *interface,
 		return (NULL);
 	}
 
-	g_mutex_lock(&iface->rip_mtx);
+	g_rw_lock_reader_lock(&iface->rip_rwlock);
 	result = g_hash_table_lookup(iface->rip_members, name);
-	g_mutex_unlock(&iface->rip_mtx);
+	g_rw_lock_reader_unlock(&iface->rip_rwlock);
 
 	return (result);
 }
@@ -846,7 +846,7 @@ rpc_instance_register_interface(rpc_instance_t instance,
 		return (0);
 
 	priv = g_malloc0(sizeof(*priv));
-	g_mutex_init(&priv->rip_mtx);
+	g_rw_lock_init(&priv->rip_rwlock);
 	priv->rip_members = g_hash_table_new_full(g_str_hash, g_str_equal,
 	    g_free, (GDestroyNotify)rpc_if_member_free);
 	priv->rip_arg = arg;
@@ -886,7 +886,7 @@ rpc_interface_free(struct rpc_interface_priv *priv)
 {
 
 	g_hash_table_destroy(priv->rip_members);
-	g_mutex_clear(&priv->rip_mtx);
+	g_rw_lock_clear(&priv->rip_rwlock);
 	g_free(priv->rip_description);
 	g_free(priv);
 }
@@ -954,9 +954,9 @@ int rpc_instance_register_member(rpc_instance_t instance, const char *interface,
 
 	}
 
-	g_mutex_lock(&priv->rip_mtx);
+	g_rw_lock_writer_lock(&priv->rip_rwlock);
 	g_hash_table_insert(priv->rip_members, g_strdup(member->rim_name), copy);
-	g_mutex_unlock(&priv->rip_mtx);
+	g_rw_lock_writer_unlock(&priv->rip_rwlock);
 	return (0);
 }
 
@@ -1000,15 +1000,16 @@ rpc_instance_unregister_member(rpc_instance_t instance, const char *interface,
 		return (-1);
 	}
 
-	g_mutex_lock(&priv->rip_mtx);
+	g_rw_lock_writer_lock(&priv->rip_rwlock);
 	member = g_hash_table_lookup(priv->rip_members, name);
 	if (member == NULL) {
 		rpc_set_last_error(ENOENT, "Member not found", NULL);
+		g_rw_lock_writer_unlock(&priv->rip_rwlock);
 		return (-1);
 	}
 
 	g_hash_table_remove(priv->rip_members, name);
-	g_mutex_unlock(&priv->rip_mtx);
+	g_rw_lock_writer_unlock(&priv->rip_rwlock);
 
 	debugf("unregistered %s", name);
 	return (0);
@@ -1374,7 +1375,7 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 	}
 
 	result = rpc_array_create();
-	g_mutex_lock(&priv->rip_mtx);
+	g_rw_lock_reader_lock(&priv->rip_rwlock);
 	g_hash_table_iter_init(&iter, priv->rip_members);
 
 	while (g_hash_table_iter_next(&iter, (gpointer)&k, (gpointer)&v)) {
@@ -1409,7 +1410,7 @@ rpc_observable_property_get_all(void *cookie, rpc_object_t args)
 		rpc_array_append_stolen_value(result, item);
 	}
 
-	g_mutex_unlock(&priv->rip_mtx);
+	g_rw_lock_reader_unlock(&priv->rip_rwlock);
 	return (result);
 }
 
