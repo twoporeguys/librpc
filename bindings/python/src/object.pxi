@@ -295,38 +295,40 @@ cdef class Object(object):
             cdef const uint8_t *c_bytes = NULL
             cdef size_t c_len = 0
 
-            if self.type == ObjectType.NIL:
+            ttype = ObjectType(rpc_get_type(self.unwrap()))
+
+            if ttype == ObjectType.NIL:
                 return None
 
-            if self.type == ObjectType.BOOL:
+            if ttype == ObjectType.BOOL:
                 return rpc_bool_get_value(self.unwrap())
 
-            if self.type == ObjectType.INT64:
+            if ttype == ObjectType.INT64:
                 return rpc_int64_get_value(self.unwrap())
 
-            if self.type == ObjectType.UINT64:
+            if ttype == ObjectType.UINT64:
                 return rpc_uint64_get_value(self.unwrap())
 
-            if self.type == ObjectType.FD:
+            if ttype == ObjectType.FD:
                 return rpc_fd_get_value(self.unwrap())
 
-            if self.type == ObjectType.STRING:
+            if ttype == ObjectType.STRING:
                 c_string = rpc_string_get_string_ptr(self.unwrap())
                 c_len = rpc_string_get_length(self.unwrap())
                 return c_string[:c_len].decode('utf-8')
 
-            if self.type == ObjectType.DOUBLE:
+            if ttype == ObjectType.DOUBLE:
                 return rpc_double_get_value(self.unwrap())
 
-            if self.type == ObjectType.DATE:
+            if ttype == ObjectType.DATE:
                 return datetime.datetime.utcfromtimestamp(rpc_date_get_value(self.unwrap()))
 
-            if self.type == ObjectType.BINARY:
+            if ttype == ObjectType.BINARY:
                 c_bytes = <uint8_t *>rpc_data_get_bytes_ptr(self.unwrap())
                 c_len = rpc_data_get_length(self.unwrap())
                 return <bytes>c_bytes[:c_len]
 
-            if self.type == ObjectType.ERROR:
+            if ttype == ObjectType.ERROR:
                 extra = Object.wrap(rpc_error_get_extra(self.unwrap()))
                 stack = Object.wrap(rpc_error_get_stack(self.unwrap()))
 
@@ -337,12 +339,12 @@ cdef class Object(object):
                     stack
                 )
 
-            if self.type == ObjectType.ARRAY:
+            if ttype == ObjectType.ARRAY:
                 array = Array.__new__(Array)
                 array.obj = rpc_retain(self.unwrap())
                 return array
 
-            if self.type == ObjectType.DICTIONARY:
+            if ttype == ObjectType.DICTIONARY:
                 dictionary = Dictionary.__new__(Dictionary)
                 dictionary.obj = rpc_retain(self.unwrap())
                 return dictionary
