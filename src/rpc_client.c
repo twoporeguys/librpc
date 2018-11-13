@@ -30,6 +30,10 @@
 #include <gio/gio.h>
 #include "internal.h"
 
+
+static GMutex clients_mtx;
+static GHashTable *active_clients = NULL;
+
 static void *
 rpc_client_worker(void *arg)
 {
@@ -52,6 +56,8 @@ rpc_client_create(const char *uri, rpc_object_t params)
 	rpc_client_t client;
 
 	client = g_malloc0(sizeof(*client));
+	g_assert(g_hash_table_lookup(active_clients, client) == NULL);
+
 	client->rci_g_context = g_main_context_new();
 	client->rci_g_loop = g_main_loop_new(client->rci_g_context, false);
 	client->rci_thread = g_thread_new("librpc client", rpc_client_worker,
@@ -68,26 +74,50 @@ rpc_client_create(const char *uri, rpc_object_t params)
 		return (NULL);
 	}
 
+	g_mutex_lock(&clients_mtx);
+	if (active_clients == NULL)
+		active_clients = g_hash_table_new(NULL, NULL);
+	g_hash_table_insert(active_clients, client, client);
+	g_mutex_unlock(&clients_mtx);
+
 	return (client);
 }
 
 GMainContext *
 rpc_client_get_main_context(rpc_client_t client)
 {
+	GMainContext *val;
 
-	return (client->rci_g_context);
+	g_mutex_lock(&clients_mtx);
+	val = g_hash_table_lookup(active_clients, client) == NULL ?
+		NULL : client->rci_g_context;
+	g_mutex_unlock(&clients_mtx);
+	return (val);
 }
 
 rpc_connection_t
 rpc_client_get_connection(rpc_client_t client)
 {
+	rpc_connection_t conn = NULL;
 
-	return (client->rci_connection);
+	g_mutex_lock(&clients_mtx);
+	conn = g_hash_table_lookup(active_clients, client) == NULL ?
+		NULL : client->rci_connection;
+	g_mutex_unlock(&clients_mtx);
+
+	return (conn);
 }
 
 void
 rpc_client_close(rpc_client_t client)
 {
+	bool removed;
+
+	g_mutex_lock(&clients_mtx);
+	removed = g_hash_table_remove(active_clients, client);
+	g_mutex_unlock(&clients_mtx);
+	if (!removed)
+		return;
 
 	if (client->rci_connection != NULL) {
 		/* must hold a reference to retain the connection until it
