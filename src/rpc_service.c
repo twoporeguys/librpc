@@ -172,6 +172,7 @@ rpc_context_create(void)
 void
 rpc_context_free(rpc_context_t context)
 {
+	struct emit_item *item;
 
 	if (context == NULL)
 		return;
@@ -179,7 +180,9 @@ rpc_context_free(rpc_context_t context)
 	g_thread_pool_free(context->rcx_threadpool, true, true);
 	rpc_instance_free(context->rcx_root);
 
-	g_async_queue_push(context->rcx_emit_queue, NULL);
+	item = g_malloc(sizeof (*item));
+        item->context = NULL;
+        g_async_queue_push(context->rcx_emit_queue, item);
 	g_thread_join(context->rcx_emit_thread);
 	g_async_queue_unref(context->rcx_emit_queue);
 
@@ -266,14 +269,19 @@ void
 rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
     const char *name, rpc_object_t args)
 {
-	g_mutex_lock(&instance->ri_mtx);
+	rpc_context_t context;
 
-	if (instance->ri_context)
+	g_mutex_lock(&instance->ri_mtx);
+	if (instance->ri_context) {
+		context = instance->ri_context;
+		g_mutex_unlock(&instance->ri_mtx);
+		g_rw_lock_reader_lock(&context->rcx_rwlock);
 		rpc_context_emit_event(instance->ri_context, instance->ri_path,
 		    interface, name, args);
-	else
-		rpc_release(args);
-
+		g_rw_lock_reader_unlock(&context->rcx_rwlock);
+		return;
+	}
+	rpc_release(args);
 	g_mutex_unlock(&instance->ri_mtx);
 }
 
@@ -389,7 +397,7 @@ emit_events(gpointer data)
 	rpc_context_t context;
 	for (;;) {
 		item = g_async_queue_pop(q);
-		if (item == NULL)
+		if (item->context == NULL)
 			break;
 		context = item->context;
 		g_rw_lock_reader_lock(&context->rcx_server_rwlock);
@@ -400,6 +408,9 @@ emit_events(gpointer data)
 		}
 		g_rw_lock_reader_unlock(&context->rcx_server_rwlock);
 		rpc_release(item->args);
+		g_free(item->path);
+		g_free(item->interface);
+		g_free(item->name);
 		g_free(item);
 	}
 	return (NULL);
@@ -412,9 +423,9 @@ rpc_context_emit_event(rpc_context_t context, const char *path,
 	struct emit_item *item = g_malloc(sizeof (*item));
 
 	item->context = context;
-	item->path = (char *)path;
-	item->interface = (char *)interface;
-	item->name = (char *)name;
+	item->path = g_strdup(path);
+	item->interface = g_strdup(interface);
+	item->name = g_strdup(name);
 	item->args = args;
 
 	g_async_queue_push(context->rcx_emit_queue, item);
