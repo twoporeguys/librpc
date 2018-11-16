@@ -30,6 +30,13 @@
  *
  * This is a basic client API example, demonstrating how to handle streaming
  * and non-streaming calls.
+ *
+ * To run with the default URI:
+ * ./build/examples/client/example-client
+ * To specify the URI:
+ * ./build/examples/client/example-client  unix://test2.sock
+ * Note that the unix domain socket example requires that client and server
+ * be run from the same directory specifying the same socket.
  */
 
 #include <stdio.h>
