@@ -1,8 +1,6 @@
 \hypertarget{server_8c-example}{}\section{server.\+c}
 An example that shows how to set up a basic librpc server and register methods on it.
 
-To run with the default U\+RI\+: ./build/examples/server/example-\/server To specify the U\+RI\+: ./build/examples/server/example-\/server unix\+://test2.sock Note that the unix domain socket example requires that client and server be run from the same directory specifying the same socket.
-
 
 \begin{DoxyCodeInclude}
 \textcolor{comment}{/*}
@@ -79,6 +77,9 @@ main(\textcolor{keywordtype}{int} argc, \textcolor{keyword}{const} \textcolor{ke
         \_\_block gint setcnt = g\_rand\_int\_range(rand, 50, 500);
         \_\_block \textcolor{keywordtype}{char} *strg = g\_malloc(27);
 
+    (void)argc;
+    (void)argv;
+
     ctx = \hyperlink{service_8h_aa53a346b1f60759fabc2f047e75fdb90}{rpc\_context\_create}();
     \hyperlink{service_8h_a1aac077f97529f7c26834c139fefc2f5}{rpc\_context\_register\_func}(ctx, NULL, \textcolor{stringliteral}{"hello"},
         NULL, hello);
@@ -117,7 +118,7 @@ main(\textcolor{keywordtype}{int} argc, \textcolor{keyword}{const} \textcolor{ke
                         i = g\_rand\_int\_range (rand, 0, 26);
 
                         res = \hyperlink{object_8h_a8a8454f12dcde323f5daba961febea97}{rpc\_object\_pack}(\textcolor{stringliteral}{"[s, i, i]"},
-                            strg + i, (int64\_t)(26-i), (int64\_t)cnt);
+                            strg + i, 26-i, cnt);
 
                         fprintf(stderr, \textcolor{stringliteral}{"returning %s,  %d letters, %d of %d\(\backslash\)n"},
                             \hyperlink{object_8h_a98483eea7ea6929d45d04b987a4c8f1c}{rpc\_array\_get\_string}(res, 0), 26-i, cnt, setcnt);
@@ -132,10 +133,7 @@ main(\textcolor{keywordtype}{int} argc, \textcolor{keyword}{const} \textcolor{ke
         \textcolor{keywordflow}{return} (\hyperlink{object_8h_af71ab5e00bfb82e6733e59c42e3ed157}{rpc\_null\_create}());
         \});
 
-    \textcolor{keywordflow}{if} (argc > 1)
-        srv = \hyperlink{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}{rpc\_server\_create}(argv[1], ctx);
-    \textcolor{keywordflow}{else}
-        srv = \hyperlink{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}{rpc\_server\_create}(\textcolor{stringliteral}{"tcp://0.0.0.0:5000"}, ctx);
+    srv = \hyperlink{server_8h_a2d524c3d5822d34b46f1d8552bf7ede0}{rpc\_server\_create}(\textcolor{stringliteral}{"tcp://0.0.0.0:5000"}, ctx);
     \textcolor{keywordflow}{if} (srv == NULL) \{
         error = \hyperlink{object_8h_a45800949eb1b61b3af02051c780244fe}{rpc\_get\_last\_error}();
         fprintf(stderr, \textcolor{stringliteral}{"Cannot create server: %s\(\backslash\)n"},
