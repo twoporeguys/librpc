@@ -53,7 +53,7 @@ pipeline {
             steps {
                 sh "mkdir -p ${DOCS_PATH}/librpc"
                 sh "rm -rf ${DOCS_PATH}/librpc/*"
-                sh "cp -a build/docs/* ${DOCS_PATH}/librpc/"
+                sh "cp -dR build/docs/* ${DOCS_PATH}/librpc/"
             }
         }
 
