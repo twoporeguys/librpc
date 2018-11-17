@@ -52,10 +52,10 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>int64_t<sp/>num;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>cnt<sp/>=<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>(void)argc;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>(void)argv;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>client<sp/>=<sp/><ref refid="client_8h_1aaf8c4f2be48ef8d79a29e004264f0bf6" kindref="member">rpc_client_create</ref>(</highlight><highlight class="stringliteral">&quot;tcp://127.0.0.1:5000&quot;</highlight><highlight class="normal">,<sp/>0);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(argc<sp/>&gt;<sp/>1)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>client<sp/>=<sp/><ref refid="client_8h_1aaf8c4f2be48ef8d79a29e004264f0bf6" kindref="member">rpc_client_create</ref>(argv[1],<sp/>0);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>client<sp/>=<sp/><ref refid="client_8h_1aaf8c4f2be48ef8d79a29e004264f0bf6" kindref="member">rpc_client_create</ref>(</highlight><highlight class="stringliteral">&quot;tcp://127.0.0.1:5000&quot;</highlight><highlight class="normal">,<sp/>0);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(client<sp/>==<sp/>NULL)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>result<sp/>=<sp/><ref refid="object_8h_1a45800949eb1b61b3af02051c780244fe" kindref="member">rpc_get_last_error</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>fprintf(stderr,<sp/></highlight><highlight class="stringliteral">&quot;cannot<sp/>connect:<sp/>%s\n&quot;</highlight><highlight class="normal">,</highlight></codeline>

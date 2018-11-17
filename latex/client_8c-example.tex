@@ -54,10 +54,10 @@ main(\textcolor{keywordtype}{int} argc, \textcolor{keyword}{const} \textcolor{ke
     int64\_t num;
     \textcolor{keywordtype}{int} cnt = 0;
 
-    (void)argc;
-    (void)argv;
-
-    client = \hyperlink{client_8h_aaf8c4f2be48ef8d79a29e004264f0bf6}{rpc\_client\_create}(\textcolor{stringliteral}{"tcp://127.0.0.1:5000"}, 0);
+    \textcolor{keywordflow}{if} (argc > 1)
+        client = \hyperlink{client_8h_aaf8c4f2be48ef8d79a29e004264f0bf6}{rpc\_client\_create}(argv[1], 0);
+    \textcolor{keywordflow}{else}
+        client = \hyperlink{client_8h_aaf8c4f2be48ef8d79a29e004264f0bf6}{rpc\_client\_create}(\textcolor{stringliteral}{"tcp://127.0.0.1:5000"}, 0);
     \textcolor{keywordflow}{if} (client == NULL) \{
         result = \hyperlink{object_8h_a45800949eb1b61b3af02051c780244fe}{rpc\_get\_last\_error}();
         fprintf(stderr, \textcolor{stringliteral}{"cannot connect: %s\(\backslash\)n"},
