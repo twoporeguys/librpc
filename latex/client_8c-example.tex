@@ -74,6 +74,11 @@ main(\textcolor{keywordtype}{int} argc, \textcolor{keyword}{const} \textcolor{ke
     printf(\textcolor{stringliteral}{"result = %s\(\backslash\)n"}, \hyperlink{object_8h_a04a698c1f5f736ef71bc81ccf91be52d}{rpc\_string\_get\_string\_ptr}(result));
     \hyperlink{object_8h_aac19be935f72b35eeb2851bc509eabb2}{rpc\_release}(result);
 
+    \textcolor{keywordflow}{if} (\hyperlink{connection_8h_a79e22944d8fb685f6378f9e5c10464f3}{rpc\_connection\_has\_credentials}(conn)) \{
+        fprintf(stderr, \textcolor{stringliteral}{"Remote pid is %d\(\backslash\)n"},
+            (\textcolor{keywordtype}{int})\hyperlink{connection_8h_a3e2ec927f332c312dc187b6f38c81337}{rpc\_connection\_get\_remote\_pid}(conn));
+    \}
+
         call = \hyperlink{connection_8h_ad5e74986e0e4bcd402fbc1f565a7dd3d}{rpc\_connection\_call}(conn, NULL, NULL, \textcolor{stringliteral}{"stream"}, 
       \hyperlink{object_8h_ae543b86020ed2e2e8fd483c38e31552a}{rpc\_array\_create}(), NULL);
         \textcolor{keywordflow}{if} (call == NULL) \{
