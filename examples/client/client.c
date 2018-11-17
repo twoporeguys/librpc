@@ -61,10 +61,10 @@ main(int argc, const char *argv[])
 	int64_t num;
 	int cnt = 0;
 
-	(void)argc;
-	(void)argv;
-
-	client = rpc_client_create("tcp://127.0.0.1:5000", 0);
+	if (argc > 1)
+		client = rpc_client_create(argv[1], 0);
+	else
+		client = rpc_client_create("tcp://127.0.0.1:5000", 0);
 	if (client == NULL) {
 		result = rpc_get_last_error();
 		fprintf(stderr, "cannot connect: %s\n",
