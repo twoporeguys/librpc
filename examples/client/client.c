@@ -81,6 +81,11 @@ main(int argc, const char *argv[])
 	printf("result = %s\n", rpc_string_get_string_ptr(result));
 	rpc_release(result);
 
+	if (rpc_connection_has_credentials(conn)) {
+		fprintf(stderr, "Remote pid is %d\n",
+		    (int)rpc_connection_get_remote_pid(conn));
+	}
+
         call = rpc_connection_call(conn, NULL, NULL, "stream", rpc_array_create(), NULL);
         if (call == NULL) {
                 fprintf(stderr, "Stream call failed\n");
