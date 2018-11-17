@@ -820,6 +820,10 @@ rpc_set_creds(rpc_connection_t conn, pid_t pid, uid_t uid, gid_t gid)
 	conn->rco_creds.rcc_uid = uid;
 	conn->rco_creds.rcc_gid = gid;
 
+        fprintf(stderr, "%s conn %p has creds: %d %d %d\n",
+            conn->rco_server == NULL ? "Client" : "Server",
+            conn, pid, uid, gid);
+
 	g_mutex_unlock(&conn->rco_mtx);
 	return (0);
 }
