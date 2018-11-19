@@ -812,7 +812,6 @@ rpc_set_creds(rpc_connection_t conn, pid_t pid, uid_t uid, gid_t gid)
 		return (-1);
 	}
 	g_assert(rpc_connection_supports_credentials(conn));
-	g_assert(!conn->rco_has_creds);
 	g_mutex_lock(&conn->rco_mtx);
 
 	conn->rco_has_creds = true;
