@@ -279,17 +279,20 @@ rpc_callback_worker(void *arg, void *data)
 		sub = rpc_connection_find_subscription(conn, path, interface, name);
 
 		if (sub != NULL) {
+			if (sub->rsu_busy) {
+				rpc_run_callback(conn, item);
+				g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
+				rpc_connection_release(conn);
+				return;
+			}
 			sub->rsu_busy = true;
-			g_mutex_lock(&sub->rsu_iter_mtx);
-			g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
 			for (guint i = 0; i < sub->rsu_handlers->len; i++) {
 				handler = g_ptr_array_index(sub->rsu_handlers, i);
+				g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
 				handler->rsh_handler(path, interface, name, data);
+				g_rw_lock_writer_lock(&conn->rco_subscription_rwlock);
 			}
-			g_rw_lock_writer_lock(&conn->rco_subscription_rwlock);
 			sub->rsu_busy = false;
-			g_mutex_unlock(&sub->rsu_iter_mtx);
-
 		}
 		g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
 
@@ -787,10 +790,8 @@ rpc_subscription_release(struct rpc_subscription *sub)
 	g_free((gpointer)sub->rsu_path);
 	g_free((gpointer)sub->rsu_interface);
 	g_free((gpointer)sub->rsu_name);
-	if (sub->rsu_handlers != NULL) {
-		g_mutex_clear(&sub->rsu_iter_mtx);
+	if (sub->rsu_handlers != NULL)
 		g_ptr_array_free(sub->rsu_handlers, true);
-	}
 	g_free(sub);
 }
 
@@ -1706,7 +1707,6 @@ rpc_connection_subscribe_event_locked(rpc_connection_t conn, const char *path,
 		sub->rsu_path = g_strdup(path);
 		sub->rsu_interface = g_strdup(interface);
 		sub->rsu_name = g_strdup(name);
-		g_mutex_init(&sub->rsu_iter_mtx);
 		sub->rsu_handlers = g_ptr_array_new_with_free_func((GDestroyNotify)rpc_rsh_release);
 		args = rpc_object_pack("[{s,s,s}]",
 		    "path", path,
