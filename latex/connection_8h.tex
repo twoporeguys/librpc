@@ -111,7 +111,7 @@ int \hyperlink{connection_8h_a11876d99f4c813328cb3a4dbbbc8bab5}{rpc\+\_\+connect
 \item 
 void $\ast$\+\_\+\+Nullable \hyperlink{connection_8h_a6f79ef869bd9d72e5cffbdb6dae2aef1}{rpc\+\_\+connection\+\_\+register\+\_\+event\+\_\+handler} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull name, \+\_\+\+Nullable \hyperlink{connection_8h_abd97c34e4cc24dce96eb2944a3cf5aad}{rpc\+\_\+handler\+\_\+t} handler)
 \item 
-int \hyperlink{connection_8h_acbd3258860547585d56e70d5b14cb4de}{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, void $\ast$\+\_\+\+Nonnull cookie)
+void \hyperlink{connection_8h_a102ad5fd1ab895a56319a25f43060a20}{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, void $\ast$\+\_\+\+Nonnull cookie)
 \item 
 \+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} \hyperlink{connection_8h_af5e8d63da05fa221ac8bb51ff22e7f3b}{rpc\+\_\+connection\+\_\+call\+\_\+sync} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn, const char $\ast$\+\_\+\+Nullable path, const char $\ast$\+\_\+\+Nullable interface, const char $\ast$\+\_\+\+Nonnull method,...)
 \item 
@@ -944,6 +944,9 @@ File descriptor number
 \begin{DoxyReturn}{Returns}
 
 \end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{client_8c-example}{client.\+c}.\end{Desc}
 \mbox{\Hypertarget{connection_8h_a43855db9f044fdc830fc1370d84a4f4b}\label{connection_8h_a43855db9f044fdc830fc1370d84a4f4b}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid}}
 \index{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid@{rpc\+\_\+connection\+\_\+get\+\_\+remote\+\_\+uid}!connection.\+h@{connection.\+h}}
@@ -976,6 +979,9 @@ Returns true if a connection has associated remote credentials information.
 \begin{DoxyReturn}{Returns}
 true if credentials information is available, otherwise false 
 \end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{client_8c-example}{client.\+c}.\end{Desc}
 \mbox{\Hypertarget{connection_8h_a71699a40039ad05bd244713464cbee88}\label{connection_8h_a71699a40039ad05bd244713464cbee88}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+is\+\_\+open@{rpc\+\_\+connection\+\_\+is\+\_\+open}}
 \index{rpc\+\_\+connection\+\_\+is\+\_\+open@{rpc\+\_\+connection\+\_\+is\+\_\+open}!connection.\+h@{connection.\+h}}
@@ -1008,7 +1014,7 @@ Registers an event handler block for an event of a given name.
 
 Each time an event occurs, a handler block is going to be called.
 
-If the connection is no longer valid a N\+U\+LL cookie will be returned and the last R\+PC error will be set to E\+C\+O\+N\+N\+R\+E\+S\+ET. If the subscription is currently being iterated, it temporarily cannot be modified and a N\+U\+LL cookie will also be returned, with the last error set to E\+B\+U\+SY.
+If the connection is no longer valid a N\+U\+LL cookie will be returned.
 
 
 \begin{DoxyParams}{Parameters}
@@ -1020,7 +1026,7 @@ If the connection is no longer valid a N\+U\+LL cookie will be returned and the 
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Cookie for \hyperlink{connection_8h_acbd3258860547585d56e70d5b14cb4de}{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler} or N\+U\+LL. 
+Cookie for \hyperlink{connection_8h_a102ad5fd1ab895a56319a25f43060a20}{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler} or N\+U\+LL. 
 \end{DoxyReturn}
 \mbox{\Hypertarget{connection_8h_abd699ca36e45ca40ff561c8243cbc99e}\label{connection_8h_abd699ca36e45ca40ff561c8243cbc99e}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+send\+\_\+event@{rpc\+\_\+connection\+\_\+send\+\_\+event}}
@@ -1254,15 +1260,13 @@ Checks whether a given connection does support file descriptor passing.
 \begin{DoxyReturn}{Returns}
 true if fd passing is supported, otherwise false 
 \end{DoxyReturn}
-\mbox{\Hypertarget{connection_8h_acbd3258860547585d56e70d5b14cb4de}\label{connection_8h_acbd3258860547585d56e70d5b14cb4de}} 
+\mbox{\Hypertarget{connection_8h_a102ad5fd1ab895a56319a25f43060a20}\label{connection_8h_a102ad5fd1ab895a56319a25f43060a20}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler}}
 \index{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler@{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler}!connection.\+h@{connection.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler()}{rpc\_connection\_unregister\_event\_handler()}}
-{\footnotesize\ttfamily int rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{void $\ast$\+\_\+\+Nonnull}]{cookie }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void rpc\+\_\+connection\+\_\+unregister\+\_\+event\+\_\+handler (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn,  }\item[{void $\ast$\+\_\+\+Nonnull}]{cookie }\end{DoxyParamCaption})}
 
 Cancels further execution of a given event handler block for ongoing events of a given name.
-
-An error will be indicated if the connection is not valid (E\+C\+O\+N\+N\+R\+E\+S\+ET) or if the handler can\textquotesingle{}t be unregistered because the subscription is currently being iterated (E\+B\+U\+SY).
 
 
 \begin{DoxyParams}{Parameters}
@@ -1271,9 +1275,6 @@ An error will be indicated if the connection is not valid (E\+C\+O\+N\+N\+R\+E\+
 {\em cookie} & Void pointer to event handler itself \\
 \hline
 \end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-0 on success, -\/1 on error 
-\end{DoxyReturn}
 \mbox{\Hypertarget{connection_8h_a11876d99f4c813328cb3a4dbbbc8bab5}\label{connection_8h_a11876d99f4c813328cb3a4dbbbc8bab5}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event@{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event}}
 \index{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event@{rpc\+\_\+connection\+\_\+unsubscribe\+\_\+event}!connection.\+h@{connection.\+h}}
