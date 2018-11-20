@@ -55,6 +55,8 @@ rpc_client_create(const char *uri, rpc_object_t params)
 {
 	rpc_client_t client;
 
+	if (active_clients == NULL)
+		active_clients = g_hash_table_new(NULL, NULL);
 	client = g_malloc0(sizeof(*client));
 	g_assert(g_hash_table_lookup(active_clients, client) == NULL);
 
@@ -75,8 +77,6 @@ rpc_client_create(const char *uri, rpc_object_t params)
 	}
 
 	g_mutex_lock(&clients_mtx);
-	if (active_clients == NULL)
-		active_clients = g_hash_table_new(NULL, NULL);
 	g_hash_table_insert(active_clients, client, client);
 	g_mutex_unlock(&clients_mtx);
 
