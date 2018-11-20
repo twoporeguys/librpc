@@ -204,8 +204,8 @@ Functions</h2></td></tr>
 <tr class="separator:a11876d99f4c813328cb3a4dbbbc8bab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f79ef869bd9d72e5cffbdb6dae2aef1"><td class="memItemLeft" align="right" valign="top">void *_Nullable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a6f79ef869bd9d72e5cffbdb6dae2aef1">rpc_connection_register_event_handler</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull name, _Nullable <a class="el" href="connection_8h.html#abd97c34e4cc24dce96eb2944a3cf5aad">rpc_handler_t</a> handler)</td></tr>
 <tr class="separator:a6f79ef869bd9d72e5cffbdb6dae2aef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a102ad5fd1ab895a56319a25f43060a20"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a102ad5fd1ab895a56319a25f43060a20">rpc_connection_unregister_event_handler</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, void *_Nonnull cookie)</td></tr>
-<tr class="separator:a102ad5fd1ab895a56319a25f43060a20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acbd3258860547585d56e70d5b14cb4de"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#acbd3258860547585d56e70d5b14cb4de">rpc_connection_unregister_event_handler</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, void *_Nonnull cookie)</td></tr>
+<tr class="separator:acbd3258860547585d56e70d5b14cb4de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5e8d63da05fa221ac8bb51ff22e7f3b"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#af5e8d63da05fa221ac8bb51ff22e7f3b">rpc_connection_call_sync</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull method,...)</td></tr>
 <tr class="separator:af5e8d63da05fa221ac8bb51ff22e7f3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac23facad7f27401980fcb21762368760"><td class="memItemLeft" align="right" valign="top">_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#ac23facad7f27401980fcb21762368760">rpc_connection_call_syncv</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn, const char *_Nullable path, const char *_Nullable interface, const char *_Nonnull method, va_list ap)</td></tr>
@@ -649,7 +649,7 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="a22306445a7503bab94835382d07e0410aefeace6607a011c0ea3bb12990abbd1c"></a>RPC_CALL_ENDED&#160;</td><td class="fielddoc"><p>Streaming call ended </p>
 </td></tr>
 </table>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="client_8c-example.html#a14">client.c</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="client_8c-example.html#a12">client.c</a>.</dd>
 </dl>
 <p class="definition">Definition at line <a class="el" href="connection_8h_source.html#l00071">71</a> of file <a class="el" href="connection_8h_source.html">connection.h</a>.</p>
 
@@ -775,7 +775,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>1 for successfully completed RPC when sync flag was set, otherwise 0 </dd></dl>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="client_8c-example.html#a16">client.c</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="client_8c-example.html#a14">client.c</a>.</dd>
 </dl>
 </div>
 </div>
@@ -827,7 +827,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result </dd></dl>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="client_8c-example.html#a18">client.c</a>, and <a class="el" href="libdispatch_8c-example.html#a5">libdispatch.c</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="client_8c-example.html#a16">client.c</a>, and <a class="el" href="libdispatch_8c-example.html#a5">libdispatch.c</a>.</dd>
 </dl>
 </div>
 </div>
@@ -865,7 +865,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="client_8c-example.html#a12">client.c</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="client_8c-example.html#a10">client.c</a>.</dd>
 </dl>
 </div>
 </div>
@@ -982,7 +982,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on failure. </dd></dl>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="client_8c-example.html#a13">client.c</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="client_8c-example.html#a11">client.c</a>.</dd>
 </dl>
 </div>
 </div>
@@ -1048,7 +1048,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>RPC call object </dd></dl>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="client_8c-example.html#a9">client.c</a>, and <a class="el" href="libdispatch_8c-example.html#a3">libdispatch.c</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="client_8c-example.html#a7">client.c</a>, and <a class="el" href="libdispatch_8c-example.html#a3">libdispatch.c</a>.</dd>
 </dl>
 </div>
 </div>
@@ -1614,8 +1614,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="client_8c-example.html#a8">client.c</a>.</dd>
-</dl>
+
 </div>
 </div>
 <a id="a43855db9f044fdc830fc1370d84a4f4b"></a>
@@ -1667,8 +1666,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if credentials information is available, otherwise false </dd></dl>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="client_8c-example.html#a7">client.c</a>.</dd>
-</dl>
+
 </div>
 </div>
 <a id="a71699a40039ad05bd244713464cbee88"></a>
@@ -1761,7 +1759,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Registers an event handler block for an event of a given name.</p>
 <p>Each time an event occurs, a handler block is going to be called.</p>
-<p>If the connection is no longer valid a NULL cookie will be returned.</p>
+<p>If the connection is no longer valid a NULL cookie will be returned and the last RPC error will be set to ECONNRESET. If the subscription is currently being iterated, it temporarily cannot be modified and a NULL cookie will also be returned, with the last error set to EBUSY.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">conn</td><td>Connection to register an event handler for </td></tr>
@@ -1770,7 +1768,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Cookie for <a class="el" href="connection_8h.html#a102ad5fd1ab895a56319a25f43060a20">rpc_connection_unregister_event_handler</a> or NULL. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Cookie for <a class="el" href="connection_8h.html#acbd3258860547585d56e70d5b14cb4de">rpc_connection_unregister_event_handler</a> or NULL. </dd></dl>
 
 </div>
 </div>
@@ -2321,14 +2319,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a102ad5fd1ab895a56319a25f43060a20"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a102ad5fd1ab895a56319a25f43060a20">&#9670;&nbsp;</a></span>rpc_connection_unregister_event_handler()</h2>
+<a id="acbd3258860547585d56e70d5b14cb4de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acbd3258860547585d56e70d5b14cb4de">&#9670;&nbsp;</a></span>rpc_connection_unregister_event_handler()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void rpc_connection_unregister_event_handler </td>
+          <td class="memname">int rpc_connection_unregister_event_handler </td>
           <td>(</td>
           <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
           <td class="paramname"><em>conn</em>, </td>
@@ -2347,6 +2345,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Cancels further execution of a given event handler block for ongoing events of a given name.</p>
+<p>An error will be indicated if the connection is not valid (ECONNRESET) or if the handler can't be unregistered because the subscription is currently being iterated (EBUSY).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">conn</td><td>Connection to remove event handler from </td></tr>
@@ -2354,6 +2353,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 on error </dd></dl>
 
 </div>
 </div>
