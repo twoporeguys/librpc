@@ -1,8 +1,6 @@
 \hypertarget{client_8c-example}{}\section{client.\+c}
 This is a basic client A\+PI example, demonstrating how to handle streaming and non-\/streaming calls.
 
-To run with the default U\+RI\+: ./build/examples/client/example-\/client To specify the U\+RI\+: ./build/examples/client/example-\/client unix\+://test2.sock Note that the unix domain socket example requires that client and server be run from the same directory specifying the same socket.
-
 
 \begin{DoxyCodeInclude}
 \textcolor{comment}{/*}
@@ -54,10 +52,10 @@ main(\textcolor{keywordtype}{int} argc, \textcolor{keyword}{const} \textcolor{ke
     int64\_t num;
     \textcolor{keywordtype}{int} cnt = 0;
 
-    \textcolor{keywordflow}{if} (argc > 1)
-        client = \hyperlink{client_8h_aaf8c4f2be48ef8d79a29e004264f0bf6}{rpc\_client\_create}(argv[1], 0);
-    \textcolor{keywordflow}{else}
-        client = \hyperlink{client_8h_aaf8c4f2be48ef8d79a29e004264f0bf6}{rpc\_client\_create}(\textcolor{stringliteral}{"tcp://127.0.0.1:5000"}, 0);
+    (void)argc;
+    (void)argv;
+
+    client = \hyperlink{client_8h_aaf8c4f2be48ef8d79a29e004264f0bf6}{rpc\_client\_create}(\textcolor{stringliteral}{"tcp://127.0.0.1:5000"}, 0);
     \textcolor{keywordflow}{if} (client == NULL) \{
         result = \hyperlink{object_8h_a45800949eb1b61b3af02051c780244fe}{rpc\_get\_last\_error}();
         fprintf(stderr, \textcolor{stringliteral}{"cannot connect: %s\(\backslash\)n"},
@@ -73,11 +71,6 @@ main(\textcolor{keywordtype}{int} argc, \textcolor{keyword}{const} \textcolor{ke
     result = \hyperlink{connection_8h_aa36b47feae14a4114bacf6f049fc1696}{rpc\_connection\_call\_simple}(conn, \textcolor{stringliteral}{"hello"}, \textcolor{stringliteral}{"[s]"}, \textcolor{stringliteral}{"world"});
     printf(\textcolor{stringliteral}{"result = %s\(\backslash\)n"}, \hyperlink{object_8h_a04a698c1f5f736ef71bc81ccf91be52d}{rpc\_string\_get\_string\_ptr}(result));
     \hyperlink{object_8h_aac19be935f72b35eeb2851bc509eabb2}{rpc\_release}(result);
-
-    \textcolor{keywordflow}{if} (\hyperlink{connection_8h_a79e22944d8fb685f6378f9e5c10464f3}{rpc\_connection\_has\_credentials}(conn)) \{
-        fprintf(stderr, \textcolor{stringliteral}{"Remote pid is %d\(\backslash\)n"},
-            (\textcolor{keywordtype}{int})\hyperlink{connection_8h_a3e2ec927f332c312dc187b6f38c81337}{rpc\_connection\_get\_remote\_pid}(conn));
-    \}
 
         call = \hyperlink{connection_8h_ad5e74986e0e4bcd402fbc1f565a7dd3d}{rpc\_connection\_call}(conn, NULL, NULL, \textcolor{stringliteral}{"stream"}, 
       \hyperlink{object_8h_ae543b86020ed2e2e8fd483c38e31552a}{rpc\_array\_create}(), NULL);
