@@ -363,7 +363,7 @@ struct rpc_interface_priv
 	char *			rip_description;
 	void *			rip_arg;
 	GHashTable *		rip_members;
-	GMutex			rip_mtx;
+	GRWLock			rip_rwlock;
 };
 
 struct rpc_property_cookie
