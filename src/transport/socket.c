@@ -480,11 +480,10 @@ done:
 
 static int
 socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
-    int **fds, size_t *nfds, struct rpc_credentials *creds)
+    int **fds, size_t *nfds)
 {
 	GError *err = NULL;
 	GSocketControlMessage **cmsg = NULL;
-	GCredentials *cr;
 	GInputVector iov[2];
 	uint32_t header[4];
 	ssize_t step;
@@ -494,6 +493,12 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 	bool have_header = false;
 	int ncmsg = 0, i;
 	int nfds_i;
+#if defined(__linux__)
+	int ret;
+	uid_t uid;
+	pid_t pid;
+	GCredentials *cr;
+#endif
 
 	*nfds = 0;
 	iov[0] = (GInputVector){ .buffer = header, .size = sizeof(header) };
@@ -548,15 +553,28 @@ socket_recv_msg(struct socket_connection *conn, void **frame, size_t *size,
 
 #ifndef _WIN32
 	for (i = 0; i < ncmsg; i++) {
+#if defined(__linux__)
 		if (G_IS_UNIX_CREDENTIALS_MESSAGE(cmsg[i])) {
 			cr = g_unix_credentials_message_get_credentials(
 			    G_UNIX_CREDENTIALS_MESSAGE(cmsg[i]));
-			creds->rcc_pid = g_credentials_get_unix_pid(cr, &err);
-			creds->rcc_uid = g_credentials_get_unix_user(cr, &err);
-			creds->rcc_gid = (gid_t)-1;
-			debugf("remote pid=%d, uid=%d, gid=%d", creds->rcc_pid,
-			    creds->rcc_uid, creds->rcc_gid);
+			pid = g_credentials_get_unix_pid(cr, &err);
+			uid = g_credentials_get_unix_user(cr, &err);
+			g_assert(pid != -1 && (int)uid != -1);
+			g_assert(conn->sc_parent->rco_set_creds != NULL);
+
+			ret = conn->sc_parent->rco_set_creds(conn->sc_parent,
+			    pid, uid, (gid_t)-1);
+			g_assert(ret == 0);
+
+			if (!g_socket_set_option(conn->sc_socket, SOL_SOCKET,
+			    SO_PASSCRED, false, &err)) {
+				debugf("Couldn't disable passcreds %s", err->message);
+				g_error_free(err);
+			}
+
+			debugf("remote pid=%d, uid=%d, gid=%d", pid, uid, -1);
 		}
+#endif
 
 		if (G_IS_UNIX_FD_MESSAGE(cmsg[i])) {
 			*fds = g_unix_fd_message_steal_fds(
@@ -662,17 +680,16 @@ static void *
 socket_reader(void *arg)
 {
 	struct socket_connection *conn = arg;
-	struct rpc_credentials creds;
 	void *frame;
 	int *fds;
 	size_t len, nfds;
 
 	for (;;) {
-		if (socket_recv_msg(conn, &frame, &len, &fds, &nfds, &creds) != 0)
+		if (socket_recv_msg(conn, &frame, &len, &fds, &nfds) != 0)
 			break;
 
 		if (conn->sc_parent->rco_recv_msg(conn->sc_parent, frame, len,
-		    fds, nfds, &creds) != 0) {
+		    fds, nfds) != 0) {
 			g_free(frame);
 			break;
 		}

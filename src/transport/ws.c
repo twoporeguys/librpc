@@ -358,7 +358,7 @@ ws_receive_message(SoupWebsocketConnection *ws __unused,
 
 	data = g_bytes_get_data(message, &len);
 	debugf("received frame: addr=%p, len=%zu", data, len);
-	conn->wc_parent->rco_recv_msg(conn->wc_parent, data, len, NULL, 0, NULL);
+	conn->wc_parent->rco_recv_msg(conn->wc_parent, data, len, NULL, 0);
 }
 
 static void

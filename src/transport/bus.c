@@ -486,7 +486,7 @@ bus_process_message(void *arg, struct librpc_message *msg, void *payload,
 	switch (msg->opcode) {
 	case LIBRPC_RESPONSE:
 		conn->bc_parent->rco_recv_msg(conn->bc_parent, payload, len,
-		    NULL, 0, NULL);
+		    NULL, 0);
 		break;
 	}
 }
