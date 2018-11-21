@@ -3,7 +3,7 @@
   <compounddef id="client_8c-example" kind="example">
     <compoundname>client.c</compoundname>
     <detaileddescription>
-<para>This is a basic client API example, demonstrating how to handle streaming and non-streaming calls.</para><para>To run with the default URI: ./build/examples/client/example-client To specify the URI: ./build/examples/client/example-client unix://test2.sock Note that the unix domain socket example requires that client and server be run from the same directory specifying the same socket. <programlisting><codeline><highlight class="comment">/*</highlight></codeline>
+<para>This is a basic client API example, demonstrating how to handle streaming and non-streaming calls. <programlisting><codeline><highlight class="comment">/*</highlight></codeline>
 <codeline><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2017<sp/>Two<sp/>Pore<sp/>Guys,<sp/>Inc.</highlight></codeline>
 <codeline><highlight class="comment"><sp/>*<sp/>All<sp/>rights<sp/>reserved</highlight></codeline>
 <codeline><highlight class="comment"><sp/>*</highlight></codeline>
@@ -52,10 +52,10 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>int64_t<sp/>num;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>cnt<sp/>=<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(argc<sp/>&gt;<sp/>1)</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>client<sp/>=<sp/><ref refid="client_8h_1aaf8c4f2be48ef8d79a29e004264f0bf6" kindref="member">rpc_client_create</ref>(argv[1],<sp/>0);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>client<sp/>=<sp/><ref refid="client_8h_1aaf8c4f2be48ef8d79a29e004264f0bf6" kindref="member">rpc_client_create</ref>(</highlight><highlight class="stringliteral">&quot;tcp://127.0.0.1:5000&quot;</highlight><highlight class="normal">,<sp/>0);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>(void)argc;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>(void)argv;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>client<sp/>=<sp/><ref refid="client_8h_1aaf8c4f2be48ef8d79a29e004264f0bf6" kindref="member">rpc_client_create</ref>(</highlight><highlight class="stringliteral">&quot;tcp://127.0.0.1:5000&quot;</highlight><highlight class="normal">,<sp/>0);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(client<sp/>==<sp/>NULL)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>result<sp/>=<sp/><ref refid="object_8h_1a45800949eb1b61b3af02051c780244fe" kindref="member">rpc_get_last_error</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>fprintf(stderr,<sp/></highlight><highlight class="stringliteral">&quot;cannot<sp/>connect:<sp/>%s\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
@@ -71,11 +71,6 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>result<sp/>=<sp/><ref refid="connection_8h_1aa36b47feae14a4114bacf6f049fc1696" kindref="member">rpc_connection_call_simple</ref>(conn,<sp/></highlight><highlight class="stringliteral">&quot;hello&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;[s]&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;world&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;result<sp/>=<sp/>%s\n&quot;</highlight><highlight class="normal">,<sp/><ref refid="object_8h_1a04a698c1f5f736ef71bc81ccf91be52d" kindref="member">rpc_string_get_string_ptr</ref>(result));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="object_8h_1aac19be935f72b35eeb2851bc509eabb2" kindref="member">rpc_release</ref>(result);</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="connection_8h_1a79e22944d8fb685f6378f9e5c10464f3" kindref="member">rpc_connection_has_credentials</ref>(conn))<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>fprintf(stderr,<sp/></highlight><highlight class="stringliteral">&quot;Remote<sp/>pid<sp/>is<sp/>%d\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">)<ref refid="connection_8h_1a3e2ec927f332c312dc187b6f38c81337" kindref="member">rpc_connection_get_remote_pid</ref>(conn));</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>call<sp/>=<sp/><ref refid="connection_8h_1ad5e74986e0e4bcd402fbc1f565a7dd3d" kindref="member">rpc_connection_call</ref>(conn,<sp/>NULL,<sp/>NULL,<sp/></highlight><highlight class="stringliteral">&quot;stream&quot;</highlight><highlight class="normal">,<sp/><ref refid="object_8h_1ae543b86020ed2e2e8fd483c38e31552a" kindref="member">rpc_array_create</ref>(),<sp/>NULL);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(call<sp/>==<sp/>NULL)<sp/>{</highlight></codeline>
