@@ -787,9 +787,9 @@ static void
 rpc_subscription_release(struct rpc_subscription *sub)
 {
 
-	g_free((gpointer)sub->rsu_path);
-	g_free((gpointer)sub->rsu_interface);
-	g_free((gpointer)sub->rsu_name);
+	g_free(sub->rsu_path);
+	g_free(sub->rsu_interface);
+	g_free(sub->rsu_name);
 	if (sub->rsu_handlers != NULL)
 		g_ptr_array_free(sub->rsu_handlers, true);
 	g_free(sub);
@@ -1716,7 +1716,7 @@ rpc_connection_subscribe_event_locked(rpc_connection_t conn, const char *path,
 		frame = rpc_pack_frame("events", "subscribe", NULL, args);
 
 		if (rpc_send_frame(conn, frame) != 0) {
-			g_free(sub);
+			rpc_subscription_release(sub);
 			return (NULL);
 		}
 
@@ -1839,6 +1839,8 @@ rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
 		goto done;
 	}
 	if (sub->rsu_busy) {
+		/* sub already existed, just undo the refcount ++ */
+		sub->rsu_refcount--;
 		rpc_set_last_error(EBUSY, "Subscription locked, retry", NULL);
 		goto done;
 	}

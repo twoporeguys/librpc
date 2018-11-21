@@ -185,9 +185,9 @@ struct rpc_object
 
 struct rpc_subscription
 {
-	const char *		rsu_name;
-	const char *		rsu_path;
-	const char *		rsu_interface;
+	char *			rsu_name;
+	char *			rsu_path;
+	char *			rsu_interface;
     	int 			rsu_refcount;
 	bool			rsu_busy;
     	GPtrArray *		rsu_handlers;
