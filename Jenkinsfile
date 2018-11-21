@@ -53,7 +53,7 @@ pipeline {
             steps {
                 sh "mkdir -p ${DOCS_PATH}/librpc"
                 sh "rm -rf ${DOCS_PATH}/librpc/*"
-                sh "cp -a build/docs/* ${DOCS_PATH}/librpc/"
+                sh "cp -dR build/docs/* ${DOCS_PATH}/librpc/"
             }
         }
 
@@ -70,7 +70,7 @@ pipeline {
             steps {
                 sh "mkdir -p ${DOCS_PATH}/typescript/librpc-client"
                 sh "rm -rf ${DOCS_PATH}/typescript/librpc-client/*"
-                sh "cp -a bindings/typescript/doc/* ${DOCS_PATH}/typescript/librpc-client/"
+                sh "cp -dR bindings/typescript/doc/* ${DOCS_PATH}/typescript/librpc-client/"
             }
         }
 
