@@ -139,6 +139,9 @@ find_path(char *str)
 int
 yuarel_parse(struct yuarel *url, char *u)
 {
+	char *sptr = NULL;
+	char *ptr = NULL;
+
 	if (NULL == url || NULL == u) {
 		return -1;
 	}
@@ -164,6 +167,22 @@ yuarel_parse(struct yuarel *url, char *u)
 		if ('\0' == *u) {
 			return -1;
 		}
+
+		if (!strcmp(url->scheme, "tcp")) {
+			sptr = strchr(u, '[');
+			ptr = strchr(u, ']');
+			if (sptr != NULL && ptr != NULL) {
+				/* ipv6 */
+				if (*(ptr + 1) == ':')
+					url->port = atoi(ptr + 2);
+				if (url->port == 0)
+					return -1;
+				*ptr = '\0';
+				url->host = sptr + 1;
+				return 0;
+			}
+		}
+
 		url->host = u;
 		if (!strcmp(url->scheme, "unix"))
 			return 0;
