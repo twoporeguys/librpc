@@ -30,6 +30,13 @@
 *
 * An example that shows how to set up a basic librpc server and register
 * methods on it.
+*
+* To run with the default URI:
+* ./build/examples/server/example-server
+* To specify the URI:
+* ./build/examples/server/example-server  unix://test2.sock
+* Note that the unix domain socket example requires that client and server
+* be run from the same directory specifying the same socket.
 */
 
 #include <unistd.h>
@@ -79,9 +86,6 @@ main(int argc, const char *argv[])
         __block gint setcnt = g_rand_int_range(rand, 50, 500);
         __block char *strg = g_malloc(27);
 
-	(void)argc;
-	(void)argv;
-
 	ctx = rpc_context_create();
 	rpc_context_register_func(ctx, NULL, "hello",
 	    NULL, hello);
@@ -120,7 +124,7 @@ main(int argc, const char *argv[])
                         i = g_rand_int_range (rand, 0, 26);
 
                         res = rpc_object_pack("[s, i, i]",
-                            strg + i, 26-i, cnt);
+                            strg + i, (int64_t)(26-i), (int64_t)cnt);
 
                         fprintf(stderr, "returning %s,  %d letters, %d of %d\n",
                             rpc_array_get_string(res, 0), 26-i, cnt, setcnt);
@@ -135,7 +139,10 @@ main(int argc, const char *argv[])
 		return (rpc_null_create());
         });
 
-	srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
+	if (argc > 1)
+		srv = rpc_server_create(argv[1], ctx);
+	else
+		srv = rpc_server_create("tcp://0.0.0.0:5000", ctx);
 	if (srv == NULL) {
 		error = rpc_get_last_error();
 		fprintf(stderr, "Cannot create server: %s\n",

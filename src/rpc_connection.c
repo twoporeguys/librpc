@@ -83,12 +83,13 @@ static int cancel_timeout_locked(rpc_call_t call);
 static void rpc_connection_set_default_fn_handlers(rpc_connection_t);
 static inline rpc_object_t rpc_call_result_save(rpc_call_t call);
 static int rpc_connection_do_close(rpc_connection_t conn, rpc_close_source_t);
-static rpc_connection_t rpc_connection_init(void);
+static rpc_connection_t rpc_connection_init(int);
 static void rpc_abort_worker(void *arg, void *data);
 static void call_abort_locked(struct rpc_call *call);
 static void rpc_subscription_release(struct rpc_subscription *sub);
 static void rpc_rsh_release(struct rpc_subscription_handler *rsh);
 static bool rpc_connection_retain_if_open(rpc_connection_t conn);
+static int rpc_set_creds(rpc_connection_t conn, pid_t pid, uid_t uid, gid_t gid);
 static int rpc_connection_unsubscribe_event_locked(rpc_connection_t conn,
     struct rpc_subscription *sub);
 
@@ -838,8 +839,28 @@ on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args,
 }
 
 static int
+rpc_set_creds(rpc_connection_t conn, pid_t pid, uid_t uid, gid_t gid)
+{
+
+	if (!rpc_connection_is_open(conn)) {
+		debugf("Rejecting msg, conn %p is closed", conn);
+		return (-1);
+	}
+	g_assert(rpc_connection_supports_credentials(conn));
+	g_mutex_lock(&conn->rco_mtx);
+
+	conn->rco_has_creds = true;
+	conn->rco_creds.rcc_pid = pid;
+	conn->rco_creds.rcc_uid = uid;
+	conn->rco_creds.rcc_gid = gid;
+
+	g_mutex_unlock(&conn->rco_mtx);
+	return (0);
+}
+
+static int
 rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
-    int *fds, size_t nfds, struct rpc_credentials *creds)
+    int *fds, size_t nfds)
 {
 	rpc_object_t msg = (rpc_object_t)frame;
 	rpc_object_t msgt;
@@ -888,9 +909,6 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 		ret = -1;
 		goto done;
 	}
-
-	if (creds != NULL)
-		conn->rco_creds = *creds;
 
 	rpc_restore_fds(msgt, fds, nfds);
 	rpc_connection_dispatch(conn, msgt);
@@ -1362,7 +1380,7 @@ rpc_connection_set_default_fn_handlers(rpc_connection_t conn)
 }
 
 static rpc_connection_t
-rpc_connection_init(void)
+rpc_connection_init(int flags)
 {
 	struct rpc_connection *conn = g_malloc0(sizeof(*conn));
 
@@ -1379,6 +1397,11 @@ rpc_connection_init(void)
 	conn->rco_rpc_timeout = DEFAULT_RPC_TIMEOUT;
 	conn->rco_recv_msg = rpc_recv_msg;
 	conn->rco_close = rpc_close;
+
+	conn->rco_flags = flags;
+	if (rpc_connection_supports_credentials(conn))
+		conn->rco_set_creds = rpc_set_creds;
+
 	conn->rco_closed = false;
 	conn->rco_aborted = false;
 	conn->rco_refcnt = 1;
@@ -1394,10 +1417,9 @@ rpc_connection_alloc(rpc_server_t server)
 	struct rpc_connection *conn = NULL;
 	GError *err = NULL;
 
-	conn = rpc_connection_init();
+	conn = rpc_connection_init(server->rs_flags);
 
 	conn->rco_uri = server->rs_uri;
-	conn->rco_flags = server->rs_flags;
 	conn->rco_server = server;
 	conn->rco_main_context = rpc_server_get_main_context(server);
 
@@ -1429,10 +1451,9 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 		return (NULL);
 	}
 
-	conn = rpc_connection_init();
+	conn = rpc_connection_init(transport->flags);
 
 	conn->rco_client = client;
-	conn->rco_flags = transport->flags;
 	conn->rco_params = params;
 	conn->rco_uri = client->rci_uri;
 	conn->rco_main_context = rpc_client_get_main_context(client);
