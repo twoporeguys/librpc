@@ -64,7 +64,23 @@ struct u {
 	 {"ws", "ws://w0.0.0.0:6600/ws", "ws://127.0.0.1:6600/ws", false},
 	 {"loopback", "loopback://0", "loopback://0", true},
 	 {"loopback", "loopback://a", "loopback://0", false},
+	 {"tcpv6", "tcp://[::]:5500", "tcp://[::1]:5500", true},
 	 {0, "", "", 0}};
+
+enum tests
+{
+	TCP_GOOD,
+	PROTO_BAD,
+	TCP_BAD,
+	DS_GOOD,
+	DS_BAD,
+	WS_GOOD,
+	WS_BAD,
+	LB_GOOD,
+	LB_BAD,
+	V6_GOOD,
+};
+
 
 typedef struct {
 	rpc_context_t	ctx;
@@ -628,61 +644,65 @@ static void
 server_test_register()
 {
 
-	g_test_add("/server/resume/tcp", server_fixture, (void *)0,
+	g_test_add("/server/resume/tcp", server_fixture, (void *)TCP_GOOD,
 	    server_test_valid_server_set_up, server_test_resume,
 	    server_test_valid_server_tear_down);
 
-	g_test_add("/server/resume/ws", server_fixture, (void *)5,
+	g_test_add("/server/resume/v6", server_fixture, (void *)V6_GOOD,
 	    server_test_valid_server_set_up, server_test_resume,
 	    server_test_valid_server_tear_down);
 
-	g_test_add("/server/resume/loopback", server_fixture, (void *)7,
+	g_test_add("/server/resume/ws", server_fixture, (void *)WS_GOOD,
 	    server_test_valid_server_set_up, server_test_resume,
 	    server_test_valid_server_tear_down);
 
-	g_test_add("/server/listen/fail", server_fixture, (void *)1,
+	g_test_add("/server/resume/loopback", server_fixture, (void *)LB_GOOD,
+	    server_test_valid_server_set_up, server_test_resume,
+	    server_test_valid_server_tear_down);
+
+	g_test_add("/server/listen/fail", server_fixture, (void *)PROTO_BAD,
 	    server_test_basic_set_up, server_test_failed_listen,
 	    server_test_basic_tear_down);
 
-	g_test_add("/server/nullables/null", server_fixture, (void *)0,
+	g_test_add("/server/nullables/null", server_fixture, (void *)TCP_GOOD,
 	    server_test_valid_server_set_up, server_test_nullables,
 	    server_test_valid_server_tear_down);
 
-	g_test_add("/server/nullables/notnull", server_fixture, (void *)0,
+	g_test_add("/server/nullables/notnull", server_fixture, (void *)TCP_GOOD,
 	    server_test_alt_server_set_up, server_test_nullables,
 	    server_test_valid_server_tear_down);
 
 	g_test_add_func("/server/listen/all", server_test_all_listen);
 
-	g_test_add("/server/flush/tcp", server_fixture, (void *)0,
+	g_test_add("/server/flush/tcp", server_fixture, (void *)TCP_GOOD,
 	    server_test_valid_server_set_up, server_test_flush,
 	    server_test_valid_server_tear_down);
 
-	g_test_add("/server/flush/ws", server_fixture, (void *)5,
+	g_test_add("/server/flush/ws", server_fixture, (void *)WS_GOOD,
 	    server_test_valid_server_set_up, server_test_flush,
 	    server_test_valid_server_tear_down);
 
-	g_test_add("/server/flush/event", server_fixture, (void *)0,
+	g_test_add("/server/flush/event", server_fixture, (void *)TCP_GOOD,
 	    server_test_valid_server_set_up, server_test_event,
 	    server_test_valid_server_tear_down);
 
-	g_test_add("/server/stream/one", server_fixture, (void *)7,
+	g_test_add("/server/stream/one", server_fixture, (void *)LB_GOOD,
 	    server_test_stream_setup, server_test_stream_run,
 	    server_test_stream_tear_down);
 
-	g_test_add("/server/stream/close", server_fixture, (void *)0,
+	g_test_add("/server/stream/close", server_fixture, (void *)TCP_GOOD,
 	    server_test_stream_setup, server_test_stream_close,
 	    server_test_stream_tear_down);
 
-	g_test_add("/server/stream/abort", server_fixture, (void *)0,
+	g_test_add("/server/stream/abort", server_fixture, (void *)TCP_GOOD,
 	    server_test_stream_setup, server_test_stream_abort,
 	    server_test_stream_tear_down);
 
-	g_test_add("/server/stream/kill", server_fixture, (void *)0,
+	g_test_add("/server/stream/kill", server_fixture, (void *)TCP_GOOD,
 	    server_test_stream_setup, server_test_stream_kill,
 	    server_test_stream_tear_down);
 
-	g_test_add("/server/flush/loopback", server_fixture, (void *)7,
+	g_test_add("/server/flush/loopback", server_fixture, (void *)LB_GOOD,
 	    server_test_valid_server_set_up, server_test_flush,
 	    server_test_valid_server_tear_down);
 }

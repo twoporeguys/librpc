@@ -292,7 +292,11 @@ int rpc_connection_unsubscribe_event(_Nonnull rpc_connection_t conn,
  *
  * Each time an event occurs, a handler block is going to be called.
  *
- * If the connection is no longer valid a NULL cookie will be returned.
+ * If the connection is no longer valid a NULL cookie will be returned
+ * and the last RPC error will be set to ECONNRESET.
+ * If the subscription is currently being iterated, it temporarily
+ * cannot be modified and a NULL cookie will also be returned, with the
+ * last error set to EBUSY.
  *
  * @param conn Connection to register an event handler for
  * @param name Name of an event to be handled
@@ -308,10 +312,15 @@ void *_Nullable rpc_connection_register_event_handler(
  * Cancels further execution of a given event handler block for ongoing events
  * of a given name.
  *
+ * An error will be indicated if the connection is not valid (ECONNRESET) or
+ * if the handler can't be unregistered because the subscription is currently
+ * being iterated (EBUSY).
+ *
  * @param conn Connection to remove event handler from
  * @param cookie Void pointer to event handler itself
+ * @return 0 on success, -1 on error
  */
-void rpc_connection_unregister_event_handler(_Nonnull rpc_connection_t conn,
+int rpc_connection_unregister_event_handler(_Nonnull rpc_connection_t conn,
     void *_Nonnull cookie);
 
 /**
