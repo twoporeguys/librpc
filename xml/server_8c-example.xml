@@ -3,7 +3,7 @@
   <compounddef id="server_8c-example" kind="example">
     <compoundname>server.c</compoundname>
     <detaileddescription>
-<para>An example that shows how to set up a basic librpc server and register methods on it.</para><para>To run with the default URI: ./build/examples/server/example-server To specify the URI: ./build/examples/server/example-server unix://test2.sock Note that the unix domain socket example requires that client and server be run from the same directory specifying the same socket. <programlisting><codeline><highlight class="comment">/*</highlight></codeline>
+<para>An example that shows how to set up a basic librpc server and register methods on it. <programlisting><codeline><highlight class="comment">/*</highlight></codeline>
 <codeline><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2017<sp/>Two<sp/>Pore<sp/>Guys,<sp/>Inc.</highlight></codeline>
 <codeline><highlight class="comment"><sp/>*<sp/>All<sp/>rights<sp/>reserved</highlight></codeline>
 <codeline><highlight class="comment"><sp/>*</highlight></codeline>
@@ -77,6 +77,9 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>__block<sp/>gint<sp/>setcnt<sp/>=<sp/>g_rand_int_range(rand,<sp/>50,<sp/>500);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>__block<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*strg<sp/>=<sp/>g_malloc(27);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>(void)argc;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>(void)argv;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>ctx<sp/>=<sp/><ref refid="service_8h_1aa53a346b1f60759fabc2f047e75fdb90" kindref="member">rpc_context_create</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="service_8h_1a1aac077f97529f7c26834c139fefc2f5" kindref="member">rpc_context_register_func</ref>(ctx,<sp/>NULL,<sp/></highlight><highlight class="stringliteral">&quot;hello&quot;</highlight><highlight class="normal">,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>NULL,<sp/>hello);</highlight></codeline>
@@ -115,7 +118,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i<sp/>=<sp/>g_rand_int_range<sp/>(rand,<sp/>0,<sp/>26);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>res<sp/>=<sp/><ref refid="object_8h_1a8a8454f12dcde323f5daba961febea97" kindref="member">rpc_object_pack</ref>(</highlight><highlight class="stringliteral">&quot;[s,<sp/>i,<sp/>i]&quot;</highlight><highlight class="normal">,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>strg<sp/>+<sp/>i,<sp/>(int64_t)(26-i),<sp/>(int64_t)cnt);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>strg<sp/>+<sp/>i,<sp/>26-i,<sp/>cnt);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>fprintf(stderr,<sp/></highlight><highlight class="stringliteral">&quot;returning<sp/>%s,<sp/><sp/>%d<sp/>letters,<sp/>%d<sp/>of<sp/>%d\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="object_8h_1a98483eea7ea6929d45d04b987a4c8f1c" kindref="member">rpc_array_get_string</ref>(res,<sp/>0),<sp/>26-i,<sp/>cnt,<sp/>setcnt);</highlight></codeline>
@@ -130,10 +133,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(<ref refid="object_8h_1af71ab5e00bfb82e6733e59c42e3ed157" kindref="member">rpc_null_create</ref>());</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(argc<sp/>&gt;<sp/>1)</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>srv<sp/>=<sp/><ref refid="server_8h_1a2d524c3d5822d34b46f1d8552bf7ede0" kindref="member">rpc_server_create</ref>(argv[1],<sp/>ctx);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>srv<sp/>=<sp/><ref refid="server_8h_1a2d524c3d5822d34b46f1d8552bf7ede0" kindref="member">rpc_server_create</ref>(</highlight><highlight class="stringliteral">&quot;tcp://0.0.0.0:5000&quot;</highlight><highlight class="normal">,<sp/>ctx);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>srv<sp/>=<sp/><ref refid="server_8h_1a2d524c3d5822d34b46f1d8552bf7ede0" kindref="member">rpc_server_create</ref>(</highlight><highlight class="stringliteral">&quot;tcp://0.0.0.0:5000&quot;</highlight><highlight class="normal">,<sp/>ctx);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(srv<sp/>==<sp/>NULL)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>error<sp/>=<sp/><ref refid="object_8h_1a45800949eb1b61b3af02051c780244fe" kindref="member">rpc_get_last_error</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>fprintf(stderr,<sp/></highlight><highlight class="stringliteral">&quot;Cannot<sp/>create<sp/>server:<sp/>%s\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
