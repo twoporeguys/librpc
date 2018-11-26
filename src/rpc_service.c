@@ -163,6 +163,7 @@ rpc_context_create(void)
 	result->rcx_emit_queue = g_async_queue_new();
 	result->rcx_emit_thread = g_thread_new("emitter", emit_events,
 	    result->rcx_emit_queue);
+	result->rcx_event_watchers = g_hash_table_new(NULL, NULL);
 
 	rpc_instance_set_description(result->rcx_root, "Root object");
 	rpc_context_register_instance(result, result->rcx_root);
@@ -185,7 +186,7 @@ rpc_context_free(rpc_context_t context)
         g_async_queue_push(context->rcx_emit_queue, item);
 	g_thread_join(context->rcx_emit_thread);
 	g_async_queue_unref(context->rcx_emit_queue);
-
+	g_hash_table_destroy(context->rcx_event_watchers);
 	g_free(context);
 }
 
@@ -393,20 +394,24 @@ emit_events(gpointer data)
 {
 	struct emit_item *item;
 	GAsyncQueue *q = data;
-	rpc_server_t server;
+	rpc_connection_t conn;
 	rpc_context_t context;
+	GHashTableIter iter;
+
 	for (;;) {
 		item = g_async_queue_pop(q);
 		if (item->context == NULL)
 			break;
 		context = item->context;
-		g_rw_lock_reader_lock(&context->rcx_server_rwlock);
-		for (guint i = 0; i < context->rcx_servers->len; i++) {
-			server = g_ptr_array_index(context->rcx_servers, i);
-			rpc_server_broadcast_event(server, item->path,
+
+		g_rw_lock_reader_lock(&context->rcx_rwlock);
+		g_hash_table_iter_init(&iter, context->rcx_event_watchers);
+		while (g_hash_table_iter_next(&iter, (gpointer)&conn, NULL)) {
+			rpc_connection_send_event(conn, item->path,
 			    item->interface, item->name, item->args);
 		}
-		g_rw_lock_reader_unlock(&context->rcx_server_rwlock);
+
+		g_rw_lock_reader_unlock(&context->rcx_rwlock);
 		rpc_release(item->args);
 		g_free(item->path);
 		g_free(item->interface);
