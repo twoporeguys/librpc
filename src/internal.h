@@ -93,7 +93,7 @@ struct rpct_validator;
 struct rpct_error_context;
 
 typedef int (*rpc_recv_msg_fn_t)(struct rpc_connection *, const void *, size_t,
-    int *, size_t, struct rpc_credentials *);
+    int *, size_t);
 typedef int (*rpc_send_msg_fn_t)(void *, const void *, size_t, const int *, size_t);
 typedef int (*rpc_abort_fn_t)(void *);
 typedef int (*rpc_get_fd_fn_t)(void *);
@@ -102,6 +102,7 @@ typedef int (*rpc_close_fn_t)(struct rpc_connection *);
 typedef int (*rpc_accept_fn_t)(struct rpc_server *, struct rpc_connection *);
 typedef bool (*rpc_valid_fn_t)(struct rpc_server *);
 typedef int (*rpc_teardown_fn_t)(struct rpc_server *);
+typedef int (*rpc_set_creds_fn_t)(struct rpc_connection *, pid_t, uid_t, gid_t);
 
 typedef struct rpct_member *(*rpct_member_fn_t)(const char *, rpc_object_t,
     struct rpct_type *);
@@ -294,6 +295,7 @@ struct rpc_connection
 	rpc_close_fn_t		rco_close;
     	rpc_get_fd_fn_t 	rco_get_fd;
 	rpc_release_fn_t	rco_release;
+	rpc_set_creds_fn_t	rco_set_creds;
 	void *			rco_arg;
 	struct rpc_fn_callbacks rco_fn_cbs;
 };
@@ -363,7 +365,7 @@ struct rpc_interface_priv
 	char *			rip_description;
 	void *			rip_arg;
 	GHashTable *		rip_members;
-	GMutex			rip_mtx;
+	GRWLock			rip_rwlock;
 };
 
 struct rpc_property_cookie

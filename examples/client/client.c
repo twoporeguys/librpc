@@ -30,6 +30,13 @@
  *
  * This is a basic client API example, demonstrating how to handle streaming
  * and non-streaming calls.
+ *
+ * To run with the default URI:
+ * ./build/examples/client/example-client
+ * To specify the URI:
+ * ./build/examples/client/example-client  unix://test2.sock
+ * Note that the unix domain socket example requires that client and server
+ * be run from the same directory specifying the same socket.
  */
 
 #include <stdio.h>
@@ -54,10 +61,10 @@ main(int argc, const char *argv[])
 	int64_t num;
 	int cnt = 0;
 
-	(void)argc;
-	(void)argv;
-
-	client = rpc_client_create("tcp://127.0.0.1:5000", 0);
+	if (argc > 1)
+		client = rpc_client_create(argv[1], 0);
+	else
+		client = rpc_client_create("tcp://127.0.0.1:5000", 0);
 	if (client == NULL) {
 		result = rpc_get_last_error();
 		fprintf(stderr, "cannot connect: %s\n",
@@ -73,6 +80,11 @@ main(int argc, const char *argv[])
 	result = rpc_connection_call_simple(conn, "hello", "[s]", "world");
 	printf("result = %s\n", rpc_string_get_string_ptr(result));
 	rpc_release(result);
+
+	if (rpc_connection_has_credentials(conn)) {
+		fprintf(stderr, "Remote pid is %d\n",
+		    (int)rpc_connection_get_remote_pid(conn));
+	}
 
         call = rpc_connection_call(conn, NULL, NULL, "stream", rpc_array_create(), NULL);
         if (call == NULL) {
