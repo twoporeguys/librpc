@@ -85,6 +85,7 @@ cdef class Instance(object):
 
         result = Instance.__new__(Instance)
         result.properties = []
+        result.methods = []
         result.instance = ptr
         return result
 
@@ -126,6 +127,7 @@ cdef class Instance(object):
         b_path = path.encode('utf-8')
         self.instance = rpc_instance_new(NULL, b_path)
         self.properties = []
+        self.methods = []
 
         if description:
             b_description = description.encode('utf-8')
@@ -139,6 +141,8 @@ cdef class Instance(object):
     def register_method(self, interface, name, fn):
         b_interface = interface.encode('utf-8')
         b_name = name.encode('utf-8')
+
+        self.methods.append(fn)
 
         if rpc_instance_register_func(
             self.instance,
