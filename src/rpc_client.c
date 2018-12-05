@@ -70,15 +70,15 @@ rpc_client_create(const char *uri, rpc_object_t params)
 	if (params)
 		rpc_retain(params);
 
+	g_mutex_lock(&clients_mtx);
+	g_hash_table_insert(active_clients, client, client);
+	g_mutex_unlock(&clients_mtx);
+
 	client->rci_connection = rpc_connection_create((void *)client, params);
 	if (client->rci_connection == NULL) {
 		rpc_client_close(client);
 		return (NULL);
 	}
-
-	g_mutex_lock(&clients_mtx);
-	g_hash_table_insert(active_clients, client, client);
-	g_mutex_unlock(&clients_mtx);
 
 	return (client);
 }
