@@ -456,6 +456,7 @@ cdef class Instance(object):
     cdef readonly Context context
     cdef rpc_instance_t instance
     cdef object properties
+    cdef object methods
     cdef public arg
 
     @staticmethod
