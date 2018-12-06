@@ -1458,6 +1458,7 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	conn->rco_callback_pool = g_thread_pool_new(&rpc_callback_worker, conn,
 	    g_get_num_processors(), false, &err);
 	rpc_connection_set_default_fn_handlers(conn);
+	conn->rco_watchers = g_hash_table_new(NULL, NULL);
 
 	if (err != NULL) {
 		g_free(err);
@@ -1867,6 +1868,7 @@ rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
 	rsh->rsh_parent = sub;
 	rsh->rsh_handler = Block_copy(handler);
 	g_ptr_array_add(sub->rsu_handlers, rsh);
+	g_hash_table_insert(conn->rco_watchers, rsh, sub);
 done:
 	g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
 	rpc_connection_release(conn);
@@ -1886,16 +1888,31 @@ rpc_connection_unregister_event_handler(rpc_connection_t conn, void *cookie)
 		return (-1);
 	}
 
-	sub = rsh->rsh_parent;
-
 	g_rw_lock_writer_lock(&conn->rco_subscription_rwlock);
+	sub = g_hash_table_lookup(conn->rco_watchers, rsh);
+	if (sub == NULL) {
+		rpc_set_last_error(ENOENT, "Event handler not found.", NULL);
+		ret = -1;
+		goto done;
+	}
+
+	if (sub != rsh->rsh_parent) {
+		rpc_set_last_error(EINVAL,
+		    "Handler and subscription don't match.", NULL);
+		ret = -1;
+		goto done;
+	}
+
 	if (sub->rsu_busy) {
 		ret = -1;
 		rpc_set_last_error(EBUSY, "Subscription locked, retry", NULL);
 		goto done;
 	}
-	if (g_ptr_array_remove(sub->rsu_handlers, rsh))
+
+	if (g_ptr_array_remove(sub->rsu_handlers, rsh)) {
 		rpc_connection_unsubscribe_event_locked(conn, sub);
+		g_hash_table_remove(conn->rco_watchers, rsh);
+	}
 
 done:
 	g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
