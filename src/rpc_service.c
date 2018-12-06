@@ -182,8 +182,8 @@ rpc_context_free(rpc_context_t context)
 	rpc_instance_free(context->rcx_root);
 
 	item = g_malloc(sizeof (*item));
-        item->context = NULL;
-        g_async_queue_push(context->rcx_emit_queue, item);
+	item->context = NULL;
+	g_async_queue_push(context->rcx_emit_queue, item);
 	g_thread_join(context->rcx_emit_thread);
 	g_async_queue_unref(context->rcx_emit_queue);
 	g_hash_table_destroy(context->rcx_event_watchers);
@@ -685,7 +685,7 @@ rpc_function_end_impl(void *cookie)
 	if (call->rc_aborted) {
 		if (!call->rc_ended && !call->rc_responded) {
 			rpc_function_error(call, ECONNRESET,
-                            "Call aborted");
+			    "Call aborted");
 			call->rc_ended = true;
 		}
 		g_mutex_unlock(&call->rc_mtx);
@@ -1045,10 +1045,10 @@ rpc_instance_unregister_member(rpc_instance_t instance, const char *interface,
 	struct rpc_interface_priv *priv;
 	struct rpc_if_member *member;
 
-        g_assert_nonnull(name);
+	g_assert_nonnull(name);
 
-        if (interface == NULL)
-                interface = RPC_DEFAULT_INTERFACE;
+	if (interface == NULL)
+		interface = RPC_DEFAULT_INTERFACE;
 
 	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
 	if (priv == NULL) {
@@ -1135,9 +1135,9 @@ rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
 
 	rpc_instance_emit_event(instance, RPC_OBSERVABLE_INTERFACE, "changed",
 	    rpc_object_pack("{s,s,v}",
-	        "interface", interface,
-	        "name", name,
-	        "value", rpc_retain(value)));
+		"interface", interface,
+		"name", name,
+		"value", rpc_retain(value)));
 
 	if (release)
 		rpc_release(value);
@@ -1250,8 +1250,8 @@ rpc_get_methods(void *cookie, rpc_object_t args)
 		return (NULL);
 	}
 
-        if (interface == NULL)
-                interface = RPC_DEFAULT_INTERFACE;
+	if (interface == NULL)
+		interface = RPC_DEFAULT_INTERFACE;
 
 	g_rw_lock_reader_lock(&instance->ri_rwlock);
 	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
