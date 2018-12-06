@@ -47,6 +47,7 @@ static rpc_object_t rpc_observable_property_get_all(void *, rpc_object_t);
 static rpc_object_t rpc_observable_property_set(void *, rpc_object_t);
 void rpc_interface_free(struct rpc_interface_priv *);
 void rpc_if_member_free(struct rpc_if_member *);
+static gpointer emit_events(gpointer data);
 
 static const struct rpc_if_member rpc_discoverable_vtable[] = {
 	RPC_EVENT(instance_added),
@@ -71,6 +72,14 @@ static const struct rpc_if_member rpc_observable_vtable[] = {
 	RPC_METHOD(get_all, rpc_observable_property_get_all),
 	RPC_METHOD(set, rpc_observable_property_set),
 	RPC_MEMBER_END
+};
+
+struct emit_item {
+	rpc_context_t	context;
+	char *		path;
+	char *		interface;
+	char *		name;
+	rpc_object_t	args;
 };
 
 static void
@@ -151,6 +160,10 @@ rpc_context_create(void)
 	result->rcx_instances = g_hash_table_new(g_str_hash, g_str_equal);
 	result->rcx_threadpool = g_thread_pool_new(rpc_context_tp_handler,
 	    result, -1, false, &err);
+	result->rcx_emit_queue = g_async_queue_new();
+	result->rcx_emit_thread = g_thread_new("emitter", emit_events,
+	    result->rcx_emit_queue);
+	result->rcx_event_watchers = g_hash_table_new(NULL, NULL);
 
 	rpc_instance_set_description(result->rcx_root, "Root object");
 	rpc_context_register_instance(result, result->rcx_root);
@@ -160,12 +173,20 @@ rpc_context_create(void)
 void
 rpc_context_free(rpc_context_t context)
 {
+	struct emit_item *item;
 
 	if (context == NULL)
 		return;
 
 	g_thread_pool_free(context->rcx_threadpool, true, true);
 	rpc_instance_free(context->rcx_root);
+
+	item = g_malloc(sizeof (*item));
+	item->context = NULL;
+	g_async_queue_push(context->rcx_emit_queue, item);
+	g_thread_join(context->rcx_emit_thread);
+	g_async_queue_unref(context->rcx_emit_queue);
+	g_hash_table_destroy(context->rcx_event_watchers);
 	g_free(context);
 }
 
@@ -249,14 +270,19 @@ void
 rpc_instance_emit_event(rpc_instance_t instance, const char *interface,
     const char *name, rpc_object_t args)
 {
-	g_mutex_lock(&instance->ri_mtx);
+	rpc_context_t context;
 
-	if (instance->ri_context)
+	g_mutex_lock(&instance->ri_mtx);
+	if (instance->ri_context) {
+		context = instance->ri_context;
+		g_mutex_unlock(&instance->ri_mtx);
+		g_rw_lock_reader_lock(&context->rcx_rwlock);
 		rpc_context_emit_event(instance->ri_context, instance->ri_path,
 		    interface, name, args);
-	else
-		rpc_release(args);
-
+		g_rw_lock_reader_unlock(&context->rcx_rwlock);
+		return;
+	}
+	rpc_release(args);
 	g_mutex_unlock(&instance->ri_mtx);
 }
 
@@ -363,21 +389,51 @@ rpc_context_unregister_member(rpc_context_t context, const char *interface,
 	    name));
 }
 
+static gpointer
+emit_events(gpointer data)
+{
+	struct emit_item *item;
+	GAsyncQueue *q = data;
+	rpc_connection_t conn;
+	rpc_context_t context;
+	GHashTableIter iter;
+
+	for (;;) {
+		item = g_async_queue_pop(q);
+		if (item->context == NULL)
+			break;
+		context = item->context;
+
+		g_rw_lock_reader_lock(&context->rcx_rwlock);
+		g_hash_table_iter_init(&iter, context->rcx_event_watchers);
+		while (g_hash_table_iter_next(&iter, (gpointer)&conn, NULL)) {
+			rpc_connection_send_event(conn, item->path,
+			    item->interface, item->name, item->args);
+		}
+
+		g_rw_lock_reader_unlock(&context->rcx_rwlock);
+		rpc_release(item->args);
+		g_free(item->path);
+		g_free(item->interface);
+		g_free(item->name);
+		g_free(item);
+	}
+	return (NULL);
+}
+
 void
 rpc_context_emit_event(rpc_context_t context, const char *path,
     const char *interface, const char *name, rpc_object_t args)
 {
-	rpc_server_t server;
+	struct emit_item *item = g_malloc(sizeof (*item));
 
-	g_rw_lock_reader_lock(&context->rcx_server_rwlock);
-	for (guint i = 0; i < context->rcx_servers->len; i++) {
-		server = g_ptr_array_index(context->rcx_servers, i);
-		rpc_server_broadcast_event(server, path, interface, name,
-		    args);
-	}
-	g_rw_lock_reader_unlock(&context->rcx_server_rwlock);
+	item->context = context;
+	item->path = g_strdup(path);
+	item->interface = g_strdup(interface);
+	item->name = g_strdup(name);
+	item->args = args;
 
-	rpc_release(args);
+	g_async_queue_push(context->rcx_emit_queue, item);
 }
 
 inline void *
@@ -629,7 +685,7 @@ rpc_function_end_impl(void *cookie)
 	if (call->rc_aborted) {
 		if (!call->rc_ended && !call->rc_responded) {
 			rpc_function_error(call, ECONNRESET,
-                            "Call aborted");
+			    "Call aborted");
 			call->rc_ended = true;
 		}
 		g_mutex_unlock(&call->rc_mtx);
@@ -989,10 +1045,10 @@ rpc_instance_unregister_member(rpc_instance_t instance, const char *interface,
 	struct rpc_interface_priv *priv;
 	struct rpc_if_member *member;
 
-        g_assert_nonnull(name);
+	g_assert_nonnull(name);
 
-        if (interface == NULL)
-                interface = RPC_DEFAULT_INTERFACE;
+	if (interface == NULL)
+		interface = RPC_DEFAULT_INTERFACE;
 
 	priv = g_hash_table_lookup(instance->ri_interfaces, interface);
 	if (priv == NULL) {
@@ -1079,9 +1135,9 @@ rpc_instance_property_changed(rpc_instance_t instance, const char *interface,
 
 	rpc_instance_emit_event(instance, RPC_OBSERVABLE_INTERFACE, "changed",
 	    rpc_object_pack("{s,s,v}",
-	        "interface", interface,
-	        "name", name,
-	        "value", rpc_retain(value)));
+		"interface", interface,
+		"name", name,
+		"value", rpc_retain(value)));
 
 	if (release)
 		rpc_release(value);
@@ -1194,8 +1250,8 @@ rpc_get_methods(void *cookie, rpc_object_t args)
 		return (NULL);
 	}
 
-        if (interface == NULL)
-                interface = RPC_DEFAULT_INTERFACE;
+	if (interface == NULL)
+		interface = RPC_DEFAULT_INTERFACE;
 
 	g_rw_lock_reader_lock(&instance->ri_rwlock);
 	priv = g_hash_table_lookup(instance->ri_interfaces, interface);

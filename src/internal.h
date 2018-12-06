@@ -384,6 +384,9 @@ struct rpc_context
 	GRWLock			rcx_rwlock;
 	GRWLock			rcx_server_rwlock;
 	rpc_instance_t 		rcx_root;
+	GAsyncQueue *		rcx_emit_queue;
+	GThread *		rcx_emit_thread;
+	GHashTable *		rcx_event_watchers;
 
 	/* Hooks */
 	rpc_function_t		rcx_pre_call_hook;

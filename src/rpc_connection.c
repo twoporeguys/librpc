@@ -75,7 +75,7 @@ static inline rpc_call_status_t rpc_call_status_locked(rpc_call_t);
 static int rpc_call_wait_locked(rpc_call_t);
 static gboolean rpc_call_timeout(gpointer user_data);
 static struct rpc_subscription *rpc_connection_subscribe_event_locked(
-    rpc_connection_t, const char *, const char *, const char *);
+    rpc_connection_t, const char *, const char *, const char *, bool);
 static struct rpc_subscription *rpc_connection_find_subscription(rpc_connection_t,
     const char *, const char *, const char *);
 static void rpc_connection_free_resources(rpc_connection_t);
@@ -750,8 +750,7 @@ on_events_subscribe(rpc_connection_t conn, rpc_object_t args,
 		return;
 
 	rpc_array_apply(args, ^(size_t index __unused, rpc_object_t value) {
-		rpc_instance_t instance;
-		struct rpc_subscription *sub;
+		struct rpc_subscription *sub = NULL;
 		const char *path = NULL;
 		const char *interface = NULL;
 		const char *name = NULL;
@@ -762,14 +761,10 @@ on_events_subscribe(rpc_connection_t conn, rpc_object_t args,
 		    "path", &path) <1)
 	    		return ((bool)true);
 
-		instance = rpc_context_find_instance(
-		    conn->rco_server->rs_context, path);
-
-		if (instance == NULL)
-			return ((bool)true);
-
 		g_rw_lock_writer_lock(&conn->rco_subscription_rwlock);
-		sub = rpc_connection_find_subscription(conn, path, interface, name);
+		if (conn->rco_subscriptions->len > 0)
+			sub = rpc_connection_find_subscription(conn, path,
+			    interface, name);
 		if (sub == NULL) {
 			sub = g_malloc0(sizeof(*sub));
 			sub->rsu_path = g_strdup(path);
@@ -779,7 +774,19 @@ on_events_subscribe(rpc_connection_t conn, rpc_object_t args,
 		}
 
 		sub->rsu_refcount++;
-		g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
+		if (conn->rco_subscriptions->len == 1) {
+			/* just added, add conn to context */
+			g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
+			g_rw_lock_writer_lock(
+			    &conn->rco_rpc_context->rcx_rwlock);
+			g_hash_table_insert(
+			    conn->rco_rpc_context->rcx_event_watchers, conn, conn);
+			g_rw_lock_writer_unlock(
+			    &conn->rco_rpc_context->rcx_rwlock);
+		} else {
+			g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
+		}
+
 		return ((bool)true);
 	});
 }
@@ -825,13 +832,24 @@ on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args,
 
 		g_rw_lock_writer_lock(&conn->rco_subscription_rwlock);
 		sub = rpc_connection_find_subscription(conn, path, interface, name);
-		if (sub == NULL)
+		if (sub == NULL) {
+			g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
 			return ((bool)true);
+		}
 
 		sub->rsu_refcount--;
-		if (sub->rsu_refcount == 0)
+		if (sub->rsu_refcount == 0) {
 			g_ptr_array_remove(conn->rco_subscriptions, sub);
-
+			if (conn->rco_subscriptions->len == 0) {
+				g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
+				g_rw_lock_writer_lock(&conn->rco_rpc_context->rcx_rwlock);
+				g_assert(g_hash_table_remove(
+				    conn->rco_rpc_context->rcx_event_watchers,
+				    conn));
+				g_rw_lock_writer_unlock(&conn->rco_rpc_context->rcx_rwlock);
+				return ((bool)true);
+			}
+		}
 		g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
 		return ((bool)true);
 	});
@@ -1716,7 +1734,7 @@ rpc_connection_dispatch(rpc_connection_t conn, rpc_object_t frame)
 
 static struct rpc_subscription *
 rpc_connection_subscribe_event_locked(rpc_connection_t conn, const char *path,
-    const char *interface, const char *name)
+    const char *interface, const char *name, bool check_busy)
 {
 	struct rpc_subscription *sub;
 	rpc_object_t frame;
@@ -1740,11 +1758,12 @@ rpc_connection_subscribe_event_locked(rpc_connection_t conn, const char *path,
 			rpc_subscription_release(sub);
 			return (NULL);
 		}
-
+		sub->rsu_refcount = 1;
 		g_ptr_array_add(conn->rco_subscriptions, sub);
+	} else {
+		if (!check_busy || !sub->rsu_busy)
+			sub->rsu_refcount++;
 	}
-
-	sub->rsu_refcount++;
 	return (sub);
 }
 
@@ -1760,7 +1779,8 @@ rpc_connection_subscribe_event(rpc_connection_t conn, const char *path,
 	}
 
 	g_rw_lock_writer_lock(&conn->rco_subscription_rwlock);
-	sub = rpc_connection_subscribe_event_locked(conn, path, interface, name);
+	sub = rpc_connection_subscribe_event_locked(conn, path, interface,
+	    name, false);
 	g_rw_lock_writer_unlock(&conn->rco_subscription_rwlock);
 
 	if (sub == NULL)
@@ -1854,14 +1874,13 @@ rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
 	g_rw_lock_writer_lock(&conn->rco_subscription_rwlock);
 
 	sub = rpc_connection_subscribe_event_locked(conn, path, interface,
-	    name);
+	    name, true);
 	if (sub == NULL) {
 		/* Couldn't inform server, error has been set */
 		goto done;
 	}
 	if (sub->rsu_busy) {
-		/* sub already existed, just undo the refcount ++ */
-		sub->rsu_refcount--;
+		/* no state changes were made, tell caller to retry */
 		rpc_set_last_error(EBUSY, "Subscription locked, retry", NULL);
 		goto done;
 	}
