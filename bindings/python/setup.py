@@ -42,6 +42,9 @@ systemd = os.environ.get('SYSTEMD_SUPPORT') == 'ON'
 
 if os.environ.get('CMAKE_BUILD_TYPE') == 'Debug':
     cflags += ['-g', '-O0']
+else:
+    while '-g' in cflags:
+        cflags.remove('-g')
 
 if 'CMAKE_SOURCE_DIR' in os.environ:
     cflags += [
@@ -54,12 +57,23 @@ if 'CMAKE_SOURCE_DIR' in os.environ:
         os.path.expandvars('-Wl,${CMAKE_PREFIX}/lib')
     ]
 
+from distutils.sysconfig import customize_compiler
+
+class my_build_ext(build_ext):
+    def build_extensions(self):
+        customize_compiler(self.compiler)
+        try:
+            self.compiler.compiler_so.remove("-g")
+        except (AttributeError, ValueError):
+            pass
+        build_ext.build_extensions(self)
+
 setup(
     name='librpc',
     version='1.0',
     packages=[''],
     package_data={'': ['*.html', '*.c', 'librpc.pxd']},
-    cmdclass={'build_ext': build_ext},
+    cmdclass={'build_ext': my_build_ext},
     ext_modules=[
         Extension(
             "librpc",
