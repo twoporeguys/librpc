@@ -198,7 +198,8 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_call *call)
 	rpc_instance_t instance = NULL;
 
 	debugf("call=%p, name=%s", call, call->rc_method_name);
-	if (call->rc_conn->rco_closed) {
+
+	if ((g_atomic_int_get(&call->rc_conn->rco_state)) != CONNECTION_OPEN) {
 		debugf("Can't dispatch call, conn %p closed", call->rc_conn);
 		return (-1);
 	}
