@@ -1608,30 +1608,26 @@ rpc_connection_is_open(rpc_connection_t conn)
 int
 rpc_connection_retain(rpc_connection_t conn)
 {
-	int ret;
 
 	if (conn == NULL)
 		return (-1);
 
-	g_mutex_lock(&conn->rco_ref_mtx);
-	g_assert(conn->rco_refcnt > 0);
-	ret = ++conn->rco_refcnt;
-	g_mutex_unlock(&conn->rco_ref_mtx);
+	g_atomic_int_inc(&conn->rco_refcnt);
+	g_assert(conn->rco_refcnt > 1);
 
-	return (ret);
+	return (0);
 }
 
 int
 rpc_connection_release(rpc_connection_t conn)
 {
-	int ret;
 
 	if (conn == NULL)
 		return (-1);
 
-	g_mutex_lock(&conn->rco_ref_mtx);
 	g_assert(conn->rco_refcnt > 0);
-	if (conn->rco_refcnt == 1) {
+	if (g_atomic_int_dec_and_test(&conn->rco_refcnt)) {
+
 		g_assert(conn->rco_closed);
 
 		if (conn->rco_release && conn->rco_arg) {
@@ -1645,19 +1641,15 @@ rpc_connection_release(rpc_connection_t conn)
 		    g_thread_self(), conn);
 
 		conn->rco_refcnt = -1;
-		g_mutex_unlock(&conn->rco_ref_mtx);
 
 		if (conn->rco_server != NULL) {
 			/* undo connection's ref on server */
 			rpc_server_release(conn->rco_server);
 		}
 		g_free(conn);
-		return (0);
 	}
-	ret = --conn->rco_refcnt;
-	g_mutex_unlock(&conn->rco_ref_mtx);
 
-	return (ret);
+	return (0);
 }
 
 int
