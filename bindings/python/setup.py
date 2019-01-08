@@ -25,6 +25,8 @@
 #
 
 import os
+import sys
+from subprocess import check_output
 import Cython.Compiler.Options
 Cython.Compiler.Options.annotate = True
 
@@ -53,6 +55,13 @@ if 'CMAKE_SOURCE_DIR' in os.environ:
         os.path.expandvars('-Wl,-rpath'),
         os.path.expandvars('-Wl,${CMAKE_PREFIX}/lib')
     ]
+
+if sys.platform == 'darwin':
+    # when only command-line tools are installed, distutils isn't finding the
+    # MacOS SDK dir correctly. Directly query and add to flags here
+    SDKROOT = check_output(['xcrun', '--show-sdk-path']).decode('utf-8').strip()
+    # flags at end of command have precidence over earlier ones
+    cflags.append('-isysroot{}'.format(SDKROOT))
 
 setup(
     name='librpc',
