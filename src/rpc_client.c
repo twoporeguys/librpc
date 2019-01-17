@@ -89,18 +89,19 @@ void
 rpc_client_close(rpc_client_t client)
 {
 
-	if (client->rci_connection != NULL) {
+	if ((client->rci_connection != NULL) &&
+	    rpc_connection_retain_if_valid(client->rci_connection, false) == 0) {
 		/* must hold a reference to retain the connection until it
 		 * is completely closed and cleaned up. Otherwise closing the
 		 * client thread below may prevent cleanup from happening.
 		 */
-		rpc_connection_retain(client->rci_connection);
 		rpc_connection_close(client->rci_connection);
 		if (rpc_get_last_error() == NULL &&
 		    client->rci_connection->rco_error != NULL)
 			rpc_set_last_rpc_error(
 			    rpc_retain(client->rci_connection->rco_error));
 		rpc_connection_release(client->rci_connection);
+		client->rci_connection = NULL;
         }
 
 	g_main_context_invoke(client->rci_g_context,

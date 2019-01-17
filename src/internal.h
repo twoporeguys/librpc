@@ -586,6 +586,7 @@ INTERNAL_LINKAGE rpc_connection_t rpc_connection_alloc(rpc_server_t server);
 INTERNAL_LINKAGE void rpc_connection_dispatch(rpc_connection_t, rpc_object_t);
 INTERNAL_LINKAGE int rpc_connection_retain(rpc_connection_t);
 INTERNAL_LINKAGE int rpc_connection_release(rpc_connection_t);
+INTERNAL_LINKAGE int rpc_connection_retain_if_valid(rpc_connection_t, bool);
 INTERNAL_LINKAGE int rpc_context_dispatch(rpc_context_t, struct rpc_call *);
 INTERNAL_LINKAGE int rpc_server_dispatch(rpc_server_t, struct rpc_call *);
 INTERNAL_LINKAGE void rpc_server_release(rpc_server_t);
