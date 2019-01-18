@@ -78,6 +78,7 @@ rpc_server_accept(rpc_server_t server, rpc_connection_t conn)
 	g_mutex_lock(&server->rs_mtx);
 	if (server->rs_closed) {
 		server->rs_conn_refused++;
+		/* ok to change state here because the conn isn't live yet */
 		g_atomic_int_or(&conn->rco_state, CONNECTION_RELEASED);
 		g_mutex_unlock(&server->rs_mtx);
 		return (-1);

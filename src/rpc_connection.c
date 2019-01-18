@@ -127,6 +127,8 @@ static const struct message_handler handlers[] = {
 	{ }
 };
 
+static GRWLock active_rwlock;
+static GHashTable *active_connections = NULL;
 
 static size_t
 rpc_serialize_fds(rpc_object_t obj, int *fds, size_t *nfds, size_t idx)
@@ -331,21 +333,23 @@ int
 rpc_connection_set_context(rpc_connection_t conn, rpc_context_t ctx)
 {
 
-	if (rpc_connection_retain_if_valid(conn, true) == 0) {
+	int ret = -1;
+
+	if (rpc_connection_retain_if_valid(conn, true) != 0)
+		rpc_set_last_errorf(EINVAL, "%s", "Connection not open");
+	else {
 		g_mutex_lock(&conn->rco_mtx);
 		if (ctx != NULL && conn->rco_rpc_context != NULL) {
 			rpc_set_last_errorf(EINVAL, "%s",
 			    "Context already set");
-			g_mutex_unlock(&conn->rco_mtx);
-			return (-1);
+		} else {
+			conn->rco_rpc_context = ctx;
+			ret = 0;
 		}
-		conn->rco_rpc_context = ctx;
 		g_mutex_unlock(&conn->rco_mtx);
 		rpc_connection_release(conn);
-		return (0);
 	}
-	rpc_set_last_errorf(EINVAL, "%s", "Connection not open");
-	return (-1);
+	return (ret);
 }
 
 static int
@@ -1436,6 +1440,11 @@ rpc_connection_init(int flags)
 	conn->rco_arg = conn;
 	rpc_connection_set_default_fn_handlers(conn);
 
+	if (active_connections == NULL) {
+		active_connections = g_hash_table_new(NULL, NULL);
+		g_rw_lock_init(&active_rwlock);
+	}
+
 	return(conn);
 }
 
@@ -1458,6 +1467,13 @@ rpc_connection_alloc(rpc_server_t server)
 		rpc_connection_free_resources(conn);
 		return NULL;
 	}
+
+	g_rw_lock_writer_lock(&active_rwlock);
+	g_assert(!g_hash_table_contains(active_connections, conn));
+	if (!g_hash_table_insert(active_connections, conn, conn))
+		g_assert_not_reached();
+	g_rw_lock_writer_unlock(&active_rwlock);
+
 	return (conn);
 }
 
@@ -1499,6 +1515,12 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 
 	if (conn->rco_flags & RPC_TRANSPORT_FD_PASSING)
 		conn->rco_supports_fd_passing = transport->is_fd_passing(conn);
+
+	g_rw_lock_writer_lock(&active_rwlock);
+	g_assert(!g_hash_table_contains(active_connections, conn));
+	if (!g_hash_table_insert(active_connections, conn, conn))
+		g_assert_not_reached();
+	g_rw_lock_writer_unlock(&active_rwlock);
 
 	return (conn);
 fail:
@@ -1615,9 +1637,25 @@ done:
 }
 
 bool
+rpc_connection_is_valid(rpc_connection_t conn)
+{
+	bool ret;
+
+	/* Use this when waiting for a conn to become invalid */
+	if (conn == NULL)
+		return (false);
+	g_rw_lock_reader_lock(&active_rwlock);
+	ret =  g_hash_table_contains(active_connections, conn);
+	g_rw_lock_reader_unlock(&active_rwlock);
+
+	return (ret);
+}
+
+bool
 rpc_connection_is_open(rpc_connection_t conn)
 {
 
+	/* conn if non-null must be valid */
 	return (conn != NULL &&
 	    (g_atomic_int_get(&conn->rco_state) == CONNECTION_OPEN));
 }
@@ -1626,6 +1664,7 @@ int
 rpc_connection_retain(rpc_connection_t conn)
 {
 
+	/* conn if non-null is expected to be valid */
 	if (conn == NULL)
 		return (-1);
 
@@ -1639,6 +1678,7 @@ int
 rpc_connection_release(rpc_connection_t conn)
 {
 
+	/* conn if non-null is expected to be valid */
 	if (conn == NULL)
 		return (-1);
 
@@ -1647,6 +1687,27 @@ rpc_connection_release(rpc_connection_t conn)
 
 		g_assert((g_atomic_int_get(&conn->rco_state) &
 		    CONNECTION_CLOSED) != 0);
+
+		g_rw_lock_writer_lock(&active_rwlock);
+		if (!g_hash_table_contains(active_connections, conn)) {
+			/* someone might have retained and released and done
+			 * cleanup while we waited for the lock. just exit.
+			 */
+			g_assert_not_reached(); /* current code won't permit */
+			g_rw_lock_writer_unlock(&active_rwlock);
+			return (0);
+		}
+		if (g_atomic_int_get(&conn->rco_refcnt) > 0) {
+			/* someone retained; just exit for now */
+			g_assert_not_reached(); /* current code won't permit */
+			g_rw_lock_writer_unlock(&active_rwlock);
+			return (0);
+		}
+
+		/* ok, we have the lock, the conn is valid and unretained */
+		if (!g_hash_table_remove(active_connections, conn))
+			g_assert_not_reached();
+		g_rw_lock_writer_unlock(&active_rwlock);
 
 		if (conn->rco_release && conn->rco_arg) {
 			conn->rco_release(conn->rco_arg);
@@ -1857,22 +1918,20 @@ int
 rpc_connection_retain_if_valid(rpc_connection_t conn, bool open)
 {
 
-	/* TODO, replace with better validation */
-	g_mutex_lock(&conn->rco_mtx);
-	if (conn == NULL || conn->rco_refcnt < 1) {
-		g_mutex_unlock(&conn->rco_mtx);
-		rpc_set_last_error(EINVAL, "No such connection", NULL);
-		return (-1);
-	}
-
-	if (open && g_atomic_int_get(&conn->rco_state) != CONNECTION_OPEN) {
-		g_mutex_unlock(&conn->rco_mtx);
-		debugf("connection not open");
-		rpc_set_last_error(ECONNRESET, "Connection closed", NULL);
+	g_rw_lock_reader_lock(&active_rwlock);
+	if (!g_hash_table_contains(active_connections, conn)) {
+		g_rw_lock_reader_unlock(&active_rwlock);
 		return (-1);
 	}
 	rpc_connection_retain(conn);
-	g_mutex_unlock(&conn->rco_mtx);
+	g_rw_lock_reader_unlock(&active_rwlock);
+
+	/* Unless the conn mutex is held, state may change after this check */
+	if (open && g_atomic_int_get(&conn->rco_state) != CONNECTION_OPEN) {
+		rpc_connection_release(conn);
+		return (-1);
+	}
+
 	return (0);
 }
 
