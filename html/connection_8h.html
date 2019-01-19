@@ -194,6 +194,8 @@ Functions</h2></td></tr>
 <tr class="separator:ab8babe3fa9b01f06445a70d5507a7ecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71699a40039ad05bd244713464cbee88"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a71699a40039ad05bd244713464cbee88">rpc_connection_is_open</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
 <tr class="separator:a71699a40039ad05bd244713464cbee88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6124f34c977a48463c608b826e249796"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a6124f34c977a48463c608b826e249796">rpc_connection_is_valid</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
+<tr class="separator:a6124f34c977a48463c608b826e249796"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72a6738b9d7aff59527dc05b12a4fb33"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a72a6738b9d7aff59527dc05b12a4fb33">rpc_connection_get_fd</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
 <tr class="separator:a72a6738b9d7aff59527dc05b12a4fb33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07eb2a0e3655cb83222f5faa530e3bfd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="connection_8h.html#a07eb2a0e3655cb83222f5faa530e3bfd">rpc_connection_free</a> (_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a> conn)</td></tr>
@@ -1687,6 +1689,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns <code>true</code> if connection is open, otherwise <code>false</code>.</p>
+<p>This function allows the caller to determine if a connection is in the 'open' state, that is, not aborted or closed. It should only be called on a connection that can't have been freed as its validity is not checked.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
@@ -1694,6 +1697,33 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if connection is open, otherwise <code>false</code> </dd></dl>
+
+</div>
+</div>
+<a id="a6124f34c977a48463c608b826e249796"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6124f34c977a48463c608b826e249796">&#9670;&nbsp;</a></span>rpc_connection_is_valid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rpc_connection_is_valid </td>
+          <td>(</td>
+          <td class="paramtype">_Nonnull <a class="el" href="connection_8h.html#a70838cb106c3464db299522c5fe2782d">rpc_connection_t</a>&#160;</td>
+          <td class="paramname"><em>conn</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns <code>true</code> if connection is valid, otherwise <code>false</code>.</p>
+<p>Unless the caller can guarantee that the connection can't be removed (by for example having created a call on the connection and not freeing it), the connection may become not-valid at any time. This function can be used to safely determine if the connection has been freed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">conn</td><td>Connection handle </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if connection is valid, otherwise <code>false</code> </dd></dl>
 
 </div>
 </div>

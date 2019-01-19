@@ -101,6 +101,8 @@ int \hyperlink{connection_8h_ab8babe3fa9b01f06445a70d5507a7ecf}{rpc\+\_\+connect
 \item 
 bool \hyperlink{connection_8h_a71699a40039ad05bd244713464cbee88}{rpc\+\_\+connection\+\_\+is\+\_\+open} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
+bool \hyperlink{connection_8h_a6124f34c977a48463c608b826e249796}{rpc\+\_\+connection\+\_\+is\+\_\+valid} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
+\item 
 int \hyperlink{connection_8h_a72a6738b9d7aff59527dc05b12a4fb33}{rpc\+\_\+connection\+\_\+get\+\_\+fd} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
 \item 
 void \hyperlink{connection_8h_a07eb2a0e3655cb83222f5faa530e3bfd}{rpc\+\_\+connection\+\_\+free} (\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t} conn)
@@ -990,6 +992,8 @@ true if credentials information is available, otherwise false
 
 Returns {\ttfamily true} if connection is open, otherwise {\ttfamily false}.
 
+This function allows the caller to determine if a connection is in the \textquotesingle{}open\textquotesingle{} state, that is, not aborted or closed. It should only be called on a connection that can\textquotesingle{}t have been freed as its validity is not checked.
+
 
 \begin{DoxyParams}{Parameters}
 {\em conn} & Connection handle \\
@@ -997,6 +1001,24 @@ Returns {\ttfamily true} if connection is open, otherwise {\ttfamily false}.
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 {\ttfamily true} if connection is open, otherwise {\ttfamily false} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{connection_8h_a6124f34c977a48463c608b826e249796}\label{connection_8h_a6124f34c977a48463c608b826e249796}} 
+\index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+is\+\_\+valid@{rpc\+\_\+connection\+\_\+is\+\_\+valid}}
+\index{rpc\+\_\+connection\+\_\+is\+\_\+valid@{rpc\+\_\+connection\+\_\+is\+\_\+valid}!connection.\+h@{connection.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+connection\+\_\+is\+\_\+valid()}{rpc\_connection\_is\_valid()}}
+{\footnotesize\ttfamily bool rpc\+\_\+connection\+\_\+is\+\_\+valid (\begin{DoxyParamCaption}\item[{\+\_\+\+Nonnull \hyperlink{connection_8h_a70838cb106c3464db299522c5fe2782d}{rpc\+\_\+connection\+\_\+t}}]{conn }\end{DoxyParamCaption})}
+
+Returns {\ttfamily true} if connection is valid, otherwise {\ttfamily false}.
+
+Unless the caller can guarantee that the connection can\textquotesingle{}t be removed (by for example having created a call on the connection and not freeing it), the connection may become not-\/valid at any time. This function can be used to safely determine if the connection has been freed.
+
+
+\begin{DoxyParams}{Parameters}
+{\em conn} & Connection handle \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if connection is valid, otherwise {\ttfamily false} 
 \end{DoxyReturn}
 \mbox{\Hypertarget{connection_8h_abbce64346725655e72faa0bf1c479750}\label{connection_8h_abbce64346725655e72faa0bf1c479750}} 
 \index{connection.\+h@{connection.\+h}!rpc\+\_\+connection\+\_\+ping@{rpc\+\_\+connection\+\_\+ping}}
