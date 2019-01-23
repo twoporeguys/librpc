@@ -90,20 +90,23 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	struct rpc_if_method *method = call->rc_if_method;
 	rpc_object_t result;
 
-	if (!rpc_connection_is_open(call->rc_conn)) {
-		debugf("Can't dispatch call, conn %p closed", call->rc_conn);
+	if (rpc_connection_call_retain(call) < 0) {
+		debugf("Can't dispatch call %p, not valid", call);
+		return;
+	}
+
+	if (call->rc_aborted || !rpc_connection_is_open(call->rc_conn)) {
+		debugf("Can't dispatch call, aborted or conn %p not open",
+		    call->rc_conn);
+		rpc_connection_call_release(call);
 		rpc_connection_close_inbound_call(call);
 		return;
 	}
 
 	if (method == NULL) {
 		rpc_function_error(call, ENOENT, "Method not found");
+		rpc_connection_call_release(call);
 		rpc_connection_close_inbound_call(call);
-		return;
-	}
-
-	if (rpc_connection_call_retain(call) < 0) {
-		debugf("Can't dispatch call %p, not valid", call);
 		return;
 	}
 
@@ -117,32 +120,26 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 
 	if (context->rcx_pre_call_hook != NULL) {
 		context->rcx_pre_call_hook(call, call->rc_args);
-		if (call->rc_responded) {
-			rpc_connection_call_release(call);
-			return;
-		}
+		if (call->rc_responded)
+			goto done;
 	}
 
 	result = method->rm_block((void *)call, call->rc_args);
 
-	if (result == RPC_FUNCTION_STILL_RUNNING) {
-		rpc_connection_call_release(call);
-		return;
-	}
+	if (result == RPC_FUNCTION_STILL_RUNNING)
+		goto done;
 
 	if (context->rcx_post_call_hook != NULL) {
 		context->rcx_post_call_hook(call, result);
-		if (call->rc_responded) {
-			rpc_connection_call_release(call);
-			return;
-		}
+		if (call->rc_responded)
+			goto done;
 	}
 
 	if (!call->rc_streaming)
 		rpc_function_respond(call, result);
 	else if (!call->rc_ended)
 		rpc_function_end(data);
-
+done:
 	rpc_connection_call_release(call);
 }
 
@@ -198,7 +195,8 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_call *call)
 	rpc_instance_t instance = NULL;
 
 	debugf("call=%p, name=%s", call, call->rc_method_name);
-	if (call->rc_conn->rco_closed) {
+
+	if (!rpc_connection_is_open(call->rc_conn)) {
 		debugf("Can't dispatch call, conn %p closed", call->rc_conn);
 		return (-1);
 	}

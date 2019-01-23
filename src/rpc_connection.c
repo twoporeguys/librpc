@@ -88,7 +88,6 @@ static void rpc_abort_worker(void *arg, void *data);
 static void call_abort_locked(struct rpc_call *call);
 static void rpc_subscription_release(struct rpc_subscription *sub);
 static void rpc_rsh_release(struct rpc_subscription_handler *rsh);
-static bool rpc_connection_retain_if_open(rpc_connection_t conn);
 static int rpc_set_creds(rpc_connection_t conn, pid_t pid, uid_t uid, gid_t gid);
 static int rpc_connection_unsubscribe_event_locked(rpc_connection_t conn,
     struct rpc_subscription *sub);
@@ -128,6 +127,8 @@ static const struct message_handler handlers[] = {
 	{ }
 };
 
+static GRWLock active_rwlock;
+static GHashTable *active_connections = NULL;
 
 static size_t
 rpc_serialize_fds(rpc_object_t obj, int *fds, size_t *nfds, size_t idx)
@@ -247,7 +248,7 @@ rpc_callback_worker(void *arg, void *data)
 	bool ret;
 
 
-	if (!rpc_connection_retain_if_open(conn))
+	if (rpc_connection_retain_if_valid(conn, true) != 0)
 		return;
 
 	if (item->call) {
@@ -332,17 +333,23 @@ int
 rpc_connection_set_context(rpc_connection_t conn, rpc_context_t ctx)
 {
 
-	g_mutex_lock(&conn->rco_mtx);
-	if (!rpc_connection_is_open(conn) || (conn->rco_rpc_context != NULL)) {
-		rpc_set_last_errorf(EINVAL, "%s",
-		    (conn->rco_rpc_context != NULL) ? "Context already set" :
-		    "Connection not open");
+	int ret = -1;
+
+	if (rpc_connection_retain_if_valid(conn, true) != 0)
+		rpc_set_last_errorf(EINVAL, "%s", "Connection not open");
+	else {
+		g_mutex_lock(&conn->rco_mtx);
+		if (ctx != NULL && conn->rco_rpc_context != NULL) {
+			rpc_set_last_errorf(EINVAL, "%s",
+			    "Context already set");
+		} else {
+			conn->rco_rpc_context = ctx;
+			ret = 0;
+		}
 		g_mutex_unlock(&conn->rco_mtx);
-		return (-1);
+		rpc_connection_release(conn);
 	}
-	conn->rco_rpc_context = ctx;
-	g_mutex_unlock(&conn->rco_mtx);
-	return (0);
+	return (ret);
 }
 
 static int
@@ -859,21 +866,22 @@ on_events_unsubscribe(rpc_connection_t conn, rpc_object_t args,
 static int
 rpc_set_creds(rpc_connection_t conn, pid_t pid, uid_t uid, gid_t gid)
 {
+	int ret = 0;
 
-	if (!rpc_connection_is_open(conn)) {
-		debugf("Rejecting msg, conn %p is closed", conn);
-		return (-1);
-	}
 	g_assert(rpc_connection_supports_credentials(conn));
-	g_mutex_lock(&conn->rco_mtx);
-
-	conn->rco_has_creds = true;
-	conn->rco_creds.rcc_pid = pid;
-	conn->rco_creds.rcc_uid = uid;
-	conn->rco_creds.rcc_gid = gid;
-
-	g_mutex_unlock(&conn->rco_mtx);
-	return (0);
+	if (rpc_connection_retain_if_valid(conn, true) == 0) {
+		g_mutex_lock(&conn->rco_mtx);
+		conn->rco_has_creds = true;
+		conn->rco_creds.rcc_pid = pid;
+		conn->rco_creds.rcc_uid = uid;
+		conn->rco_creds.rcc_gid = gid;
+		g_mutex_unlock(&conn->rco_mtx);
+		rpc_connection_release(conn);
+	} else {
+		rpc_set_last_errorf(EINVAL, "Connection is not open.");
+		ret = -1;
+	}
+	return (ret);
 }
 
 static int
@@ -884,7 +892,7 @@ rpc_recv_msg(struct rpc_connection *conn, const void *frame, size_t len,
 	rpc_object_t msgt;
 	int ret = 0;
 
-	if (!rpc_connection_retain_if_open(conn)) {
+	if (rpc_connection_retain_if_valid(conn, true) != 0) {
 		debugf("Rejecting msg, conn %p is closed", conn);
 		return (-1);
 	}
@@ -976,15 +984,16 @@ rpc_close(rpc_connection_t conn)
 	GError *err = NULL;
 
 	g_mutex_lock(&conn->rco_mtx);
-	if (conn->rco_aborted) {
+
+	if ((g_atomic_int_or(&conn->rco_state, CONNECTION_ABORTED) &
+	    CONNECTION_ABORTED) != 0) {
 		g_mutex_unlock(&conn->rco_mtx); /*another thread called first*/
 		return (0);
 	}
 
-	conn->rco_aborted = true;
 	if (conn->rco_server != NULL)
-		conn->rco_closed = true;
-	
+		g_atomic_int_or(&conn->rco_state, CONNECTION_CLOSED);
+
 	if (conn->rco_error_handler) {
 		if (conn->rco_error != NULL) {
 			conn->rco_error_handler(RPC_TRANSPORT_ERROR,
@@ -1045,7 +1054,7 @@ rpc_close(rpc_connection_t conn)
 
 	g_rw_lock_reader_unlock(&conn->rco_call_rwlock);
 
-	if (conn->rco_closed)
+	if ((g_atomic_int_get(&conn->rco_state) & CONNECTION_CLOSED) != 0)
 		rpc_connection_do_close(conn, RPC_ABORTED);
 	rpc_connection_release(conn);
 
@@ -1065,17 +1074,24 @@ rpc_call_alloc(rpc_connection_t conn, rpc_object_t id, const char *path,
 		return (NULL);
 	}
 
+	/* retain the connection for the life of the call. */
+	if (rpc_connection_retain_if_valid(conn, true) != 0) {
+		rpc_set_last_errorf(EINVAL,
+		    "Connection not open.");
+		return (NULL);
+	}
+
 	if (args != NULL) {
 		if (rpc_get_type(args) != RPC_TYPE_ARRAY) {
 			rpc_set_last_errorf(EINVAL,
 			    "Method arguments must be an array");
+			rpc_connection_release(conn);
 			return (NULL);
 		}
 		call_args = rpc_retain(args);
 	} else
 		call_args = rpc_array_create();
 
-	rpc_connection_retain(conn);
 	call = g_malloc0(sizeof(*call));
 	call->rc_refcount = 1;
 	call->rc_queue = g_queue_new();
@@ -1420,11 +1436,14 @@ rpc_connection_init(int flags)
 	if (rpc_connection_supports_credentials(conn))
 		conn->rco_set_creds = rpc_set_creds;
 
-	conn->rco_closed = false;
-	conn->rco_aborted = false;
 	conn->rco_refcnt = 1;
 	conn->rco_arg = conn;
 	rpc_connection_set_default_fn_handlers(conn);
+
+	if (active_connections == NULL) {
+		active_connections = g_hash_table_new(NULL, NULL);
+		g_rw_lock_init(&active_rwlock);
+	}
 
 	return(conn);
 }
@@ -1448,6 +1467,13 @@ rpc_connection_alloc(rpc_server_t server)
 		rpc_connection_free_resources(conn);
 		return NULL;
 	}
+
+	g_rw_lock_writer_lock(&active_rwlock);
+	g_assert(!g_hash_table_contains(active_connections, conn));
+	if (!g_hash_table_insert(active_connections, conn, conn))
+		g_assert_not_reached();
+	g_rw_lock_writer_unlock(&active_rwlock);
+
 	return (conn);
 }
 
@@ -1490,6 +1516,12 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	if (conn->rco_flags & RPC_TRANSPORT_FD_PASSING)
 		conn->rco_supports_fd_passing = transport->is_fd_passing(conn);
 
+	g_rw_lock_writer_lock(&active_rwlock);
+	g_assert(!g_hash_table_contains(active_connections, conn));
+	if (!g_hash_table_insert(active_connections, conn, conn))
+		g_assert_not_reached();
+	g_rw_lock_writer_unlock(&active_rwlock);
+
 	return (conn);
 fail:
 	if (conn != NULL)
@@ -1501,13 +1533,14 @@ int
 rpc_connection_register_context(rpc_connection_t conn, rpc_context_t ctx)
 {
 
-	g_mutex_lock(&conn->rco_mtx);
-	if (conn->rco_closed) {
+	if (rpc_connection_retain_if_valid(conn, true) == 0) {
+		g_mutex_lock(&conn->rco_mtx);
+		conn->rco_rpc_context = ctx;
 		g_mutex_unlock(&conn->rco_mtx);
-		return (-1);
+		rpc_connection_release(conn);
+		return (0);
 	}
-	conn->rco_rpc_context = ctx;
-	return (0);
+	return (-1);
 }
 
 int rpc_connection_get_subscription_count(rpc_connection_t conn)
@@ -1545,7 +1578,6 @@ int
 rpc_connection_close(rpc_connection_t conn)
 {
 
-	conn->rco_closed = true;
 	return (rpc_connection_do_close(conn, RPC_CLOSE_CALLED));
 }
 
@@ -1553,16 +1585,22 @@ int
 rpc_connection_do_close(rpc_connection_t conn, rpc_close_source_t source)
 {
 	rpc_abort_fn_t abort_func;
+	uint state;
 
-	debugf("%s aborted: %d conn: %p refcnt: %d  arg: %p, closed %d"
-	    " released: %d, source: %d",
+	debugf("%s state: %d conn: %p refcnt: %d  arg: %p, source: %d",
 	    conn->rco_server ? "Server" : "Client",
-	    conn->rco_aborted, conn, conn->rco_refcnt,
-	    conn->rco_arg, conn->rco_closed, conn->rco_released, source);
+	    conn->rco_state, conn, conn->rco_refcnt,
+	    conn->rco_arg, source);
 
 	g_mutex_lock(&conn->rco_mtx);
+	if (source == RPC_CLOSE_CALLED)
+		g_atomic_int_or(&conn->rco_state, CONNECTION_CLOSED);
 
-	if ((conn->rco_abort != NULL) && !conn->rco_aborted) {
+	/* rco_state will only be modified under rco_mtx */
+	state = g_atomic_int_get(&conn->rco_state);
+
+	if ((conn->rco_abort != NULL) &&
+	    (state & CONNECTION_ABORTED) == 0) {
 		abort_func = conn->rco_abort;
 		conn->rco_abort = NULL;
 		g_mutex_unlock(&conn->rco_mtx);
@@ -1572,19 +1610,19 @@ rpc_connection_do_close(rpc_connection_t conn, rpc_close_source_t source)
 		rpc_connection_release(conn);
 		return (0);
 	}
-	if (conn->rco_released)
+	if ((state & CONNECTION_RELEASED) != 0)
 		goto done;
 
 	if (conn->rco_client != NULL) {
-		if (!conn->rco_closed)
+		if ((state & CONNECTION_CLOSED) == 0)
 			goto done;
 
-		conn->rco_released = true;
+		g_atomic_int_or(&conn->rco_state, CONNECTION_RELEASED);
 		g_mutex_unlock(&conn->rco_mtx);
 
 	} else if (conn->rco_server != NULL) {
 		g_atomic_int_inc(&conn->rco_server->rs_conn_closed);
-		conn->rco_released = true;
+		g_atomic_int_or(&conn->rco_state, CONNECTION_RELEASED);
 		g_mutex_unlock(&conn->rco_mtx);
 
 		/* if server isn't closed this will undo server's ref */
@@ -1599,40 +1637,77 @@ done:
 }
 
 bool
+rpc_connection_is_valid(rpc_connection_t conn)
+{
+	bool ret;
+
+	/* Use this when waiting for a conn to become invalid */
+	if (conn == NULL)
+		return (false);
+	g_rw_lock_reader_lock(&active_rwlock);
+	ret =  g_hash_table_contains(active_connections, conn);
+	g_rw_lock_reader_unlock(&active_rwlock);
+
+	return (ret);
+}
+
+bool
 rpc_connection_is_open(rpc_connection_t conn)
 {
 
-	return (!(conn->rco_closed || conn->rco_aborted || conn->rco_refcnt < 1));
+	/* conn if non-null must be valid */
+	return (conn != NULL &&
+	    (g_atomic_int_get(&conn->rco_state) == CONNECTION_OPEN));
 }
 
 int
 rpc_connection_retain(rpc_connection_t conn)
 {
-	int ret;
 
+	/* conn if non-null is expected to be valid */
 	if (conn == NULL)
 		return (-1);
 
-	g_mutex_lock(&conn->rco_ref_mtx);
-	g_assert(conn->rco_refcnt > 0);
-	ret = ++conn->rco_refcnt;
-	g_mutex_unlock(&conn->rco_ref_mtx);
+	g_atomic_int_inc(&conn->rco_refcnt);
+	g_assert(conn->rco_refcnt > 1);
 
-	return (ret);
+	return (0);
 }
 
 int
 rpc_connection_release(rpc_connection_t conn)
 {
-	int ret;
 
+	/* conn if non-null is expected to be valid */
 	if (conn == NULL)
 		return (-1);
 
-	g_mutex_lock(&conn->rco_ref_mtx);
 	g_assert(conn->rco_refcnt > 0);
-	if (conn->rco_refcnt == 1) {
-		g_assert(conn->rco_closed);
+	if (g_atomic_int_dec_and_test(&conn->rco_refcnt)) {
+
+		g_assert((g_atomic_int_get(&conn->rco_state) &
+		    CONNECTION_CLOSED) != 0);
+
+		g_rw_lock_writer_lock(&active_rwlock);
+		if (!g_hash_table_contains(active_connections, conn)) {
+			/* someone might have retained and released and done
+			 * cleanup while we waited for the lock. just exit.
+			 */
+			g_assert_not_reached(); /* current code won't permit */
+			g_rw_lock_writer_unlock(&active_rwlock);
+			return (0);
+		}
+		if (g_atomic_int_get(&conn->rco_refcnt) > 0) {
+			/* someone retained; just exit for now */
+			g_assert_not_reached(); /* current code won't permit */
+			g_rw_lock_writer_unlock(&active_rwlock);
+			return (0);
+		}
+
+		/* ok, we have the lock, the conn is valid and unretained */
+		if (!g_hash_table_remove(active_connections, conn))
+			g_assert_not_reached();
+		g_rw_lock_writer_unlock(&active_rwlock);
 
 		if (conn->rco_release && conn->rco_arg) {
 			conn->rco_release(conn->rco_arg);
@@ -1645,19 +1720,15 @@ rpc_connection_release(rpc_connection_t conn)
 		    g_thread_self(), conn);
 
 		conn->rco_refcnt = -1;
-		g_mutex_unlock(&conn->rco_ref_mtx);
 
 		if (conn->rco_server != NULL) {
 			/* undo connection's ref on server */
 			rpc_server_release(conn->rco_server);
 		}
 		g_free(conn);
-		return (0);
 	}
-	ret = --conn->rco_refcnt;
-	g_mutex_unlock(&conn->rco_ref_mtx);
 
-	return (ret);
+	return (0);
 }
 
 int
@@ -1773,7 +1844,7 @@ rpc_connection_subscribe_event(rpc_connection_t conn, const char *path,
 {
 	struct rpc_subscription *sub;
 
-	if (!rpc_connection_retain_if_open(conn)) {
+	if (rpc_connection_retain_if_valid(conn, true) != 0) {
 		rpc_set_last_error(ECONNRESET, "Connection closed", NULL);
 		return (-1);
 	}
@@ -1797,7 +1868,7 @@ rpc_connection_unsubscribe_event(rpc_connection_t conn, const char *path,
 	struct rpc_subscription *sub;
 	int ret = 0;
 
-	if (!rpc_connection_retain_if_open(conn)) {
+	if (rpc_connection_retain_if_valid(conn, true) != 0) {
 		rpc_set_last_error(ECONNRESET, "Connection closed", NULL);
 		return (-1);
 	}
@@ -1843,20 +1914,25 @@ rpc_connection_unsubscribe_event_locked(rpc_connection_t conn,
 	return (ret);
 }
 
-static bool
-rpc_connection_retain_if_open(rpc_connection_t conn)
+int
+rpc_connection_retain_if_valid(rpc_connection_t conn, bool open)
 {
 
-	g_mutex_lock(&conn->rco_mtx);
-	if (!rpc_connection_is_open(conn)) {
-		g_mutex_unlock(&conn->rco_mtx);
-		debugf("connection not open");
-		rpc_set_last_error(ECONNRESET, "Connection closed", NULL);
-		return (false);
+	g_rw_lock_reader_lock(&active_rwlock);
+	if (!g_hash_table_contains(active_connections, conn)) {
+		g_rw_lock_reader_unlock(&active_rwlock);
+		return (-1);
 	}
 	rpc_connection_retain(conn);
-	g_mutex_unlock(&conn->rco_mtx);
-	return (true);
+	g_rw_lock_reader_unlock(&active_rwlock);
+
+	/* Unless the conn mutex is held, state may change after this check */
+	if (open && g_atomic_int_get(&conn->rco_state) != CONNECTION_OPEN) {
+		rpc_connection_release(conn);
+		return (-1);
+	}
+
+	return (0);
 }
 
 void *
@@ -1866,7 +1942,7 @@ rpc_connection_register_event_handler(rpc_connection_t conn, const char *path,
 	struct rpc_subscription *sub;
 	struct rpc_subscription_handler *rsh = NULL;
 
-	if (!rpc_connection_retain_if_open(conn)) {
+	if (rpc_connection_retain_if_valid(conn, true) != 0) {
 		rpc_set_last_error(ECONNRESET, "Connection closed", NULL);
 		return (NULL);
 	}
@@ -1902,7 +1978,7 @@ rpc_connection_unregister_event_handler(rpc_connection_t conn, void *cookie)
 	struct rpc_subscription *sub;
 	int ret = 0;
 
-	if (!rpc_connection_retain_if_open(conn)) {
+	if (rpc_connection_retain_if_valid(conn, true) != 0) {
 		rpc_set_last_error(ECONNRESET, "Connection closed", NULL);
 		return (-1);
 	}
@@ -2023,14 +2099,9 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 	rpc_object_t payload;
 	rpc_object_t frame;
 
-	if (!rpc_connection_retain_if_open(conn))
-		return (NULL);
-
 	call = rpc_call_alloc(conn, NULL, path, interface, name, args);
-	if (call == NULL) {
-		rpc_connection_release(conn);
+	if (call == NULL)
 		return (NULL);
-	}
 
 	call->rc_type = RPC_OUTBOUND_CALL;
 	call->rc_callback = callback != NULL ? Block_copy(callback) : NULL;
@@ -2054,18 +2125,14 @@ rpc_connection_call(rpc_connection_t conn, const char *path,
 
 	call->rc_timeout = g_timeout_source_new_seconds(conn->rco_rpc_timeout);
 	g_source_set_callback(call->rc_timeout, &rpc_call_timeout, call, NULL);
-	g_mutex_lock(&conn->rco_mtx);
 	g_source_attach(call->rc_timeout, conn->rco_main_context);
 	g_mutex_unlock(&call->rc_mtx);
-	g_mutex_unlock(&conn->rco_mtx);
 
 	if (rpc_send_frame(conn, frame) != 0) {
 		rpc_call_free(call);
-		rpc_connection_release(conn);
 		return (NULL);
 	}
 
-	rpc_connection_release(conn);
 	return (call);
 }
 
@@ -2158,7 +2225,7 @@ rpc_connection_send_event(rpc_connection_t conn, const char *path,
 	struct rpc_subscription *sub;
 	int ret = 0;
 
-	if (!rpc_connection_retain_if_open(conn))
+	if (rpc_connection_retain_if_valid(conn, true) != 0)
 		return (-1);
 
 	/* Any listeners? */

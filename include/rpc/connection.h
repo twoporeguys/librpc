@@ -217,10 +217,28 @@ int rpc_connection_set_context(_Nonnull rpc_connection_t conn,
 /**
  * Returns @p true if connection is open, otherwise @p false.
  *
+ * This function allows the caller to determine if a connection is in the
+ * 'open' state, that is, not aborted or closed. It should only be called
+ * on a connection that can't have been freed as its validity is not checked.
+ *
  * @param conn Connection handle
  * @return @p true if connection is open, otherwise @p false
  */
 bool rpc_connection_is_open(_Nonnull rpc_connection_t conn);
+
+/**
+ * Returns @p true if connection is valid, otherwise @p false.
+ *
+ * Unless the caller can guarantee that the connection can't be removed
+ * (by for example having created a call on the connection and not
+ * freeing it), the connection may become not-valid at any time.
+ * This function can be used to safely determine if the connection has
+ * been freed.
+
+ * @param conn Connection handle
+ * @return @p true if connection is valid, otherwise @p false
+ */
+bool rpc_connection_is_valid(_Nonnull rpc_connection_t conn);
 
 /**
  * Returns file descriptor associated with the connection.
