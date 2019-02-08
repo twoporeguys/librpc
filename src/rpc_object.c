@@ -66,6 +66,15 @@ static const char *rpc_types[] = {
     [RPC_TYPE_ERROR] = "error"
 };
 
+volatile int objcnt;
+volatile int bincnt;
+
+int
+rpc_get_count(bool all)
+{
+	return (all ? g_atomic_int_get(&objcnt) : g_atomic_int_get(&bincnt));
+}
+
 rpc_object_t
 rpc_prim_create(rpc_type_t type, union rpc_value val)
 {
@@ -78,6 +87,8 @@ rpc_prim_create(rpc_type_t type, union rpc_value val)
 	ro->ro_type = type;
 	ro->ro_value = val;
 	ro->ro_refcnt = 1;
+
+	g_atomic_int_inc(&objcnt);
 	return (ro);
 }
 
@@ -471,6 +482,7 @@ rpc_release_impl(rpc_object_t object)
 	assert(object->ro_refcnt > 0);
 
 	if (g_atomic_int_dec_and_test(&object->ro_refcnt)) {
+		g_atomic_int_dec_and_test(&objcnt);
 		switch (object->ro_type) {
 		case RPC_TYPE_BINARY:
 			if (object->ro_value.rv_bin.rbv_destructor != NULL) {
@@ -479,6 +491,7 @@ rpc_release_impl(rpc_object_t object)
 
 				Block_release(
 				    object->ro_value.rv_bin.rbv_destructor);
+				g_atomic_int_dec_and_test(&bincnt);
 			}
 			break;
 
@@ -1282,6 +1295,7 @@ rpc_data_create(const void *bytes, size_t length,
 
 	if (destructor != NULL)
 		value.rv_bin.rbv_destructor = Block_copy(destructor);
+	g_atomic_int_inc(&bincnt);
 
 	return (rpc_prim_create(RPC_TYPE_BINARY, value));
 }

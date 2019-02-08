@@ -279,6 +279,9 @@ cdef class Object(object):
     def copy(self):
         return Object.wrap(rpc_copy(self.unwrap()))
 
+    def refcount(self):
+        return rpc_get_refcount(self.unwrap())
+
     def validate(self):
         if not self.typei:
             raise LibException(errno.ENOENT, 'No type information')

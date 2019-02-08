@@ -208,6 +208,9 @@ int rpc_release_impl(_Nonnull rpc_object_t object);
  */
 int rpc_get_refcount(_Nullable rpc_object_t object);
 
+/**   get current counts of rpc_objects */
+int rpc_get_count(bool all);
+
 /**
  * Gets line number of object location in source file (if any).
  *

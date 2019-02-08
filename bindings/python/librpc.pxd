@@ -82,6 +82,7 @@ cdef extern from "rpc/object.h" nogil:
 
     rpc_object_t rpc_retain(rpc_object_t object)
     int rpc_release_impl(rpc_object_t object)
+    int rpc_get_refcount(rpc_object_t object)
     rpc_object_t rpc_copy(rpc_object_t object)
     bint rpc_equal(rpc_object_t o1, rpc_object_t o2)
     size_t rpc_hash(rpc_object_t object)
