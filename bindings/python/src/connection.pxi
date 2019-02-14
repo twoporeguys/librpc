@@ -291,7 +291,6 @@ cdef class Connection(object):
         def get_chunk():
             nonlocal rpc_result
 
-            rpc_result = rpc_retain(rpc_call_result(call))
             return Object.wrap(rpc_result).unpack()
 
         def iter_chunk():
