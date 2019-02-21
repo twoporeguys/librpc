@@ -67,12 +67,12 @@ static const char *rpc_types[] = {
 };
 
 volatile int objcnt;
-volatile int bincnt;
+volatile int othcnt;
 
 int
 rpc_get_count(bool all)
 {
-	return (all ? g_atomic_int_get(&objcnt) : g_atomic_int_get(&bincnt));
+	return (all ? g_atomic_int_get(&objcnt) : g_atomic_int_get(&othcnt));
 }
 
 rpc_object_t
@@ -491,12 +491,17 @@ rpc_release_impl(rpc_object_t object)
 
 				Block_release(
 				    object->ro_value.rv_bin.rbv_destructor);
-				g_atomic_int_dec_and_test(&bincnt);
+				//g_atomic_int_dec_and_test(&othcnt);
 			}
 			break;
 
 		case RPC_TYPE_STRING:
 			g_string_free(object->ro_value.rv_str, true);
+			//g_atomic_int_dec_and_test(&othcnt);
+			break;
+
+		case RPC_TYPE_NULL:
+			//g_atomic_int_dec_and_test(&othcnt);
 			break;
 
 		case RPC_TYPE_DATE:
@@ -505,10 +510,12 @@ rpc_release_impl(rpc_object_t object)
 
 		case RPC_TYPE_ARRAY:
 			g_ptr_array_unref(object->ro_value.rv_list);
+			g_atomic_int_dec_and_test(&othcnt);
 			break;
 
 		case RPC_TYPE_DICTIONARY:
 			g_hash_table_unref(object->ro_value.rv_dict);
+			//g_atomic_int_dec_and_test(&othcnt);
 			break;
 
 		case RPC_TYPE_ERROR:
@@ -1176,6 +1183,7 @@ rpc_null_create(void)
 	union rpc_value val = { 0 };
 
 	val.rv_b = false;
+	//g_atomic_int_inc(&othcnt);
 	return (rpc_prim_create(RPC_TYPE_NULL, val));
 }
 
@@ -1295,7 +1303,7 @@ rpc_data_create(const void *bytes, size_t length,
 
 	if (destructor != NULL)
 		value.rv_bin.rbv_destructor = Block_copy(destructor);
-	g_atomic_int_inc(&bincnt);
+	//g_atomic_int_inc(&othcnt);
 
 	return (rpc_prim_create(RPC_TYPE_BINARY, value));
 }
@@ -1376,6 +1384,7 @@ rpc_string_create(const char *string)
 		return (rpc_null_create());
 
 	val.rv_str = g_string_new(string);
+	//g_atomic_int_inc(&othcnt);
 	return (rpc_prim_create(RPC_TYPE_STRING, val));
 }
 
@@ -1390,6 +1399,7 @@ rpc_string_create_len(const char *string, size_t length)
 		return (rpc_null_create());
 
 	val.rv_str = g_string_new_len(string, length);
+	//g_atomic_int_inc(&othcnt);
 	return (rpc_prim_create(RPC_TYPE_STRING, val));
 }
 
@@ -1404,6 +1414,7 @@ rpc_string_create_with_format(const char *fmt, ...)
 	g_string_vprintf(val.rv_str, fmt, ap);
 	va_end(ap);
 
+	//g_atomic_int_inc(&othcnt);
 	return (rpc_prim_create(RPC_TYPE_STRING, val));
 }
 
@@ -1414,6 +1425,7 @@ rpc_string_create_with_format_and_arguments(const char *fmt, va_list ap)
 
 	val.rv_str = g_string_new(NULL);
 	g_string_vprintf(val.rv_str, fmt, ap);
+	//g_atomic_int_inc(&othcnt);
 	return (rpc_prim_create(RPC_TYPE_STRING, val));
 }
 
@@ -1649,6 +1661,7 @@ rpc_array_create(void)
 
 	val.rv_list = g_ptr_array_new_with_free_func(
 	    (GDestroyNotify)rpc_release_impl);
+	g_atomic_int_inc(&othcnt);
 	return (rpc_prim_create(RPC_TYPE_ARRAY, val));
 }
 
@@ -2037,6 +2050,7 @@ rpc_dictionary_create(void)
 	val.rv_dict = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
 	    (GDestroyNotify)rpc_release_impl);
 
+	//g_atomic_int_inc(&othcnt);
 	return (rpc_prim_create(RPC_TYPE_DICTIONARY, val));
 }
 
