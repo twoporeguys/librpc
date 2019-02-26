@@ -335,7 +335,7 @@ main(int argc, char *argv[])
 
 	if (!g_option_context_parse(parser, &argc, &argv, &err)) {
 		g_printerr("Cannot parse options: %s\n", err->message);
-		g_free(err);
+		g_error_free(err);
 		g_option_context_free(parser);
 		return (1);
 	}

@@ -798,7 +798,7 @@ on_events_subscribe(rpc_connection_t conn, rpc_object_t args,
 	});
 }
 
-static void 
+static void
 rpc_subscription_release(struct rpc_subscription *sub)
 {
 
@@ -1463,7 +1463,7 @@ rpc_connection_alloc(rpc_server_t server)
 	conn->rco_callback_pool = g_thread_pool_new(&rpc_abort_worker, conn,
 	    g_get_num_processors(), false, &err);
 	if (err != NULL) {
-		g_free(err);
+		g_error_free(err);
 		rpc_connection_free_resources(conn);
 		return NULL;
 	}
@@ -1507,7 +1507,7 @@ rpc_connection_create(void *cookie, rpc_object_t params)
 	rpc_connection_set_default_fn_handlers(conn);
 
 	if (err != NULL) {
-		g_free(err);
+		g_error_free(err);
 		goto fail;
 	}
 	if (transport->connect(conn, conn->rco_uri, params) != 0)
@@ -1900,7 +1900,7 @@ rpc_connection_unsubscribe_event_locked(rpc_connection_t conn,
 	sub->rsu_refcount--;
 	if (sub->rsu_refcount > 0)
 		return (0);
- 
+
 	args = rpc_object_pack("[{s,s,s}]",
 	    "path", sub->rsu_path,
 	    "interface", sub->rsu_interface,
