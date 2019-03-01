@@ -66,6 +66,8 @@ static const char *rpc_types[] = {
     [RPC_TYPE_ERROR] = "error"
 };
 
+static rpc_object_t this_null = NULL;
+
 rpc_object_t
 rpc_prim_create(rpc_type_t type, union rpc_value val)
 {
@@ -839,6 +841,7 @@ rpc_copy_description(rpc_object_t object)
 	rpc_create_description(description, object, 0, false);
 	g_string_truncate(description, description->len - 1);
 
+	/* free the glib GString but not the string buffer */
 	return g_string_free(description, false);
 }
 
@@ -1163,7 +1166,12 @@ rpc_null_create(void)
 	union rpc_value val = { 0 };
 
 	val.rv_b = false;
-	return (rpc_prim_create(RPC_TYPE_NULL, val));
+	//return (rpc_prim_create(RPC_TYPE_NULL, val));
+
+	/* cache the RPC_TYPE_NULL object */
+	if (this_null == NULL)
+		this_null = rpc_prim_create(RPC_TYPE_NULL, val);
+	return (rpc_retain(this_null));
 }
 
 inline rpc_object_t
