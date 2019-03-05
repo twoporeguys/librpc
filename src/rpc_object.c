@@ -66,6 +66,9 @@ static const char *rpc_types[] = {
     [RPC_TYPE_ERROR] = "error"
 };
 
+static volatile rpc_object_t this_null = NULL;
+static volatile int null_made = 0;
+
 volatile int objcnt;
 volatile int othcnt;
 
@@ -497,7 +500,7 @@ rpc_release_impl(rpc_object_t object)
 
 		case RPC_TYPE_STRING:
 			g_string_free(object->ro_value.rv_str, true);
-			//g_atomic_int_dec_and_test(&othcnt);
+			g_atomic_int_dec_and_test(&othcnt);
 			break;
 
 		case RPC_TYPE_NULL:
@@ -510,7 +513,7 @@ rpc_release_impl(rpc_object_t object)
 
 		case RPC_TYPE_ARRAY:
 			g_ptr_array_unref(object->ro_value.rv_list);
-			g_atomic_int_dec_and_test(&othcnt);
+			//g_atomic_int_dec_and_test(&othcnt);
 			break;
 
 		case RPC_TYPE_DICTIONARY:
@@ -1183,8 +1186,19 @@ rpc_null_create(void)
 	union rpc_value val = { 0 };
 
 	val.rv_b = false;
+
 	//g_atomic_int_inc(&othcnt);
-	return (rpc_prim_create(RPC_TYPE_NULL, val));
+
+	if (this_null != NULL)
+		goto done;
+
+	while (this_null == NULL) {
+		if (g_atomic_int_compare_and_exchange(&null_made, 0, 1))
+			this_null = rpc_prim_create(RPC_TYPE_NULL, val);
+		continue;
+	}
+done:
+	return (rpc_retain(this_null));
 }
 
 inline rpc_object_t
@@ -1384,7 +1398,7 @@ rpc_string_create(const char *string)
 		return (rpc_null_create());
 
 	val.rv_str = g_string_new(string);
-	//g_atomic_int_inc(&othcnt);
+	g_atomic_int_inc(&othcnt);
 	return (rpc_prim_create(RPC_TYPE_STRING, val));
 }
 
@@ -1399,7 +1413,7 @@ rpc_string_create_len(const char *string, size_t length)
 		return (rpc_null_create());
 
 	val.rv_str = g_string_new_len(string, length);
-	//g_atomic_int_inc(&othcnt);
+	g_atomic_int_inc(&othcnt);
 	return (rpc_prim_create(RPC_TYPE_STRING, val));
 }
 
@@ -1414,7 +1428,7 @@ rpc_string_create_with_format(const char *fmt, ...)
 	g_string_vprintf(val.rv_str, fmt, ap);
 	va_end(ap);
 
-	//g_atomic_int_inc(&othcnt);
+	g_atomic_int_inc(&othcnt);
 	return (rpc_prim_create(RPC_TYPE_STRING, val));
 }
 
@@ -1425,7 +1439,7 @@ rpc_string_create_with_format_and_arguments(const char *fmt, va_list ap)
 
 	val.rv_str = g_string_new(NULL);
 	g_string_vprintf(val.rv_str, fmt, ap);
-	//g_atomic_int_inc(&othcnt);
+	g_atomic_int_inc(&othcnt);
 	return (rpc_prim_create(RPC_TYPE_STRING, val));
 }
 
@@ -1661,7 +1675,7 @@ rpc_array_create(void)
 
 	val.rv_list = g_ptr_array_new_with_free_func(
 	    (GDestroyNotify)rpc_release_impl);
-	g_atomic_int_inc(&othcnt);
+	//g_atomic_int_inc(&othcnt);
 	return (rpc_prim_create(RPC_TYPE_ARRAY, val));
 }
 
