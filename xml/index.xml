@@ -231,7 +231,6 @@
     <member refid="object_8h_1a38666db12609d1a1f5c856a7f3f0a03a" kind="function"><name>rpc_retain</name></member>
     <member refid="object_8h_1aef96805793fdeeb98b88d03890d034ba" kind="function"><name>rpc_release_impl</name></member>
     <member refid="object_8h_1a304648476e1f6a68cd9c2521a7703824" kind="function"><name>rpc_get_refcount</name></member>
-    <member refid="object_8h_1a9ec7986f5515c359eb4ce86b7d9afa64" kind="function"><name>rpc_get_count</name></member>
     <member refid="object_8h_1a7cfb70b97eaa92aec1888ff177b3100d" kind="function"><name>rpc_get_line_number</name></member>
     <member refid="object_8h_1ac2b74c41ca419b2daca6ffb7123a1fb7" kind="function"><name>rpc_get_column_number</name></member>
     <member refid="object_8h_1a14ffadb854f6dfe280235c819ba92030" kind="function"><name>rpc_copy</name></member>
