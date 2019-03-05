@@ -66,7 +66,8 @@ static const char *rpc_types[] = {
     [RPC_TYPE_ERROR] = "error"
 };
 
-static rpc_object_t this_null = NULL;
+static volatile rpc_object_t this_null = NULL;
+static volatile int null_made = 0;
 
 rpc_object_t
 rpc_prim_create(rpc_type_t type, union rpc_value val)
@@ -1166,11 +1167,17 @@ rpc_null_create(void)
 	union rpc_value val = { 0 };
 
 	val.rv_b = false;
-	//return (rpc_prim_create(RPC_TYPE_NULL, val));
+
+	if (this_null != NULL)
+		goto done;
 
 	/* cache the RPC_TYPE_NULL object */
-	if (this_null == NULL)
-		this_null = rpc_prim_create(RPC_TYPE_NULL, val);
+	while (this_null == NULL) {
+		if (g_atomic_int_compare_and_exchange(&null_made, 0, 1))
+			this_null = rpc_prim_create(RPC_TYPE_NULL, val);
+		continue;
+	}
+done:
 	return (rpc_retain(this_null));
 }
 
