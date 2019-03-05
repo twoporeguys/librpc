@@ -187,6 +187,8 @@ Functions</h2></td></tr>
 <tr class="separator:aef96805793fdeeb98b88d03890d034ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a304648476e1f6a68cd9c2521a7703824"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a304648476e1f6a68cd9c2521a7703824">rpc_get_refcount</a> (_Nullable <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:a304648476e1f6a68cd9c2521a7703824"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ec7986f5515c359eb4ce86b7d9afa64"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a9ec7986f5515c359eb4ce86b7d9afa64">rpc_get_count</a> (bool all)</td></tr>
+<tr class="separator:a9ec7986f5515c359eb4ce86b7d9afa64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7cfb70b97eaa92aec1888ff177b3100d"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#a7cfb70b97eaa92aec1888ff177b3100d">rpc_get_line_number</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
 <tr class="separator:a7cfb70b97eaa92aec1888ff177b3100d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2b74c41ca419b2daca6ffb7123a1fb7"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="object_8h.html#ac2b74c41ca419b2daca6ffb7123a1fb7">rpc_get_column_number</a> (_Nonnull <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a> object)</td></tr>
@@ -488,7 +490,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>RAII version of <a class="el" href="object_8h.html#ab365f726b4975c0c8376b808d111d01b">rpc_object_t</a>. Automatically released when goes out of scope. </p>
 
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l01678">1678</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l01681">1681</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -599,7 +601,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00313">313</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00316">316</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -629,7 +631,7 @@ Functions</h2></td></tr>
 </dl>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="client_8c-example.html#a6">client.c</a>, <a class="el" href="fd-client_8c-example.html#a5">fd-client.c</a>, <a class="el" href="loopback_8c-example.html#a9">loopback.c</a>, and <a class="el" href="query_8c-example.html#a10">query.c</a>.</dd>
 </dl>
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00323">323</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00326">326</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -661,7 +663,7 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                \</div><div class="line">        rpc_release(_old);                  \</div><div class="line">        (_old) = (_new);                    \</div><div class="line">    } <span class="keywordflow">while</span> (0)</div></div><!-- fragment --><p>Swaps <code>_old</code> object with  object.</p>
 <p>Releases <code>_old</code> before replacing it with <code>_new</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00334">334</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="object_8h_source.html#l00337">337</a> of file <a class="el" href="object_8h_source.html">object.h</a>.</p>
 
 </div>
 </div>
@@ -4093,6 +4095,25 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A column number in source file or 0 </dd></dl>
+
+</div>
+</div>
+<a id="a9ec7986f5515c359eb4ce86b7d9afa64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ec7986f5515c359eb4ce86b7d9afa64">&#9670;&nbsp;</a></span>rpc_get_count()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rpc_get_count </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>all</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>get current counts of rpc_objects </p>
 
 </div>
 </div>

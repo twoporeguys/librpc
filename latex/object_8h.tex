@@ -90,6 +90,8 @@ int \hyperlink{object_8h_aef96805793fdeeb98b88d03890d034ba}{rpc\+\_\+release\+\_
 \item 
 int \hyperlink{object_8h_a304648476e1f6a68cd9c2521a7703824}{rpc\+\_\+get\+\_\+refcount} (\+\_\+\+Nullable \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
 \item 
+int \hyperlink{object_8h_a9ec7986f5515c359eb4ce86b7d9afa64}{rpc\+\_\+get\+\_\+count} (bool all)
+\item 
 size\+\_\+t \hyperlink{object_8h_a7cfb70b97eaa92aec1888ff177b3100d}{rpc\+\_\+get\+\_\+line\+\_\+number} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
 \item 
 size\+\_\+t \hyperlink{object_8h_ac2b74c41ca419b2daca6ffb7123a1fb7}{rpc\+\_\+get\+\_\+column\+\_\+number} (\+\_\+\+Nonnull \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t} object)
@@ -354,7 +356,7 @@ Definition at line 158 of file object.\+h.
 
 R\+A\+II version of \hyperlink{object_8h_ab365f726b4975c0c8376b808d111d01b}{rpc\+\_\+object\+\_\+t}. Automatically released when goes out of scope. 
 
-Definition at line 1678 of file object.\+h.
+Definition at line 1681 of file object.\+h.
 
 \mbox{\Hypertarget{object_8h_a470d0e93b159810ff425aec90f47c817}\label{object_8h_a470d0e93b159810ff425aec90f47c817}} 
 \index{object.\+h@{object.\+h}!R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR@{R\+P\+C\+\_\+\+B\+I\+N\+A\+R\+Y\+\_\+\+D\+E\+S\+T\+R\+U\+C\+T\+OR}}
@@ -419,7 +421,7 @@ Checks if an object is of type R\+P\+C\+\_\+\+T\+Y\+P\+E\+\_\+\+E\+R\+R\+OR.
 \end{DoxyParams}
 
 
-Definition at line 313 of file object.\+h.
+Definition at line 316 of file object.\+h.
 
 \mbox{\Hypertarget{object_8h_aac19be935f72b35eeb2851bc509eabb2}\label{object_8h_aac19be935f72b35eeb2851bc509eabb2}} 
 \index{object.\+h@{object.\+h}!rpc\+\_\+release@{rpc\+\_\+release}}
@@ -448,7 +450,7 @@ Also sets it to N\+U\+LL if as a result of the operation reference count dropped
 \hyperlink{client_8c-example}{client.\+c}, \hyperlink{fd-client_8c-example}{fd-\/client.\+c}, \hyperlink{loopback_8c-example}{loopback.\+c}, and \hyperlink{query_8c-example}{query.\+c}.\end{Desc}
 
 
-Definition at line 323 of file object.\+h.
+Definition at line 326 of file object.\+h.
 
 \mbox{\Hypertarget{object_8h_a541e997e04e48fe86df08ae323516490}\label{object_8h_a541e997e04e48fe86df08ae323516490}} 
 \index{object.\+h@{object.\+h}!rpc\+\_\+swap@{rpc\+\_\+swap}}
@@ -467,7 +469,7 @@ Swaps {\ttfamily \+\_\+old} object with  object.
 
 Releases {\ttfamily \+\_\+old} before replacing it with {\ttfamily \+\_\+new}. 
 
-Definition at line 334 of file object.\+h.
+Definition at line 337 of file object.\+h.
 
 
 
@@ -2283,7 +2285,13 @@ If the object was read from a file using R\+PC serializer A\+PI, this function m
 \begin{DoxyReturn}{Returns}
 A column number in source file or 0 
 \end{DoxyReturn}
-\mbox{\Hypertarget{object_8h_a45800949eb1b61b3af02051c780244fe}\label{object_8h_a45800949eb1b61b3af02051c780244fe}} 
+\mbox{\Hypertarget{object_8h_a9ec7986f5515c359eb4ce86b7d9afa64}\label{object_8h_a9ec7986f5515c359eb4ce86b7d9afa64}} 
+\index{object.\+h@{object.\+h}!rpc\+\_\+get\+\_\+count@{rpc\+\_\+get\+\_\+count}}
+\index{rpc\+\_\+get\+\_\+count@{rpc\+\_\+get\+\_\+count}!object.\+h@{object.\+h}}
+\subsubsection{\texorpdfstring{rpc\+\_\+get\+\_\+count()}{rpc\_get\_count()}}
+{\footnotesize\ttfamily int rpc\+\_\+get\+\_\+count (\begin{DoxyParamCaption}\item[{bool}]{all }\end{DoxyParamCaption})}
+
+get current counts of rpc\+\_\+objects \mbox{\Hypertarget{object_8h_a45800949eb1b61b3af02051c780244fe}\label{object_8h_a45800949eb1b61b3af02051c780244fe}} 
 \index{object.\+h@{object.\+h}!rpc\+\_\+get\+\_\+last\+\_\+error@{rpc\+\_\+get\+\_\+last\+\_\+error}}
 \index{rpc\+\_\+get\+\_\+last\+\_\+error@{rpc\+\_\+get\+\_\+last\+\_\+error}!object.\+h@{object.\+h}}
 \subsubsection{\texorpdfstring{rpc\+\_\+get\+\_\+last\+\_\+error()}{rpc\_get\_last\_error()}}
