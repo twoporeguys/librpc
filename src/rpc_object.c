@@ -66,8 +66,13 @@ static const char *rpc_types[] = {
     [RPC_TYPE_ERROR] = "error"
 };
 
-static volatile rpc_object_t this_null = NULL;
-static volatile int null_made = 0;
+static struct rpc_object this_null_obj = {
+	.ro_type = RPC_TYPE_NULL,
+	.ro_value = (union rpc_value)0,
+	.ro_refcnt = 1
+};
+
+static rpc_object_t this_null = &this_null_obj;
 
 rpc_object_t
 rpc_prim_create(rpc_type_t type, union rpc_value val)
@@ -1164,20 +1169,6 @@ rpc_object_vunpack(rpc_object_t obj, const char *fmt, va_list ap)
 inline rpc_object_t
 rpc_null_create(void)
 {
-	union rpc_value val = { 0 };
-
-	val.rv_b = false;
-
-	if (this_null != NULL)
-		goto done;
-
-	/* cache the RPC_TYPE_NULL object */
-	while (this_null == NULL) {
-		if (g_atomic_int_compare_and_exchange(&null_made, 0, 1))
-			this_null = rpc_prim_create(RPC_TYPE_NULL, val);
-		continue;
-	}
-done:
 	return (rpc_retain(this_null));
 }
 
@@ -1574,7 +1565,7 @@ rpc_error_create(int code, const char *msg, rpc_object_t extra)
 rpc_object_t
 rpc_error_create_from_gerror(GError *g_error)
 {
-	
+
         return (rpc_error_create(g_error->code, g_error->message, NULL));
 }
 
