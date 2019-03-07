@@ -498,6 +498,13 @@ rpc_release_impl(rpc_object_t object)
 			g_date_time_unref(object->ro_value.rv_datetime);
 			break;
 
+		case RPC_TYPE_NULL:
+			g_assert_not_reached();
+			debugf("this_null refcount set to 0, resetting to 1");
+			/* prevent this_null from being set = NULL by macro */
+			object->ro_refcnt = 1;
+			break;
+
 		case RPC_TYPE_ARRAY:
 			g_ptr_array_unref(object->ro_value.rv_list);
 			break;
