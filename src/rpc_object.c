@@ -66,6 +66,14 @@ static const char *rpc_types[] = {
     [RPC_TYPE_ERROR] = "error"
 };
 
+static struct rpc_object this_null_obj = {
+	.ro_type = RPC_TYPE_NULL,
+	.ro_value = (union rpc_value)0,
+	.ro_refcnt = 1
+};
+
+static rpc_object_t this_null = &this_null_obj;
+
 rpc_object_t
 rpc_prim_create(rpc_type_t type, union rpc_value val)
 {
@@ -490,6 +498,16 @@ rpc_release_impl(rpc_object_t object)
 			g_date_time_unref(object->ro_value.rv_datetime);
 			break;
 
+		case RPC_TYPE_NULL:
+			g_assert_not_reached();
+			/* non-assert code follows; may want better reporting.
+			 * Most code doesn't check for errors, so don't fail.
+			 */
+			debugf("this_null refcount set to 0, resetting to 1");
+			/* prevent this_null from being set = NULL by macro */
+			object->ro_refcnt = 1;
+			return (0);
+
 		case RPC_TYPE_ARRAY:
 			g_ptr_array_unref(object->ro_value.rv_list);
 			break;
@@ -839,6 +857,7 @@ rpc_copy_description(rpc_object_t object)
 	rpc_create_description(description, object, 0, false);
 	g_string_truncate(description, description->len - 1);
 
+	/* free the glib GString but not the string buffer */
 	return g_string_free(description, false);
 }
 
@@ -1160,10 +1179,7 @@ rpc_object_vunpack(rpc_object_t obj, const char *fmt, va_list ap)
 inline rpc_object_t
 rpc_null_create(void)
 {
-	union rpc_value val = { 0 };
-
-	val.rv_b = false;
-	return (rpc_prim_create(RPC_TYPE_NULL, val));
+	return (rpc_retain(this_null));
 }
 
 inline rpc_object_t
@@ -1559,7 +1575,7 @@ rpc_error_create(int code, const char *msg, rpc_object_t extra)
 rpc_object_t
 rpc_error_create_from_gerror(GError *g_error)
 {
-	
+
         return (rpc_error_create(g_error->code, g_error->message, NULL));
 }
 
