@@ -500,10 +500,13 @@ rpc_release_impl(rpc_object_t object)
 
 		case RPC_TYPE_NULL:
 			g_assert_not_reached();
+			/* non-assert code follows; may want better reporting.
+			 * Most code doesn't check for errors, so don't fail.
+			 */
 			debugf("this_null refcount set to 0, resetting to 1");
 			/* prevent this_null from being set = NULL by macro */
 			object->ro_refcnt = 1;
-			break;
+			return (0);
 
 		case RPC_TYPE_ARRAY:
 			g_ptr_array_unref(object->ro_value.rv_list);
