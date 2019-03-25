@@ -1491,10 +1491,12 @@ rpc_instance_t
 rpc_instance_retain(rpc_instance_t inst)
 {
 
-	g_mutex_lock(&inst->ri_mtx);
-	inst->ri_refcnt++;
-	g_cond_broadcast(&inst->ri_cv);
-	g_mutex_unlock(&inst->ri_mtx);
+	if (inst != NULL) {
+		g_mutex_lock(&inst->ri_mtx);
+		inst->ri_refcnt++;
+		g_cond_broadcast(&inst->ri_cv);
+		g_mutex_unlock(&inst->ri_mtx);
+	}
 	return (inst);
 }
 
@@ -1502,8 +1504,10 @@ void
 rpc_instance_release(rpc_instance_t inst)
 {
 
-	g_mutex_lock(&inst->ri_mtx);
-	inst->ri_refcnt--;
-	g_cond_broadcast(&inst->ri_cv);
-	g_mutex_unlock(&inst->ri_mtx);
+	if (inst != NULL) {
+		g_mutex_lock(&inst->ri_mtx);
+		inst->ri_refcnt--;
+		g_cond_broadcast(&inst->ri_cv);
+		g_mutex_unlock(&inst->ri_mtx);
+	}
 }

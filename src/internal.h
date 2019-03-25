@@ -611,8 +611,6 @@ INTERNAL_LINKAGE void rpc_connection_close_inbound_call(struct rpc_call *);
 INTERNAL_LINKAGE int rpc_connection_call_retain(struct rpc_call *call);
 INTERNAL_LINKAGE int rpc_connection_call_release(struct rpc_call *call);
 INTERNAL_LINKAGE int rpc_connection_get_subscription_count(rpc_connection_t conn);
-INTERNAL_LINKAGE rpc_instance_t rpc_instance_retain(rpc_instance_t);
-INTERNAL_LINKAGE void rpc_instance_release(rpc_instance_t);
 
 INTERNAL_LINKAGE void rpc_bus_event(rpc_bus_event_t, struct rpc_bus_node *);
 

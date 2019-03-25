@@ -585,6 +585,30 @@ _Nullable rpc_instance_t rpc_instance_new(void *_Nullable arg,
     const char *_Nonnull fmt, ...);
 
 /**
+ * Increment the reference count of an instance.
+ *
+ * This is useful in the case where hardware removal might result in
+ * the instance being freed while still in use.
+ *
+ * @param instance Instance handle
+ * @return the instance if non-null and retained, else NULL.
+ */
+_Nullable rpc_instance_t rpc_instance_retain(_Nullable rpc_instance_t);
+
+/**
+ *
+ * Decrement the reference count of an instance.
+ *
+ * Releases the caller's interest in preserving the instance. It may be
+ * freed at any time after this call and should no longer be accessed. If
+ * null the function will just return.
+ *
+ * @param instance Instance handle
+ */
+void rpc_instance_release(_Nullable rpc_instance_t);
+
+
+/**
  * Sets the description string of an instance.
  *
  * @param instance Instance handle
