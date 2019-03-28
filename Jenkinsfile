@@ -57,22 +57,6 @@ pipeline {
             }
         }
 
-        stage('Generate typescript docs') {
-            steps {
-                sh 'make -C bindings/typescript doc'
-            }
-        }
-
-        stage('Deploy typescript docs') {
-            when {
-                expression { "${env.DOCS_PATH}" != "" }
-            }
-            steps {
-                sh "mkdir -p ${DOCS_PATH}/typescript/librpc-client"
-                sh "rm -rf ${DOCS_PATH}/typescript/librpc-client/*"
-                sh "cp -dR bindings/typescript/doc/* ${DOCS_PATH}/typescript/librpc-client/"
-            }
-        }
 
         stage('Cleanup') {
             steps {
