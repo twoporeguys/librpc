@@ -219,7 +219,7 @@ rpc_yaml_read_scalar(yaml_event_t *event)
 
 	ret = rpc_string_create_len(value, len);
 done:
-	ret->ro_column = event->start_mark.column;
+	//ret->ro_column = event->start_mark.column;
 	ret->ro_line = event->start_mark.line;
 	return (ret);
 }

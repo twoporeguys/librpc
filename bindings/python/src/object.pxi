@@ -118,6 +118,7 @@ cdef class Object(object):
         elif isinstance(value, str):
             bstr = value.encode('utf-8')
             self.obj = rpc_string_create(bstr)
+            rpc_set_py(self.obj)
 
         elif isinstance(value, float):
             self.obj = rpc_double_create(value)

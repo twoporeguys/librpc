@@ -188,6 +188,10 @@ typedef void (^rpc_binary_destructor_t)(void *_Nullable);
  */
 _Nonnull rpc_object_t rpc_retain(_Nonnull rpc_object_t object);
 
+
+void rpc_set_py(_Nonnull rpc_object_t obj);
+
+
 /**
  * Decrements reference count of an object.
  *

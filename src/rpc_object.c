@@ -48,6 +48,12 @@
 #include "memfd.h"
 #endif
 
+struct tracker {
+	rpc_object_t	obj;
+	int		id;
+	bool		is_py;
+};
+
 static const char *rpc_types[] = {
     [RPC_TYPE_NULL] = "nulltype",
     [RPC_TYPE_BOOL] = "bool",
@@ -68,6 +74,27 @@ static const char *rpc_types[] = {
 
 volatile int objcnt;
 volatile int othcnt;
+
+static GMutex tr_mtx = { 0 };
+static GList * tr_list = NULL;
+static tr_cnt = 0;
+
+void
+tr_walk(int cnt)
+{
+	GList *item;
+	struct tracker *tr;
+
+	g_mutex_lock(&tr_mtx);
+	if (tr_list == NULL)
+		return;
+	for (item = g_list_first(tr_list); item && cnt; item = item->next, --cnt) {
+		tr = item->data;
+		printf("%s %d %p:  %s\n", tr->is_py ? "P" : " ", tr->id,  tr->obj, rpc_copy_description(tr->obj));
+	}
+	g_mutex_unlock(&tr_mtx);
+}
+
 
 int
 rpc_get_count(bool all)
@@ -479,6 +506,50 @@ rpc_retain(rpc_object_t object)
 	return (object);
 }
 
+void
+rpc_set_py(rpc_object_t obj)
+{
+	GList *item;
+	struct tracker *tr;
+
+	if (obj->ro_column && obj->ro_type == RPC_TYPE_STRING) {
+		item = obj->ro_column;
+		tr = (struct tracker *)item->data;
+		tr->is_py = true;
+	}
+}
+
+
+/* tr_add and tr_rm should only be called for the tracked type. */
+void
+tr_add(rpc_object_t obj)
+{
+	struct tracker *tr = NULL;
+
+	tr = g_malloc0(sizeof(*tr));
+	tr->obj = obj;
+	g_mutex_lock(&tr_mtx);
+	tr->id = ++tr_cnt;
+	tr_list = g_list_prepend(tr_list, tr);
+	obj->ro_column = tr_list;
+	g_mutex_unlock(&tr_mtx);
+}
+
+void
+tr_rm(rpc_object_t obj)
+{
+	struct tracker *tr;
+
+	if (!obj->ro_column)
+		return;
+	tr = obj->ro_column->data;
+	g_mutex_lock(&tr_mtx);
+	tr_list = g_list_remove_link(tr_list, obj->ro_column);
+	g_free(tr);
+	g_list_free_1(obj->ro_column);
+	g_mutex_unlock(&tr_mtx);
+}
+
 inline int
 rpc_release_impl(rpc_object_t object)
 {
@@ -505,10 +576,7 @@ rpc_release_impl(rpc_object_t object)
 		case RPC_TYPE_STRING:
 			g_string_free(object->ro_value.rv_str, true);
 			g_atomic_int_dec_and_test(&othcnt);
-			break;
-
-		case RPC_TYPE_NULL:
-			//g_atomic_int_dec_and_test(&othcnt);
+			tr_rm(object);
 			break;
 
 		case RPC_TYPE_DATE:
@@ -516,6 +584,7 @@ rpc_release_impl(rpc_object_t object)
 			break;
 
 		case RPC_TYPE_NULL:
+			//g_atomic_int_dec_and_test(&othcnt);
 			g_assert_not_reached();
 			/* non-assert code follows; may want better reporting.
 			 * Most code doesn't check for errors, so don't fail.
@@ -576,7 +645,7 @@ inline size_t
 rpc_get_column_number(rpc_object_t object)
 {
 
-	return (object->ro_column);
+	return ((int)object->ro_column);
 }
 
 inline rpc_type_t
@@ -1394,13 +1463,16 @@ inline rpc_object_t
 rpc_string_create(const char *string)
 {
 	union rpc_value val;
+	rpc_object_t tmp;
 
 	if (string == NULL)
 		return (rpc_null_create());
 
 	val.rv_str = g_string_new(string);
 	g_atomic_int_inc(&othcnt);
-	return (rpc_prim_create(RPC_TYPE_STRING, val));
+	tmp = rpc_prim_create(RPC_TYPE_STRING, val);
+	tr_add(tmp);
+	return(tmp);
 }
 
 inline rpc_object_t
@@ -1408,6 +1480,7 @@ rpc_string_create_len(const char *string, size_t length)
 {
 	union rpc_value val;
 	const char *null_b;
+	rpc_object_t tmp;
 
 	null_b = memchr(string, '\0', length);
 	if ((null_b != NULL) && (null_b != string + length))
@@ -1415,7 +1488,9 @@ rpc_string_create_len(const char *string, size_t length)
 
 	val.rv_str = g_string_new_len(string, length);
 	g_atomic_int_inc(&othcnt);
-	return (rpc_prim_create(RPC_TYPE_STRING, val));
+	tmp = rpc_prim_create(RPC_TYPE_STRING, val);
+	tr_add(tmp);
+	return(tmp);
 }
 
 inline rpc_object_t
@@ -1423,6 +1498,7 @@ rpc_string_create_with_format(const char *fmt, ...)
 {
 	va_list ap;
 	union rpc_value val;
+	rpc_object_t tmp;
 
 	va_start(ap, fmt);
 	val.rv_str = g_string_new(NULL);
@@ -1430,18 +1506,23 @@ rpc_string_create_with_format(const char *fmt, ...)
 	va_end(ap);
 
 	g_atomic_int_inc(&othcnt);
-	return (rpc_prim_create(RPC_TYPE_STRING, val));
+	tmp = rpc_prim_create(RPC_TYPE_STRING, val);
+	tr_add(tmp);
+	return(tmp);
 }
 
 inline rpc_object_t
 rpc_string_create_with_format_and_arguments(const char *fmt, va_list ap)
 {
 	union rpc_value val;
+	rpc_object_t tmp;
 
 	val.rv_str = g_string_new(NULL);
 	g_string_vprintf(val.rv_str, fmt, ap);
 	g_atomic_int_inc(&othcnt);
-	return (rpc_prim_create(RPC_TYPE_STRING, val));
+	tmp = rpc_prim_create(RPC_TYPE_STRING, val);
+	tr_add(tmp);
+	return(tmp);
 }
 
 inline size_t
