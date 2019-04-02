@@ -596,6 +596,19 @@ _Nullable rpc_instance_t rpc_instance_new(void *_Nullable arg,
 _Nullable rpc_instance_t rpc_instance_retain(_Nullable rpc_instance_t);
 
 /**
+ * Find the instance of path in context, and increment its refcount.
+ *
+ * Combining the 'retain' with the find ensures that the instance is valid
+ * when retained.
+ *
+ * @param ctx Context pointer
+ * @param path Object path
+ * @return Instance or NULL
+ */
+_Nullable rpc_instance_t rpc_instance_find_and_retain(
+    _Nonnull rpc_context_t context, const char *_Nonnull path);
+
+/**
  *
  * Decrement the reference count of an instance.
  *
