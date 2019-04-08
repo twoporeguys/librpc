@@ -69,6 +69,8 @@ static int bus_lookup_address(const char *, uint32_t *);
 static void bus_process_message(void *, struct librpc_message *, void *, size_t);
 static void *bus_reader(void *);
 static void bus_release(void *);
+static void bus_nack_all(struct bus_netlink *bn);
+static void bus_process_departure(void *arg);
 
 static const struct rpc_bus_transport bus_transport_ops = {
 	.open = bus_open,
@@ -102,6 +104,7 @@ struct bus_netlink
     	GThread *		bn_thread;
     	bus_netlink_cb_t	bn_callback;
     	void *			bn_arg;
+	bool			bn_departed;
 };
 
 struct bus_connection
@@ -352,6 +355,9 @@ bus_netlink_send(struct bus_netlink *bn, struct librpc_message *msg,
 	struct cn_msg *cn = NLMSG_DATA(nlh);
 	size_t size = NLMSG_SPACE(sizeof(*cn) + sizeof(*msg) + len);
 
+	if (bn->bn_departed)
+		return(EIO);
+
 	nlh->nlmsg_seq = bn->bn_seq++;
 	nlh->nlmsg_pid = (uint32_t)getpid();
 	nlh->nlmsg_len = (uint32_t)size;
@@ -440,14 +446,20 @@ bus_netlink_recv(struct bus_netlink *bn)
 		if (msg->opcode == LIBRPC_ARRIVE)
 			rpc_bus_event(RPC_BUS_ATTACHED, &node);
 
-		if (msg->opcode == LIBRPC_DEPART)
+		if (msg->opcode == LIBRPC_DEPART) {
+			bn->bn_departed = true;
 			rpc_bus_event(RPC_BUS_DETACHED, &node);
+			bus_nack_all(bn);
+			if (bn->bn_callback != NULL)
+				bus_process_departure(bn->bn_arg);
+		}
 
 		break;
 
 	case LIBRPC_ACK:
 		g_mutex_lock(&bn->bn_mtx);
 		ack = g_hash_table_lookup(bn->bn_ack, GUINT_TO_POINTER(cn->seq));
+		g_hash_table_remove(bn->bn_ack, GUINT_TO_POINTER(cn->seq));
 		g_mutex_unlock(&bn->bn_mtx);
 
 		if (ack != NULL) {
@@ -472,9 +484,38 @@ bus_netlink_recv(struct bus_netlink *bn)
 }
 
 static void
+bus_nack_all(struct bus_netlink *bn)
+{
+	GHashTableIter iter;
+	gpointer key;
+	struct bus_ack *ack;
+
+	g_mutex_lock(&bn->bn_mtx);
+	g_hash_table_iter_init(&iter, bn->bn_ack);
+	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&ack)) {
+		g_mutex_lock(&ack->ba_mtx);
+		if (!ack->ba_done) {
+			ack->ba_done = true;
+			ack->ba_status = EPIPE;
+			g_cond_broadcast(&ack->ba_cv);
+		}
+		g_mutex_unlock(&ack->ba_mtx);
+	}
+	g_mutex_unlock(&bn->bn_mtx);
+}
+
+static void
 bus_release(void *arg)
 {
 
+}
+
+static void
+bus_process_departure(void *arg)
+{
+	struct bus_connection *conn = arg;
+
+	conn->bc_parent->rco_close(conn->bc_parent);
 }
 
 static void
@@ -485,6 +526,12 @@ bus_process_message(void *arg, struct librpc_message *msg, void *payload,
 
 	switch (msg->opcode) {
 	case LIBRPC_RESPONSE:
+		if (msg->status != 0) {
+			rpc_set_last_error(msg->status,
+			    "Bus received error status.", NULL);
+			conn->bc_parent->rco_close(conn->bc_parent);
+			return;
+		}
 		conn->bc_parent->rco_recv_msg(conn->bc_parent, payload, len,
 		    NULL, 0);
 		break;
