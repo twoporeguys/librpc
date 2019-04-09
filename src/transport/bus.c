@@ -122,7 +122,7 @@ bus_open(GMainContext *context __unused)
 
 	bn = g_malloc0(sizeof(*bn));
 	if (bus_netlink_open(bn) != 0) {
-		free(bn);
+		g_free(bn);
 		return (NULL);
 	}
 
@@ -355,8 +355,11 @@ bus_netlink_send(struct bus_netlink *bn, struct librpc_message *msg,
 	struct cn_msg *cn = NLMSG_DATA(nlh);
 	size_t size = NLMSG_SPACE(sizeof(*cn) + sizeof(*msg) + len);
 
-	if (bn->bn_departed)
+	g_mutex_lock(&bn->bn_mtx);
+	if (bn->bn_departed) {
+		g_mutex_unlock(&bn->bn_mtx);
 		return(EIO);
+	}
 
 	nlh->nlmsg_seq = bn->bn_seq++;
 	nlh->nlmsg_pid = (uint32_t)getpid();
@@ -375,7 +378,6 @@ bus_netlink_send(struct bus_netlink *bn, struct librpc_message *msg,
 	if (payload != NULL)
 		memcpy(cn->data + sizeof(struct librpc_message), payload, len);
 
-	g_mutex_lock(&bn->bn_mtx);
 
 	ack.ba_done = false;
 	ack.ba_status = 0;
@@ -413,6 +415,19 @@ bus_netlink_recv(struct bus_netlink *bn)
 	msglen = recv(bn->bn_sock, buf, BUS_NL_MSGSIZE, 0);
 	nlh = (struct nlmsghdr *)buf;
 
+	if (bn->bn_departed) {
+		/* all messages are delivered in the order received by the
+		 * receive thread, and we shouldn't receive anything after the
+		 * device has disconnected. However the driver disconnect runs
+		 * in a different thread from its command handler, so a race
+		 * is conceivable. bn_departed will only be set for bus_netlink
+		 * structures with an actual client.
+		 */
+		g_assert_not_reached();
+		/* terminate the recv thread. */
+		return (-1);
+	}
+
 	if (msglen <= 0)
 		return (-1);
 
@@ -447,11 +462,14 @@ bus_netlink_recv(struct bus_netlink *bn)
 			rpc_bus_event(RPC_BUS_ATTACHED, &node);
 
 		if (msg->opcode == LIBRPC_DEPART) {
-			bn->bn_departed = true;
-			rpc_bus_event(RPC_BUS_DETACHED, &node);
-			bus_nack_all(bn);
-			if (bn->bn_callback != NULL)
+			if (bn->bn_callback != NULL) {
+				bn->bn_departed = true;
+				rpc_bus_event(RPC_BUS_DETACHED, &node);
+				bus_nack_all(bn);
 				bus_process_departure(bn->bn_arg);
+			} else {
+				rpc_bus_event(RPC_BUS_DETACHED, &node);
+			}
 		}
 
 		break;
@@ -487,12 +505,11 @@ static void
 bus_nack_all(struct bus_netlink *bn)
 {
 	GHashTableIter iter;
-	gpointer key;
 	struct bus_ack *ack;
 
 	g_mutex_lock(&bn->bn_mtx);
 	g_hash_table_iter_init(&iter, bn->bn_ack);
-	while (g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&ack)) {
+	while (g_hash_table_iter_next(&iter, NULL, (gpointer)&ack)) {
 		g_mutex_lock(&ack->ba_mtx);
 		if (!ack->ba_done) {
 			ack->ba_done = true;
