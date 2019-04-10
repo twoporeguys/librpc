@@ -32,6 +32,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <sys/syscall.h>
 #include <sys/socket.h>
 #include <sys/poll.h>
 #include <sys/ioctl.h>
@@ -69,7 +70,7 @@ static int bus_lookup_address(const char *, uint32_t *);
 static void bus_process_message(void *, struct librpc_message *, void *, size_t);
 static void *bus_reader(void *);
 static void bus_release(void *);
-static void bus_nack_all(struct bus_netlink *bn);
+static void bus_nack_all_locked(struct bus_netlink *bn);
 static void bus_process_departure(void *arg);
 
 static const struct rpc_bus_transport bus_transport_ops = {
@@ -93,6 +94,7 @@ struct bus_ack
     	GCond			ba_cv;
     	bool			ba_done;
     	int			ba_status;
+	uint32_t		ba_seq;
 };
 
 struct bus_netlink
@@ -134,6 +136,9 @@ bus_close(void *arg)
 {
 	struct bus_netlink *bn = arg;
 
+			fprintf(stderr, "CLOSE  bn %p thread %lld\n",
+			    bn,
+			    (uint64_t)syscall(SYS_gettid));
 	(void)bus_netlink_close(bn);
 }
 
@@ -181,6 +186,9 @@ bus_abort(void *arg)
 {
 	struct bus_connection *conn = arg;
 
+			fprintf(stderr, "ABORT  bn %p conn %p  thread %lld\n",
+			    &conn->bc_bn, conn,
+			    (uint64_t)syscall(SYS_gettid));
 	bus_netlink_close(&conn->bc_bn);
 	g_free(conn);
 	return (0);
@@ -342,6 +350,7 @@ static int
 bus_netlink_close(struct bus_netlink *bn)
 {
 	close(bn->bn_sock);
+	bus_process_departure(bn->bn_arg);
 	return (0);
 }
 
@@ -381,12 +390,18 @@ bus_netlink_send(struct bus_netlink *bn, struct librpc_message *msg,
 
 	ack.ba_done = false;
 	ack.ba_status = 0;
+	ack.ba_seq = nlh->nlmsg_seq;
 	g_mutex_init(&ack.ba_mtx);
 	g_cond_init(&ack.ba_cv);
 	g_hash_table_insert(bn->bn_ack, GUINT_TO_POINTER(cn->seq), &ack);
 
-	if (send(bn->bn_sock, buf, size, 0) != (ssize_t)size)
+	//fprintf(stderr, "Sending %d - %d\n", cn->seq, ack.ba_seq);
+	if (send(bn->bn_sock, buf, size, 0) != (ssize_t)size) {
+		g_hash_table_remove(bn->bn_ack, GUINT_TO_POINTER(cn->seq));
+		fprintf(stderr, "Failed %d\n", cn->seq);
+		g_mutex_unlock(&bn->bn_mtx);
 		return (-1);
+	}
 
 	g_mutex_unlock(&bn->bn_mtx);
 	g_mutex_lock(&ack.ba_mtx);
@@ -395,6 +410,7 @@ bus_netlink_send(struct bus_netlink *bn, struct librpc_message *msg,
 		g_cond_wait(&ack.ba_cv, &ack.ba_mtx);
 
 	g_mutex_unlock(&ack.ba_mtx);
+	//fprintf(stderr, "Waked %d, status %d\n", ack.ba_seq, ack.ba_status);
 	return (ack.ba_status);
 }
 
@@ -416,15 +432,10 @@ bus_netlink_recv(struct bus_netlink *bn)
 	nlh = (struct nlmsghdr *)buf;
 
 	if (bn->bn_departed) {
-		/* all messages are delivered in the order received by the
-		 * receive thread, and we shouldn't receive anything after the
-		 * device has disconnected. However the driver disconnect runs
-		 * in a different thread from its command handler, so a race
-		 * is conceivable. bn_departed will only be set for bus_netlink
-		 * structures with an actual client.
-		 */
-		g_assert_not_reached();
-		/* terminate the recv thread. */
+			fprintf(stderr, "DEPARTED bn %p opcode %d seq %d size %d, thread %lld\n",
+			    bn, msg->opcode, cn->seq, bn->bn_callback ?
+			    g_hash_table_size(bn->bn_ack) : -1,
+			    (uint64_t)syscall(SYS_gettid));
 		return (-1);
 	}
 
@@ -462,11 +473,17 @@ bus_netlink_recv(struct bus_netlink *bn)
 			rpc_bus_event(RPC_BUS_ATTACHED, &node);
 
 		if (msg->opcode == LIBRPC_DEPART) {
+			fprintf(stderr, "departing bn %p opcode %d seq %d size %d, thread %lld\n",
+			    bn, msg->opcode, cn->seq, bn->bn_callback ?
+			    g_hash_table_size(bn->bn_ack) : -1,
+			    (uint64_t)syscall(SYS_gettid));
 			if (bn->bn_callback != NULL) {
+				g_mutex_lock(&bn->bn_mtx);
 				bn->bn_departed = true;
+				bus_nack_all_locked(bn);
+				g_mutex_unlock(&bn->bn_mtx);
 				rpc_bus_event(RPC_BUS_DETACHED, &node);
-				bus_nack_all(bn);
-				bus_process_departure(bn->bn_arg);
+				//bus_process_departure(bn->bn_arg);
 			} else {
 				rpc_bus_event(RPC_BUS_DETACHED, &node);
 			}
@@ -484,6 +501,7 @@ bus_netlink_recv(struct bus_netlink *bn)
 			g_mutex_lock(&ack->ba_mtx);
 			ack->ba_done = true;
 			ack->ba_status = msg->status;
+			//fprintf(stderr, "Waking %d, status %d\n", ack->ba_seq, ack->ba_status);
 			g_cond_broadcast(&ack->ba_cv);
 			g_mutex_unlock(&ack->ba_mtx);
 		}
@@ -502,23 +520,20 @@ bus_netlink_recv(struct bus_netlink *bn)
 }
 
 static void
-bus_nack_all(struct bus_netlink *bn)
+bus_nack_all_locked(struct bus_netlink *bn)
 {
 	GHashTableIter iter;
 	struct bus_ack *ack;
 
-	g_mutex_lock(&bn->bn_mtx);
 	g_hash_table_iter_init(&iter, bn->bn_ack);
 	while (g_hash_table_iter_next(&iter, NULL, (gpointer)&ack)) {
 		g_mutex_lock(&ack->ba_mtx);
-		if (!ack->ba_done) {
-			ack->ba_done = true;
-			ack->ba_status = EPIPE;
-			g_cond_broadcast(&ack->ba_cv);
-		}
+		ack->ba_done = true;
+		ack->ba_status = EPIPE;
+		fprintf(stderr, "NAK Waking %d, status %d\n", ack->ba_seq, ack->ba_status);
+		g_cond_broadcast(&ack->ba_cv);
 		g_mutex_unlock(&ack->ba_mtx);
 	}
-	g_mutex_unlock(&bn->bn_mtx);
 }
 
 static void
