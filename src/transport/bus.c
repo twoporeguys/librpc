@@ -483,7 +483,12 @@ bus_netlink_recv(struct bus_netlink *bn)
 				bus_nack_all_locked(bn);
 				g_mutex_unlock(&bn->bn_mtx);
 				rpc_bus_event(RPC_BUS_DETACHED, &node);
-				//bus_process_departure(bn->bn_arg);
+				/* there is a client attached, and bn might get
+				 * cleaned up, so stop the thread.
+				 * TBD will that block the netlink socket if it
+				 * tries to deliver an error message?
+				 */
+				return (-1);
 			} else {
 				rpc_bus_event(RPC_BUS_DETACHED, &node);
 			}
@@ -547,6 +552,8 @@ bus_process_departure(void *arg)
 {
 	struct bus_connection *conn = arg;
 
+			fprintf(stderr, "rco_close for bn %p conn %p\n",
+					&conn->bc_bn, conn->bc_parent);
 	conn->bc_parent->rco_close(conn->bc_parent);
 }
 
