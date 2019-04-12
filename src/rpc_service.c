@@ -249,22 +249,6 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_call *call)
 
 	call->rc_instance = instance;
 
-	/*
-	if (call->rc_path == NULL)
-		instance = context->rcx_root;
-
-	if (instance == NULL)
-		instance = rpc_context_find_instance(context, call->rc_path);
-
-	if (instance == NULL || instance->ri_destroyed) {
-		call->rc_err = rpc_error_create(ENOENT, "Instance not found",
-		    NULL);
-		return (-1);
-	}
-
-	call->rc_instance = rpc_instance_retain(instance);
-	*/
-
 	member = rpc_instance_find_member(instance,
 	    call->rc_interface, call->rc_method_name);
 
