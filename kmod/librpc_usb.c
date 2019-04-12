@@ -201,7 +201,7 @@ librpc_usb_request(struct device *dev, void *cookie, const void *buf, size_t len
 	struct librpc_usb_response *resp;
 	int wpipe = usb_sndctrlpipe(udev, 0);
 	int rpipe = usb_rcvctrlpipe(udev, 0);
-	int ret;
+	int ret, status;
 	int errcnt = 500;
 
 	resp = kmalloc(sizeof(*resp) + LIBRPC_MAX_MSGSIZE, GFP_KERNEL);
@@ -242,8 +242,9 @@ librpc_usb_request(struct device *dev, void *cookie, const void *buf, size_t len
 		break;
 	}
 
+	status = resp->status;
 	kfree(resp);
-	return (resp->status);
+	return (status);
 }
 
 static int
