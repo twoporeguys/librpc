@@ -201,7 +201,8 @@ librpc_usb_request(struct device *dev, void *cookie, const void *buf, size_t len
 	struct librpc_usb_response *resp;
 	int wpipe = usb_sndctrlpipe(udev, 0);
 	int rpipe = usb_rcvctrlpipe(udev, 0);
-	int ret;
+	int ret, status;
+	int errcnt = 500;
 
 	resp = kmalloc(sizeof(*resp) + LIBRPC_MAX_MSGSIZE, GFP_KERNEL);
 	ret = usb_control_msg(udev, wpipe, LIBRPC_USB_SEND_REQ, USB_TYPE_VENDOR,
@@ -209,6 +210,7 @@ librpc_usb_request(struct device *dev, void *cookie, const void *buf, size_t len
 	if (ret < 0) {
 		dev_err(dev, "Submitting request URB failed: %d\n", ret);
 		kfree(resp);
+		librpc_device_error(dev, cookie, ret);
 		return (ret);
 	}
 
@@ -220,10 +222,18 @@ librpc_usb_request(struct device *dev, void *cookie, const void *buf, size_t len
 		if (ret < 0) {
 			dev_err(dev, "Reading response failed: %d\n", ret);
 			kfree(resp);
+			librpc_device_error(dev, cookie, ret);
 			return (ret);
 		}
 
 		if (resp->status == LIBRPC_USB_NOT_READY) {
+			if (errcnt-- == 0) {
+				ret = -ETIME;
+				dev_err(dev, "Reading response failed: %d\n", ret);
+				librpc_device_error(dev, cookie, ret);
+				kfree(resp);
+				return(ret);
+			}
 			msleep(10);
 			continue;
 		}
@@ -232,8 +242,9 @@ librpc_usb_request(struct device *dev, void *cookie, const void *buf, size_t len
 		break;
 	}
 
+	status = resp->status;
 	kfree(resp);
-	return (resp->status);
+	return (status);
 }
 
 static int

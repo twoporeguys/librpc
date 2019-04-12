@@ -60,8 +60,10 @@ struct u {
 	 {"tcp", "tcp://23.42.42.42:42", "tcp://127.0.0.1:5500", false},
 	 {"unix", "unix://test.sock", "unix://test.sock", true},
 	 {"unix", "unix:/", "unix://test.sock", false},
+#ifndef __linux__
 	 {"ws", "ws://0.0.0.0:6600/ws", "ws://127.0.0.1:6600/ws", true},
 	 {"ws", "ws://w0.0.0.0:6600/ws", "ws://127.0.0.1:6600/ws", false},
+#endif
 	 {"loopback", "loopback://0", "loopback://0", true},
 	 {"loopback", "loopback://a", "loopback://0", false},
 	 {"tcpv6", "tcp://[::]:5500", "tcp://[::1]:5500", true},
@@ -74,8 +76,10 @@ enum tests
 	TCP_BAD,
 	DS_GOOD,
 	DS_BAD,
+#ifndef __linux__
 	WS_GOOD,
 	WS_BAD,
+#endif
 	LB_GOOD,
 	LB_BAD,
 	V6_GOOD,
@@ -652,9 +656,11 @@ server_test_register()
 	    server_test_valid_server_set_up, server_test_resume,
 	    server_test_valid_server_tear_down);
 
+#ifndef __linux__
 	g_test_add("/server/resume/ws", server_fixture, (void *)WS_GOOD,
 	    server_test_valid_server_set_up, server_test_resume,
 	    server_test_valid_server_tear_down);
+#endif
 
 	g_test_add("/server/resume/loopback", server_fixture, (void *)LB_GOOD,
 	    server_test_valid_server_set_up, server_test_resume,
@@ -678,9 +684,11 @@ server_test_register()
 	    server_test_valid_server_set_up, server_test_flush,
 	    server_test_valid_server_tear_down);
 
+#ifndef __linux__
 	g_test_add("/server/flush/ws", server_fixture, (void *)WS_GOOD,
 	    server_test_valid_server_set_up, server_test_flush,
 	    server_test_valid_server_tear_down);
+#endif
 
 	g_test_add("/server/flush/event", server_fixture, (void *)TCP_GOOD,
 	    server_test_valid_server_set_up, server_test_event,

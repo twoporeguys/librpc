@@ -32,6 +32,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <sys/syscall.h>
 #include <sys/socket.h>
 #include <sys/poll.h>
 #include <sys/ioctl.h>
@@ -69,6 +70,8 @@ static int bus_lookup_address(const char *, uint32_t *);
 static void bus_process_message(void *, struct librpc_message *, void *, size_t);
 static void *bus_reader(void *);
 static void bus_release(void *);
+static void bus_nack_all_locked(struct bus_netlink *bn);
+static void bus_process_departure(void *arg);
 
 static const struct rpc_bus_transport bus_transport_ops = {
 	.open = bus_open,
@@ -91,6 +94,7 @@ struct bus_ack
     	GCond			ba_cv;
     	bool			ba_done;
     	int			ba_status;
+	uint32_t		ba_seq;
 };
 
 struct bus_netlink
@@ -102,6 +106,7 @@ struct bus_netlink
     	GThread *		bn_thread;
     	bus_netlink_cb_t	bn_callback;
     	void *			bn_arg;
+	bool			bn_departed;
 };
 
 struct bus_connection
@@ -119,7 +124,7 @@ bus_open(GMainContext *context __unused)
 
 	bn = g_malloc0(sizeof(*bn));
 	if (bus_netlink_open(bn) != 0) {
-		free(bn);
+		g_free(bn);
 		return (NULL);
 	}
 
@@ -131,6 +136,8 @@ bus_close(void *arg)
 {
 	struct bus_netlink *bn = arg;
 
+	fprintf(stderr, "CLOSE  bn %p thread %lld\n",
+	    bn, (uint64_t)syscall(SYS_gettid));
 	(void)bus_netlink_close(bn);
 }
 
@@ -178,6 +185,8 @@ bus_abort(void *arg)
 {
 	struct bus_connection *conn = arg;
 
+	fprintf(stderr, "ABORT  bn %p conn %p  thread %lld\n",
+	    &conn->bc_bn, conn, (uint64_t)syscall(SYS_gettid));
 	bus_netlink_close(&conn->bc_bn);
 	g_free(conn);
 	return (0);
@@ -339,6 +348,7 @@ static int
 bus_netlink_close(struct bus_netlink *bn)
 {
 	close(bn->bn_sock);
+	bus_process_departure(bn->bn_arg);
 	return (0);
 }
 
@@ -351,6 +361,12 @@ bus_netlink_send(struct bus_netlink *bn, struct librpc_message *msg,
 	struct nlmsghdr *nlh = (struct nlmsghdr *)buf;
 	struct cn_msg *cn = NLMSG_DATA(nlh);
 	size_t size = NLMSG_SPACE(sizeof(*cn) + sizeof(*msg) + len);
+
+	g_mutex_lock(&bn->bn_mtx);
+	if (bn->bn_departed) {
+		g_mutex_unlock(&bn->bn_mtx);
+		return(EIO);
+	}
 
 	nlh->nlmsg_seq = bn->bn_seq++;
 	nlh->nlmsg_pid = (uint32_t)getpid();
@@ -369,16 +385,20 @@ bus_netlink_send(struct bus_netlink *bn, struct librpc_message *msg,
 	if (payload != NULL)
 		memcpy(cn->data + sizeof(struct librpc_message), payload, len);
 
-	g_mutex_lock(&bn->bn_mtx);
 
 	ack.ba_done = false;
 	ack.ba_status = 0;
+	ack.ba_seq = nlh->nlmsg_seq;
 	g_mutex_init(&ack.ba_mtx);
 	g_cond_init(&ack.ba_cv);
 	g_hash_table_insert(bn->bn_ack, GUINT_TO_POINTER(cn->seq), &ack);
 
-	if (send(bn->bn_sock, buf, size, 0) != (ssize_t)size)
+	if (send(bn->bn_sock, buf, size, 0) != (ssize_t)size) {
+		g_hash_table_remove(bn->bn_ack, GUINT_TO_POINTER(cn->seq));
+		fprintf(stderr, "NL send failed %d\n", cn->seq);
+		g_mutex_unlock(&bn->bn_mtx);
 		return (-1);
+	}
 
 	g_mutex_unlock(&bn->bn_mtx);
 	g_mutex_lock(&ack.ba_mtx);
@@ -407,8 +427,20 @@ bus_netlink_recv(struct bus_netlink *bn)
 	msglen = recv(bn->bn_sock, buf, BUS_NL_MSGSIZE, 0);
 	nlh = (struct nlmsghdr *)buf;
 
-	if (msglen <= 0)
+	if (msglen <= 0) {
+		fprintf(stderr,
+		    "Received 0 length msg, bn = %p, terminating thread %lld\n",
+		    bn, (uint64_t)syscall(SYS_gettid));
 		return (-1);
+	}
+
+	if (bn->bn_departed) {
+		fprintf(stderr, "DEPARTED bn %p opcode %d seq %d size %d, thread %lld\n",
+		    bn, msg->opcode, cn->seq, bn->bn_callback ?
+		    g_hash_table_size(bn->bn_ack) : -1,
+		    (uint64_t)syscall(SYS_gettid));
+		return (-1);
+	}
 
 	debugf("message: type=%d, seq=%d, len=%d", nlh->nlmsg_type, cn->seq,
 	    cn->len);
@@ -440,14 +472,32 @@ bus_netlink_recv(struct bus_netlink *bn)
 		if (msg->opcode == LIBRPC_ARRIVE)
 			rpc_bus_event(RPC_BUS_ATTACHED, &node);
 
-		if (msg->opcode == LIBRPC_DEPART)
-			rpc_bus_event(RPC_BUS_DETACHED, &node);
+		if (msg->opcode == LIBRPC_DEPART) {
+			fprintf(stderr, "departing bn %p opcode %d seq %d size %d, thread %lld\n",
+			    bn, msg->opcode, cn->seq, bn->bn_callback ?
+			    g_hash_table_size(bn->bn_ack) : -1,
+			    (uint64_t)syscall(SYS_gettid));
+			if (bn->bn_callback != NULL) {
+				g_mutex_lock(&bn->bn_mtx);
+				bn->bn_departed = true;
+				bus_nack_all_locked(bn);
+				g_mutex_unlock(&bn->bn_mtx);
+				rpc_bus_event(RPC_BUS_DETACHED, &node);
+				/* there is a client attached, and bn might get
+				 * cleaned up, so stop the thread.
+				 */
+				return (-1);
+			} else {
+				rpc_bus_event(RPC_BUS_DETACHED, &node);
+			}
+		}
 
 		break;
 
 	case LIBRPC_ACK:
 		g_mutex_lock(&bn->bn_mtx);
 		ack = g_hash_table_lookup(bn->bn_ack, GUINT_TO_POINTER(cn->seq));
+		g_hash_table_remove(bn->bn_ack, GUINT_TO_POINTER(cn->seq));
 		g_mutex_unlock(&bn->bn_mtx);
 
 		if (ack != NULL) {
@@ -472,9 +522,36 @@ bus_netlink_recv(struct bus_netlink *bn)
 }
 
 static void
+bus_nack_all_locked(struct bus_netlink *bn)
+{
+	GHashTableIter iter;
+	struct bus_ack *ack;
+
+	g_hash_table_iter_init(&iter, bn->bn_ack);
+	while (g_hash_table_iter_next(&iter, NULL, (gpointer)&ack)) {
+		g_mutex_lock(&ack->ba_mtx);
+		ack->ba_done = true;
+		ack->ba_status = EPIPE;
+		fprintf(stderr, "NAK Waking %d, status %d\n", ack->ba_seq, ack->ba_status);
+		g_cond_broadcast(&ack->ba_cv);
+		g_mutex_unlock(&ack->ba_mtx);
+	}
+}
+
+static void
 bus_release(void *arg)
 {
 
+}
+
+static void
+bus_process_departure(void *arg)
+{
+	struct bus_connection *conn = arg;
+
+	fprintf(stderr, "rco_close for bn %p conn %p\n",
+	    &conn->bc_bn, conn->bc_parent);
+	conn->bc_parent->rco_close(conn->bc_parent);
 }
 
 static void
@@ -485,6 +562,12 @@ bus_process_message(void *arg, struct librpc_message *msg, void *payload,
 
 	switch (msg->opcode) {
 	case LIBRPC_RESPONSE:
+		if (msg->status != 0) {
+			rpc_set_last_error(msg->status,
+			    "Bus received error status.", NULL);
+			conn->bc_parent->rco_close(conn->bc_parent);
+			return;
+		}
 		conn->bc_parent->rco_recv_msg(conn->bc_parent, payload, len,
 		    NULL, 0);
 		break;

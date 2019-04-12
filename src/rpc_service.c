@@ -82,13 +82,48 @@ struct emit_item {
 	rpc_object_t	args;
 };
 
+enum tp_type {
+	TYPE_CALL,
+	TYPE_INSTANCE,
+};
+
+struct tp_item {
+	gpointer data;
+	enum tp_type type;
+};
+
 static void
 rpc_context_tp_handler(gpointer data, gpointer user_data)
 {
 	struct rpc_context *context = user_data;
-	struct rpc_call *call = data;
-	struct rpc_if_method *method = call->rc_if_method;
+	struct tp_item *item = data;
+	struct rpc_call *call;
+	rpc_instance_t instance;
+	struct rpc_if_method *method;
 	rpc_object_t result;
+
+	if (item->type == TYPE_INSTANCE) {
+		instance = item->data;
+		g_assert(instance->ri_destroyed);
+
+		g_mutex_lock(&instance->ri_mtx);
+		while (instance->ri_refcnt > 0)
+			g_cond_wait(&instance->ri_cv, &instance->ri_mtx);
+
+		g_mutex_unlock(&instance->ri_mtx);
+		g_cond_clear(&instance->ri_cv);
+		g_mutex_clear(&instance->ri_mtx);
+		g_rw_lock_clear(&instance->ri_rwlock);
+		g_free(instance->ri_path);
+		g_hash_table_destroy(instance->ri_interfaces);
+		g_free(instance);
+		g_free(item);
+		return;
+	}
+
+	call = item->data;
+	method = call->rc_if_method;
+	g_free(item);
 
 	if (rpc_connection_call_retain(call) < 0) {
 		debugf("Can't dispatch call %p, not valid", call);
@@ -138,7 +173,7 @@ rpc_context_tp_handler(gpointer data, gpointer user_data)
 	if (!call->rc_streaming)
 		rpc_function_respond(call, result);
 	else if (!call->rc_ended)
-		rpc_function_end(data);
+		rpc_function_end(call);
 done:
 	rpc_connection_call_release(call);
 }
@@ -175,8 +210,9 @@ rpc_context_free(rpc_context_t context)
 	if (context == NULL)
 		return;
 
-	g_thread_pool_free(context->rcx_threadpool, true, true);
+	/* free the instance before taking down the tp */
 	rpc_instance_free(context->rcx_root);
+	g_thread_pool_free(context->rcx_threadpool, true, true);
 
 	item = g_malloc(sizeof (*item));
 	item->context = NULL;
@@ -193,6 +229,7 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_call *call)
 	struct rpc_if_member *member;
 	GError *err = NULL;
 	rpc_instance_t instance = NULL;
+	struct tp_item *item;
 
 	debugf("call=%p, name=%s", call, call->rc_method_name);
 
@@ -200,19 +237,17 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_call *call)
 		debugf("Can't dispatch call, conn %p closed", call->rc_conn);
 		return (-1);
 	}
-	if (call->rc_path == NULL)
-		instance = context->rcx_root;
 
-	if (instance == NULL)
-		instance = rpc_context_find_instance(context, call->rc_path);
+	instance = rpc_instance_find_and_retain(context,
+	    call->rc_path == NULL ? "/" : call->rc_path);
 
-	if (instance == NULL || instance->ri_destroyed) {
-		call->rc_err = rpc_error_create(ENOENT, "Instance not found",
+	if (instance == NULL) {
+		call->rc_err = rpc_error_create(ENOENT, "No valid instance found",
 		    NULL);
 		return (-1);
 	}
 
-	call->rc_instance = rpc_instance_retain(instance);
+	call->rc_instance = instance;
 
 	member = rpc_instance_find_member(instance,
 	    call->rc_interface, call->rc_method_name);
@@ -225,14 +260,21 @@ rpc_context_dispatch(rpc_context_t context, struct rpc_call *call)
 	if (member == NULL || member->rim_type != RPC_MEMBER_METHOD) {
 		call->rc_err = rpc_error_create(ENOENT, "Member not found",
 		    NULL);
+		rpc_instance_release(instance);
 		return (-1);
 	}
 
 	call->rc_if_method = &member->rim_method;
-	g_thread_pool_push(context->rcx_threadpool, call, &err);
+	item = g_malloc(sizeof(*item));
+	item->type = TYPE_CALL;
+	item->data = call;
+	g_thread_pool_push(context->rcx_threadpool, item, &err);
 	if (err != NULL) {
 		call->rc_err = rpc_error_create(EFAULT, "Cannot submit call",
 		    NULL);
+		g_free(item);
+		g_error_free(err);
+		rpc_instance_release(instance);
 		return (-1);
 	}
 
@@ -255,6 +297,22 @@ rpc_context_find_instance(rpc_context_t context, const char *path)
 
 	g_rw_lock_reader_unlock(&context->rcx_rwlock);
 	return (result);
+}
+
+rpc_instance_t
+rpc_instance_find_and_retain(rpc_context_t context, const char *path)
+{
+	rpc_instance_t instance;
+
+	if (context == NULL)
+		return (NULL);
+
+
+	g_rw_lock_reader_lock(&context->rcx_rwlock);
+	instance = g_hash_table_lookup(context->rcx_instances, path);
+	instance = rpc_instance_retain(instance);
+	g_rw_lock_reader_unlock(&context->rcx_rwlock);
+	return (instance);
 }
 
 rpc_instance_t
@@ -831,21 +889,20 @@ rpc_instance_get_path(rpc_instance_t instance)
 void
 rpc_instance_free(rpc_instance_t instance)
 {
+	struct tp_item *item;
 
 	g_assert_nonnull(instance);
+	item = g_malloc(sizeof(*item));
 
 	g_mutex_lock(&instance->ri_mtx);
+	item->type = TYPE_INSTANCE;
+	item->data = instance;
 	instance->ri_destroyed = true;
-	while (instance->ri_refcnt > 0)
-		g_cond_wait(&instance->ri_cv, &instance->ri_mtx);
 
+	/* wait on any outstanding calls to complete in another thread. */
+	g_thread_pool_push(instance->ri_context->rcx_threadpool, item, NULL);
 	g_mutex_unlock(&instance->ri_mtx);
-	g_cond_clear(&instance->ri_cv);
-	g_mutex_clear(&instance->ri_mtx);
-	g_rw_lock_clear(&instance->ri_rwlock);
-	g_free(instance->ri_path);
-	g_hash_table_destroy(instance->ri_interfaces);
-	g_free(instance);
+
 }
 
 struct rpc_if_member *
@@ -1491,10 +1548,16 @@ rpc_instance_t
 rpc_instance_retain(rpc_instance_t inst)
 {
 
-	g_mutex_lock(&inst->ri_mtx);
-	inst->ri_refcnt++;
-	g_cond_broadcast(&inst->ri_cv);
-	g_mutex_unlock(&inst->ri_mtx);
+	if (inst != NULL) {
+		g_mutex_lock(&inst->ri_mtx);
+		if (inst->ri_destroyed) {
+			g_mutex_unlock(&inst->ri_mtx);
+			return (NULL);
+		}
+		inst->ri_refcnt++;
+		g_cond_broadcast(&inst->ri_cv);
+		g_mutex_unlock(&inst->ri_mtx);
+	}
 	return (inst);
 }
 
@@ -1502,8 +1565,10 @@ void
 rpc_instance_release(rpc_instance_t inst)
 {
 
-	g_mutex_lock(&inst->ri_mtx);
-	inst->ri_refcnt--;
-	g_cond_broadcast(&inst->ri_cv);
-	g_mutex_unlock(&inst->ri_mtx);
+	if (inst != NULL) {
+		g_mutex_lock(&inst->ri_mtx);
+		inst->ri_refcnt--;
+		g_cond_broadcast(&inst->ri_cv);
+		g_mutex_unlock(&inst->ri_mtx);
+	}
 }

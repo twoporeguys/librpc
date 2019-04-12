@@ -35,6 +35,22 @@ build:
 	    -DBUILD_DOC=$(BUILD_DOC)
 	make -C build
 
+build-arm:
+	mkdir -p build
+	cd build && cmake .. \
+	    -DBUILD_LIBUSB=OFF \
+	    -DPYTHON_VERSION=$(PYTHON_VERSION) \
+	    -DRPC_DEBUG=$(RPC_DEBUG) \
+	    -DCMAKE_BUILD_TYPE=Debug \
+	    -DCMAKE_INSTALL_PREFIX=$(PREFIX) \
+	    -DBUILD_CLIENT=$(BUILD_CLIENT) \
+	    -DBUILD_PYTHON=$(BUILD_PYTHON) \
+	    -DBUILD_TESTS=ON \
+	    -DBUILD_CPLUSPLUS=$(BUILD_CPLUSPLUS) \
+	    -DENABLE_RPATH=$(ENABLE_RPATH) \
+	    -DBUILD_DOC=$(BUILD_DOC)
+	make -C build
+
 build-cov:
 	mkdir -p build-cov
 	cd build-cov && cmake .. \
