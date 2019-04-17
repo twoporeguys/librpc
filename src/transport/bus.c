@@ -348,7 +348,8 @@ static int
 bus_netlink_close(struct bus_netlink *bn)
 {
 	close(bn->bn_sock);
-	bus_process_departure(bn->bn_arg);
+	if (bn->bn_arg != NULL)
+		bus_process_departure(bn->bn_arg);
 	return (0);
 }
 
