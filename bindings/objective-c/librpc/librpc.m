@@ -382,15 +382,6 @@
     return [self instancesForPath:@"/"];
 }
 
-- (id)findInstance:(NSString *)name andInterface:(NSString *)interface
-{
-    RPCInstance *inst = [self.instances objectForKey:name];
-    if (inst == nil)
-        return nil;
-
-    return [[inst interfaces] objectForKey:interface];
-}
-
 - (NSDictionary *)instancesForPath:(NSString *)path
 {
     NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
@@ -408,11 +399,6 @@
         [result setValue:instance forKey:iPath];
     }
     return result;
-}
-
-- (void)setDispatchQueue:(nullable dispatch_queue_t)queue
-{
-    rpc_connection_set_dispatch_queue(conn, queue);
 }
 
 - (RPCObject *)callSync:(NSString *)method
