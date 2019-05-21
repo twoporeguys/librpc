@@ -410,11 +410,6 @@
     return result;
 }
 
-- (void)setDispatchQueue:(nullable dispatch_queue_t)queue
-{
-    rpc_connection_set_dispatch_queue(conn, queue);
-}
-
 - (RPCObject *)callSync:(NSString *)method
                    path:(NSString *)path
               interface:(NSString *)interface
