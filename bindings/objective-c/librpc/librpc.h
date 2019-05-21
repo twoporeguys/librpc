@@ -246,16 +246,6 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
  * Returns a dictionary of instances found on the server.
  */
 - (nonnull NSDictionary<NSString *, RPCInstance *> *)instances;
-
-/**
- * Configures dispatch queue to be used by callbacks.
- *
- * Setting this to @p NULL switches back to internal librpc thread pool.
- *
- * @param queue Dispatch queue to use
- */
-- (void)setDispatchQueue:(nullable dispatch_queue_t)queue;
-
 - (nullable id)findInstance:(nonnull NSString *)name
                andInterface:(nonnull NSString *)interface;
 
