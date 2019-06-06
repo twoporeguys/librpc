@@ -240,7 +240,7 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
  *
  * @return Pointer to a @p rpc_client_t handle.
  */
-- (void *)nativeValue;
+- (void *_Nonnull)nativeValue;
 
 /**
  * Returns a dictionary of instances found on the server.
@@ -271,7 +271,7 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
  * Issues a call to the server and runs @p callback when
  * there's a response available.
  */
-- (RPCCall *)callAsync:(nonnull NSString *)method
+- (RPCCall *_Nonnull)callAsync:(nonnull NSString *)method
                   path:(nullable NSString *)path
              interface:(nullable NSString *)interface
                   args:(nullable RPCObject *)args
@@ -413,7 +413,7 @@ typedef void (^RPCEventCallback)(RPCObject* _Nonnull value, NSString * _Nonnull 
 @end
 
 @interface RPCTyping : NSObject
-+ (instancetype)shared;
++ (instancetype _Nonnull )shared;
 - (BOOL)loadTypes:(nonnull NSString *)path error:(NSError *_Nullable *_Nullable)error;
 - (BOOL)loadTypesDirectory:(nonnull NSString *)directory error:(NSError *_Nullable *_Nullable)error;
 - (BOOL)loadTypesConnection:(nonnull RPCClient *)client error:(NSError *_Nullable *_Nullable)error;
