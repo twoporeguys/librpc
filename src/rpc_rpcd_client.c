@@ -140,7 +140,7 @@ rpcd_register(const char *uri, const char *name, const char *description)
 	conn = rpc_client_get_connection(client);
 	result = rpc_connection_call_syncp(conn, "/", RPCD_MANAGER_INTERFACE,
 	    "register_service",
-	    "[<com.twoporeguys.librpc.rpcd.Service>{s,s,s}]",
+	    "[{s,s,s}]",
 	    "uri", uri,
 	    "name", name,
 	    "description", description);
