@@ -23,7 +23,7 @@ make_binary:
     - make bootstrap
     - mkdir -p build
     - cd build && cmake .. -DBUILD_LIBUSB=ON -DBUILD_DOC=ON
-    - cd build && make
+    - make
   artifacts:
     name: "$CI_COMMIT_REF_NAME"
     paths:
