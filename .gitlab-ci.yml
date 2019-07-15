@@ -31,7 +31,11 @@ run_make:
     
 run_tests:
   stage: test
+  before_script:
+  - apt-get update
+  - apt-get -y -q install --no-install-recommends build-essential
   script:
+    - make bootstrap
     - make test
   dependencies:
     - run_make
