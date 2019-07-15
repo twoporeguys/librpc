@@ -37,20 +37,6 @@ run_tests:
     paths:
       - build/
 
-make_docs:
-  stage: build
-  before_script:
-    - apt-get update
-    - apt-get -y -q install --no-install-recommends git make curl ssh
-  script:
-    - make bootstrap
-    - make docs
-  artifacts:
-    name: "$CI_COMMIT_REF_NAME"
-    paths:
-      - build/docs/
-    expire_in: 1 day
-
 deploy_docs:
   stage: deploy
   script:
