@@ -14,7 +14,7 @@ stages:
   - test
   - deploy
 
-make_binary:
+run_make:
   stage: build
   before_script:
     - apt-get update
@@ -30,12 +30,11 @@ make_binary:
       - build/
     
 run_tests:
+  stage: test
   script:
     - make test
-  artifacts:
-    name: "$CI_COMMIT_REF_NAME"
-    paths:
-      - build/
+  dependencies:
+    - run_make
 
 deploy_docs:
   stage: deploy
@@ -44,7 +43,7 @@ deploy_docs:
     - rm -rf "$DOCS_PATH/librpc/$CI_COMMIT_REF_SLUG/*"
     - cp -R build/docs/* "$DOCS_PATH/librpc/$CI_COMMIT_REF_SLUG/"
   dependencies:
-    - make_docs
+    - run_make
 
 
 
