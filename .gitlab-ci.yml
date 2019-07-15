@@ -1,12 +1,12 @@
 image: ubuntu:bionic
 
 variables:
-  DOCS_PATH: '/mnt/docs'
-  CC: 'clang'
-  CXX: 'clang++'
-  DEBIAN_FRONTEND: 'noninteractive'
-  DEBCONF_NONINTERACTIVE_SEEN: 'true'
-  LANG: 'C'
+  DOCS_PATH: "/mnt/docs"
+  CC: "clang"
+  CXX: "clang++"
+  DEBIAN_FRONTEND: "noninteractive"
+  DEBCONF_NONINTERACTIVE_SEEN: "true"
+  LANG: "C"
   npm_config_cache: ".npm"
 
 stages:
@@ -25,7 +25,7 @@ run_make:
     - cd build && cmake .. -DBUILD_LIBUSB=ON -DBUILD_DOC=ON
     - make
   artifacts:
-    name: "$CI_COMMIT_REF_NAME"
+    name: $CI_COMMIT_REF_NAME
     paths:
       - build/
     
@@ -43,10 +43,9 @@ run_tests:
 deploy_docs:
   stage: deploy
   script:
-    - echo "$CI_COMMIT_REF_NAME"
-    - mkdir -p "$DOCS_PATH/librpc/$CI_COMMIT_REF_SLUG"
-    - rm -rf "$DOCS_PATH/librpc/$CI_COMMIT_REF_SLUG/*"
-    - cp -R build/docs/* "$DOCS_PATH/librpc/$CI_COMMIT_REF_SLUG/"
+    - mkdir -p "$DOCS_PATH/librpc"
+    - rm -rf "$DOCS_PATH/librpc/*"
+    - cp -R build/docs/* "$DOCS_PATH/librpc/"
   dependencies:
     - run_make
 
