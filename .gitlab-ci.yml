@@ -18,7 +18,7 @@ make_binary:
   stage: build
   before_script:
     - apt-get update
-    - apt-get -y -q install --no-install-recommends build-essential dot git make curl ssh
+    - apt-get -y -q install --no-install-recommends build-essential git make curl ssh
   script:
     - make bootstrap
     - mkdir -p build
