@@ -1,0 +1,64 @@
+image: ubuntu:bionic
+
+variables:
+  DOCS_PATH: '/mnt/docs'
+  CC: 'clang'
+  CXX: 'clang++'
+  DEBIAN_FRONTEND: 'noninteractive'
+  DEBCONF_NONINTERACTIVE_SEEN: 'true'
+  LANG: 'C'
+  npm_config_cache: ".npm"
+
+stages:
+  - build
+  - test
+  - deploy
+
+make_binary:
+  stage: build
+  before_script:
+    - apt-get update
+    - apt-get -y -q install --no-install-recommends build-essential git make curl ssh
+  script:
+    - make bootstrap
+    - mkdir -p build
+    - cd build && cmake .. -DBUILD_LIBUSB=ON -DBUILD_DOC=ON
+    - cd build && make
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    paths:
+      - build/
+    
+run_tests:
+  script:
+    - make test
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    paths:
+      - build/
+
+make_docs:
+  stage: build
+  before_script:
+    - apt-get update
+    - apt-get -y -q install --no-install-recommends git make curl ssh
+  script:
+    - make bootstrap
+    - make docs
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    paths:
+      - build/docs/
+    expire_in: 1 day
+
+deploy_docs:
+  stage: deploy
+  script:
+    - mkdir -p "$DOCS_PATH/librpc/$CI_COMMIT_REF_SLUG"
+    - rm -rf "$DOCS_PATH/librpc/$CI_COMMIT_REF_SLUG/*"
+    - cp -R build/docs/* "$DOCS_PATH/librpc/$CI_COMMIT_REF_SLUG/"
+  dependencies:
+    - make_docs
+
+
+
