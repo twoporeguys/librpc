@@ -43,6 +43,7 @@ run_tests:
 deploy_docs:
   stage: deploy
   script:
+    - echo "$CI_COMMIT_REF_NAME"
     - mkdir -p "$DOCS_PATH/librpc/$CI_COMMIT_REF_SLUG"
     - rm -rf "$DOCS_PATH/librpc/$CI_COMMIT_REF_SLUG/*"
     - cp -R build/docs/* "$DOCS_PATH/librpc/$CI_COMMIT_REF_SLUG/"
